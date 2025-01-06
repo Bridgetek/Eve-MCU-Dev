@@ -451,6 +451,7 @@ uint16_t EVE_LIB_SendString(const char* string)
     // Store command length to return.
     CommandSize = length;
 
+#if MCU_UNALIGNED_ACCESSES 
     // Send string as 32 bit data.
     while (length)
     {
@@ -458,7 +459,19 @@ uint16_t EVE_LIB_SendString(const char* string)
         string += 4;
         length -= 4;
     }
-
+#else
+		uint32_t val32;
+		while (length)
+		{
+				val32 = *string++;
+				val32 |= (*string++ << 8);
+				val32 |= (*string++ << 16);
+				val32 |= (*string++ << 24);
+        HAL_Write32(val32);
+        length -= 4;
+		}
+#endif
+	
     return CommandSize;
 }
 

@@ -1,6 +1,8 @@
-# STM32 Cube distribution directory
-project/Drivers/
-Projects/
-
-*.lst
-
+# STM32 distribution directory
+DebugConfig/
+Listings/
+Objects/
+EventRecorderStub.scvd
+*.uvguix.*
+*.uvoptx
+RTE/_*

@@ -119,8 +119,6 @@ void MCU_Init(void)
 
 void MCU_Setup(void)
 {
-#ifdef FT81X_ENABLE
-#endif // FT81X_ENABLE
 }
 
 // ########################### GPIO CONTROL ####################################

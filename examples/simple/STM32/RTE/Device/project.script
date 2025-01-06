@@ -1,0 +1,6 @@
+load STM32F030R8Tx 
+project name STCubeGenerated 
+project toolchain "MDK-ARM V5" 
+project path "C:\Users\gordon.mcnab\Documents\GitHub\EVE-MCU-Examples-BRT_AN_025\examples\fontmagic\STM32\RTE\Device\STM32F030R8Tx\" 
+set tpl_path "C:\Users\gordon.mcnab\AppData\Local\Arm\Packs\Keil\STM32F0xx_DFP\2.1.1\MDK\CubeMX" 
+set dest_path "STM32F030R8Tx" 
