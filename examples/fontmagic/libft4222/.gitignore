@@ -1,0 +1,8 @@
+# libFT4222 distribution directory
+.vs
+.vscode
+imports/
+VisualStudio/*
+!VisualStudio/libFT4222.sln
+!VisualStudio/libFT4222.vcxproj
+!VisualStudio/libFT4222.vcxproj.filters
