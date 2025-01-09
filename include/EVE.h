@@ -226,6 +226,10 @@ void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
 void EVE_NOP(void);
 #endif
 
+#if IS_EVE_API(5) // BT82x extensions
+void EVE_BITMAP_SOURCE_H(uint8_t addr);
+#endif
+
 // Co-Processor Widgets.
 // Common to all generations.
 

@@ -911,6 +911,16 @@ void EVE_NOP(void)
 
 #endif
 
+#if IS_EVE_API(5) // BT82x extensions
+
+void EVE_BITMAP_SOURCE_H(uint8_t addr)
+{
+    HAL_Write32(EVE_ENC_BITMAP_SOURCE_H(addr));
+    HAL_IncCmdPointer(4);
+}
+
+#endif
+
 //##############################################################################
 // Co-Processor Widgets
 //##############################################################################

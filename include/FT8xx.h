@@ -228,18 +228,15 @@
 #define FT_GPU_NUMCHAR_PERFONT         (128)
 #define FT_GPU_FONT_TABLE_SIZE         (148)
 
-/* BT81x, FT81x and FT80x font table structure */
-/* Font table address in ROM can be found by reading the address from 0xFFFFC location. */
-/* 16 font tables are present at the address read from location 0xFFFFC. */
-/* On EVE4 this is called the Legacy Font Structure. */
+/* Font table structure */
+/* On EVE4 onwards this is called the Legacy Font Structure. */
 typedef struct
 {
-    /* All the values are in bytes */
     /* Width of each character font from 0 to 127 */
     uint8_t    FontWidth[FT_GPU_NUMCHAR_PERFONT];
-    /* Bitmap format of font wrt bitmap formats supported by FT800 - L1, L4, L8 */
+    /* Bitmap format of font - this is the same as the EVE_FORMAT_x, where x is L1, L2, L4 etc. */
     uint32_t    FontBitmapFormat;
-    /* Font line stride in FT800 ROM */
+    /* Font line stride in bytes */
     uint32_t    FontLineStride;
     /* Font width in pixels */
     uint32_t    FontWidthInPixels;
@@ -248,5 +245,75 @@ typedef struct
     /* Pointer to font graphics raw data */
     uint32_t    PointerToFontGraphicsData;
 } EVE_GPU_FONT_HEADER;
+
+#if IS_EVE_API(4, 5)
+
+/* On EVE4 onwards this is called the Extended Font Structure. */
+typedef struct
+{
+    /* Signature of font structure - must be 0x0100AAFF */
+    uint32_t    Signature;
+    /* Total size of font block in bytes */
+    uint32_t    Size;
+    /* Bitmap format of font - this is the same as the EVE_FORMAT_x, where x is L1, L2, L4 etc. */
+    uint32_t    FontBitmapFormat;
+    /* Bitmap swizzle - as used in BITMAP_SWIZZLE command */
+    uint32_t    FontBitmapSwizzle;
+    /* Font layout width in bytes */
+    uint32_t    FontLayoutWidth;
+    /* Font layout height */
+    uint32_t    FontLayoutHeight;
+    /* Font width in pixels */
+    uint32_t    FontWidthInPixels;
+    /* Font height in pixels */
+    uint32_t    FontHeightInPixels;
+    /* Pointer to font graphics raw data */
+    uint32_t    PointerToFontGraphicsData;
+    /* Number of characters */
+    uint32_t    FontNumberCharacters;
+} EVE_GPU_EXT_FONT_HEADER;
+
+#endif
+
+#if IS_EVE_API(5)
+
+/* On EVE5 onwards this is called the Extended 2 Font Structure. */
+typedef struct
+{
+    /* Signature of font structure - must be 0x0200AAFF */
+    uint32_t    Signature;
+    /* Total size of font block in bytes */
+    uint32_t    Size;
+    /* Bitmap format and flags of font */
+    /* Format is the same as the EVE_FORMAT_x, where x is L1, L2, L4 etc. */
+    /* Flags denotes binary and line break behaviour */
+    uint32_t    FontBitmapFormat;
+    /* Bitmap swizzle - as used in BITMAP_SWIZZLE command */
+    uint32_t    FontBitmapSwizzle;
+    /* Font layout width in bytes */
+    uint32_t    FontLayoutWidth;
+    /* Font layout height */
+    uint32_t    FontLayoutHeight;
+    /* Font width in pixels */
+    uint32_t    FontWidthInPixels;
+    /* Font height in pixels */
+    uint32_t    FontHeightInPixels;
+    /* Font padding and leading in pixels */
+    uint32_t    FontPadLeadInPixels;
+    /* Number of characters */
+    uint32_t    FontNumberCharacters;
+    /* Font midline and baseline in pixels */
+    uint32_t    FontMidlineBaselineInPixels;
+} EVE_GPU_EXT2_FONT_HEADER;
+
+typedef struct
+{
+    /* Pointer to font graphics raw data */
+    uint32_t    PointerToFontGraphicsData;
+    /* Width of font character */
+    uint32_t    Width;
+} EVE_GPU_EXT2_CHAR_DESCRIPTOR;
+
+#endif
 
 #endif    /* _FT8XX_H_ */
