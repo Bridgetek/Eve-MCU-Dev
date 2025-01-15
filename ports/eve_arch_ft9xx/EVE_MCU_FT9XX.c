@@ -60,6 +60,7 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
+#include "../include/EVE.h"
 #include "../include/MCU.h"
 #include "EVE_config.h"
 
@@ -125,6 +126,9 @@ void MCU_Init(void)
 	gpio_write(PIN_NUM_CS, 1);
 	gpio_write(PIN_NUM_PD, 1);
 
+	// EVE5 supports 60 MHz SPI clock
+	// EVE1, EVE2, EVE3, EVE4 support 30 MHz SPI clock
+	// Divide by 8 is 25 MHz
 	spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
 }
 
@@ -153,14 +157,19 @@ void MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-	//gpio_write(PIN_NUM_CS, 0);
 	spi_open(SPIM, 0);
+    // Tsac is 10 ns (EVE1), 3 ns (EVE2, EVE3, EVE4, EVE5)
+    delayus(1);
 }  
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-	//gpio_write(PIN_NUM_CS, 1);
+  // Tcsnh is 10 ns (EVE1), 0 ns (EVE2, EVE3, EVE4, EVE5)
+  // This 1 us delay can be removed in most cases
+#if IS_EVE_API(1)
+    delayus(1);
+#endif
 	spi_close(SPIM, 0);
 }
 
@@ -236,7 +245,12 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	spi_writen(SPIM, DataToWrite, length);
+  spi_writen(SPIM, DataToWrite, length);
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+  spi_readn(SPIM, DataToRead, length);
 }
 
 void MCU_Delay_20ms(void)

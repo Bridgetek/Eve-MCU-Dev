@@ -10,8 +10,8 @@ The PLATFORM macro sets the port files to be used by the compiler. The options a
 
 | Port Name | PLATFORM | Port Directory | BT82x Support |
 | --- | --- | --- | --- |
-|Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | No |
-|Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | No |
+|Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
+|Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
 |Beaglebone Black | PLATFORM_BEAGLEBONE | eve_arch_beaglebone | No |
 |Expressif ESP32 | PLATFORM_ESP32 | eve_arch_esp32 | No |
 |TI MSP430 | PLATFORM_MSP430 | eve_arch_msp430 | No |

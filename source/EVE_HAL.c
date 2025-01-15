@@ -159,8 +159,7 @@ void HAL_EVE_Init(void)
         HAL_HostCmdWrite(0xFF, 0xE9, 0xC0, 0x00, 0x00);
         // Perform a reset pulse
         HAL_HostCmdWrite(0xFF, 0xE7, 0x00, 0x00, 0x00) ; 
-        // Write 4 zeros
-        MCU_SPIWrite(bb, 4);
+        MCU_Delay_20ms();
         // Delay 100 mS
         MCU_Delay_20ms();
         MCU_Delay_20ms();
@@ -169,7 +168,10 @@ void HAL_EVE_Init(void)
         MCU_Delay_20ms();
 
         HAL_ChipSelect(1);
-        HAL_Read(bb, 128);
+        // Write 4 zeros
+        MCU_SPIWrite(bb, 4);
+        // Read 128 bytes response
+        MCU_SPIRead(bb, 128);
         HAL_ChipSelect(0);
 
         for (i = 0; i < 128; i++)
@@ -310,7 +312,7 @@ uint32_t HAL_Read32(void)
 {    
     // Read 4 bytes from a register has been previously addressed. Send dummy
     // 00 bytes as only the incoming value is important.
-    uint32_t val32;
+    uint32_t val32 = 0;
 
     // Read low byte of data first.
 #if IS_EVE_API(1, 2, 3, 4)
