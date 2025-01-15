@@ -387,14 +387,22 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	//spi_writen(SPIM, DataToWrite, length);
-
     uint16_t DataPointer = 0;   
-    DataPointer = 0;
 
     while(DataPointer < length)
     {
-        MCU_SPIWrite8(DataToWrite[DataPointer]);                                       // Send data byte-by-byte from array
+        MCU_SPIWrite8(DataToWrite[DataPointer]); // Send data byte-by-byte from array
+        DataPointer ++;
+    }
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    uint16_t DataPointer = 0;
+
+    while(DataPointer < length)
+    {
+        DataToRead[DataPointer] = MCU_SPIWrite8(0);  // Receive data byte-by-byte to array
         DataPointer ++;
     }
 }

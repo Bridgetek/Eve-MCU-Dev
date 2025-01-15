@@ -296,7 +296,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 
     while(DataPointer < length)
     {
-        MCU_SPIWrite8(DataToWrite[DataPointer]);                                       // Send data byte-by-byte from array
+        MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
         DataPointer += sizeof(uint8_t);
     }
 }
@@ -308,7 +308,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 
     while(DataPointer < length)
     {
-    	DataToRead[DataPointer] = MCU_SPIRead8();                                       // Send data byte-by-byte from array
+    	DataToRead[DataPointer] = MCU_SPIRead8();  // Send data byte-by-byte from array
         DataPointer += sizeof(uint8_t);
     }
 }

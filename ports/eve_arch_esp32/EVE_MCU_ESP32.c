@@ -176,6 +176,18 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
     spi_device_transmit(spi, &trans);
 }
 
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    static spi_transaction_t trans;
+
+    trans.length = length * 8;
+	trans.rxlength = 0;
+    trans.flags = 0;
+    trans.tx_buffer = DataToRead;
+    trans.rx_buffer = DataToRead;
+    spi_device_transmit(spi, &trans);
+}
+
 uint8_t MCU_SPIRead8(void)
 {
     uint8_t DataRead = 0;
