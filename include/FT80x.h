@@ -270,28 +270,22 @@
 #define EVE_ENC_CMD_CALIBRATE          0xffffff15UL
 #define EVE_ENC_CMD_CLOCK              0xffffff14UL
 #define EVE_ENC_CMD_COLDSTART          0xffffff32UL
-#define EVE_ENC_CMD_CRC                0xffffff03UL
 #define EVE_ENC_CMD_CSKETCH            0xffffff35UL
 #define EVE_ENC_CMD_DIAL               0xffffff2dUL
 #define EVE_ENC_CMD_DLSTART            0xffffff00UL
-#define EVE_ENC_CMD_EXECUTE            0xffffff07UL
 #define EVE_ENC_CMD_FGCOLOR            0xffffff0aUL
 #define EVE_ENC_CMD_GAUGE              0xffffff13UL
 #define EVE_ENC_CMD_GETMATRIX          0xffffff33UL
-#define EVE_ENC_CMD_GETPOINT           0xffffff08UL
 #define EVE_ENC_CMD_GETPROPS           0xffffff25UL
 #define EVE_ENC_CMD_GETPTR             0xffffff23UL
 #define EVE_ENC_CMD_GRADCOLOR          0xffffff34UL
 #define EVE_ENC_CMD_GRADIENT           0xffffff0bUL
-#define EVE_ENC_CMD_HAMMERAUX          0xffffff04UL
-#define EVE_ENC_CMD_IDCT               0xffffff06UL
 #define EVE_ENC_CMD_INFLATE            0xffffff22UL
 #define EVE_ENC_CMD_INTERRUPT          0xffffff02UL
 #define EVE_ENC_CMD_KEYS               0xffffff0eUL
 #define EVE_ENC_CMD_LOADIDENTITY       0xffffff26UL
 #define EVE_ENC_CMD_LOADIMAGE          0xffffff24UL
 #define EVE_ENC_CMD_LOGO               0xffffff31UL
-#define EVE_ENC_CMD_MARCH              0xffffff05UL
 #define EVE_ENC_CMD_MEMCPY             0xffffff1dUL
 #define EVE_ENC_CMD_MEMCRC             0xffffff18UL
 #define EVE_ENC_CMD_MEMSET             0xffffff1bUL
@@ -314,7 +308,6 @@
 #define EVE_ENC_CMD_SWAP               0xffffff01UL
 #define EVE_ENC_CMD_TEXT               0xffffff0cUL
 #define EVE_ENC_CMD_TOGGLE             0xffffff12UL
-#define EVE_ENC_CMD_TOUCH_TRANSFORM    0xffffff20UL
 #define EVE_ENC_CMD_TRACK              0xffffff2cUL
 #define EVE_ENC_CMD_TRANSLATE          0xffffff27UL
 

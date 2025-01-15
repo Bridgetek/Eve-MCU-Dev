@@ -311,31 +311,36 @@ void EVE_CMD_GETPOINT(int16_t x, int16_t y, uint32_t sx, uint32_t sy);
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options);
 void EVE_CMD_CLEARCACHE();
 void EVE_CMD_INTRAMSHARED(uint32_t ptr);
-void EVE_CMD_SHA1(uint32_t src, uint32_t num, uint32_t hash);
+void EVE_CMD_VIDEOSTARTF();
+#endif
+
+#if IS_EVE_API(3, 4, 5)
 void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop);
 void EVE_CMD_ANIMSTOP(int32_t ch);
 void EVE_CMD_ANIMXY(int32_t ch, int16_t x, int16_t y);
 void EVE_CMD_ANIMDRAW(int32_t ch);
 void EVE_CMD_ANIMFRAME(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame);
 void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num);
-void EVE_CMD_VIDEOSTARTF();
 #endif
 
 #if IS_EVE_API(4)
 void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame );
 void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop);
-void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
 void EVE_CMD_APILEVEL(uint32_t level);
+void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num);
+void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used);
+void EVE_CMD_HSF(uint32_t w );
+void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
+#endif
+
+#if IS_EVE_API(4, 5)
+void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
 void EVE_CMD_TESTCARD();
 void EVE_CMD_WAIT(uint32_t us);
 void EVE_CMD_NEWLIST(uint32_t a);
 void EVE_CMD_ENDLIST();
 void EVE_CMD_CALLLIST(uint32_t a);
 void EVE_CMD_RETURN();
-void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num);
-void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used);
-void EVE_CMD_HSF(uint32_t w );
-void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
 #endif
 
 #if IS_EVE_API(3, 4, 5)
@@ -365,26 +370,25 @@ void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32
 #endif
 
 #if IS_EVE_API(5)
-void EVE_CMD_CGRADIENT(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1); //TODO
-void EVE_CMD_TEXTDIM(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...); //TODO
-void EVE_CMD_ARC();
+void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb0, uint32_t rgb1);
+void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...);
+void EVE_CMD_ARC(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1);
 void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h);
-void EVE_CMD_ENABLEREGION();
-void EVE_CMD_FENCE();
+void EVE_CMD_ENABLEREGION(uint32_t en);
+void EVE_CMD_FENCE(void);
 void EVE_CMD_GRAPHICSFINISH(void);
-void EVE_CMD_REGWRITE(uint32_t a, uint32_t b );
-void EVE_CMD_APBWRITE(uint32_t a, uint32_t b );
-void EVE_CMD_APBREAD(uint32_t a, uint32_t result );
-void EVE_CMD_LOADWAV(void); //TODO
-void EVE_CMD_GLOW(void); //TODO
-void EVE_CMD_SDATTACH(); //TODO
-void EVE_CMD_FSOPTIONS(); //TODO
-void EVE_CMD_FSREAD(); //TODO
-void EVE_CMD_FSSIZE(); //TODO
-void EVE_CMD_FSSOURCE(); //TODO
-void EVE_CMD_FSDIR(); //TODO
-void EVE_CMD_SDBLOCKREAD(); //TODO
-//TODO add the rest of the co-processor commands INCOMPLETE
+void EVE_CMD_REGWRITE(uint32_t a, uint32_t b);
+void EVE_CMD_APBWRITE(uint32_t a, uint32_t b);
+void EVE_CMD_APBREAD(uint32_t a, uint32_t result);
+void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options);
+void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h);
+void EVE_CMD_SDATTACH(uint32_t options, uint32_t result);
+void EVE_CMD_FSOPTIONS(uint32_t options);
+void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result);
+void EVE_CMD_FSSIZE(const char* filename, uint32_t size);
+void EVE_CMD_FSSOURCE(const char* filename, uint32_t result);
+void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result);
+void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result);
 #endif
 
 #endif	/* EVE_HEADER_H */

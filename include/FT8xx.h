@@ -128,7 +128,7 @@
 #define EVE_API 5
 
 #else
-#warning FT8XX_TYPE definition not recognised.
+#error FT8XX_TYPE definition not recognised.
 #endif
 
 #undef EVE1_ENABLE // deprecated

@@ -66,7 +66,7 @@
 #define WVGA 	800		// e.g. ME813A-WH50C or VM816
 #define	WSVGA	1024	// e.g. ME817EV with 7" display
 #define	WXGA	1280	// e.g. ME817EV with 10.1" display
-#define HD      1920    // 
+#define HD      1920    // e.g. 10" high definition display
 
 // Select the resolution
 #ifndef DISPLAY_RES

@@ -1531,23 +1531,6 @@ void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t
 
 #if IS_EVE_API(3, 4)
 
-void EVE_CMD_INT_SWLOADIMAGE(uint32_t ptr, uint32_t options)
-{
-    HAL_Write32(EVE_ENC_CMD_INT_SWLOADIMAGE);
-    HAL_Write32(ptr);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
-}
-
-void EVE_CMD_GETPOINT(int16_t x, int16_t y, uint32_t sx, uint32_t sy)
-{
-  HAL_Write32(EVE_ENC_CMD_GETPOINT);
-  HAL_Write32(((uint32_t)y<<16) |(x & 0xFFFF));
-  HAL_Write32(sx);
-  HAL_Write32(sy);
-  HAL_IncCmdPointer(16);
-}
-
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options)
 {
   HAL_Write32(EVE_ENC_CMD_INFLATE2);
@@ -1562,21 +1545,15 @@ void EVE_CMD_CLEARCACHE()
   HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_INTRAMSHARED(uint32_t ptr)
+void EVE_CMD_VIDEOSTARTF()
 {
-  HAL_Write32(EVE_ENC_CMD_INT_RAMSHARED);
-  HAL_Write32(ptr);
-  HAL_IncCmdPointer(8);
+    HAL_Write32(EVE_ENC_CMD_VIDEOSTARTF);
+    HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_SHA1(uint32_t src, uint32_t num, uint32_t hash)
-{
-  HAL_Write32(EVE_ENC_CMD_SHA1);
-  HAL_Write32(src);
-  HAL_Write32(num);
-  HAL_Write32(hash);
-  HAL_IncCmdPointer(16);
-}
+#endif
+
+#if IS_EVE_API(3, 4, 5)
 
 void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop)
 {
@@ -1626,12 +1603,6 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
     HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_VIDEOSTARTF()
-{
-    HAL_Write32(EVE_ENC_CMD_VIDEOSTARTF);
-    HAL_IncCmdPointer(4);
-}
-
 #endif
 
 #if IS_EVE_API(4)
@@ -1656,6 +1627,55 @@ void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop)
     HAL_IncCmdPointer(16);
 }
 
+void EVE_CMD_APILEVEL(uint32_t level)
+{
+    //CMD_APILEVEL (0xFFFF FF63)
+    HAL_Write32(EVE_ENC_CMD_APILEVEL);
+    HAL_Write32(level);
+    HAL_IncCmdPointer(8);
+}
+
+void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num)
+{
+    //CMD_FONTCACHE(0xFFFF FF6B)
+    HAL_Write32(EVE_ENC_CMD_FONTCACHE);
+    HAL_Write32(font);
+    HAL_Write32(ptr);
+    HAL_Write32(num);
+    HAL_IncCmdPointer(16);
+}
+
+void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used)
+{
+    //CMD_FONTCACHEQUERY(0xFFFF FF6C)
+    HAL_Write32(EVE_ENC_CMD_FONTCACHEQUERY);
+    HAL_Write32(total);
+    HAL_Write32(used);
+    HAL_IncCmdPointer(12);
+}
+
+void EVE_CMD_HSF(uint32_t w )
+{
+    //CMD_HSF (0xFFFF FF62)
+    HAL_Write32(EVE_ENC_CMD_HSF);
+    HAL_Write32(w);
+    HAL_IncCmdPointer(8);
+}
+
+void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
+{
+    //CMD_PCLKFREQ (0xFFFF FF6A)
+    HAL_Write32(EVE_ENC_CMD_PCLKFREQ);
+    HAL_Write32(ftarget);
+    HAL_Write32(rounding);
+    HAL_Write32(factual);
+    HAL_IncCmdPointer(16);
+}
+
+#endif
+
+#if IS_EVE_API(4, 5)
+
 void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
 {
     //CMD_RUNANIM(0xFFFF FF6F)
@@ -1663,14 +1683,6 @@ void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
     HAL_Write32(waitmask);
     HAL_Write32(play);
     HAL_IncCmdPointer(12);
-}
-
-void EVE_CMD_APILEVEL(uint32_t level)
-{
-    //CMD_APILEVEL (0xFFFF FF63)
-    HAL_Write32(EVE_ENC_CMD_APILEVEL);
-    HAL_Write32(level);
-    HAL_IncCmdPointer(8);
 }
 
 void EVE_CMD_TESTCARD()
@@ -1716,43 +1728,6 @@ void EVE_CMD_RETURN()
     //CMD_RETURN(0xFFFF FF66)
     HAL_Write32(EVE_ENC_CMD_RETURN);
     HAL_IncCmdPointer(4);
-}
-
-void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num)
-{
-    //CMD_FONTCACHE(0xFFFF FF6B)
-    HAL_Write32(EVE_ENC_CMD_FONTCACHE);
-    HAL_Write32(font);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
-}
-
-void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used)
-{
-    //CMD_FONTCACHEQUERY(0xFFFF FF6C)
-    HAL_Write32(EVE_ENC_CMD_FONTCACHEQUERY);
-    HAL_Write32(total);
-    HAL_Write32(used);
-    HAL_IncCmdPointer(12);
-}
-
-void EVE_CMD_HSF(uint32_t w )
-{
-    //CMD_HSF (0xFFFF FF62)
-    HAL_Write32(EVE_ENC_CMD_HSF);
-    HAL_Write32(w);
-    HAL_IncCmdPointer(8);
-}
-
-void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
-{
-    //CMD_PCLKFREQ (0xFFFF FF6A)
-    HAL_Write32(EVE_ENC_CMD_PCLKFREQ);
-    HAL_Write32(ftarget);
-    HAL_Write32(rounding);
-    HAL_Write32(factual);
-    HAL_IncCmdPointer(16);
 }
 
 #endif
@@ -1936,7 +1911,6 @@ void EVE_CMD_GETIMAGE(uint32_t source, uint32_t fmt, uint32_t w, uint32_t h, uin
 
 void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t result)
 {
-    //CMD_CALIBRATESUB(0xFFFF FF60)
     HAL_Write32(EVE_ENC_CMD_CALIBRATESUB);
     HAL_Write32(((uint32_t)y<<16) |(x & 0xFFFF));
     HAL_Write32(((uint32_t)h<<16) |(w & 0xFFFF));
@@ -1948,47 +1922,84 @@ void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32
 
 #if IS_EVE_API(5)
 
-void EVE_CMD_CGRADIENT(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1)
+void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb0, uint32_t rgb1)
 {
-
+    HAL_Write32(EVE_ENC_CMD_CGRADIENT);
+    HAL_Write32(shape);
+    HAL_Write32(((uint32_t)y<<16) |(x & 0xFFFF));
+    HAL_Write32(((uint32_t)h<<16) |(w & 0xFFFF));
+    HAL_Write32(rgb0);
+    HAL_Write32(rgb1);
+    HAL_IncCmdPointer(24);
 }
 
-void EVE_CMD_TEXTDIM(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...)
+void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...)
 {
+    va_list args;
+    uint32_t CommandSize;
+    uint32_t StringLength;
+    uint8_t i, num=0;
 
+    va_start(args, string);
+
+    num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
+
+    HAL_Write32(EVE_ENC_CMD_TEXTDIM);
+    HAL_Write32(dimensions);
+    CommandSize = 8;
+
+    StringLength = EVE_LIB_SendString(string);
+
+    for (i = 0; i < num; i++)
+    {
+        HAL_Write32((uint32_t)va_arg(args, uint32_t));
+    }
+
+    CommandSize = CommandSize + StringLength + (num*4);
+
+    HAL_IncCmdPointer(CommandSize);
+
+    va_end(args);
 }
 
-void EVE_CMD_ARC()
+void EVE_CMD_ARC(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1)
 {
-
+    HAL_Write32(EVE_ENC_CMD_ARC);
+    HAL_Write32(((uint32_t)y<<16) |(x & 0xFFFF));
+    HAL_Write32(((uint32_t)r1<<16) |(r0 & 0xFFFF));
+    HAL_Write32(((uint32_t)a1<<16) |(a0 & 0xFFFF));
+    HAL_IncCmdPointer(16);
 }
 
 void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h)
 {
-      HAL_Write32(EVE_ENC_CMD_RENDERTARGET);
+    HAL_Write32(EVE_ENC_CMD_RENDERTARGET);
     HAL_Write32(dest);
     HAL_Write32(fmt | (w << 16));
     HAL_Write32(h);
     HAL_IncCmdPointer(16);
 }
 
-void EVE_CMD_ENABLEREGION()
+void EVE_CMD_ENABLEREGION(uint32_t en)
 {
-
+    HAL_Write32(EVE_ENC_CMD_ENABLEREGION);
+    HAL_Write32(en);
+    HAL_IncCmdPointer(8);
 }
 
-void EVE_CMD_FENCE()
+void EVE_CMD_FENCE(void)
 {
-
+    HAL_Write32(EVE_ENC_CMD_FENCE);
+    HAL_IncCmdPointer(4);
 }
 
 void EVE_CMD_GRAPHICSFINISH(void)
 {
-      HAL_Write32(EVE_ENC_CMD_GRAPHICSFINISH);
+    HAL_Write32(EVE_ENC_CMD_GRAPHICSFINISH);
     HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_REGWRITE(uint32_t a, uint32_t b )
+void EVE_CMD_REGWRITE(uint32_t a, uint32_t b)
 {
     HAL_Write32(EVE_ENC_CMD_REGWRITE);
     HAL_Write32(a);
@@ -1996,7 +2007,7 @@ void EVE_CMD_REGWRITE(uint32_t a, uint32_t b )
     HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_APBWRITE(uint32_t a, uint32_t b )
+void EVE_CMD_APBWRITE(uint32_t a, uint32_t b)
 {
     HAL_Write32(EVE_ENC_CMD_APBWRITE);
     HAL_Write32(a);
@@ -2004,7 +2015,7 @@ void EVE_CMD_APBWRITE(uint32_t a, uint32_t b )
     HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_APBREAD(uint32_t a, uint32_t result )
+void EVE_CMD_APBREAD(uint32_t a, uint32_t result)
 {
     HAL_Write32(EVE_ENC_CMD_APBREAD);
     HAL_Write32(a);
@@ -2012,359 +2023,90 @@ void EVE_CMD_APBREAD(uint32_t a, uint32_t result )
     HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_LOADWAV(void)
+void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options)
 {
-
+    HAL_Write32(EVE_ENC_CMD_LOADWAV);
+    HAL_Write32(dst);
+    HAL_Write32(options);
+    HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_GLOW(void)
+void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h )
 {
-
+    HAL_Write32(EVE_ENC_CMD_GLOW);
+    HAL_Write32(((uint32_t)y<<16) |(x & 0xFFFF));
+    HAL_Write32(((uint32_t)h<<16) |(w & 0xFFFF));
+    HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_SDATTACH()
+void EVE_CMD_SDATTACH(uint32_t options, uint32_t result)
 {
-
+    HAL_Write32(EVE_ENC_CMD_SDATTACH);
+    HAL_Write32(options);
+    HAL_Write32(result);
+    HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_FSOPTIONS()
+void EVE_CMD_FSOPTIONS(uint32_t options)
 {
-
+    HAL_Write32(EVE_ENC_CMD_FSOPTIONS);
+    HAL_Write32(options);
+    HAL_IncCmdPointer(8);
 }
 
-void EVE_CMD_FSREAD()
+void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 {
+    uint32_t StringLength;
 
+    HAL_Write32(EVE_ENC_CMD_FSREAD);
+    StringLength = EVE_LIB_SendString(filename);
+    HAL_Write32(result);
+    HAL_IncCmdPointer(8 + StringLength);
 }
 
-void EVE_CMD_FSSIZE()
+void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 {
+    uint32_t StringLength;
 
+    HAL_Write32(EVE_ENC_CMD_FSSIZE);
+    StringLength = EVE_LIB_SendString(filename);
+    HAL_Write32(size);
+    HAL_IncCmdPointer(8 + StringLength);
 }
 
-void EVE_CMD_FSSOURCE()
+void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 {
+    uint32_t StringLength;
 
+    HAL_Write32(EVE_ENC_CMD_FSSOURCE);
+    StringLength = EVE_LIB_SendString(filename);
+    HAL_Write32(result);
+    HAL_IncCmdPointer(8 + StringLength);
 }
 
-void EVE_CMD_FSDIR()
+void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result)
 {
+    uint32_t StringLength;
 
+    HAL_Write32(EVE_ENC_CMD_FSDIR);
+    HAL_Write32(dst);
+    HAL_Write32(num);
+    StringLength = EVE_LIB_SendString(path);
+    HAL_Write32(result);
+    HAL_IncCmdPointer(16 + StringLength);
 }
 
-void EVE_CMD_SDBLOCKREAD()
+void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result)
 {
-
+    HAL_Write32(EVE_ENC_CMD_FSDIR);
+    HAL_Write32(dst);
+    HAL_Write32(src);
+    HAL_Write32(count);
+    HAL_Write32(result);
+    HAL_IncCmdPointer(20);
 }
 
 #endif
 
 // ############################  All EVE  ##########################################
 
-// todo: Can add similar helpers to those below the eve_helper.c file //
-
-//#if defined (BT81X_ENABLE)
-//
-//
-//
-//
-//
-//void Gpu_CoCmd_FlashHelper_Init(void)
-//{
-//	while (FLASH_STATUS_DETACHED == Gpu_Hal_Rd8(phost, REG_FLASH_STATUS))
-//	{
-//		Gpu_CoCmd_FlashAttach(phost);
-//	}
-//}
-//
-///*
-//Switch to other flash state
-//Error code:
-//- 0x0	command succeeds
-//- 0xffff command fails (invalid transition state)
-//- 0xe001 flash is not attached
-//- 0xe002 no header detected in sector 0 - is flash blank?
-//- 0xe003 sector 0 data failed integrity check
-//- 0xe004 device/blob mismatch - was correct blob loaded?
-//- 0xe005 failed full-speed test - check board wiring
-//*/
-//
-//
-//
-//
-//
-//uint32_t Gpu_CoCmd_FlashHelper_SwitchState(uint8_t nextState)
-//{
-//	uint32_t ret = 0;
-//	//uint8_t read_data[CMD_FIFO_SIZE]; Debug only
-//	uint8_t curr_flash_state = Gpu_Hal_Rd8(phost, REG_FLASH_STATUS);
-//	uint16_t ret_addr = 0;
-//	if (curr_flash_state != nextState) { //Only handle if nextState is diff
-//		if (FLASH_STATUS_DETACHED == nextState)
-//		{
-//			Gpu_CoCmd_FlashDetach(phost);
-//			App_Flush_Co_Buffer(phost);
-//		}
-//		else if (FLASH_STATUS_BASIC == nextState)
-//		{
-//			if (FLASH_STATUS_FULL == curr_flash_state)
-//			{
-//				do {
-//					Gpu_CoCmd_FlashDetach(phost);
-//					App_Flush_Co_Buffer(phost);
-//				} while (FLASH_STATUS_DETACHED != Gpu_Hal_Rd8(phost, REG_FLASH_STATUS));
-//			}
-//			Gpu_CoCmd_FlashAttach(phost);
-//			App_Flush_Co_Buffer(phost);
-//		}
-//		else if (FLASH_STATUS_FULL == nextState)
-//		{
-//			if (FLASH_STATUS_BASIC != curr_flash_state)
-//			{
-//				do {
-//					Gpu_CoCmd_FlashAttach(phost);
-//					App_Flush_Co_Buffer(phost);
-//				} while (FLASH_STATUS_BASIC != Gpu_Hal_Rd8(phost, REG_FLASH_STATUS));
-//			}
-//			Gpu_CoCmd_FlashFast(phost, 0);
-//			App_Flush_Co_Buffer(phost);
-//
-//			/* Read the return code in CMD_BUFFER */
-//			ret_addr = (phost->cmd_fifo_wp - 4) & FIFO_SIZE_MASK;
-//			ret_addr = (ret_addr + 3) & FIFO_BYTE_ALIGNMENT_MASK; //4 byte alignment
-//
-//			ret = Gpu_Hal_Rd32(phost, RAM_CMD + ret_addr);
-//			//Gpu_Hal_RdMem(phost, RAM_CMD, read_data, CMD_FIFO_SIZE);
-//		}
-//		else
-//		{
-//			ret = 0xffff;
-//		}
-//	}
-//	return ret;
-//}
-//
-//
-//
-//
-//
-///*
-//Switch to other flash state to full mode
-//*/
-//uint32_t Gpu_CoCmd_FlashHelper_SwitchFullMode(Gpu_Hal_Context_t *phost)
-//{
-//	uint8_t val;
-//	/* Try detaching and attaching the flash followed by fast mdoe */
-//	Gpu_CoCmd_FlashDetach(phost);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//	val = Gpu_Hal_Rd8(phost, REG_FLASH_STATUS);
-//
-//	if (FLASH_STATUS_DETACHED != val)
-//	{
-//		printf("Error, Flash is not able to detatch %d\n", val);
-//		return 0;
-//	}
-//
-//	Gpu_CoCmd_FlashAttach(phost);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//	val = Gpu_Hal_Rd8(phost, REG_FLASH_STATUS);
-//
-//	if (FLASH_STATUS_BASIC != val)
-//	{
-//		printf("Error, Flash is not able to attach %d\n", val);
-//		return 0;
-//	}
-//
-//	Gpu_CoCmd_FlashFast(phost, 0);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//	val = Gpu_Hal_Rd8(phost, REG_FLASH_STATUS);
-//
-//	if (FLASH_STATUS_FULL != val)
-//	{
-//		printf("Error, Flash is not able to get into full mode %d\n", val);
-//		return 0;
-//	}
-//	return 1;
-//}
-///*
-//	 Write data to flash, and align byte if needed.
-//	 Note:
-//	 - Destination flash address must be virgin (not used before).
-//	 Otherwise, users have to perform flash erase before using.
-//	 - Destination address must be 256-byte aligned.
-//	 - Automatically padding 0xFF to non-aligned num.
-//*/
-//
-//
-//
-//
-//
-//Flash_Cmd_Status_t Gpu_CoCmd_FlashHelper_Write(Gpu_Hal_Context_t *phost, uint32_t dest_flash, uint32_t num, uint8_t *write_data)
-//{
-//	uint32_t i;
-//	uint8_t padding_arr[FLASH_WRITE_ALIGN_BYTE]; /* write_data must be 256-byte aligned */
-//	uint32_t aligned_length = num % FLASH_WRITE_ALIGN_BYTE;
-//
-//	if (dest_flash % FLASH_WRITE_ALIGN_BYTE != 0) /* Check aligned address */
-//	{
-//		return FLASH_CMD_ALIGNED_ERR;
-//	}
-//
-//
-//	if (aligned_length == 0) /* write_data is already aligned */
-//	{
-//		Gpu_CoCmd_FlashWriteExt(phost, dest_flash, num, write_data);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//	}
-//	else
-//	{
-//		/* Write first aligned chunks of write_data */
-//		if (num - aligned_length > 0){
-//			Gpu_CoCmd_FlashWriteExt(phost, dest_flash, num - aligned_length, write_data);
-//			App_Flush_Co_Buffer(phost);
-//			Gpu_Hal_WaitCmdfifo_empty(phost);
-//		}
-//		/* Write the rest write_data */
-//		write_data = write_data + num - aligned_length;
-//		for (i = 0; i < FLASH_WRITE_ALIGN_BYTE; i++)
-//		{
-//			if (i < aligned_length) {
-//				padding_arr[i] = *write_data++;
-//			}
-//			else {
-//				padding_arr[i] = 0xFF; /* Should use 0xFF instead of 0x00 to avoid writing overhead */
-//			}
-//		}
-//		Gpu_CoCmd_FlashWriteExt(phost, dest_flash + num - aligned_length, FLASH_WRITE_ALIGN_BYTE, padding_arr);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//	}
-//	return FLASH_CMD_SUCCESS;
-//}
-//
-//
-//
-//
-//
-///*
-//	Writes the given data to flash.
-//	If the data matches the existing contents of flash, nothing is done.
-//	Otherwise the flash is erased in 4K units, and the data is written.
-//	@dest_flash: destination address in flash memory. Must be 4096-byte aligned
-//	@src_ram: source data in main memory. Must be 4-byte aligned
-//	@num: number of bytes to write, should be multiple of 4096, otherwise, dummy data will be padded
-//*/
-//Flash_Cmd_Status_t Gpu_CoCmd_FlashHelper_Update(Gpu_Hal_Context_t *phost, uint32_t dest_flash, uint32_t src_ram, uint32_t num)
-//{
-//	uint32_t last_chunk =  (num% 4096); /* must be multiple of 4096. Cut off the extended data */
-//
-//	if ((dest_flash % FLASH_UPDATE_ALIGN_BYTE != 0)||((src_ram % 4) != 0)) /* Check aligned address */
-//	{
-//		return FLASH_CMD_ALIGNED_ERR;
-//	}
-//
-//
-//	if (num < FLASH_UPDATE_ALIGN_BYTE) {
-//		Gpu_CoCmd_FlashUpdate(phost, dest_flash, src_ram, FLASH_UPDATE_ALIGN_BYTE);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//	}
-//	else if (last_chunk == 0) /* num is multiple of 4k */
-//	{
-//		Gpu_CoCmd_FlashUpdate(phost, dest_flash, src_ram, num);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//	}
-//	else /* num is not fit in multiple of 4k */
-//	{
-//		Gpu_CoCmd_FlashUpdate(phost, dest_flash, src_ram, num - last_chunk);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//
-//		/* 4k is quite big for allocating new stack/heap data. So reuse the pointer and write dummy data to flash */
-//		Gpu_CoCmd_FlashUpdate(phost, dest_flash + num - last_chunk, src_ram + num - last_chunk, FLASH_UPDATE_ALIGN_BYTE);
-//		App_Flush_Co_Buffer(phost);
-//		Gpu_Hal_WaitCmdfifo_empty(phost);
-//	}
-//	return FLASH_CMD_SUCCESS;
-//}
-//
-//
-//
-//
-//
-///* Read date from flash to array
-//@dest_ram: address in ram where the flash copy data to
-//@src_flash: source address in flash memory. Must be 64-byte aligned. From 0 to 64*1024 for 64MB flash
-//@num: number of bytes would be read
-//@read_data: pointer to user read data
-//*/
-//Flash_Cmd_Status_t Gpu_CoCmd_FlashHelper_Read(Gpu_Hal_Context_t *phost, uint32_t dest_ram, uint32_t src_flash, uint32_t num, uint8_t *read_data)
-//{
-//	num = num - (num% 4); /* Only read lesser or equal aligned bytes */
-//
-//	if ((src_flash % FLASH_READ_ALIGN_BYTE != 0) || ((dest_ram % 4) != 0)) /* Check aligned address */
-//	{
-//		return FLASH_CMD_ALIGNED_ERR;
-//	}
-//
-//
-//	Gpu_CoCmd_FlashRead(phost, dest_ram, src_flash, num);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//
-//	Gpu_Hal_RdMem(phost, dest_ram, read_data, num);
-//	return FLASH_CMD_SUCCESS;
-//}
-//
-//
-//
-//
-//
-///*
-//	Erase entire flash.
-//*/
-//void Gpu_CoCmd_FlashHelper_Erase(Gpu_Hal_Context_t *phost)
-//{
-//	Gpu_CoCmd_FlashErase(phost);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//}
-//
-//
-//
-//
-//
-///*
-//	Clears the graphics system's flash cache. It should be executed	after
-//	modifying graphics data in flash, otherwise bitmaps from flash may render
-//	"stale" data. This command must be executed when the display list is in use,
-//	immediately after a CMD SWAP command.
-//*/
-//void Gpu_CoCmd_FlashHelper_ClearCache(Gpu_Hal_Context_t *phost)
-//{
-//	Gpu_CoCmd_ClearCache(phost);
-//	App_Flush_Co_Buffer(phost);
-//	Gpu_Hal_WaitCmdfifo_empty(phost);
-//}
-//
-//
-//
-//
-//
-///*
-//Flash state/status:
-//- FLASH_STATUS_BASIC	2UL
-//- FLASH_STATUS_DETACHED 1UL
-//- FLASH_STATUS_FULL	 3UL
-//- FLASH_STATUS_INIT	 0UL
-//*/
-//uint8_t Gpu_CoCmd_FlashHelper_GetState(Gpu_Hal_Context_t *phost)
-//{
-//	return Gpu_Hal_Rd8(phost, REG_FLASH_STATUS);
-//}
-//#endif
