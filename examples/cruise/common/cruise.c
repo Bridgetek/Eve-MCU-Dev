@@ -55,16 +55,20 @@
 
 #include "eve_helper.h"
 
+// Draw a stencil to show a circular display
 #define TARGET_CIRCULAR
 #define TARGET_SCREEN_RADIUS 240
+// Font for km/h or other units
 #define UNITS_FONT 25
-#define ACTION_FONT 30
+// Font for action areas
+#define ACTION_FONT 31
+// Location for display zones
 #define TARGET_AREA_TOP ((TARGET_SCREEN_RADIUS * 3) / 10)
 #define TARGET_AREA_BOTTOM ((TARGET_SCREEN_RADIUS * 2) - TARGET_AREA_TOP)
 #define TARGET_SCREEN_MIRROR(x) ((TARGET_SCREEN_RADIUS * 2) - x)
 // Seven segment size and gap between segments
 #define SEGMENT_SIZE 100
-#define SEGMENT_GAP (SEGMENT_SIZE + ((SEGMENT_SIZE * 3) / 10))
+#define SEGMENT_GAP (SEGMENT_SIZE + ((SEGMENT_SIZE * 4) / 10))
 
 const uint32_t scrbg = 0x000000;
 const uint32_t dullfg = 0x800000;
@@ -339,7 +343,7 @@ void eve_display(void)
         if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
         {
             // Resume at the top.
-            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "RESUME");
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, (TARGET_AREA_TOP * 3) / 4, ACTION_FONT, EVE_OPT_CENTER, "RESUME");
         }
         else if ((cruise_arm == e_disabled) || ((cruise_arm == e_enabled) && (cruise_active == e_enabled)))
         {
@@ -347,7 +351,7 @@ void eve_display(void)
             EVE_TAG(10);
             EVE_CMD_TEXT(TARGET_SCREEN_RADIUS - SEGMENT_SIZE, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "50");
             EVE_TAG(11);
-            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "80");
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, (TARGET_AREA_TOP * 3) / 4, ACTION_FONT, EVE_OPT_CENTER, "80");
             EVE_TAG(12);
             EVE_CMD_TEXT(TARGET_SCREEN_RADIUS + SEGMENT_SIZE, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "100");
         }
@@ -432,10 +436,10 @@ void eve_display(void)
         EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 3) + 200, 150, ACTION_FONT, EVE_OPT_CENTERX, "turn wheel");
         // Turn clockwise, go faster.
 		EVE_TAG(101);
-		EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 3) + 200, 200, 200, 60, ACTION_FONT, 0, "+");
+		EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 3) + 200, 200 + ACTION_FONT, 200, 60, ACTION_FONT, 0, "+");
 		// Turn anti-clockwise, go slower.
 		EVE_TAG(102);
-		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 200, 200, 60, ACTION_FONT, 0, "-");
+		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 200 + ACTION_FONT, 200, 60, ACTION_FONT, 0, "-");
 
 		EVE_DISPLAY();
 		EVE_CMD_SWAP();
