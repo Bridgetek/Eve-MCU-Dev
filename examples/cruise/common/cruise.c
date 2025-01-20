@@ -1,0 +1,551 @@
+/**
+ @file cruise.c
+ */
+/*
+ * ============================================================================
+ * History
+ * =======
+ * Nov 2019		Initial beta for FT81x and FT80x
+ * Mar 2020		Updated beta - added BT815/6 commands
+ * Mar 2021		Beta with BT817/8 support added
+ *
+ *
+ *
+ *
+ *
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
+#include <stdio.h>
+
+#include <stdint.h>
+#include "EVE.h"
+#include "../include/HAL.h"
+#include "MCU.h"
+
+#include "eve_helper.h"
+
+#define TARGET_CIRCULAR
+#define TARGET_SCREEN_RADIUS 240
+#define UNITS_FONT 25
+#define ACTION_FONT 30
+#define TARGET_AREA_TOP ((TARGET_SCREEN_RADIUS * 3) / 10)
+#define TARGET_AREA_BOTTOM ((TARGET_SCREEN_RADIUS * 2) - TARGET_AREA_TOP)
+#define TARGET_SCREEN_MIRROR(x) ((TARGET_SCREEN_RADIUS * 2) - x)
+// Seven segment size and gap between segments
+#define SEGMENT_SIZE 100
+#define SEGMENT_GAP (SEGMENT_SIZE + ((SEGMENT_SIZE * 3) / 10))
+
+const uint32_t scrbg = 0x000000;
+const uint32_t dullfg = 0x800000;
+const uint32_t dullbg = 0x200000;
+const uint32_t redfg = 0xff0000;
+const uint32_t redbg = 0x300000;
+const uint32_t grnfg = 0x00ff00;
+const uint32_t grnbg = 0x003000;
+
+
+/*
+ * x,y - top left of seven segment graphic in pixels
+ * size - width/height of each segment in pixels
+ * digit - numeral to display in segment (0-9)
+ * fgcolor - colour of on/highlighted segment
+ * bgcolor - colour of off segment
+*/
+void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgcolour, uint32_t bgcolour)
+{
+#if IS_EVE_API(2, 3, 4, 5)
+    const int32_t vertex = 4;
+#else
+    const int32_t vertex = 16;
+#endif
+
+    const uint8_t map[][7] = {{1,1,1,0,1,1,1}, // 0
+            {0,0,1,0,0,1,0}, // 1
+            {1,0,1,1,1,0,1}, // 2
+            {1,0,1,1,0,1,1}, // 3
+            {0,1,1,1,0,1,0}, // 4
+            {1,1,0,1,0,1,1}, // 5
+            {1,1,0,1,1,1,1}, // 6
+            {1,0,1,0,0,1,0}, // 7
+            {1,1,1,1,1,1,1}, // 8
+            {1,1,1,1,0,1,0}, // 9
+            {1,1,1,1,1,1,0}, // 10 - A
+            {0,1,0,1,1,1,1}, // 11 - b
+            {1,1,0,1,1,0,1}, // 12 - C
+            {0,0,1,1,1,1,1}, // 13 - d
+            {1,1,0,1,1,0,1}, // 14 - E
+            {1,1,0,1,1,0,0}, // 15 - F
+            {0,0,0,1,0,0,0}, // 16 - dash
+			};
+
+    int32_t top = (y) * vertex;
+    int32_t centre = (y + size) * vertex;
+    int32_t bottom = (y + (size * 2)) * vertex;
+    int32_t left = (x) * vertex;
+    int32_t right = (x + size) * vertex;
+
+    int32_t pt0lx = (x - (size / 2)) * vertex;
+    int32_t pt0ly = (y - (size / 2)) * vertex;
+
+    int32_t pt1lx = (x + (size / 2)) * vertex;
+    int32_t pt1ly = (y + (size / 2)) * vertex;
+
+    int32_t pt2lx = (x + (size * 3 / 2)) * vertex;
+    int32_t pt2ly = (y + (size * 3 / 2)) * vertex;
+
+    int32_t pt3ly = (y + (size * 5 / 2)) * vertex;
+
+    int32_t width = (((size * 2)/ 3) / 8) * 16;
+
+    EVE_SAVE_CONTEXT();
+#if IS_EVE_API(2, 3, 4, 5)
+    EVE_VERTEX_FORMAT(2);
+#endif
+    EVE_COLOR_MASK(0, 0, 0, 1);
+    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    // Top segment
+    EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, top);
+    EVE_VERTEX2F(right, top);
+    // Top left segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, top);
+    EVE_VERTEX2F(left, centre);
+    // Top right segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(right, top);
+    EVE_VERTEX2F(right, centre);
+    // Centre segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, centre);
+    EVE_VERTEX2F(right, centre);
+    // Bottom left segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, centre);
+    EVE_VERTEX2F(left, bottom);
+    // Bottom right segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(right, centre);
+    EVE_VERTEX2F(right, bottom);
+    // Bottom segment
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, bottom);
+    EVE_VERTEX2F(right, bottom);
+
+    // Draw mesh frame for segments
+    EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    EVE_LINE_WIDTH((width * 3) / 4);
+	EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+    EVE_VERTEX2F(pt0lx, pt0ly);
+    EVE_VERTEX2F(pt2lx, pt2ly);
+    EVE_VERTEX2F(pt1lx, pt3ly);
+    EVE_VERTEX2F(pt0lx, pt2ly);
+    EVE_VERTEX2F(pt2lx, pt0ly);
+    EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+    EVE_VERTEX2F(pt0lx, pt3ly);
+    EVE_VERTEX2F(pt2lx, pt1ly);
+    EVE_VERTEX2F(pt1lx, pt0ly);
+    EVE_VERTEX2F(pt0lx, pt1ly);
+    EVE_VERTEX2F(pt2lx, pt3ly);
+
+    EVE_COLOR_MASK(1, 1, 1, 0);
+    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE);
+    // Top segment
+    EVE_COLOR(map[(int)digit][0]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, top);
+    EVE_VERTEX2F(right, top);
+    // Top left segment
+    EVE_COLOR(map[(int)digit][1]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, top);
+    EVE_VERTEX2F(left, centre);
+    // Top right segment
+    EVE_COLOR(map[(int)digit][2]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(right, top);
+    EVE_VERTEX2F(right, centre);
+    // Centre segment
+    EVE_COLOR(map[(int)digit][3]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, centre);
+    EVE_VERTEX2F(right, centre);
+    // Bottom left segment
+    EVE_COLOR(map[(int)digit][4]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, centre);
+    EVE_VERTEX2F(left, bottom);
+    // Bottom right segment
+    EVE_COLOR(map[(int)digit][5]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(right, centre);
+    EVE_VERTEX2F(right, bottom);
+    // Bottom segment
+    EVE_COLOR(map[(int)digit][6]?fgcolour:bgcolour);
+	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(width);
+    EVE_VERTEX2F(left, bottom);
+    EVE_VERTEX2F(right, bottom);
+    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    EVE_RESTORE_CONTEXT();
+}
+
+
+void eve_display(void)
+{
+    int set_speed = 65;
+	int current_speed = 55;
+
+	uint8_t key = 0;
+	uint8_t keyprev = 0;
+	int16_t x, y;
+	enum state {
+		e_disabled,
+		e_enabled,
+	};
+	enum state cruise_arm = e_disabled;
+	enum state cruise_active = e_disabled;
+
+	do {
+        EVE_LIB_BeginCoProList();
+        EVE_CMD_DLSTART();
+        EVE_CLEAR_COLOR_RGB(0, 0, 0);
+        EVE_CLEAR(1,1,1);
+
+        uint32_t fg_setpt = 0xffffff;
+        uint32_t bg_setpt = 0x000000;
+
+        // Colour selections
+		if (cruise_arm == e_disabled)
+		{
+			fg_setpt = dullfg;
+			bg_setpt = dullbg;
+		}
+		else if (cruise_arm == e_enabled)
+		{
+			if (cruise_active == e_disabled)
+			{
+				fg_setpt = redfg;
+				bg_setpt = redbg;
+			}
+			else
+			{
+				fg_setpt = grnfg;
+				bg_setpt = grnbg;
+			}
+		}
+
+#ifdef TARGET_CIRCULAR
+        // Stencil for a circular screen
+        EVE_COLOR_RGB(0, 0, 0);
+        EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INCR);
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        EVE_POINT_SIZE(TARGET_SCREEN_RADIUS * 16);
+        EVE_VERTEX2F(TARGET_SCREEN_RADIUS * 16, TARGET_SCREEN_RADIUS * 16);
+        EVE_STENCIL_FUNC(EVE_TEST_NOTEQUAL, 0, 255);
+#endif // CIRCULAR
+
+        // Top centre of action buttons
+        x = TARGET_SCREEN_RADIUS;
+        y = (TARGET_SCREEN_RADIUS * 3 / 10);
+
+        // Set Cancel Resume Buttons
+		EVE_COLOR(0xffffff);
+
+        // Gradient at the top
+        EVE_SAVE_CONTEXT();
+        EVE_SCISSOR_XY(0, 0);
+        EVE_SCISSOR_SIZE(TARGET_SCREEN_RADIUS * 2, (TARGET_SCREEN_RADIUS - SEGMENT_SIZE));
+        if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
+        {
+            // Resume at the top.
+            EVE_CMD_GRADIENT(TARGET_SCREEN_RADIUS, 0, grnfg, TARGET_SCREEN_RADIUS, SEGMENT_SIZE, scrbg);
+        }
+        else if ((cruise_arm == e_disabled) || ((cruise_arm == e_enabled) && (cruise_active == e_enabled)))
+        {
+            // Preset speeds when cruise disabled or active
+            EVE_CMD_GRADIENT(TARGET_SCREEN_RADIUS, 0, grnfg, TARGET_SCREEN_RADIUS, SEGMENT_SIZE, scrbg);
+        }
+        EVE_RESTORE_CONTEXT();
+
+        // Gradients at the bottom
+        EVE_SAVE_CONTEXT();
+        EVE_SCISSOR_XY(0, (TARGET_SCREEN_RADIUS + SEGMENT_SIZE));
+        EVE_SCISSOR_SIZE(TARGET_SCREEN_RADIUS * 2, (TARGET_SCREEN_RADIUS - SEGMENT_SIZE) + 1);
+        if (cruise_arm == e_enabled)
+        {
+            if (cruise_active == e_disabled)
+            {
+                // Set at the bottom.
+                EVE_CMD_GRADIENT(TARGET_SCREEN_RADIUS, (TARGET_SCREEN_RADIUS + SEGMENT_SIZE), scrbg, TARGET_SCREEN_RADIUS, TARGET_SCREEN_RADIUS * 2, grnfg);
+            }
+            else
+            {
+                // Cancel at the bottom.
+                EVE_CMD_GRADIENT(TARGET_SCREEN_RADIUS, (TARGET_SCREEN_RADIUS + SEGMENT_SIZE), scrbg, TARGET_SCREEN_RADIUS, TARGET_SCREEN_RADIUS * 2,redfg);
+            }
+        }
+        else
+        {
+            // Cancel at the bottom.
+        }
+        EVE_RESTORE_CONTEXT();
+
+        // Buttons at the top
+        if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
+        {
+            // Resume at the top.
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "RESUME");
+        }
+        else if ((cruise_arm == e_disabled) || ((cruise_arm == e_enabled) && (cruise_active == e_enabled)))
+        {
+            // Preset speeds when cruise disabled or active
+            EVE_TAG(10);
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS - SEGMENT_SIZE, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "50");
+            EVE_TAG(11);
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "80");
+            EVE_TAG(12);
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS + SEGMENT_SIZE, TARGET_AREA_TOP, ACTION_FONT, EVE_OPT_CENTER, "100");
+        }
+
+        // Buttons at the bottom
+        EVE_TAG(20);
+        if (cruise_arm == e_enabled)
+        {
+            if (cruise_active == e_disabled)
+            {
+                // Set at the bottom.
+                EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_BOTTOM, ACTION_FONT, EVE_OPT_CENTER, "SET");
+            }
+            else
+            {
+                // Cancel at the bottom.
+                EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_BOTTOM, ACTION_FONT, EVE_OPT_CENTER, "CANCEL");
+            }
+        }
+        else
+        {
+            // Cancel at the bottom.
+            EVE_CMD_TEXT(TARGET_SCREEN_RADIUS, TARGET_AREA_BOTTOM, ACTION_FONT, EVE_OPT_CENTER, "DISABLED");
+        }
+
+        // Top left of seven segment display
+        x = TARGET_SCREEN_RADIUS - (((SEGMENT_GAP * 2) + SEGMENT_SIZE) / 2);
+        y = TARGET_SCREEN_RADIUS - SEGMENT_SIZE;
+
+        // Main Cruise set point
+        EVE_COLOR(fg_setpt);
+        EVE_CMD_TEXT(x + (((SEGMENT_GAP * 2) + SEGMENT_SIZE) / 2), y - UNITS_FONT, UNITS_FONT, EVE_OPT_CENTER, "km/h");
+        if (cruise_arm == e_enabled)
+        {
+            sevensegment(x + (SEGMENT_GAP * 0), y, SEGMENT_SIZE, ((set_speed/100)%10), fg_setpt, bg_setpt);
+            sevensegment(x + (SEGMENT_GAP * 1), y, SEGMENT_SIZE, ((set_speed/10)%10), fg_setpt, bg_setpt);
+            sevensegment(x + (SEGMENT_GAP * 2), y, SEGMENT_SIZE, ((set_speed/1)%10), fg_setpt, bg_setpt);
+        }
+        else
+        {
+            sevensegment(x + (SEGMENT_GAP * 0), y, SEGMENT_SIZE, 16, fg_setpt, bg_setpt);
+            sevensegment(x + (SEGMENT_GAP * 1), y, SEGMENT_SIZE, 16, fg_setpt, bg_setpt);
+            sevensegment(x + (SEGMENT_GAP * 2), y, SEGMENT_SIZE, 16, fg_setpt, bg_setpt);
+        }
+
+        // See through tag areas for top area
+        EVE_COLOR_A(0);
+        EVE_TAG(10);
+        EVE_BEGIN(EVE_BEGIN_RECTS);
+        EVE_LINE_WIDTH(16);
+        EVE_VERTEX2F(0, 0);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS - (SEGMENT_SIZE / 2)) * 16, (TARGET_SCREEN_RADIUS - SEGMENT_SIZE) * 16);
+        EVE_TAG(11);
+        EVE_BEGIN(EVE_BEGIN_RECTS);
+        EVE_LINE_WIDTH(16);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS - (SEGMENT_SIZE / 2)) * 16, 0);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS + (SEGMENT_SIZE / 2)) * 16, (TARGET_SCREEN_RADIUS - SEGMENT_SIZE) * 16);
+        EVE_TAG(12);
+        EVE_BEGIN(EVE_BEGIN_RECTS);
+        EVE_LINE_WIDTH(16);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS + (SEGMENT_SIZE / 2)) * 16, 0);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS * 2) * 16, (TARGET_SCREEN_RADIUS - SEGMENT_SIZE) * 16);
+        // See through tag area for bottom area
+        EVE_TAG(20);
+        EVE_BEGIN(EVE_BEGIN_RECTS);
+        EVE_LINE_WIDTH(16);
+        EVE_VERTEX2F(0, (TARGET_SCREEN_RADIUS + SEGMENT_SIZE) * 16);
+        EVE_VERTEX2F((TARGET_SCREEN_RADIUS * 2) * 16, (TARGET_SCREEN_RADIUS * 2) * 16);
+        // Restore non see throughness
+        EVE_COLOR_A(255);
+
+#ifdef TARGET_CIRCULAR
+        EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255);
+#endif // CIRCULAR
+
+        // Click wheel actions
+		EVE_COLOR(0xffffff);
+		// Depress wheel, enable/disable cruise.
+		EVE_TAG(100);
+		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 50, 400, 80, ACTION_FONT, 0, "button click");
+
+        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 3) + 200, 150, ACTION_FONT, EVE_OPT_CENTERX, "turn wheel");
+        // Turn clockwise, go faster.
+		EVE_TAG(101);
+		EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 3) + 200, 200, 200, 60, ACTION_FONT, 0, "+");
+		// Turn anti-clockwise, go slower.
+		EVE_TAG(102);
+		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 200, 200, 60, ACTION_FONT, 0, "-");
+
+		EVE_DISPLAY();
+		EVE_CMD_SWAP();
+		EVE_LIB_EndCoProList();
+		EVE_LIB_AwaitCoProEmpty();
+
+		while (eve_read_tag(&key) == 0);
+		
+		// Debounce keys.
+		if (key != keyprev)
+		{
+		    keyprev = key;
+
+            // Conditions for bottom button area
+            if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
+            {
+                // RESUME button when cruise inactive
+                if (key == 20)
+                {
+                    cruise_active = e_enabled;
+                }
+            }
+            else if ((cruise_arm == e_enabled) && (cruise_active == e_enabled))
+            {
+                // CANCEL button when cruise active
+                if (key == 20)
+                {
+                    cruise_active = e_disabled;
+                }
+            }
+
+            // Conditions for top button area
+            if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
+            {
+                // SET button when cruise inactive
+                if ((key == 10) || (key == 11) || (key == 12))
+                {
+                    set_speed = current_speed;
+                    cruise_active = e_enabled;
+                }
+            }
+            else if ((cruise_arm == e_disabled) || ((cruise_arm == e_enabled) && (cruise_active == e_enabled)))
+            {
+                // Preset speeds when cruise disabled or active
+                if (key == 10)
+                {
+                    set_speed = 50;
+                    cruise_arm = e_enabled;
+                    cruise_active = e_enabled;
+                }
+                else if (key == 11)
+                {
+                    set_speed = 80;
+                    cruise_arm = e_enabled;
+                    cruise_active = e_enabled;
+                }
+                else if (key == 12)
+                {
+                    set_speed = 100;
+                    cruise_arm = e_enabled;
+                    cruise_active = e_enabled;
+                }
+            }
+
+            // ENABLE/DISABLE cruise (ARM/DISARM)
+            if (key == 100)
+            {
+                if (cruise_arm == e_disabled)
+                {
+                    cruise_arm = e_enabled;
+                    cruise_active = e_disabled;
+                }
+                else if (cruise_arm == e_enabled)
+                {
+                    cruise_arm = e_disabled;
+                }
+            }
+            // FASTER button event
+            if (key == 101)
+            {
+                set_speed++;
+                if (set_speed > 120)
+                {
+                    set_speed = 120;
+                }
+            }
+            // SLOWER button event
+            if (key == 102)
+            {
+                set_speed--;
+                if (set_speed < 30)
+                {
+                    set_speed = 30;
+                }
+            }
+		}
+
+	} while (1);
+}
+
+void cruise(void)
+{
+	// Initialise the display
+	EVE_Init();
+
+	// Calibrate the display
+	printf("Calibrating display...\n");
+	eve_calibrate();
+
+	// Start example code
+	printf("Starting demo:\n");
+	eve_display();
+}
