@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -59,26 +59,26 @@
  */
 uint8_t eve_read_tag(uint8_t *key)
 {
-	uint8_t Read_tag;
-	uint8_t key_detect = 0;
+    uint8_t Read_tag;
+    uint8_t key_detect = 0;
 
 #if IS_EVE_API(1, 2, 3, 4)
-	Read_tag = HAL_MemRead8(EVE_REG_TOUCH_TAG);
-	if (!(HAL_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
-	{
-		key_detect = 1;
-		*key = Read_tag;
-	}
+    Read_tag = HAL_MemRead8(EVE_REG_TOUCH_TAG);
+    if (!(HAL_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
 #else
-	Read_tag = HAL_MemRead32(EVE_REG_TOUCH_TAG);
-	if ((HAL_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-	{
-		key_detect = 1;
-		*key = Read_tag;
-	}
+    Read_tag = HAL_MemRead32(EVE_REG_TOUCH_TAG);
+    if ((HAL_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
 #endif
 
-	return key_detect;
+    return key_detect;
 }
 
 /* Array containing the bitmap sizes of ROM fonts. */
@@ -87,10 +87,10 @@ const uint8_t eve_rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
 
 uint8_t eve_romfont_width(uint8_t font)
 {
-	return eve_rom_font_widths[font];
+    return eve_rom_font_widths[font];
 }
 
 uint8_t eve_romfont_height(uint8_t font)
 {
-	return eve_rom_font_heights[font];
+    return eve_rom_font_heights[font];
 }

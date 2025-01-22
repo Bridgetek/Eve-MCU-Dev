@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -77,8 +77,8 @@ extern "C" {
  in Flash and identify if the calibration needs to be re-performed.
  */
 struct touchscreen_calibration {
-	uint32_t key; // VALID_KEY_TOUCHSCREEN
-	uint32_t transform[6];
+    uint32_t key; // VALID_KEY_TOUCHSCREEN
+    uint32_t transform[6];
 };
 
 /* Globals available within the eve_example code */

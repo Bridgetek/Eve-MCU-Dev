@@ -7,9 +7,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021     Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -68,11 +68,11 @@
 /**
  @brief Defined area in flash to store EVE calibration data.
  @details This 256 byte array is initialised to all 1s. It will be used to store the
- 	 touch screen calibration data. There is a key placed at the start of the array
- 	 when the calibration is programmed, this indicates that the data is valid.
- 	 Only if this array is in place will calibration data be programmed.
- 	 The size is 256 bytes and it is aligned on a 256 byte boundary as the minimum
- 	 programmable Flash sector is 256 bytes.
+    touch screen calibration data. There is a key placed at the start of the array
+    when the calibration is programmed, this indicates that the data is valid.
+    Only if this array is in place will calibration data be programmed.
+    The size is 256 bytes and it is aligned on a 256 byte boundary as the minimum
+    programmable Flash sector is 256 bytes.
  */
 __flash__ uint8_t __attribute__((aligned(256))) dlog_pm[256] = {[0 ... 255] = 0xff };
 
@@ -91,127 +91,127 @@ void debug_uart_init(void);
 //@{
 int8_t platform_calib_init(void)
 {
-	const __flash__ struct touchscreen_calibration *pcalibpm = (const __flash__ struct touchscreen_calibration *)dlog_pm;
+    const __flash__ struct touchscreen_calibration *pcalibpm = (const __flash__ struct touchscreen_calibration *)dlog_pm;
 
-	/* Check that there is an area set aside in the data section for calibration data. */
-	if ((pcalibpm->key != VALID_KEY_TOUCHSCREEN) && (pcalibpm->key != 0xFFFFFFFF))
-	{
-		if (((uint32_t)pcalibpm & 255) != 0)
-		{
-			/* An aligned 256 byte Flash sector not has been correctly setup for calibration data. */
-			return -1;
-		}
-	}
+    /* Check that there is an area set aside in the data section for calibration data. */
+    if ((pcalibpm->key != VALID_KEY_TOUCHSCREEN) && (pcalibpm->key != 0xFFFFFFFF))
+    {
+        if (((uint32_t)pcalibpm & 255) != 0)
+        {
+            /* An aligned 256 byte Flash sector not has been correctly setup for calibration data. */
+            return -1;
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
-	uint8_t	dlog_flash[260] __attribute__((aligned(4)));
-	struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
+    uint8_t    dlog_flash[260] __attribute__((aligned(4)));
+    struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
 
-	/* Read calibration data from Flash to a properly aligned array. */
-	CRITICAL_SECTION_BEGIN
-	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
-	CRITICAL_SECTION_END
+    /* Read calibration data from Flash to a properly aligned array. */
+    CRITICAL_SECTION_BEGIN
+    memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
+    CRITICAL_SECTION_END
 
-	/* Check that the Flash blank, so it is possible to write to this sector in Flash. */
-	if (pcalibflash->key == 0xFFFFFFFF)
-	{
-		/* Copy calibration data into a properly aligned array. */
-		calib->key = VALID_KEY_TOUCHSCREEN;
-		memset(dlog_flash, 0xff, sizeof(dlog_flash));
-		memcpy(dlog_flash, calib, sizeof(struct touchscreen_calibration));
+    /* Check that the Flash blank, so it is possible to write to this sector in Flash. */
+    if (pcalibflash->key == 0xFFFFFFFF)
+    {
+        /* Copy calibration data into a properly aligned array. */
+        calib->key = VALID_KEY_TOUCHSCREEN;
+        memset(dlog_flash, 0xff, sizeof(dlog_flash));
+        memcpy(dlog_flash, calib, sizeof(struct touchscreen_calibration));
 
-		CRITICAL_SECTION_BEGIN
-		/* This are must be set to 0xff for Flash programming to work. */
-		memcpy_dat2flash ((uint32_t)dlog_pm, dlog_flash, 256);
-		CRITICAL_SECTION_END;
+        CRITICAL_SECTION_BEGIN
+        /* This are must be set to 0xff for Flash programming to work. */
+        memcpy_dat2flash ((uint32_t)dlog_pm, dlog_flash, 256);
+        CRITICAL_SECTION_END;
 
-		return 0;
-	}
+        return 0;
+    }
 
-	return -1;
+    return -1;
 }
 
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
-	uint8_t dlog_flash[256] __attribute__((aligned(4)));
-	struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
+    uint8_t dlog_flash[256] __attribute__((aligned(4)));
+    struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
 
-	/* Read calibration data from Flash to a properly aligned array. */
-	CRITICAL_SECTION_BEGIN
-	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
-	CRITICAL_SECTION_END
+    /* Read calibration data from Flash to a properly aligned array. */
+    CRITICAL_SECTION_BEGIN
+    memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
+    CRITICAL_SECTION_END
 
-	/* Flash blank, program memory blank: flash calibration data blank. */
-	if (pcalibflash->key != VALID_KEY_TOUCHSCREEN)
-	{
-		return -2;
-	}
+    /* Flash blank, program memory blank: flash calibration data blank. */
+    if (pcalibflash->key != VALID_KEY_TOUCHSCREEN)
+    {
+        return -2;
+    }
 
-	/* Calibration data is valid. */
-	memcpy(calib, dlog_flash, sizeof(struct touchscreen_calibration));
+    /* Calibration data is valid. */
+    memcpy(calib, dlog_flash, sizeof(struct touchscreen_calibration));
 
-	return 0;
+    return 0;
 }
 //@}
 
 int main(void)
 {
-	/* Setup UART */
-	setup();
+    /* Setup UART */
+    setup();
 
-	/* Start example code */
-	cruise();
+    /* Start example code */
+    cruise();
 
-	// function never returns 
-	for (;;) ;
+    // function never returns
+    for (;;) ;
 }
 
 void setup(void)
 {
-	// UART initialisation
-	debug_uart_init();
+    // UART initialisation
+    debug_uart_init();
 
 #if DEBUG_LEVEL > 0
-	/* Print out a welcome message... */
-	printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
-	printf ("---------------------------------------------------------------- \r\n");
-	printf ("Welcome to BRT_AN_025 Example for FT9xx\r\n");
+    /* Print out a welcome message... */
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
+    printf ("---------------------------------------------------------------- \r\n");
+    printf ("Welcome to BRT_AN_025 Example for FT9xx\r\n");
 #endif
 }
 
 /* Initializes the UART for the testing */
 void debug_uart_init(void)
 {
-	/* Enable the UART Device... */
-	sys_enable(sys_device_uart0);
+    /* Enable the UART Device... */
+    sys_enable(sys_device_uart0);
 #if defined(__FT930__)
-	/* Make GPIO23 function as UART0_TXD and GPIO22 function as UART0_RXD... */
-	gpio_function(23, pad_uart0_txd); /* UART0 TXD */
-	gpio_function(22, pad_uart0_rxd); /* UART0 RXD */
+    /* Make GPIO23 function as UART0_TXD and GPIO22 function as UART0_RXD... */
+    gpio_function(23, pad_uart0_txd); /* UART0 TXD */
+    gpio_function(22, pad_uart0_rxd); /* UART0 RXD */
 #else
-	/* Make GPIO48 function as UART0_TXD and GPIO49 function as UART0_RXD... */
-	gpio_function(48, pad_uart0_txd); /* UART0 TXD MM900EVxA CN3 pin 4 */
-	gpio_function(49, pad_uart0_rxd); /* UART0 RXD MM900EVxA CN3 pin 6 */
-	gpio_function(50, pad_uart0_rts); /* UART0 RTS MM900EVxA CN3 pin 8 */
-	gpio_function(51, pad_uart0_cts); /* UART0 CTS MM900EVxA CN3 pin 10 */
+    /* Make GPIO48 function as UART0_TXD and GPIO49 function as UART0_RXD... */
+    gpio_function(48, pad_uart0_txd); /* UART0 TXD MM900EVxA CN3 pin 4 */
+    gpio_function(49, pad_uart0_rxd); /* UART0 RXD MM900EVxA CN3 pin 6 */
+    gpio_function(50, pad_uart0_rts); /* UART0 RTS MM900EVxA CN3 pin 8 */
+    gpio_function(51, pad_uart0_cts); /* UART0 CTS MM900EVxA CN3 pin 10 */
 #endif
 
-	// Open the UART using the coding required.
-	uart_open(UART0,                    /* Device */
-			1,                        /* Prescaler = 1 */
-			UART_DIVIDER_115200_BAUD,  /* Divider = 1302 */
-			uart_data_bits_8,         /* No. buffer Bits */
-			uart_parity_none,         /* Parity */
-			uart_stop_bits_1);        /* No. Stop Bits */
+    // Open the UART using the coding required.
+    uart_open(UART0,                    /* Device */
+            1,                        /* Prescaler = 1 */
+            UART_DIVIDER_115200_BAUD,  /* Divider = 1302 */
+            uart_data_bits_8,         /* No. buffer Bits */
+            uart_parity_none,         /* Parity */
+            uart_stop_bits_1);        /* No. Stop Bits */
 
 #if DEBUG_LEVEL > 0
-	uart_puts(UART0,
-			"\x1B[2J" /* ANSI/VT100 - Clear the Screen */
-			"\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
-	);
+    uart_puts(UART0,
+            "\x1B[2J" /* ANSI/VT100 - Clear the Screen */
+            "\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
+    );
 #endif
 }

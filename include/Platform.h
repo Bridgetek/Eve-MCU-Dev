@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -48,7 +48,7 @@
  */
 
 #ifndef PLATFORM_HEADER_H
-#define	PLATFORM_HEADER_H
+#define PLATFORM_HEADER_H
 
 #ifndef __linux__
 #error This file is for Linux-based systems. It is not intended for use on Microcontrollers.
@@ -70,64 +70,64 @@
 /**
  @brief Platform specific initialisation
  @details Must contain any platform-specific initialisation. This will typically be
- 	 setting up the SPI bus, GPIOs and operating environment requirements.
+    setting up the SPI bus, GPIOs and operating environment requirements.
  */
 void Platform_Init(void);
 
 /**
  @brief Platform specific setup
  @details Called after the EVE has been power cycled and started. Contains
- 	 any platform-specific configuration options for the EVE.
+    any platform-specific configuration options for the EVE.
  */
 void Platform_Setup(void);
 
 /**
  @brief Platform specific SPI transfer
  @details Called to perform a transmit/receive operation on the platform's
-	 SPI bus. This can be for both transmission or receiving or a combination
-	 of both. Multiple transfers can be grouped with the spi_ioc_transfer
-	 structure.
+    SPI bus. This can be for both transmission or receiving or a combination
+    of both. Multiple transfers can be grouped with the spi_ioc_transfer
+    structure.
  */
 int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count);
 
 /**
  @brief Platform specific chip select enable
  @details This function will pull the chip select line to the EVE low to
- 	 allow data transmission on the SPI bus.
- 	 The EVE requires chip select to toggle frequently.
+    allow data transmission on the SPI bus.
+    The EVE requires chip select to toggle frequently.
  */
 void Platform_CSlow(void);
 
 /**
  @brief Platform specific chip select deassert
  @details This function will pull the chip select line to the EVE high to
- 	 prevent data transmission on the SPI bus.
- 	 The EVE requires chip select to toggle frequently.
+    prevent data transmission on the SPI bus.
+    The EVE requires chip select to toggle frequently.
  */
 void Platform_CShigh(void);
 
 /**
  @brief Platform specific power down enable
  @details This function will pull the power down line to the EVE low to
- 	 force the device into power down mode.
- 	 This will be done during EVE initialisation and can be done to allow
- 	 deep power saving.
+    force the device into power down mode.
+    This will be done during EVE initialisation and can be done to allow
+    deep power saving.
  */
 void Platform_PDlow(void);
 
 /**
  @brief Platform specific power down disable
  @details This function will pull the power down line to the EVE high to
- 	 enable normal operation of the EVE.
- 	 This will be done during EVE initialisation and can be done to allow
- 	 recovery from deep power saving.
+    enable normal operation of the EVE.
+    This will be done during EVE initialisation and can be done to allow
+    recovery from deep power saving.
  */
 void Platform_PDhigh(void);
 
 /**
  @brief Platform specific SPI write
  @details Performs an SPI write of the data block and discards the data
- 	 received in response.
+    received in response.
  @param DataToWrite - pointer to buffer to write.
  @param length - number of bytes to write.
  */
@@ -136,7 +136,7 @@ void Platform_SPIWrite(const uint8_t *DataToWrite, uint32_t length);
 /**
  @brief Platform specific SPI 8 bit read
  @details Performs an SPI dummy write and returns the data received in
-    	 response.
+    response.
  @returns Data received from EVE.
  */
 uint8_t Platform_SPIRead8(void);
@@ -144,7 +144,7 @@ uint8_t Platform_SPIRead8(void);
 /**
  @brief Platform specific SPI 8 bit write
  @details Performs an SPI write and discards the data received in
-    	 response.
+    response.
  @param Data to write to EVE.
  */
 void Platform_SPIWrite8(uint8_t DataToWrite);
@@ -152,7 +152,7 @@ void Platform_SPIWrite8(uint8_t DataToWrite);
 /**
  @brief Platform specific SPI 16 bit read
  @details Performs an SPI dummy write and returns the data received in
-    	 response.
+    response.
  @returns Data received from EVE.
  */
 uint16_t Platform_SPIRead16(void);
@@ -160,7 +160,7 @@ uint16_t Platform_SPIRead16(void);
 /**
  @brief Platform specific SPI 16 bit write
  @details Performs an SPI write and discards the data received in
-    	 response.
+    response.
  @param Data to write to EVE.
  */
 void Platform_SPIWrite16(uint16_t DataToWrite);
@@ -168,7 +168,7 @@ void Platform_SPIWrite16(uint16_t DataToWrite);
 /**
  @brief Platform specific SPI 24 bit read
  @details Performs an SPI dummy write and returns the data received in
-    	 response.
+    response.
  @returns Data received from EVE.
  */
 uint32_t Platform_SPIRead24(void);
@@ -176,7 +176,7 @@ uint32_t Platform_SPIRead24(void);
 /**
  @brief Platform specific SPI 24 bit write
  @details Performs an SPI write and discards the data received in
-    	 response.
+    response.
  @param Data to write to EVE.
  */
 void Platform_SPIWrite24(uint32_t DataToWrite);
@@ -184,7 +184,7 @@ void Platform_SPIWrite24(uint32_t DataToWrite);
 /**
  @brief Platform specific SPI 32 bit read
  @details Performs an SPI dummy write and returns the data received in
-    	 response.
+    response.
  @returns Data received from EVE.
  */
 uint32_t Platform_SPIRead32(void);
@@ -192,7 +192,7 @@ uint32_t Platform_SPIRead32(void);
 /**
  @brief Platform specific SPI 32 bit write
  @details Performs an SPI write and discards the data received in
-    	 response.
+    response.
  @param Data to write to EVE.
  */
 void Platform_SPIWrite32(uint32_t DataToWrite);
@@ -200,24 +200,24 @@ void Platform_SPIWrite32(uint32_t DataToWrite);
 /**
  @brief Platform specific 20 ms delay
  @details Cause the platform to idle or otherwise delay for a minimum of
- 	 20 milliseconds. This is used during initialisation to perform a
- 	 power down of the EVE for a controlled minimum period of time.
+    20 milliseconds. This is used during initialisation to perform a
+    power down of the EVE for a controlled minimum period of time.
  */
 void Platform_Delay_20ms(void);
 
 /**
  @brief Platform specific 500 ms delay
  @details Cause the platform to idle or otherwise delay for a minimum of
- 	 500 milliseconds. This is used during initialisation to perform a
- 	 power down of the EVE for a controlled minimum period of time.
+    500 milliseconds. This is used during initialisation to perform a
+    power down of the EVE for a controlled minimum period of time.
  */
 void Platform_Delay_500ms(void);
 
 /**
  @brief Platform specific byte swapping routines
  @details EVE addresses from the HAL_SetReadAddress and HAL_SetWriteAddress
- 	 are sent in big-endian format. However, data for registers or memory
- 	 mapped areas are in little-endian format.
+    are sent in big-endian format. However, data for registers or memory
+    mapped areas are in little-endian format.
  */
 //@{
 uint16_t Platform_htobe16(uint16_t h);

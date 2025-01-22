@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -62,10 +62,10 @@
 #endif
 
 // Definitions used for target display resolution selection
-#define	WQVGA	480		// e.g. VM800B with 5" or 4.3" display
-#define WVGA 	800		// e.g. ME813A-WH50C or VM816
-#define	WSVGA	1024	// e.g. ME817EV with 7" display
-#define	WXGA	1280	// e.g. ME817EV with 10.1" display
+#define WQVGA   480        // e.g. VM800B with 5" or 4.3" display
+#define WVGA    800        // e.g. ME813A-WH50C or VM816
+#define WSVGA   1024    // e.g. ME817EV with 7" display
+#define WXGA    1280    // e.g. ME817EV with 10.1" display
 #define HD      1920    // e.g. 10" high definition display
 
 // Select the resolution
@@ -141,7 +141,7 @@
 #define EVE_DISP_DITHER 1
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0xD12	// set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
@@ -164,7 +164,7 @@
 #define EVE_DISP_DITHER 0
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1	// set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 

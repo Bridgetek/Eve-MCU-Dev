@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -48,7 +48,7 @@
  */
 
 #ifndef EVE_HEADER_H
-#define	EVE_HEADER_H
+#define    EVE_HEADER_H
 
 // for Uint8/16/32 and Int8/16/32 data types.
 #include <stdint.h>
@@ -60,14 +60,14 @@
 /**
  @brief Initialise EVE API.
  @details Initialise the EVE API layer, HAL layer and MCU-specific hardware
- 	 layer.
+      layer.
  */
 void EVE_Init(void);
 
 /**
  @brief EVE API: Begin coprocessor list
  @details Starts a coprocessor list. Waits for the coprocessor to be idle
- 	 before asserting chip select.
+      before asserting chip select.
  */
 void EVE_LIB_BeginCoProList(void);
 
@@ -115,10 +115,10 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 /**
  @brief EVE API: Write a buffer to the coprocessor command memory
  @details Writes a block of data via SPI to the EVE coprocessor.
- 	 This must be part of a coprocessor list. It will typically be called
- 	 after a coprocessor command to provide data for the operation.
- 	 The data will be added to the coprocessor command list therefore the
- 	 write will block on available space in this list.
+      This must be part of a coprocessor list. It will typically be called
+      after a coprocessor command to provide data for the operation.
+      The data will be added to the coprocessor command list therefore the
+      write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
  */
@@ -127,10 +127,10 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
 /**
  @brief EVE API: Write a string the coprocessor command memory
  @details Writes a string via SPI to the EVE coprocessor.
- 	 This must be part of a coprocessor list. It will typically be called
- 	 after a coprocessor command to provide a string for the operation.
- 	 The data will be added to the coprocessor command list therefore the
- 	 write will block on available space in this list.
+      This must be part of a coprocessor list. It will typically be called
+      after a coprocessor command to provide a string for the operation.
+      The data will be added to the coprocessor command list therefore the
+      write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
  */
@@ -139,8 +139,8 @@ uint16_t EVE_LIB_SendString(const char* string);
 /**
  @brief EVE API: Get properties of an CMD_LOADIMAGE operation
  @details Obtains the details of an image decoded by the CMD_LOADIMAGE
- 	 coprocessor command. The properties of the image are taken from
- 	 the coprocessor command list.
+      coprocessor command. The properties of the image are taken from
+      the coprocessor command list.
  @param addr - Pointer to variable to receive the image start address.
  @param width - Pointer to variable to receive the image width.
  @param height - Pointer to variable to receive the image height.
@@ -152,8 +152,8 @@ void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint3
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
 #if IS_EVE_API(2, 3, 4, 5)
 void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, 
-								int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
-								uint32_t *result );
+                              int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
+                              uint32_t *result );
 #endif
 #if IS_EVE_API(4, 5)
 void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette);
@@ -391,4 +391,4 @@ void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result
 void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result);
 #endif
 
-#endif	/* EVE_HEADER_H */
+#endif    /* EVE_HEADER_H */

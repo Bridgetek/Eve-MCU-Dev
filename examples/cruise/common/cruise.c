@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -62,6 +62,8 @@
 #define UNITS_FONT 25
 // Font for action areas
 #define ACTION_FONT 31
+// Font for extenal controls
+#define EXT_FONT 29
 // Location for display zones
 #define TARGET_AREA_TOP ((TARGET_SCREEN_RADIUS * 3) / 10)
 #define TARGET_AREA_BOTTOM ((TARGET_SCREEN_RADIUS * 2) - TARGET_AREA_TOP)
@@ -69,6 +71,8 @@
 // Seven segment size and gap between segments
 #define SEGMENT_SIZE 100
 #define SEGMENT_GAP (SEGMENT_SIZE + ((SEGMENT_SIZE * 4) / 10))
+// Maximum speed
+#define MAX_SPEED 160
 
 const uint32_t scrbg = 0x000000;
 const uint32_t dullfg = 0x800000;
@@ -77,6 +81,8 @@ const uint32_t redfg = 0xff0000;
 const uint32_t redbg = 0x300000;
 const uint32_t grnfg = 0x00ff00;
 const uint32_t grnbg = 0x003000;
+const uint32_t blufg = 0x0000ff;
+const uint32_t blubg = 0x000030;
 
 
 /*
@@ -111,7 +117,7 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
             {1,1,0,1,1,0,1}, // 14 - E
             {1,1,0,1,1,0,0}, // 15 - F
             {0,0,0,1,0,0,0}, // 16 - dash
-			};
+            };
 
     int32_t top = (y) * vertex;
     int32_t centre = (y + size) * vertex;
@@ -144,32 +150,32 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(right, top);
     // Top left segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(left, centre);
     // Top right segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, top);
     EVE_VERTEX2F(right, centre);
     // Centre segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(right, centre);
     // Bottom left segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(left, bottom);
     // Bottom right segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, centre);
     EVE_VERTEX2F(right, bottom);
     // Bottom segment
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, bottom);
     EVE_VERTEX2F(right, bottom);
@@ -177,7 +183,7 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
     // Draw mesh frame for segments
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_LINE_WIDTH((width * 3) / 4);
-	EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+    EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
     EVE_VERTEX2F(pt0lx, pt0ly);
     EVE_VERTEX2F(pt2lx, pt2ly);
     EVE_VERTEX2F(pt1lx, pt3ly);
@@ -194,43 +200,43 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE);
     // Top segment
     EVE_COLOR(map[(int)digit][0]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(right, top);
     // Top left segment
     EVE_COLOR(map[(int)digit][1]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(left, centre);
     // Top right segment
     EVE_COLOR(map[(int)digit][2]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, top);
     EVE_VERTEX2F(right, centre);
     // Centre segment
     EVE_COLOR(map[(int)digit][3]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(right, centre);
     // Bottom left segment
     EVE_COLOR(map[(int)digit][4]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(left, bottom);
     // Bottom right segment
     EVE_COLOR(map[(int)digit][5]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, centre);
     EVE_VERTEX2F(right, bottom);
     // Bottom segment
     EVE_COLOR(map[(int)digit][6]?fgcolour:bgcolour);
-	EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, bottom);
     EVE_VERTEX2F(right, bottom);
@@ -242,19 +248,19 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
 void eve_display(void)
 {
     int set_speed = 65;
-	int current_speed = 55;
+    int current_speed = 55;
 
-	uint8_t key = 0;
-	uint8_t keyprev = 0;
-	int16_t x, y;
-	enum state {
-		e_disabled,
-		e_enabled,
-	};
-	enum state cruise_arm = e_disabled;
-	enum state cruise_active = e_disabled;
+    uint8_t key = 0;
+    uint8_t keyprev = 0;
+    int16_t x, y;
+    enum state {
+        e_disabled,
+        e_enabled,
+    };
+    enum state cruise_arm = e_disabled;
+    enum state cruise_active = e_disabled;
 
-	do {
+    do {
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -264,24 +270,24 @@ void eve_display(void)
         uint32_t bg_setpt = 0x000000;
 
         // Colour selections
-		if (cruise_arm == e_disabled)
-		{
-			fg_setpt = dullfg;
-			bg_setpt = dullbg;
-		}
-		else if (cruise_arm == e_enabled)
-		{
-			if (cruise_active == e_disabled)
-			{
-				fg_setpt = redfg;
-				bg_setpt = redbg;
-			}
-			else
-			{
-				fg_setpt = grnfg;
-				bg_setpt = grnbg;
-			}
-		}
+        if (cruise_arm == e_disabled)
+        {
+            fg_setpt = dullfg;
+            bg_setpt = dullbg;
+        }
+        else if (cruise_arm == e_enabled)
+        {
+            if (cruise_active == e_disabled)
+            {
+                fg_setpt = redfg;
+                bg_setpt = redbg;
+            }
+            else
+            {
+                fg_setpt = grnfg;
+                bg_setpt = grnbg;
+            }
+        }
 
 #ifdef TARGET_CIRCULAR
         // Stencil for a circular screen
@@ -298,7 +304,7 @@ void eve_display(void)
         y = (TARGET_SCREEN_RADIUS * 3 / 10);
 
         // Set Cancel Resume Buttons
-		EVE_COLOR(0xffffff);
+        EVE_COLOR(0xffffff);
 
         // Gradient at the top
         EVE_SAVE_CONTEXT();
@@ -383,7 +389,7 @@ void eve_display(void)
 
         // Main Cruise set point
         EVE_COLOR(fg_setpt);
-        EVE_CMD_TEXT(x + (((SEGMENT_GAP * 2) + SEGMENT_SIZE) / 2), y - UNITS_FONT, UNITS_FONT, EVE_OPT_CENTER, "km/h");
+        EVE_CMD_TEXT(x + (((SEGMENT_GAP * 2) + SEGMENT_SIZE) / 2), y - eve_romfont_height(UNITS_FONT), UNITS_FONT, EVE_OPT_CENTER, "km/h");
         if (cruise_arm == e_enabled)
         {
             sevensegment(x + (SEGMENT_GAP * 0), y, SEGMENT_SIZE, ((set_speed/100)%10), fg_setpt, bg_setpt);
@@ -428,37 +434,51 @@ void eve_display(void)
 #endif // CIRCULAR
 
         // Click wheel actions
-		EVE_COLOR(0xffffff);
-		// Depress wheel, enable/disable cruise.
-		EVE_TAG(100);
-		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 50, 400, 80, ACTION_FONT, 0, "button click");
-
-        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 3) + 200, 150, ACTION_FONT, EVE_OPT_CENTERX, "turn wheel");
+        EVE_COLOR(0xffffff);
+        EVE_CMD_FGCOLOR(blufg);
+        // Depress wheel, enable/disable cruise.
+        EVE_TAG(100);
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50, 400, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "button click");
+        // Wheel actions.
+        EVE_TAG(0);
+        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 3), EXT_FONT, EVE_OPT_CENTERX, "turn wheel");
         // Turn clockwise, go faster.
-		EVE_TAG(101);
-		EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 3) + 200, 200 + ACTION_FONT, 200, 60, ACTION_FONT, 0, "+");
-		// Turn anti-clockwise, go slower.
-		EVE_TAG(102);
-		EVE_CMD_BUTTON(TARGET_SCREEN_RADIUS * 3, 200 + ACTION_FONT, 200, 60, ACTION_FONT, 0, "-");
+        EVE_TAG(101);
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 4), 200, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "+");
+        // Turn anti-clockwise, go slower.
+        EVE_TAG(102);
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 4), 200, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "-");
+        // Car inputs.
+        EVE_TAG(0);
+        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 7), EXT_FONT, EVE_OPT_CENTERX, "road speed");
+        EVE_TAG(103);
+        EVE_CMD_SLIDER((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 9), 400, (eve_romfont_height(EXT_FONT) * 1), 0, (current_speed * 400) / MAX_SPEED, 400);
+        EVE_CMD_TRACK((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 9), 400, (eve_romfont_height(EXT_FONT) * 1), 103);
+        // Brake!
+        EVE_TAG(104);
+        EVE_CMD_FGCOLOR(redfg);
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 12), 400, (eve_romfont_height(EXT_FONT) * 2), 28, 0, "Brake!");
 
-		EVE_DISPLAY();
-		EVE_CMD_SWAP();
-		EVE_LIB_EndCoProList();
-		EVE_LIB_AwaitCoProEmpty();
+        EVE_DISPLAY();
+        EVE_CMD_SWAP();
+        EVE_LIB_EndCoProList();
+        EVE_LIB_AwaitCoProEmpty();
 
-		while (eve_read_tag(&key) == 0);
-		
-		// Debounce keys.
-		if (key != keyprev)
-		{
-		    keyprev = key;
+        while (eve_read_tag(&key) == 0);
+
+        // Debounce keys.
+        if (key != keyprev)
+        {
+            keyprev = key;
 
             // Conditions for bottom button area
             if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
             {
-                // RESUME button when cruise inactive
+                // SET button when cruise inactive
                 if (key == 20)
                 {
+                    // Update set speed to road speed
+                    set_speed = current_speed;
                     cruise_active = e_enabled;
                 }
             }
@@ -474,10 +494,11 @@ void eve_display(void)
             // Conditions for top button area
             if ((cruise_arm == e_enabled) && (cruise_active == e_disabled))
             {
-                // SET button when cruise inactive
+                // RESUME button when cruise inactive
                 if ((key == 10) || (key == 11) || (key == 12))
                 {
-                    set_speed = current_speed;
+                    // Update road speed to match set speed when active
+                    current_speed = set_speed;
                     cruise_active = e_enabled;
                 }
             }
@@ -486,19 +507,19 @@ void eve_display(void)
                 // Preset speeds when cruise disabled or active
                 if (key == 10)
                 {
-                    set_speed = 50;
+                    set_speed = current_speed = 50;
                     cruise_arm = e_enabled;
                     cruise_active = e_enabled;
                 }
                 else if (key == 11)
                 {
-                    set_speed = 80;
+                    set_speed = current_speed = 80;
                     cruise_arm = e_enabled;
                     cruise_active = e_enabled;
                 }
                 else if (key == 12)
                 {
-                    set_speed = 100;
+                    set_speed = current_speed = 100;
                     cruise_arm = e_enabled;
                     cruise_active = e_enabled;
                 }
@@ -525,6 +546,7 @@ void eve_display(void)
                 {
                     set_speed = 120;
                 }
+                current_speed = set_speed;
             }
             // SLOWER button event
             if (key == 102)
@@ -534,22 +556,41 @@ void eve_display(void)
                 {
                     set_speed = 30;
                 }
+                current_speed = set_speed;
             }
-		}
+            // Road speed slider
+            if (key == 103)
+            {
+                uint32_t tracker;
+                tracker = HAL_MemRead32(EVE_REG_TRACKER);
+                if ((tracker & 0xff) == 103)
+                {
+                    // 65535 -> MAX_SPEED
+                    // 32768 -> MAX_SPEED / 2
+                    // 0 -> 0 km/h
+                    current_speed = ((tracker >> 16) *  MAX_SPEED) / 65535;
+                }
+            }
+            // BRAKE! button event
+            if (key == 104)
+            {
+                cruise_active = e_disabled;
+            }
+        }
 
-	} while (1);
+    } while (1);
 }
 
 void cruise(void)
 {
-	// Initialise the display
-	EVE_Init();
+    // Initialise the display
+    EVE_Init();
 
-	// Calibrate the display
-	printf("Calibrating display...\n");
-	eve_calibrate();
+    // Calibrate the display
+    printf("Calibrating display...\n");
+    eve_calibrate();
 
-	// Start example code
-	printf("Starting demo:\n");
-	eve_display();
+    // Start example code
+    printf("Starting demo:\n");
+    eve_display();
 }
