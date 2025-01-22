@@ -87,9 +87,9 @@ extern uint32_t eve_img_bridgetek_logo_height;
 
 /* Functions called within the eve_example code */
 void eve_calibrate(void);
-uint32_t eve_init_fonts(void);
-uint32_t eve_load_images(uint32_t);
 uint8_t eve_read_tag(uint8_t *key);
+uint8_t eve_romfont_width(uint8_t font);
+uint8_t eve_romfont_height(uint8_t font);
 
 /* Functions called from eve_example code to platform specific code */
 int8_t platform_calib_init(void);

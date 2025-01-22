@@ -54,6 +54,9 @@
 
 #include "eve_helper.h"
 
+/* Read a (single) touch tag from the touch controller. 
+ * Return non-zero if there is a valid touch tag. Zero if no touch. 
+ */
 uint8_t eve_read_tag(uint8_t *key)
 {
 	uint8_t Read_tag;
@@ -78,3 +81,16 @@ uint8_t eve_read_tag(uint8_t *key)
 	return key_detect;
 }
 
+/* Array containing the bitmap sizes of ROM fonts. */
+const uint8_t eve_rom_font_widths[] = EVE_ROMFONT_WIDTHS;
+const uint8_t eve_rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
+
+uint8_t eve_romfont_width(uint8_t font)
+{
+	return eve_rom_font_widths[font];
+}
+
+uint8_t eve_romfont_height(uint8_t font)
+{
+	return eve_rom_font_heights[font];
+}

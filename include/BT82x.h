@@ -298,6 +298,7 @@
 #define EVE_ENC_BITMAP_TRANSFORM_D_EXT(p,v) ((0x18UL<<24)|(((p)&0x1UL)<<17)|(((v)&0x1FFFFUL)<<0))
 #define EVE_ENC_BITMAP_TRANSFORM_E_EXT(p,v) ((0x19UL<<24)|(((p)&0x1UL)<<17)|(((v)&0x1FFFFUL)<<0))
 #define EVE_ENC_BITMAP_TRANSFORM_F(f)       ((0x1aUL<<24)|(((f)&0xFFFFFFUL)<<0))
+#define EVE_ENC_BITMAP_ZORDER(o)            ((0x33UL<<24)|(((o)&0xffUL)<<0))
 #define EVE_ENC_BLEND_FUNC(src,dst)         ((0xbUL<<24)|(((src)&0x7UL)<<3)|(((dst)&0x7UL)<<0))
 #define EVE_ENC_CALL(dest)                  ((0x1dUL<<24)|(((dest)&0xffffUL)<<0))
 #define EVE_ENC_CELL(cell)                  ((0x6UL<<24)|(((cell)&0x7FUL)<<0))
@@ -320,6 +321,8 @@
 #define EVE_ENC_PALETTE_SOURCE(addr)        ((0x2aUL<<24)|(((addr)&0x3FFFFFUL)<<0))
 #define EVE_ENC_POINT_SIZE(size)            ((0xdUL<<24)|(((size)&0x1FFFUL)<<0))
 #define EVE_ENC_RESTORE_CONTEXT()           ((0x23UL<<24))
+#define EVE_ENC_PALLETE_SOURCE_H(addr)      ((0x32UL<< 24) | ((addr)&0xFFUL))
+#define EVE_ENC_REGION(y,h,dest)            ((0x34UL<<24)|(((y)&0x3fUL)<<18)|(((h)&0x3fUL)<<12)|(((dest)&0xfffUL)<<0))
 #define EVE_ENC_RETURN()                    ((0x24UL<<24))
 #define EVE_ENC_SAVE_CONTEXT()              ((0x22UL<<24))
 #define EVE_ENC_SCISSOR_SIZE(width,height)  ((0x1cUL<<24)|(((width)&0xFFFUL)<<12)|(((height)&0xFFFUL)<<0))
@@ -327,7 +330,7 @@
 #define EVE_ENC_STENCIL_FUNC(func,ref,mask) ((0xaUL<<24)|(((func)&0x7UL)<<16)|(((ref)&0xffUL)<<8)|(((mask)&0xffUL)<<0))
 #define EVE_ENC_STENCIL_MASK(mask)          ((0x13UL<<24)|(((mask)&0xffUL)<<0))
 #define EVE_ENC_STENCIL_OP(sfail,spass)     ((0xcUL<<24)|(((sfail)&0x7UL)<<3)|(((spass)&0x7UL)<<0))
-#define EVE_ENC_TAG(s)                      ((0x3UL<<24)|(((s)&0xffUL)<<0))
+#define EVE_ENC_TAG(s)                      ((0x3UL<<24)|(((s)&0xffffffUL)<<0))
 #define EVE_ENC_TAG_MASK(mask)              ((0x14UL<<24)|(((mask)&0x1UL)<<0))
 #define EVE_ENC_VERTEX2F(x,y)               ((0x1UL<<30)|(((x)&0x7fffUL)<<15)|(((y)&0x7fffUL)<<0))
 #define EVE_ENC_VERTEX2II(x,y,handle,cell)  ((0x2UL<<30)|(((x)&0x1FFUL)<<21)|(((y)&0x1FFUL)<<12)|(((handle)&0x1fUL)<<7)|(((cell)&0x7FUL)<<0))
@@ -574,6 +577,8 @@
 #define EVE_OPT_RIGHTX                 0x800UL
 #define EVE_OPT_SIGNED                 0x100UL
 #define EVE_OPT_SOUND                  0x20UL
+#define EVE_OPT_1BIT                   0x0UL
+#define EVE_OPT_FULLSPEED              0x0UL
 
 // Touchmode Options
 
@@ -640,6 +645,22 @@
 #define EVE_FLASH_STATUS_DETACHED      0x1UL
 #define EVE_FLASH_STATUS_FULL          0x3UL
 #define EVE_FLASH_STATUS_INIT          0x0UL
+
+// Arrays containing the bitmap sizes of ROM fonts
+
+#define EVE_ROMFONT_MAX 34
+
+#define EVE_ROMFONT_WIDTHS {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, \
+    8,8,8,8,10,13,14,17,24,30, \
+    14,15,18,22,28,38,48,62,83}
+#define EVE_ROMFONT_HEIGHTS {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, \
+    8,8,16,16,13,17,20,22,29,38, \
+    16,18,22,27,33,46,58,74,98}
+#define EVE_ROMFONT_FORMATS {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, \
+    EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1, \
+    EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1,EVE_FORMAT_L1, \
+    EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4, \
+    EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4}
 
 #endif    /* _BT82X_H_ */
 
