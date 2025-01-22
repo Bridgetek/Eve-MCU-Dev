@@ -79,11 +79,13 @@ add_library(eve_helper # Helper code library name
         # Source files for helper code library
         ../common/eve_calibrate.c
         ../common/eve_helper.c
+        ../../snippets/sevenseg/sevenseg.c
 )
 # Header files used for helper code library
 target_include_directories(eve_helper PUBLIC
         ../common/ # Headers for helper code
         ../../../include # Headers for EVE library
+        ../../snippets/sevenseg # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_helper

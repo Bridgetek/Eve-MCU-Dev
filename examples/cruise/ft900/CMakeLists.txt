@@ -47,6 +47,8 @@ set(EXECUTABLE ${PROJECT}.elf)
 
 # Compile a list of source files.
 file(GLOB SRC_FILES CONFIGURE_DEPENDS
+        # Snippets
+        ../../snippets/sevenseg/sevenseg.c
         # Source code for EVE library
         ../../../source/EVE_API.c
         ../../../source/EVE_HAL.c
@@ -89,6 +91,7 @@ target_compile_definitions(${EXECUTABLE} PRIVATE PLATFORM_FT9XX)
 target_include_directories(${EXECUTABLE} PRIVATE
         ../common/ # Headers for application code
         ../../../include # Headers for EVE library
+        ../../snippets/sevenseg # Header for snippets
 )
 
 # Setup any extra compiler options required.
