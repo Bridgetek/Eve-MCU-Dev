@@ -104,7 +104,7 @@ void MCU_Init(void)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
     gpio_function(PIN_NUM_PD, pad_gpio43);
 #elif defined(__FT930__)
-    gpio_function(PIN_NUM_CS, pad30_spim_ss0); /* GPIO30 as CS */
+    gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO30 as CS */
     gpio_function(PIN_NUM_PD, pad_gpio15);
 #endif
 

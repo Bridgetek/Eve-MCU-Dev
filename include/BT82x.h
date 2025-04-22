@@ -598,7 +598,6 @@
 
 #define EVE_DLSWAP_DONE                0x0UL
 #define EVE_DLSWAP_FRAME               0x2UL
-#define EVE_DLSWAP_LINE                0x1UL
 
 // Interrupt Options
 
