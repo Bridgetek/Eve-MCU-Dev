@@ -84,8 +84,9 @@ void HAL_EVE_Init(void)
     MCU_Init();
 
     // Set Chip Select OFF
+#if IS_EVE_API(1, 2, 3, 4)
     HAL_ChipSelect(0);
-    
+
     // Reset the display
     MCU_Delay_20ms();
     HAL_PowerDown(1);
@@ -134,17 +135,25 @@ void HAL_EVE_Init(void)
     HAL_MemWrite32(EVE_REG_FREQUENCY, 72000000);
 #endif
 
+#endif
+
 #if IS_EVE_API(5)
-    HAL_ChipSelect(0);
 
     while (1)
     {
         unsigned char bb[128];
+        char rd[5];
         int i;
 
         memset(bb, 0, sizeof(bb));
 
+        // Reset the display
         MCU_Delay_20ms();
+        HAL_PowerDown(1);
+        MCU_Delay_20ms();
+        HAL_PowerDown(0);
+        MCU_Delay_20ms();
+
         // Set System PLL NS = 15 for 576MHz
         HAL_HostCmdWrite(0xFF, 0xE4, 0x0F, 0x00, 0x00);
         // Set System clock divider to 0x17 for 72MHz
@@ -154,27 +163,28 @@ void HAL_EVE_Init(void)
         // Set DDR Type - 1333, DDR3L, 4096
         HAL_HostCmdWrite(0xFF, 0xEB, 0x08, 0x00, 0x00);
         // Set DDR, JT and AUD in Boot Control
-        HAL_HostCmdWrite(0xFF, 0xE8, 0xE0, 0x00, 0x00);
+        HAL_HostCmdWrite(0xFF, 0xE8, 0xF0, 0x00, 0x00);
         // Clear BootCfgEn
         HAL_HostCmdWrite(0xFF, 0xE9, 0xC0, 0x00, 0x00);
         // Perform a reset pulse
         HAL_HostCmdWrite(0xFF, 0xE7, 0x00, 0x00, 0x00) ; 
-        MCU_Delay_20ms();
-        // Delay 100 mS
-        MCU_Delay_20ms();
-        MCU_Delay_20ms();
-        MCU_Delay_20ms();
-        MCU_Delay_20ms();
-        MCU_Delay_20ms();
+        // Set ACTIVE
+        HAL_HostCmdWrite(0x00, 0x00, 0x00, 0x00, 0x00) ; 
+
+        // Delay ~100 mS
+        for (i = 0; i < 5; i++)
+        {
+            MCU_Delay_20ms();
+        }   
 
         HAL_ChipSelect(1);
         // Write 4 zeros
-        MCU_SPIWrite(bb, 4);
+        MCU_SPIWrite32(0);
         // Read 128 bytes response
-        MCU_SPIRead(bb, 128);
+        MCU_SPIRead(bb, sizeof(bb));
         HAL_ChipSelect(0);
 
-        for (i = 0; i < 128; i++)
+        for (i = 0; i < sizeof(bb); i++)
         {
             if (bb[i] == 1)
             {
@@ -202,7 +212,7 @@ void HAL_EVE_Init(void)
                 break;
             }
         }
-        if (i < 128) break;
+        if (i < sizeof(bb)) break;
 
         DEBUG_PRINTF("[Boot fail after reset, retrying...]\n");
     }

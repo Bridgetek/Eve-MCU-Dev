@@ -300,7 +300,7 @@ int EVE_LIB_AwaitCoProEmpty(void)
 // Obtain the coprocessor exception description
 void EVE_LIB_GetCoProException(char* desc)
 {
-    uint32_t report = EVE_COPROC_ERR_REPORT;
+    uint32_t report = EVE_COPROC_REPORT;
     for (uint32_t j = 0; j < 256; j += 4)
     {
         uint32_t w = HAL_MemRead32(report + j);

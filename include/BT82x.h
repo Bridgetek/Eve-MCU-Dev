@@ -68,8 +68,8 @@
 #define EVE_RAM_ROMSUB                 0x7f027800UL
 #define EVE_ROMFONT_TABLEADDRESS       0x07ffff00UL
 #define EVE_RAM_TOP                    0x00304000UL
-#define EVE_RAM_ERR_REPORT             0x00309800UL
-#define EVE_COPROC_ERR_REPORT          0x7f004800UL
+#define EVE_RAM_REPORT                 0x00309800UL
+#define EVE_COPROC_REPORT              0x7f004800UL
 
 // Coprocessor Method
 
@@ -469,7 +469,11 @@
 #define EVE_ENC_CMD_WAITCOND           0xffffff78
 #define EVE_ENC_CMD_WATCHDOG           0xffffff83
 
+// Aliases 
+
 #define FTPOINTS                       POINTS
+
+// Hardware swapchains for render engine
 
 #define EVE_SWAPCHAIN_0                0xffff00ffUL 
 #define EVE_SWAPCHAIN_1                0xffff01ffUL

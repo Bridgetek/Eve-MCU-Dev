@@ -188,7 +188,7 @@ void MCU_Init(void)
 			exit(-4);
 		}
 
-		ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, CLK_DIV_2, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
+		ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, CLK_DIV_4, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
 		if (FT_OK != ftStatus)
 		{
 			fprintf(stderr, "Init FT4222 as SPI master device failed!\n");
