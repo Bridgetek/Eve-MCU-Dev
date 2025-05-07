@@ -296,6 +296,13 @@ int EVE_LIB_AwaitCoProEmpty(void)
     return HAL_WaitCmdFifoEmpty();
 }
 
+// Gets a result from the command buffer 
+uint32_t EVE_LIB_GetResult(int offset)
+{
+    uint32_t CmdBufPointer = (HAL_GetCmdPointer() - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
+    return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
+}
+
 #if IS_EVE_API(5)
 // Obtain the coprocessor exception description
 void EVE_LIB_GetCoProException(char* desc)
@@ -489,9 +496,9 @@ void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *addr = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (1 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *width = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (2 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *height = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (3 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *addr = EVE_LIB_GetResult(3);
+    *width = EVE_LIB_GetResult(2);
+    *height = EVE_LIB_GetResult(1);
 }
 
 void EVE_LIB_GetPtr(uint32_t *addr)
@@ -504,7 +511,7 @@ void EVE_LIB_GetPtr(uint32_t *addr)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *addr = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (1 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *addr = EVE_LIB_GetResult(1);
 }
 
 void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f)
@@ -517,12 +524,12 @@ void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint3
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *a = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (1 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *b = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (2 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *c = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (3 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *d = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (4 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *e = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (5 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *f = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (6 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *a = EVE_LIB_GetResult(6);
+    *b = EVE_LIB_GetResult(5);
+    *c = EVE_LIB_GetResult(4);
+    *d = EVE_LIB_GetResult(3);
+    *e = EVE_LIB_GetResult(2);
+    *f = EVE_LIB_GetResult(1);
 }
 
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result)
@@ -535,7 +542,7 @@ void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *result = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (3 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *result = EVE_LIB_GetResult(1);
 }
 
 #if IS_EVE_API(2, 3, 4, 5)
@@ -551,7 +558,7 @@ void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, in
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *result = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (13 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *result = EVE_LIB_GetResult(1);
 }
 #endif
 
@@ -566,11 +573,11 @@ void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *addr = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (1 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *fmt = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (2 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *width = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (3 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *height = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (4 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
-    *palette = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (5 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *addr = EVE_LIB_GetResult(5);
+    *fmt = EVE_LIB_GetResult(4);
+    *width = EVE_LIB_GetResult(3);
+    *height = EVE_LIB_GetResult(2);
+    *palette = EVE_LIB_GetResult(1);
 }
 #endif
 
@@ -585,7 +592,7 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t *value)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     // Obtain the results from the EVE_RAM_CMD in the CoProcessor.
-    *value = HAL_MemRead32(EVE_RAM_CMD + ((WritePointer + (2 * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1)));
+    *value = EVE_LIB_GetResult(1);
 }
 #endif
 

@@ -142,7 +142,6 @@ void HAL_EVE_Init(void)
     while (1)
     {
         unsigned char bb[128];
-        char rd[5];
         int i;
 
         memset(bb, 0, sizeof(bb));

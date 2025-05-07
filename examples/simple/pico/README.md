@@ -35,18 +35,18 @@ Scanning dependencies of target eve_library
 [ 59%] No install step for 'ELF2UF2Build'
 [ 59%] Completed 'ELF2UF2Build'
 [ 61%] Built target ELF2UF2Build
-[ 62%] Linking CXX executable pico.elf
+[ 62%] Linking CXX executable simple_pico.elf
    text    data     bss     dec     hex filename
-  35228      40    3476   38744    9758 pico.elf
-[100%] Built target pico
+  35228      40    3476   38744    9758 simple_pico.elf
+[100%] Built target simple_pico
 ```
 
 There will be the following files in the `build` directory:
 
 ```
 $ ls build/
-CMakeCache.txt  Makefile             elf2uf2    libeve_example.a  pico-sdk  pico.dis  pico.elf.map  pico.uf2
-CMakeFiles      cmake_install.cmake  generated  libeve_library.a  pico.bin  pico.elf  pico.hex
+CMakeCache.txt  Makefile             elf2uf2    libeve_example.a  pico-sdk  simple_pico.dis  simple_pico.elf.map  simple_pico.uf2
+CMakeFiles      cmake_install.cmake  generated  libeve_library.a  simple_pico.bin  simple_pico.elf  simple_pico.hex
 ```
 
-To run the code on the Pico, power-up the pico with the BOOTSEL button depressed. It will instantiate a removable drive. Now copy the file `pico.uf2` to the removable drive.
+To run the code on the Pico, power-up the pico with the BOOTSEL button depressed. It will instantiate a removable drive. Now copy the file `simple_pico.uf2` to the removable drive.

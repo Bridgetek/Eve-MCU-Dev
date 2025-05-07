@@ -93,7 +93,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_MPSSE=1;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_MPSSE=1;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

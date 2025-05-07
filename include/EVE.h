@@ -84,6 +84,15 @@ void EVE_LIB_EndCoProList(void);
  */
 int EVE_LIB_AwaitCoProEmpty(void);
 
+/**
+ @brief EVE API: Returns a result from the coprocessor command buffer
+ @details Will return a result value from "offset" words back in the command buffer.
+ If the value of offset is 1 then the previous value from the coprocessor
+ command buffer is returned.
+ @returns result of a previous coprocessor command.
+ */
+uint32_t EVE_LIB_GetResult(int offset);
+
 #if IS_EVE_API(5)
 /**
  @brief EVE API: Get coprocessor exception description

@@ -18,9 +18,11 @@ cmake_minimum_required(VERSION 3.12)
 include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
 # Set name of project (as current working directory)
+get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
+get_filename_component(ProjectName ${PARENT_DIR} NAME)
 get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
-project(${ProjectId} C CXX)
+project(${ProjectName}_${ProjectId} C CXX)
 
 # Set C/C++ Standards
 set(CMAKE_C_STANDARD 11)

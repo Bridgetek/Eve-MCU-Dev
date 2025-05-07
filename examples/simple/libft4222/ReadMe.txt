@@ -20,6 +20,27 @@ The following files are used in this sample code.
 
 The example application will load and use the LibFT4222-64.dll file. This file must be available either locally (in the same directory as the example application) or on the system path (recommended "C:\Windows\System32").
 
+Command Line Compilation
+------------------------
+
+To compile the project with the default C compiler:
+
+    cmake -B build -S .
+
+On Windows, if an MSVC compiler is not the default compiler on your platform then choose a suitable Visual Studio compiler explicitly:
+
+    cmake -B build -S . -G "Visual Studio 17 2022"
+
+On Windows, to compile the project use the MinGW C compiler:
+
+    cmake -B build -S . -G "MinGW Makefiles"
+
+Then to compile:
+
+    cmake --build build
+
+The executable file is in the build directory. The exact location is defined by the compiler defaults.
+
 Visual Studio Code
 ------------------
 

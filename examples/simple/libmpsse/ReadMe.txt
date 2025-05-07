@@ -21,6 +21,39 @@ There may be other, possibly older, versions of this FT8xx-SPI sample code in th
 
 The example application will load and use the libmpsse.dll file. This file must be available either locally (in the same directory as the example application) or on the system path (recommended "C:\Windows\System32").
 
+Due to limitations in the libMPSSE distribution, a small modification is required:
+
+Line 239 of "release\source\ftdi_infra.c":
+    #else // _WIN32
+	    hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
+    #endif // _WIN32
+
+Remove the "L" before the DLL name:
+    #else // _WIN32
+	    hdll_d2xx = LoadLibrary("ftd2xx.dll");
+    #endif // _WIN32
+
+Command Line Compilation
+------------------------
+
+To compile the project with the default C compiler:
+
+    cmake -B build -S .
+
+On Windows, if an MSVC compiler is not the default compiler on your platform then choose a suitable Visual Studio compiler explicitly:
+
+    cmake -B build -S . -G "Visual Studio 17 2022"
+
+On Windows, to compile the project use the MinGW C compiler:
+
+    cmake -B build -S . -G "MinGW Makefiles"
+
+Then to compile:
+
+    cmake --build build
+
+The executable file is in the build directory. The exact location is defined by the compiler defaults.
+
 Visual Studio Code
 ------------------
 
