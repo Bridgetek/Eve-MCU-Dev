@@ -141,7 +141,11 @@ void eve_example(void)
 
 	// Calibrate the display
 	printf("Calibrating display...\n");
-	eve_calibrate();
+	if (eve_calibrate() != 0)
+	{
+		printf("Exception...\n");
+		while(1);
+	}
 
 	// Load fonts and images
 	printf("Loading font...\n");

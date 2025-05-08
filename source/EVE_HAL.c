@@ -161,10 +161,10 @@ void HAL_EVE_Init(void)
         HAL_HostCmdWrite(0xFF, 0xE9, 0xe1, 0x00, 0x00);
         // Set DDR Type - 1333, DDR3L, 4096
         HAL_HostCmdWrite(0xFF, 0xEB, 0x08, 0x00, 0x00);
-        // Set DDR, JT and AUD in Boot Control
-        HAL_HostCmdWrite(0xFF, 0xE8, 0xF0, 0x00, 0x00);
+        // Set DDR, JT, AUD and WD in Boot Control
+        HAL_HostCmdWrite(0xFF, 0xE8, 0xf0, 0x00, 0x00);
         // Clear BootCfgEn
-        HAL_HostCmdWrite(0xFF, 0xE9, 0xC0, 0x00, 0x00);
+        HAL_HostCmdWrite(0xFF, 0xE9, 0xe0, 0x00, 0x00);
         // Perform a reset pulse
         HAL_HostCmdWrite(0xFF, 0xE7, 0x00, 0x00, 0x00) ; 
         // Set ACTIVE
@@ -572,6 +572,8 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
     {
         // Read the graphics processor read pointer
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
+        // Detect an exception
+        if (readCmdPointer & 1) break;
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
 #else
     // Wait until there is all the potential space free
@@ -579,15 +581,24 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
     {
         // Read the graphics processor read pointer
         readCmdPointer = HAL_MemRead32(EVE_REG_CMDB_SPACE);
-    } while (readCmdPointer != (EVE_RAM_CMD_SIZE - 4));
+        // Detect an exception
+        if (readCmdPointer & 1) break;
+    } while (readCmdPointer < (EVE_RAM_CMD_SIZE - 4));
 #endif
-
-    if(readCmdPointer == (EVE_RAM_CMD_SIZE - 1))
+    if(readCmdPointer & 1)
     {
         // Return 0xFF if an error occurred
         #if DEBUG_LEVEL > 0
-        fprintf(stderr, "Co-processor exception.\n");
-        #endif
+        #if IS_EVE_API(5)
+        char message[256];
+
+        memset(message, 0, sizeof(message));
+        EVE_LIB_GetCoProException(message);
+        fprintf(stderr, "Co-processor exception: %s\n", message);
+        #else // IS_EVE_API(5)
+        fprintf(stderr, "Co-processor exception\n");
+        #endif // IS_EVE_API(5)
+        #endif // DEBUG_LEVEL
         
         return 0xFF;
     }

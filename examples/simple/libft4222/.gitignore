@@ -2,6 +2,7 @@
 .vs
 .vscode
 imports/
+build/
 VisualStudio/*
 !VisualStudio/libFT4222.sln
 !VisualStudio/libFT4222.vcxproj
