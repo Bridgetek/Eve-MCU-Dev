@@ -1,4 +1,4 @@
-# EVE-MCU-Examples-BRT_AN_025
+# EVE-MCU-Dev
 
 The code is in the process of being updated to support the BT82x devices (EVE generation 5). Not all platforms have been coded and tested for BT82x. Outstanding work will be completed as time allows.
 

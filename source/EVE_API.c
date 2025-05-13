@@ -142,7 +142,9 @@ void EVE_Init(void)
 #elif IS_EVE_API(5) 
 
     EVE_LIB_BeginCoProList();
+    EVE_CMD_REGWRITE(EVE_REG_CPURESET, 2);
     EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, EVE_TOUCH_CONFIG);
+    EVE_CMD_REGWRITE(EVE_REG_CPURESET, 0);
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 

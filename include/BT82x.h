@@ -482,22 +482,31 @@
 // Bitmap Formats
 
 #define EVE_FORMAT_ARGB1555            0x0UL
-#define EVE_FORMAT_ARGB2               0x5UL
-#define EVE_FORMAT_ARGB4               0x6UL
-#define EVE_FORMAT_BARGRAPH            0xbUL
 #define EVE_FORMAT_L1                  0x1UL
-#define EVE_FORMAT_L2                  0x11UL
 #define EVE_FORMAT_L4                  0x2UL
 #define EVE_FORMAT_L8                  0x3UL
-#define EVE_FORMAT_PALETTED            0x8UL
-#define EVE_FORMAT_PALETTED4444        0xfUL
-#define EVE_FORMAT_PALETTED565         0xeUL
-#define EVE_FORMAT_PALETTED8           0x10UL
 #define EVE_FORMAT_RGB332              0x4UL
+#define EVE_FORMAT_ARGB2               0x5UL
+#define EVE_FORMAT_ARGB4               0x6UL
 #define EVE_FORMAT_RGB565              0x7UL
-#define EVE_FORMAT_RGB6                0x16UL
+#define EVE_FORMAT_PALETTED            0x8UL
 #define EVE_FORMAT_TEXT8X8             0x9UL
 #define EVE_FORMAT_TEXTVGA             0xaUL
+#define EVE_FORMAT_BARGRAPH            0xbUL
+#define EVE_FORMAT_PALETTED565         0xeUL
+#define EVE_FORMAT_PALETTED4444        0xfUL
+#define EVE_FORMAT_PALETTED8           0x10UL
+#define EVE_FORMAT_L2                  0x11UL
+#define EVE_FORMAT_RGB8                0x13UL
+#define EVE_FORMAT_ARGB8               0x14UL
+#define EVE_FORMAT_PALETTEDARGB8       0x15UL
+#define EVE_FORMAT_RGB6                0x16UL
+#define EVE_FORMAT_ARGB6               0x17UL
+#define EVE_FORMAT_LA1                 0x18UL
+#define EVE_FORMAT_LA2                 0x19UL
+#define EVE_FORMAT_LA4                 0x1aUL
+#define EVE_FORMAT_LA8                 0x1bUL
+#define EVE_FORMAT_YCBCR               0x1cUL
 // Extended Bitmap Format to enable BITMAP_EXT_FORMAT
 #define EVE_GLFORMAT                   0x1fUL
 // BITMAP_EXT_FORMATs
@@ -519,43 +528,43 @@
 // Command Options
 
 #define EVE_BEGIN_BITMAPS              0x1UL
+#define EVE_BEGIN_POINTS               0x2UL
+#define EVE_BEGIN_LINES                0x3UL
+#define EVE_BEGIN_LINE_STRIP           0x4UL
+#define EVE_BEGIN_EDGE_STRIP_R         0x5UL
+#define EVE_BEGIN_EDGE_STRIP_L         0x6UL
 #define EVE_BEGIN_EDGE_STRIP_A         0x7UL
 #define EVE_BEGIN_EDGE_STRIP_B         0x8UL
-#define EVE_BEGIN_EDGE_STRIP_L         0x6UL
-#define EVE_BEGIN_EDGE_STRIP_R         0x5UL
-#define EVE_BEGIN_LINE_STRIP           0x4UL
-#define EVE_BEGIN_LINES                0x3UL
-#define EVE_BEGIN_POINTS               0x2UL
 #define EVE_BEGIN_RECTS                0x9UL
 
-#define EVE_TEST_ALWAYS                0x7UL
-#define EVE_TEST_EQUAL                 0x5UL
-#define EVE_TEST_GEQUAL                0x4UL
-#define EVE_TEST_GREATER               0x3UL
-#define EVE_TEST_LEQUAL                0x2UL
-#define EVE_TEST_LESS                  0x1UL
 #define EVE_TEST_NEVER                 0x0UL
+#define EVE_TEST_LESS                  0x1UL
+#define EVE_TEST_LEQUAL                0x2UL
+#define EVE_TEST_GREATER               0x3UL
+#define EVE_TEST_GEQUAL                0x4UL
+#define EVE_TEST_EQUAL                 0x5UL
 #define EVE_TEST_NOTEQUAL              0x6UL
+#define EVE_TEST_ALWAYS                0x7UL
 
-#define EVE_FILTER_BILINEAR            0x1UL
 #define EVE_FILTER_NEAREST             0x0UL
+#define EVE_FILTER_BILINEAR            0x1UL
 
 #define EVE_WRAP_BORDER                0x0UL
 #define EVE_WRAP_REPEAT                0x1UL
 
-#define EVE_BLEND_DST_ALPHA            0x3UL
-#define EVE_BLEND_ONE                  0x1UL
-#define EVE_BLEND_ONE_MINUS_DST_ALPHA  0x5UL
-#define EVE_BLEND_ONE_MINUS_SRC_ALPHA  0x4UL
-#define EVE_BLEND_SRC_ALPHA            0x2UL
 #define EVE_BLEND_ZERO                 0x0UL
+#define EVE_BLEND_ONE                  0x1UL
+#define EVE_BLEND_SRC_ALPHA            0x2UL
+#define EVE_BLEND_ONE_MINUS_SRC_ALPHA  0x4UL
+#define EVE_BLEND_DST_ALPHA            0x3UL
+#define EVE_BLEND_ONE_MINUS_DST_ALPHA  0x5UL
 
-#define EVE_STENCIL_DECR               0x4UL
-#define EVE_STENCIL_INCR               0x3UL
-#define EVE_STENCIL_INVERT             0x5UL
+#define EVE_STENCIL_ZERO               0x0UL
 #define EVE_STENCIL_KEEP               0x1UL
 #define EVE_STENCIL_REPLACE            0x2UL
-#define EVE_STENCIL_ZERO               0x0UL
+#define EVE_STENCIL_INCR               0x3UL
+#define EVE_STENCIL_DECR               0x4UL
+#define EVE_STENCIL_INVERT             0x5UL
 
 #define EVE_OPT_3D                     0x0UL
 #define EVE_OPT_CENTER                 0x600UL
@@ -586,17 +595,18 @@
 
 // Touchmode Options
 
-#define EVE_TOUCHMODE_CONTINUOUS       0x3UL
-#define EVE_TOUCHMODE_FRAME            0x2UL
 #define EVE_TOUCHMODE_OFF              0x0UL
 #define EVE_TOUCHMODE_ONESHOT          0x1UL
+#define EVE_TOUCHMODE_FRAME            0x2UL
+#define EVE_TOUCHMODE_CONTINUOUS       0x3UL
 #define EVE_OPT_TOUCH_100KHZ           0x800
-#define EVE_OPT_TOUCH_AR1021           0x3
+#define EVE_OPT_TOUCH_400KHZ           0x0
 #define EVE_OPT_TOUCH_FOCALTECH        0x1
 #define EVE_OPT_TOUCH_GOODIX           0x2
+#define EVE_OPT_TOUCH_AR1021           0x3
 #define EVE_OPT_TOUCH_ILI2511          0x4
-#define EVE_OPT_TOUCH_QUICKSIM         0x8000
 #define EVE_OPT_TOUCH_TSC2007          0x5
+#define EVE_OPT_TOUCH_QUICKSIM         0x8000
 
 // Display List Swap Options
 
@@ -605,49 +615,55 @@
 
 // Interrupt Options
 
+#define EVE_INT_SWAP                   0x1UL
+#define EVE_INT_TOUCH                  0x2UL
+#define EVE_INT_TAG                    0x4UL
+#define EVE_INT_SOUND                  0x8UL
+#define EVE_INT_PLAYBACK               0x10UL
 #define EVE_INT_CMDEMPTY               0x20UL
 #define EVE_INT_CMDFLAG                0x40UL
 #define EVE_INT_CONVCOMPLETE           0x80UL
 #define EVE_INT_G8                     0x12UL
 #define EVE_INT_L8C                    0xcUL
-#define EVE_INT_PLAYBACK               0x10UL
-#define EVE_INT_SOUND                  0x8UL
-#define EVE_INT_SWAP                   0x1UL
-#define EVE_INT_TAG                    0x4UL
-#define EVE_INT_TOUCH                  0x2UL
 #define EVE_INT_VGA                    0xdUL
 
 // Audio Playback Options
 
-#define EVE_LINEAR_SAMPLES             0x0UL
-#define EVE_ULAW_SAMPLES               0x1UL
-#define EVE_ADPCM_SAMPLES              0x2UL
 #define EVE_VOL_ZERO                   0x0UL
+#define EVE_SAMPLES_LINEAR             0x0UL
+#define EVE_SAMPLES_ULAW               0x1UL
+#define EVE_SAMPLES_ADPCM              0x2UL
+#define EVE_SAMPLES_S16                0x3UL
+#define EVE_SAMPLES_S16S               0x4UL
 
 // Channel Definitions
 
-#define EVE_ALPHA                      0x5UL
-#define EVE_BLUE                       0x4UL
-#define EVE_GREEN                      0x3UL
 #define EVE_RED                        0x2UL
+#define EVE_GREEN                      0x3UL
+#define EVE_BLUE                       0x4UL
+#define EVE_ALPHA                      0x5UL
 
 // ADC Options
 
-#define EVE_ADC_DIFFERENTIAL           0x1UL
 #define EVE_ADC_SINGLE_ENDED           0x0UL
+#define EVE_ADC_DIFFERENTIAL           0x1UL
 
 // Animation Options
 
-#define EVE_ANIM_HOLD                  0x2UL
-#define EVE_ANIM_LOOP                  0x1UL
 #define EVE_ANIM_ONCE                  0x0UL
+#define EVE_ANIM_LOOP                  0x1UL
+#define EVE_ANIM_HOLD                  0x2UL
 
 // Flash Status
 
-#define EVE_FLASH_STATUS_BASIC         0x2UL
-#define EVE_FLASH_STATUS_DETACHED      0x1UL
-#define EVE_FLASH_STATUS_FULL          0x3UL
 #define EVE_FLASH_STATUS_INIT          0x0UL
+#define EVE_FLASH_STATUS_DETACHED      0x1UL
+#define EVE_FLASH_STATUS_BASIC         0x2UL
+#define EVE_FLASH_STATUS_FULL          0x3UL
+
+// CGradient Shape
+#define EVE_CGRADIENT_CORNER_ZERO      0x0UL
+#define EVE_CGRADIENT_EDGE_ZERO        0x1UL
 
 // Arrays containing the bitmap sizes of ROM fonts
 
