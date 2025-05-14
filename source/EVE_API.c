@@ -934,6 +934,12 @@ void EVE_BITMAP_ZORDER(uint8_t o)
     HAL_IncCmdPointer(4);
 }
 
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
+{
+    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
+    HAL_IncCmdPointer(4);
+}
+
 void EVE_PALLETE_SOURCE_H(uint8_t addr)
 {
     HAL_Write32(EVE_ENC_PALLETE_SOURCE_H(addr));

@@ -665,6 +665,10 @@
 #define EVE_CGRADIENT_CORNER_ZERO      0x0UL
 #define EVE_CGRADIENT_EDGE_ZERO        0x1UL
 
+// Touchmode settings
+#define EVE_CTOUCHMODE_EXTENDED        0x0UL
+#define EVE_CTOUCHMODE_COMPATIBILITY   0x1UL
+
 // Arrays containing the bitmap sizes of ROM fonts
 
 #define EVE_ROMFONT_MAX 34

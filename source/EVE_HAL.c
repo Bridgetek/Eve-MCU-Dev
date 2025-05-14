@@ -331,6 +331,10 @@ uint32_t HAL_Read32(void)
         int i;
         do
         {
+            // In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
+            // Timeout for a read is 7uS for BT82x.
+            // At a 20MHz SPI bus the timout is approximately 140 clock cycles.
+            // Round up to a maximum of 32 bytes before the "0x01" that signifies data ready.
             HAL_Read(bb, 36);
             for (i = 0; i < 36; i++)
             {
