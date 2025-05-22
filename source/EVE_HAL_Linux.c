@@ -198,7 +198,7 @@ void HAL_EVE_Init(void)
                     Platform_Delay_20ms();
                 }
 
-                boot = HAL_MemRead32(EVE_BOOT_STATUS);
+                boot = HAL_MemRead32(EVE_REG_BOOT_STATUS);
                 if (boot != 0x522e2e2e)
                 {
                     dbg_printf("[Timeout waiting for BOOT_STATUS, stuck at 0x%08x, retrying...]\n", boot);
@@ -217,6 +217,11 @@ void HAL_EVE_Init(void)
 
         info_printf("[Boot fail after reset, retrying...]\n");
     }
+#if 0 // If we need to disable sequential reads.
+    // Disable QSPI burst mode
+    HAL_MemWrite32(EVE_REG_SYS_CFG, 1 << 10);
+#endif
+
     info_printf("[Boot complete]\n");
 
 #endif

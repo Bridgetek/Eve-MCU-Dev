@@ -86,7 +86,23 @@
 #define EVE_RAM_BIST                   0x7f8001c0
 #define EVE_REG_CPURESET               0x7f006088   //  Coprocessor reset bits 2:JA 1:JT 0:J1
 #define EVE_REG_BOOT_CONTROL           0x7f006628   //  Boot control byte
-#define EVE_BOOT_STATUS                0x7f80044c
+#define EVE_REG_PIN_DRV_0              0x7f800408   //   Pin drive strength setting
+#define EVE_REG_PIN_DRV_1              0x7f80040C   //   Pin drive strength setting
+#define EVE_REG_PIN_SLEW_0             0x7f800410   //   Pin output slew rate setting
+#define EVE_REG_PIN_TYPE_0             0x7f800414   //   Pin type setting
+#define EVE_REG_PIN_TYPE_1             0x7f800418   //   Pin type setting
+#define EVE_REG_SYS_CFG                0x7f800420   //   Miscellaneous system configuration
+#define EVE_REG_SYS_STAT               0x7f800424   //   System status
+#define EVE_REG_CHIP_ID                0x7f800448   //   CHIP_ID info
+#define EVE_REG_BOOT_STATUS            0x7f80044C   //   EVE boot status
+#define EVE_REG_DDR_TYPE               0x7f800454   //   DDR DRAM type setting
+#define EVE_REG_PIN_DRV_2              0x7f800464   //   Pin drive strength setting
+#define EVE_REG_PIN_SLEW_1             0x7f800468   //   Pin output slew rate setting
+#define EVE_REG_PIN_TYPE_2             0x7f80046C   //   Pin type setting
+#define EVE_REG_I2S_CFG                0x7f800800   //   I2S configuration registers
+#define EVE_REG_I2S_CTL                0x7f800804   //   I2S control registers
+#define EVE_REG_I2S_STAT               0x7f800810   //   I2S status
+#define EVE_REG_I2S_PAD_CFG            0x7f800814   //   I2S padding configuration
 
 // Display Registers 
 
