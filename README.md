@@ -1,6 +1,10 @@
 # EVE-MCU-Dev
 
-The code is in the process of being updated to support the BT82x devices (EVE generation 5). Not all platforms have been coded and tested for BT82x. Outstanding work will be completed as time allows.
+This library and ports allow a variety of hardware to communicate with FT8xx and BT8xx devices: embedded MCUs using their native SPI hardware; Linux PCs using SPI character devices; PCs using FT4222H or MPSSE USB devices. This library is intended to provide a **C** library for embedded designs.
+
+The code is in the process of being updated to support the **BT82x** devices (EVE generation 5). Not all platforms have been coded and tested for BT82x. Outstanding work will be completed as time allows.
+
+The application note document for this library is linked on the Bridgetek Website in (Home / Software Examples / EVE Examples / Portable EVE Library)[https://brtchip.com/software-examples/eve-examples-2/]. The document is (BRT_AN_025 EVE Portable MCU Example)[https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf]
 
 ## Ports
 

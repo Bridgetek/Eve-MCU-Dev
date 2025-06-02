@@ -156,18 +156,60 @@ uint16_t EVE_LIB_SendString(const char* string);
  */
 void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height);
 
+/**
+ @brief EVE API: Get current allocation pointer
+ @details Obtains the automatic allocation pointer of the last address
+      used for certain coprocessor operations.
+ @returns addr - Last allocation address rounded up to the next 32-bit 
+      boundary.
+ */
 void EVE_LIB_GetPtr(uint32_t *addr);
+
+/**
+ @brief EVE API: Get the touchscreen transformation matrix.
+ @details Obtains the transformation matric from a CMD_CALIBRATE operation.
+ @param a -  pointer of varaible to receive matrix a.
+ @param b -  pointer of varaible to receive matrix b.
+ @param c -  pointer of varaible to receive matrix c.
+ @param d -  pointer of varaible to receive matrix d.
+ @param e -  pointer of varaible to receive matrix e.
+ @param f -  pointer of varaible to receive matrix f.
+ */
 void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f);
+
+/**
+ @brief EVE API: Calculate the CRC of a memory area.
+ @details Obtains the CRC of a memory area.
+ @param ptr - Start of memory area.
+ @param num - Number of bytes to CRC.
+ @param result - pointer to receive the CRC.
+ */
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
+
 #if IS_EVE_API(2, 3, 4, 5)
 void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, 
                               int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
                               uint32_t *result );
 #endif
 #if IS_EVE_API(4, 5)
+/**
+ @brief EVE API: Get image properties.
+ @details From the last CMD_LOADIMAGE get the address, size, format and palette of the loaded image.
+ @param *addr - pointer to variable to receive the address the image was loaded to.
+ @param *fmt - pointer to variable to receive the format of the loaded image.
+ @param *width - pointer to variable to receive the width of the loaded image.
+ @param *height - pointer to variable to receive the height of the loaded image.
+ @param *palette - pointer to variable to receive the palette of the loaded image.
+ */
 void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette);
 #endif
 #if IS_EVE_API(5)
+/**
+ @brief EVE API: Read a register.
+ @details Reads a register value.
+ @param addr - Address of register to read.
+ @param value - pointer to receive the contents of the register.
+ */
 void EVE_LIB_RegRead(uint32_t addr, uint32_t *value);
 #endif
 
