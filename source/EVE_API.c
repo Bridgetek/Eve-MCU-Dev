@@ -2064,6 +2064,14 @@ void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options)
     HAL_IncCmdPointer(12);
 }
 
+void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options)
+{
+    HAL_Write32(EVE_ENC_CMD_LOADASSET);
+    HAL_Write32(dst);
+    HAL_Write32(options);
+    HAL_IncCmdPointer(12);
+}
+
 void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h )
 {
     HAL_Write32(EVE_ENC_CMD_GLOW);
