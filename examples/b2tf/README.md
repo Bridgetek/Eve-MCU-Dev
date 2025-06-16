@@ -1,20 +1,18 @@
-# EVE-MCU-Dev Cruise Example
+# EVE-MCU-Dev Advanced Seven Segment Example
 
 [Back](../README.md)
 
-## Cruise Example
+## Advanced Seven Segment Example
 
-The `cruise` example demonstrates drawing multiple seven segment displays on the same screen, blending, scissoring, and trackers. The `cruise` code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform some of the drawing. 
+The `b2tf` example demonstrates drawing multiple seven segment displays on the same screen. The `b2tf` code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform some of the drawing. 
 
-The example is intended to show a reimaginged cruise control for a vehicle. The physical control for which would be a rotating turn wheel (with presumably a shaft encoder), an integrated click button (the whole rotating wheel physically registers a press) and a touchscreen display. An external input would provide a signal for when the vehicle would disengage cruise control, e.g. when the brakes are depressed. The touchscreen would be overridden and disabled in software by the click button.
+The example is intended to show a three clocks, one in the past, one at the present and another which counts backward from the present clock time to the past clock time.
 
-The display comprises two parts: the left side is a circular display which is the operational part of the touchscreen on the physical control; the right side are touchscreen controls to mimic the function of the turn wheel, button click and brake input.
-
-![Cruise Example](docs/cruise.png)
+![B2tf Example](docs/b2tf.png)
 
 ### `main.c`
 
-The application starts up in the file `main.c` which provides initial MCU configuration and then calls `cruise.c` where the remainder of the application will be carried out. 
+The application starts up in the file `main.c` which provides initial MCU configuration and then calls `b2tf.c` where the remainder of the application will be carried out. 
 
 The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
 - **platform_calib_init** initialise a platform's non-volatile storage system.
@@ -23,12 +21,12 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 
 The example program in the common code is then called.
 
-### `cruise.c`
+### `b2tf.c`
 
-In the function `cruise` the basic format is as follows:
+In the function `b2tf` the basic format is as follows:
 
 ```
-void cruise(void)
+void b2tf(void)
 {
     uint32_t font_end;
     // Initialise the display
@@ -57,7 +55,7 @@ The example contains a common directory with several files which comprises all t
 
 | File/Folder | Description |
 | --- | --- |
-| [common/cruise.c](common/cruise.c) | Example source code file |
+| [common/b2tf.c](common/b2tf.c) | Example source code file |
 | [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
 | [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
 | [docs](docs) | Documentation support files |

@@ -4,7 +4,7 @@
 
 ## Simple Example
 
-The "simple"" example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G. 
+The `simple` example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G. 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
@@ -21,7 +21,7 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 
 The example program in the common code is then called.
 
-### `exe_example.c`
+### `eve_example.c`
 
 In the function `eve_example` the basic format is as follows:
 
@@ -70,9 +70,9 @@ The example contains a common directory with several files which comprises all t
 
 | File/Folder | Description |
 | --- | --- |
-| [common/exe_example.c](common/exe_example.c) | Example source code file |
-| [common/exe_calibrate.c](common/exe_calibrate.c) | Calibrations routines |
-| [common/exe_fonts.c](common/exe_fonts.c) | Font helper routines |
-| [common/exe_helper.c](common/exe_helper.c) | General helper routines (touch detection) |
-| [common/exe_images.c](common/exe_images.c) | Image helper routines |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
+| [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
+| [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
+| [common/eve_images.c](common/eve_images.c) | Image helper routines |
 | [docs](docs) | Documentation support files |
