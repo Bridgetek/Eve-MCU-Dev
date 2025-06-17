@@ -54,3 +54,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 *.bak
+
+# Generated Eclipse-based IDE files
+.settings/
