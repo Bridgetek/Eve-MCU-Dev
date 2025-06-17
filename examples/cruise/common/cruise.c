@@ -56,6 +56,10 @@
 #include "eve_helper.h"
 #include "sevenseg.h"
 
+#if EVE_DISP_WIDTH < 480
+#error This example needs a screen width of 480 pixels or above.
+#endif
+
 // Draw a stencil to show a circular display
 #define TARGET_CIRCULAR
 #define TARGET_SCREEN_RADIUS 240

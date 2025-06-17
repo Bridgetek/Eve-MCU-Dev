@@ -57,6 +57,14 @@
 #include "eve_helper.h"
 #include "sevenseg.h"
 
+#if IS_EVE_API(1)
+#error This example requires EVE API 2 or above.
+#endif
+
+#if EVE_DISP_WIDTH < 480
+#error This example needs a screen width of 480 pixels or above.
+#endif
+
 void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
 {
     EVE_VERTEX_FORMAT(2);
@@ -136,12 +144,20 @@ void eve_display(void)
         EVE_CLEAR_COLOR_RGB(0x0, 0x0, 0x0);
         EVE_CLEAR(1,1,1);
 
-        uint16_t segsize = 80;
-
+        // Screen sizing sets the seven segment size
+        uint16_t segsize = EVE_DISP_WIDTH / 24;
         // Starting point
-        uint16_t x = 200;
-        uint16_t y = 120;
-
+        uint16_t x = segsize * 2;
+        uint16_t y = (segsize * 2) / 2;
+        uint16_t cx = x + (segsize * 9);
+        uint8_t font = 31;
+        if (segsize < 50) // < 1200 pixels wide
+            font -= 1;
+        if (segsize < 42) // < 1024 pixels wide
+            font -= 1;
+        if (segsize < 33) // < 800 pixels wide
+            font -= 1;
+        uint16_t w = segsize * 10;
         uint16_t dx = x;
         uint16_t dy = y;
         EVE_COLOR_RGB(0x80, 0x80, 0x80);
@@ -155,19 +171,19 @@ void eve_display(void)
 
         dy = y;
         EVE_COLOR_RGB(0, 0, 0);
-        tapebox(EVE_DISP_WIDTH/2 - 300, dy + 5 * segsize / 2, 600, 60);
+        tapebox(cx - w/2, dy + 5 * segsize / 2, w, (eve_romfont_height(font) * 4) / 3);
         dy = dy + segsize * 4;
-        tapebox(EVE_DISP_WIDTH/2 - 300, dy + 5 * segsize / 2, 600, 60);
+        tapebox(cx - w/2, dy + 5 * segsize / 2, w, (eve_romfont_height(font) * 4) / 3);
         dy = dy + segsize * 4;
-        tapebox(EVE_DISP_WIDTH/2 - 300, dy + 5 * segsize / 2, 600, 60);
+        tapebox(cx - w/2, dy + 5 * segsize / 2, w, (eve_romfont_height(font) * 4) / 3);
 
         dy = y;
         EVE_COLOR_RGB(255, 255, 255);
-        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, dy + 5 * segsize / 2 + 30, 31, EVE_OPT_CENTER, "DESTINATION TIME");
+        EVE_CMD_TEXT(cx, dy + 5 * segsize / 2 + (eve_romfont_height(font) * 2) / 3, font, EVE_OPT_CENTER, "DESTINATION TIME");
         dy = dy + segsize * 4;
-        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, dy + 5 * segsize / 2 + 30, 31, EVE_OPT_CENTER, "PRESENT TIME");
+        EVE_CMD_TEXT(cx, dy + 5 * segsize / 2 + (eve_romfont_height(font) * 2) / 3, font, EVE_OPT_CENTER, "PRESENT TIME");
         dy = dy + segsize * 4;
-        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, dy + 5 * segsize / 2 + 30, 31, EVE_OPT_CENTER, "LAST TIME DEPARTED");
+        EVE_CMD_TEXT(cx, dy + 5 * segsize / 2 + (eve_romfont_height(font) * 2) / 3, font, EVE_OPT_CENTER, "LAST TIME DEPARTED");
         dy = dy + segsize * 4;
 
         // Bacground colour of non-active LED segments
