@@ -10,6 +10,8 @@ The example is intended to show a three clocks, one in the past, one at the pres
 
 ![B2tf Example](docs/b2tf.png)
 
+NOTE this example will work only on operating systems and compilers that provide a real time clock functionality includeing the `time.h` header file, `gmtime_s` and `mktime` functions.
+
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `b2tf.c` where the remainder of the application will be carried out. 
