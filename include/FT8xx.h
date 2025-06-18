@@ -71,7 +71,7 @@
 #define CTOUCH_MODE_COMPATIBILITY 1
 #define CTOUCH_MODE_EXTENDED 0
 
-#undef EVE_API
+#ifndef EVE_API
 #undef EVE_SUB_API
 
 #if (FT8XX_TYPE == FT800)
@@ -130,6 +130,16 @@
 #else
 #error FT8XX_TYPE definition not recognised.
 #endif
+
+#else // EVE_API
+
+#if (EVE_API == 2)
+#ifndef EVE_SUB_API
+#error EVE_SUB_API definition required for EVE API 2.
+#endif // EVE_SUB_API
+#endif // (EVE_API == 2)
+
+#endif // EVE_API
 
 #undef EVE1_ENABLE // deprecated
 #undef EVE2_ENABLE // deprecated

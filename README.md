@@ -57,3 +57,59 @@ Build instructions will be included in the example repositories.
 |Raspberry Pi | examples/simple/raspberry_pi | makefile/gcc |
 |Generic using libMPSSE | examples/simple/libmpsse | makefile/gcc or VisualStudio |
 |Generic using libFT4222 | examples/simple/libft4222 | makefile/gcc or VisualStudio |
+
+## EVE and Panel Selection
+
+The library must be built for the correct EVE device and panel type. 
+
+### EVE Device Selection
+
+The available EVE devices are:
+- EVE API 1
+  - FT800 
+  - FT801 
+- EVE API 2
+  - FT810 
+  - FT811 
+  - FT812 
+  - FT813 
+  - BT880 
+  - BT881 
+  - BT882 
+  - BT883 
+- EVE API 3
+  - BT815 
+  - BT816 
+- EVE API 4
+  - BT817 
+  - BT818 
+- EVE API 5
+  - BT820 
+
+The EVE device to target is set in the file `EVE_config.h` using the macro `FT8XX_TYPE` or `EVE_API`.
+
+If the `FT8XX_TYPE` macro is used then the "FT" or "BT" part number of the device is set. This line will set a BT820 device and EVE API 5 will be selected automatically.
+```
+#define FT8XX_TYPE BT820
+```
+If `EVE_API` is used this will override any `FT8XX_TYPE` values and a number from 1 to 5 is used. For EVE API 2 a subtype of the API is set in the `EVE_SUB_API` macro. So for an FT813 device the following can be used:
+```
+#define EVE_API 2
+#define EVE_SUB_API 1
+```
+**The default in the distribution will be a BT820 device**.
+
+Note that the example programs will take the `EVE_config.h` file from the `include` directory.
+
+### Panel Selection
+
+The panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specificaitions or contact Bridgetek Support for advice.
+
+The following are included in the distribution:
+- WQVGA 480x272 (VM800B with 5" or 4.3" display)
+- WVGA 800x480 (ME813A-WH50C or VM816)
+- WSVGA 1024x600 (ME817EV with 7" display)
+- WXGA 1280x800 (ME817EV with 10.1" display)
+- HD 1920x1200 (10" high definition display)
+
+**The default in the distribution will be an HD panel**.
