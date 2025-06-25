@@ -150,8 +150,8 @@ void EVE_Init(void)
 
     EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
-    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, 10 << 20);
-    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR1, 18 << 20);
+    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, 0x7a00000);
+    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR1, 0x7a00000 + (EVE_DISP_WIDTH * EVE_DISP_HEIGHT * 3));
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
@@ -191,6 +191,7 @@ void EVE_Init(void)
 
     // Define active edge of PCLK
     EVE_CMD_REGWRITE(EVE_REG_PCLK_POL, 0);
+    EVE_CMD_REGWRITE(EVE_REG_RE_DITHER, 1);
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     unsigned long extsyncmode = 3;
@@ -199,15 +200,14 @@ void EVE_Init(void)
     if (TXPLLDiv > 4) valcfg = 0x00300870 + TXPLLDiv;
     else valcfg = 0x00301070 + TXPLLDiv;
 
-    EVE_CMD_APBWRITE(EVE_REG_LVDSPLL_CFG, valcfg);
-    EVE_CMD_APBWRITE(EVE_REG_LVDS_EN, 7); // Enable PLL
-
+    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_PLLCFG, valcfg);
+    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 7); // Enable PLL
+    
     EVE_CMD_REGWRITE(EVE_REG_SO_MODE, extsyncmode);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
     EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, EVE_FORMAT_RGB6);
     EVE_CMD_REGWRITE(EVE_REG_SO_EN, 1);
     
-    //EVE_CMD_REGWRITE(EVE_REG_RE_DITHER, EVE_DISP_DITHER);
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
@@ -288,6 +288,7 @@ void EVE_LIB_EndCoProList(void)
     // Update the ring buffer pointer to start decode
 #ifndef EVE_USE_CMDB_METHOD
     HAL_WriteCmdPointer();
+
 #endif
 }
 
@@ -298,10 +299,16 @@ int EVE_LIB_AwaitCoProEmpty(void)
     return HAL_WaitCmdFifoEmpty();
 }
 
-// Gets a result from the command buffer 
+// Gets a result from the command buffer
 uint32_t EVE_LIB_GetResult(int offset)
 {
-    uint32_t CmdBufPointer = (HAL_GetCmdPointer() - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
+    uint32_t wp, rp;
+    do {
+        rp = HAL_MemRead32(EVE_REG_CMD_READ); 
+        wp = HAL_GetCmdPointer();//HAL_MemRead32(EVE_REG_CMD_WRITE); 
+    }
+    while (rp != wp);
+    uint32_t CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
     return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
 }
 
@@ -505,7 +512,6 @@ void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height)
 
 void EVE_LIB_GetPtr(uint32_t *addr)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_GETPTR(0);
@@ -518,7 +524,6 @@ void EVE_LIB_GetPtr(uint32_t *addr)
 
 void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_GETMATRIX(0, 0, 0, 0, 0, 0);
@@ -536,7 +541,6 @@ void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint3
 
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_MEMCRC(ptr, num, 0);
@@ -552,7 +556,6 @@ void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, in
                                 int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
                                 uint32_t *result )
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_BITMAP_TRANSFORM(x0, y0, x1, y1, x2, y2, tx0, ty0, tx1, ty1, tx2, ty2, 0);
@@ -567,7 +570,6 @@ void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, in
 #if IS_EVE_API(4, 5)
 void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_GETIMAGE(0, 0, 0, 0, 0);
@@ -586,7 +588,6 @@ void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *
 #if IS_EVE_API(5)
 void EVE_LIB_RegRead(uint32_t addr, uint32_t *value)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
     EVE_LIB_BeginCoProList();
     // Send the command to the CoProcessor.
     EVE_CMD_REGREAD(addr, 0);
@@ -2145,6 +2146,30 @@ void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t re
     HAL_Write32(count);
     HAL_Write32(result);
     HAL_IncCmdPointer(20);
+}
+
+void EVE_CMD_WAITCHANGE(uint32_t a)
+{
+    HAL_Write32(EVE_ENC_CMD_WAITCHANGE);
+    HAL_Write32(a);
+    HAL_IncCmdPointer(8);
+}
+
+void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask)
+{
+    HAL_Write32(EVE_ENC_CMD_WAITCOND);
+    HAL_Write32(a);
+    HAL_Write32(func);
+    HAL_Write32(ref);
+    HAL_Write32(mask);
+    HAL_IncCmdPointer(20);
+}
+
+void EVE_CMD_RESULT(uint32_t a)
+{
+    HAL_Write32(EVE_ENC_CMD_RESULT);
+    HAL_Write32(a);
+    HAL_IncCmdPointer(8);
 }
 
 #endif

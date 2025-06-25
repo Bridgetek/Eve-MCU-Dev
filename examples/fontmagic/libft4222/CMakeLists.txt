@@ -17,6 +17,10 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
+        message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
+endif()
+
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
         main.c

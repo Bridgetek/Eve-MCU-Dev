@@ -195,6 +195,13 @@ void MCU_Init(void)
 			exit(-5);
 		}
 
+		ftStatus = FT4222_SetClock(ftHandleGPIO, SYS_CLK_80);
+		if (FT_OK != ftStatus)
+		{
+			fprintf(stderr, "Set clock failed!\n");
+			exit(-6);
+		}
+
 		ftStatus = FT4222_SetSuspendOut(ftHandleGPIO, FALSE);
 		if (FT_OK != ftStatus)
 		{
@@ -258,6 +265,10 @@ int MCU_transmit_buffer(int end)
 		{
 			// spi master read failed
 			fprintf(stderr, "FT4222_SPIMaster_SingleWrite failed %d\n", status);
+		}
+		else
+		{
+			toWrite = 0;
 		}
 	}
 	MCU_bufferLen = 0;

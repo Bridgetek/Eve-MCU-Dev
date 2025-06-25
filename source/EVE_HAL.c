@@ -164,7 +164,7 @@ void HAL_EVE_Init(void)
         // Set DDR, JT, AUD and WD in Boot Control
         HAL_HostCmdWrite(0xFF, 0xE8, 0xf0, 0x00, 0x00);
         // Clear BootCfgEn
-        HAL_HostCmdWrite(0xFF, 0xE9, 0xe0, 0x00, 0x00);
+        HAL_HostCmdWrite(0xFF, 0xE9, 0xc0, 0x00, 0x00);
         // Perform a reset pulse
         HAL_HostCmdWrite(0xFF, 0xE7, 0x00, 0x00, 0x00) ; 
         // Set ACTIVE
@@ -574,7 +574,6 @@ void HAL_WriteCmdPointer(void)
 uint8_t HAL_WaitCmdFifoEmpty(void)
 {
     uint32_t readCmdPointer;
-
 #ifndef EVE_USE_CMDB_METHOD
     // Wait until the two registers match
     do

@@ -282,10 +282,22 @@
 
 // LVDS Registers
 
-#define EVE_REG_BRIDGE_EN              0x7f00669c
-#define EVE_REG_LVDS_EN                0x7f800300
-#define EVE_REG_LVDSPLL_CFG            0x7f800304
-#define EVE_REG_LVDS_CFG               0x7f800308
+#define EVE_REG_LVDSRX_CORE_ENABLE     0x7f006670   // LVDSRX enable register
+#define EVE_REG_LVDSRX_CORE_CAPTURE    0x7f006674   // LVDSRX enable capture register
+#define EVE_REG_LVDSRX_CORE_SETUP      0x7f006678   // LVDSRX pixel setup control register
+#define EVE_REG_LVDSRX_CORE_DEST       0x7f00667c   // LVDSRX destination frame address register
+#define EVE_REG_LVDSRX_CORE_FORMAT     0x7f006680   // LVDSRX output pixel format register
+#define EVE_REG_LVDSRX_CORE_DITHER     0x7f006684   // LVDSRX enable dither register
+#define EVE_REG_LVDSRX_CORE_FRAMES     0x7f006698   // LVDSRX frame counter
+#define EVE_REG_LVDSRX_SETUP           0x7F800500   // LVDSRX system set-up
+#define EVE_REG_LVDSRX_CTRL            0x7F800504   // LVDSRX analog block configuration
+#define EVE_REG_LVDSRX_STAT            0x7F800508   // LVDSRX status register
+#define EVE_REG_LVDSTX_EN              0x7f800300   // LVDS enables
+#define EVE_REG_LVDSTX_PLLCFG          0x7f800304   // LVDS PLL and Clock configuration
+#define EVE_REG_LVDSTX_CTRL_CH0        0x7f800314   // LVDS channel 0 control
+#define EVE_REG_LVDSTX_CTRL_CH1        0x7f800318   // LVDS channel 1 control
+#define EVE_REG_LVDSTX_STAT            0x7f80031c   // LVDS status
+#define EVE_REG_LVDSTX_ERR_STAT        0x7f800320   // LVDS error status
 
 // Completion Register
 
@@ -491,9 +503,9 @@
 
 // Hardware swapchains for render engine
 
-#define EVE_SWAPCHAIN_0                0xffff00ffUL 
-#define EVE_SWAPCHAIN_1                0xffff01ffUL
-#define EVE_SWAPCHAIN_2                0xffff02ffUL 
+#define EVE_SWAPCHAIN_0                0xffff00ff 
+#define EVE_SWAPCHAIN_1                0xffff01ff
+#define EVE_SWAPCHAIN_2                0xffff02ff
 
 // Bitmap Formats
 

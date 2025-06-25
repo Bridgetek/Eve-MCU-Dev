@@ -441,6 +441,9 @@ void EVE_CMD_FSSIZE(const char* filename, uint32_t size);
 void EVE_CMD_FSSOURCE(const char* filename, uint32_t result);
 void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result);
 void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result);
+void EVE_CMD_WAITCHANGE(uint32_t a);
+void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask);
+void EVE_CMD_RESULT(uint32_t a);
 #endif
 
 #endif    /* EVE_HEADER_H */
