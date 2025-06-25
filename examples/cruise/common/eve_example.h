@@ -1,5 +1,5 @@
 /**
-    @file cruise.h
+    @file eve_example.h
  **/
 /*
  * ============================================================================
@@ -47,8 +47,8 @@
  * ============================================================================
  */
 
-#ifndef _CRUISE_H
-#define _CRUISE_H
+#ifndef _EVE_EXAMPLE_H_
+#define _EVE_EXAMPLE_H_
 
 #include <stdint.h>
 
@@ -59,10 +59,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 /* Entry point to the example code */
-void cruise(void);
+void eve_example(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
 
-#endif /* _CRUISE_H */
+#endif /* _EVE_EXAMPLE_H_ */

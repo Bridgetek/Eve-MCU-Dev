@@ -56,7 +56,7 @@
 
 #include "EVE.h"
 
-#include "fontmagic.h"
+#include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
 
@@ -125,7 +125,7 @@ int main(void)
     setup();
 
     /* Start example code */
-    fontmagic();
+    eve_example();
 }
 
 void setup(void)

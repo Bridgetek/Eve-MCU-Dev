@@ -1,5 +1,5 @@
 /**
- @file b2tf.c
+ @file eve_example.c
  */
 /*
  * ============================================================================
@@ -295,7 +295,7 @@ void eve_display(void)
     }
 }
 
-void b2tf(void)
+void eve_example(void)
 {
     // Initialise the display
     EVE_Init();

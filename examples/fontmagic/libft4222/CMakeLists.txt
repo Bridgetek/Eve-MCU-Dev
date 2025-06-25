@@ -64,7 +64,7 @@ endif()
 add_library(eve_example # Example code library name
         # Source files for example code library
         ../common/eve_calibrate.c
-        ../common/fontmagic.c
+        ../common/eve_example.c
         ../common/eve_fonts.c
         ../common/eve_helper.c
 )

@@ -47,8 +47,8 @@
  * ============================================================================
  */
 
-#ifndef _FONTMAGIC_H
-#define _FONTMAGIC_H
+#ifndef _EVE_EXAMPLE_H_
+#define _EVE_EXAMPLE_H_
 
 #include <stdint.h>
 
@@ -142,10 +142,10 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib);
 /**
  @brief Entry point to the example code .
  */
-void fontmagic(void);
+void eve_example(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */
 
-#endif /* _FONTMAGIC_H */
+#endif /* _EVE_EXAMPLE_H_ */

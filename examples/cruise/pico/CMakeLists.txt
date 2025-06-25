@@ -64,7 +64,7 @@ target_link_libraries(eve_library
 # Source for application code
 add_library(cruise # Code library name
         # Source files for application code library
-        ../common/cruise.c
+        ../common/eve_example.c
 )
 # Header files used for application code library
 target_include_directories(cruise PUBLIC

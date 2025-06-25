@@ -62,7 +62,7 @@
 
 #include "EVE.h"
 
-#include "cruise.h"
+#include "eve_example.h"
 #include "eve_helper.h"
 
 /**
@@ -164,7 +164,7 @@ int main(void)
     setup();
 
     /* Start example code */
-    cruise();
+    eve_example();
 
     // function never returns
     for (;;) ;

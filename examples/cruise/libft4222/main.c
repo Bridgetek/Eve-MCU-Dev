@@ -57,7 +57,7 @@
 #include "EVE.h"
 
 #include "eve_helper.h"
-#include "cruise.h"
+#include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
 
@@ -126,7 +126,7 @@ int main(void)
     setup();
 
     /* Start example code */
-    cruise();
+    eve_example();
 }
 
 void setup(void)

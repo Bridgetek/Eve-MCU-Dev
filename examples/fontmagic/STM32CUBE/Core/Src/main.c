@@ -29,7 +29,7 @@
 #include <FT8xx.h>
 #include <HAL.h>
 #include <MCU.h>
-#include <fontmagic.h>
+#include <eve_example.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,7 +124,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  fontmagic();
+  eve_example();
 
   /* USER CODE END 2 */
 

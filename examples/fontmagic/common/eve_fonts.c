@@ -51,7 +51,7 @@
 
 #include "EVE.h"
 
-#include "fontmagic.h"
+#include "eve_example.h"
 
 const uint32_t font0_offset = 0x0; // Taken from commmand line
 const uint8_t font0_first = 0x20; // Taken from commmand line

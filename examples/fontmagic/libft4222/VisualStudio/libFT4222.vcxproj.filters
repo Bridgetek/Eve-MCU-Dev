@@ -16,7 +16,7 @@
     <ClCompile Include="..\..\common\eve_fonts.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\fontmagic.c">
+    <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_calibrate.c">
@@ -45,7 +45,7 @@
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\fontmagic.h">
+    <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">

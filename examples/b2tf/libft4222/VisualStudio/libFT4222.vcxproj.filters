@@ -22,7 +22,7 @@
     <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\b2tf.c">
+    <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,7 +69,7 @@
     <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\b2tf.h">
+    <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
   </ItemGroup>

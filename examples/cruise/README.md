@@ -14,7 +14,7 @@ The display comprises two parts: the left side is a circular display which is th
 
 ### `main.c`
 
-The application starts up in the file `main.c` which provides initial MCU configuration and then calls `cruise.c` where the remainder of the application will be carried out. 
+The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
 The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
 - **platform_calib_init** initialise a platform's non-volatile storage system.
@@ -23,12 +23,12 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 
 The example program in the common code is then called.
 
-### `cruise.c`
+### `eve_example.c`
 
-In the function `cruise` the basic format is as follows:
+In the function `eve_example` the basic format is as follows:
 
 ```
-void cruise(void)
+void eve_example(void)
 {
     uint32_t font_end;
     // Initialise the display
@@ -57,7 +57,7 @@ The example contains a common directory with several files which comprises all t
 
 | File/Folder | Description |
 | --- | --- |
-| [common/cruise.c](common/cruise.c) | Example source code file |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
 | [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
 | [docs](docs) | Documentation support files |

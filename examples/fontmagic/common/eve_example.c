@@ -49,11 +49,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 #include "EVE.h"
 #include "../include/HAL.h"
 #include "MCU.h"
 
-#include "fontmagic.h"
+#include "eve_example.h"
 
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
@@ -148,19 +149,18 @@ void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t
     if (format == 0x0100AAFF)
     {
         // Extended format 1 font cache.
-        EVE_GPU_EXT_FONT_HEADER *fonthdr1 = (EVE_GPU_EXT_FONT_HEADER *)fontptr;
         // Get the font bitmap sizes.
-        cache->width = HAL_MemRead32((uint32_t)&fonthdr1->FontWidthInPixels);
-        cache->height = HAL_MemRead32((uint32_t)&fonthdr1->FontHeightInPixels);
-        uint32_t stride = HAL_MemRead32((uint32_t)&fonthdr1->FontLayoutWidth);
+        cache->width = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontWidthInPixels));
+        cache->height = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontHeightInPixels));
+        uint32_t stride = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontLayoutWidth));
         // Get the total number (and fixed maximum) of characters in the font.
-        N = HAL_MemRead32((uint32_t)&fonthdr1->FontNumberCharacters);
+        N = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontNumberCharacters));
         if (N > MAX_CHARACTERS)
         {
             N = MAX_CHARACTERS;
         }
         // Load character widths and glyph pointers.
-        start_of_graphics = HAL_MemRead32((uint32_t)&fonthdr1->PointerToFontGraphicsData);
+        start_of_graphics = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, PointerToFontGraphicsData));
         for (page = 0; page < N / 128; page++)
         {
             gptr = HAL_MemRead32(fontptr + sizeof(EVE_GPU_EXT_FONT_HEADER) + (page * 4));
@@ -181,13 +181,12 @@ void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t
     else if (format == 0x0200AAFF)
     {
         // Extended format 2 font cache.
-        EVE_GPU_EXT2_FONT_HEADER *fonthdr2 = (EVE_GPU_EXT2_FONT_HEADER *)fontptr;
         cache->legacy = 0;
         // Get the font pixel sizes.
-        cache->height = HAL_MemRead32((uint32_t)&fonthdr2->FontHeightInPixels);
-        cache->width= HAL_MemRead32((uint32_t)&fonthdr2->FontWidthInPixels);
+        cache->height = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontHeightInPixels));
+        cache->width= HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontWidthInPixels));
         // Get the total number (and fixed maximum) of characters in the font.
-        N = HAL_MemRead32((uint32_t)&fonthdr2->FontNumberCharacters);
+        N = HAL_MemRead32((uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontNumberCharacters));
         if (N > MAX_CHARACTERS)
         {
             N = MAX_CHARACTERS;
@@ -208,20 +207,19 @@ void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t
     else
     {
         // Legacy font.
-    	EVE_GPU_FONT_HEADER *fonthdr = (EVE_GPU_FONT_HEADER *)fontptr;
         cache->legacy = 1;
         // Get the font pixel sizes.
-        uint16_t stride = HAL_MemRead32((uint32_t)&fonthdr->FontLineStride);
-        cache->width = HAL_MemRead32((uint32_t)&fonthdr->FontWidthInPixels);
-        cache->height = HAL_MemRead32((uint32_t)&fonthdr->FontHeightInPixels);
+        uint16_t stride = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontLineStride));
+        cache->width = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidthInPixels));
+        cache->height = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontHeightInPixels));
         // Get offset to glyphs.
-        start_of_graphics = HAL_MemRead32((uint32_t)&fonthdr->PointerToFontGraphicsData);
+        start_of_graphics = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, PointerToFontGraphicsData));
         // Load character widths and glyph pointers.
         int ch, w;
         for (ch = 0; ch < 128; ch += 4)
         {
             // Read character width as a 32 bit word.
-            uint32_t width4 = HAL_MemRead32((uint32_t)&fonthdr->FontWidth[ch]);
+            uint32_t width4 = HAL_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidth[ch]));
             for (w = 0; w < 4; w++)
             {
                 cache->widths[ch + w] = (width4 >> (w * 8)) & 0xff;
@@ -308,7 +306,7 @@ void cmd_textrotate(int x, int y, struct eve_font_cache *cache, char *text)
     EVE_CMD_SETMATRIX();
 
     int i;
-    int len = strlen(text);
+    size_t len = strlen(text);
     char *ch = text;
 
     for (i = 0; i < len; i++)
@@ -356,7 +354,7 @@ void cmd_textzoom(int x, int y, struct eve_font_cache *cache, uint32_t zoom, cha
     EVE_CMD_SETMATRIX();
 
     int i;
-    int len = strlen(text);
+    size_t len = strlen(text);
     char *ch = text;
 
     for (i = 0; i < len; i++)
@@ -390,7 +388,7 @@ uint32_t loadlegacyfont(const uint8_t *fontptr, uint32_t fontsize, uint32_t font
 	return ((fontsize + fontoffset) + 16) & (~15);
 }
 
-void fontmagic(void)
+void eve_example(void)
 {
     int action = 0;
     int y;

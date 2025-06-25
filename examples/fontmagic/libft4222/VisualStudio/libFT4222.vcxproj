@@ -175,7 +175,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\common\eve_calibrate.c" />
-    <ClCompile Include="..\..\common\fontmagic.c" />
+    <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\common\eve_fonts.c" />
     <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
@@ -187,7 +187,7 @@
     <ClInclude Include="..\..\..\..\include\BT82x.h" />
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
-    <ClInclude Include="..\..\common\fontmagic.h" />
+    <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
     <ClInclude Include="..\..\..\..\include\FT8xx.h" />

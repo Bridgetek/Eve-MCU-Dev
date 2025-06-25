@@ -52,7 +52,7 @@
 #include "EVE.h"
 #include "HAL.h"
 
-#include "fontmagic.h"
+#include "eve_example.h"
 
 uint8_t eve_read_tag(uint8_t *key)
 {

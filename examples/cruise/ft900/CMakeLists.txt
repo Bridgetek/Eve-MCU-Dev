@@ -57,7 +57,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
         ../common/eve_calibrate.c
         ../common/eve_helper.c
         # Source files for application code library
-        ../common/cruise.c
+        ../common/eve_example.c
         # Main function file
         main/*.c
 )

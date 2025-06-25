@@ -52,7 +52,7 @@
 #include "EVE.h"
 #include "HAL.h"
 
-#include "fontmagic.h"
+#include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
 

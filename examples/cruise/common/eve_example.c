@@ -1,5 +1,5 @@
 /**
- @file cruise.c
+ @file eve_example.c
  */
 /*
  * ============================================================================
@@ -427,7 +427,7 @@ void eve_display(void)
     } while (1);
 }
 
-void cruise(void)
+void eve_example(void)
 {
     // Initialise the display
     EVE_Init();

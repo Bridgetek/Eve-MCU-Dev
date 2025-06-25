@@ -400,9 +400,9 @@
               <FilePath>..\common\eve_helper.c</FilePath>
             </File>
             <File>
-              <FileName>fontmagic.c</FileName>
+              <FileName>eve_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\common\fontmagic.c</FilePath>
+              <FilePath>..\common\eve_example.c</FilePath>
             </File>
           </Files>
         </Group>

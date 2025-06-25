@@ -13,7 +13,7 @@
     <ClCompile Include="..\..\common\eve_helper.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\cruise.c">
+    <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_calibrate.c">

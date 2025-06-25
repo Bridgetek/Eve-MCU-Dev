@@ -121,7 +121,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  fontmagic();
+  eve_example();
 
   /* USER CODE END 2 */
 

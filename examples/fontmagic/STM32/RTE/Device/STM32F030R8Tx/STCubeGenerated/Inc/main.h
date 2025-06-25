@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "fontmagic.h"
+#include "eve_example.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
