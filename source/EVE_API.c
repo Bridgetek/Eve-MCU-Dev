@@ -142,13 +142,6 @@ void EVE_Init(void)
 #elif IS_EVE_API(5) 
 
     EVE_LIB_BeginCoProList();
-    EVE_CMD_REGWRITE(EVE_REG_CPURESET, 2);
-    EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, EVE_TOUCH_CONFIG);
-    EVE_CMD_REGWRITE(EVE_REG_CPURESET, 0);
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
-
-    EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
     EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, 0x7a00000);
     EVE_CMD_REGWRITE(EVE_REG_SC0_PTR1, 0x7a00000 + (EVE_DISP_WIDTH * EVE_DISP_HEIGHT * 3));
@@ -309,7 +302,8 @@ uint32_t EVE_LIB_GetResult(int offset)
     }
     while (rp != wp);
     uint32_t CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
-    return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
+    uint32_t r = HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
+    return r;
 }
 
 #if IS_EVE_API(5)

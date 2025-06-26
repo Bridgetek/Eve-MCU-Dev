@@ -76,6 +76,12 @@
 #define DEBUG_PRINTF(...)
 #endif
 
+#if DEBUG_LEVEL
+#define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define DEBUG_ERROR(...)
+#endif
+
 // Used to navigate command ring buffer
 static uint16_t writeCmdPointer = 0x0000;
 
@@ -602,9 +608,9 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
 
         memset(message, 0, sizeof(message));
         EVE_LIB_GetCoProException(message);
-        fprintf(stderr, "Co-processor exception: %s\n", message);
+        DEBUG_ERROR("Co-processor exception: %s\n", message);
         #else // IS_EVE_API(5)
-        fprintf(stderr, "Co-processor exception\n");
+        DEBUG_ERROR("Co-processor exception\n");
         #endif // IS_EVE_API(5)
         #endif // DEBUG_LEVEL
         
