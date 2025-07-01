@@ -294,9 +294,9 @@ void eve_display(void)
     EVE_CMD_REGWRITE(EVE_REG_LVDSTX_EN, 7); // Enable PLL
 
     EVE_CMD_REGWRITE(EVE_REG_SC2_SIZE, 2);
-    // Start the swapchain 2 buffer at 0x6000000 - second buffer immediately after
-    EVE_CMD_REGWRITE(EVE_REG_SC2_PTR0, (6 << 24));
-    EVE_CMD_REGWRITE(EVE_REG_SC2_PTR1, (6 << 24) + (LVDSRX_W * LVDSRX_W * 3));
+    // Start the swapchain 2 buffer at 0x5000000 - second buffer immediately after
+    EVE_CMD_REGWRITE(EVE_REG_SC2_PTR0, (5 << 24));
+    EVE_CMD_REGWRITE(EVE_REG_SC2_PTR1, (5 << 24) + (LVDSRX_W * LVDSRX_H * 3));
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
