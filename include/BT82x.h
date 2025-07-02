@@ -146,12 +146,12 @@
 #define EVE_REG_TOUCH_TRANSFORM_F      0x7f0061b0   //  Touchscreen transform coefficient (s15.16)
 
 #define EVE_REG_CTOUCH_EXTENDED        0x7f00615c   //  0: single-touch, 1: multi-touch
-#define EVE_REG_CTOUCH_TOUCH0_XY       0x7f006160   //  Touchscreen screen $(x,y)$ (16, 16)
-#define EVE_REG_CTOUCH_TOUCH4_XY       0x7f006170   //  Touchscreen touch 4
-#define EVE_REG_CTOUCH_TOUCHA_XY       0x7f006164   //  Touchscreen raw $(x,y)$ (16, 16)
-#define EVE_REG_CTOUCH_TOUCHB_XY       0x7f006168   //  Touchscreen touch 2
-#define EVE_REG_CTOUCH_TOUCHC_XY       0x7f00616c   //  Touchscreen touch 3
-#define EVE_REG_TOUCH_CONFIG           0x7f00613c   //  bit 0: disable audio filter bank, 2: true PWM out, 3: e0ready testmode
+#define EVE_REG_CTOUCH_TOUCH0_XY       0x7f006160   //  Touchscreen screen $(x,y)$ (16, 16) Extended Mode
+#define EVE_REG_CTOUCH_TOUCH4_XY       0x7f006170   //  Touchscreen touch 4 Extended Mode
+#define EVE_REG_CTOUCH_TOUCHA_XY       0x7f006164   //  Touchscreen raw $(x,y)$ (16, 16) Extended Mode
+#define EVE_REG_CTOUCH_TOUCHB_XY       0x7f006168   //  Touchscreen touch 2 Extended Mode
+#define EVE_REG_CTOUCH_TOUCHC_XY       0x7f00616c   //  Touchscreen touch 3 Extended Mode
+#define EVE_REG_TOUCH_CONFIG           0x7f0061b4   //  Touchscreen configuration
 
 // Media Registers
 
