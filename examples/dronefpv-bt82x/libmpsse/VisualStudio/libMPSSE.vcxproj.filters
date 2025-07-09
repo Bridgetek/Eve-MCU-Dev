@@ -10,13 +10,7 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_images.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\eve_fonts.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
@@ -36,6 +30,15 @@
     </ClCompile>
     <ClCompile Include="..\release\source\ftdi_spi.c">
       <Filter>Library\libmpsse_spi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\flightcontrols\flightalt.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\flightcontrols\flightatt.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+      <Filter>Example</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
+      <Filter>Example</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

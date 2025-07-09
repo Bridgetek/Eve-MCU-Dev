@@ -25,6 +25,15 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\flightcontrols\flightalt.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\flightcontrols\flightatt.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -72,6 +81,14 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
