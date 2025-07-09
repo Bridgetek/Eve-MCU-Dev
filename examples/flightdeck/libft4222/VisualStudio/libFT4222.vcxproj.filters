@@ -28,6 +28,9 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -73,6 +76,10 @@
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
       <Filter>Example</Filter>
     </ClInclude>
   </ItemGroup>
