@@ -48,7 +48,7 @@
  */
 
 /* Only compile for linux platforms unless MPSSE is being used. */
-#if defined(USE_LINUX_SPI_DEV) && !defined(USE_MPSSE)
+#if defined(USE_LINUX_SPI_DEV) && !defined(USE_MPSSE) && !defined(USE_FT4222)
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types

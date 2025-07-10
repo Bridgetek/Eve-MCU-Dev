@@ -221,6 +221,7 @@ void HAL_EVE_Init(void)
 
         DEBUG_PRINTF("[Boot fail after reset, retrying...]\n");
     }
+
 #if 0 // If we need to disable sequential reads.
     // Disable QSPI burst mode
     HAL_MemWrite32(EVE_REG_SYS_CFG, 1 << 10);
@@ -324,7 +325,47 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
     // Send multiple bytes of data after previously sending address. Ignore return
     // values as this is an SPI write only. Data must be the correct endianess
     // for the SPI bus.
+#if IS_EVE_API(1, 2, 3, 4)
     MCU_SPIRead(buffer, length);
+#else
+    unsigned char bb[16];
+    uint16_t offset = 0;
+    int i;
+    // In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
+    // Timeout for a read is 7uS for BT82x.
+    // At a 20MHz SPI bus the timout is approximately 140 clock cycles.
+    // Round up to a maximum of 16 bytes before the "0x01" that signifies data ready.
+    MCU_SPIRead(bb, 16);
+    for (i = 0; i < 16; i++)
+    {
+        if (bb[i] == 1)
+        {
+            i++;
+            uint16_t offset = 16 - i;
+            // Offset can range from 0 to 15.
+            if (length < offset)
+            {
+                offset = length;
+            }
+            // Read first part of data in. This will always be less than 16 bytes.
+            // Do not break alignment.
+            // TODO: Use memcpy for now but this will be removed ASAP.
+            memcpy(buffer, &bb[i], offset);
+            length -= offset;
+            while (length > 0)
+            {
+                uint16_t nn = length;
+                if (nn > MCU_SPI_TRANSFER)
+                {
+                    nn = MCU_SPI_TRANSFER;
+                }
+                MCU_SPIRead(&buffer[offset], nn);
+                length -= nn;
+                offset += nn;
+            }
+        }
+    }
+#endif
 }
 
 // ------------------------ Read a 32-bit data value --------------------------
@@ -334,43 +375,11 @@ uint32_t HAL_Read32(void)
     // 00 bytes as only the incoming value is important.
     uint32_t val32 = 0;
 
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
     // Read low byte of data first.
-#if IS_EVE_API(1, 2, 3, 4)
-        val32 = MCU_SPIRead32();
+    val32 = MCU_SPIRead32();
 #else
-        unsigned char bb[36];
-        int i;
-        do
-        {
-            // In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
-            // Timeout for a read is 7uS for BT82x.
-            // At a 20MHz SPI bus the timout is approximately 140 clock cycles.
-            // Round up to a maximum of 32 bytes before the "0x01" that signifies data ready.
-            HAL_Read(bb, 36);
-            for (i = 0; i < 36; i++)
-            {
-                if (bb[i] == 1)
-                {
-                    i++;
-                    // read data in LE format
-#if MCU_UNALIGNED_ACCESSES 
-                    // Data can be read unaligned.
-                    val32 = *(uint32_t *)&bb[i];
-#else
-                    // Read data byte-by-byte.
-                    val32 = bb[i++];
-                    val32 |= (bb[i++] << 8);
-                    val32 |= (bb[i++] << 16);
-                    val32 |= (bb[i++] << 24);
-#endif
-                    break;
-                }
-            }
-            if (i < 36)
-            {
-                break;
-            }
-        } while (1);
+    HAL_Read((uint8_t *)&val32, sizeof(uint32_t));
 #endif
 
     // Return combined 32-bit value

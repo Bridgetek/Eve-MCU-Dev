@@ -70,6 +70,32 @@
 #endif
 
 /**
+ @brief MCU allows large SPI transfers.
+ @details Set to maximum size of SPI transfers allowed, e.g. on
+ microcontrolles. This has been added to support enhanced SPI
+ access on BT82x.
+ Do not make this larger than required as on BT82x (EVE API 5) 
+ there will be a stack buffer allocated in HAL_Read of this 
+ size plus a small number of bytes for protocol.
+ A larger buffer is only needed if fast reads of large blocks 
+ of data are required from the device. Normal operation can be
+ acheived with 32-bit reads with good performance.
+ */
+#if IS_EVE_API(5)
+#if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
+    || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
+    || defined(PLATFORM_NXPK64) ||  defined(PLATFORM_MSP430) \
+    ||  defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
+    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040)
+#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#elif defined (USE_MPSSE) || defined (USE_FT4222)
+#define MCU_SPI_TRANSFER 0x100
+#elif defined(USE_LINUX_SPI_DEV)
+#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#endif
+#endif
+
+/**
  @brief MCU specific initialisation
  @details Must contain any MCU-specific initialisation. This will typically be
     setting up the SPI bus, GPIOs and operating environment requirements.
