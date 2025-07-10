@@ -6,7 +6,7 @@
 
 The `dronefpv-bt82x` example demonstrates LVDS video. **This demo only works on the BT82x devices.**
 
-![BT82x Video](docs/xxxx.png)
+![BT82x Video](docs/dronefpv.png)
 
 ### `main.c`
 
