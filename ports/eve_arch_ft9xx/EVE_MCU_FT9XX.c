@@ -62,7 +62,6 @@
 
 #include "../include/EVE.h"
 #include "../include/MCU.h"
-#include "EVE_config.h"
 
 // SPI Master pins
 #if defined(__FT900__)

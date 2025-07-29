@@ -404,7 +404,6 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
         // Begin an SPI burst read
         HAL_ChipSelect(1);
         // Send address to which first value will be read
-        printf("%s %d %d\n", __FUNCTION__, SrcAddress + CurrentIndex, ChunkSize);
         HAL_SetReadAddress(SrcAddress + CurrentIndex);
         HAL_Read(ImgData, ChunkSize);
         ImgData += ChunkSize;
@@ -537,8 +536,6 @@ uint16_t EVE_LIB_SendString(const char* string)
 
 void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
-    EVE_LIB_BeginCoProList();
     // To read the result from CMD_GETPROPS we need to be clever and find out
     // where the CoProcessor is writing the command. We can then retrieve the
     // results from the place where they were written.
@@ -2115,6 +2112,13 @@ void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options)
     HAL_Write32(dst);
     HAL_Write32(options);
     HAL_IncCmdPointer(12);
+}
+
+void EVE_CMD_LOADPATCH(uint32_t options)
+{
+    HAL_Write32(EVE_ENC_CMD_LOADPATCH);
+    HAL_Write32(options);
+    HAL_IncCmdPointer(8);
 }
 
 void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h )

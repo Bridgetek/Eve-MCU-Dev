@@ -341,7 +341,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
         if (bb[i] == 1)
         {
             i++;
-            uint16_t offset = 16 - i;
+            offset = 16 - i;
             // Offset can range from 0 to 15.
             if (length < offset)
             {
@@ -363,6 +363,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
                 length -= nn;
                 offset += nn;
             }
+            break;
         }
     }
 #endif
