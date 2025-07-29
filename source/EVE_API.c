@@ -540,6 +540,7 @@ void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height)
     // where the CoProcessor is writing the command. We can then retrieve the
     // results from the place where they were written.
     // Send the command to the CoProcessor.
+    EVE_LIB_BeginCoProList();
     EVE_CMD_GETPROPS(0, 0, 0);
     // Wait for it to finish.
     // TODO For BT82x (EVE5_API) use EVE_ENC_CMD_RESULT to retrive these results.
