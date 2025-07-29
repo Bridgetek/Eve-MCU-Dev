@@ -203,6 +203,9 @@ int MCU_append_buffer(const uint8_t *buffer, uint16_t length)
 		if (plength + MCU_bufferLen >= MCU_BUFFER_SIZE)
 			plength = MCU_BUFFER_SIZE - MCU_bufferLen;
 		
+		/* NOTE: memcpy is used here as the libft4222 is not generally 
+		 * used for embedded systems.
+		 */
 		memcpy(&MCU_buffer[i], &buffer[j], plength);
 		j += plength;
 		i += plength;

@@ -71,6 +71,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
+#include "../include/EVE.h"
 #include "../include/MCU.h"
 
 /* SPI Master pins */

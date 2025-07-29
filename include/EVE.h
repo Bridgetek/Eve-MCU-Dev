@@ -433,6 +433,7 @@ void EVE_CMD_APBWRITE(uint32_t a, uint32_t b);
 void EVE_CMD_APBREAD(uint32_t a, uint32_t result);
 void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options);
 void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options);
+void EVE_CMD_LOADPATCH(uint32_t options);
 void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h);
 void EVE_CMD_SDATTACH(uint32_t options, uint32_t result);
 void EVE_CMD_FSOPTIONS(uint32_t options);

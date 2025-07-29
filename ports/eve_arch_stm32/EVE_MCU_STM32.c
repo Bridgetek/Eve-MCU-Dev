@@ -64,14 +64,12 @@
 /* Replace with header file for target MCU */
 //#include <stm32f0308_discovery.h>
 
-#include <main.h>
-#include <EVE.h>
-#include <EVE_config.h>
-#include <FT8xx.h>
-#include <HAL.h>
-#include <MCU.h>
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+
+#include <main.h>
+#include <EVE.h>
+#include <MCU.h>
 
 extern GPIO_TypeDef *config_gpio;
 extern uint16_t config_pin_pd;

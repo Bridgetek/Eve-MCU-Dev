@@ -327,47 +327,96 @@ void EVE_LIB_GetCoProException(char* desc)
 // Writes a block of data to the RAM_G
 void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t DestAddress)
 {
-    // Begins SPI transaction
-    HAL_ChipSelect(1);
-    // Send address to which first value will be written
-    HAL_SetWriteAddress(DestAddress);
+    uint32_t CurrentIndex = 0;
+    uint32_t ChunkSize = 0;
+    const uint32_t MaxChunkSize = 1024;
+    uint8_t IsLastChunk = 0;
 
     // Pad data length to multiple of 4.
     DataSize = (DataSize + 3) & (~3);
 
-    // Send data as 32 bits.
-    while (DataSize)
+    // While not all data is sent
+    while (CurrentIndex < DataSize)
     {
-        HAL_Write32(*(uint32_t *)ImgData);
-        ImgData += 4;
-        DataSize -= 4;
-    }
+        // If more than ChunkSize bytes to send
+        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        {
+            // ... then add ChunkSize to the current target index to make new target
+            ChunkSize = MaxChunkSize;
+            // ... and this is not the last chunk
+            IsLastChunk = 0;
+        }
+        // or if all remaining bytes can fit in one chunk
+        else
+        {
+            // ... then add the amount of data to the current target
+            ChunkSize = DataSize - CurrentIndex;
+            // .. and this is the last chunk
+            IsLastChunk = 1;
+        }
 
-    // End SPI transaction
-    HAL_ChipSelect(0);
+        // Begin an SPI burst write
+        HAL_ChipSelect(1);
+        // Send address to which first value will be written
+        HAL_SetWriteAddress(DestAddress + CurrentIndex);
+        HAL_Write(ImgData, ChunkSize);
+        ImgData += ChunkSize;
+        CurrentIndex += ChunkSize;
+        // End the SPI burst
+        HAL_ChipSelect(0);
+
+        // If this is the last chunk of the data,
+        if (IsLastChunk)
+        {
+            break;
+        }
+    }
 }
 
 // Reads a block of data from the RAM_G
 void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcAddress)
 {
-    // Begins SPI transaction
-    HAL_ChipSelect(1);
-    // Send address to which first value will be written
-    HAL_SetReadAddress(SrcAddress);
+    uint32_t CurrentIndex = 0;
+    uint32_t ChunkSize = 0;
+    const uint32_t MaxChunkSize = 1024;
+    uint8_t IsLastChunk = 0;
 
-    // Pad data length to multiple of 4.
-    DataSize = (DataSize + 3) & (~3);
-
-    // Send data as 32 bits.
-    while (DataSize)
+    // While not all data is received
+    while (CurrentIndex < DataSize)
     {
-        *(uint32_t *)ImgData = HAL_Read32();
-        ImgData += 4;
-        DataSize -= 4;
-    }
+        // If more than ChunkSize bytes to receive
+        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        {
+            // ... then add ChunkSize to the current target index to make new target
+            ChunkSize = MaxChunkSize;
+            // ... and this is not the last chunk
+            IsLastChunk = 0;
+        }
+        // or if all remaining bytes can fit in one chunk
+        else
+        {
+            // ... then add the amount of data to the current target
+            ChunkSize = DataSize - CurrentIndex;
+            // .. and this is the last chunk
+            IsLastChunk = 1;
+        }
 
-    // End SPI transaction
-    HAL_ChipSelect(0);
+        // Begin an SPI burst read
+        HAL_ChipSelect(1);
+        // Send address to which first value will be read
+        HAL_SetReadAddress(SrcAddress + CurrentIndex);
+        HAL_Read(ImgData, ChunkSize);
+        ImgData += ChunkSize;
+        CurrentIndex += ChunkSize;
+        // End the SPI burst
+        HAL_ChipSelect(0);
+
+        // If this is the last chunk of the data,
+        if (IsLastChunk)
+        {
+            break;
+        }
+    }
 }
 
 // Write a block of data to the coprocessor
@@ -487,12 +536,11 @@ uint16_t EVE_LIB_SendString(const char* string)
 
 void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height)
 {
-    uint32_t WritePointer = HAL_GetCmdPointer();
-    EVE_LIB_BeginCoProList();
     // To read the result from CMD_GETPROPS we need to be clever and find out
     // where the CoProcessor is writing the command. We can then retrieve the
     // results from the place where they were written.
     // Send the command to the CoProcessor.
+    EVE_LIB_BeginCoProList();
     EVE_CMD_GETPROPS(0, 0, 0);
     // Wait for it to finish.
     // TODO For BT82x (EVE5_API) use EVE_ENC_CMD_RESULT to retrive these results.
@@ -2065,6 +2113,13 @@ void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options)
     HAL_Write32(dst);
     HAL_Write32(options);
     HAL_IncCmdPointer(12);
+}
+
+void EVE_CMD_LOADPATCH(uint32_t options)
+{
+    HAL_Write32(EVE_ENC_CMD_LOADPATCH);
+    HAL_Write32(options);
+    HAL_IncCmdPointer(8);
 }
 
 void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h )

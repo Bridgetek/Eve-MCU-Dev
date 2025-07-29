@@ -1,6 +1,9 @@
 # Set minimum required version of CMake
 cmake_minimum_required(VERSION 3.12)
 
+# Set the location of the EVE-MCU-Dev tree
+set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
+
 # Set name of project (as current working directory)
 get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
 get_filename_component(ProjectName ${PARENT_DIR} NAME)
@@ -8,6 +11,7 @@ get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectName}_${ProjectId} C CXX)
 
+message(API_DIRECTORY="${API_DIRECTORY}")
 message(ProjectId="${PROJECT_SOURCE_DIR}")
 message(PROJECT_NAME="${PROJECT_NAME}")
 message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
@@ -16,6 +20,9 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 # Set C/C++ Standards
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+
+set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
+set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
         message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
@@ -26,8 +33,8 @@ add_executable(${PROJECT_NAME}
         main.c
 )
 include_directories(
-        ../../../include
-        ../common/
+        ${API_DIRECTORY}/include
+        ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use libFT4222 as base class
 add_compile_definitions(USE_FT4222=0)
@@ -35,13 +42,13 @@ add_compile_definitions(USE_FT4222=0)
 # Source code for EVE library (targetted at FT4222)
 add_library(eve_library # EVE library name
         # Source code for EVE library
-        ../../../source/EVE_API.c
-        ../../../source/EVE_HAL.c
-        ../../../ports/eve_libft4222/EVE_libft4222.c
+        ${API_DIRECTORY}/source/EVE_API.c
+        ${API_DIRECTORY}/source/EVE_HAL.c
+        ${API_DIRECTORY}/ports/eve_libft4222/EVE_libft4222.c
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
-        ../../../include
+        ${API_DIRECTORY}/include
         imports/ftd2xx
         imports/LibFT4222/inc
 )
@@ -63,16 +70,17 @@ endif()
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library
-        ../common/eve_calibrate.c
-        ../common/eve_example.c
-        ../common/eve_helper.c
-        ../../snippets/sevenseg/sevenseg.c
+        ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_COMMON}/eve_calibrate.c
+        ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_COMMON}/eve_helper.c
+        ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
-        ../common/ # Headers for example code
-        ../../../include # Headers for EVE library
-        ../../snippets/sevenseg # Headers for snippets
+        ${EXAMPLE_COMMON}/ # Headers for example code
+        ${API_DIRECTORY}/include # Headers for EVE library
+        ${EXAMPLE_SNIPPETS}/sevenseg # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

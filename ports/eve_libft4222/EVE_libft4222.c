@@ -289,6 +289,9 @@ int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
 		if (plength + MCU_bufferLen >= MCU_BUFFER_SIZE)
 			plength = MCU_BUFFER_SIZE - MCU_bufferLen;
 		
+		/* NOTE: memcpy is used here as the libft4222 is not generally 
+		 * used for embedded systems.
+		 */
 		memcpy(&MCU_buffer[i], &buffer[j], plength);
 		j += plength;
 		i += plength;
@@ -382,7 +385,7 @@ uint8_t MCU_SPIRead8(void)
 	uint16_t transferred;
 
 	MCU_transmit_buffer(0);
-	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 1, &transferred, 1);
+	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 1, &transferred, 0);
  	if (FT4222_OK != status)
  	{
  		// spi master read failed
@@ -404,7 +407,7 @@ uint16_t MCU_SPIRead16(void)
 	uint16_t transferred;
 
 	MCU_transmit_buffer(0);
-	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 2, &transferred, 1);
+	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 2, &transferred, 0);
  	if (FT4222_OK != status)
  	{
  		// spi master read failed
@@ -426,7 +429,7 @@ uint32_t MCU_SPIRead24(void)
 	uint16_t transferred;
 
 	MCU_transmit_buffer(0);
-	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 3, &transferred, 1);
+	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 3, &transferred, 0);
  	if (FT4222_OK != status)
  	{
  		// spi master read failed
@@ -448,7 +451,7 @@ uint32_t MCU_SPIRead32(void)
 	uint16_t transferred;
 
 	MCU_transmit_buffer(0);
-	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 4, &transferred, 1);
+	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)&DataRead, 4, &transferred, 0);
  	if (FT4222_OK != status)
  	{
  		// spi master read failed
@@ -469,7 +472,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 	uint16_t transferred;
 
 	MCU_transmit_buffer(0);
-	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, length, &transferred, 1);
+	status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, length, &transferred, 0);
  	if (FT4222_OK != status)
  	{
  		// spi master read failed

@@ -439,6 +439,7 @@
 #define EVE_ENC_CMD_LOADIDENTITY       0xffffff23
 #define EVE_ENC_CMD_LOADIMAGE          0xffffff21
 #define EVE_ENC_CMD_LOADWAV            0xffffff85
+#define EVE_ENC_CMD_LOADPATCH          0xffffff82
 #define EVE_ENC_CMD_LOGO               0xffffff2d
 #define EVE_ENC_CMD_MEDIAFIFO          0xffffff34
 #define EVE_ENC_CMD_MEMCPY             0xffffff1b
@@ -635,6 +636,17 @@
 #define EVE_OPT_TOUCH_ILI2511          0x4
 #define EVE_OPT_TOUCH_TSC2007          0x5
 #define EVE_OPT_TOUCH_QUICKSIM         0x8000
+
+// Option to plot graph horizontally, data on Y-axis
+#define EVE_OPT_PLOTHORIZONTAL          0x0000
+// Option to plot graph vertically, data on X-axis
+#define EVE_OPT_PLOTVERTICAL            0x1000 
+// Option to remove duplicate points
+#define EVE_OPT_PLOTFILTER              0x2000 
+// Option to invert data
+#define EVE_OPT_PLOTINVERT              0x4000
+// Option to create subtractive overlay bitmap
+#define EVE_OPT_PLOTOVERLAY             0x8000
 
 // Display List Swap Options
 

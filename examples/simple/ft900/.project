@@ -27,22 +27,22 @@
 		<link>
 			<name>common</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/examples/simple/common</location>
+			<locationURI>PARENT-1-PROJECT_LOC/common</locationURI>
 		</link>
 		<link>
 			<name>eve_arch_ft9xx</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/ports/eve_arch_ft9xx</location>
+			<locationURI>PARENT-3-PROJECT_LOC../ports/eve_arch_ft9xx</locationURI>
 		</link>
 		<link>
 			<name>include</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/include</location>
+			<locationURI>PARENT-3-PROJECT_LOC/include</locationURI>
 		</link>
 		<link>
 			<name>source</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/source</location>
+			<locationURI>PARENT-3-PROJECT_LOC/source</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
