@@ -62,15 +62,16 @@
 #endif
 
 // Definitions used for target display resolution selection
-#define WQVGA   480        // e.g. VM800B with 5" or 4.3" display
+#define WQVGA   480        // e.g. VM800B with 5 or 4.3 inch display
 #define WVGA    800        // e.g. ME813A-WH50C or VM816
-#define WSVGA   1024    // e.g. ME817EV with 7" display
-#define WXGA    1280    // e.g. ME817EV with 10.1" display
-#define HD      1920    // e.g. 10" high definition display
+#define WSVGA   1024       // e.g. ME817EV with 7 inch display
+#define WXGA    1280       // e.g. ME817EV with 10.1 inch display
+#define HD      1920       // e.g. 15 inch high definition display
+#define WUXGA   19201200   // e.g. 10 inch high definition display
 
 // Select the resolution
 #ifndef DISPLAY_RES
-#define DISPLAY_RES HD
+#define DISPLAY_RES WUXGA
 #endif
 
 // Explicitly disable QuadSPI
@@ -99,6 +100,9 @@
 #define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
@@ -119,6 +123,9 @@
 #define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
@@ -142,6 +149,9 @@
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
 #define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
@@ -165,10 +175,36 @@
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
 #define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
 #elif DISPLAY_RES == HD
+ 
+#define EVE_DISP_WIDTH 1920 // Active width of LCD display
+#define EVE_DISP_HEIGHT 1080 // Active height of LCD display
+#define EVE_DISP_HCYCLE 2140 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 220 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 20 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 1108 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 28 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 4 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+ 
+#define EVE_TOUCH_CONFIG    ((0x5d << 4) | (2) | (1 << 11)) // Goodix GT911
+
+#elif DISPLAY_RES == WUXGA
 
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
 #define EVE_DISP_HEIGHT 1200 // Active height of LCD display
@@ -185,6 +221,9 @@
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #define EVE_TOUCH_CONFIG    ((0x5d << 4) | (2) | (1 << 11)) // Goodix GT911
 

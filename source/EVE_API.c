@@ -149,7 +149,7 @@ void EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 
     EVE_LIB_BeginCoProList();
-    EVE_CMD_RENDERTARGET(EVE_SWAPCHAIN_0, EVE_FORMAT_RGB6, EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+    EVE_CMD_RENDERTARGET(EVE_SWAPCHAIN_0, EVE_DISP_LVDSTXFORMAT, EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
     EVE_CLEAR(1,1,1);
     EVE_CMD_SWAP();
     EVE_CMD_GRAPHICSFINISH();
@@ -188,17 +188,17 @@ void EVE_Init(void)
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     unsigned long extsyncmode = 3;
-    unsigned long TXPLLDiv = 0x03;
-    unsigned long valcfg = 0;
-    if (TXPLLDiv > 4) valcfg = 0x00300870 + TXPLLDiv;
-    else valcfg = 0x00301070 + TXPLLDiv;
+    unsigned long lvdstlldiv = EVE_DISP_LVDSTXCLKDIV;
+    unsigned long pllcfg = 0;
+    if (lvdstlldiv > 4) pllcfg = 0x00300870 + lvdstlldiv;
+    else pllcfg = 0x00301070 + lvdstlldiv;
 
-    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_PLLCFG, valcfg);
-    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 7); // Enable PLL
+    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
+    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 6); // Enable PLLs for LVDS CH1 and CH2
     
     EVE_CMD_REGWRITE(EVE_REG_SO_MODE, extsyncmode);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
-    EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, EVE_FORMAT_RGB6);
+    EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, EVE_DISP_LVDSTXFORMAT);
     EVE_CMD_REGWRITE(EVE_REG_SO_EN, 1);
     
     EVE_LIB_EndCoProList();
