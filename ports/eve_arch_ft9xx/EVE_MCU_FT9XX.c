@@ -125,8 +125,7 @@ void MCU_Init(void)
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
 
-    // EVE5 supports 60 MHz SPI clock
-    // EVE1, EVE2, EVE3, EVE4 support 30 MHz SPI clock
+    // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Divide by 8 is 25 MHz
     spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
 }

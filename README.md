@@ -12,7 +12,7 @@ The application note document for this library is linked on the Bridgetek Websit
 
 The PLATFORM macro sets the port files to be used by the compiler. The options are as follows:
 
-| Port Name | PLATFORM | Port Directory | BT82x Support |
+| Port Name | PLATFORM | Port Directory | Tested BT82x Support |
 | --- | --- | --- | --- |
 |Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
 |Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |

@@ -107,11 +107,13 @@ void Platform_Init(void)
         printf("\"Interfacing Options\". \n");
         exit(-1);
     }
+
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    uint32_t speed = 1000000;
+    ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
     // Initialize SPIM HW
     uint8_t lsb = 0;
     ioctl(spiHandle, SPI_IOC_WR_LSB_FIRST, &lsb );
-    uint32_t speed = 1000000;
-    ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
     uint32_t mode = SPI_MODE_0;
     ioctl(spiHandle, SPI_IOC_WR_MODE, &mode );
 

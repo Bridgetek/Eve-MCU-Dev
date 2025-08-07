@@ -328,30 +328,31 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
 #if IS_EVE_API(1, 2, 3, 4)
     MCU_SPIRead(buffer, length);
 #else
-    unsigned char bb[16];
-    uint16_t offset = 0;
+    unsigned char bb[MCU_SPI_TIMEOUT];
+    uint16_t recvlen = 0;
     int i;
-    // In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
-    // Timeout for a read is 7uS for BT82x.
-    // At a 20MHz SPI bus the timout is approximately 140 clock cycles.
-    // Round up to a maximum of 16 bytes before the "0x01" that signifies data ready.
-    MCU_SPIRead(bb, 16);
-    for (i = 0; i < 16; i++)
+    // Read MCU_SPI_TIMEOUT bytes before the "0x01" that signifies data ready.
+    MCU_SPIRead(bb, MCU_SPI_TIMEOUT);
+    for (i = 0; i < MCU_SPI_TIMEOUT; i++)
     {
         if (bb[i] == 1)
         {
             i++;
-            offset = 16 - i;
-            // Offset can range from 0 to 15.
-            if (length < offset)
+            // Number of bytes received that are valid
+            recvlen = MCU_SPI_TIMEOUT - i;
+            // Number of valid bytes can range from 0 to MCU_SPI_TIMEOUT-1.
+            // Only take the requested length of data from the input buffer.
+            if (length < recvlen)
             {
-                offset = length;
+                recvlen = length;
             }
-            // Read first part of data in. This will always be less than 16 bytes.
+            length -= recvlen;
+            // Read first part of data in. This will always be less than MCU_SPI_TIMEOUT bytes.
             // Do not break alignment.
-            // TODO: Use memcpy for now but this will be removed ASAP.
-            memcpy(buffer, &bb[i], offset);
-            length -= offset;
+            while (recvlen--)
+            {
+                *(buffer++) = bb[i++];
+            }
             while (length > 0)
             {
                 uint16_t nn = length;
@@ -359,9 +360,9 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
                 {
                     nn = MCU_SPI_TRANSFER;
                 }
-                MCU_SPIRead(&buffer[offset], nn);
+                MCU_SPIRead(buffer, nn);
                 length -= nn;
-                offset += nn;
+                buffer += nn;
             }
             break;
         }

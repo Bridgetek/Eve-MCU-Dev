@@ -104,6 +104,7 @@ void MCU_Init(void)
 	DWORD channels;
 	FT_STATUS status;
 
+	/* Set SPI clock speed to 15 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
 	memset(&channelConf, 0, sizeof(ChannelConfig));
 	channelConf.ClockRate = 15000000;
 	channelConf.LatencyTimer = 10;

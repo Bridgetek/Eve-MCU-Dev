@@ -85,6 +85,8 @@ void initSPI()
     P1SEL = MISO | MOSI | SCLK;             // p1.1 MISO, p1.2 MOSI, P1.4 SCLK
     P1SEL2 = MISO | MOSI | SCLK;
 
+    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+
     /* configure UCA0 for SPI */
     UCA0CTL1 = UCSWRST;
     UCA0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;     // 3-pin, 8-bit SPI master (mode 0)

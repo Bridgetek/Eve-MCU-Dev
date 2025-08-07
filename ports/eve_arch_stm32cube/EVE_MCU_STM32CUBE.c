@@ -86,6 +86,7 @@ static void Error_Handler(void);
 
 void MCU_Init(void)
 {
+    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
 }
 
 void MCU_Setup(void)

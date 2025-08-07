@@ -102,7 +102,7 @@ void MCU_Init(void)
 	// Shut down the SPI Master to initialise it
 	SPI1_MCR |= SPI_MCR_HALT_MASK;
 
-
+	/* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
 
 	// Set up the SPI1 CTAR0
 	SPI1_CTAR0 = 0;
@@ -443,4 +443,4 @@ uint32_t MCU_le32toh (uint32_t h)
         return bswap32(h);
 }
 
-#endif /* defined(PLATFORM_PIC) */
+#endif /* defined(PLATFORM_NXPK64) */

@@ -93,6 +93,7 @@ void MCU_Init(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(config_gpio, &GPIO_InitStruct);
 
+    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
     /* SPI1 parameter configuration*/
     SpiHandle.Instance = SPI1;
     SpiHandle.Init.Mode = SPI_MODE_MASTER;

@@ -102,6 +102,9 @@ void MCU_Init(void)
         .quadwp_io_num=-1,
         .quadhd_io_num=-1
     };
+
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+
     spi_device_interface_config_t devcfg={
         .clock_speed_hz = 1000000, //Clock out at 10 MHz
         .mode=0, //SPI mode 0

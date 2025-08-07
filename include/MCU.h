@@ -96,6 +96,54 @@
 #endif
 
 /**
+ @brief MCU SPI bus speed.
+ @details In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
+ Timeout for a read is a maximum of 7uS for BT82x.
+ The timeout value here must be adjusted for the host system SPI clock speed.
+ The SPI clock speed is set in the MCU_Init(void) function for a port.
+ Values here match the default values set in the ports.
+ At 1 MHz SPI bus the timeout is approximately 8 clock cycles (1 byte).
+ At 20 MHz SPI bus the timeout is approximately 140 clock cycles (17.5 bytes).
+ At 25 MHz SPI bus the timeout is approximately 175 clock cycles (24 bytes).
+ At 60 MHz SPI bus the timeout is approximately 420 clock cycles (52 bytes).
+ The minimum timeout allowed is 8 bytes.
+ */
+#if IS_EVE_API(5)
+#if defined(PLATFORM_FT9XX) 
+/* FT9xx SPI Bus is set to 25 MHz */
+#define MCU_SPI_TIMEOUT 24
+
+#elif defined(PLATFORM_RASPBERRYPI) 
+/* Raspberry Pi SPI bus is set to 1 MHz */
+#define MCU_SPI_TIMEOUT 8
+
+#elif defined(PLATFORM_RP2040)
+/* RP2040 SPI bus is set to 1 MHz */
+#define MCU_SPI_TIMEOUT 8
+
+#elif defined (USE_MPSSE) 
+/* libMPSSE and libft4222 generate a 15 MHz SPI bus - 16 bytes is sufficient. */
+#define MCU_SPI_TIMEOUT 16
+
+#elif defined (USE_FT4222)
+/* libMPSSE and libft4222 generate a 20 MHz SPI bus - 16 bytes is sufficient. */
+#define MCU_SPI_TIMEOUT 16
+
+#elif defined(USE_LINUX_SPI_DEV)
+/* Linux systems SPI busses are set to 1 MHz */
+#define MCU_SPI_TIMEOUT 8
+
+#elif defined (PLATFORM_STM32_CUBE) \
+    || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
+    || defined(PLATFORM_NXPK64) ||  defined(PLATFORM_MSP430) \
+    ||  defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE)
+/* The default SPI bus for embedded MCUs to 1 MHz */
+#define MCU_SPI_TIMEOUT 8
+
+#endif
+#endif
+
+    /**
  @brief MCU specific initialisation
  @details Must contain any MCU-specific initialisation. This will typically be
     setting up the SPI bus, GPIOs and operating environment requirements.

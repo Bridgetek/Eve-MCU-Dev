@@ -92,7 +92,7 @@ void MCU_Init(void)
     gpio_set_dir(pd_pin, GPIO_OUT);
     gpio_put(pd_pin, 1);
 
-    // Initialize SPI port at 1 MHz
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     spi_init(spi_port, 1000 * 1000);
 
 	// Set SPI format
