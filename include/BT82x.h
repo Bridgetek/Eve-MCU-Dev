@@ -59,7 +59,7 @@
 // Memory Map
 
 #define EVE_RAM_G                      0x0UL
-#define EVE_RAM_G_SIZE                 0x07ffffffUL
+// EVE_RAM_G_SIZE set in EVE_config.h
 #define EVE_RAM_CMD                    0x7f000000UL
 #define EVE_RAM_CMD_SIZE               (16*1024L)
 #define EVE_RAM_DL                     0x7f008000UL

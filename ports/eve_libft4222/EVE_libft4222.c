@@ -188,6 +188,7 @@ void MCU_Init(void)
 			exit(-4);
 		}
 
+		/* Set SPI clock speed to 20 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
 		ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, CLK_DIV_4, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
 		if (FT_OK != ftStatus)
 		{

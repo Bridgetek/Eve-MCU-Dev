@@ -79,6 +79,17 @@
 #undef QUADSPI_ENABLE
 #endif
 
+#if FT8XX_TYPE == BT820
+// Setup RAM_G size for BT82X
+// Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb or 4Gb
+#define EVE_RAM_G_512_MBIT 0x01000000UL
+#define EVE_RAM_G_1_GBIT   0x02000000UL
+#define EVE_RAM_G_2_GBIT   0x04000000UL
+#define EVE_RAM_G_4_GBIT   0x08000000UL
+
+#define EVE_RAM_G_SIZE     EVE_RAM_G_1_GBIT
+#endif
+
 // Setup default parameters for various displays.
 // These can be overridden for different display modules.
 #undef SET_PCLK_FREQ
