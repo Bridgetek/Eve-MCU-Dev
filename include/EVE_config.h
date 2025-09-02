@@ -74,20 +74,39 @@
 #define DISPLAY_RES WUXGA
 #endif
 
+// Definitions used for touch controllers
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
+#define TOUCH_TYPE_GOODIX 2
+
+// Select the touchscreen
+#ifndef EVE_TOUCH_ADDR
+#define EVE_TOUCH_ADDR TOUCH_ADDR_GOODIX
+#endif
+#ifndef EVE_TOUCH_TYPE
+#define EVE_TOUCH_TYPE TOUCH_TYPE_GOODIX
+#endif
+
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE
 #undef QUADSPI_ENABLE
 #endif
 
-#if FT8XX_TYPE == BT820
-// Setup RAM_G size for BT82X
-// Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb or 4Gb
-#define EVE_RAM_G_512_MBIT 0x01000000UL
-#define EVE_RAM_G_1_GBIT   0x02000000UL
-#define EVE_RAM_G_2_GBIT   0x04000000UL
-#define EVE_RAM_G_4_GBIT   0x08000000UL
+// Setup RAM_G size for BT82X only
+// Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL 
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
 
-#define EVE_RAM_G_SIZE     EVE_RAM_G_1_GBIT
+#ifndef EVE_RAM_G_CONFIG_SIZE
+#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
 #endif
 
 // Setup default parameters for various displays.
@@ -115,8 +134,6 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
-
 #elif DISPLAY_RES == WVGA
 
 #define EVE_DISP_WIDTH 800 // Active width of LCD display
@@ -137,8 +154,6 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
-
-#define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
 
 #elif DISPLAY_RES == WSVGA
 
@@ -164,8 +179,6 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
-
 #elif DISPLAY_RES == WXGA
 
 #define EVE_DISP_WIDTH 1280 // Active width of LCD display
@@ -190,8 +203,6 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#define EVE_TOUCH_CONFIG    ((0x38 << 4) | (1) | (1 << 11)) // Focaltech FT5206
-
 #elif DISPLAY_RES == HD
  
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
@@ -212,8 +223,6 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
- 
-#define EVE_TOUCH_CONFIG    ((0x5d << 4) | (2) | (1 << 11)) // Goodix GT911
 
 #elif DISPLAY_RES == WUXGA
 
@@ -235,8 +244,6 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
-
-#define EVE_TOUCH_CONFIG    ((0x5d << 4) | (2) | (1 << 11)) // Goodix GT911
 
 #else
 

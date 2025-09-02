@@ -84,7 +84,6 @@
 #pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 #pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 
-
 // This is the MCU specific section and contains the functions which talk to the
 // PIC registers. If porting the code to a different PIC or to another MCU, these
 // should be modified to suit the registers of the selected MCU.
@@ -110,7 +109,7 @@ void MCU_Init(void)
     TRISDbits.TRISD4 = 0;                                                       // CTS OUTPUT (TO FT232 CTS)
 
     LATBbits.LATB0 = 1;
-
+    
     // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
 
     // SPI 1 set-up
@@ -156,13 +155,13 @@ void MCU_Setup(void)
 void MCU_CSlow(void)
 {
     LATCbits.LATC7 = 0;                                                         // CS# line low
-    Nop();
+    NOP();
 }  
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void)
 {
-    Nop();
+    NOP();
     LATCbits.LATC7 = 1;                                                         // CS# line high
 }
 
@@ -194,8 +193,8 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
     uint16_t DataRead = 0;
-    DataRead = MCU_SPIReadWrite8((DataToWrite) >> 8) << 8;
-    DataRead |= MCU_SPIReadWrite8((DataToWrite) & 0xff);
+    DataRead = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
+    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff);
 
     return MCU_be16toh(DataRead);
 }
@@ -205,11 +204,11 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     uint32_t DataRead = 0;
     uint32_t temp;
     
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 24)); 
+    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff); 
     DataRead |= (temp<<24);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 16));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
     DataRead |= (temp<<16);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 8));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
     DataRead |= (temp<<8);
 
     return MCU_be32toh(DataRead);
@@ -220,12 +219,13 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
     uint32_t DataRead = 0;
     uint32_t temp;
           
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 24));    
+    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);    
     DataRead |= (temp << 24);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 16));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
     DataRead |= (temp << 16);      
-    DataRead |= (MCU_SPIReadWrite8((DataToWrite) >> 8) << 8);       
-    DataRead |= (MCU_SPIReadWrite8(DataToWrite) & 0xff); 
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);       
+    DataRead |= (temp << 8);      
+    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff); 
     
     return MCU_be32toh(DataRead);
 }
@@ -323,7 +323,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 
     while(DataPointer < length)
     {
-        DataToRead[DataPointer] = MCU_SPIWrite8(0);  // Receive data byte-by-byte to array
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
         DataPointer ++;
     }
 }

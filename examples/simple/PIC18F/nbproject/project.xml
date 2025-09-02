@@ -3,20 +3,17 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>PIC18F46K22</name>
-            <creation-uuid>425db4f2-f4e3-4cc7-9187-e01434e34bec</creation-uuid>
+            <name>PIC18F44K22</name>
+            <creation-uuid>0a45e8ec-db0b-4dce-a472-4c9600a199e3</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions>c</c-extensions>
-            <cpp-extensions/>
-            <header-extensions>h</header-extensions>
-            <asminc-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>../../../include</sourceRootElem>
-                <sourceRootElem>../../../source</sourceRootElem>
+                <sourceRootElem>main</sourceRootElem>
                 <sourceRootElem>../common</sourceRootElem>
+                <sourceRootElem>../../../source</sourceRootElem>
                 <sourceRootElem>../../../ports/eve_arch_pic</sourceRootElem>
+                <sourceRootElem>../../../include</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

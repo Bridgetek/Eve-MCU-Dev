@@ -102,6 +102,10 @@ void EVE_Init(void)
     // Turn on or off Dither
     HAL_MemWrite8(EVE_REG_DITHER,  EVE_DISP_DITHER);
 
+    #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
+    HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, EVE_TOUCH_ADDR << 4);
+    #endif
+
     // Write first display list
     HAL_MemWrite32((EVE_RAM_DL + 0), EVE_ENC_CLEAR_COLOR_RGB(0,0,0));
     HAL_MemWrite32((EVE_RAM_DL + 4), EVE_ENC_CLEAR(1,1,1));
@@ -185,6 +189,10 @@ void EVE_Init(void)
     // Define active edge of PCLK
     EVE_CMD_REGWRITE(EVE_REG_PCLK_POL, 0);
     EVE_CMD_REGWRITE(EVE_REG_RE_DITHER, 1);
+
+    #if defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
+    EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, (EVE_TOUCH_ADDR << 4) | (EVE_TOUCH_TYPE) | (1 << 11));
+    #endif
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     unsigned long extsyncmode = 3;
@@ -523,9 +531,9 @@ uint16_t EVE_LIB_SendString(const char* string)
 		while (length)
 		{
 				val32 = *string++;
-				val32 |= (*string++ << 8);
-				val32 |= (*string++ << 16);
-				val32 |= (*string++ << 24);
+				val32 |= ((uint32_t)*string++ << 8);
+				val32 |= ((uint32_t)*string++ << 16);
+				val32 |= ((uint32_t)*string++ << 24);
         HAL_Write32(val32);
         length -= 4;
 		}
