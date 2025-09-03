@@ -57,12 +57,6 @@
 extern const uint8_t font0[];
 const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
 
-#if DEBUG_LEVEL > 0
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
-#else
-#define DEBUG_PRINTF(...)
-#endif
-
 void eve_display(void)
 {
 	uint32_t counter = 0;
