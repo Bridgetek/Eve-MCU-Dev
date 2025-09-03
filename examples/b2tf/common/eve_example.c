@@ -138,7 +138,6 @@ void eve_display(void)
               present.tm_min
               );
               */
-        
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0x0, 0x0, 0x0);

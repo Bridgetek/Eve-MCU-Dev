@@ -319,10 +319,12 @@ uint32_t EVE_LIB_GetResult(int offset)
 void EVE_LIB_GetCoProException(char* desc)
 {
     uint32_t report = EVE_COPROC_REPORT;
-    for (uint32_t j = 0; j < 256; j += 4)
+    uint32_t j;
+    int i;
+    for (j = 0; j < 256; j += 4)
     {
         uint32_t w = HAL_MemRead32(report + j);
-        for (int i = 0; i < 4; i++)
+        for (i = 0; i < 4; i++)
         {
             char c = (w >> (i * 8)) & 0x7f;
             *desc++ = c;
@@ -1868,7 +1870,7 @@ void EVE_CMD_FLASHERASE()
      - Destination flash address must be virgin (not used before)
      - data array must be aligned 256-bit
      */
-void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *data)
+void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *fdata)
 {
   uint32_t i, send_data32=0, totalnum = (num+3)/4;
 
@@ -1878,10 +1880,10 @@ void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *data)
   for (i = 0; i < num; i=i+4)
   {
       /* Pack 4 bytes into a 32-bit data each sending package */
-      send_data32 = *data++;
-      send_data32 |= (*data++) << 8;
-      send_data32 |= (*data++) << 16;
-      send_data32 |= (*data++) << 24;
+      send_data32 = *fdata++;
+      send_data32 |= (*fdata++) << 8;
+      send_data32 |= (*fdata++) << 16;
+      send_data32 |= (*fdata++) << 24;
       HAL_Write32(send_data32);
   }
   HAL_IncCmdPointer(4*(3+totalnum));

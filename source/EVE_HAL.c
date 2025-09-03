@@ -70,18 +70,6 @@
 #include "../include/HAL.h"
 #include "../include/MCU.h"
 
-#if DEBUG_LEVEL > 0
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
-#else
-#define DEBUG_PRINTF(...)
-#endif
-
-#if DEBUG_LEVEL
-#define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
-#else
-#define DEBUG_ERROR(...)
-#endif
-
 // Used to navigate command ring buffer
 static uint16_t writeCmdPointer = 0x0000;
 

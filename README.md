@@ -19,6 +19,7 @@ The PLATFORM macro sets the port files to be used by the compiler. The options a
 |Beaglebone Black | PLATFORM_BEAGLEBONE | eve_arch_beaglebone | No |
 |Expressif ESP32 | PLATFORM_ESP32 | eve_arch_esp32 | No |
 |TI MSP430 | PLATFORM_MSP430 | eve_arch_msp430 | No |
+|TI MSPM0 | PLATFORM_MSPM0 | eve_arch_mspm0 | No |
 |Microchip PIC18F | PLATFORM_PIC | eve_arch_pic | No |
 |ST STM32 (Keil) | PLATFORM_STM32 | eve_arch_stm32 | Yes |
 |ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32cube | Yes |

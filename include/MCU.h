@@ -61,9 +61,10 @@
  */
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
     || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
-    || defined(PLATFORM_NXPK64) ||  defined(PLATFORM_MSP430) \
-    ||  defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
-    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040)
+    || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
+    || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
+    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040) \
+    || defined(PLATFORM_MSPM0)
 #define MCU_UNALIGNED_ACCESSES 0
 #else
 #define MCU_UNALIGNED_ACCESSES 1
@@ -83,10 +84,11 @@
  */
 #if IS_EVE_API(5)
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
-    || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
-    || defined(PLATFORM_NXPK64) ||  defined(PLATFORM_MSP430) \
-    ||  defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
-    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040)
+    || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
+    || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
+    || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
+    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040) \
+    || defined(PLATFORM_MSPM0)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
 #elif defined (USE_MPSSE) || defined (USE_FT4222)
 #define MCU_SPI_TRANSFER 0x100
@@ -134,14 +136,39 @@
 #define MCU_SPI_TIMEOUT 8
 
 #elif defined (PLATFORM_STM32_CUBE) \
-    || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
-    || defined(PLATFORM_NXPK64) ||  defined(PLATFORM_MSP430) \
-    ||  defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE)
+    || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
+    || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
+    || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
+    || defined(PLATFORM_MSPM0)
 /* The default SPI bus for embedded MCUs to 1 MHz */
 #define MCU_SPI_TIMEOUT 8
 
 #endif
 #endif
+
+/**
+ @brief MCU allows debug information.
+ @details Map debug output to nul or to printf function.
+ For MCUs this will not normally ever be mapped. 
+ On Un*x like systems it may be mapped.
+ For PCs with MPSSE or FT4222 interfaces is is probably mapped.
+ The DEBUG_LEVEL macro will override this for MCUs.
+ DEBUG_LEVEL 0 for error reports.
+ DEBUG_LEVEL 1 for error reports and information.
+ */
+//@{
+#if DEBUG_LEVEL > 0 || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#else
+#define DEBUG_PRINTF(...)
+#endif
+
+#if defined(DEBUG_LEVEL) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define DEBUG_ERROR(...)
+#endif
+//@}
 
     /**
  @brief MCU specific initialisation

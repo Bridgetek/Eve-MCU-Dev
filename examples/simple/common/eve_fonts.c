@@ -180,7 +180,7 @@ const uint8_t font0[] =
 uint32_t eve_init_fonts(void)
 {
 	const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
-	uint32_t font0_size = sizeof(font0);
+	const uint32_t font0_size = sizeof(font0);
 
 	EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 

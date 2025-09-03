@@ -57,6 +57,12 @@
 extern const uint8_t font0[];
 const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
 
+#if DEBUG_LEVEL > 0
+#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#else
+#define DEBUG_PRINTF(...)
+#endif
+
 void eve_display(void)
 {
 	uint32_t counter = 0;
@@ -140,20 +146,20 @@ void eve_example(void)
 	EVE_Init();
 
 	// Calibrate the display
-	printf("Calibrating display...\n");
+	DEBUG_PRINTF("Calibrating display...\n");
 	if (eve_calibrate() != 0)
 	{
-		printf("Exception...\n");
+		DEBUG_PRINTF("Exception...\n");
 		while(1);
 	}
 
 	// Load fonts and images
-	printf("Loading font...\n");
+	DEBUG_PRINTF("Loading font...\n");
 	font_end = eve_init_fonts();
-	printf("Loading images...\n");
+	DEBUG_PRINTF("Loading images...\n");
 	eve_load_images(font_end);
 
 	// Start example code
-	printf("Starting demo:\n");
+	DEBUG_PRINTF("Starting demo:\n");
 	eve_display();
 }

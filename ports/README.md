@@ -12,7 +12,8 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 |Bridgetek FT93x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | 
 |Beaglebone Black | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) |
 |Expressif ESP32 | [eve_arch_esp32](eve_arch_esp32/README.md) |
-|TI MSP430 | [eve_arch_msp430](eve_arch_msp430/README.md) |
+|TI MSP430 | [eve_arch_msp](eve_arch_msp/README.md) |
+|TI MSPM0 | [eve_arch_msp](eve_arch_msp/README.md) |
 |Microchip PIC18F | [eve_arch_msp430](eve_arch_msp430/README.md) |
 |ST STM32 (Keil) | [eve_arch_stm32](eve_arch_stm32/README.md) |
 |ST STM32Cube | [eve_arch_stm32](eve_arch_stm32/README.md) |

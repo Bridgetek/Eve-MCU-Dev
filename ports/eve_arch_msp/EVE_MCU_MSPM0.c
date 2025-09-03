@@ -1,5 +1,5 @@
 /**
- @file EVE_MCU_MSP430.c
+ @file EVE_MCU_MSPM0.c
  */
 /*
  * ============================================================================
@@ -48,12 +48,12 @@
  */
 
 // Guard against being used for incorrect CPU type.
-#if defined(PLATFORM_MSP430)
+#if defined(PLATFORM_MSPM0)
 
-#pragma message "Compiling " __FILE__ " for TI MSP430"
+#pragma message "Compiling " __FILE__ " for TI MSPM0"
 
 /* Replace with header file for target MCU */
-#include <msp430g2553.h>
+#include "ti_msp_dl_config.h"
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
 #include "EVE.h"
@@ -61,54 +61,18 @@
 
 
 #define Nop() __no_operation()
-#define MISO            BIT1                // P1.1 is SPI MISO
-#define MOSI            BIT2                // P1.2 is SPI MOSI
-#define PD              BIT3                // P1.3 is Power Down
-#define SCLK            BIT4                // P1.4 is SPI clock
-#define CS              BIT5                // P1.5 is Chip Select
-#define CPU_FREQ        1000                // for use in delay function
-
-void initClock()
-{
-    DCOCTL = 0;                                 // Select lowest DCOx and MODx settings
-    BCSCTL1 = CALBC1_1MHZ;                      // Set DCO for 1MHz (1/8/12/16 available)
-    DCOCTL = CALDCO_1MHZ;
-}
-
-void initSPI()
-{
-    /* set pins to be used for CS# and PD# */
-    P1OUT |= CS + PD;                       //p1.5 - #CS, p1.3 - #PD
-    P1DIR |= CS + PD;
-
-    /* set SPI pins in both P1SEL and P1SEL2 as to work with Universal Serial Communication Interface*/
-    P1SEL = MISO | MOSI | SCLK;             // p1.1 MISO, p1.2 MOSI, P1.4 SCLK
-    P1SEL2 = MISO | MOSI | SCLK;
-
-    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
-
-    /* configure UCA0 for SPI */
-    UCA0CTL1 = UCSWRST;
-    UCA0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;     // 3-pin, 8-bit SPI master (mode 0)
-    UCA0CTL1 |= UCSSEL_2;                   // USCI clock source = SMCLK
-    UCA0BR0 |= 0x02;                        // divide SMCLK by 2 in baud rate control register
-    UCA0BR1 = 0;                            // = 0.5 mhz spi
-    UCA0MCTL = 0;                           // No modulation
-    UCA0CTL1 &= ~UCSWRST;                   // **Initialise USCI state machine** - restart module
-
-    IE2 |= UCA0RXIE;                        // Enable USCI0 RX interrupt
-}
+#define MISO            GPIO_SPI_0_POCI_PORT->GPIO_SPI_0_POCI_PIN  // SPI MISO
+#define MOSI            GPIO_SPI_0_PICO_PORT->GPIO_SPI_0_PICO_PIN  // SPI MOSI
+#define PD              GPIO_GRP_0_PORT->GPIO_GRP_0_PD_PIN         // Power Down
+#define SCLK            GPIO_SPI_0_SCLK_PORT->GPIO_SPI_0_SCLK_PIN  // SPI clock
+#define CS              GPIO_GRP_0_PORT->GPIO_GRP_0_CS_PIN         // Chip Select
+#define CPU_FREQ        CPUCLK_FREQ                // for use in delay function
 
 /* configure MCU, SPI and PD pins */
 void MCU_Init(void){
 
-    WDTCTL = WDTPW | WDTHOLD;               // stop watch dog timer
-
-    initClock();                            // set Clocks
-    initSPI();                              // configure SPI
-
-    __enable_interrupt();                   // enable interrupts
-
+    /* set pins to be used for CS# and PD# */
+    DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN | GPIO_GRP_0_PD_PIN);
 }
 
 void MCU_Setup(void)
@@ -119,28 +83,89 @@ void MCU_Setup(void)
 //#endif // FT81X_ENABLE
 }
 
+/* State machine to keep track of the current SPI Controller mode */
+typedef enum SPI_ControllerModeEnum {
+    IDLE_MODE,
+    WRITE_DATA_MODE,
+    READ_DATA_MODE,
+    TIMEOUT_MODE
+} SPI_Controller_Mode;
 
-// ########################### SPI Send and Receive ####################################
-// --------------------- Global variables for SPI data ----------------------------------
-volatile uint8_t DataRead;      // Stores slave data
+/* Global used to receive data in the ISR */
+uint8_t gRxVal;
+/* Global used to transmit data in the ISR */
+uint8_t gTxVal;
 
-// --------------------- SPI RX ISR ----------------------------------
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI_SPIRX_ISR(void)
+/* Used to track the state of the software state machine */
+volatile SPI_Controller_Mode gControllerMode = IDLE_MODE;
+
+/* Dummy data sent when receiving data from SPI Peripheral */
+#define DUMMY_DATA (0xFF)
+
+void SPI_0_INST_IRQHandler(void)
 {
-    if (IFG2 & UCA0RXIFG){      // check if SPI receiver interrupt flag is set
-      DataRead = UCA0RXBUF;     //Store value clocked in from FT8xx from SPI Rx buffer (auto resets UCA0RxIFG)
+    switch (DL_SPI_getPendingInterrupt(SPI_0_INST)) {
+        case DL_SPI_IIDX_TX:
+            switch (gControllerMode) {
+                case IDLE_MODE:
+                case TIMEOUT_MODE:
+                    break;
+                case READ_DATA_MODE:
+                    /*  Send dummy data to get read more bytes */
+                    DL_SPI_transmitData8(SPI_0_INST, DUMMY_DATA);
+                    break;
+                case WRITE_DATA_MODE:
+                    /* Transmit data until all expected data is sent */
+                    DL_SPI_transmitData8(SPI_0_INST, gTxVal);
+                    gControllerMode = IDLE_MODE;
+                    break;
+            }
+            break;
+        case DL_SPI_IIDX_RX:
+            switch (gControllerMode) {
+                case IDLE_MODE:
+                case TIMEOUT_MODE:
+                    break;
+                case READ_DATA_MODE:
+                    gRxVal = DL_SPI_receiveData8(SPI_0_INST);
+                    /* All data is received, reset state machine */
+                    gControllerMode = IDLE_MODE;
+                    break;
+                case WRITE_DATA_MODE:
+                    /* Ignore the data while transmitting */
+                    DL_SPI_receiveData8(SPI_0_INST);
+                    break;
+            }
+            break;
+        default:
+            break;
     }
 }
+
 // --------------------- SPI Read/Write 8 bits ----------------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
+    gControllerMode = WRITE_DATA_MODE;
 
-    while (!(IFG2 & UCA0TXIFG));            // USCI_A0 TX (SPI) buffer ready?
-    UCA0TXBUF = DataToWrite;                // Send data to FT8xx by writing data to SPI buffer
-    IFG2 = UCA0RXIFG;                       // trigger UCA0RXIFG to receive SPI data
+    /*
+     * TX interrupts are disabled and RX interrupts are enabled by default.
+     * TX interrupts will be enabled after sending the command, and they will
+     * trigger after the FIFO has more space to send all subsequent bytes.
+     */
+    DL_SPI_clearInterruptStatus(SPI_0_INST, DL_SPI_INTERRUPT_TX);
+    DL_SPI_transmitData8(SPI_0_INST, DataToWrite);
+    DL_SPI_enableInterrupt(SPI_0_INST, DL_SPI_INTERRUPT_TX);
 
-    return DataRead;
+    /* Go to sleep until all data is received */
+    while (gControllerMode != IDLE_MODE) {
+        __WFI();
+    }
+
+    /* Disable TX interrupts after the command is complete */
+    DL_SPI_disableInterrupt(SPI_0_INST, DL_SPI_INTERRUPT_TX);
+    DL_SPI_clearInterruptStatus(SPI_0_INST, DL_SPI_INTERRUPT_TX);
+
+    return gRxVal;
 }
 
 // --------------------- SPI Read/Write 16 bits ----------------------------------
@@ -267,7 +292,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 
     while(DataPointer < length)
     {
-        DataToRead[DataPointer] = MCU_SPIWrite8(0);  // Receive data byte-by-byte to array
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
         DataPointer ++;
     }
 }
@@ -277,27 +302,27 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-    P1OUT &= (~CS);                       // CS# line low
-    __delay_cycles(10);
+    DL_GPIO_clearPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN); // CS# line low
+    delay_cycles(10);
 }
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-    __delay_cycles(10);
-    P1OUT |= (CS);                        // CS# line high
+    delay_cycles(10);
+    DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN);  // CS# line high
 }
 
 // -------------------------- PD line low --------------------------------------
 inline void MCU_PDlow(void)
 {
-    P1OUT &= (~PD);                       // PD# line low
+    DL_GPIO_clearPins(GPIO_GRP_0_PORT, GPIO_GRP_0_PD_PIN);  // PD# line low
 }
 
 // ------------------------- PD line high --------------------------------------
 inline void MCU_PDhigh(void)
 {
-    P1OUT |= (PD);                        // PD# line high
+    DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_PD_PIN);  // PD# line high
 }
 
 // ------------------- msec delay based on MCLK (CPU_FREQ) ----------------------
@@ -305,7 +330,7 @@ void delay(int msec){
     //could use a timer here
     while(msec)
     {
-        __delay_cycles(CPU_FREQ);
+        delay_cycles(CPU_FREQ);
         msec--;
     }
 }
