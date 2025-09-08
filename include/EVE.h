@@ -57,6 +57,11 @@
 #include <EVE_config.h>
 #include "FT8xx.h"
 
+#if IS_EVE_API(5)
+// Base patch for BT82x
+#include "patch_base.h"
+#endif
+
 /**
  @brief Initialise EVE API.
  @details Initialise the EVE API layer, HAL layer and MCU-specific hardware

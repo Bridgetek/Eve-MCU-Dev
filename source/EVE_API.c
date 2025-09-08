@@ -54,6 +54,10 @@
 #include "../include/EVE.h"
 #include "../include/HAL.h"
 
+#if IS_EVE_API(5)
+#include "patch_base.h"
+#endif
+
 // Set beginning of graphics command memory
 //static uint32_t RAMCommandBuffer = EVE_RAM_CMD;
 
@@ -212,6 +216,8 @@ void EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
+    // Load base patch or project defined patch if overriden
+    eve_loadpatch();
 #endif
 
     // --------------------- Clear screen ready to start -----------------------

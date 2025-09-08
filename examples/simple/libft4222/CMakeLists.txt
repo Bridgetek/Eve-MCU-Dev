@@ -45,10 +45,12 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libft4222/EVE_libft4222.c
+        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${API_DIRECTORY}/include
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         imports/ftd2xx
         imports/LibFT4222/inc
 )

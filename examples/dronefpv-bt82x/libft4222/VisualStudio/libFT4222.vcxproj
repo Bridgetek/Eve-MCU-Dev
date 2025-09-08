@@ -70,22 +70,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -183,6 +183,7 @@
     <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
+    <ClCompile Include="..\..\common\patch_dronefpv.c" />
     <ClCompile Include="..\main.c" />
   </ItemGroup>
   <ItemGroup>
@@ -190,10 +191,10 @@
     <ClInclude Include="..\..\..\..\include\BT82x.h" />
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
     <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h" />
     <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h" />
-    <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
+    <ClInclude Include="..\..\common\patch_dronefpv.h" />
     <ClInclude Include="..\imports\ftd2xx\ftd2xx.h" />
     <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h" />
   </ItemGroup>

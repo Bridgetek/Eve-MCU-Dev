@@ -45,10 +45,12 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libft4222/EVE_libft4222.c
+        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${API_DIRECTORY}/include
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         imports/ftd2xx
         imports/LibFT4222/inc
 )
@@ -72,7 +74,6 @@ add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/eve_calibrate.c
-        ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/eve_helper.c
         ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
 )
@@ -81,6 +82,7 @@ target_include_directories(eve_example PUBLIC
         ${EXAMPLE_COMMON}/ # Headers for example code
         ${API_DIRECTORY}/include # Headers for EVE library
         ${EXAMPLE_SNIPPETS}/sevenseg # Headers for snippets
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
 )
 # Example code dependencies
 target_link_libraries(eve_example
