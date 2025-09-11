@@ -1,0 +1,89 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug FT90x Application",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/FT90x_Debug/simple.elf",
+            "args": [],
+            "preLaunchTask": "Programming FT90x debug image",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "Path",
+                    "value": "${env:Path};${env:FT9XX_TOOLCHAIN}/tools/bin"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "ft32-elf-gdb.exe",
+            "miDebuggerServerAddress": "localhost:3333",
+            "debugServerPath": "FT9xxProg.exe",
+            "debugServerArgs": "--gdb --quiet",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set remote timeout in case the programming task takes a long time",
+                    "text": "set remotetimeout 20",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set a breakpoint at main",
+                    "text": "break main",
+                    "ignoreFailures": false
+                }
+            ],
+            "logging": {
+                "moduleLoad": true
+            }
+        },
+        {
+            "name": "Debug FT93x Application",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/FT93x_Debug/simple.elf",
+            "args": [],
+            "preLaunchTask": "Programming FT93x debug image",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "Path",
+                    "value": "${env:Path};${env:FT9XX_TOOLCHAIN}/tools/bin"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "ft32-elf-gdb.exe",
+            "miDebuggerServerAddress": "localhost:3333",
+            "debugServerPath": "FT9xxProg.exe",
+            "debugServerArgs": "--gdb --quiet",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set remote timeout in case the programming task takes a long time",
+                    "text": "set remotetimeout 20",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set a breakpoint at main",
+                    "text": "break main",
+                    "ignoreFailures": false
+                }
+            ],
+            "logging": {
+                "moduleLoad": true
+            }
+        }
+    ]
+}

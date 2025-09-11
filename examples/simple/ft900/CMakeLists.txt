@@ -63,9 +63,8 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${EXAMPLE_COMMON}/eve_example.c
     ${EXAMPLE_COMMON}/eve_helper.c
     ${EXAMPLE_COMMON}/eve_calibrate.c
-
-    # Snippet code for seven segment
-    ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
+    ${EXAMPLE_COMMON}/eve_images.c
+    ${EXAMPLE_COMMON}/eve_fonts.c
 
     # API Sources
     ${API_DIRECTORY}/source/EVE_API.c
@@ -103,8 +102,6 @@ target_include_directories(${EXECUTABLE} PRIVATE
     Includes
     # Example project includes
     ${EXAMPLE_COMMON}
-    # Snippets includes
-    ${EXAMPLE_SNIPPETS}/sevenseg/
     # API Includes
     ${API_DIRECTORY}/include
     # Base patch include

@@ -52,11 +52,29 @@
 
 #include <stdint.h>
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+/**
+ @brief Key for identifying if touchscreen calibration values are programmed correctly.
+ */
+#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
+
+/**
+ @brief Structure to hold touchscreen calibration settings.
+ @details This is used to store the touchscreen calibration settings persistently
+ in Flash and identify if the calibration needs to be re-performed.
+ */
+struct touchscreen_calibration {
+	uint32_t key; // VALID_KEY_TOUCHSCREEN
+	uint32_t transform[6];
+};
+
+/* Functions called from eve_example code to platform specific code */
+int8_t platform_calib_init(void);
+int8_t platform_calib_write(struct touchscreen_calibration *calib);
+int8_t platform_calib_read(struct touchscreen_calibration *calib);
 
 /* Entry point to the example code */
 void eve_example(void);

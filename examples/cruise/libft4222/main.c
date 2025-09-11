@@ -56,7 +56,6 @@
 
 #include "EVE.h"
 
-#include "eve_helper.h"
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
