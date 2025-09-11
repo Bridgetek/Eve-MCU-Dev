@@ -80,13 +80,9 @@
 #define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
 #define TOUCH_TYPE_GOODIX 2
 
-// Select the touchscreen
-#ifndef EVE_TOUCH_ADDR
-#define EVE_TOUCH_ADDR TOUCH_ADDR_GOODIX
-#endif
-#ifndef EVE_TOUCH_TYPE
-#define EVE_TOUCH_TYPE TOUCH_TYPE_GOODIX
-#endif
+// Select the touchscreen automatically
+#undef EVE_TOUCH_ADDR
+#undef EVE_TOUCH_TYPE
 
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE
