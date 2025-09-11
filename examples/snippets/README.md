@@ -19,10 +19,11 @@ There are several widgets in the directory:
 | File/Folder | Description |
 | --- | --- |
 | [sevenseg](#Seven-Segment-LED-Widget) | Seven segement LED code |
+| [flightcontrols](#flight-control-widgets) | Flight control widgets code |
 
 ### Seven Segment LED Widget
 
-This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimale displays, and for 16 a dash '-' is displayed.
+This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimal displays, and for 16 a dash '-' is displayed.
 
 ![Seven Segment LEDs](docs/segment123.png)
 

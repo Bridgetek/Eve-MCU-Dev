@@ -10,6 +10,25 @@ The example is intended to show a reimaginged cruise control for a vehicle. The 
 
 The display comprises two parts: the left side is a circular display which is the operational part of the touchscreen on the physical control; the right side are touchscreen controls to mimic the function of the turn wheel, button click and brake input.
 
+On screens of width/height 480 pixels only the circular control is shown. On wider screens the control buttons will be shown.
+
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+|Bridgetek FT90x | ft900 | Yes |
+|Bridgetek FT93x | ft900 | Yes |
+|Raspberry Pi Pico | pico | Yes |
+|Generic using libFT4222 | libmpsse | Yes |
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+The following is an screenshot of the simple example.
+
 ![Cruise Example](docs/cruise.png)
 
 ### `main.c`

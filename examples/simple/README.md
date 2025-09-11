@@ -8,6 +8,36 @@ The `simple` example demonstrates detection of a touch event on a display item, 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+|Bridgetek FT90x | ft900 | Yes |
+|Bridgetek FT93x | ft900 | Yes |
+|Beaglebone Black | BeagleBone | Yes (1) |
+|Expressif ESP32 | ESP32 | Yes (1) |
+|TI MSP430 | MSP430 | Yes (1) |
+|TI MSPM0 | MSPM0G3519 | Yes (1) |
+|Microchip PIC18F | PIC18F | Yes (1) |
+|ST STM32 (Keil) | STM32 | Yes (1) |
+|ST STM32Cube | STM32CUBE | Yes (1) |
+|Raspberry Pi | raspberry_pi | Yes |
+|Raspberry Pi Pico | pico | Yes |
+|Generic using libMPSSE CMake | libft4222 | Yes |
+|Generic using libMPSSE Visual Studio | libft4222 | Yes |
+|Generic using libFT4222 CMake | libmpsse | Yes |
+|Generic using libFT4222 Visual Studio | libmpsse | Yes |
+ 
+1 - EVE API 5 work in progress
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+The following is an screenshot of the simple example.
+
 ![Simple Example](docs/simple.png)
 
 ### `main.c`

@@ -6,6 +6,25 @@
 
 The `dronefpv-bt82x` example demonstrates LVDS video. **This demo only works on the BT82x devices.**
 
+Video is taken from the LVDS RX channel and rendered into RAM_G as a bitmap. The rendered bitmap is used on the screen a background on the display. An altimeter and attitude indicator are drawn from the snippets library ontop of the video background. See the [flightdeck](../flightdeck/README.md) example for information on the altimeter and attitude indicator.
+
+A 1920 x 1200 or 1080 screen is recommended. An LVDS video input of 1920 x 1080 is expected.
+
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+|Generic using libMPSSE | libft4222 | Yes |
+|Generic using libFT4222 | libmpsse | Yes |
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| No | No | No | No | Yes |
+
+The following is an screenshot of the simple example.
+
 ![BT82x Video](docs/dronefpv.png)
 
 ### `main.c`

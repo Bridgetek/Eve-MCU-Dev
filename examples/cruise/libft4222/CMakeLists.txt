@@ -33,8 +33,8 @@ add_executable(${PROJECT_NAME}
         main.c
 )
 include_directories(
-        ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
+        ${API_DIRECTORY}/include
 )
 # Tell EVE library to use libFT4222 as base class
 add_compile_definitions(USE_FT4222=0)

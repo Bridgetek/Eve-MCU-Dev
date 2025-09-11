@@ -4,9 +4,23 @@
 
 ## Advanced Seven Segment Example
 
-The `b2tf` example demonstrates drawing multiple seven segment displays on the same screen. The `b2tf` code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform some of the drawing. 
+The `b2tf` example demonstrates drawing multiple seven segment displays on the same screen. The `b2tf` code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform the drawing of the seven segment characters.
 
 The example is intended to show a three clocks, one in the past, one at the present and another which counts backward from the present clock time to the past clock time.
+
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+|Generic using libFT4222 | libmpsse | Yes |
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+The following is an screenshot of the simple example.
 
 ![B2tf Example](docs/b2tf.png)
 

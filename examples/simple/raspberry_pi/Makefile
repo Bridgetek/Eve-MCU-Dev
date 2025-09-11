@@ -1,7 +1,7 @@
 PLATFORM?=RASPBERRYPI
 
 CC = gcc
-CFLAGS = -c -Wall -g -Os -DPLATFORM_RASPBERRYPI -DUSE_LINUX_SPI_DEV -I../../../include -I../common
+CFLAGS = -c -Wall -g -Os -DPLATFORM_RASPBERRYPI -DUSE_LINUX_SPI_DEV -I../../../include -I../common -I../../../ports/eve_bt82x
 LD = $(CC)
 LDFLAGS = -lgpiod
 
@@ -11,6 +11,7 @@ OBJECTS = $(patsubst %.c, %.o, $(shell find . -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../common -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../source -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../ports/eve_arch_rpi -name "*.c"))
+OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../ports/eve_bt82x -name "*.c"))
 
 all: $(TARGET)
 

@@ -31,6 +31,9 @@
     <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
       <Filter>Example</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
+      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -82,6 +85,10 @@
     <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
       <Filter>Example</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
+      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -110,6 +117,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\eve\ports\eve_bt82x">
+      <UniqueIdentifier>{3d447ea8-f90d-4e00-99c7-8f61b1a67f58}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

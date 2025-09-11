@@ -14,6 +14,24 @@ In the standard mode, the text is written at an angle using the `cmd_textrotate`
 
 To make the scaling and rotation possible the program needs to know the widths of each character in the font. Therefore there is code that will read the font descriptors and calculate the widths of each character. This is stored in a python tuple called the font cache. This is initialised with the `getromfontinfo` function for ROM fonts and `getcustomfontinfo` for custom fonts.
 
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+|ST STM32 (Keil) | STM32 | Yes (1) |
+|ST STM32Cube | STM32CUBE | Yes (1) |
+|Generic using libFT4222 | libmpsse | Yes |
+
+(1) - EVE API 5 support in progress
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+The following is an screenshot of the simple example.
+
 ![Font Magic Example](docs/fontmagic.png)
 
 _Example code running in standard mode._

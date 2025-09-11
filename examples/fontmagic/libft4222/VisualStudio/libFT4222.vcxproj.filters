@@ -25,6 +25,9 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
+      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
+      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -94,6 +100,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\eve\ports\eve_bt82x">
+      <UniqueIdentifier>{b65025ee-59ea-492f-90e5-b748101d3209}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
