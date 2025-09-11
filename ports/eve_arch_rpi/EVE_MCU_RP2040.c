@@ -60,8 +60,9 @@
 #include "../include/EVE.h"
 #include "../include/MCU.h"
 
-#include "pico/stdlib.h"
-#include "hardware/spi.h"
+#include <hardware/gpio.h>
+#include <hardware/spi.h>
+#include <pico/time.h>
 
 // This is not yet supported
 #undef QUADSPI_ENABLE
