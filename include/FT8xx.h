@@ -128,7 +128,9 @@
 #define EVE_API 5
 
 #else
+#ifndef EVE_API
 #error FT8XX_TYPE definition not recognised.
+#endif
 #endif
 
 #else // EVE_API
