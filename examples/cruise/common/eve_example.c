@@ -76,6 +76,16 @@
 // Seven segment size and gap between segments
 #define SEGMENT_SIZE 100
 #define SEGMENT_GAP (SEGMENT_SIZE + ((SEGMENT_SIZE * 4) / 10))
+// Remain area on right for buttons and controls
+#if EVE_DISP_WIDTH > 480
+// Only draw this if the 480x480 circular display is NOT used
+#define BUTTON_GAP 50
+#define BUTTON_WIDTH (EVE_DISP_WIDTH - (TARGET_SCREEN_RADIUS * 2) - (BUTTON_GAP * 2))
+#if BUTTON_WIDTH > 400
+#undef BUTTON_WIDTH
+#define BUTTON_WIDTH 400
+#endif
+#endif
 // Maximum speed
 #define MAX_SPEED 160
 
@@ -279,31 +289,33 @@ void eve_display(void)
         EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255);
 #endif // CIRCULAR
 
+#if EVE_DISP_WIDTH > 480
         // Click wheel actions
         EVE_COLOR(0xffffff);
         EVE_CMD_FGCOLOR(blufg);
         // Depress wheel, enable/disable cruise.
         EVE_TAG(100);
-        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50, 400, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "button click");
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP, BUTTON_WIDTH, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "button click");
         // Wheel actions.
         EVE_TAG(0);
-        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 3), EXT_FONT, EVE_OPT_CENTERX, "turn wheel");
+        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP + (BUTTON_WIDTH / 2), BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 3), EXT_FONT, EVE_OPT_CENTERX, "turn wheel");
         // Turn clockwise, go faster.
         EVE_TAG(101);
-        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 4), 200, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "+");
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP + (BUTTON_WIDTH / 2), BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 4), BUTTON_WIDTH / 2, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "+");
         // Turn anti-clockwise, go slower.
         EVE_TAG(102);
-        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 4), 200, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "-");
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 4), BUTTON_WIDTH / 2, (eve_romfont_height(EXT_FONT) * 2), EXT_FONT, 0, "-");
         // Car inputs.
         EVE_TAG(0);
-        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + 250, 50 + (eve_romfont_height(EXT_FONT) * 7), EXT_FONT, EVE_OPT_CENTERX, "road speed");
+        EVE_CMD_TEXT((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP + (BUTTON_WIDTH / 2), BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 7), EXT_FONT, EVE_OPT_CENTERX, "road speed");
         EVE_TAG(103);
-        EVE_CMD_SLIDER((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 9), 400, (eve_romfont_height(EXT_FONT) * 1), 0, (current_speed * 400) / MAX_SPEED, 400);
-        EVE_CMD_TRACK((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 9), 400, (eve_romfont_height(EXT_FONT) * 1), 103);
+        EVE_CMD_SLIDER((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 9), BUTTON_WIDTH, (eve_romfont_height(EXT_FONT) * 1), 0, (current_speed * 400) / MAX_SPEED, 400);
+        EVE_CMD_TRACK((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 9), BUTTON_WIDTH, (eve_romfont_height(EXT_FONT) * 1), 103);
         // Brake!
         EVE_TAG(104);
         EVE_CMD_FGCOLOR(redfg);
-        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + 50, 50 + (eve_romfont_height(EXT_FONT) * 12), 400, (eve_romfont_height(EXT_FONT) * 2), 28, 0, "Brake!");
+        EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 12), BUTTON_WIDTH, (eve_romfont_height(EXT_FONT) * 2), 28, 0, "Brake!");
+#endif
 
         EVE_DISPLAY();
         EVE_CMD_SWAP();
