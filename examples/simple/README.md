@@ -16,8 +16,8 @@ This example supports the following platforms:
 |Bridgetek FT93x | ft900 | Yes |
 |Beaglebone Black | BeagleBone | Yes (1) |
 |Expressif ESP32 | ESP32 | Yes (1) |
-|TI MSP430 | MSP430 | Yes (1) |
-|TI MSPM0 | MSPM0G3519 | Yes (1) |
+|TI MSP430 | MSP430 | Yes |
+|TI MSPM0 | MSPM0 | Yes |
 |Microchip PIC18F | PIC18F | Yes (1) |
 |ST STM32 (Keil) | STM32 | Yes (1) |
 |ST STM32Cube | STM32CUBE | Yes (1) |

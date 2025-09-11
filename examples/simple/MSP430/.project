@@ -36,6 +36,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_arch_msp</locationURI>
 		</link>
 		<link>
+			<name>eve_bt82x</name>
+			<type>2</type>
+			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Dev/ports/eve_bt82x</location>
+		</link>
+		<link>
 			<name>include</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/include</locationURI>

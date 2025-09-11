@@ -6,18 +6,24 @@
 
 The EVE-MCU-Dev library is intended for simple porting to MCU and embedded environments. There are several common target types which are provided with this library:
 
-| Port Name | Port Directory |
-| --- | --- |
-|Bridgetek FT90x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | 
-|Bridgetek FT93x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | 
-|Beaglebone Black | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) |
-|Expressif ESP32 | [eve_arch_esp32](eve_arch_esp32/README.md) |
-|TI MSP430 | [eve_arch_msp](eve_arch_msp/README.md) |
-|TI MSPM0 | [eve_arch_msp](eve_arch_msp/README.md) |
-|Microchip PIC18F | [eve_arch_msp430](eve_arch_msp430/README.md) |
-|ST STM32 (Keil) | [eve_arch_stm32](eve_arch_stm32/README.md) |
-|ST STM32Cube | [eve_arch_stm32](eve_arch_stm32/README.md) |
-|Raspberry Pi | [eve_arch_rpi](eve_arch_rpi/README.md) |
-|Raspberry Pi Pico  | [eve_arch_rpi](eve_arch_rpi/README.md) |
-|Generic using libMPSSE  | [eve_libmpsse](eve_libmpsse/README.md) |
-|Generic using libFT4222  | [eve_libft4222](eve_libft4222/README.md) |
+| Port Name | Port Directory | Variant | Test Status |
+| --- | --- | --- | --- |
+|Bridgetek FT90x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | N/A | Compile Only |
+|Bridgetek FT93x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | N/A | Compile Only |
+|Beaglebone Black | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | N/A | Requires Update |
+|Expressif ESP32 | [eve_arch_esp32](eve_arch_esp32/README.md) | N/A | Requires Update |
+|TI MSP430 | [eve_arch_msp](eve_arch_msp/README.md) | MSP430G2553 | Compile Only |
+|TI MSPM0 | [eve_arch_msp](eve_arch_msp/README.md) | MSPM0G3519 | Compile Only |
+|Microchip PIC18F | [eve_arch_msp430](eve_arch_pic/README.md) | N/A | Requires Update |
+|ST STM32 (Keil) | [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Requires Update |
+|ST STM32Cube | [eve_arch_stm32](eve_arch_stm32cube/README.md) | N/A | Requires Update |
+|Raspberry Pi | [eve_arch_rpi](eve_arch_rpi/README.md) | Raspberry Pi Model B+ | Requires Update |
+|Raspberry Pi Pico  | [eve_arch_rpi](eve_arch_rpi/README.md) | RP2040 | Pass |
+|Generic using libMPSSE  | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
+|Generic using libFT4222  | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
+
+- Pass: Has been compiled with the latest toolchains and run on hardware across of EVE generations.
+- Compile Only: Latest toolchain has been used to successfully compile code for EVE generations. No hardware testing carried out with new toolchain. Previous version of toolchain has been used for hardware testing.
+- Requires Update: Previous version of toolchain has been used for hardware testing.
+
+For most parts a generic variant of the device has been chosen. The specific device variant is shown in the table above.
