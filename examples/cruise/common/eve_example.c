@@ -56,6 +56,10 @@
 #include "eve_helper.h"
 #include "sevenseg.h"
 
+#if IS_EVE_API(1)
+#error This example requires EVE API 2 or above.
+#endif
+
 #if EVE_DISP_WIDTH < 480
 #error This example needs a screen width of 480 pixels or above.
 #endif

@@ -56,6 +56,10 @@
 
 #include "eve_example.h"
 
+#if IS_EVE_API(1, 2, 3, 4)
+#error This example requires EVE API 5 or above.
+#endif
+
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
 

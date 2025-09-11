@@ -59,8 +59,8 @@
 #include "trig_furman.h"
 #include "flightcontrols.h"
 
-#if IS_EVE_API(1)
-#error This example requires EVE API 2 or above.
+#if IS_EVE_API(1, 2, 3, 4)
+#error This example requires EVE API 5 or above.
 #endif
 
 #if EVE_DISP_WIDTH < 480

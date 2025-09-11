@@ -28,7 +28,7 @@ Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
+| No | No | No | No | Yes |
 
 The following is an screenshot of the simple example.
 
