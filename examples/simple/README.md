@@ -23,13 +23,14 @@ This example supports the following platforms:
 |ST STM32Cube | STM32CUBE | Yes (1) |
 |Raspberry Pi | raspberry_pi | Yes |
 |Raspberry Pi Pico (SDK) | pico | Yes |
-|Raspberry Pi Pico (VS Code) | pico_vscode | Yes |
+|Raspberry Pi Pico (VS Code) | pico_vscode | Yes (2) |
 |Generic using libMPSSE CMake | libft4222 | Yes |
 |Generic using libMPSSE Visual Studio | libft4222 | Yes |
 |Generic using libFT4222 CMake | libmpsse | Yes |
 |Generic using libFT4222 Visual Studio | libmpsse | Yes |
  
 1 - EVE API 5 work in progress
+2 - Pico SDK on VS Code work is in progress
 
 Supported EVE APIs in this example:
 

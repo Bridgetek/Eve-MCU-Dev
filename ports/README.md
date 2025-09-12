@@ -18,11 +18,12 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 |ST STM32 (Keil) | [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Requires Update |
 |ST STM32Cube | [eve_arch_stm32](eve_arch_stm32cube/README.md) | N/A | Requires Update |
 |Raspberry Pi | [eve_arch_rpi](eve_arch_rpi/README.md) | Raspberry Pi Model B+ | Requires Update |
-|Raspberry Pi Pico (SDK and VS Code) | [eve_arch_rpi](eve_arch_rpi/README.md) | RP2040 | Pass |
+|Raspberry Pi Pico (SDK and VS Code) | [eve_arch_rpi](eve_arch_rpi/README.md) | RP2040 | User Test |
 |Generic using libMPSSE  | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
 |Generic using libFT4222  | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
 
 - Pass: Has been compiled with the latest toolchains and run on hardware across of EVE generations.
+- Under Test: Compiles with the latest toolchain but hardware testing is ongoing.
 - Compile Only: Latest toolchain has been used to successfully compile code for EVE generations. No hardware testing carried out with new toolchain. Previous version of toolchain has been used for hardware testing.
 - Requires Update: Previous version of toolchain has been used for hardware testing.
 
