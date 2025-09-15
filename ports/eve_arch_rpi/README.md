@@ -25,6 +25,30 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 
+### Compilation
+
+There are two compilation methods for pico boards. CMake and Visual Studio Code.
+
+#### CMake
+
+The first is using the Raspberry Pi pico SDK in command line mode. The example repositories with build options for this have a folder called `pico`. Within this folder there is a file called `CMakeLists.txt` to perform the compilation using CMake.
+
+The CMake environment must be configured first with the command:
+```
+cmake -B build -S .
+```
+Then the compilation performed using:
+```
+cmake --build build
+```
+The compiled UF2 file is found in the `build` directory.
+
+#### Visual Studio Code
+
+This method requires that the Raspberry Pi pico Extension is loaded into the Visual Studio Code and properly configured. Once this is completed then a workspace file in the `pico_vscode` folder of an example can be opened. 
+
+The instructions for compiling and programming the pico can be followed from the Raspberry Pi pico Extension Guide available from the Raspberry Pi website.
+
 ## Hardware Raspberry Pi
 
 The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However it is compatible with all of the Raspberry Pi SBCs sharing the same 40-pin GPIO header. Please reference the Raspberry Pi documentation for more information.
