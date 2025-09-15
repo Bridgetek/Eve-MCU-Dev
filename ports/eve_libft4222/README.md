@@ -1,6 +1,28 @@
-# EVE-MCU-Dev Examples for libft4222
+# EVE-MCU-Dev Ports for libft4222
+
+[Back](../README.md)
 
 The port for libft4222 comprises a host PC with a USB host controller connecting to the target EVE device through an FTDI FT4222H device. The FT4222H device manages the EVE device SPI bus. The host PC uses a library or DLL to manage the interface with the FT4222H device.
+
+## Hardware
+
+This code requires an FT4222H adapter to connect to the EVE module. The FT4222H adapter is normally based around the FTDI FT4222H USB bridging chip.
+
+A popular solution which makes it easy to get up and running quickly is the FTDI [UMFT4222EV-D](https://ftdichip.com/products/umft4222ev/) module. 
+
+The UMFT4222EV-D module uses the FT2222H chipset. The module can be connected to the associated pins of the EVE module using jumper wires.
+
+| UMFT4222EV-D Name | UMFT4222EV-D Pin | EVE Signal |
+| --- | --- | --- |
+| SCK | JP5 Pin 9 | SCK |
+| MOSI | JP5 Pin 7 | MOSI |
+| MISO | JP5 Pin 8 | MISO |
+| GPIO1 | JP4 Pin 5 | CS# |
+| GPIO1 | JP4 Pin 4 | PD# |
+| VCC (5V) | JP4 Pin 1 | 5V |
+| GND | JP4 Pin 3 / JP5 Pin 10 | GND |
+
+The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 
 ## Windows
 

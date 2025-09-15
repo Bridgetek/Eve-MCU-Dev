@@ -158,32 +158,58 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
-  /* Enable the UART Device... */
-  sys_enable(sys_device_uart0);
-  /* Set UART0 GPIO functions to UART0_TXD and UART0_RXD... */
-  gpio_function(GPIO_UART0_TX, pad_uart0_txd); /* UART0 TXD */
-  gpio_function(GPIO_UART0_RX, pad_uart0_rxd); /* UART0 RXD */
-  uart_open(UART0,                             /* Device */
-            1,                                 /* Prescaler = 1 */
-            UART_DIVIDER_115200_BAUD,           /* Divider = 1302 */
-            uart_data_bits_8,                  /* No. Data Bits */
-            uart_parity_none,                  /* Parity */
-            uart_stop_bits_1);                 /* No. Stop Bits */
+/* Setup UART */
+	setup();
 
-  /* Print out a welcome message... */
-  uart_puts(UART0,
-            "--------------------------------------------------------------------- \r\n"
-            "Hello World! \r\n"
-            "--------------------------------------------------------------------- \r\n");
+	/* Start example code */
+	eve_example();
 
-  /* Start example code */
-  eve_example();
+	// function never returns 
+	for (;;) ;
+}
 
-  /* Now keep looping */
-  while (1)
-  {
-    // Do nothing
-  }
+void setup(void)
+{
+	// UART initialisation
+	debug_uart_init();
 
-  return 0;
+#if DEBUG_LEVEL > 0
+	/* Print out a welcome message... */
+	printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
+	printf ("---------------------------------------------------------------- \r\n");
+	printf ("Welcome to BRT_AN_025 Example for FT9xx\r\n");
+#endif
+}
+
+/* Initializes the UART for the testing */
+void debug_uart_init(void)
+{
+	/* Enable the UART Device... */
+	sys_enable(sys_device_uart0);
+#if defined(__FT930__)
+	/* Make GPIO23 function as UART0_TXD and GPIO22 function as UART0_RXD... */
+	gpio_function(23, pad_uart0_txd); /* UART0 TXD */
+	gpio_function(22, pad_uart0_rxd); /* UART0 RXD */
+#else
+	/* Make GPIO48 function as UART0_TXD and GPIO49 function as UART0_RXD... */
+	gpio_function(48, pad_uart0_txd); /* UART0 TXD MM900EVxA CN3 pin 4 */
+	gpio_function(49, pad_uart0_rxd); /* UART0 RXD MM900EVxA CN3 pin 6 */
+	gpio_function(50, pad_uart0_rts); /* UART0 RTS MM900EVxA CN3 pin 8 */
+	gpio_function(51, pad_uart0_cts); /* UART0 CTS MM900EVxA CN3 pin 10 */
+#endif
+
+	// Open the UART using the coding required.
+	uart_open(UART0,                    /* Device */
+			1,                        /* Prescaler = 1 */
+			UART_DIVIDER_115200_BAUD,  /* Divider = 1302 */
+			uart_data_bits_8,         /* No. buffer Bits */
+			uart_parity_none,         /* Parity */
+			uart_stop_bits_1);        /* No. Stop Bits */
+
+#if DEBUG_LEVEL > 0
+	uart_puts(UART0,
+			"\x1B[2J" /* ANSI/VT100 - Clear the Screen */
+			"\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
+	);
+#endif
 }

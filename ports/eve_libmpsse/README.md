@@ -1,6 +1,34 @@
-# EVE-MCU-Dev Examples for libmpsse
+# EVE-MCU-Dev Ports for libmpsse
+
+[Back](../README.md)
 
 The port for libmpsse comprises a host PC with a USB host controller connecting to the target EVE device through an FTDI FT4232H/FT232H/FT232R device. The FTDI device manages the EVE device SPI bus. The host PC uses a library or DLL to manage the interface with the FTDI device.
+
+## Hardware
+
+This code requires a USB-MPSSE adapter to connect to the EVE module. The USB-MPSSE adapter is normally based around the FTDI FT232H USB bridging chip.
+
+A popular solution which makes it easy to get up and running quickly is the range of C232HM cables from FTDI such as [C232HM-EDHSL](https://ftdichip.com/products/c232hm-edhsl-0/). These can also be purchased from [Connective Peripherals](https://connectiveperipherals.com/) as a version with Type C USB connector (part USBC-HS-MPSSE-5V-3.3V-500-SPR). 
+
+The C232HM uses the FT232H chipset and has a 50cm cable with ten single pole receptacles. These can be connected to the associated pins of the EVE module.
+
+For the versions with 5V output on the red wire (C232HM-EDHSL and USBC-HS-MPSSE-5V-3.3V500-SPR) the following wires can be used in Table 3.
+
+If the version of the cable is used which has the 3.3V power output (or if using the 5V version but the EVE module requires more current than can be provided) then a separate power connection to the EVE module could be used, with the grounds of the C232HM / USBC-HS-MPSSE and the separate power source common together to EVE.
+
+| Wire color | EVE Signal |
+| --- | --- |
+| Orange | SCK |
+| Yellow | MOSI |
+| Green | MISO |
+| Brown | CS# |
+| Blue | PD# |
+| Red | 5V |
+| Black | GND |
+
+An alternative is the VA800A-SPI module can also be used in the same way as the C232HM. *Note that the VA800A-SPI is now discontinued but the information is retained here for reference.*
+
+The VA800A-SPI has a 10-way connector and can be connected directly to some EVE modules such as the VM800B, VM810C50A and VM816C50A. Very short jumper wires can be used to connect it to other EVE modules by connecting the SCK, CS, MOSI, MISO, PD and GND connections. The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 
 ## Windows
 

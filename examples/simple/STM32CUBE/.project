@@ -36,9 +36,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/common</locationURI>
 		</link>
 		<link>
-			<name>eve_arch_stm32cube</name>
+			<name>eve_arch_stm32</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_arch_stm32cube</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_arch_stm32</locationURI>
 		</link>
 		<link>
 			<name>source</name>

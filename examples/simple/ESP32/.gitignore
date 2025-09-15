@@ -1,0 +1,5 @@
+sdkconfig
+CMakeCache.txt
+
+build/
+CMakeFiles/

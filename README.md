@@ -22,7 +22,7 @@ The PLATFORM macro sets the port files to be used by the compiler. The options a
 |TI MSPM0 | PLATFORM_MSPM0 | eve_arch_mspm0 | No |
 |Microchip PIC18F | PLATFORM_PIC | eve_arch_pic | No |
 |ST STM32 (Keil) | PLATFORM_STM32 | eve_arch_stm32 | Yes |
-|ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32cube | Yes |
+|ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32 | Yes |
 |Raspberry Pi | PLATFORM_RASPBERRYPI | eve_arch_rpi | Yes |
 |Raspberry Pi Pico | PLATFORM_RP2040 | eve_arch_rpi | Yes |
 |Generic using libMPSSE | USE_MPSSE | eve_libmpsse | Yes |

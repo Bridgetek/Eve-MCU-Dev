@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../include"
+		},
+		{
+			"path": "../../../ports/eve_arch_esp32"
+		},
+		{
+			"path": "../../../source"
+		},
+		{
+			"path": "../common"
+		}
+	],
+	"settings": {}
+}
