@@ -5,7 +5,8 @@
 ## Runnable Examples
 
 In the example code the EVE-MCU-Dev library is compiled with the example program. 
-The example `simple` is supported by all platforms and is intended to be used as a template for new projects.
+
+The example [simple](simple/README.md) is supported by all platforms and is intended to be used as a template for new projects. It contains build instructions for all the platforms as well.
 
 The following example code is available:
 
