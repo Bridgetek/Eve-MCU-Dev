@@ -134,7 +134,7 @@ void Platform_Init(void)
         exit(-1);
     }
     // Request line as output
-    if (gpiod_line_request_output(gpio_pd_line, "example", 0) < 0) 
+    if (gpiod_line_request_output(gpio_pd_line, "eve", 0) < 0) 
     {
         fprintf(stderr, "Failed: gpiod_line_request_output\n");
         gpiod_chip_close(gpio_chip);
@@ -148,14 +148,14 @@ void Platform_Init(void)
         exit(-1);
     }
     gpio_cs_line = gpiod_chip_get_line(gpio_chip, GPIO_cs_line_num);
-    if (!gpio_pd_line) 
+    if (!gpio_cs_line) 
     {
         fprintf(stderr, "Failed: gpiod_chip_get_line GPIO_cs_line_num\n");
         gpiod_chip_close(gpio_chip);
         exit(-1);
     }
     // Request line as output
-    if (gpiod_line_request_output(gpio_cs_line, "example", 0) < 0) 
+    if (gpiod_line_request_output(gpio_cs_line, "eve", 0) < 0) 
     {
         fprintf(stderr, "Failed: gpiod_line_request_output\n");
         gpiod_chip_close(gpio_chip);
@@ -211,7 +211,7 @@ void Platform_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void Platform_PDlow(void)
 {
-    if (gpiod_line_set_value(gpio_pd_line, 1) < 0)
+    if (gpiod_line_set_value(gpio_pd_line, 0) < 0)
     {
         perror("gpiod_line_set_value");
         gpiod_chip_close(gpio_chip);
@@ -242,7 +242,6 @@ void Platform_Delay_500ms(void)
     usleep(500 * 1000);
 }
 
-// Beaglebone is Little Endian.
 // Use toolchain defined functions.
 uint16_t Platform_htobe16(uint16_t h)
 {
