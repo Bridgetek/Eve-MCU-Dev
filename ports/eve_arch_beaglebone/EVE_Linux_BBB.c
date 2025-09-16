@@ -178,6 +178,12 @@ void Platform_Init(void)
     }
 }
 
+void Platform_Deinit(void)
+{
+    close(spiHandle);
+    spiHandle = NULL;
+}
+
 void Platform_Setup(void)
 {
 }

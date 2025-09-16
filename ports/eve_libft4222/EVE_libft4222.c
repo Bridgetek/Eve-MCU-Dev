@@ -247,6 +247,14 @@ void MCU_Init(void)
 	MCU_bufferLen = 0;
 }
 
+void MCU_Deinit(void)
+{
+    FT_Close(ftHandleSPI);
+    FT_Close(ftHandleGPIO);
+    
+    ftHandleSPI = ftHandleGPIO = NULL;
+}
+
 void MCU_Setup(void)
 {
 }

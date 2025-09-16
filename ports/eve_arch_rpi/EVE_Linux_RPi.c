@@ -169,6 +169,12 @@ void Platform_Init(void)
     }
 }
 
+void Platform_Deinit(void)
+{
+    close(spiHandle);
+    gpiod_chip_close(gpio_chip);
+}
+
 void Platform_Setup(void)
 {
 }

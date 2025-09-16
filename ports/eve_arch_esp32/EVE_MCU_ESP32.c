@@ -141,6 +141,13 @@ void MCU_Init(void)
     gpio_set_level(PIN_NUM_BLUE_LED, 1);
 }
 
+void MCU_Deinit(void)
+{
+    // Shut down the SPI Master
+    spi_bus_remove_device(spi);
+    spi_bus_free(HSPI_HOST);
+}
+
 void MCU_Setup(void)
 {
     // No action required.

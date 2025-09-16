@@ -111,6 +111,10 @@ void MCU_Init(void){
 
 }
 
+void MCU_Deinit(void)
+{
+}
+
 void MCU_Setup(void)
 {
 /* function to configure QSPI*/

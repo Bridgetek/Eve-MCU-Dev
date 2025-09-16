@@ -69,10 +69,14 @@
 #define CPU_FREQ        CPUCLK_FREQ                // for use in delay function
 
 /* configure MCU, SPI and PD pins */
-void MCU_Init(void){
-
+void MCU_Init(void)
+{
     /* set pins to be used for CS# and PD# */
     DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN | GPIO_GRP_0_PD_PIN);
+}
+
+void MCU_Deinit(void)
+{
 }
 
 void MCU_Setup(void)

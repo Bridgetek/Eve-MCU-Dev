@@ -130,6 +130,11 @@ void MCU_Init(void)
     SSP1CON1bits.SSPEN  = 1;                                                    // Enable SPI1 after configuration
 }
 
+void MCU_Deinit(void)
+{
+    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+}
+
 void MCU_Setup(void)
 {
 //#ifdef FT81X_ENABLE
@@ -252,58 +257,58 @@ void MCU_Delay_500ms(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite8(0);
+    DataRead = MCU_SPIReadWrite8(0);
     
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
-	MCU_SPIReadWrite8(DataToWrite);
+    MCU_SPIReadWrite8(DataToWrite);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite16(0);
+    DataRead = MCU_SPIReadWrite16(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	MCU_SPIReadWrite16(DataToWrite);
+    MCU_SPIReadWrite16(DataToWrite);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite24(0);
+    DataRead = MCU_SPIReadWrite24(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite24(DataToWrite);
+    MCU_SPIReadWrite24(DataToWrite);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite32(0);
+    DataRead = MCU_SPIReadWrite32(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite32(DataToWrite);
+    MCU_SPIReadWrite32(DataToWrite);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)

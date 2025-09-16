@@ -61,6 +61,12 @@
 void HAL_EVE_Init(void);
 
 /**
+ @brief De-Initialise EVE HAL Layer.
+ @details This will call the MCU-specific de-initialisation routines.
+ */
+void HAL_EVE_Deinit(void);
+
+/**
  @brief Chip Select Control
  @details Abstract the low-level MCU chip select control to either
      enable or disable. A call to this function to enable chip select

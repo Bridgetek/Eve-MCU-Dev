@@ -116,6 +116,11 @@ void MCU_Init(void)
     }
 }
 
+void MCU_Deinit(void)
+{
+    HAL_SPI_DeInit(&SpiHandle);
+}
+
 void MCU_Setup(void)
 {
 }
@@ -151,18 +156,18 @@ inline void MCU_PDhigh(void)
 // --------------------- SPI Send and Receive ----------------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
-	uint8_t DataRead;
-	uint8_t TxBuffer;
-	
-	TxBuffer = DataToWrite;
-		
-	HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, 5000);
+    uint8_t DataRead;
+    uint8_t TxBuffer;
+    
+    TxBuffer = DataToWrite;
+        
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, 5000);
 
-	// Note that this call to the STM32 HAL returns a status value which can be checked as shown below in order
-	// to make the application more robust
+    // Note that this call to the STM32 HAL returns a status value which can be checked as shown below in order
+    // to make the application more robust
 #if 0
-	switch(HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, 5000))
-	{
+    switch(HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, 5000))
+    {
     case HAL_OK:
       /* Communication is completed ___________________________________________ */
     case HAL_TIMEOUT:
@@ -179,16 +184,16 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
       break;
   }
 #endif
-	   
+       
     return DataRead;
 }
 
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
-	uint16_t DataRead;
+    uint16_t DataRead;
     uint16_t TxBuffer = DataToWrite;
 
-	HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
 
     return MCU_be16toh(DataRead);
 }
@@ -198,7 +203,7 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     uint32_t DataRead;
     uint32_t TxBuffer = DataToWrite;
     
-	HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
 
     return MCU_be32toh(DataRead);
 }
@@ -216,7 +221,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 void MCU_Delay_20ms(void)
 {
     HAL_Delay(20);
-	}
+    }
 
 void MCU_Delay_500ms(void)
 {
@@ -234,58 +239,58 @@ void MCU_Delay_500ms(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite8(0);
+    DataRead = MCU_SPIReadWrite8(0);
     
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
-	MCU_SPIReadWrite8(DataToWrite);
+    MCU_SPIReadWrite8(DataToWrite);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite16(0);
+    DataRead = MCU_SPIReadWrite16(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	MCU_SPIReadWrite16(DataToWrite);
+    MCU_SPIReadWrite16(DataToWrite);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite24(0);
+    DataRead = MCU_SPIReadWrite24(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite24(DataToWrite);
+    MCU_SPIReadWrite24(DataToWrite);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite32(0);
+    DataRead = MCU_SPIReadWrite32(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite32(DataToWrite);
+    MCU_SPIReadWrite32(DataToWrite);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
@@ -307,7 +312,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 
     while(DataPointer < length)
     {
-    	DataToRead[DataPointer] = MCU_SPIRead8();  // Send data byte-by-byte from array
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Send data byte-by-byte from array
         DataPointer += sizeof(uint8_t);
     }
 }

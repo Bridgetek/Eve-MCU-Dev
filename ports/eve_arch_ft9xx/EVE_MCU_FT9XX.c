@@ -130,6 +130,13 @@ void MCU_Init(void)
     spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
 }
 
+void MCU_Deinit(void)
+{
+    // Shut down the SPI Master
+    spi_uninit(SPIM);
+    sys_disable(sys_device_spi_master);
+}
+
 void MCU_Setup(void)
 {
 #if defined QUADSPI_ENABLE

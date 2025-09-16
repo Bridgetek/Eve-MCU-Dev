@@ -226,6 +226,11 @@ void HAL_EVE_Init(void)
     // This function will not return unless an EVE device is present.
 }
 
+void HAL_EVE_Deinit(void)
+{
+    MCU_Deinit();
+}
+
 // --------------------- Chip Select line ----------------------------------
 void HAL_ChipSelect(int8_t enable)
 {

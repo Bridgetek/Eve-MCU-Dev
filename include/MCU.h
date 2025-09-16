@@ -170,12 +170,19 @@
 #endif
 //@}
 
-    /**
+/**
  @brief MCU specific initialisation
  @details Must contain any MCU-specific initialisation. This will typically be
     setting up the SPI bus, GPIOs and operating environment requirements.
  */
 void MCU_Init(void);
+
+/**
+ @brief MCU specific de-initialisation
+ @details Must contain any MCU-specific de-initialisation. This will typically be
+    closing the SPI bus, GPIOs and operating environment requirements.
+ */
+void MCU_Deinit(void);
 
 /**
  @brief MCU specific setup

@@ -75,6 +75,13 @@
 void Platform_Init(void);
 
 /**
+ @brief Platform specific de-initialisation
+ @details Must contain any platform-specific de-initialisation. This will typically be
+    closing the SPI bus, GPIOs and operating environment requirements.
+ */
+void Platform_Deinit(void);
+
+/**
  @brief Platform specific setup
  @details Called after the EVE has been power cycled and started. Contains
     any platform-specific configuration options for the EVE.

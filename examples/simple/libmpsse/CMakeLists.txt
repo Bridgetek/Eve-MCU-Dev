@@ -80,9 +80,8 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_SNIPPETS}/flightcontrols/flightalt.c
-        ${EXAMPLE_SNIPPETS}/flightcontrols/flightatt.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
+        ${EXAMPLE_COMMON}/eve_images.c
+        ${EXAMPLE_COMMON}/eve_fonts.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
