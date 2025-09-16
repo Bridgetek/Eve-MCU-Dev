@@ -14,19 +14,19 @@ The PLATFORM macro sets the port files to be used by the compiler. The options a
 
 | Port Name | PLATFORM | Port Directory | Tested BT82x Support |
 | --- | --- | --- | --- |
-|Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
-|Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
-|Beaglebone Black | PLATFORM_BEAGLEBONE | eve_arch_beaglebone | No |
-|Expressif ESP32 | PLATFORM_ESP32 | eve_arch_esp32 | No |
-|TI MSP430 | PLATFORM_MSP430 | eve_arch_msp430 | No |
-|TI MSPM0 | PLATFORM_MSPM0 | eve_arch_mspm0 | No |
-|Microchip PIC18F | PLATFORM_PIC | eve_arch_pic | No |
-|ST STM32 (Keil) | PLATFORM_STM32 | eve_arch_stm32 | Yes |
-|ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32 | Yes |
-|Raspberry Pi | PLATFORM_RASPBERRYPI | eve_arch_rpi | Yes |
-|Raspberry Pi Pico | PLATFORM_RP2040 | eve_arch_rpi | Yes |
-|Generic using libMPSSE | USE_MPSSE | eve_libmpsse | Yes |
-|Generic using libFT4222 | USE_FT4222 | eve_libft4222 | Yes |
+| Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
+| Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
+| Beaglebone Black | PLATFORM_BEAGLEBONE | eve_arch_beaglebone | No |
+| Expressif ESP32 | PLATFORM_ESP32 | eve_arch_esp32 | Yes |
+| TI MSP430 | PLATFORM_MSP430 | eve_arch_msp430 | No |
+| TI MSPM0 | PLATFORM_MSPM0 | eve_arch_mspm0 | No |
+| Microchip PIC18F | PLATFORM_PIC | eve_arch_pic | No |
+| ST STM32 (Keil) | PLATFORM_STM32 | eve_arch_stm32 | Yes |
+| ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32 | Yes |
+| Raspberry Pi | PLATFORM_RASPBERRYPI | eve_arch_rpi | Yes |
+| Raspberry Pi Pico | PLATFORM_RP2040 | eve_arch_rpi | Yes |
+| Generic using libMPSSE | USE_MPSSE | eve_libmpsse | Yes |
+| Generic using libFT4222 | USE_FT4222 | eve_libft4222 | Yes |
 
 The C source files are in the [ports](ports/) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros.
 
@@ -34,7 +34,7 @@ The Rasberrry Pi platform is suitable for generic Linux by modifying the GPIO pi
 
 ## Example Code
 
-There are example projects for many MCUs and platforms. These include this repository as a submodule within the required code for the platform.
+There are example projects for many MCUs and platforms. These include this repository as a submodule within the required code for the platform. The "simple" example has 
 
 Build instructions will be included in the example repositories.
 
@@ -50,16 +50,16 @@ Build instructions will be included in the example repositories.
 |Microchip PIC18F | examples/simple/PIC18F | |
 |ST STM32 (Keil) | examples/simple/STM32 | Keil IDE and STM32CubeMX |
 |ST STM32Cube | examples/simple/STM32CUBE | STM32Cube IDE and STM32CubeMX |
-</table>
 
 ### Platforms
+
 | Platform | Example Repository | Build Environment |
 | --- | --- | --- |
 |Raspberry Pi | examples/simple/raspberry_pi | makefile/gcc |
 |Generic using libMPSSE | examples/simple/libmpsse | makefile/gcc or VisualStudio |
 |Generic using libFT4222 | examples/simple/libft4222 | makefile/gcc or VisualStudio |
 
-## EVE and Panel Selection
+## EVE Device and Panel Selection
 
 The library must be built for the correct EVE device and panel type. 
 
@@ -115,3 +115,39 @@ The following are included in the distribution:
 - WUXGA *1920x1200* (10 inch high definition display)
 
 **The default in the distribution will be a WUXGA panel**.
+
+## EVE Module Connection
+
+There are 2 standard connectors for EVE modules used by BridgeTek. 
+
+### Through-Board 2x8 Pins
+
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+
+| Pin | EVE Signal | Pin | EVE Signal |
+| --- | --- | --- | --- |
+| 1 | N/C | 2 | N/C |
+| 3 | N/C | 4 | PD# |
+| 5 | GND | 6 | N/C |
+| 7 | 5V | 8 | N/C |
+| 9 | N/C | 10 | N/C |
+| 11 | N/C | 12 | N/C |
+| 13 | MOSI | 14 | MISO |
+| 15 | CS# | 16 | SCK |
+
+### Header 1x10 Pins
+
+This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the VA800A-SPI board. 
+
+| Pin | EVE Signal |
+| --- | --- |
+| 1 | SCK |
+| 2 | MOSI |
+| 3 | MISO |
+| 4 | CS# |
+| 5 | INT# |
+| 6 | PD# |
+| 7 | 5V |
+| 8 | N/C |
+| 9 | GND |
+| 10 | GND |

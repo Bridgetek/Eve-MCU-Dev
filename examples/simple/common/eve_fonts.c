@@ -179,39 +179,39 @@ const uint8_t font0[] =
 
 uint32_t eve_init_fonts(void)
 {
-	const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
-	const uint32_t font0_size = sizeof(font0);
+    const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+    const uint32_t font0_size = sizeof(font0);
 
-	EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
+    EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 
-	EVE_LIB_BeginCoProList();
-	EVE_CMD_DLSTART();
-	EVE_CLEAR(1,1,1);
-	EVE_COLOR_RGB(255, 255, 255);
-	EVE_BEGIN(EVE_BEGIN_BITMAPS);
-	EVE_BITMAP_HANDLE(FONT_CUSTOM);
-	// Suggest to mask the bitmap source here with 0x3FFFFF to ensure that only the valid bits for addressing within RAM_G are set.
-	// BT81x now supports additional addressing where the source is in flash (see bitmap_source in the programmers guide)
-	// Note that bitmap_source in this framework uses a uint32_t and so if your font has a negative value for PointerToFontGraphicsData
-	// it will be required to mask the bits or to use a signed data type in your bitmap_source implementation. 
-	// Or to place the font in RAM_G such that the PointerToFontGraphicsData (also known as Raw Data Address in Decimal) is positive. 
-	// In this particular example, the PointerToFontGraphicsData will be ([location where we load the font in RAM_G] minus 142). 
-	// We load it at RAM_G + 1K to keep this positive (1K - 142 == 858). If we loaded the font at RAM_G + 0, it would have been -142.
-	EVE_BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
-	EVE_BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
-			font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
-	EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
-			font0_hdr->FontWidthInPixels,
-			font0_hdr->FontHeightInPixels);
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_DLSTART();
+    EVE_CLEAR(1,1,1);
+    EVE_COLOR_RGB(255, 255, 255);
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BITMAP_HANDLE(FONT_CUSTOM);
+    // Suggest to mask the bitmap source here with 0x3FFFFF to ensure that only the valid bits for addressing within RAM_G are set.
+    // BT81x now supports additional addressing where the source is in flash (see bitmap_source in the programmers guide)
+    // Note that bitmap_source in this framework uses a uint32_t and so if your font has a negative value for PointerToFontGraphicsData
+    // it will be required to mask the bits or to use a signed data type in your bitmap_source implementation. 
+    // Or to place the font in RAM_G such that the PointerToFontGraphicsData (also known as Raw Data Address in Decimal) is positive. 
+    // In this particular example, the PointerToFontGraphicsData will be ([location where we load the font in RAM_G] minus 142). 
+    // We load it at RAM_G + 1K to keep this positive (1K - 142 == 858). If we loaded the font at RAM_G + 0, it would have been -142.
+    EVE_BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
+    EVE_BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
+            font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
+    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
+            font0_hdr->FontWidthInPixels,
+            font0_hdr->FontHeightInPixels);
 #if IS_EVE_API(5)
-	EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
+    EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
 #else
-	EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset);
+    EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset);
 #endif
-	EVE_END();
-	EVE_DISPLAY();
-	EVE_CMD_SWAP();
-	EVE_LIB_EndCoProList();
-	EVE_LIB_AwaitCoProEmpty();
-	return ((font0_size + font0_offset) + 16) & (~15);
+    EVE_END();
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+    return ((font0_size + font0_offset) + 16) & (~15);
 }

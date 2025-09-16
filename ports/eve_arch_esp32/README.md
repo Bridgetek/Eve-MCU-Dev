@@ -10,11 +10,11 @@ The ESP32 port was developed using a [ESP32 Thing](https://www.sparkfun.com/prod
 
 | ESP32 Thing Pin Label | EVE Signal |
 | --- | --- |
-| 18 | SCK |
-| 23 | MOSI |
+| 22 | CS# |
 | 19 | MISO |
-| 8 | CS# |
-| 22 | PD# |
+| 23 | MOSI |
+| 18 | SCK |
+| 15 | PD# |
 | VUSB | 5V |
 | GND | GND |
 

@@ -14,6 +14,9 @@
 		},
 		{
 			"path": "../common"
+		},
+		{
+			"path": "../../../ports/eve_bt82x"
 		}
 	],
 	"settings": {}

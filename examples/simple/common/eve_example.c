@@ -59,101 +59,101 @@ const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
 
 void eve_display(void)
 {
-	uint32_t counter = 0;
-	uint8_t key;
-	int8_t i;
-	uint32_t units;
+    uint32_t counter = 0;
+    uint8_t key;
+    int8_t i;
+    uint32_t units;
 
-	do {
-		// Comment this line if the counter needs to increment continuously.
-		// Uncomment and it will increment by one each press.
-		//while (eve_read_tag(&key) != 0);
+    do {
+        // Comment this line if the counter needs to increment continuously.
+        // Uncomment and it will increment by one each press.
+        //while (eve_read_tag(&key) != 0);
 
-		EVE_LIB_BeginCoProList();
-		EVE_CMD_DLSTART();
-		EVE_CLEAR_COLOR_RGB(0, 0, 0);
-		EVE_CLEAR(1,1,1);
-		EVE_COLOR_RGB(255, 255, 255);
+        EVE_LIB_BeginCoProList();
+        EVE_CMD_DLSTART();
+        EVE_CLEAR_COLOR_RGB(0, 0, 0);
+        EVE_CLEAR(1,1,1);
+        EVE_COLOR_RGB(255, 255, 255);
 
-		EVE_BEGIN(EVE_BEGIN_BITMAPS);
+        EVE_BEGIN(EVE_BEGIN_BITMAPS);
 #if IS_EVE_API(2, 3, 4, 5)
-		// Set origin on canvas using EVE_VERTEX_TRANSLATE.
-		EVE_VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH/2)-(eve_img_bridgetek_logo_width/2)) * 16);
-		EVE_VERTEX2II(0, 0, BITMAP_BRIDGETEK_LOGO, 0);
-		EVE_VERTEX_TRANSLATE_X(0);
+        // Set origin on canvas using EVE_VERTEX_TRANSLATE.
+        EVE_VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH/2)-(eve_img_bridgetek_logo_width/2)) * 16);
+        EVE_VERTEX2II(0, 0, BITMAP_BRIDGETEK_LOGO, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
 #else
-		// Place directly on canvas EVE_VERTEX_TRANSLATE not available.
-		EVE_VERTEX2II((EVE_DISP_WIDTH/2)-(eve_img_bridgetek_logo_width/2), 0, BITMAP_BRIDGETEK_LOGO, 0);
+        // Place directly on canvas EVE_VERTEX_TRANSLATE not available.
+        EVE_VERTEX2II((EVE_DISP_WIDTH/2)-(eve_img_bridgetek_logo_width/2), 0, BITMAP_BRIDGETEK_LOGO, 0);
 #endif
 
-		EVE_CMD_TEXT(EVE_DISP_WIDTH/2, eve_img_bridgetek_logo_height,
-				28, EVE_OPT_CENTERX, "Touch the counter");
+        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, eve_img_bridgetek_logo_height,
+                28, EVE_OPT_CENTERX, "Touch the counter");
 
-		EVE_TAG(100);
+        EVE_TAG(100);
 
-		EVE_COLOR_RGB(255, 0, 0);
+        EVE_COLOR_RGB(255, 0, 0);
 
-		EVE_BEGIN(EVE_BEGIN_BITMAPS);
-		units = 1;
+        EVE_BEGIN(EVE_BEGIN_BITMAPS);
+        units = 1;
 
 #if IS_EVE_API(2, 3, 4, 5)
-		EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 2) * 16);
+        EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 2) * 16);
 
-		for (i = 0; i < 5; i++)
-		{
-			EVE_VERTEX_TRANSLATE_X((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))) * 16);
-			EVE_VERTEX2II(0, 0, FONT_CUSTOM, ((counter / units) % 10)+1); //+1 as in the converted font the number '0' is in position 1 in the font table
-			units *= 10;
-		}
+        for (i = 0; i < 5; i++)
+        {
+            EVE_VERTEX_TRANSLATE_X((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))) * 16);
+            EVE_VERTEX2II(0, 0, FONT_CUSTOM, ((counter / units) % 10)+1); //+1 as in the converted font the number '0' is in position 1 in the font table
+            units *= 10;
+        }
 #else
-		for (i = 0; i < 5; i++)
-		{
-			EVE_VERTEX2II((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))),
-					(EVE_DISP_HEIGHT / 2), FONT_CUSTOM, ((counter / units) % 10)+1); //+1 as in the converted font the number '0' is in position 1 in the font table
-			units *= 10;
-		}
+        for (i = 0; i < 5; i++)
+        {
+            EVE_VERTEX2II((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))),
+                    (EVE_DISP_HEIGHT / 2), FONT_CUSTOM, ((counter / units) % 10)+1); //+1 as in the converted font the number '0' is in position 1 in the font table
+            units *= 10;
+        }
 #endif
 
-		EVE_DISPLAY();
-		EVE_CMD_SWAP();
-		EVE_LIB_EndCoProList();
-		EVE_LIB_AwaitCoProEmpty();
+        EVE_DISPLAY();
+        EVE_CMD_SWAP();
+        EVE_LIB_EndCoProList();
+        EVE_LIB_AwaitCoProEmpty();
 
-		while (eve_read_tag(&key) == 0);
+        while (eve_read_tag(&key) == 0);
 
-		if (key == 100)
-		{
-			counter++;
-			if (counter == 100000)
-			{
-				counter = 0;
-			}
-		}
-	} while (1);
+        if (key == 100)
+        {
+            counter++;
+            if (counter == 100000)
+            {
+                counter = 0;
+            }
+        }
+    } while (1);
 }
 
 void eve_example(void)
 {
-	uint32_t font_end;
+    uint32_t font_end;
 
-	// Initialise the display
-	EVE_Init();
+    // Initialise the display
+    EVE_Init();
 
-	// Calibrate the display
-	DEBUG_PRINTF("Calibrating display...\n");
-	if (eve_calibrate() != 0)
-	{
-		DEBUG_PRINTF("Exception...\n");
-		while(1);
-	}
+    // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while(1);
+    }
 
-	// Load fonts and images
-	DEBUG_PRINTF("Loading font...\n");
-	font_end = eve_init_fonts();
-	DEBUG_PRINTF("Loading images...\n");
-	eve_load_images(font_end);
+    // Load fonts and images
+    DEBUG_PRINTF("Loading font...\n");
+    font_end = eve_init_fonts();
+    DEBUG_PRINTF("Loading images...\n");
+    eve_load_images(font_end);
 
-	// Start example code
-	DEBUG_PRINTF("Starting demo:\n");
-	eve_display();
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();
 }

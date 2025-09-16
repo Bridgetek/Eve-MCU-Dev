@@ -28,7 +28,22 @@ If the version of the cable is used which has the 3.3V power output (or if using
 
 An alternative is the VA800A-SPI module can also be used in the same way as the C232HM. *Note that the VA800A-SPI is now discontinued but the information is retained here for reference.*
 
-The VA800A-SPI has a 10-way connector and can be connected directly to some EVE modules such as the VM800B, VM810C50A and VM816C50A. Very short jumper wires can be used to connect it to other EVE modules by connecting the SCK, CS, MOSI, MISO, PD and GND connections. The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
+The VA800A-SPI has a 10-way connector and can be connected directly to the "VM" range of EVE modules such as the VM800B, VM810C50A and VM816C50A. Very short jumper wires can be used to connect it to other EVE modules by connecting the SCK, CS, MOSI, MISO, PD and GND connections. The adapter also provides a 5V power supply via the 5V pin on the header.
+
+| VA800A-SPI | EVE Signal |
+| --- | --- |
+| CN1-1 | SCK |
+| CN1-2 | MOSI |
+| CN1-3 | MISO |
+| CN1-4 | CS# |
+| CN1-5 | INT# |
+| CN1-6 | PD# |
+| CN1-7 | 5V |
+| CN1-8 | N/C |
+| CN1-9 | GND |
+| CN1-10 | GND |
+
+Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 
 ## Windows
 

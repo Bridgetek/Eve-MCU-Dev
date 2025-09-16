@@ -11,14 +11,14 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 |Bridgetek FT90x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | N/A | Compile Only |
 |Bridgetek FT93x | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | N/A | Compile Only |
 |Beaglebone Black | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | N/A | Requires Update |
-|Expressif ESP32 | [eve_arch_esp32](eve_arch_esp32/README.md) | N/A | Requires Update |
+|Expressif ESP32 | [eve_arch_esp32](eve_arch_esp32/README.md) | N/A | Pass |
 |TI MSP430 | [eve_arch_msp](eve_arch_msp/README.md) | MSP430G2553 | Compile Only |
 |TI MSPM0 | [eve_arch_msp](eve_arch_msp/README.md) | MSPM0G3519 | Compile Only |
 |Microchip PIC18F | [eve_arch_msp430](eve_arch_pic/README.md) | N/A | Requires Update |
 |ST STM32 (Keil) | [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Requires Update |
 |ST STM32Cube | [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Requires Update |
 |Raspberry Pi | [eve_arch_rpi](eve_arch_rpi/README.md) | Raspberry Pi Model B+ | Requires Update |
-|Raspberry Pi Pico (SDK and VS Code) | [eve_arch_rpi](eve_arch_rpi/README.md) | RP2040 | Under Test |
+|Raspberry Pi Pico (SDK and VS Code) | [eve_arch_rpi](eve_arch_rpi/README.md) | RP2040 | Pass |
 |Generic using libMPSSE  | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
 |Generic using libFT4222  | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
 
