@@ -754,10 +754,21 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
     // Check for exceptions
     writeCmdPointer = readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
 #endif
-
-    if (readCmdPointer == 0xFFF)
+    if(readCmdPointer & 1)
     {
         // Return 0xFF if an error occurred
+        #ifdef EVE_HAL_ERROR
+        #if IS_EVE_API(5)
+        char message[256];
+
+        memset(message, 0, sizeof(message));
+        EVE_LIB_GetCoProException(message);
+        err_printf("Co-processor exception: %s\n", message);
+        #else // IS_EVE_API(5)
+        err_printf("Co-processor exception\n");
+        #endif // IS_EVE_API(5)
+        #endif // EVE_HAL_ERROR
+        
         return 0xFF;
     }
     else
