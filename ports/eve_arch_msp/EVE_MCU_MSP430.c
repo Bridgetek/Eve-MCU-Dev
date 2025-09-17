@@ -50,7 +50,11 @@
 // Guard against being used for incorrect CPU type.
 #if defined(PLATFORM_MSP430)
 
-#pragma message "Compiling " __FILE__ " for TI MSP430"
+#pragma diag_push
+#pragma diag_remark 1181
+#warning "Compiling " __FILE__ " for TI MSP430"
+#pragma diag_pop
+
 /* Replace with header file for target MCU */
 #include <msp430g2553.h>
 

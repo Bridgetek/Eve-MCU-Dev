@@ -9,12 +9,12 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "BRT_AN_025_FT8xx_Example_for_MSP430",
+        "name": "simple_MSP430",
         "type": "ccs-debug",
         "request": "launch",
         "projectInfo": {
-          "name": "BRT_AN_025_FT8xx_Example_for_MSP430",
-          "resourceId": "/BRT_AN_025_FT8xx_Example_for_MSP430"
+          "name": "simple_MSP430",
+          "resourceId": "/simple_MSP430"
         }
       }
     ]

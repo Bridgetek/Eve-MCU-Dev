@@ -155,7 +155,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to BRT_AN_025 Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
 	printf ("Pin configuration for example:\n");
 	printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

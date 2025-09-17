@@ -18,7 +18,9 @@ Then to compile:
 ```
     cmake --build build
 ```
-The executable file is in the build directory. The exact location is defined by the compiler defaults.
+Default builds are compiled with debugging enabled. 
+
+The executable file is `build\Debug\simple_libmpsse.exe`. This can be run from the command line. 
 
 ## Visual Studio Code
 

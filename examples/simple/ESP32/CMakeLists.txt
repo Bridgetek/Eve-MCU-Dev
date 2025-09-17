@@ -9,4 +9,4 @@ set(INCLUDE_DIRECTORIES "../../../../include" "../../common" "../../../../ports/
 set(EXTRA_COMPONENT_DIRS "../../../ports/eve_arch_esp32" "../../../ports/eve_bt82x")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(BRT_AN_025)
+project(simple_esp32)

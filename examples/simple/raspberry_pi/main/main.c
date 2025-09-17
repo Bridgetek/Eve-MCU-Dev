@@ -127,7 +127,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to BRT_AN_025 Example for Raspberry Pi\r\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi\r\n");
     printf ("\n");
 	printf ("Pin configuration for example:\n");
 	printf ("Use SPI hardware bus which is /dev/spidev0.0 in Linux.\n");

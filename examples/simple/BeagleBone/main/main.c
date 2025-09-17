@@ -184,7 +184,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \n\n");
     printf ("---------------------------------------------------------------- \n");
-    printf ("Welcome to BRT_AN_025 Example for Beaglebone Black\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for Beaglebone Black\n");
     printf ("\n");
     printf ("Pin configuration for example:\n");
     printf ("Use SPI0 hardware bus which is /dev/spidev1.0 in Linux.\n");

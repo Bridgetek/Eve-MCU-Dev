@@ -2038,6 +2038,7 @@ void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const 
 
     HAL_Write32(EVE_ENC_CMD_TEXTDIM);
     HAL_Write32(dimensions);
+    HAL_Write32(((uint32_t)options<<16) |(font & 0xFFFF));
     CommandSize = 8;
 
     StringLength = EVE_LIB_SendString(string);
@@ -2166,6 +2167,7 @@ void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
     uint32_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSREAD);
+    HAL_Write32(dst);
     StringLength = EVE_LIB_SendString(filename);
     HAL_Write32(result);
     HAL_IncCmdPointer(8 + StringLength);

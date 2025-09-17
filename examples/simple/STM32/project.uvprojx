@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>simple</TargetName>
+      <TargetName>simple_stm32</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>project</OutputName>
+          <OutputName>simple_stm32</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>PLATFORM_STM32</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\include;..\common</IncludePath>
+              <IncludePath>..\common;..\..\..\include;..\..\..\ports\eve_bt82x</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -457,6 +457,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>EVE BT82x Code</GroupName>
+          <Files>
+            <File>
+              <FileName>patch_base.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\ports\eve_bt82x\patch_base.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
@@ -473,7 +483,7 @@
     <gpdscs>
       <gpdsc generator="STM32CubeMX" name="RTE/Device/STM32F030R8Tx/FrameworkCubeMX.gpdsc">
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </gpdsc>
     </gpdscs>
@@ -481,19 +491,19 @@
       <api Capiversion="1.0.0" Cclass="CMSIS Driver" Cgroup="GPIO" exclusive="0">
         <package name="CMSIS" schemaVersion="1.7.36" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </api>
       <api Capiversion="2.3.0" Cclass="CMSIS Driver" Cgroup="SPI" exclusive="0">
         <package name="CMSIS" schemaVersion="1.7.36" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </api>
       <api Capiversion="1.0.0" Cclass="Device" Cgroup="STM32Cube Framework" exclusive="1">
         <package name="STM32F0xx_DFP" schemaVersion="1.7.2" url="https://www.keil.com/pack/" vendor="Keil" version="2.1.1"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </api>
     </apis>
@@ -501,31 +511,31 @@
       <component Capiversion="1.0.0" Cclass="CMSIS Driver" Cgroup="GPIO" Csub="Custom" Cvendor="ARM" Cversion="1.0.0" custom="1">
         <package name="CMSIS" schemaVersion="1.7.36" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </component>
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="6.1.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.7.36" url="https://www.keil.com/pack/" vendor="ARM" version="6.1.0"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </component>
       <component Capiversion="2.1.0" Cclass="CMSIS Driver" Cgroup="SPI" Cvendor="Keil" Cversion="1.0.0" condition="STM32F0 CMSIS STM32CubeMX">
         <package name="STM32F0xx_DFP" schemaVersion="1.7.2" url="https://www.keil.com/pack/" vendor="Keil" version="2.1.1"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </component>
       <component Cbundle="STM32CubeMX" Cclass="Device" Cgroup="STM32Cube Framework" Csub="STM32CubeMX" Cvendor="Keil" Cversion="1.1.0" condition="STCubeMX" generated="1" generator="STM32CubeMX" selectable="1">
         <package name="STM32F0xx_DFP" schemaVersion="1.7.2" url="https://www.keil.com/pack/" vendor="Keil" version="2.1.1"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </component>
       <component Cbundle="STM32CubeMX" Cclass="Device" Cgroup="STM32Cube HAL" Cvendor="Keil" Cversion="1.11.3" condition="STM32F0 CMSIS STM32CubeMX">
         <package name="STM32F0xx_DFP" schemaVersion="1.7.2" url="https://www.keil.com/pack/" vendor="Keil" version="2.1.1"/>
         <targetInfos>
-          <targetInfo name="simple"/>
+          <targetInfo name="simple_stm32"/>
         </targetInfos>
       </component>
     </components>

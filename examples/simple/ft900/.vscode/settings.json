@@ -1,5 +1,5 @@
 {
-    "ft9xx.projectName": "simple",
+    "ft9xx.projectName": "simple_ft9xx",
     "ft9xx.baudrate": "921600",
     "ft9xx.buildMode": "Debug",
     "ft9xx.chipset": "FT90x",

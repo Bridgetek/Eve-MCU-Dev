@@ -144,7 +144,7 @@ void MCU_Setup(void)
 //	MCU_SPIWrite8(2);
 //	MCU_CShigh();
 
-// Turn on FT9xx quad-SPI.
+// Turn on quad-SPI.
 //	spi_option(SPIM, spi_option_bus_width, 4);
 
 //#endif // FT81X_ENABLE

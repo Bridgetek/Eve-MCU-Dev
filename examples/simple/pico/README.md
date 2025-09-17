@@ -24,7 +24,7 @@ cmake --build build
 ```
 Once completed, the compiled files are also found in the `build` directory.
 
-## Running the Simple Raspberry Pi Example
+## Running the Simple Raspberry Pi pico Example
 
 The executable image is found in the file `build` directory. It is called `simple-pico.uf2`.
 

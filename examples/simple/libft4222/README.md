@@ -18,7 +18,11 @@ Then to compile:
 ```
     cmake --build build
 ```
-The executable file is in the build directory. The exact location is defined by the compiler defaults.
+Default builds are compiled with debugging enabled. 
+
+The executable file is `build\Debug\simple_libft4222.exe`. This can be run from the command line. 
+
+Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 
 ## Visual Studio Code
 

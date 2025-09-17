@@ -15,9 +15,10 @@ make
 ```
 
 ## Running the Simple Raspberry Pi Example
-The executable image is found in the file `raspberry_pi` in the current directory. To run this file simple call it from the command line.
+
+The executable image is found in the file `simple_raspberry_pi` in the current directory. To run this file simple call it from the command line.
 ```
-./raspberry_pi
+./simple_raspberry_pi
 ```
 The program will output:
 ```

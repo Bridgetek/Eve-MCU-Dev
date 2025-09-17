@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>BRT_AN_025_FT8xx_Example_for_MSP430</name>
+	<name>simple_MSP430</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -38,7 +38,7 @@
 		<link>
 			<name>eve_bt82x</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Dev/ports/eve_bt82x</location>
+			<location>PARENT-3-PROJECT_LOC/ports/eve_bt82x</location>
 		</link>
 		<link>
 			<name>include</name>
