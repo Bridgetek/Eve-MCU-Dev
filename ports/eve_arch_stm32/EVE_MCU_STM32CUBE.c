@@ -105,14 +105,16 @@ void MCU_Setup(void)
 inline void MCU_CSlow(void)
 {
     HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_RESET); //lo
-    //Nop();
+    // Perform a very short delay
+    __NOP();
 }
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
     HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_SET); //hi
-    //Nop();
+    // Perform a very short delay
+    __NOP();
 }
 
 // -------------------------- PD line low --------------------------------------
@@ -169,7 +171,7 @@ uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 
     HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
 
-    return MCU_be16toh(DataRead);
+    return MCU_le16toh(DataRead);
 }
 
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
@@ -179,7 +181,7 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     
     HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
 
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
 
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
@@ -189,7 +191,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 
     HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, 5000);
 
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_Delay_20ms(void)
@@ -229,7 +231,7 @@ uint16_t MCU_SPIRead16(void)
 
     DataRead = MCU_SPIReadWrite16(0);
 
-    return DataRead;
+    return MCU_le16toh(DataRead);
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
@@ -243,7 +245,7 @@ uint32_t MCU_SPIRead24(void)
 
     DataRead = MCU_SPIReadWrite24(0);
 
-    return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
@@ -257,7 +259,7 @@ uint32_t MCU_SPIRead32(void)
 
     DataRead = MCU_SPIReadWrite32(0);
 
-    return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
@@ -329,39 +331,5 @@ uint32_t MCU_le32toh (uint32_t h)
     return le32toh(h);
 }
 
-#if 0
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-static void Timeout_Error_Handler(void)
-{
-  /* Toggle LED4 on */
-  while(1)
-  {
-    BSP_LED_On(LED4);
-    HAL_Delay(500);
-    BSP_LED_Off(LED4);
-    HAL_Delay(500);
-  }
-}
-#endif
-
-#if 0
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-static void Error_Handler(void)
-{
-  /* Turn LED4 on */
-  //BSP_LED_On(LED4);
-  while(1)
-  {
-  }
-}
-#endif
 
 #endif /* defined (PLATFORM_STM32_CUBE) */

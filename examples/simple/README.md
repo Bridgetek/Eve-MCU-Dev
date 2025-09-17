@@ -18,8 +18,8 @@ This example supports the following platforms:
 |TI MSP430 | [MSP430](MSP430/README.md) (1) |
 |TI MSPM0 | [MSPM0](MSPM0/README.md) (1) | 
 |Microchip PIC18F | PIC18F (1) | 
-|ST STM32 (Keil) | [STM32](STM32/README.md) (1) | 
-|ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) (1) | 
+|ST STM32 (Keil) | [STM32](STM32/README.md) | 
+|ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) | 
 |Raspberry Pi | [raspberry_pi](raspberry_pi/README.md) | 
 |Raspberry Pi Pico (SDK) | [pico](pico/README.md) | 
 |Raspberry Pi Pico (VS Code) | [pico_vscode](pico_vscode/README.md) |

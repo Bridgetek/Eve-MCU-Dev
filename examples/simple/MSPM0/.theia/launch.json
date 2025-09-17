@@ -22,6 +22,15 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "simple_MSPM0",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "simple_MSPM0",
+                "resourceId": "/simple_MSPM0"
+            }
         }
     ]
 }

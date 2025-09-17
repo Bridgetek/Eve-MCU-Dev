@@ -55,7 +55,7 @@
 // support methods via macros "EVE_API" where the value depends on the level of
 // the EVE device support. Alternatively directly set the EVE_API and EVE_SUB_API
 // macro as required. This must be called prior to including FT8xx.h.
-// "#define FT8XX_TYPE BT817" is equivalant to having "#define EVE_API 4".
+// "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
 // Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
 #ifndef FT8XX_TYPE
 #define FT8XX_TYPE BT820

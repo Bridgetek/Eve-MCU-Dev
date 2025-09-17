@@ -442,7 +442,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
     uint32_t ChunkSize = 0;
     const uint32_t MaxChunkSize = 128;
     uint8_t IsLastChunk = 0;
-    uint16_t Freespace = 0;
+    uint32_t Freespace = 0;
 
     HAL_ChipSelect(0);
 
@@ -511,7 +511,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
         }
     }
 
-    HAL_ChipSelect(1);
+    //HAL_ChipSelect(1);
 }
 
 // Writes a string over SPI

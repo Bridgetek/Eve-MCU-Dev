@@ -75,13 +75,13 @@ int8_t platform_calib_init(void)
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
-		(void)calib;
-	  return 0;
+	(void)calib;
+	return 0;
 }
 
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
-		(void)calib;
+	(void)calib;
     return -1;
 }
 //@}

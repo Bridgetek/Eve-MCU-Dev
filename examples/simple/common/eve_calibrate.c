@@ -71,7 +71,7 @@ int eve_calibrate(void)
 {
 	struct touchscreen_calibration calib;
 	uint8_t dummy;
-
+    
 	platform_calib_init();
 
 	// If no store of calibration or current screen touch.

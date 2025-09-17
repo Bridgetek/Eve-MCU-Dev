@@ -130,27 +130,29 @@ void MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-  HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_RESET); //lo
-  //Nop();
+    HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_RESET); //lo
+    // Perform a very short delay
+    __nop();
 }
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-  HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_SET); //hi
-  //Nop();
+    HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_SET); //hi
+    // Perform a very short delay
+    __nop();
 }
 
 // -------------------------- PD line low --------------------------------------
 inline void MCU_PDlow(void)
 {
-  HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_RESET); //lo                                                     // PD# line low
+    HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_RESET); //lo                                                     // PD# line low
 }
 
 // ------------------------- PD line high --------------------------------------
 inline void MCU_PDhigh(void)
 {
-  HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_SET); //hi                                                      // PD# line high
+    HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_SET); //hi                                                      // PD# line high
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -191,49 +193,42 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
     uint16_t DataRead;
-    uint16_t TxBuffer = DataToWrite;
+    uint16_t TxBuffer = MCU_htole16(DataToWrite);
 
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
 
-    return MCU_be16toh(DataRead);
+    return MCU_le16toh(DataRead);
 }
 
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
 {
     uint32_t DataRead;
-    uint32_t TxBuffer = DataToWrite;
+    uint32_t TxBuffer = MCU_htole32(DataToWrite);
     
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
 
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
 
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 {
     uint32_t DataRead;
-    uint32_t TxBuffer = DataToWrite;
+    uint32_t TxBuffer = MCU_htole32(DataToWrite);
 
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, 5000);
  
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_Delay_20ms(void)
 {
     HAL_Delay(20);
-    }
+}
 
 void MCU_Delay_500ms(void)
 {
-    uint8_t dly = 0;
-
-    for(dly =0; dly < 100; dly++)
-    {
-        HAL_Delay(20);
-    }
+    HAL_Delay(500);
 }
-
-
 
 // --------------------- SPI Send and Receive ----------------------------------
 
@@ -257,7 +252,7 @@ uint16_t MCU_SPIRead16(void)
 
     DataRead = MCU_SPIReadWrite16(0);
 
-    return DataRead;
+    return MCU_le16toh(DataRead);
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
@@ -271,7 +266,7 @@ uint32_t MCU_SPIRead24(void)
 
     DataRead = MCU_SPIReadWrite24(0);
 
-    return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
@@ -285,7 +280,7 @@ uint32_t MCU_SPIRead32(void)
 
     DataRead = MCU_SPIReadWrite32(0);
 
-    return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
