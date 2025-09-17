@@ -17,7 +17,8 @@ This example supports the following platforms:
 |Expressif ESP32 | [ESP32](ESP32/README.md) | 
 |TI MSP430 | [MSP430](MSP430/README.md) (1) |
 |TI MSPM0 | [MSPM0](MSPM0/README.md) (1) | 
-|Microchip PIC18F | PIC18F (1) | 
+|Microchip PIC18F | [PIC18F](PIC18F/README.md) (2) | 
+|NXP K64 | [NXP_K64](NXP_K64/README.md) (2) | 
 |ST STM32 (Keil) | [STM32](STM32/README.md) | 
 |ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) | 
 |Raspberry Pi | [raspberry_pi](raspberry_pi/README.md) | 
@@ -29,6 +30,7 @@ This example supports the following platforms:
 |Generic using libFT4222 Visual Studio | [libmpsse](libmpsse/README.md) | 
 
 - (1) Hardware testing ongoing.
+- (2) Build environment incomplete.
  
 Supported EVE APIs in this example:
 
