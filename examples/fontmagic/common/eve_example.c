@@ -309,7 +309,7 @@ void cmd_textrotate(int x, int y, struct eve_font_cache *cache, char *text)
         16384, 65536);
     EVE_CMD_SETMATRIX();
 
-    int i;
+    unsigned int i;
     size_t len = strlen(text);
     char *ch = text;
 

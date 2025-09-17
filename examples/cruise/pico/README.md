@@ -1,52 +1,31 @@
-# EVE-MCU-BRT_AN_025-Example-Pico
-Example code for Application Note BRT_AN_025 for the Raspberry Pi Pico Board
+# EVE-MCU-Dev Cruise Raspberry Pi pico Example
 
-Refer to the Bridgetek Application Note document BRT_AN_025 for details on the example code.
+[Back](../README.md)
 
-To build use CMake. Firstly initialise the build directory into a directory called `build`. This only needs to be done once.
+## Setting Up the pico SDK
 
+The build environment depends on the presence of the Raspberry Pi pico SDK. This can be setup following instructions in the section "Appendix C: Manual toolchain setup" of the [Getting Started With pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) document from the Raspberry Pi website.
+
+This will configure a command line environment for compilation of Raspberry Pi pico projects. It is intended for Linux environments.
+
+## Compiling the Cruise Raspberry Pi pico Example
+
+The build process is controlled by a file in this folder called `CMakeLists.txt`. This is used by a utility called CMake to perform the build.
+
+Firstly, the CMake environment must be configured first with the command.
 ```
-$ cmake -B build -S .
+cmake -B build -S .
 ```
+Configuration files for the build are kept in the directory called `build`.
 
-Next, build the code.
-
+Then the compilation performed using this command.
 ```
-$ cmake --build build
+cmake --build build
 ```
+Once completed, the compiled files are also found in the `build` directory.
 
-The build will end with the following messages. Places where compilation steps are not shown are marked in the output.
+## Running the Cruise Raspberry Pi pico Example
 
-```
-[  1%] Built target bs2_default
-[  2%] Built target bs2_default_padded_checksummed_asm
-Scanning dependencies of target eve_library
-<<<< SKIPPED COMPILATIONS >>>>
-[  3%] Building C object CMakeFiles/eve_library.dir/mnt/c/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/ports/eve_arch_rpi/EVE_MCU_RP2040.c.obj
-/mnt/c/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/ports/eve_arch_rpi/EVE_MCU_RP2040.c:53:9: note: #pragma message: Compiling /mnt/c/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Examples-BRT_AN_025/ports/eve_arch_rpi/EVE_MCU_RP2040.c for Raspberry Pi pico RP2040
-   53 | #pragma message "Compiling " __FILE__ " for Raspberry Pi pico RP2040"
-      |         ^~~~~~~
-<<<< SKIPPED COMPILATIONS >>>>
-[  4%] Linking CXX static library libeve_library.a
-[ 29%] Built target eve_library
-[ 57%] Built target eve_example
-[ 58%] Performing build step for 'ELF2UF2Build'
-[100%] Built target elf2uf2
-[ 59%] No install step for 'ELF2UF2Build'
-[ 59%] Completed 'ELF2UF2Build'
-[ 61%] Built target ELF2UF2Build
-[ 62%] Linking CXX executable pico.elf
-   text    data     bss     dec     hex filename
-  35228      40    3476   38744    9758 pico.elf
-[100%] Built target pico
-```
+The executable image is found in the file `build` directory. It is called `simple-pico.uf2`.
 
-There will be the following files in the `build` directory:
-
-```
-$ ls build/
-CMakeCache.txt  Makefile             elf2uf2    libeve_example.a  pico-sdk  pico.dis  pico.elf.map  pico.uf2
-CMakeFiles      cmake_install.cmake  generated  libeve_library.a  pico.bin  pico.elf  pico.hex
-```
-
-To run the code on the Pico, power-up the pico with the BOOTSEL button depressed. It will instantiate a removable drive. Now copy the file `pico.uf2` to the removable drive.
+To run this file place the pico into BOOTSEL mode. Then copy the file to the USB Mass Storage Device that is started on the pico when BOOTSEL mode is started.

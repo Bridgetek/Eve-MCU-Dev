@@ -16,8 +16,7 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Bridgetek FT90x | ft900 | Yes |
-|Bridgetek FT93x | ft900 | Yes |
+|Bridgetek FT9xx | [ft900](ft900/README.md) | Yes | 
 |Raspberry Pi Pico | pico | Yes |
 |Generic using libFT4222 | libmpsse | Yes |
 
