@@ -5,7 +5,7 @@ CFLAGS = -c -Wall -g -Os -DPLATFORM_BEAGLEBONE -DUSE_LINUX_SPI_DEV -I../../../in
 LD = $(CC)
 LDFLAGS = 
 
-TARGET = $(shell basename $(CURDIR))
+TARGET = simple_$(shell basename $(CURDIR))
 
 OBJECTS = $(patsubst %.c, %.o, $(shell find . -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../common -name "*.c"))

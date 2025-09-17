@@ -12,15 +12,14 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-|Bridgetek FT90x | ft900 (1) | 
-|Bridgetek FT93x | ft900 (1) | 
-|Beaglebone Black | BeagleBone (1) | 
-|Expressif ESP32 | ESP32 | 
-|TI MSP430 | MSP430 (1) |
-|TI MSPM0 | MSPM0 (1) | 
+|Bridgetek FT9xx | [ft900](ft900/README.md) | 
+|Beaglebone Black | [BeagleBone](BeagleBone/README.md) (1) | 
+|Expressif ESP32 | [ESP32](ESP32/README.md) | 
+|TI MSP430 | [MSP430](MSP430/README.md) (1) |
+|TI MSPM0 | [MSPM0](MSPM0/README.md) (1) | 
 |Microchip PIC18F | PIC18F (1) | 
-|ST STM32 (Keil) | STM32 (1) | 
-|ST STM32Cube | STM32CUBE (1) | 
+|ST STM32 (Keil) | [STM32](STM32/README.md) (1) | 
+|ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) (1) | 
 |Raspberry Pi | [raspberry_pi](raspberry_pi/README.md) | 
 |Raspberry Pi Pico (SDK) | [pico](pico/README.md) | 
 |Raspberry Pi Pico (VS Code) | [pico_vscode](pico_vscode/README.md) |
