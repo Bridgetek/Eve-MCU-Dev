@@ -2,66 +2,23 @@
 
 This library and ports allow a variety of hardware to communicate with FT8xx and BT8xx devices: embedded MCUs using their native SPI hardware; Linux PCs using SPI character devices; PCs using FT4222H or MPSSE USB devices. This library is intended to provide a **C** library for embedded designs.
 
-The code is in the process of being updated to support the **BT82x** devices (EVE generation 5). Not all platforms have been coded and tested for BT82x. Outstanding work will be completed as time allows.
-
-The application note document for this library is linked on the Bridgetek Website in (Home / Software Examples / EVE Examples / Portable EVE Library)[https://brtchip.com/software-examples/eve-examples-2/]. The document is (BRT_AN_025 EVE Portable MCU Example)[https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf]
+The application note document for this library is linked on the Bridgetek Website in [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). This library is covered by Application Note [BRT_AN_025 EVE Portable MCU Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf)
 
 ## Ports
 
-### PLATFORM Macro
+The supported platforms are listed in the [ports/README.md](ports/README.md) file. 
 
-The PLATFORM macro sets the port files to be used by the compiler. The options are as follows:
-
-| Port Name | PLATFORM | Port Directory | Tested BT82x Support |
-| --- | --- | --- | --- |
-| Bridgetek FT90x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
-| Bridgetek FT93x | PLATFORM_FT9XX | eve_arch_ft9xx | Yes |
-| Beaglebone Black | PLATFORM_BEAGLEBONE | eve_arch_beaglebone | No |
-| Expressif ESP32 | PLATFORM_ESP32 | eve_arch_esp32 | Yes |
-| TI MSP430 | PLATFORM_MSP430 | eve_arch_msp430 | No |
-| TI MSPM0 | PLATFORM_MSPM0 | eve_arch_mspm0 | No |
-| Microchip PIC18F | PLATFORM_PIC | eve_arch_pic | No |
-| ST STM32 (Keil) | PLATFORM_STM32 | eve_arch_stm32 | Yes |
-| ST STM32Cube | PLATFORM_STM32CUBE | eve_arch_stm32 | Yes |
-| Raspberry Pi | PLATFORM_RASPBERRYPI | eve_arch_rpi | Yes |
-| Raspberry Pi Pico | PLATFORM_RP2040 | eve_arch_rpi | Yes |
-| Generic using libMPSSE | USE_MPSSE | eve_libmpsse | Yes |
-| Generic using libFT4222 | USE_FT4222 | eve_libft4222 | Yes |
-
-The C source files are in the [ports](ports/) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros.
-
-The Rasberrry Pi platform is suitable for generic Linux by modifying the GPIO pins and device names to match the CPU and board package.
+The source code for each platform is stored in the [ports](ports) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros or USE_<i>xxx</i> macros. This way all the files in the ports directory can be loaded into a compiler and ignored if they are not relevant.
 
 ## Example Code
 
-There are example projects for many MCUs and platforms. These include this repository as a submodule within the required code for the platform. The "simple" example has 
+There are example projects for many each supported platform. The [examples/README.md](examples/README.md) file has details on each of the included examples.
 
-Build instructions will be included in the example repositories.
-
-### Microcontrollers
-
-| MCU | Example Repository | Build Environment |
-| --- | --- | --- |
-|Bridgetek FT90x/FT93x | examples/simple/ft900 | ft32-elf-gcc using FT9xx Toolchain IDE or makefile |
-|Raspberry Pi Pico | examples/simple/pico | CMake, gcc |
-|Beaglebone Black | examples/simple/BeagleBone | |
-|Expressif ESP32 | examples/simple/ESP32 | |
-|TI MSP430 | examples/simple/MSP430 | |
-|Microchip PIC18F | examples/simple/PIC18F | |
-|ST STM32 (Keil) | examples/simple/STM32 | Keil IDE and STM32CubeMX |
-|ST STM32Cube | examples/simple/STM32CUBE | STM32Cube IDE and STM32CubeMX |
-
-### Platforms
-
-| Platform | Example Repository | Build Environment |
-| --- | --- | --- |
-|Raspberry Pi | examples/simple/raspberry_pi | makefile/gcc |
-|Generic using libMPSSE | examples/simple/libmpsse | makefile/gcc or VisualStudio |
-|Generic using libFT4222 | examples/simple/libft4222 | makefile/gcc or VisualStudio |
+The [simple](examples/simple) example has build environments for all platforms and forms the basis of other examples that are provided. Build instructions are included in the simple example directory in the file [simple/README.md](examples/simple/README.md).
 
 ## EVE Device and Panel Selection
 
-The library must be built for the correct EVE device and panel type. 
+The library __must__ be built for the correct EVE device and panel type. This is defined in the file [include/EVE_config.h](include/EVE_config.h).
 
 ### EVE Device Selection
 
@@ -104,7 +61,9 @@ Note that the example programs will take the `EVE_config.h` file from the `inclu
 
 ### Panel Selection
 
-The panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specificaitions or contact Bridgetek Support for advice.
+The panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. 
+
+Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
 
 The following are included in the distribution:
 - WQVGA *480x272* (VM800B with 5 or 4.3 inch display)
@@ -113,6 +72,11 @@ The following are included in the distribution:
 - WXGA *1280x800* (ME817EV with 10.1 inch display)
 - HD *1920x1080* (15 inch high definition display)
 - WUXGA *1920x1200* (10 inch high definition display)
+
+This line will set the panel to a ME-813A-WH50C (800 x 400).
+```
+#define DISPLAY_RES WVGA
+```
 
 **The default in the distribution will be a WUXGA panel**.
 
