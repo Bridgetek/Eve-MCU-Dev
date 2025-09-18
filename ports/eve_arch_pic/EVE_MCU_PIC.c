@@ -237,16 +237,18 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 
 void MCU_Delay_20ms(void)
 {
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
+    // Repeat 4 times to give 20ms due to x4 PLL
+    __delay_ms(20); 
+    __delay_ms(20); 
+    __delay_ms(20); 
+    __delay_ms(20); 
 }
 
 void MCU_Delay_500ms(void)
 {
     uint8_t dly = 0;
 
+    // Repeat 100 times to give 20ms due to x4 PLL
     for(dly =0; dly < 100; dly++)
     {
         __delay_ms(20);
@@ -345,12 +347,12 @@ uint32_t MCU_htobe32 (uint32_t h)
 
 uint16_t MCU_htole16 (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
 
 uint16_t MCU_be16toh (uint16_t h)
@@ -364,12 +366,12 @@ uint32_t MCU_be32toh (uint32_t h)
 
 uint16_t MCU_le16toh (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
 
 #endif /* defined(PLATFORM_PIC) */

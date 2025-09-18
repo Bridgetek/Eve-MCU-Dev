@@ -1,4 +1,4 @@
-/* Generated file by extension.py */
+/* Generated file by extensionutil.py */
 
 #include <stdint.h>
 #include <stdarg.h>
