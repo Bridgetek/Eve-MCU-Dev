@@ -1,0 +1,10 @@
+name                                            : id    : start   : size   : type  : stype : comp  : width : height
+
+unified.blob                                    : 0     : 0       : 4096   : 1     : 0     : 0     : 0     : 0    
+EDF Block                                       : 1     : 4096    : 192    : 253   : 0     : 0     : 0     : 0    
+Color_Wheel_250x250_ARGB1555.raw                : 2     : 4288    : 125056 : 2     : 0     : 0     : 250   : 250  
+Color_Picker_Square_790x470_ARGB1555.raw        : 3     : 129344  : 742656 : 2     : 0     : 0     : 790   : 470  
+Color_Picker_Square_790x470_PALETTED8_lut.raw   : 4     : 872000  : 1024   : 3     : 0     : 0     : 0     : 0    
+Color_Picker_Square_790x470_PALETTED8_index.raw : 5     : 873024  : 371328 : 254   : 0     : 0     : 0     : 0    
+Frog_602x401_PALETTED8_lut.raw                  : 6     : 1244352 : 1024   : 3     : 0     : 0     : 0     : 0    
+Frog_602x401_PALETTED8_index.raw                : 7     : 1245376 : 241408 : 254   : 0     : 0     : 0     : 0    
