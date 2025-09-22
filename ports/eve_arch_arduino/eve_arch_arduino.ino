@@ -1,5 +1,5 @@
 /**
- @file EVE_Linux_BBB.c
+ @file eve_arch_arduino.c
  */
 /*
  * ============================================================================
@@ -47,7 +47,6 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
 // Guard against being used for incorrect CPU type.
 #if defined(ARDUINO)
 
