@@ -1,0 +1,18 @@
+{
+    "ft9xx.projectName": "simple",
+    "ft9xx.baudrate": "921600",
+    "ft9xx.buildMode": "Debug",
+    "ft9xx.chipset": "FT90x",
+    "ft9xx.subWorkspace": true,
+    "ft9xx.comPort": "",
+    "ft9xx.thirdPartyLibs": [],
+    "ft9xx.hardwareLibs": [],
+    "ft9xx.layeredDrivers": [],
+    "ft9xx.d2xxType": "",
+    "ft9xx.customDefinedFlags": [],
+    "ft9xx.customLinkerFlags": [],
+    "files.associations": {
+        "stdio.h": "c",
+        "string.h": "c"
+    }
+}

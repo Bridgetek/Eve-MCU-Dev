@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../include"
+		},
+		{
+			"path": "../../../ports/eve_arch_esp32"
+		},
+		{
+			"path": "../../../source"
+		},
+		{
+			"path": "../common"
+		},
+		{
+			"path": "../../../ports/eve_bt82x"
+		}
+	],
+	"settings": {}
+}

@@ -62,6 +62,7 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "nvs_flash.h"
+#include "driver/gpio.h"
 
 #include "EVE.h"
 
@@ -89,15 +90,15 @@ void setup(void);
 //@{
 int8_t platform_calib_init(void)
 {
-	esp_err_t err = nvs_flash_init();
-	if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
-		// NVS partition was truncated and needs to be erased
-		// Retry nvs_flash_init
-		ESP_ERROR_CHECK(nvs_flash_erase());
-		err = nvs_flash_init();
-	}
-	ESP_ERROR_CHECK( err );
-	return 0;
+    esp_err_t err = nvs_flash_init();
+    if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
+        // NVS partition was truncated and needs to be erased
+        // Retry nvs_flash_init
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        err = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( err );
+    return 0;
 }
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
@@ -125,37 +126,37 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
 
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
-	nvs_handle my_handle;
-	esp_err_t err;
+    nvs_handle my_handle;
+    esp_err_t err;
 
-	// Open
-	err = nvs_open(STORAGE_NAMESPACE, NVS_READWRITE, &my_handle);
-	if (err != ESP_OK) return err;
+    // Open
+    err = nvs_open(STORAGE_NAMESPACE, NVS_READWRITE, &my_handle);
+    if (err != ESP_OK) return err;
 
-	// Read calibration blob
-	size_t required_size = sizeof(struct touchscreen_calibration);
-	err = nvs_get_blob(my_handle, STORAGE_CALIBRATION, calib, &required_size);
-	if (err != ESP_OK) return err;
-	if (required_size == 0) err = -1;
+    // Read calibration blob
+    size_t required_size = sizeof(struct touchscreen_calibration);
+    err = nvs_get_blob(my_handle, STORAGE_CALIBRATION, calib, &required_size);
+    if (err != ESP_OK) return err;
+    if (required_size == 0) err = -1;
 
-	// Close
-	nvs_close(my_handle);
-	return err;
+    // Close
+    nvs_close(my_handle);
+    return err;
 }
 //@}
 
 void main_thread(void *p)
 {
-	ESP_LOGE(__FUNCTION__, "setup starting");
-	/* Setup UART */
-	setup();
+    ESP_LOGE(__FUNCTION__, "setup starting");
+    /* Setup UART */
+    setup();
 
-	ESP_LOGE(__FUNCTION__, "example starting");
-	/* Start example code */
-	eve_example();
+    ESP_LOGE(__FUNCTION__, "example starting");
+    /* Start example code */
+    eve_example();
 
-	// function never returns 
-	for (;;) ;
+    // function never returns 
+    for (;;) ;
 }
 
 void setup(void)
@@ -164,6 +165,6 @@ void setup(void)
 
 void app_main()
 {
-	ESP_ERROR_CHECK( nvs_flash_init() );
-	xTaskCreate(&main_thread, "main", 4096, NULL, 5, NULL);
+    ESP_ERROR_CHECK( nvs_flash_init() );
+    xTaskCreate(&main_thread, "main", 4096, NULL, 5, NULL);
 }

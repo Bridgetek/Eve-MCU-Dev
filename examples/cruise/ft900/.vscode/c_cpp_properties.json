@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${FT9XX_TOOLCHAIN}/hardware/include/**",
+                "${FT9XX_TOOLCHAIN}/hardware/include/private/**",
+                "${FT9XX_TOOLCHAIN}/hardware/include/registers/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "__CDT_PARSER__",
+                "__FT900__"
+            ],
+            "compilerPath": "${env:FT9XX_TOOLCHAIN}\\tools\\bin\\ft32-elf-gcc.exe",
+            "cStandard": "c99",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}

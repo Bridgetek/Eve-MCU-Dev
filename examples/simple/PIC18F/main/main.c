@@ -3,18 +3,7 @@
  */
 /*
  * 
-============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
- * (C) Copyright Bridgetek Pte Ltd
+ * @defgroup main MAIN
  * 
 ============================================================================
  *
@@ -52,7 +41,8 @@ Bridgetek
  * 
 ============================================================================
  */
-
+#include "../mcc_generated_files/system/system.h"
+#include <xc.h>
 
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
@@ -92,6 +82,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
   */
 int main(void)
 {
+    SYSTEM_Initialize();
 
     eve_example();
 

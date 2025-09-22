@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -48,7 +48,7 @@
  */
 
 #ifndef EVE_HEADER_H
-#define	EVE_HEADER_H
+#define EVE_HEADER_H
 
 // for Uint8/16/32 and Int8/16/32 data types.
 #include <stdint.h>
@@ -57,17 +57,22 @@
 #include <EVE_config.h>
 #include "FT8xx.h"
 
+#if IS_EVE_API(5)
+// Base patch for BT82x
+#include "patch_base.h"
+#endif
+
 /**
  @brief Initialise EVE API.
  @details Initialise the EVE API layer, HAL layer and MCU-specific hardware
- 	 layer.
+      layer.
  */
 void EVE_Init(void);
 
 /**
  @brief EVE API: Begin coprocessor list
  @details Starts a coprocessor list. Waits for the coprocessor to be idle
- 	 before asserting chip select.
+      before asserting chip select.
  */
 void EVE_LIB_BeginCoProList(void);
 
@@ -80,8 +85,28 @@ void EVE_LIB_EndCoProList(void);
 /**
  @brief EVE API: Waits for coprocessor list to end
  @details Will poll the coprocessor command list until it has been completed.
+ @returns 0 for successful completion, 0xff for coprocessor exception.
  */
-void EVE_LIB_AwaitCoProEmpty(void);
+int EVE_LIB_AwaitCoProEmpty(void);
+
+/**
+ @brief EVE API: Returns a result from the coprocessor command buffer
+ @details Will return a result value from "offset" words back in the command buffer.
+ If the value of offset is 1 then the previous value from the coprocessor
+ command buffer is returned.
+ @returns result of a previous coprocessor command.
+ */
+uint32_t EVE_LIB_GetResult(int offset);
+
+#if IS_EVE_API(5)
+/**
+ @brief EVE API: Get coprocessor exception description
+ @details Will query the coprocessor exception description to a string.
+ @returns Coprocessor exception description. This is a pointer to a string
+  and must be sufficient to hold 256 characters.
+ */
+void EVE_LIB_GetCoProException(char *desc);
+#endif
 
 /**
  @brief EVE API: Write a buffer to memory mapped RAM
@@ -104,10 +129,10 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 /**
  @brief EVE API: Write a buffer to the coprocessor command memory
  @details Writes a block of data via SPI to the EVE coprocessor.
- 	 This must be part of a coprocessor list. It will typically be called
- 	 after a coprocessor command to provide data for the operation.
- 	 The data will be added to the coprocessor command list therefore the
- 	 write will block on available space in this list.
+      This must be part of a coprocessor list. It will typically be called
+      after a coprocessor command to provide data for the operation.
+      The data will be added to the coprocessor command list therefore the
+      write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
  */
@@ -116,10 +141,10 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
 /**
  @brief EVE API: Write a string the coprocessor command memory
  @details Writes a string via SPI to the EVE coprocessor.
- 	 This must be part of a coprocessor list. It will typically be called
- 	 after a coprocessor command to provide a string for the operation.
- 	 The data will be added to the coprocessor command list therefore the
- 	 write will block on available space in this list.
+      This must be part of a coprocessor list. It will typically be called
+      after a coprocessor command to provide a string for the operation.
+      The data will be added to the coprocessor command list therefore the
+      write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
  */
@@ -128,21 +153,76 @@ uint16_t EVE_LIB_SendString(const char* string);
 /**
  @brief EVE API: Get properties of an CMD_LOADIMAGE operation
  @details Obtains the details of an image decoded by the CMD_LOADIMAGE
- 	 coprocessor command. The properties of the image are taken from
- 	 the coprocessor command list.
+      coprocessor command. The properties of the image are taken from
+      the coprocessor command list.
  @param addr - Pointer to variable to receive the image start address.
  @param width - Pointer to variable to receive the image width.
  @param height - Pointer to variable to receive the image height.
  */
 void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height);
 
+/**
+ @brief EVE API: Get current allocation pointer
+ @details Obtains the automatic allocation pointer of the last address
+      used for certain coprocessor operations.
+ @returns addr - Last allocation address rounded up to the next 32-bit 
+      boundary.
+ */
+void EVE_LIB_GetPtr(uint32_t *addr);
 
+/**
+ @brief EVE API: Get the touchscreen transformation matrix.
+ @details Obtains the transformation matric from a CMD_CALIBRATE operation.
+ @param a -  pointer of varaible to receive matrix a.
+ @param b -  pointer of varaible to receive matrix b.
+ @param c -  pointer of varaible to receive matrix c.
+ @param d -  pointer of varaible to receive matrix d.
+ @param e -  pointer of varaible to receive matrix e.
+ @param f -  pointer of varaible to receive matrix f.
+ */
+void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f);
 
+/**
+ @brief EVE API: Calculate the CRC of a memory area.
+ @details Obtains the CRC of a memory area.
+ @param ptr - Start of memory area.
+ @param num - Number of bytes to CRC.
+ @param result - pointer to receive the CRC.
+ */
+void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
 
-
+#if IS_EVE_API(2, 3, 4, 5)
+void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, 
+                              int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
+                              uint32_t *result );
+#endif
+#if IS_EVE_API(4, 5)
+/**
+ @brief EVE API: Get image properties.
+ @details From the last CMD_LOADIMAGE get the address, size, format and palette of the loaded image.
+ @param *addr - pointer to variable to receive the address the image was loaded to.
+ @param *fmt - pointer to variable to receive the format of the loaded image.
+ @param *width - pointer to variable to receive the width of the loaded image.
+ @param *height - pointer to variable to receive the height of the loaded image.
+ @param *palette - pointer to variable to receive the palette of the loaded image.
+ */
+void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette);
+#endif
+#if IS_EVE_API(5)
+/**
+ @brief EVE API: Read a register.
+ @details Reads a register value.
+ @param addr - Address of register to read.
+ @param value - pointer to receive the contents of the register.
+ */
+void EVE_LIB_RegRead(uint32_t addr, uint32_t *value);
+#endif
 
 //##################################################################################################
-// Raw command interface write
+
+// Display List encodings.
+// Common to all generations.
+
 void EVE_CMD(uint32_t c);
 // Graphics instructions
 void EVE_CLEAR_COLOR_RGB(uint8_t r, uint8_t g, uint8_t b);
@@ -154,6 +234,9 @@ void EVE_VERTEX2F(int16_t x, int16_t y);
 void EVE_VERTEX2II(uint16_t x, uint16_t y, uint8_t handle,uint8_t cell);
 void EVE_BITMAP_HANDLE(uint8_t handle);
 void EVE_BITMAP_SOURCE(int32_t addr);
+#if IS_EVE_API(3, 4) // BT81x BT88x API change
+void EVE_BITMAP_SOURCE2(uint8_t flash_or_ram, int32_t addr);
+#endif
 void EVE_BITMAP_LAYOUT(uint8_t format, uint16_t linestride, uint16_t height);
 void EVE_BITMAP_SIZE(uint8_t filter, uint8_t wrapx, uint8_t wrapy, uint16_t width, uint16_t height);
 void EVE_CELL(uint8_t cell);
@@ -182,22 +265,33 @@ void EVE_RESTORE_CONTEXT(void);
 void EVE_RETURN(void);
 void EVE_MACRO(uint8_t m);
 void EVE_DISPLAY(void);
+void EVE_BITMAP_TRANSFORM_A(long a);
+void EVE_BITMAP_TRANSFORM_B(long b);
+void EVE_BITMAP_TRANSFORM_C(long c);
+void EVE_BITMAP_TRANSFORM_D(long d);
+void EVE_BITMAP_TRANSFORM_E(long e);
+void EVE_BITMAP_TRANSFORM_F(long f);
 
+#if IS_EVE_API(2, 3, 4, 5) // FT81x API change
+void EVE_VERTEX_FORMAT(uint8_t frac);
+void EVE_BITMAP_LAYOUT_H(uint8_t linestride, uint8_t height);
+void EVE_BITMAP_SIZE_H(uint8_t width, uint8_t height);
+void EVE_PALETTE_SOURCE(uint32_t addr);
+void EVE_VERTEX_TRANSLATE_X(uint32_t x);
+void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
+void EVE_NOP(void);
+#endif
 
+#if IS_EVE_API(5) // BT82x extensions
+void EVE_BITMAP_SOURCE_H(uint8_t addr);
+#endif
 
+// Co-Processor Widgets.
+// Common to all generations.
 
-
-
-
-
-
-// Co-Processor Widgets
-//void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string);
-//void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string);
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string);
 void EVE_CMD_NUMBER(int16_t x, int16_t y, int16_t font, uint16_t options, int32_t n);
 void EVE_CMD_LOADIDENTITY(void);
-//void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string);
 void EVE_CMD_GAUGE(int16_t x, int16_t y, int16_t r, uint16_t options, uint16_t major, uint16_t minor, uint16_t val, uint16_t range);
 void EVE_CMD_REGREAD(uint32_t ptr, uint32_t result);
 void EVE_CMD_GETPROPS(uint32_t ptr, uint32_t w, uint32_t h);
@@ -209,12 +303,6 @@ void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty);
 void EVE_CMD_STOP(void);
 void EVE_CMD_SLIDER(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t range);
-void EVE_BITMAP_TRANSFORM_A(long a);
-void EVE_BITMAP_TRANSFORM_B(long b);
-void EVE_BITMAP_TRANSFORM_C(long c);
-void EVE_BITMAP_TRANSFORM_D(long d);
-void EVE_BITMAP_TRANSFORM_E(long e);
-void EVE_BITMAP_TRANSFORM_F(long f);
 void EVE_CMD_INTERRUPT(uint32_t ms);
 void EVE_CMD_FGCOLOR(uint32_t c);
 void EVE_CMD_ROTATE(int32_t a);
@@ -226,7 +314,11 @@ void EVE_CMD_MEMSET(uint32_t ptr, uint32_t value, uint32_t num);
 void EVE_CMD_GRADCOLOR(uint32_t c);
 void EVE_CMD_BITMAP_TRANSFORM(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2, uint16_t result);
 void EVE_CMD_CALIBRATE(uint32_t result);
+#if IS_EVE_API(1, 2, 3, 4) // BT82x API change
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr);
+#else
+void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar);
+#endif
 void EVE_CMD_LOGO(void);
 void EVE_CMD_APPEND(uint32_t ptr, uint32_t num);
 void EVE_CMD_MEMZERO(uint32_t ptr, uint32_t num);
@@ -248,25 +340,12 @@ uint8_t COUNT_ARGS(const char* string);
 void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...);
 void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string, ...);
 void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string, ...);
-
-
-
-
-
-#if defined (EVE2_ENABLE) || defined (EVE3_ENABLE) || defined (EVE4_ENABLE)
-void EVE_VERTEX_FORMAT(uint8_t frac);
-void EVE_BITMAP_LAYOUT_H(uint8_t linestride, uint8_t height);
-void EVE_BITMAP_SIZE_H(uint8_t width, uint8_t height);
-void EVE_PALETTE_SOURCE(uint32_t addr);
-void EVE_VERTEX_TRANSLATE_X(uint32_t x);
-void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
-void EVE_NOP(void);
-// ---------------   CO-PRO   -------------
+#if IS_EVE_API(2)
+void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format, uint16_t freq);
+#endif
+#if IS_EVE_API(2, 3, 4, 5)
 void EVE_CMD_SETROTATE(uint32_t r);
-void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar);
-void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t w, int16_t h);
 void EVE_CMD_MEDIAFIFO(uint32_t ptr, uint32_t size);
-void EVE_CMD_INT_SWLOADIMAGE(uint32_t ptr, uint32_t options);
 void EVE_CMD_SYNC(void);
 void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
 void EVE_CMD_PLAYVIDEO(uint32_t options);
@@ -277,15 +356,55 @@ void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h);
 void EVE_CMD_SETSCRATCH(uint32_t handle);
 #endif
 
+#if IS_EVE_API(2, 3, 4) // FT80x, BT82x API change
+void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar);
+void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t w, int16_t h);
+#endif
 
-
-#if defined (EVE3_ENABLE) || defined (EVE4_ENABLE)
-void EVE_BITMAP_SOURCE2(uint8_t flash_or_ram, int32_t addr);
-void EVE_CMD_FILLWIDTH(uint32_t s);
-void EVE_CMD_NOP();
+#if IS_EVE_API(3, 4)
+void EVE_CMD_INT_SWLOADIMAGE(uint32_t ptr, uint32_t options);
 void EVE_CMD_GETPOINT(int16_t x, int16_t y, uint32_t sx, uint32_t sy);
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options);
+void EVE_CMD_CLEARCACHE();
+void EVE_CMD_INTRAMSHARED(uint32_t ptr);
+void EVE_CMD_VIDEOSTARTF();
+#endif
+
+#if IS_EVE_API(3, 4, 5)
+void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop);
+void EVE_CMD_ANIMSTOP(int32_t ch);
+void EVE_CMD_ANIMXY(int32_t ch, int16_t x, int16_t y);
+void EVE_CMD_ANIMDRAW(int32_t ch);
+void EVE_CMD_ANIMFRAME(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame);
+void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num);
+#endif
+
+#if IS_EVE_API(4)
+void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame );
+void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop);
+void EVE_CMD_APILEVEL(uint32_t level);
+void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num);
+void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used);
+void EVE_CMD_HSF(uint32_t w );
+void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
+#endif
+
+#if IS_EVE_API(4, 5)
+void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
+void EVE_CMD_TESTCARD();
+void EVE_CMD_WAIT(uint32_t us);
+void EVE_CMD_NEWLIST(uint32_t a);
+void EVE_CMD_ENDLIST();
+void EVE_CMD_CALLLIST(uint32_t a);
+void EVE_CMD_RETURN();
+#endif
+
+#if IS_EVE_API(3, 4, 5)
+void EVE_CMD_NOP();
+void EVE_CMD_FILLWIDTH(uint32_t s); 
 void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s);
+void EVE_CMD_RESETFONTS();
+void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1); //TODO
 void EVE_CMD_FLASHERASE();
 void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *data);
 void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num);
@@ -299,48 +418,38 @@ void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num);
 void EVE_CMD_FLASHATTACH();
 void EVE_CMD_FLASHDETATCH();
 void EVE_CMD_FLASHSPIDESEL();
-void EVE_CMD_CLEARCACHE();
-void EVE_CMD_INTRAMSHARED(uint32_t ptr);
-void EVE_CMD_SHA1(uint32_t src, uint32_t num, uint32_t hash);
-void EVE_CMD_RESETFONTS();
-void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop);
-void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1);
-void EVE_CMD_ANIMSTOP(int32_t ch);
-void EVE_CMD_ANIMXY(int32_t ch, int16_t x, int16_t y);
-void EVE_CMD_ANIMDRAW(int32_t ch);
-void EVE_CMD_ANIMFRAME(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame);
-void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num);
-void EVE_CMD_VIDEOSTARTF();
 #endif
 
-
-#if defined (EVE2_ENABLE)
-//void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string);
-//void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string);
-//void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string);
-void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format, uint16_t freq);
-#endif
-
-
-
-
-#if defined (EVE4_ENABLE)
-void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame );
-void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop);
-void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
-void EVE_CMD_APILEVEL(uint32_t level);
-void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t result);
-void EVE_CMD_TESTCARD();
-void EVE_CMD_WAIT(uint32_t us);
-void EVE_CMD_NEWLIST(uint32_t a);
-void EVE_CMD_ENDLIST();
-void EVE_CMD_CALLLIST(uint32_t a);
-void EVE_CMD_RETURN();
-void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num);
-void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used);
+#if IS_EVE_API(4, 5)
 void EVE_CMD_GETIMAGE(uint32_t source, uint32_t fmt, uint32_t w, uint32_t h, uint32_t palette);
-void EVE_CMD_HSF(uint32_t w );
-void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
+void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t result);
 #endif
 
-#endif	/* EVE_HEADER_H */
+#if IS_EVE_API(5)
+void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb0, uint32_t rgb1);
+void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...);
+void EVE_CMD_ARC(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1);
+void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h);
+void EVE_CMD_ENABLEREGION(uint32_t en);
+void EVE_CMD_FENCE(void);
+void EVE_CMD_GRAPHICSFINISH(void);
+void EVE_CMD_REGWRITE(uint32_t a, uint32_t b);
+void EVE_CMD_APBWRITE(uint32_t a, uint32_t b);
+void EVE_CMD_APBREAD(uint32_t a, uint32_t result);
+void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options);
+void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options);
+void EVE_CMD_LOADPATCH(uint32_t options);
+void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h);
+void EVE_CMD_SDATTACH(uint32_t options, uint32_t result);
+void EVE_CMD_FSOPTIONS(uint32_t options);
+void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result);
+void EVE_CMD_FSSIZE(const char* filename, uint32_t size);
+void EVE_CMD_FSSOURCE(const char* filename, uint32_t result);
+void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result);
+void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result);
+void EVE_CMD_WAITCHANGE(uint32_t a);
+void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask);
+void EVE_CMD_RESULT(uint32_t a);
+#endif
+
+#endif    /* EVE_HEADER_H */

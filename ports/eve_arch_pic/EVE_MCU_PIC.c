@@ -58,14 +58,11 @@
 
 
 #include <xc.h>
-
-#include <EVE.h>
-#include <EVE_config.h>
-#include <FT8xx.h>
-#include <HAL.h>
-#include <MCU.h>
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+
+#include <EVE.h>
+#include <MCU.h>
 
 #define _XTAL_FREQ 12000000      // Required for _delay() function, internal OSC Max
 
@@ -86,7 +83,6 @@
 #pragma config PRICLKEN = ON       // 
 #pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 #pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
-
 
 // This is the MCU specific section and contains the functions which talk to the
 // PIC registers. If porting the code to a different PIC or to another MCU, these
@@ -113,6 +109,8 @@ void MCU_Init(void)
     TRISDbits.TRISD4 = 0;                                                       // CTS OUTPUT (TO FT232 CTS)
 
     LATBbits.LATB0 = 1;
+    
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
 
     // SPI 1 set-up
     SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
@@ -132,6 +130,11 @@ void MCU_Init(void)
     SSP1CON1bits.SSPEN  = 1;                                                    // Enable SPI1 after configuration
 }
 
+void MCU_Deinit(void)
+{
+    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+}
+
 void MCU_Setup(void)
 {
 //#ifdef FT81X_ENABLE
@@ -141,7 +144,7 @@ void MCU_Setup(void)
 //	MCU_SPIWrite8(2);
 //	MCU_CShigh();
 
-// Turn on FT9xx quad-SPI.
+// Turn on quad-SPI.
 //	spi_option(SPIM, spi_option_bus_width, 4);
 
 //#endif // FT81X_ENABLE
@@ -157,13 +160,13 @@ void MCU_Setup(void)
 void MCU_CSlow(void)
 {
     LATCbits.LATC7 = 0;                                                         // CS# line low
-    Nop();
+    NOP();
 }  
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void)
 {
-    Nop();
+    NOP();
     LATCbits.LATC7 = 1;                                                         // CS# line high
 }
 
@@ -195,8 +198,8 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
     uint16_t DataRead = 0;
-    DataRead = MCU_SPIReadWrite8((DataToWrite) >> 8) << 8;
-    DataRead |= MCU_SPIReadWrite8((DataToWrite) & 0xff);
+    DataRead = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
+    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff);
 
     return MCU_be16toh(DataRead);
 }
@@ -206,11 +209,11 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     uint32_t DataRead = 0;
     uint32_t temp;
     
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 24)); 
+    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff); 
     DataRead |= (temp<<24);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 16));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
     DataRead |= (temp<<16);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 8));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
     DataRead |= (temp<<8);
 
     return MCU_be32toh(DataRead);
@@ -221,28 +224,31 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
     uint32_t DataRead = 0;
     uint32_t temp;
           
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 24));    
+    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);    
     DataRead |= (temp << 24);
-    temp = (MCU_SPIReadWrite8((DataToWrite) >> 16));
+    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
     DataRead |= (temp << 16);      
-    DataRead |= (MCU_SPIReadWrite8((DataToWrite) >> 8) << 8);       
-    DataRead |= (MCU_SPIReadWrite8(DataToWrite) & 0xff); 
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);       
+    DataRead |= (temp << 8);      
+    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff); 
     
     return MCU_be32toh(DataRead);
 }
 
 void MCU_Delay_20ms(void)
 {
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
-    __delay_ms(20);                                                             // gives 20ms due to x4 PLL
+    // Repeat 4 times to give 20ms due to x4 PLL
+    __delay_ms(20); 
+    __delay_ms(20); 
+    __delay_ms(20); 
+    __delay_ms(20); 
 }
 
 void MCU_Delay_500ms(void)
 {
     uint8_t dly = 0;
 
+    // Repeat 100 times to give 20ms due to x4 PLL
     for(dly =0; dly < 100; dly++)
     {
         __delay_ms(20);
@@ -253,70 +259,78 @@ void MCU_Delay_500ms(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite8(0);
+    DataRead = MCU_SPIReadWrite8(0);
     
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
-	MCU_SPIReadWrite8(DataToWrite);
+    MCU_SPIReadWrite8(DataToWrite);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite16(0);
+    DataRead = MCU_SPIReadWrite16(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	MCU_SPIReadWrite16(DataToWrite);
+    MCU_SPIReadWrite16(DataToWrite);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite24(0);
+    DataRead = MCU_SPIReadWrite24(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite24(DataToWrite);
+    MCU_SPIReadWrite24(DataToWrite);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite32(0);
+    DataRead = MCU_SPIReadWrite32(0);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite32(DataToWrite);
+    MCU_SPIReadWrite32(DataToWrite);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	//spi_writen(SPIM, DataToWrite, length);
-
     uint16_t DataPointer = 0;   
-    DataPointer = 0;
 
     while(DataPointer < length)
     {
-        MCU_SPIWrite8(DataToWrite[DataPointer]);                                       // Send data byte-by-byte from array
+        MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
+        DataPointer ++;
+    }
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    uint16_t DataPointer = 0;
+
+    while(DataPointer < length)
+    {
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
         DataPointer ++;
     }
 }
@@ -333,12 +347,12 @@ uint32_t MCU_htobe32 (uint32_t h)
 
 uint16_t MCU_htole16 (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
 
 uint16_t MCU_be16toh (uint16_t h)
@@ -352,12 +366,12 @@ uint32_t MCU_be32toh (uint32_t h)
 
 uint16_t MCU_le16toh (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
 
 #endif /* defined(PLATFORM_PIC) */

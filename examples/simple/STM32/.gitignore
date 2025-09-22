@@ -1,0 +1,10 @@
+# STM32 distribution directory
+DebugConfig/
+Listings/
+Objects/
+EventRecorderStub.scvd
+*.uvguix.*
+*.uvoptx
+*.script
+*.dep
+RTE/_*

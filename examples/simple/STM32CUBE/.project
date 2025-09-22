@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>BRT_AN_025_STM32CUBE</name>
+	<name>simple_STM32CUBE</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -33,17 +33,41 @@
 		<link>
 			<name>common</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common</locationURI>
+			<locationURI>$%7BEXAMPLE_COMMON%7D</locationURI>
 		</link>
 		<link>
-			<name>eve_arch_stm32cube</name>
+			<name>eve_arch_stm32</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_arch_stm32cube</locationURI>
+			<locationURI>$%7BAPI_DIRECTORY%7D/ports/eve_arch_stm32</locationURI>
+		</link>
+		<link>
+			<name>eve_bt82x</name>
+			<type>2</type>
+			<locationURI>$%7BAPI_DIRECTORY%7D/ports/eve_bt82x</locationURI>
+		</link>
+		<link>
+			<name>include</name>
+			<type>2</type>
+			<locationURI>$%7BAPI_DIRECTORY%7D/include</locationURI>
 		</link>
 		<link>
 			<name>source</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/source</locationURI>
+			<locationURI>$%7BAPI_DIRECTORY%7D/source</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>API_DIRECTORY</name>
+			<value>$%7BPARENT-3-PROJECT_LOC%7D</value>
+		</variable>
+		<variable>
+			<name>EXAMPLE_COMMON</name>
+			<value>$%7BPARENT-1-PROJECT_LOC%7D/common</value>
+		</variable>
+		<variable>
+			<name>EXAMPLE_SNIPPETS</name>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/snippets</value>
+		</variable>
+	</variableList>
 </projectDescription>

@@ -62,139 +62,67 @@
 #include <stm32f0xx_hal_spi.h>
 
 /* Replace with header file for target MCU */
-#include "stm32f0308_discovery.h"
+//#include <stm32f0308_discovery.h>
+
+#include <string.h>
+#include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
 #include <main.h>
 #include <EVE.h>
-#include <EVE_config.h>
-#include <FT8xx.h>
-#include <HAL.h>
 #include <MCU.h>
-#include <string.h>
-#include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+
+extern GPIO_TypeDef *config_gpio;
+extern uint16_t config_pin_pd;
+extern uint16_t config_pin_cs;
 
 /* SPI handler declaration */
 SPI_HandleTypeDef SpiHandle;
 
 void MCU_Init(void)
 {
-  /* Configure the system clock to 48 MHz */
-  /**
-  * @brief  System Clock Configuration
-  *         The system Clock is configured as follow : 
-  *            System Clock source            = PLL (HSI/2)
-  *            SYSCLK(Hz)                     = 48000000
-  *            HCLK(Hz)                       = 48000000
-  *            AHB Prescaler                  = 1
-  *            APB1 Prescaler                 = 1
-  *            HSI Frequency(Hz)              = 8000000
-  *            PREDIV                         = 1
-  *            PLLMUL                         = 12
-  *            Flash Latency(WS)              = 1
-  * @param  None
-  * @retval None
-  */
+    // GPIO Initialization Function
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  
-  /* No HSE Oscillator on Nucleo, Activate PLL with HSI/2 as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_NONE;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct)!= HAL_OK)
-  {
-    /* Initialization Error */
-    while(1); 
-  }
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(config_gpio, config_pin_cs|config_pin_pd, GPIO_PIN_RESET);
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1)!= HAL_OK)
-  {
-    /* Initialization Error */
-    while(1); 
-  }
+    /*Configure GPIO pins : config_pin_cs config_pin_pd */
+    GPIO_InitStruct.Pin = config_pin_cs|config_pin_pd;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(config_gpio, &GPIO_InitStruct);
 
-  GPIO_InitTypeDef  GPIO_InitStruct;
-  
-  /* Enable the GPIO_LED clock */
-  //LEDx_GPIO_CLK_ENABLE(Led);
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* SPI1 parameter configuration*/
+    SpiHandle.Instance = SPI1;
+    SpiHandle.Init.Mode = SPI_MODE_MASTER;
+    SpiHandle.Init.Direction = SPI_DIRECTION_2LINES;
+    SpiHandle.Init.DataSize = SPI_DATASIZE_8BIT;
+    SpiHandle.Init.CLKPolarity = SPI_POLARITY_LOW;
+    SpiHandle.Init.CLKPhase = SPI_PHASE_1EDGE;
+    SpiHandle.Init.NSS = SPI_NSS_SOFT;
+    SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    SpiHandle.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    SpiHandle.Init.TIMode = SPI_TIMODE_DISABLE;
+    SpiHandle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    SpiHandle.Init.CRCPolynomial = 7;
+    SpiHandle.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+    SpiHandle.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    if (HAL_SPI_Init(&SpiHandle) != HAL_OK)
+    {
+        /* Initialization Error */
+        Error_Handler();
+    }
+}
 
-  /* Configure the PD# pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); 
-	
-  /* Configure the CS# pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET); 
-	
-  /* Configure the SCK pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET); 
-	
-  /* Configure the MOSI pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET); 	
-	
-  /* Configure the MISO pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET); 		
-	
-  /*##-1- Configure the SPI peripheral #######################################*/
-  /* Set the SPI parameters */
-  SpiHandle.Instance               = SPI1;
-  SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
-  SpiHandle.Init.Direction         = SPI_DIRECTION_2LINES;
-  SpiHandle.Init.CLKPhase          = SPI_PHASE_1EDGE;
-  SpiHandle.Init.CLKPolarity       = SPI_POLARITY_LOW;
-  SpiHandle.Init.DataSize          = SPI_DATASIZE_8BIT;
-  SpiHandle.Init.FirstBit          = SPI_FIRSTBIT_MSB;
-  SpiHandle.Init.TIMode            = SPI_TIMODE_DISABLE;
-  SpiHandle.Init.CRCCalculation    = SPI_CRCCALCULATION_DISABLE;
-  SpiHandle.Init.CRCPolynomial     = 7;
-  SpiHandle.Init.CRCLength         = SPI_CRC_LENGTH_8BIT;
-  SpiHandle.Init.NSS               = SPI_NSS_SOFT;
-  SpiHandle.Init.NSSPMode          = SPI_NSS_PULSE_DISABLE;
-  SpiHandle.Init.Mode = SPI_MODE_MASTER;
-
-  if(HAL_SPI_Init(&SpiHandle) != HAL_OK)
-  {
-    /* Initialization Error */
-    //Error_Handler();
-  }
+void MCU_Deinit(void)
+{
+    HAL_SPI_DeInit(&SpiHandle);
 }
 
 void MCU_Setup(void)
 {
-#ifdef FT81X_ENABLE
-#endif // FT81X_ENABLE
 }
 
 // ########################### GPIO CONTROL ####################################
@@ -202,271 +130,226 @@ void MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET); //lo
-  //Nop();
+    HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_RESET); //lo
+    // Perform a very short delay
+    __nop();
 }
-
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET); //hi
-  //Nop();
+    HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_SET); //hi
+    // Perform a very short delay
+    __nop();
 }
 
 // -------------------------- PD line low --------------------------------------
 inline void MCU_PDlow(void)
 {
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET); //lo                                                     // PD# line low
+    HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_RESET); //lo                                                     // PD# line low
 }
 
 // ------------------------- PD line high --------------------------------------
 inline void MCU_PDhigh(void)
 {
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET); //hi                                                      // PD# line high
+    HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_SET); //hi                                                      // PD# line high
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
+    uint8_t DataRead;
+    uint8_t TxBuffer;
     
-	uint8_t DataRead[4];
-	uint8_t TxBuffer[4];
-	
-	 TxBuffer[0] = DataToWrite;
-		
-	HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, 5000);
+    TxBuffer = DataToWrite;
+        
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, 5000);
 
-	// Note that this call to the STM32 HAL returns a status value which can be checked as shown below in order
-	// to make the application more robust
-	
-	//switch(HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, 5000))
-	//{
-    //case HAL_OK:
+    // Note that this call to the STM32 HAL returns a status value which can be checked as shown below in order
+    // to make the application more robust
+#if 0
+    switch(HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, 5000))
+    {
+    case HAL_OK:
       /* Communication is completed ___________________________________________ */
-//    case HAL_TIMEOUT:
-//      /* A Timeout Occur ______________________________________________________*/
-//      /* Call Timeout Handler */
-//      Timeout_Error_Handler();
-//      break;
-//      /* An Error Occur ______________________________________________________ */
-//    case HAL_ERROR:
-//      /* Call Timeout Handler */
-//      Error_Handler();
-//      break;
-    //default:
-      //break;
-//  }
-	   
-
-    return DataRead[0];
+    case HAL_TIMEOUT:
+      /* A Timeout Occur ______________________________________________________*/
+      /* Call Timeout Handler */
+      Timeout_Error_Handler();
+      break;
+      /* An Error Occur ______________________________________________________ */
+    case HAL_ERROR:
+      /* Call Timeout Handler */
+      Error_Handler();
+      break;
+    default:
+      break;
+  }
+#endif
+       
+    return DataRead;
 }
 
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
-    uint16_t DataRead = 0;
-    DataRead = MCU_SPIReadWrite8((DataToWrite) >> 8) << 8;
-    DataRead |= MCU_SPIReadWrite8((DataToWrite) & 0xff);
-    return MCU_be16toh(DataRead);
+    uint16_t DataRead;
+    uint16_t TxBuffer = MCU_htole16(DataToWrite);
+
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
+
+    return MCU_le16toh(DataRead);
 }
-
-
 
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
 {
-    uint32_t DataRead = 0;
-    uint32_t temp;
+    uint32_t DataRead;
+    uint32_t TxBuffer = MCU_htole32(DataToWrite);
     
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
 
-     temp = (MCU_SPIReadWrite8((DataToWrite) >> 24)); //****
-    DataRead |= (temp<<24);
-
-     temp = (MCU_SPIReadWrite8((DataToWrite) >> 16));
-    DataRead |= (temp<<16);
-     temp = (MCU_SPIReadWrite8((DataToWrite) >> 8));
-    DataRead |= (temp<<8);
-
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
-
 
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 {
-    uint32_t DataRead = 0;
-    uint32_t temp;
+    uint32_t DataRead;
+    uint32_t TxBuffer = MCU_htole32(DataToWrite);
 
-	temp = (MCU_SPIReadWrite8((DataToWrite) >> 24)); 
-    DataRead |= (temp << 24);
-     temp = (MCU_SPIReadWrite8((DataToWrite) >> 16)); 
-    DataRead |= (temp << 16);      
-    DataRead |= (MCU_SPIReadWrite8((DataToWrite) >> 8) << 8);      
-    DataRead |= (MCU_SPIReadWrite8(DataToWrite) & 0xff); 
+    HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, 5000);
  
-    return MCU_be32toh(DataRead);
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_Delay_20ms(void)
 {
     HAL_Delay(20);
-	}
+}
 
 void MCU_Delay_500ms(void)
 {
-    uint8_t dly = 0;
-
-    for(dly =0; dly < 100; dly++)
-    {
-        HAL_Delay(20);
-    }
+    HAL_Delay(500);
 }
-
-
 
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite8(0);
+    DataRead = MCU_SPIReadWrite8(0);
     
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
-	MCU_SPIReadWrite8(DataToWrite);
+    MCU_SPIReadWrite8(DataToWrite);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite16(0);
+    DataRead = MCU_SPIReadWrite16(0);
 
-	return DataRead;
+    return MCU_le16toh(DataRead);
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	MCU_SPIReadWrite16(DataToWrite);
+    MCU_SPIReadWrite16(DataToWrite);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite24(0);
+    DataRead = MCU_SPIReadWrite24(0);
 
-	return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite24(DataToWrite);
+    MCU_SPIReadWrite24(DataToWrite);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	DataRead = MCU_SPIReadWrite32(0);
+    DataRead = MCU_SPIReadWrite32(0);
 
-	return DataRead;
+    return MCU_le32toh(DataRead);
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	MCU_SPIReadWrite32(DataToWrite);
+    MCU_SPIReadWrite32(DataToWrite);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	//spi_writen(SPIM, DataToWrite, length);
-
-    uint16_t DataPointer = 0;   
+    uint32_t DataPointer = 0;
     DataPointer = 0;
 
     while(DataPointer < length)
     {
-        MCU_SPIWrite8(DataToWrite[DataPointer]);                                       // Send data byte-by-byte from array
-        DataPointer ++;
+        MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
+        DataPointer += sizeof(uint8_t);
+    }
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    uint16_t DataPointer = 0;
+    DataPointer = 0;
+
+    while(DataPointer < length)
+    {
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Send data byte-by-byte from array
+        DataPointer += sizeof(uint8_t);
     }
 }
 
 uint16_t MCU_htobe16 (uint16_t h)
 {
-    return h;
+    return bswap16(h);
 }
 
 uint32_t MCU_htobe32 (uint32_t h)
 {
-    return h;
+    return bswap32(h);
 }
 
 uint16_t MCU_htole16 (uint16_t h)
 {
-
-        return bswap16(h); 
+    return h;
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
-
-        return bswap32(h);
+    return h;
 }
 
 uint16_t MCU_be16toh (uint16_t h)
 {
-    return h;
+    return bswap16(h); 
 }
+
 uint32_t MCU_be32toh (uint32_t h)
 {
-     return h;
+    return bswap32(h); 
 }
 
 uint16_t MCU_le16toh (uint16_t h)
 {
-
-        return bswap16(h); 
+    return h;
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
-
+    return h;
 }
-
-///**
-//  * @brief  This function is executed in case of error occurrence.
-//  * @param  None
-//  * @retval None
-//  */
-//static void Timeout_Error_Handler(void)
-//{
-//  /* Toggle LED4 on */
-//  while(1)
-//  {
-//    BSP_LED_On(LED4);
-//    HAL_Delay(500);
-//    BSP_LED_Off(LED4);
-//    HAL_Delay(500);
-//  }
-//}
-
-
-///**
-//  * @brief  This function is executed in case of error occurrence.
-//  * @param  None
-//  * @retval None
-//  */
-//static void Error_Handler(void)
-//{
-//  /* Turn LED4 on */
-//  BSP_LED_On(LED4);
-//  while(1)
-//  {
-//  }
-//}
 
 #endif /* defined (PLATFORM_STM32) */

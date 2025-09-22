@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>simple_MSPM0</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>common</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common</locationURI>
+		</link>
+		<link>
+			<name>eve_arch_msp</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_arch_msp</locationURI>
+		</link>
+		<link>
+			<name>eve_bt82x</name>
+			<type>2</type>
+			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Dev/ports/eve_bt82x</location>
+		</link>
+		<link>
+			<name>include</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/include</locationURI>
+		</link>
+		<link>
+			<name>source</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/source</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

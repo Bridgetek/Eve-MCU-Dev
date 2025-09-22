@@ -1,0 +1,4 @@
+# STM32 Cube distribution directory
+Release/
+Debug/
+Drivers/

@@ -1,0 +1,409 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Show Binary Analysis",
+            "command": "${command:bridgetek-ft9xx.showBinarySizeChart}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean the FT9xx Flash",
+            "type": "shell",
+            "command": "FT9xxProg.exe",
+            "args": [
+                "--restore"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake config project FT90x debug",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "\"Ninja\"",
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-DBUILD=Debug",
+                "-DTARGET=ft90x"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "cmake",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake create the FT90x debug image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT90x debug",
+                "CMake build project",
+                "Show Binary Analysis"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Programming FT90x debug image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT90x debug",
+                "CMake build project"
+            ],
+            "dependsOrder": "sequence",
+            "command": "FT9xxProg.exe",
+            "args": [
+                "--loadflash",
+                "\"${workspaceRoot}\\FT90x_Debug\\simple_ft9xx.bin\"",
+                "--onewire",
+                "--device",
+                "0",
+                "--quiet"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "${defaultBuildTask}",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake config project FT90x release",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "\"Ninja\"",
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-DBUILD=Release",
+                "-DTARGET=ft90x"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "cmake",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake create the FT90x release image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT90x release",
+                "CMake build project",
+                "Show Binary Analysis"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Programming FT90x release image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT90x release",
+                "CMake build project"
+            ],
+            "dependsOrder": "sequence",
+            "command": "FT9xxProg.exe",
+            "args": [
+                "--loadflash",
+                "\"${workspaceRoot}\\FT90x_Release\\simple_ft9xx.bin\"",
+                "--onewire",
+                "--device",
+                "0",
+                "--quiet"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "${defaultBuildTask}",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake config project FT93x debug",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "\"Ninja\"",
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-DBUILD=Debug",
+                "-DTARGET=ft93x"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "cmake",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake create the FT93x debug image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT93x debug",
+                "CMake build project",
+                "Show Binary Analysis"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Programming FT93x debug image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT93x debug",
+                "CMake build project"
+            ],
+            "dependsOrder": "sequence",
+            "command": "FT9xxProg.exe",
+            "args": [
+                "--loadflash",
+                "\"${workspaceRoot}\\FT93x_Debug\\simple_ft9xx.bin\"",
+                "--onewire",
+                "--device",
+                "1",
+                "--quiet"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "${defaultBuildTask}",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake config project FT93x release",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "\"Ninja\"",
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-DBUILD=Release",
+                "-DTARGET=ft93x"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "cmake",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake create the FT93x release image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT93x release",
+                "CMake build project",
+                "Show Binary Analysis"
+            ],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Programming FT93x release image",
+            "type": "shell",
+            "dependsOn": [
+                "CMake config project FT93x release",
+                "CMake build project"
+            ],
+            "dependsOrder": "sequence",
+            "command": "FT9xxProg.exe",
+            "args": [
+                "--loadflash",
+                "\"${workspaceRoot}\\FT93x_Release\\simple_ft9xx.bin\"",
+                "--onewire",
+                "--device",
+                "1",
+                "--quiet"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "${defaultBuildTask}",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "CMake build project",
+            "type": "cppbuild",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "cmake",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        }
+    ]
+}

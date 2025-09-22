@@ -331,6 +331,7 @@ uint32_t eve_load_images(uint32_t start_addr)
 				flag = 0;
 			}
 		}
+		
 		EVE_LIB_WriteDataToCMD(buf, (i + 3)&(~3));
 	};
 	EVE_LIB_EndCoProList();
@@ -342,6 +343,7 @@ uint32_t eve_load_images(uint32_t start_addr)
 
 	eve_img_bridgetek_logo_width = (uint16_t)img_width;
 	eve_img_bridgetek_logo_height = (uint16_t)img_height;
+	//printf("image w = %d, h = %d\n", eve_img_bridgetek_logo_width, eve_img_bridgetek_logo_height);
 
 	EVE_LIB_BeginCoProList();
 	EVE_CMD_DLSTART();
@@ -352,12 +354,12 @@ uint32_t eve_load_images(uint32_t start_addr)
 	// BT81x now supports additional addressing where the source is in flash (see bitmap_source in the programmers guide)
 	EVE_BITMAP_SOURCE(start_addr & 0x3FFFFF);
 	EVE_BITMAP_LAYOUT(EVE_FORMAT_RGB565, img_width * 2, img_height);
-#if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
+#if IS_EVE_API(2, 3, 4, 5)
 	EVE_BITMAP_LAYOUT_H((img_width * 2) >> 10, img_height >> 9);
 #endif
 	EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
 			img_width, img_height);
-#if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
+#if IS_EVE_API(2, 3, 4, 5)
 	EVE_BITMAP_SIZE_H(img_width >> 9, img_height >> 9);
 #endif
 	EVE_END();

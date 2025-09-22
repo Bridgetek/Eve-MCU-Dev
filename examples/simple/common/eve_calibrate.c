@@ -67,11 +67,11 @@
 
 /* FUNCTIONS ***********************************************************************/
 
-void eve_calibrate(void)
+int eve_calibrate(void)
 {
 	struct touchscreen_calibration calib;
 	uint8_t dummy;
-
+    
 	platform_calib_init();
 
 	// If no store of calibration or current screen touch.
@@ -89,7 +89,10 @@ void eve_calibrate(void)
 				28, EVE_OPT_CENTERX | EVE_OPT_CENTERY,"Please tap on the dots");
 		EVE_CMD_CALIBRATE(0);
 		EVE_LIB_EndCoProList();
-		EVE_LIB_AwaitCoProEmpty();
+		if (EVE_LIB_AwaitCoProEmpty() != 0)
+		{
+			return -1;
+		}
 
 		calib.transform[0] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
 		calib.transform[1] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
@@ -108,4 +111,5 @@ void eve_calibrate(void)
 		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
 		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
 	}
+	return 0;
 }

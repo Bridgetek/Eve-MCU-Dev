@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -60,8 +60,8 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
+#include "../include/EVE.h"
 #include "../include/MCU.h"
-#include "EVE_config.h"
 
 // SPI Master pins
 #if defined(__FT900__)
@@ -95,37 +95,46 @@
 // ------------------- MCU specific initialisation  ----------------------------
 void MCU_Init(void)
 {
-	// Initialize SPIM HW
-	sys_enable(sys_device_spi_master);
+    // Initialize SPIM HW
+    sys_enable(sys_device_spi_master);
 
-	gpio_function(PIN_NUM_CLK, pad_spim_sck); /* GPIO27 to SPIM_CLK */
+    gpio_function(PIN_NUM_CLK, pad_spim_sck); /* GPIO27 to SPIM_CLK */
 #if defined(__FT900__)
-	gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
-	gpio_function(PIN_NUM_PD, pad_gpio43);
+    gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
+    gpio_function(PIN_NUM_PD, pad_gpio43);
 #elif defined(__FT930__)
-	gpio_function(PIN_NUM_CS, pad30_spim_ss0); /* GPIO30 as CS */
-	gpio_function(PIN_NUM_PD, pad_gpio15);
+    gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO30 as CS */
+    gpio_function(PIN_NUM_PD, pad_gpio15);
 #endif
 
-	gpio_function(PIN_NUM_MOSI, pad_spim_mosi); /* GPIO29 to SPIM_MOSI */
-	gpio_function(PIN_NUM_MISO, pad_spim_miso); /* GPIO30 to SPIM_MISO */
+    gpio_function(PIN_NUM_MOSI, pad_spim_mosi); /* GPIO29 to SPIM_MOSI */
+    gpio_function(PIN_NUM_MISO, pad_spim_miso); /* GPIO30 to SPIM_MISO */
 
-	gpio_dir(PIN_NUM_CLK, pad_dir_output);
-	gpio_dir(PIN_NUM_CS, pad_dir_output);
-	gpio_dir(PIN_NUM_MOSI, pad_dir_output);
-	gpio_dir(PIN_NUM_MISO, pad_dir_input);
-	gpio_dir(PIN_NUM_PD, pad_dir_output);
+    gpio_dir(PIN_NUM_CLK, pad_dir_output);
+    gpio_dir(PIN_NUM_CS, pad_dir_output);
+    gpio_dir(PIN_NUM_MOSI, pad_dir_output);
+    gpio_dir(PIN_NUM_MISO, pad_dir_input);
+    gpio_dir(PIN_NUM_PD, pad_dir_output);
 #if (SPI_ENABLE == ENABLE_SPI_QUAD)
-	/* Initialize IO2 and IO3 pad/pin for quad settings */
-	gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
-	gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
-	gpio_dir(PIN_NUM_IO2, pad_dir_output);
-	gpio_dir(PIN_NUM_IO3, pad_dir_output);
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
+    gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
+    gpio_dir(PIN_NUM_IO2, pad_dir_output);
+    gpio_dir(PIN_NUM_IO3, pad_dir_output);
 #endif
-	gpio_write(PIN_NUM_CS, 1);
-	gpio_write(PIN_NUM_PD, 1);
+    gpio_write(PIN_NUM_CS, 1);
+    gpio_write(PIN_NUM_PD, 1);
 
-	spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
+    // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Divide by 8 is 25 MHz
+    spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
+}
+
+void MCU_Deinit(void)
+{
+    // Shut down the SPI Master
+    spi_uninit(SPIM);
+    sys_disable(sys_device_spi_master);
 }
 
 void MCU_Setup(void)
@@ -133,19 +142,19 @@ void MCU_Setup(void)
 #if defined QUADSPI_ENABLE
 
 #if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-	// Turn on EVE quad-SPI for FT81x devices.
-	MCU_CSlow();
-	MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
-	MCU_SPIWrite8(2);
-	MCU_CShigh();
+    // Turn on EVE quad-SPI for FT81x devices.
+    MCU_CSlow();
+    MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
+    MCU_SPIWrite8(2);
+    MCU_CShigh();
 
-	// Turn on FT9xx quad-SPI.
-	spi_option(SPIM, spi_option_bus_width, 4);
+    // Turn on FT9xx quad-SPI.
+    spi_option(SPIM, spi_option_bus_width, 4);
 #endif//(defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
 #endif// QUADSPI_ENABLE
 
-	// Turn off SPI buffering. Timing of chip select is critical.
-	spi_option(SPIM, spi_option_fifo, 0);
+    // Turn off SPI buffering. Timing of chip select is critical.
+    spi_option(SPIM, spi_option_fifo, 0);
 }
 
 // ########################### GPIO CONTROL ####################################
@@ -153,142 +162,152 @@ void MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-	//gpio_write(PIN_NUM_CS, 0);
-	spi_open(SPIM, 0);
+    spi_open(SPIM, 0);
+    // Tsac is 10 ns (EVE1), 3 ns (EVE2, EVE3, EVE4, EVE5)
+    delayus(1);
 }  
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-	//gpio_write(PIN_NUM_CS, 1);
-	spi_close(SPIM, 0);
+  // Tcsnh is 10 ns (EVE1), 0 ns (EVE2, EVE3, EVE4, EVE5)
+  // This 1 us delay can be removed in most cases
+#if IS_EVE_API(1)
+    delayus(1);
+#endif
+    spi_close(SPIM, 0);
 }
 
 // -------------------------- PD line low --------------------------------------
 inline void MCU_PDlow(void)
 {
-	gpio_write(PIN_NUM_PD, 0);
+    gpio_write(PIN_NUM_PD, 0);
 }
 
 // ------------------------- PD line high --------------------------------------
 inline void MCU_PDhigh(void)
 {
-	gpio_write(PIN_NUM_PD, 1);
+    gpio_write(PIN_NUM_PD, 1);
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	spi_readn(SPIM, &DataRead, 1);
+    spi_readn(SPIM, &DataRead, 1);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
-	spi_writen(SPIM, &DataToWrite, 1);
+    spi_writen(SPIM, &DataToWrite, 1);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	spi_readn(SPIM, (uint8_t *)&DataRead, 2);
+    spi_readn(SPIM, (uint8_t *)&DataRead, 2);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	spi_writen(SPIM, (uint8_t *)&DataToWrite, 2);
+    spi_writen(SPIM, (uint8_t *)&DataToWrite, 2);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	spi_readn(SPIM, (uint8_t *)&DataRead, 3);
+    spi_readn(SPIM, (uint8_t *)&DataRead, 3);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	spi_writen(SPIM, (uint8_t *)&DataToWrite, 3);
+    spi_writen(SPIM, (uint8_t *)&DataToWrite, 3);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	spi_readn(SPIM, (uint8_t *)&DataRead, 4);
+    spi_readn(SPIM, (uint8_t *)&DataRead, 4);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	spi_writen(SPIM, (uint8_t *)&DataToWrite, 4);
+    spi_writen(SPIM, (uint8_t *)&DataToWrite, 4);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	spi_writen(SPIM, DataToWrite, length);
+  spi_writen(SPIM, DataToWrite, length);
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+  spi_readn(SPIM, DataToRead, length);
 }
 
 void MCU_Delay_20ms(void)
 {
-	delayms(20);
+    delayms(20);
 }
 
 void MCU_Delay_500ms(void)
 {
-	delayms(500);
+    delayms(500);
 }
 
 // FT9XX is Little Endian.
 // Use toolchain defined functions.
 uint16_t MCU_htobe16(uint16_t h)
 {
-	return __bswap16(h);
+    return __bswap16(h);
 }
 
 uint32_t MCU_htobe32(uint32_t h)
 {
-	return __bswap32(h);
+    return __bswap32(h);
 }
 
 uint16_t MCU_htole16(uint16_t h)
 {
-	return h;
+    return h;
 }
 
 uint32_t MCU_htole32(uint32_t h)
 {
-	return h;
+    return h;
 }
 
 uint16_t MCU_be16toh(uint16_t h)
 {
-	return __bswap16(h);
+    return __bswap16(h);
 }
 
 uint32_t MCU_be32toh(uint32_t h)
 {
-	return __bswap32(h);
+    return __bswap32(h);
 }
 
 uint16_t MCU_le16toh(uint16_t h)
 {
-	return h;
+    return h;
 }
 
 uint32_t MCU_le32toh(uint32_t h)
 {
-	return h;
+    return h;
 }
 
 #endif /* defined(PLATFORM_FT9XX) */

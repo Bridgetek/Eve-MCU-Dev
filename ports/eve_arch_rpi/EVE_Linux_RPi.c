@@ -47,6 +47,8 @@
  * ============================================================================
  */
 
+// NOTE: libgpiod-dev must be installed!
+
 // Guard against being used for incorrect CPU type.
 #if defined(PLATFORM_RASPBERRYPI)
 
@@ -64,6 +66,7 @@
 #include <sys/stat.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
+#include <gpiod.h>
 
 // Powerdown pin
 /*
@@ -87,17 +90,15 @@
 static int spiHandle = 0;
 
 const char *SPI_device = "/dev/spidev0.0";
-const char *GPIO_export="/sys/class/gpio/export";
-const char *GPIO_unexport="/sys/class/gpio/unexport";
-const char *GPIO_pd_dir="/sys/class/gpio/gpio" str(PIN_NUM_PD) "/direction";
-const char *GPIO_cs_dir="/sys/class/gpio/gpio" str(PIN_NUM_CS) "/direction";
-const char *GPIO_pd_val="/sys/class/gpio/gpio" str(PIN_NUM_PD) "/value";
-const char *GPIO_cs_val="/sys/class/gpio/gpio" str(PIN_NUM_CS) "/value";
+const char *GPIO_chip = "gpiochip0";
+struct gpiod_chip *gpio_chip = NULL;
+unsigned int GPIO_pd_line_num = PIN_NUM_PD;  // GPIO pin number
+struct gpiod_line *gpio_pd_line = NULL;
+unsigned int GPIO_cs_line_num = PIN_NUM_CS;  // GPIO pin number
+struct gpiod_line *gpio_cs_line = NULL;
 
 void Platform_Init(void)
 {
-    FILE *hGPIO = NULL;
-
     spiHandle = open(SPI_device, O_RDWR);
     if (spiHandle == -1)
     {
@@ -106,73 +107,72 @@ void Platform_Init(void)
         printf("\"Interfacing Options\". \n");
         exit(-1);
     }
+
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    uint32_t speed = 1000000;
+    ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
     // Initialize SPIM HW
     uint8_t lsb = 0;
     ioctl(spiHandle, SPI_IOC_WR_LSB_FIRST, &lsb );
-    uint32_t speed = 1000000;
-    ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
     uint32_t mode = SPI_MODE_0;
     ioctl(spiHandle, SPI_IOC_WR_MODE, &mode );
 
-    if ((hGPIO = fopen(GPIO_unexport, "w")) != NULL)
+    // Open GPIO chip
+    gpio_chip = gpiod_chip_open_by_name(GPIO_chip);
+    if (!gpio_chip)
     {
-        fwrite(str(PIN_NUM_PD), sizeof(char), strlen(str(PIN_NUM_PD)), hGPIO);
-        fwrite(str(PIN_NUM_CS), sizeof(char), strlen(str(PIN_NUM_CS)), hGPIO);
-        fclose(hGPIO);
-        hGPIO = NULL;
-    }
-
-    if ((hGPIO = fopen(GPIO_export, "w")) != NULL)
-    {
-        fwrite(str(PIN_NUM_PD), sizeof(char), strlen(str(PIN_NUM_PD)), hGPIO);
-        fclose(hGPIO);
-    }
-    if ((hGPIO = fopen(GPIO_export, "w")) != NULL)
-    {
-        fwrite(str(PIN_NUM_CS), sizeof(char), strlen(str(PIN_NUM_CS)), hGPIO);
-        fclose(hGPIO);
-    }
-    hGPIO = NULL;
-
-    if ((hGPIO = fopen(GPIO_pd_dir, "r+")) != NULL)
-    {
-        fwrite("out", sizeof(char), 3, hGPIO);
-        fclose(hGPIO);
-        hGPIO = NULL;
-
-        if ((hGPIO = fopen(GPIO_pd_val, "r+")) != NULL)
-        {
-            // All good.
-            fclose(hGPIO);
-        }
-    }
-    else
-    {
-        printf("failed to set GPIO direction %d!\n", PIN_NUM_PD);
-    }
-
-    if ((hGPIO = fopen(GPIO_cs_dir, "r+")) != NULL)
-    {
-        fwrite("out", sizeof(char), 3, hGPIO);
-        fclose(hGPIO);
-        hGPIO = NULL;
-
-        if ((hGPIO = fopen(GPIO_cs_val, "r+")) != NULL)
-        {
-            // All good.
-            fclose(hGPIO);
-        }
-    }
-    else
-    {
-        printf("failed to set GPIO chip select %d!\n", PIN_NUM_CS);
-    }
-
-    if (hGPIO == NULL)
-    {
-        printf("failed to export GPIO %d. Make sure you run this with \"sudo\"\n", PIN_NUM_PD);
+        fprintf(stderr, "Failed: gpiod_chip_open_by_name\n");
         exit(-1);
     }
+    
+    // Get line
+    gpio_pd_line = gpiod_chip_get_line(gpio_chip, GPIO_pd_line_num);
+    if (!gpio_pd_line) 
+    {
+        fprintf(stderr, "Failed: gpiod_chip_get_line GPIO_pd_line_num\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Request line as output
+    if (gpiod_line_request_output(gpio_pd_line, "eve", 0) < 0) 
+    {
+        fprintf(stderr, "Failed: gpiod_line_request_output\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Set high
+    if (gpiod_line_set_value(gpio_pd_line, 1) < 0) 
+    {
+        fprintf(stderr, "Failed: gpiod_line_set_value\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    gpio_cs_line = gpiod_chip_get_line(gpio_chip, GPIO_cs_line_num);
+    if (!gpio_cs_line) 
+    {
+        fprintf(stderr, "Failed: gpiod_chip_get_line GPIO_cs_line_num\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Request line as output
+    if (gpiod_line_request_output(gpio_cs_line, "eve", 0) < 0) 
+    {
+        fprintf(stderr, "Failed: gpiod_line_request_output\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Set high
+    if (gpiod_line_set_value(gpio_cs_line, 1) < 0) {
+        fprintf(stderr, "Failed: gpiod_line_set_value\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+}
+
+void Platform_Deinit(void)
+{
+    close(spiHandle);
+    gpiod_chip_close(gpio_chip);
 }
 
 void Platform_Setup(void)
@@ -189,48 +189,44 @@ int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)
 // --------------------- Chip Select line low ----------------------------------
 void Platform_CSlow(void)
 {
-    FILE *h1;
-
-    if ((h1 = fopen(GPIO_cs_val, "r+")) != NULL)
+    if (gpiod_line_set_value(gpio_cs_line, 0) < 0)
     {
-        fwrite("0", sizeof(char), 1, h1);
-        fclose(h1);
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return;
     }
 }
 
 // --------------------- Chip Select line high ---------------------------------
 void Platform_CShigh(void)
 {
-    FILE *h1;
-
-    if ((h1 = fopen(GPIO_cs_val, "r+")) != NULL)
+    if (gpiod_line_set_value(gpio_cs_line, 1) < 0)
     {
-        fwrite("1", sizeof(char), 1, h1);
-        fclose(h1);
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return;
     }
 }
 
 // -------------------------- PD line low --------------------------------------
 void Platform_PDlow(void)
 {
-    FILE *h1;
-
-    if ((h1 = fopen(GPIO_pd_val, "r+")) != NULL)
+    if (gpiod_line_set_value(gpio_pd_line, 0) < 0)
     {
-        fwrite("0", sizeof(char), 1, h1);
-        fclose(h1);
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return;
     }
 }
 
 // ------------------------- PD line high --------------------------------------
 void Platform_PDhigh(void)
 {
-    FILE *h1;
-
-    if ((h1 = fopen(GPIO_pd_val, "r+")) != NULL)
+    if (gpiod_line_set_value(gpio_pd_line, 1) < 0)
     {
-        fwrite("1", sizeof(char), 1, h1);
-        fclose(h1);
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return;
     }
 }
 
@@ -246,7 +242,6 @@ void Platform_Delay_500ms(void)
     usleep(500 * 1000);
 }
 
-// Beaglebone is Little Endian.
 // Use toolchain defined functions.
 uint16_t Platform_htobe16(uint16_t h)
 {

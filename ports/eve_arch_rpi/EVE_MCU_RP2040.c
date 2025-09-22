@@ -57,11 +57,12 @@
 #include <stdio.h>
 #include <machine/endian.h>
 
+#include "../include/EVE.h"
 #include "../include/MCU.h"
-#include "EVE_config.h"
 
-#include "pico/stdlib.h"
-#include "hardware/spi.h"
+#include <hardware/gpio.h>
+#include <hardware/spi.h>
+#include <pico/time.h>
 
 // This is not yet supported
 #undef QUADSPI_ENABLE
@@ -87,15 +88,15 @@ void MCU_Init(void)
     gpio_set_dir(cs_pin, GPIO_OUT);
     gpio_put(cs_pin, 1);
 
-	// Initialise PD (Power Down) pin high
+    // Initialise PD (Power Down) pin high
     gpio_init(pd_pin);
     gpio_set_dir(pd_pin, GPIO_OUT);
     gpio_put(pd_pin, 1);
 
-    // Initialize SPI port at 1 MHz
+    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     spi_init(spi_port, 1000 * 1000);
 
-	// Set SPI format
+    // Set SPI format
     spi_set_format( spi_port, 		// SPI instance
                     8,      		// Number of bits per transfer
                     SPI_CPOL_0,		// Polarity (CPOL)
@@ -110,10 +111,17 @@ void MCU_Init(void)
 #if defined QUADSPI_ENABLE
 
 #if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-	/* Initialize IO2 and IO3 pad/pin for quad settings */
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
 #endif
 
 #endif// QUADSPI_ENABLE
+}
+
+void MCU_Deinit(void)
+{
+    spi_deinit(spi_port);
+    gpio_deinit(cs_pin);
+    gpio_deinit(pd_pin);
 }
 
 void MCU_Setup(void)
@@ -121,11 +129,11 @@ void MCU_Setup(void)
 #if defined QUADSPI_ENABLE
 
 #if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-	// Turn on EVE quad-SPI for FT81x devices.
-	MCU_CSlow();
-	MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
-	MCU_SPIWrite8(2);
-	MCU_CShigh();
+    // Turn on EVE quad-SPI for FT81x devices.
+    MCU_CSlow();
+    MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
+    MCU_SPIWrite8(2);
+    MCU_CShigh();
 #endif//(defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
 
 #endif// QUADSPI_ENABLE
@@ -161,11 +169,11 @@ inline void MCU_PDhigh(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-	uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-	spi_read_blocking(spi_port, 0, &DataRead, 1);
+    spi_read_blocking(spi_port, 0, &DataRead, 1);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
@@ -175,101 +183,106 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
 
 uint16_t MCU_SPIRead16(void)
 {
-	uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-	spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 2);
+    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 2);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
-	spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 2);
+    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 2);
 }
 
 uint32_t MCU_SPIRead24(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 3);
+    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 3);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
-	spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 3);
+    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 3);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-	uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-	spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 4);
+    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 4);
 
-	return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
-	spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 4);
+    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 4);
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    spi_read_blocking(spi_port, 0, DataToRead, length);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-	spi_write_blocking(spi_port, DataToWrite, length);
+    spi_write_blocking(spi_port, DataToWrite, length);
 }
 
 void MCU_Delay_20ms(void)
 {
-	sleep_ms(20);
+    sleep_ms(20);
 }
 
 void MCU_Delay_500ms(void)
 {
-	sleep_ms(500);
+    sleep_ms(500);
 }
 
-// RP2040 is Little Endian.
+// RP2040 is Little Endian. There is no sys/endian.h.
 // Use toolchain defined functions.
 uint16_t MCU_htobe16(uint16_t h)
 {
-	return __bswap16(h);
+    return __bswap16(h);
 }
 
 uint32_t MCU_htobe32(uint32_t h)
 {
-	return __bswap32(h);
+    return __bswap32(h);
 }
 
 uint16_t MCU_htole16(uint16_t h)
 {
-	return h;
+    return h;
 }
 
 uint32_t MCU_htole32(uint32_t h)
 {
-	return h;
+    return h;
 }
 
 uint16_t MCU_be16toh(uint16_t h)
 {
-	return __bswap16(h);
+    return __bswap16(h);
 }
 
 uint32_t MCU_be32toh(uint32_t h)
 {
-	return __bswap32(h);
+    return __bswap32(h);
 }
 
 uint16_t MCU_le16toh(uint16_t h)
 {
-	return h;
+    return h;
 }
 
 uint32_t MCU_le32toh(uint32_t h)
 {
-	return h;
+    return h;
 }
 
 #endif /* defined(PLATFORM_RP2040) */

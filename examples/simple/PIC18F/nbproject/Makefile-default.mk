@@ -44,12 +44,6 @@ else
 COMPARISON_BUILD=
 endif
 
-ifdef SUB_IMAGE_ADDRESS
-
-else
-SUB_IMAGE_ADDRESS_COMMAND=
-endif
-
 # Object Directory
 OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 
@@ -57,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main/main.c ../../../source/EVE_API.c ../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_images.c ../common/eve_helper.c ../../../source/EVE_HAL.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c
+SOURCEFILES_QUOTED_IF_SPACED=../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_helper.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main/main.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/main/main.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d ${OBJECTDIR}/main/main.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main/main.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1
+OBJECTFILES=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
 
 # Source Files
-SOURCEFILES=main/main.c ../../../source/EVE_API.c ../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_images.c ../common/eve_helper.c ../../../source/EVE_HAL.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c
+SOURCEFILES=../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_helper.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
 
 
 
@@ -94,27 +88,11 @@ MP_PROCESSOR_OPTION=18F46K22
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main/main.p1: main/main.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/main" 
-	@${RM} ${OBJECTDIR}/main/main.p1.d 
-	@${RM} ${OBJECTDIR}/main/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main/main.p1 main/main.c 
-	@-${MV} ${OBJECTDIR}/main/main.d ${OBJECTDIR}/main/main.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/main/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1366059434/EVE_API.p1: ../../../source/EVE_API.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ../../../source/EVE_API.c 
-	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_API.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
 ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1: ../common/eve_calibrate.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.d ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
@@ -122,7 +100,7 @@ ${OBJECTDIR}/_ext/1270477542/eve_example.p1: ../common/eve_example.c  nbproject/
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_example.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ../common/eve_example.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ../common/eve_example.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_example.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
@@ -130,64 +108,120 @@ ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1: ../common/eve_fonts.c  nbproject/Make
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_fonts.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ../common/eve_images.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_images.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1: ../common/eve_helper.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_helper.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1: ../../../source/EVE_HAL.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ../../../source/EVE_HAL.c 
-	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ../common/eve_images.c 
+	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_images.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1: ../../../ports/eve_arch_pic/EVE_MCU_PIC.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/366209512" 
 	@${RM} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ../../../ports/eve_arch_pic/EVE_MCU_PIC.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ../../../ports/eve_arch_pic/EVE_MCU_PIC.c 
 	@-${MV} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1: mcc_generated_files/spi/src/mssp1.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/spi/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 mcc_generated_files/spi/src/mssp1.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.d ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1: mcc_generated_files/system/src/interrupt.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 mcc_generated_files/system/src/interrupt.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.d ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/clock.p1: mcc_generated_files/system/src/clock.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 mcc_generated_files/system/src/clock.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/clock.d ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/system.p1: mcc_generated_files/system/src/system.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 mcc_generated_files/system/src/system.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/system.d ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1: mcc_generated_files/system/src/config_bits.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 mcc_generated_files/system/src/config_bits.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.d ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/pins.p1: mcc_generated_files/system/src/pins.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 mcc_generated_files/system/src/pins.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/pins.d ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_API.p1: ../../../source/EVE_API.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ../../../source/EVE_API.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_API.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1: ../../../source/EVE_HAL.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ../../../source/EVE_HAL.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1: ../../../source/EVE_HAL_Linux.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ../../../source/EVE_HAL_Linux.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/main/main.p1: main/main.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/main" 
+	@${RM} ${OBJECTDIR}/main/main.p1.d 
+	@${RM} ${OBJECTDIR}/main/main.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main/main.p1 main/main.c 
+	@-${MV} ${OBJECTDIR}/main/main.d ${OBJECTDIR}/main/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/main/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 else
-${OBJECTDIR}/main/main.p1: main/main.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/main" 
-	@${RM} ${OBJECTDIR}/main/main.p1.d 
-	@${RM} ${OBJECTDIR}/main/main.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main/main.p1 main/main.c 
-	@-${MV} ${OBJECTDIR}/main/main.d ${OBJECTDIR}/main/main.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/main/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1366059434/EVE_API.p1: ../../../source/EVE_API.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ../../../source/EVE_API.c 
-	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_API.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
 ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1: ../common/eve_calibrate.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.d ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
@@ -195,7 +229,7 @@ ${OBJECTDIR}/_ext/1270477542/eve_example.p1: ../common/eve_example.c  nbproject/
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_example.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ../common/eve_example.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ../common/eve_example.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_example.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
@@ -203,41 +237,113 @@ ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1: ../common/eve_fonts.c  nbproject/Make
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_fonts.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ../common/eve_images.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_images.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1: ../common/eve_helper.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_helper.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
-${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1: ../../../source/EVE_HAL.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ../../../source/EVE_HAL.c 
-	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_images.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ../common/eve_images.c 
+	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_images.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1: ../../../ports/eve_arch_pic/EVE_MCU_PIC.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/366209512" 
 	@${RM} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d 
 	@${RM} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ../../../ports/eve_arch_pic/EVE_MCU_PIC.c 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ../../../ports/eve_arch_pic/EVE_MCU_PIC.c 
 	@-${MV} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1: mcc_generated_files/spi/src/mssp1.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/spi/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 mcc_generated_files/spi/src/mssp1.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.d ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1: mcc_generated_files/system/src/interrupt.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 mcc_generated_files/system/src/interrupt.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.d ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/clock.p1: mcc_generated_files/system/src/clock.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 mcc_generated_files/system/src/clock.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/clock.d ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/system.p1: mcc_generated_files/system/src/system.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 mcc_generated_files/system/src/system.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/system.d ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1: mcc_generated_files/system/src/config_bits.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 mcc_generated_files/system/src/config_bits.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.d ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcc_generated_files/system/src/pins.p1: mcc_generated_files/system/src/pins.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/mcc_generated_files/system/src" 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d 
+	@${RM} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 mcc_generated_files/system/src/pins.c 
+	@-${MV} ${OBJECTDIR}/mcc_generated_files/system/src/pins.d ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_API.p1: ../../../source/EVE_API.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ../../../source/EVE_API.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_API.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1: ../../../source/EVE_HAL.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ../../../source/EVE_HAL.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1: ../../../source/EVE_HAL_Linux.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/_ext/1366059434" 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ../../../source/EVE_HAL_Linux.c 
+	@-${MV} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/main/main.p1: main/main.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}/main" 
+	@${RM} ${OBJECTDIR}/main/main.p1.d 
+	@${RM} ${OBJECTDIR}/main/main.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/main/main.p1 main/main.c 
+	@-${MV} ${OBJECTDIR}/main/main.d ${OBJECTDIR}/main/main.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/main/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 endif
 
@@ -258,13 +364,15 @@ endif
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/PIC18F.${IMAGE_TYPE}.map  -D__DEBUG=1  -mdebugger=none  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto        $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/PIC18F.${IMAGE_TYPE}.map  -D__DEBUG=1  -mdebugger=none  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto        $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 	@${RM} ${DISTDIR}/PIC18F.${IMAGE_TYPE}.hex 
+	
 	
 else
 ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/PIC18F.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1    -fno-short-double -fno-short-float -memi=wordwrite -O0 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../../../../Program Files (x86)/Microchip/xc8/v2.05/pic/include/c99" -I"../../../include" -I"../../../source" -I"../common" -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mdefault-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/PIC18F.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/PIC18F.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	
 	
 endif
 
@@ -284,7 +392,7 @@ endif
 # Enable dependency checking
 .dep.inc: .depcheck-impl
 
-DEPFILES=$(shell mplabwildcard ${POSSIBLE_DEPFILES})
+DEPFILES=$(wildcard ${POSSIBLE_DEPFILES})
 ifneq (${DEPFILES},)
 include ${DEPFILES}
 endif

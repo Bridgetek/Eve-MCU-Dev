@@ -5,9 +5,9 @@
  * ============================================================================
  * History
  * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
+ * Nov 2019        Initial beta for FT81x and FT80x
+ * Mar 2020        Updated beta - added BT815/6 commands
+ * Mar 2021        Beta with BT817/8 support added
  *
  *
  *
@@ -52,29 +52,57 @@
 
 // Select the EVE controller type from the supported list in FT8xx.h.
 // Note: In FT8xx.h this will lead to the selection of the EVE Programming
-// support methods via macros "EVEx_ENABLE" where 'x' depends on the level of
-// the EVE device support. Alternatively directly set the EVEx_ENABLE macro
-// required. This must be called prior to including FT8xx.h.
-// "#define FT8XX_TYPE BT817" is equivelant to having "#define EVE4_ENABLE".
+// support methods via macros "EVE_API" where the value depends on the level of
+// the EVE device support. Alternatively directly set the EVE_API and EVE_SUB_API
+// macro as required. This must be called prior to including FT8xx.h.
+// "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
+// Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
 #ifndef FT8XX_TYPE
-#define FT8XX_TYPE BT816
+#define FT8XX_TYPE BT820
 #endif
 
 // Definitions used for target display resolution selection
-#define	WQVGA	480		// e.g. VM800B with 5" or 4.3" display
-#define WVGA 	800		// e.g. ME813A-WH50C or VM816
-#define	WSVGA	1024	// e.g. ME817EV with 7" display
-#define	WXGA	1280	// e.g. ME817EV with 10.1" display
-
+#define WQVGA   480        // e.g. VM800B with 5 or 4.3 inch display
+#define WVGA    800        // e.g. ME813A-WH50C or VM816
+#define WSVGA   1024       // e.g. ME817EV with 7 inch display
+#define WXGA    1280       // e.g. ME817EV with 10.1 inch display
+#define HD      1920       // e.g. 15 inch high definition display
+#define WUXGA   19201200   // e.g. 10 inch high definition display
 
 // Select the resolution
 #ifndef DISPLAY_RES
-#define DISPLAY_RES WVGA
+#define DISPLAY_RES WUXGA
 #endif
+
+// Definitions used for touch controllers
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
+#define TOUCH_TYPE_GOODIX 2
+
+// Select the touchscreen automatically
+#undef EVE_TOUCH_ADDR
+#undef EVE_TOUCH_TYPE
 
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE
 #undef QUADSPI_ENABLE
+#endif
+
+// Setup RAM_G size for BT82X only
+// Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL 
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
+
+#ifndef EVE_RAM_G_CONFIG_SIZE
+#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
 #endif
 
 // Setup default parameters for various displays.
@@ -98,6 +126,9 @@
 #define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #elif DISPLAY_RES == WVGA
 
@@ -116,6 +147,9 @@
 #define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #elif DISPLAY_RES == WSVGA
 
@@ -136,7 +170,10 @@
 #define EVE_DISP_DITHER 1
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0xD12	// set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #elif DISPLAY_RES == WXGA
 
@@ -157,18 +194,57 @@
 #define EVE_DISP_DITHER 0
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1	// set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == HD
+ 
+#define EVE_DISP_WIDTH 1920 // Active width of LCD display
+#define EVE_DISP_HEIGHT 1080 // Active height of LCD display
+#define EVE_DISP_HCYCLE 2140 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 220 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 20 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 1108 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 28 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 4 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WUXGA
+
+#define EVE_DISP_WIDTH 1920 // Active width of LCD display
+#define EVE_DISP_HEIGHT 1200 // Active height of LCD display
+#define EVE_DISP_HCYCLE (1920 + 180) // Total number of clocks per line
+#define EVE_DISP_HOFFSET 50 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 30 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE (1200 + 45) // Total number of lines per screen
+#define EVE_DISP_VOFFSET 10 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 3 // End of vertical sync pulse
+#define EVE_DISP_PCLK 2 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
 #else
 
 #error EVE_DISP_* parameters must be configured.
 
 #endif
-
-
-
-
-
-
 
 #endif /* _EVE_CONFIG_H_ */
