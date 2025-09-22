@@ -66,6 +66,8 @@
     || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040) \
     || defined(PLATFORM_MSPM0)
 #define MCU_UNALIGNED_ACCESSES 0
+#elif defined(ARDUINO)
+#define MCU_UNALIGNED_ACCESSES 0
 #else
 #define MCU_UNALIGNED_ACCESSES 1
 #endif
@@ -89,6 +91,8 @@
     || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
     || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040) \
     || defined(PLATFORM_MSPM0)
+#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#elif defined(ARDUINO)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
 #elif defined (USE_MPSSE) || defined (USE_FT4222)
 #define MCU_SPI_TRANSFER 0x100
@@ -143,6 +147,9 @@
 /* The default SPI bus for embedded MCUs to 1 MHz */
 #define MCU_SPI_TIMEOUT 8
 
+#elif defined(ARDUINO)
+/* Arduino SPI bus are set to 100 kHz */
+   #define MCU_SPI_TIMEOUT 8
 #endif
 #endif
 

@@ -66,12 +66,20 @@
 #include <stdio.h>
 #endif
 
+#ifndef ARDUINO
 #include "../include/EVE.h"
 #include "../include/HAL.h"
 #include "../include/MCU.h"
+#else
+#include "EVE.h"
+#include "HAL.h"
+#include "MCU.h"
+#endif
 
-// Used to navigate command ring buffer
+// Used to navigate command ring buffer on FT800
+#ifndef EVE_USE_CMDB_METHOD
 static uint16_t writeCmdPointer = 0x0000;
+#endif
 
 void HAL_EVE_Init(void)
 {
@@ -558,17 +566,24 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
 // --------- Increment co-processor address offset counter --------------------
 void HAL_IncCmdPointer(uint16_t commandSize)
 {
+#ifndef EVE_USE_CMDB_METHOD
     // Calculate new offset
     writeCmdPointer = (writeCmdPointer + commandSize) & (EVE_RAM_CMD_SIZE - 1);
+#endif
 }
 
 // --------- Increment co-processor address offset counter --------------------
 uint16_t HAL_GetCmdPointer(void)
 {
     // Return new offset
+#ifdef EVE_USE_CMDB_METHOD
+    uint32_t writeCmdPointer;
+    writeCmdPointer = HAL_MemRead32(EVE_REG_CMD_WRITE);
+#endif
     return writeCmdPointer;
 }
 
+#ifndef EVE_USE_CMDB_METHOD
 void HAL_ResetCmdPointer(void)
 {
     writeCmdPointer = 0;
@@ -579,6 +594,7 @@ void HAL_WriteCmdPointer(void)
     // and move write pointer to here
     HAL_MemWrite32(EVE_REG_CMD_WRITE, writeCmdPointer);
 }
+#endif
 
 // ------ Wait for co-processor read and write pointers to be equal ------------
 uint8_t HAL_WaitCmdFifoEmpty(void)

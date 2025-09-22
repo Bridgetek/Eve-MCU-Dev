@@ -54,7 +54,7 @@
 #include <stdint.h>
 // Include the configuration for this instance.
 
-#include <EVE_config.h>
+#include "EVE_config.h"
 #include "FT8xx.h"
 
 #if IS_EVE_API(5)
