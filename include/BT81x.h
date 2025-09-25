@@ -62,6 +62,7 @@
 // Memory Map
 
 #define EVE_RAM_G                      0x0ul
+#undef EVE_RAM_G_SIZE
 #define EVE_RAM_G_SIZE                 (1024*1024L)
 #define EVE_RAM_CMD                    0x308000ul
 #define EVE_RAM_CMD_SIZE               (4*1024L)

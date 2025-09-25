@@ -66,11 +66,12 @@ The panel dimensions to use are set in the file `EVE_config.h` using the macro `
 Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
 
 The following are included in the distribution:
+- QVGA *320x240* (VM800B with 3.5 inch display)
 - WQVGA *480x272* (VM800B with 5 or 4.3 inch display)
 - WVGA *800x480* (ME813A-WH50C or VM816)
 - WSVGA *1024x600* (ME817EV with 7 inch display)
 - WXGA *1280x800* (ME817EV with 10.1 inch display)
-- HD *1920x1080* (15 inch high definition display)
+- FULLHD *1920x1080* (15 inch high definition display)
 - WUXGA *1920x1200* (10 inch high definition display)
 
 This line will set the panel to a ME-813A-WH50C (800 x 400).

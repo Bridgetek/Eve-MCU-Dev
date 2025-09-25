@@ -62,11 +62,12 @@
 #endif
 
 // Definitions used for target display resolution selection
+#define QVGA    320        // e.g. VM800B with 3.5 inch display
 #define WQVGA   480        // e.g. VM800B with 5 or 4.3 inch display
 #define WVGA    800        // e.g. ME813A-WH50C or VM816
 #define WSVGA   1024       // e.g. ME817EV with 7 inch display
 #define WXGA    1280       // e.g. ME817EV with 10.1 inch display
-#define HD      1920       // e.g. 15 inch high definition display
+#define FULLHD  1920       // e.g. 15 inch high definition display
 #define WUXGA   19201200   // e.g. 10 inch high definition display
 
 // Select the resolution
@@ -109,7 +110,28 @@
 // These can be overridden for different display modules.
 #undef SET_PCLK_FREQ
 
-#if DISPLAY_RES == WQVGA
+#if DISPLAY_RES == QVGA
+
+#define EVE_DISP_WIDTH 320 // Active width of LCD display
+#define EVE_DISP_HEIGHT 240 // Active height of LCD display
+#define EVE_DISP_HCYCLE 408 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 70 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 10 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 263 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 13 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 2 // End of vertical sync pulse
+#define EVE_DISP_PCLK 8 // Pixel Clock
+#define EVE_DISP_SWIZZLE 2 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WQVGA
 
 #define EVE_DISP_WIDTH 480 // Active width of LCD display
 #define EVE_DISP_HEIGHT 272 // Active height of LCD display
@@ -199,7 +221,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == HD
+#elif DISPLAY_RES == FULLHD
  
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
 #define EVE_DISP_HEIGHT 1080 // Active height of LCD display
