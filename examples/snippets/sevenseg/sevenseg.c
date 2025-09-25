@@ -110,39 +110,27 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
 #endif
     EVE_COLOR_MASK(0, 0, 0, 1);
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    // Top segment
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
+    // Top segment
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(right, top);
     // Top left segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(left, centre);
     // Top right segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, top);
     EVE_VERTEX2F(right, centre);
     // Centre segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(right, centre);
     // Bottom left segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(left, bottom);
     // Bottom right segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, centre);
     EVE_VERTEX2F(right, bottom);
     // Bottom segment
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, bottom);
     EVE_VERTEX2F(right, bottom);
 
@@ -163,47 +151,35 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
     EVE_VERTEX2F(pt2lx, pt3ly);
 
     EVE_COLOR_MASK(1, 1, 1, 0);
-    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE);
-    // Top segment
-    EVE_COLOR(map[(int)digit][0]?fgcolour:bgcolour);
+    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
+    // Top segment
+    EVE_COLOR(map[(int)digit][0]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(right, top);
     // Top left segment
     EVE_COLOR(map[(int)digit][1]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(left, centre);
     // Top right segment
     EVE_COLOR(map[(int)digit][2]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, top);
     EVE_VERTEX2F(right, centre);
     // Centre segment
     EVE_COLOR(map[(int)digit][3]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(right, centre);
     // Bottom left segment
     EVE_COLOR(map[(int)digit][4]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(left, bottom);
     // Bottom right segment
     EVE_COLOR(map[(int)digit][5]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(right, centre);
     EVE_VERTEX2F(right, bottom);
     // Bottom segment
     EVE_COLOR(map[(int)digit][6]?fgcolour:bgcolour);
-    EVE_BEGIN(EVE_BEGIN_LINES);
-    EVE_LINE_WIDTH(width);
     EVE_VERTEX2F(left, bottom);
     EVE_VERTEX2F(right, bottom);
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);

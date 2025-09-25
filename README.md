@@ -8,7 +8,7 @@ The application note document for this library is linked on the Bridgetek Websit
 
 The supported platforms are listed in the [ports/README.md](ports/README.md) file. 
 
-The source code for each platform is stored in the [ports](ports) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros or USE_<i>xxx</i> macros. This way all the files in the ports directory can be loaded into a compiler and ignored if they are not relevant.
+The source code for each platform is stored in the [ports](ports) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros, USE_<i>xxx</i> macros, or a develoment environment specific macro. This way all the files in the ports directory can be loaded into a compiler and ignored if they are not relevant.
 
 ## Example Code
 
@@ -84,6 +84,17 @@ This line will set the panel to a ME-813A-WH50C (800 x 400).
 
 There are 2 standard connectors for EVE modules used by BridgeTek. 
 
+The wiring colours in the section for each connection are defined in the following table.
+
+| Colour | EVE Signal |
+| --- | --- |
+| Blue | SCK |
+| Green | MOSI |
+| Yellow | MISO |
+| Orange | CS# |
+| Red | PD# |
+| Brown | GND |
+
 ### Through-Board 2x8 Pins
 
 This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
@@ -98,6 +109,10 @@ This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly
 | 11 | N/C | 12 | N/C |
 | 13 | MOSI | 14 | MISO |
 | 15 | CS# | 16 | SCK |
+
+The 2x8 header can be connected as in the following picture.
+
+![Wiring for 2x8 Header](docs/header2x8.png)
 
 ### Header 1x10 Pins
 
@@ -115,3 +130,8 @@ This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly
 | 8 | N/C |
 | 9 | GND |
 | 10 | GND |
+
+The 1x10 header can be connected as in the following picture.
+
+![Wiring for 1x10 Header](docs/header1x10.png)
+

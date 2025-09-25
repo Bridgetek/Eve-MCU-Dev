@@ -26,6 +26,6 @@ There are two separate ports for the STM32:
 
 | Port | PLATFORM macro | Port File |
 | --- | --- | --- |
-| Keil uVision 5 | PLATFORM_STM32 | [EVE_MCU_STM32.c](EVE_MCU_STM32.c) |
-| STM32CubeIDE | PLATFORM_STM32CUBE | [EVE_MCU_STM32CUBE.c](EVE_MCU_STM32CUBE.c) |
+| Keil uVision 5 | `PLATFORM_STM32` | [EVE_MCU_STM32.c](EVE_MCU_STM32.c) |
+| STM32CubeIDE | `PLATFORM_STM32CUBE` | [EVE_MCU_STM32CUBE.c](EVE_MCU_STM32CUBE.c) |
 

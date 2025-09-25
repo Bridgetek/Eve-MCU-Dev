@@ -6,8 +6,8 @@ There are two separate ports for Ti MSP products:
 
 | Port | PLATFORM macro | Port File |
 | --- | --- | --- |
-| [MSP430](#hardware-MSP430) | PLATFORM_MSP430 | [EVE_MCU_MSP430.c](EVE_MCU_MSP430.c) |
-| [MSPM0](#hardware-MSPM0) | PLATFORM_MSPM0 | [EVE_MCU_MSPM0.c](EVE_MCU_MSPM0.c) |
+| [MSP430](#hardware-MSP430) | `PLATFORM_MSP430` | [EVE_MCU_MSP430.c](EVE_MCU_MSP430.c) |
+| [MSPM0](#hardware-MSPM0) | `PLATFORM_MSPM0` | [EVE_MCU_MSPM0.c](EVE_MCU_MSPM0.c) |
 
 The port for MSP430 and MSPM0 comprises the MCU connected to the EVE device via the SPI bus. The MSP device manages the EVE device SPI bus. 
 

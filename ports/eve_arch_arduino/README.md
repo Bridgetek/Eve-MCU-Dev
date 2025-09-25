@@ -20,6 +20,10 @@ The Arduino port was developed using an Arduino Zero and Arduino Leonardo. The A
 
 Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
 
+An Arduino board can be connected to an EVE board as in the following picture.
+
+![Arduino Wiring Picture](../../docs/arduino.png)
+
 ## Software
 
 Please refer to the [Arduino Simple example](../../examples/simple/Arduino/README.md) for instructions on using the hardware sketch in an EVE-MCU-Dev project.
