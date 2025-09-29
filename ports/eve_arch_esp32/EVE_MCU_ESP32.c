@@ -71,8 +71,8 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#include "../include/EVE.h"
-#include "../include/MCU.h"
+#include "EVE.h"
+#include "MCU.h"
 
 /* SPI Master pins */
 #define PIN_NUM_MISO GPIO_NUM_19

@@ -51,14 +51,9 @@
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdarg.h>
 
-#ifndef ARDUINO
-#include "../include/EVE.h"
-#include "../include/HAL.h"
-#else
 #include "EVE.h"
 #include "HAL.h"
 #include "MCU.h"
-#endif
 
 #if IS_EVE_API(5)
 #include "patch_base.h"

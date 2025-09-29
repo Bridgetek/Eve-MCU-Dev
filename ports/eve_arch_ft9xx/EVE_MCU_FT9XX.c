@@ -60,8 +60,8 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-#include "../include/EVE.h"
-#include "../include/MCU.h"
+#include "EVE.h"
+#include "MCU.h"
 
 // SPI Master pins
 #if defined(__FT900__)
