@@ -1,5 +1,7 @@
 # Typically run with "python libbuild.py --dist ../EVE-MCU-Dev --api 5"
-# 
+#
+# This requires a C preprocessor callable with the command line "cpp". 
+#
 import subprocess
 import shutil
 import re
@@ -24,6 +26,13 @@ if (eve_api < 1) or (eve_api > 5):
     raise Exception("Invalid EVE API")
 if (eve_api == 2) and ((eve_sub_api < 1) or (eve_sub_api > 2)):
     raise Exception("Invalid EVE SUB API for EVE API 2")
+
+# Check for a suitable preprocessor
+try:
+    cppcmd = ['cpp', '--version']
+    cpptest = subprocess.run(cppcmd, stdout=subprocess.PIPE)
+except:
+    raise Exception("Requires a GNU C preprocessor (cpp) on the system PATH.")
 
 print(f"Making EVE API {eve_api}")
 if eve_sub_api > 0: 
