@@ -218,6 +218,34 @@ void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *
 void EVE_LIB_RegRead(uint32_t addr, uint32_t *value);
 #endif
 
+/**
+ @brief EVE API: Write a memory location.
+ @details Writes a memory location value.
+ @param addr - Address of register to read.
+ @param value - Value to write to memory.
+ */
+//@{
+void EVE_LIB_MemWrite32(uint32_t addr, uint32_t value);
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
+void EVE_LIB_MemWrite16(uint32_t addr, uint16_t value);
+void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value)
+#endif  // IS_EVE_API(1, 2, 3, 4)
+//@}
+
+/**
+ @brief EVE API: Read a memory location.
+ @details Reads a memory location value.
+ @param addr - Address of register to read.
+ @return - Value read from memory.
+ */
+//@{
+uint32_t EVE_LIB_MemRead32(uint32_t address);
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
+uint16_t EVE_LIB_MemRead16(uint32_t address);
+uint8_t EVE_LIB_MemRead8(uint32_t address);
+#endif  // IS_EVE_API(1, 2, 3, 4)
+//@}
+
 //##################################################################################################
 
 // Display List encodings.

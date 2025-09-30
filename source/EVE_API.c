@@ -507,9 +507,39 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
             break;
         }
     }
-
-    //HAL_ChipSelect(1);
 }
+
+void EVE_LIB_MemWrite32(uint32_t addr, uint32_t value)
+{
+     HAL_MemWrite32(addr, value);
+}
+
+uint32_t EVE_LIB_MemRead32(uint32_t address)
+{
+     return HAL_MemRead32(address);
+}
+
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
+void EVE_LIB_MemWrite16(uint32_t addr, uint16_t value)
+{
+     HAL_MemWrite16(addr, value);
+}
+
+uint16_t EVE_LIB_MemRead16(uint32_t address)
+{
+     return HAL_MemRead16(address);
+}
+
+void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value)
+{
+     HAL_MemWrite8(addr, value);
+}
+
+uint8_t EVE_LIB_MemRead8(uint32_t address)
+{
+     return HAL_MemRead8(address);
+}
+#endif  // IS_EVE_API(1, 2, 3, 4)
 
 // Writes a string over SPI
 uint16_t EVE_LIB_SendString(const char* string)
