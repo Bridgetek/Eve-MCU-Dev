@@ -14,7 +14,7 @@ The python script `libbuild.py` is run with the the following options:
 
 ```
 > libbuild.py --help
-usage: libbuild.py [-h] --src SRC [--dest DEST] [--api API] [--apisub APISUB]
+usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB]
 
 Library Builder for EVE
 
@@ -25,9 +25,9 @@ options:
   --api API        EVE API to build library for
   --apisub APISUB  EVE SUB API to build library for
 ```
-The `--src` option tells the script where the root directory of the EVE-MCU-Dev code is located. This is the folder that contains the `source`, `include`, `ports`, and `examples` directories. The script will take files that it needs from the EVE-MCU-Dev libraries.
+The `--src` option tells the script where the root directory of the EVE-MCU-Dev code is located. This is the folder that contains the `source`, `include`, `ports`, and `examples` directories. The script will take files that it needs from the EVE-MCU-Dev libraries. The default is `../..` since this the relative path to the code from the normal location of this script.
 
-The `--dest` options is the folder where the Arduino library code will be written to. This is, by default, `./arduino_library`.
+The `--dest` options is the folder where the Arduino library code will be written to. This is, by default, `./BtEve<API>` where `<API>` is replaced with the API version.
 
 The EVE API to use is set by the `--api` and `--apisub` parameters. The default is `5` for BT82x. The `--subapi` is only used for the API 2 which distinguishes between the FT81x and BT88x.
 
@@ -36,14 +36,14 @@ The EVE API to use is set by the `--api` and `--apisub` parameters. The default 
   - MCU.h
   - HAL.h
   - FT8xx.h
-  - BT81x.h  (EVE API 3,4)
-  - BT82x.h  (EVE API 5)
-  - FT80x.h  (EVE API 1)
-  - FT81x.h  (EVE API 2)
+  - BT81x.h  (for EVE API 3,4 only)
+  - BT82x.h  (for EVE API 5 only)
+  - FT80x.h  (for EVE API 1 only)
+  - FT81x.h  (for EVE API 2 only)
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `ports\eve_bt82x` directory add the BT82x base patch (if BT82x will be used):
+- From the `ports\eve_bt82x` directory add the BT82x base patch (for API 5 only):
   - patch_base.c
   - patch_base.h
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
@@ -53,12 +53,25 @@ Template files are added to this to form the library:
 - EVE_config.h
 - bteve.h
 - bteve.cpp
+- library.properties
+- README.md
+- test/test.ino
+
+The following example projects are added:
+- examples/simple
+
+The output directory is a library specifically for the API version that was specified in the command line. It cannot be used for EVE devices that support a different API level.
+
+### Python Script Requirements
+
+The script needs a valid EVE-MCU-Dev directory with current files.
 
 ## Using the Arduino Library
 
-The library can be added to a sketch by including the line:
+The library can be added to a sketch by including the line in the example below. This is for the API 5 library for BT82x, the number corresponds to the API.
 ```
 #include <bteve5.h>
+```
 
 ## Distributing the Arduino Library
 
