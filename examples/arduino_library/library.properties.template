@@ -1,0 +1,11 @@
+name=Bridgetek-EVE-/*EVE API VER*/
+version=0.0.1
+author=Gordon McNab
+maintainer=Bridgetek <support.emea@brtchip.com>
+sentence=Library for Bridgetek /*EVE DEV*/ devices
+paragraph=Support for Bridgetek /*EVE DEV*/ devices.
+category=Display
+url=https://bridgetek.github.io/
+architectures=*
+includes=/*EVE LIB*/.h
+depends=

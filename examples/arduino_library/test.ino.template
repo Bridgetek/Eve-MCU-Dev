@@ -1,0 +1,28 @@
+/* This code is used to test the generated library. */
+
+#include <SPI.h>
+#include </*EVE LIB*/.h>
+
+/*EVE LIB*/ eve;
+
+void setup() {
+  Serial.begin(9600);
+  eve.setup(WUXGA, EVE_RAM_G_1_GBIT);
+  eve.Init();
+}
+
+void loop() {
+  // Initialise the display
+  Serial.print("Starting demo...\n");
+  eve.LIB_BeginCoProList();
+  eve.CMD_DLSTART();
+  eve.CLEAR_COLOR_RGB(0, 0, 0);
+  eve.CLEAR(1,1,1);
+  eve.COLOR_RGB(255, 255, 255);
+  eve.CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2, 
+                28, eve.OPT_CENTERX, "Testing /*EVE DEV*/");
+  eve.DISPLAY();
+  eve.CMD_SWAP();
+  eve.LIB_EndCoProList();
+  eve.LIB_AwaitCoProEmpty();
+}
