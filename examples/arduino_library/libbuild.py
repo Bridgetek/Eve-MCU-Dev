@@ -81,15 +81,16 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
     if api == 1:
         apidev = "FT800/FT801"
         apilib = "FT800 and FT801"
-        defres = "WQVGA" # 480x272
+        defres = "WQVGA" # 480 x 272
     elif api == 2:
         if subapi != 2:
             apidev = "FT810/FT811/FT812/FT813"
             apilib = "FT810 FT811 FT812 and FT813"
+            defres = "WVGA" # 800 x 480
         else:
             apidev = "BT880/BT881/BT882/BT883"
             apilib = "BT880 BT881 BT882 and BT883"
-        defres = "WVGA" # 800 x 480
+            defres = "WQVGA" # 480 x 272
     elif api == 3:
         apidev = "BT815/BT816"
         apilib = "BT815 and BT816"
