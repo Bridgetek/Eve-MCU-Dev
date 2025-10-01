@@ -1,5 +1,5 @@
 /**
- @file simple.ino
+ @file simple_EVE### EVE API VER ###.ino
  */
 /*
  * ============================================================================
@@ -43,7 +43,7 @@
  @brief EVE library handle.
  @details This is the one instance of the EVE library. Available as a global to other files.
  */
-BtEve5 eve;
+### EVE CLASS ### eve;
 
 extern const uint8_t font0[];
 const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
@@ -72,8 +72,8 @@ void setup() {
 
   uint32_t font_end;
 
-  // Setup the EVE library (WUXGA is 1920x1200 pixels)
-  eve.setup(WUXGA, EVE_RAM_G_1_GBIT);
+  // Setup the EVE library (### EVE RES ###)
+  eve.setup(### EVE RES ###);
   // Initialise the display
   eve.Init();
 

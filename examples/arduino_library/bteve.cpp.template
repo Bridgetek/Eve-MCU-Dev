@@ -1,6 +1,7 @@
-/// @file /*EVE LIB*/.cpp
-/// @brief Support /*EVE DEV*/
-
+/**
+ * @file ### EVE CLASS ###.cpp
+ * @brief Support ### EVE DEV ###
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -38,7 +39,7 @@
  */
 
 #include "Arduino.h"
-#include "/*EVE LIB*/.h"
+#include "### EVE CLASS ###.h"
 
 uint32_t EVE_DISP_WIDTH, EVE_DISP_HEIGHT;
 uint32_t EVE_DISP_HCYCLE, EVE_DISP_VCYCLE;
@@ -49,24 +50,24 @@ uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 uint32_t EVE_TOUCH_ADDR;
 
-uint32_t EVE_RAM_G_CONFIG_SIZE;
+uint32_t EVE_RAM_G_CONFIG_SIZE = EVE_RAM_G_1_GBIT;
 
-/*EVE LIB*/::/*EVE LIB*/(void)
+### EVE CLASS ###::### EVE CLASS ###(void)
 {
 }
 
-void /*EVE LIB*/::setup(uint32_t panel)
+void ### EVE CLASS ###::setup(uint32_t panel)
 {
     setpanel(panel);
 }
 
-void /*EVE LIB*/::setup(uint32_t panel, uint32_t ramg)
+void ### EVE CLASS ###::setup(uint32_t panel, uint32_t ramg)
 {
     setpanel(panel);
     EVE_RAM_G_CONFIG_SIZE = ramg;
 }
 
-void /*EVE LIB*/::setpanel(uint32_t panel)
+void ### EVE CLASS ###::setpanel(uint32_t panel)
 {
     if (panel == WQVGA)
     {
@@ -86,8 +87,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK = 5;
         EVE_DISP_PCLK_FREQ = 0x8A1;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -109,8 +108,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK = 2;
         EVE_DISP_PCLK_FREQ = 0x8A1;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -132,8 +129,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK = 1;
         EVE_DISP_PCLK_FREQ = 0xd12;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -155,8 +150,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_DITHER = 0;
         EVE_DISP_PCLK = 1;
         EVE_DISP_PCLK_FREQ = 0x8B1;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -178,8 +171,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK = 1;
         EVE_DISP_PCLK_FREQ = 0x8B1;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -200,8 +191,6 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         EVE_DISP_CSPREAD = 0;
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK_FREQ = 0x8B1;
-        EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
@@ -210,4 +199,9 @@ void /*EVE LIB*/::setpanel(uint32_t panel)
         // Panel type not defined.
         Serial.print("ERROR: No panel selected!\n");
     }
+
+#if IS_EVE_API(5)
+    EVE_DISP_LVDSTXCLKDIV = 3;
+    EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+#endif
 }

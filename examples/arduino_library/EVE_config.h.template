@@ -1,6 +1,7 @@
-/// @file EVE_config.h
-/// @brief Support /*EVE DEV*/
-
+/**
+ * @file EVE_config.h
+ * @brief Support ### EVE DEV ###
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -40,8 +41,13 @@
 #ifndef _EVE_CONFIG_H_
 #define _EVE_CONFIG_H_
 
-#define EVE_API /*EVE API*/
-#define EVE_SUB_API /*EVE SUB API*/
+// Default platform selection
+#ifndef EVE_API
+#define EVE_API ### EVE API ###
+#ifndef EVE_SUB_API
+#define EVE_SUB_API ### EVE SUB API ###
+#endif // EVE_SUB_API
+#endif // EVE_API
 
 // Definitions used for target display resolution selection
 #define QVGA    320        // e.g. VM800B with 3.5 inch display

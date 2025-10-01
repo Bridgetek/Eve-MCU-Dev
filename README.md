@@ -1,6 +1,6 @@
 # EVE-MCU-Dev
 
-This library and ports allow a variety of hardware to communicate with FT8xx and BT8xx devices: embedded MCUs using their native SPI hardware; Linux PCs using SPI character devices; PCs using FT4222H or MPSSE USB devices. This library is intended to provide a **C** library for embedded designs.
+This library and ports allow a variety of hardware to communicate with FT8xx and BT8xx graphics controller devices: embedded MCUs using their native SPI hardware; Linux PCs using SPI character devices; PCs using FT4222H or MPSSE USB devices. This library is intended to provide a **C** library for embedded designs.
 
 The application note document for this library is linked on the Bridgetek Website in [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). This library is covered by Application Note [BRT_AN_025 EVE Portable MCU Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf)
 

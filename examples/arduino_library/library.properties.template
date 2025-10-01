@@ -1,11 +1,11 @@
-name=Bridgetek-EVE-/*EVE API VER*/
+name=Bridgetek ### EVE LIB NAME ###
 version=0.0.1
 author=Gordon McNab
 maintainer=Bridgetek <support.emea@brtchip.com>
-sentence=Library for Bridgetek /*EVE DEV*/ devices
-paragraph=Support for Bridgetek /*EVE DEV*/ devices.
+sentence=Library for Bridgetek ### EVE LIB NAME ### graphics controllers.
+paragraph=Provides an easy lightweight API for programming Bridgetek ### EVE LIB NAME ### graphics controllers. Provides a simple interface to the EVE-MCU-Dev API from an Arduino sketch.
 category=Display
-url=https://bridgetek.github.io/
+url=https://github.com/Bridgetek/EVE-MCU-Dev_Arduino_/### EVE API VER ###
 architectures=*
-includes=/*EVE LIB*/.h
+includes=### EVE CLASS ###.h
 depends=

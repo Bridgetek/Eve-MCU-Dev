@@ -3,7 +3,6 @@
 # This requires a C preprocessor callable with the command line "cpp". 
 #
 import subprocess
-import shutil
 import re
 import os
 import argparse
@@ -43,10 +42,21 @@ if eve_sub_api > 0:
 
 # Generate name of library
 if eve_sub_api > 1:
-    library_name = f"BtEve{eve_api}_{eve_sub_api}"
+    str_lib_name = f"BridgetekEVE{eve_api}_{eve_sub_api}"
 else:
-    library_name = f"BtEve{eve_api}"
-print(f"Library name is {library_name}")
+    str_lib_name = f"BridgetekEVE{eve_api}"
+print(f"Library name is {str_lib_name}")
+
+str_api_version = f"{eve_api}"
+if eve_sub_api > 1: 
+    str_api_sub_version = f"{eve_sub_api}"
+    str_full_version = str_api_version + "_" + str_api_sub_version
+else: 
+    if eve_sub_api > 0: 
+        str_api_sub_version = f"{eve_sub_api}"
+    else:
+        str_api_sub_version = ""
+    str_full_version = str_api_version
 
 src_api = os.path.normpath(args.src)
 if not os.path.exists(src_api):
@@ -54,7 +64,7 @@ if not os.path.exists(src_api):
 if args.dest:
     dest_lib = os.path.normpath(args.dest)
 else:
-    dest_lib = os.path.normpath(library_name)
+    dest_lib = os.path.normpath(str_lib_name)
 
 # Check API source and header files exist
 if not (os.path.exists(os.path.join(src_api, "source")) and 
@@ -63,44 +73,51 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, lib, api, subapi, apidefs):
+def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_version, apidefs):
     cppfile = []
     flag = True
-    apiver = f"{api}"
-    if subapi > 1: 
-        apisubver = f"{subapi}"
-        ver = apiver + "_" + apisubver
-    else: 
-        if subapi > 0: 
-            apisubver = f"{subapi}"
-        else:
-            apisubver = ""
-        ver = apiver
+        
+    # defaults for each generation
     if api == 1:
         apidev = "FT800/FT801"
+        apilib = "FT800 and FT801"
+        defres = "WQVGA" # 480x272
     elif api == 2:
         if subapi != 2:
             apidev = "FT810/FT811/FT812/FT813"
+            apilib = "FT810 FT811 FT812 and FT813"
         else:
             apidev = "BT880/BT881/BT882/BT883"
+            apilib = "BT880 BT881 BT882 and BT883"
+        defres = "WVGA" # 800 x 480
     elif api == 3:
         apidev = "BT815/BT816"
+        apilib = "BT815 and BT816"
+        defres = "WVGA" # 800 x 480
     elif api == 4:
         apidev = "BT817/BT818"
+        apilib = "BT817 and BT818"
+        defres = "WSVGA" # 1024 x 600
     elif api == 5:
         apidev = "BT820"
+        apilib = "BT820"
+        defres = "WUXGA" # 1920 x 1200
+
+    # Replace markers with values
     with open(file_in, "r") as file:
         while line := file.readline():
-            if re.findall(r"/\*END API\*/", line): 
+            if re.findall(r"/\* ### END API ### \*/", line): 
                 flag = True
-            line = re.sub(r"/\*EVE API VER\*/", ver, line)
-            line = re.sub(r"/\*EVE API\*/", apiver, line)
-            line = re.sub(r"/\*EVE SUB API\*/", apisubver, line)
-            line = re.sub(r"/\*EVE DEV\*/", apidev, line)
-            line = re.sub(r"/\*EVE LIB\*/", lib, line)
+            line = re.sub(r"### EVE API VER ###", str_full_version, line)
+            line = re.sub(r"### EVE API ###", str_api_version, line)
+            line = re.sub(r"### EVE SUB API ###", str_api_sub_version, line)
+            line = re.sub(r"### EVE DEV ###", apidev, line)
+            line = re.sub(r"### EVE LIB NAME ###", apilib, line)
+            line = re.sub(r"### EVE CLASS ###", cpplib, line)
+            line = re.sub(r"### EVE RES ###", defres, line)
             if flag: 
                 cppfile.append(line.rstrip())
-            if re.findall(r"/\*BEGIN API\*/", line):
+            if re.findall(r"/\* ### BEGIN API ### \*/", line):
                 flag = False
                 cppfile.extend(apidefs)
 
@@ -141,7 +158,7 @@ try:
     for d in dist_source_files:
         srcf, destf = d
         print(f"{srcf} -> {destf}")
-        shutil.copyfile(srcf, destf)
+        template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
@@ -162,11 +179,11 @@ template_files.append(("test.ino.template", os.path.join(test_dir,"test.ino")))
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, library_name, eve_api, eve_sub_api, "")
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
 
 # Command line for preprocessor
 cppcmd = ['cpp', f'-DEVE_API={eve_api}']
-if eve_sub_api > 1:
+if eve_sub_api > 0:
     cppcmd.append(f'-DEVE_SUB_API={eve_sub_api}')
 
 # Command line to preprocess the library files
@@ -265,18 +282,35 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
 
 # Library main class files (template files pass 2)
 template_files = []
-template_files.append(("bteve.cpp.template", os.path.join(dest_lib,f"{library_name}.cpp")))
-template_files.append(("bteve.h.template", os.path.join(dest_lib,f"{library_name}.h")))
+template_files.append(("bteve.cpp.template", os.path.join(dest_lib,f"{str_lib_name}.cpp")))
+template_files.append(("bteve.h.template", os.path.join(dest_lib,f"{str_lib_name}.h")))
 
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, library_name, eve_api, eve_sub_api, cppdefs)
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppdefs)
 
 # Make the examples directory
 examples_dir = os.path.join(dest_lib, "examples")
 os.makedirs(examples_dir, exist_ok=True)
 
 # Copy all the examples
-print(f"examples -> {examples_dir}")
-shutil.copytree(os.path.normpath("examples"), examples_dir, dirs_exist_ok=True)
+example_files = []
+for path, subdirs, files in os.walk(os.path.normpath("examples")):
+    for dir in subdirs:
+        destdir = dir + "_EVE" + str_full_version
+        # Make a unique destination directory
+        os.makedirs(os.path.join(dest_lib, path, destdir), exist_ok=True)
+    for name in files:
+        # Rename the destination file path
+        destpath = path + "_EVE" + str_full_version
+        destname = name
+        # Rename the sketch main file
+        if (os.path.basename(name) == os.path.split(path)[-1] + ".ino"):
+            destname = os.path.split(path)[-1] + "_EVE" + str_full_version + ".ino"
+        example_files.append((os.path.join(path, name), os.path.join(dest_lib, destpath, destname)))
+
+for t in example_files:
+    srcf, destf = t
+    print(f"{srcf} -> {destf}")
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")

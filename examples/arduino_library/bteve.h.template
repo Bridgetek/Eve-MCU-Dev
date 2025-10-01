@@ -1,6 +1,7 @@
-/// @file /*EVE LIB*/.h
-/// @brief Support /*EVE DEV*/
-
+/**
+ * @file ### EVE CLASS ###.h
+ * @brief Support ### EVE DEV ###
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -41,14 +42,15 @@
 #define _BTEVE_H_
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+#include <stdarg.h>
 
 #include "Arduino.h"
 
 /* Clash with Arduino API */
 #undef DISPLAY
 
-#define EVE_API /*EVE API*/
-#define EVE_SUB_API /*EVE SUB API*/
+#define EVE_API ### EVE API ###
+#define EVE_SUB_API ### EVE SUB API ###
 
 //@{
 /** @brief Library Includes
@@ -64,17 +66,17 @@ extern "C" {
 }
 //@}
 
-class /*EVE LIB*/
+class ### EVE CLASS ###
 {
   public:
-    /*EVE LIB*/(void);
+    ### EVE CLASS ###(void);
 
   void setup(uint32_t panel);
   void setup(uint32_t panel, uint32_t ramg);
 
   public:
-  /*BEGIN API*/
-  /*END API*/
+  /* ### BEGIN API ### */
+  /* ### END API ### */
 
   private:
     void setpanel(uint32_t panel);

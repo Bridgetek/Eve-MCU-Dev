@@ -1,10 +1,12 @@
-# Arduino Library for Bridgetek /*EVE DEV*/
+# Arduino Library for Bridgetek ### EVE LIB NAME ###
 
 [Back](../README.md)
 
-This library is to provide an API to control the Bridgetek /*EVE DEV*/ devices. It implements EVE API /*EVE API VER*/.
+This library is to provide an API to control the Bridgetek ### EVE LIB NAME ### devices. It implements EVE API ### EVE API VER ###.
 
-The class name of the library is "/*EVE LIB*/".
+The class name of the library is "### EVE CLASS ###".
+
+The example code is set to the ### EVE RES ### display resolution.
 
 ## Hardware
 

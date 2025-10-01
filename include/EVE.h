@@ -228,7 +228,7 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t *value);
 void EVE_LIB_MemWrite32(uint32_t addr, uint32_t value);
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 void EVE_LIB_MemWrite16(uint32_t addr, uint16_t value);
-void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value)
+void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value);
 #endif  // IS_EVE_API(1, 2, 3, 4)
 //@}
 
