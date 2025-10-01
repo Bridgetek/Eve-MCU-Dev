@@ -70,7 +70,7 @@ void ConnectToFlash(void)
 		EVE_LIB_EndCoProList();
 		EVE_LIB_AwaitCoProEmpty();
 
-		Flash_Status = HAL_MemRead8(EVE_REG_FLASH_STATUS);
+		Flash_Status = EVE_LIB_MemRead8(EVE_REG_FLASH_STATUS);
 
 		// If the flash status isn't 'detached', go to an error screen
 		if (EVE_FLASH_STATUS_DETACHED != Flash_Status)
@@ -97,7 +97,7 @@ void ConnectToFlash(void)
 		EVE_LIB_EndCoProList();
 		EVE_LIB_AwaitCoProEmpty();
 
-		Flash_Status = HAL_MemRead8(EVE_REG_FLASH_STATUS);
+		Flash_Status = EVE_LIB_MemRead8(EVE_REG_FLASH_STATUS);
 
 		// If the flash status isn't 'attached', go to an error screen
 		if (EVE_FLASH_STATUS_BASIC != Flash_Status)
@@ -124,7 +124,7 @@ void ConnectToFlash(void)
 		EVE_LIB_EndCoProList();
 		EVE_LIB_AwaitCoProEmpty();
 
-		Flash_Status = HAL_MemRead8(EVE_REG_FLASH_STATUS);
+		Flash_Status = EVE_LIB_MemRead8(EVE_REG_FLASH_STATUS);
 
 		// If the flash status isn't 'fast', go to an error screen
 		if (EVE_FLASH_STATUS_FULL != Flash_Status)
@@ -454,8 +454,8 @@ void eve_display_ColorPicker_CircularARGB1555(void)
 
 
 		// Read the current Tag value and the coordinates used to find it
-        TagVal = HAL_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
-		TouchXY = HAL_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
+        TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
+		TouchXY = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
 		TouchY = (TouchXY & 0x0000FFFF);											// Get the X and Y values of the coordinate
 		TouchX = ((TouchXY & 0xFFFF0000) >> 16);
 
@@ -474,7 +474,7 @@ void eve_display_ColorPicker_CircularARGB1555(void)
 			// read through the image data to find byte corresponding to the coordinate
 			// start address in RAM_G + (Y * length of line) + X
 			ColorBytesLoc = Image_Data_RAM_G + (Img_touch_X*2 + (Img_touch_Y*Image_Width*2));
-			ColorBytes = HAL_MemRead16(ColorBytesLoc);
+			ColorBytes = EVE_LIB_MemRead16(ColorBytesLoc);
 
 			// ARGB1555 data has format ARRR RRGG GGGB BBBB
 			// Find the R, G and B components
@@ -568,7 +568,7 @@ void eve_display_ColorPicker_RectangularARGB1555_MultiTouch()
 
 	// ################################## Enable Multi-Touch ######################################
 
-	HAL_MemWrite8(EVE_REG_CTOUCH_EXTENDED,0);									// Switch to extended (multi-touch) mode
+	EVE_LIB_MemWrite8(EVE_REG_CTOUCH_EXTENDED,0);									// Switch to extended (multi-touch) mode
 
 	// ################################## Enable PWM ######################################
 
@@ -709,18 +709,18 @@ void eve_display_ColorPicker_RectangularARGB1555_MultiTouch()
 		// Touch Tag 0 is the first touch which the user puts on the screen
 		// This could be on either point and so is not always related to a certain cursor
 
-    	Tag0 = HAL_MemRead8(EVE_REG_TOUCH_TAG);
-    	Tag0_Coord = HAL_MemRead32(EVE_REG_CTOUCH_TOUCH0_XY);
-    	//Tag0_Coord = HAL_MemRead32(EVE_REG_TOUCH_TAG_XY);
+    	Tag0 = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
+    	Tag0_Coord = EVE_LIB_MemRead32(EVE_REG_CTOUCH_TOUCH0_XY);
+    	//Tag0_Coord = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG_XY);
     	Tag0_Coord_X = (Tag0_Coord >> 16);
     	Tag0_Coord_Y = (Tag0_Coord & 0x0000FFFF);
 
 		// Touch Tag 1 is the second touch (second finger on the screen in multi-touch use) which the user puts on the screen
 		// This could be on either point and so is not always related to a certain cursor
 
-    	Tag1 = HAL_MemRead8(EVE_REG_TOUCH_TAG1);
-    	Tag1_Coord = HAL_MemRead32(EVE_REG_CTOUCH_TOUCH1_XY);
-    	//Tag1_Coord = HAL_MemRead32(EVE_REG_TOUCH_TAG1_XY);
+    	Tag1 = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG1);
+    	Tag1_Coord = EVE_LIB_MemRead32(EVE_REG_CTOUCH_TOUCH1_XY);
+    	//Tag1_Coord = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG1_XY);
     	Tag1_Coord_X = (Tag1_Coord >> 16);
     	Tag1_Coord_Y = (Tag1_Coord & 0x0000FFFF);
 
@@ -798,7 +798,7 @@ void eve_display_ColorPicker_RectangularARGB1555_MultiTouch()
 
 		// Read the 2 bytes from this address (2 bytes because it is ARGB1555)
 		// These are encoded as ARRR RRGG GGGB BBBB
-		ColorBytes = HAL_MemRead16(ColorBytesLoc);
+		ColorBytes = EVE_LIB_MemRead16(ColorBytesLoc);
 
 		// Find the R, G and B components within the bits of these 2 bytes
 		// Shift so that the 5 bits are in the upper bits of the byte
@@ -826,7 +826,7 @@ void eve_display_ColorPicker_RectangularARGB1555_MultiTouch()
 
 		// Read the 2 bytes from this address (2 bytes because it is ARGB1555)
 		// These are encoded as ARRR RRGG GGGB BBBB
-		ColorBytes = HAL_MemRead16(ColorBytesLoc);
+		ColorBytes = EVE_LIB_MemRead16(ColorBytesLoc);
 
 		// Find the R, G and B components within the bits of these 2 bytes
 		// Shift so that the 5 bits are in the upper bits of the byte
@@ -1026,8 +1026,8 @@ void eve_display_ColorPicker_RectangularPaletted8(void)
     	// ################################## Read the touch data ######################################
 
 		// Read the current Tag value and the coordinates used to find it
-        TagVal = HAL_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
-		TouchXY = HAL_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
+        TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
+		TouchXY = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
 		TouchY = (TouchXY & 0x0000FFFF);											// Get the X and Y values of the coordinate
 		TouchX = ((TouchXY & 0xFFFF0000) >> 16);
 
@@ -1061,11 +1061,11 @@ void eve_display_ColorPicker_RectangularPaletted8(void)
 			// Can add additional error checking here
 			//if(ColorBytesLoc > (Image_Width_Paletted8*Image_Height_Paletted8))
 			//	ColorBytesLoc = (Image_Width_Paletted8*Image_Height_Paletted8);
-			ColorByteIndex = HAL_MemRead8(ColorBytesLoc);
+			ColorByteIndex = EVE_LIB_MemRead8(ColorBytesLoc);
 
 			// Now read the actual color value from the LUT.
 			// From the start of the LUT data, add the index value * 4 (as the index is for 32-bit values)
-			ColorBytes = HAL_MemRead32(Image_Data_RAM_G_Pal8_LUT + (ColorByteIndex*4));
+			ColorBytes = EVE_LIB_MemRead32(Image_Data_RAM_G_Pal8_LUT + (ColorByteIndex*4));
 			// ARRR RRGG GGGB BBBB
 			// find the R, G and B components which are 8-bit in this case as it is Paletted 8
 			ColorByteB = (uint8_t)(ColorBytes);
@@ -1278,9 +1278,9 @@ while(1)
 	// ################################## Read the touch data ######################################
 
 	// Read the current Tag value and the coordinates used to find it
-    TagVal = HAL_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
-	//TouchXY = HAL_MemRead32(EVE_REG_TOUCH_SCREEN_XY);
-	TouchXY = HAL_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
+    TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);                                   // Get Tag value
+	//TouchXY = EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY);
+	TouchXY = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG_XY);								// Get coordinates
 	TouchY = (TouchXY & 0x0000FFFF);											// Get the X and Y values of the coordinate
 	TouchX = ((TouchXY & 0xFFFF0000) >> 16);
 
@@ -1314,11 +1314,11 @@ while(1)
 		// Can add additional error checking here
 		//if(ColorBytesLoc > (Image_Width_Paletted8*Image_Height_Paletted8))
 		//	ColorBytesLoc = (Image_Width_Paletted8*Image_Height_Paletted8);
-		ColorByteIndex = HAL_MemRead8(ColorBytesLoc);
+		ColorByteIndex = EVE_LIB_MemRead8(ColorBytesLoc);
 
 		// Now read the actual color value from the LUT.
 		// From the start of the LUT data, add the index value * 4 (as the index is for 32-bit values)
-		ColorBytes = HAL_MemRead32(Image_Data_RAM_G_Pal8_LUT + (ColorByteIndex*4));
+		ColorBytes = EVE_LIB_MemRead32(Image_Data_RAM_G_Pal8_LUT + (ColorByteIndex*4));
 		// ARRR RRGG GGGB BBBB
 		// find the R, G and B components which are 8-bit in this case as it is Paletted 8
 		ColorByteB = (uint8_t)(ColorBytes);

@@ -1,6 +1,7 @@
 /**
     @file eve_example.h
- **/
+    @brief Target is ### EVE DEV ###
+**/
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -43,13 +44,13 @@
 #include <stdint.h>
 
 #include <SPI.h>
-#include <BtEve5.h>
+#include <### EVE CLASS ###.h>
 
 /**
  @brief EVE library handle.
  @details This is the one instance of the EVE library. Available as a global.
  */
-extern BtEve5 eve;
+extern ### EVE CLASS ### eve;
 
 /**
  @brief Definitions of handles for custom fonts and bitmaps.

@@ -92,21 +92,21 @@ void eve_calibrate(void)
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
 
-        calib.transform[0] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
-        calib.transform[1] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
-        calib.transform[2] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
-        calib.transform[3] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
-        calib.transform[4] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
-        calib.transform[5] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
+        calib.transform[0] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
+        calib.transform[1] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
+        calib.transform[2] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
+        calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
+        calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
+        calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
         platform_calib_write(&calib);
     }
     else
     {
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
     }
 }

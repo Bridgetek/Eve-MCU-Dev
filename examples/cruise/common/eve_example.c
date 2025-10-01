@@ -424,7 +424,7 @@ void eve_display(void)
             if (key == 103)
             {
                 uint32_t tracker;
-                tracker = HAL_MemRead32(EVE_REG_TRACKER);
+                tracker = EVE_LIB_MemRead32(EVE_REG_TRACKER);
                 if ((tracker & 0xff) == 103)
                 {
                     // 65535 -> MAX_SPEED

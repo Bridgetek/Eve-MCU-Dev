@@ -60,15 +60,15 @@ uint8_t eve_read_tag(uint8_t *key)
 	uint8_t key_detect = 0;
 
 #if IS_EVE_API(1, 2, 3, 4)
-	Read_tag = HAL_MemRead8(EVE_REG_TOUCH_TAG);
-	if (!(HAL_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
+	Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
+	if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
 	{
 		key_detect = 1;
 		*key = Read_tag;
 	}
 #else
-	Read_tag = HAL_MemRead32(EVE_REG_TOUCH_TAG);
-	if ((HAL_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
+	Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
+	if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
 	{
 		key_detect = 1;
 		*key = Read_tag;

@@ -262,7 +262,7 @@ void eve_display(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    printf("Swapchain 2: 0x%x and 0x%x\n", HAL_MemRead32(EVE_REG_SC2_PTR0), HAL_MemRead32(EVE_REG_SC2_PTR1));
+    printf("Swapchain 2: 0x%x and 0x%x\n", EVE_LIB_MemRead32(EVE_REG_SC2_PTR0), EVE_LIB_MemRead32(EVE_REG_SC2_PTR1));
 
     video_LVDS();
 }
