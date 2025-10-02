@@ -66,9 +66,9 @@
 #include <stdio.h>
 #endif
 
-#include "EVE.h"
-#include "HAL.h"
-#include "MCU.h"
+#include <EVE.h>
+#include <HAL.h>
+#include <MCU.h>
 
 // Used to navigate command ring buffer on FT800
 #ifndef EVE_USE_CMDB_METHOD

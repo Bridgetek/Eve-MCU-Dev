@@ -60,7 +60,7 @@
 #include <ft900_dlog.h>
 #include <ft900_memctl.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

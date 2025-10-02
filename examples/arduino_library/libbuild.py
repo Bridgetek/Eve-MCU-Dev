@@ -183,7 +183,7 @@ for t in template_files:
     template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
 
 # Command line for preprocessor
-cppcmd = ['cpp', f'-DEVE_API={eve_api}']
+cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
 if eve_sub_api > 0:
     cppcmd.append(f'-DEVE_SUB_API={eve_sub_api}')
 

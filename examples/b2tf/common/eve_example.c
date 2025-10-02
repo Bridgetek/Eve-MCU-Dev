@@ -50,9 +50,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 
 #include "eve_helper.h"
 #include "sevenseg.h"

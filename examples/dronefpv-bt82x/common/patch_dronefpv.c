@@ -1,8 +1,8 @@
 /* Generated file by extension.py */
 
 #include "patch_dronefpv.h"
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
+#include <HAL.h>
 
 
 #if IS_EVE_API(5)

@@ -49,8 +49,7 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
 
 #include "eve_helper.h"
 

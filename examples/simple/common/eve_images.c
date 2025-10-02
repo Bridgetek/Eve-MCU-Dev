@@ -50,7 +50,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

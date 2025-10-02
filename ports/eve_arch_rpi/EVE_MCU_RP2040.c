@@ -57,8 +57,8 @@
 #include <stdio.h>
 #include <machine/endian.h>
 
-#include "EVE.h"
-#include "MCU.h"
+#include <EVE.h>
+#include <MCU.h>
 
 #include <hardware/gpio.h>
 #include <hardware/spi.h>

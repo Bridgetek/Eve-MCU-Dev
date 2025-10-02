@@ -50,9 +50,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

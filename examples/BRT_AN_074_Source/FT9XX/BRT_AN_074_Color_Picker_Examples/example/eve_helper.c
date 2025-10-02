@@ -49,8 +49,7 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -59,9 +58,9 @@ uint8_t eve_read_tag(uint8_t *key)
 	uint8_t Read_tag;
 	uint8_t key_detect = 0;
 
-	Read_tag = HAL_MemRead8(EVE_REG_TOUCH_TAG);
+	Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
 
-	if (!(HAL_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
+	if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
 	{
 		key_detect = 1;
 		*key = Read_tag;

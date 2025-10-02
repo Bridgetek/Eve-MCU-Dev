@@ -1,7 +1,7 @@
 PLATFORM?=RASPBERRYPI
 
 CC = gcc
-CFLAGS = -c -Wall -g -Os -DPLATFORM_RASPBERRYPI -DUSE_LINUX_SPI_DEV -I../../../include -I../common -I../../../ports/eve_bt82x
+CFLAGS = -c -Wall -g -Os -DPLATFORM_RASPBERRYPI -DUSE_LINUX_SPI_DEV -I. -I../../../include -I../../../ports/eve_bt82x -I../common
 LD = $(CC)
 LDFLAGS = -lgpiod
 

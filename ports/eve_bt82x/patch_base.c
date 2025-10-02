@@ -1,8 +1,8 @@
 /* Generated file by extensionutil.py */
 
 #include "patch_base.h"
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
+#include <HAL.h>
 
 
 #if IS_EVE_API(5)

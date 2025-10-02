@@ -58,15 +58,12 @@ Bridgetek
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
-#include <EVE.h>
-#include <EVE_config.h>
-#include <FT8xx.h>
-#include <HAL.h>
-#include <MCU.h>
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
-#include <eve_example.h>
 
+#include <EVE.h>
+
+#include <eve_example.h>
 
 //@{
 int8_t platform_calib_init(void)

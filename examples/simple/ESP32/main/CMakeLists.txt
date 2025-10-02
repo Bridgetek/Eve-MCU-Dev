@@ -6,6 +6,6 @@ set(COMPONENT_SRCS "main.c"
                     "../../common/eve_images.c" 
                     "../../common/eve_helper.c")
                     
-set(COMPONENT_ADD_INCLUDEDIRS "../../../../include" "../../common" "../../../../ports/eve_bt82x")
+set(COMPONENT_ADD_INCLUDEDIRS ${CMAKE_CURRENT_SOURCE_DIR} "../../../../include" "../../../../ports/eve_bt82x" "../../common")
 
 register_component()

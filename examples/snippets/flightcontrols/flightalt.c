@@ -48,9 +48,8 @@
  */
 #include <stdint.h>
 #include <stdlib.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+
+#include <EVE.h>
 
 #include "trig_furman.h"
 

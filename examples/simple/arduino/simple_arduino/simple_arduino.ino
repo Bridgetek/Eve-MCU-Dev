@@ -1,9 +1,7 @@
 #include <SPI.h>
 
 extern "C" {
-#include "EVE.h"
-#include "HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 #include "eve_example.h"
 }
 

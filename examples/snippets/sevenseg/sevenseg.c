@@ -47,9 +47,8 @@
  * ============================================================================
  */
 #include <stdint.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+
+#include <EVE.h>
 
 /*
  * x,y - top left of seven segment graphic in pixels

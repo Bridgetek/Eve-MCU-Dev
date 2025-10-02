@@ -56,8 +56,8 @@
 #include "ti_msp_dl_config.h"
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include "EVE.h"
-#include "MCU.h"
+#include <EVE.h>
+#include <MCU.h>
 
 
 #define Nop() __no_operation()

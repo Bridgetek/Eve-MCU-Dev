@@ -100,15 +100,16 @@ ft9xx_set_executable(${EXECUTABLE} "${SRC_FILES}" "${LIB_FILES}" "${LDSCRIPT_FIL
 
 # Compile a list of include directories.
 target_include_directories(${EXECUTABLE} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
     Includes
-    # Example project includes
-    ${EXAMPLE_COMMON}
-    # Snippets includes
-    ${EXAMPLE_SNIPPETS}/sevenseg/
     # API Includes
     ${API_DIRECTORY}/include
     # Base patch include
     ${API_DIRECTORY}/ports/eve_bt82x
+    # Example project includes
+    ${EXAMPLE_COMMON}
+    # Snippets includes
+    ${EXAMPLE_SNIPPETS}/sevenseg/
 
     # GENERATED: INCLUDES - DO NOT MODIFY - BEGIN
     # GENERATED: INCLUDES - DO NOT MODIFY - END

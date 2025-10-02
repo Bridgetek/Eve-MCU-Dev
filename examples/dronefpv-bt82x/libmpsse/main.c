@@ -54,7 +54,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

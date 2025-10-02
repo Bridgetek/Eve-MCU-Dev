@@ -64,7 +64,7 @@
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

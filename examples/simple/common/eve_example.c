@@ -47,11 +47,10 @@
  * ============================================================================
  */
 #include <stdio.h>
-
 #include <stdint.h>
-#include "EVE.h"
-#include "HAL.h"
-#include "MCU.h"
+
+#include <EVE.h>
+#include <MCU.h> // For DEBUG_PRINTF
 
 #include "eve_example.h"
 extern const uint8_t font0[];

@@ -49,7 +49,7 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

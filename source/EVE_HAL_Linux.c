@@ -58,9 +58,9 @@
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
-#include "EVE.h"
-#include "HAL.h"
-#include "Platform.h"
+#include <EVE.h>
+#include <HAL.h>
+#include <Platform.h>
 
 #ifdef EVE_HAL_DEBUG
 #define dbg_printf(...) printf(__VA_ARGS__)

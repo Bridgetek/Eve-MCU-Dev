@@ -52,9 +52,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 
 #if IS_EVE_API(1,2,3,4)
 #error This example requires EVE API 5 or above.

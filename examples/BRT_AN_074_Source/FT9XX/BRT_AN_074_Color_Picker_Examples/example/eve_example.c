@@ -52,13 +52,10 @@
 //#define ColorPicker_ImagePaletted8
 
 #include <stdint.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
+
 #include "eve_example.h"
 #include "ft900.h"
-
-
 
 void ConnectToFlash(void)
 {
