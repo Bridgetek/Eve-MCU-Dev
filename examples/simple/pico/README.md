@@ -1,31 +1,39 @@
-# EVE-MCU-Dev Simple Raspberry Pi pico Example
+# EVE-MCU-Dev Simple Raspberry Pi pico VSCode Example
 
 [Back](../README.md)
 
-## Setting Up the pico SDK
+## Compiling using the pico VSCode Extension
 
-The build environment depends on the presence of the Raspberry Pi pico SDK. This can be setup following instructions in the section "Appendix C: Manual toolchain setup" of the [Getting Started With pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) document from the Raspberry Pi website.
+The workspace file `simple.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
 
-This will configure a command line environment for compilation of Raspberry Pi pico projects. It is intended for Linux environments.
+### Setting Up the Simple Raspberry Pi pico VSCode Example
 
-## Compiling the Simple Raspberry Pi pico Example
+The build environment depends on the presence of the Raspberry Pi pico VSCode Extension. This can be setup following instructions in the [Getting Started With pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) document from the Raspberry Pi website.
 
-The build process is controlled by a file in this folder called `CMakeLists.txt`. This is used by a utility called CMake to perform the build.
+### Compiling the Simple Raspberry Pi pico VSCode Example
 
-Firstly, the CMake environment must be configured first with the command.
+The instructions for compiling and programming the pico can be followed from the Raspberry Pi pico Extension Guide available from the Raspberry Pi website.
+
+## Compiling using the Command Line
+
+The pico toolchain is also available from the command line. It can be accessed from the command line if the Raspberry Pi pico VSCode Extension is loaded or the Raspberry Pi pico toolchain is configured manually (see "Appendix C: Manual toolchain setup" in the Getting Started With pico document).
+
+### Setting Up the Simple Raspberry Pi pico Example Manually
+
+To configure the build environment using CMake:
+
 ```
-cmake -B build -S .
+cmake --fresh -B build -S . -G "Unix Makefiles"
 ```
-Configuration files for the build are kept in the directory called `build`.
 
-Then the compilation performed using this command.
+This will configure the compilation to take place in the `build` directory. It must be directed to use `Unix Makefiles` as a generator, if other compilation environments are configured then these may be used in preference to the pico toolchain.
+
+### Compiling the Simple Raspberry Pi pico Example Manually
+
+The following CMake command will build the code and place the resulting files in the `build` directory:
+
 ```
 cmake --build build
 ```
-Once completed, the compiled files are also found in the `build` directory.
 
-## Running the Simple Raspberry Pi pico Example
-
-The executable image is found in the file `build` directory. It is called `simple-pico.uf2`.
-
-To run this file place the pico into BOOTSEL mode. Then copy the file to the USB Mass Storage Device that is started on the pico when BOOTSEL mode is started.
+The UF2 file for programming onto the board is `simple_pico.uf2` in the `build` directory.

@@ -4,22 +4,19 @@
 			"path": "."
 		},
 		{
-			"path": "../../../include"
+			"path": "../common"
 		},
 		{
-			"path": "../../../ports/eve_arch_rpi"
+			"path": "../../../include"
 		},
 		{
 			"path": "../../../source"
 		},
 		{
-			"path": "../common"
+			"path": "../../../ports/eve_arch_rpi"
 		},
 		{
-			"path": "main"
-		},
-		{
-			"path": "../../snippets/sevenseg"
+			"path": "../../../ports/eve_bt82x"
 		}
 	],
 	"settings": {
@@ -50,6 +47,7 @@
 			"PICO_TOOLCHAIN_PATH": "${env:HOME}/.pico-sdk/toolchain/14_2_Rel1",
 			"PATH": "${env:HOME}/.pico-sdk/toolchain/14_2_Rel1/bin:${env:HOME}/.pico-sdk/picotool/2.2.0/picotool:${env:HOME}/.pico-sdk/cmake/v3.31.5/bin:${env:HOME}/.pico-sdk/ninja/v1.12.1:${env:PATH}"
 		},
+		"raspberry-pi-pico.cmakeAutoConfigure": false,
 		"raspberry-pi-pico.useCmakeTools": true,
 		"raspberry-pi-pico.cmakePath": "${HOME}/.pico-sdk/cmake/v3.31.5/bin/cmake",
 		"raspberry-pi-pico.ninjaPath": "${HOME}/.pico-sdk/ninja/v1.12.1/ninja"
