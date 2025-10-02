@@ -1,6 +1,3 @@
-# Pico distribution directory
-build/
-Makefile
-cmake_install.cmake
-pico.code-workspace
-pico_sdk_import.cmake
+build/*
+pico-sdk/
+!.vscode/*

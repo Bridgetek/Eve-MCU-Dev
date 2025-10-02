@@ -33,8 +33,8 @@ add_executable(${PROJECT_NAME}
         main.c
 )
 include_directories(
-        ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
+        ${API_DIRECTORY}/include
 )
 # Tell EVE library to use libFT4222 as base class
 add_compile_definitions(USE_FT4222=0)
@@ -45,6 +45,7 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libft4222/EVE_libft4222.c
+        # ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC

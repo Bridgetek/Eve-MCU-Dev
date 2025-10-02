@@ -22,8 +22,7 @@ This example supports the following platforms:
 |ST STM32 (Keil) | [STM32](STM32/README.md) | 
 |ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) | 
 |Raspberry Pi | [raspberry_pi](raspberry_pi/README.md) | 
-|Raspberry Pi Pico (SDK) | [pico](pico/README.md) | 
-|Raspberry Pi Pico (VS Code) | [pico_vscode](pico_vscode/README.md) |
+|Raspberry Pi Pico | [pico](pico/README.md) | 
 |Generic using libMPSSE CMake | [libft4222](libft4222/README.md) | 
 |Generic using libMPSSE Visual Studio | [libft4222](libft4222/README.md) | 
 |Generic using libFT4222 CMake | [libmpsse](libmpsse/README.md) | 
