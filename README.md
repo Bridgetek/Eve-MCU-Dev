@@ -23,18 +23,21 @@ The library __must__ be built for the correct EVE device and panel type. This is
 ### EVE Device Selection
 
 The available EVE devices are:
+
 - EVE API 1
   - FT800 
   - FT801 
 - EVE API 2
-  - FT810 
-  - FT811 
-  - FT812 
-  - FT813 
-  - BT880 
-  - BT881 
-  - BT882 
-  - BT883 
+  - EVE SUB API 1
+    - FT810 
+    - FT811 
+    - FT812 
+    - FT813 
+  - EVE SUB API 2
+    - BT880 
+    - BT881 
+    - BT882 
+    - BT883 
 - EVE API 3
   - BT815 
   - BT816 
@@ -44,7 +47,7 @@ The available EVE devices are:
 - EVE API 5
   - BT820 
 
-The EVE device to target is set in the file `EVE_config.h` using the macro `FT8XX_TYPE` or `EVE_API`.
+The EVE device to target is set in the file `EVE_config.h` using the macro `FT8XX_TYPE` or `EVE_API`/`EVE_SUB_API`. This **must** be set correctly for the device being used/
 
 If the `FT8XX_TYPE` macro is used then the "FT" or "BT" part number of the device is set. This line will set a BT820 device and EVE API 5 will be selected automatically.
 ```
@@ -59,11 +62,13 @@ If `EVE_API` is used this will override any `FT8XX_TYPE` values and a number fro
 
 Note that the example programs will take the `EVE_config.h` file from the `include` directory.
 
-### Panel Selection
+### Display Panel Selection
 
-The panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. 
+The display panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. 
 
 Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
+
+The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
 
 The following are included in the distribution:
 - QVGA *320x240* (VM800B with 3.5 inch display)

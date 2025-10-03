@@ -122,3 +122,7 @@ The sketch can be verified and uploaded to the Arduino device. Please follow the
 ## Reusing the Example Code
 
 This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_helper.c`, `eve_images.c`, `eve_fonts.c`, and `eve_calibrate.c`. If using the python script then the list of files for the example code will need updated.
+
+## Updating the Configuration
+
+If the sketch is to be changed to target a different display panel or EVE device then changes can be made to the file `EVE_config.h`. This is the main configuration file that is most often changed. If a display panel is changed then there are settings built-in to allow for several different popular screen types and sizes. Likewise, the EVE API is not compatible between generations of devices and the `FT8XX_TYPE` setting will have to change to any different device type.
