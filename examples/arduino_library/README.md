@@ -4,7 +4,7 @@
 
 This directory is used to build an EVE library for Arduino. There are template files which are used to supplement the EVE-MCU-Dev library to make it accessible as a library when called by an Arduino sketch.
 
-The script will build a library for one generation of EVE device. Each generation requires a seperate library since the API and supported options on each device is different. 
+The script will build a library for one generation of EVE device. Each generation requires a seperate library since the API and supported options on each device are different. Supporting multiple APIs with a single library would lead to larger code size of the library.
 
 The display panel settings can be chosen at runtime from a set configured into the template files.
 
@@ -56,7 +56,7 @@ The available EVE device APIs and SUB APIs are:
 - EVE API 5
   - BT820 
 
-The name of the library will be generated from the EVE API and SUB API. If there is a SUB API then this is appended to the EVE API to make the "full" API version. So, for example, the API for a BT820 device will be "5" and for a BT881 will be "2_2".
+The name of the library will be generated from the EVE API and SUB API. If there is a SUB API greater than "1" then this is appended to the EVE API to make the "full" API version. So, for example, the API for a BT820 will be "5", FT81x will be "2", and for a BT88x will be "2_2".
 
 ### Files copied to the Arduino Library
 
