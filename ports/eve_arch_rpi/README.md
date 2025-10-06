@@ -29,6 +29,36 @@ A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM20
 
 ![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
 
+### IDM2040-7A Module
+
+The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT817Q. The screen resolution is 800x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE BT817
+#define DISPLAY_RES IDM20407A
+```
+
+### IDM2040-43A Module
+
+The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT883. The screen resolution is 480x272.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE BT883
+#define DISPLAY_RES IDM204043A
+```
+
+### IDM2040-21R Module
+
+The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 pico and a FT800Q. The screen resolution is 480x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE FT800
+#define DISPLAY_RES IDM204021R
+```
+
 ## Hardware Raspberry Pi
 
 The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However it is compatible with all of the Raspberry Pi SBCs sharing the same 40-pin GPIO header. Please reference the Raspberry Pi documentation for more information.

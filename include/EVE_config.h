@@ -62,13 +62,27 @@
 #endif
 
 // Definitions used for target display resolution selection
-#define QVGA    320        // e.g. VM800B with 3.5 inch display
-#define WQVGA   480        // e.g. VM800B with 5 or 4.3 inch display
-#define WVGA    800        // e.g. ME813A-WH50C or VM816
-#define WSVGA   1024       // e.g. ME817EV with 7 inch display
-#define WXGA    1280       // e.g. ME817EV with 10.1 inch display
-#define FULLHD  1920       // e.g. 15 inch high definition display
-#define WUXGA   19201200   // e.g. 10 inch high definition display
+#define QVGA    320        // 320x240   e.g. VM800B with 3.5 inch display
+#define WQVGA   480        // 480x272   e.g. IDM2040-43A with 4.3 inch display
+#define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
+#define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
+#define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
+#define WXGA    1280       // 1280x800  e.g. ME817EV with 10.1 inch display
+#define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
+#define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
+
+// Predefined module displays
+#define VM800B     QVGA    // VM800B35A-BK with 3.5 inch display
+#define VM800C35A  QVGA    // VM800C35A-D with 3.5 inch display
+#define VM800C43A  QVGA    // VM800C43A-D with 4.3 inch display
+#define VM800C50A  WQVGA   // VM800C50A-D with 4.3 inch display
+#define VM810C     WVGA    // VM810C50A-D with 5 inch display
+#define ME812A     WVGA    // ME812A-WH50R, ME812AU-WH50R with 5 inch display
+#define ME813A     WVGA    // ME813A-WH50C with 5 inch display
+#define VM816C     WVGA    // VM816C50A-D, VM816CU50A-D with 5 inch display
+#define IDM204021R WQVGAR  // IDM2040-21R (FT8XX_TYPE is FT800)
+#define IDM204043A WQVGA   // IDM2040-43A (FT8XX_TYPE is BT883)
+#define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
 
 // Select the resolution
 #ifndef DISPLAY_RES
@@ -262,6 +276,24 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WQVGAR
+
+#define EVE_DISP_WIDTH 480 // Active width of LCD display
+#define EVE_DISP_HEIGHT 480 // Active height of LCD display
+#define EVE_DISP_HCYCLE 578 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 40 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 40 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 576 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 12 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 3 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
 
 #else
 

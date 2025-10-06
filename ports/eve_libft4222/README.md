@@ -24,6 +24,26 @@ The UMFT4222EV-D module uses the FT2222H chipset. The module can be connected to
 
 The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 
+### ME812AU-WH50R Module
+
+The ME812AU-WH50R from Bridgetek has an integrated FT4222H and a FT812Q. The screen resolution is 800x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE FT812
+#define DISPLAY_RES WVGA
+```
+
+### VM816CU50A-D Module
+
+The VM816CU50A-D from Bridgetek has an integrated FT4222H and a BT816Q. The screen resolution is 800x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE BT816
+#define DISPLAY_RES WVGA
+```
+
 ## Windows
 
 Important Information about Windows builds.
