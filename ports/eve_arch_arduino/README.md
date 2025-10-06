@@ -26,4 +26,4 @@ An Arduino board can be connected to an EVE board as in the following picture.
 
 ## Software
 
-Please refer to the [Arduino Simple example](../../examples/simple/Arduino/README.md) for instructions on using the hardware sketch in an EVE-MCU-Dev project.
+Please refer to the [Arduino Simple example](../../examples/simple/arduino/README.md) for instructions on using the hardware sketch in an EVE-MCU-Dev project.
