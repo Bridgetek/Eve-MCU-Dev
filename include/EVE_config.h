@@ -74,7 +74,7 @@
 // Predefined module displays
 #define VM800B     QVGA    // VM800B35A-BK with 3.5 inch display
 #define VM800C35A  QVGA    // VM800C35A-D with 3.5 inch display
-#define VM800C43A  QVGA    // VM800C43A-D with 4.3 inch display
+#define VM800C43A  WQVGA   // VM800C43A-D with 4.3 inch display
 #define VM800C50A  WQVGA   // VM800C50A-D with 4.3 inch display
 #define VM810C     WVGA    // VM810C50A-D with 5 inch display
 #define ME812A     WVGA    // ME812A-WH50R, ME812AU-WH50R with 5 inch display

@@ -379,7 +379,7 @@ void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
 void EVE_CMD_PLAYVIDEO(uint32_t options);
 void EVE_CMD_VIDEOFRAME(uint32_t dst, uint32_t ptr);
 void EVE_CMD_VIDEOSTART(void);
-void EVE_CMD_SETBASE(uint32_t eve_base);
+void EVE_CMD_SETBASE(uint32_t base);
 void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h);
 void EVE_CMD_SETSCRATCH(uint32_t handle);
 #endif

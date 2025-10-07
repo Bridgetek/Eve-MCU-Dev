@@ -54,44 +54,44 @@
 /* FUNCTIONS ***********************************************************************/
 
 int eve_calibrate() {
-	struct touchscreen_calibration calib;
-	uint8_t dummy;
+    struct touchscreen_calibration calib;
+    uint8_t dummy;
 
-	platform_calib_init();
+    platform_calib_init();
 
-	// If no store of calibration or current screen touch.
-	if ((platform_calib_read(&calib) != 0) || (eve_read_tag(&dummy))) {
-		// Wait for end of touch.
-		while (eve_read_tag(&dummy))
-			;
+    // If no store of calibration or current screen touch.
+    if ((platform_calib_read(&calib) != 0) || (eve_read_tag(&dummy))) {
+        // Wait for end of touch.
+        while (eve_read_tag(&dummy))
+            ;
 
-		eve.LIB_BeginCoProList();
-		eve.CMD_DLSTART();
-		eve.CLEAR_COLOR_RGB(0, 0, 0);
-		eve.CLEAR(1, 1, 1);
-		eve.COLOR_RGB(255, 255, 255);
-		eve.CMD_TEXT(EVE_DISP_WIDTH / 2, EVE_DISP_HEIGHT / 2,
-		             28, eve.OPT_CENTERX | eve.OPT_CENTERY, "Please tap on the dots");
-		eve.CMD_CALIBRATE(0);
-		eve.LIB_EndCoProList();
-		if (eve.LIB_AwaitCoProEmpty() != 0) {
-			return -1;
-		}
+        eve.LIB_BeginCoProList();
+        eve.CMD_DLSTART();
+        eve.CLEAR_COLOR_RGB(0, 0, 0);
+        eve.CLEAR(1, 1, 1);
+        eve.COLOR_RGB(255, 255, 255);
+        eve.CMD_TEXT(EVE_DISP_WIDTH / 2, EVE_DISP_HEIGHT / 2,
+                     28, eve.OPT_CENTERX | eve.OPT_CENTERY, "Please tap on the dots");
+        eve.CMD_CALIBRATE(0);
+        eve.LIB_EndCoProList();
+        if (eve.LIB_AwaitCoProEmpty() != 0) {
+            return -1;
+        }
 
-		calib.transform[0] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_A);
-		calib.transform[1] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_B);
-		calib.transform[2] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_C);
-		calib.transform[3] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_D);
-		calib.transform[4] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_E);
-		calib.transform[5] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_F);
-		platform_calib_write(&calib);
-	} else {
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-		eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_F, calib.transform[5]);
-	}
-	return 0;
+        calib.transform[0] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_A);
+        calib.transform[1] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_B);
+        calib.transform[2] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_C);
+        calib.transform[3] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_D);
+        calib.transform[4] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_E);
+        calib.transform[5] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_F);
+        platform_calib_write(&calib);
+    } else {
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+        eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+    }
+    return 0;
 }

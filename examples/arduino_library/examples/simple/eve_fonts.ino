@@ -165,36 +165,19 @@ const uint8_t font0[] =
 
 
 uint32_t eve_init_fonts(void) {
-  const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+  const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = (const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *)font0;
   const uint32_t font0_size = sizeof(font0);
 
   eve.LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 
   eve.LIB_BeginCoProList();
   eve.CMD_DLSTART();
-  eve.CLEAR(1, 1, 1);
-  eve.COLOR_RGB(255, 255, 255);
-  eve.BEGIN(eve.BEGIN_BITMAPS);
-  eve.BITMAP_HANDLE(FONT_CUSTOM);
-  // Suggest to mask the bitmap source here with 0x3FFFFF to ensure that only the valid bits for addressing within RAM_G are set.
-  // BT81x now supports additional addressing where the source is in flash (see bitmap_source in the programmers guide)
-  // Note that bitmap_source in this framework uses a uint32_t and so if your font has a negative value for PointerToFontGraphicsData
-  // it will be required to mask the bits or to use a signed data type in your bitmap_source implementation.
-  // Or to place the font in RAM_G such that the PointerToFontGraphicsData (also known as Raw Data Address in Decimal) is positive.
-  // In this particular example, the PointerToFontGraphicsData will be ([location where we load the font in RAM_G] minus 142).
-  // We load it at RAM_G + 1K to keep this positive (1K - 142 == 858). If we loaded the font at RAM_G + 0, it would have been -142.
-  eve.BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData) & (0x3FFFFF));
-  eve.BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
-                    font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
-  eve.BITMAP_SIZE(eve.FILTER_NEAREST, eve.WRAP_BORDER, eve.WRAP_BORDER,
-                  font0_hdr->FontWidthInPixels,
-                  font0_hdr->FontHeightInPixels);
-#if IS_EVE_API(5)
+/* ### BEGIN API >= 5 ### */
   eve.CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
-#else
+/* ### END API ### */
+/* ### BEGIN API < 5 ### */
   eve.CMD_SETFONT(FONT_CUSTOM, font0_offset);
-#endif
-  eve.END();
+/* ### END API ### */
   eve.DISPLAY();
   eve.CMD_SWAP();
   eve.LIB_EndCoProList();

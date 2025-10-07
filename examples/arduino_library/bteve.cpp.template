@@ -47,10 +47,11 @@ uint32_t EVE_DISP_HOFFSET, EVE_DISP_VOFFSET;
 uint32_t EVE_DISP_HSYNC0, EVE_DISP_HSYNC1, EVE_DISP_VSYNC0, EVE_DISP_VSYNC1;
 uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
-uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 uint32_t EVE_TOUCH_ADDR;
-
+/* ### BEGIN API >= 5 ### */
+uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 uint32_t EVE_RAM_G_CONFIG_SIZE = EVE_RAM_G_1_GBIT;
+/* ### END API ### */
 
 ### EVE CLASS ###::### EVE CLASS ###(void)
 {
@@ -61,15 +62,38 @@ void ### EVE CLASS ###::setup(uint32_t panel)
     setpanel(panel);
 }
 
+/* ### BEGIN API >= 5 ### */
 void ### EVE CLASS ###::setup(uint32_t panel, uint32_t ramg)
 {
     setpanel(panel);
     EVE_RAM_G_CONFIG_SIZE = ramg;
 }
+/* ### END API ### */
 
 void ### EVE CLASS ###::setpanel(uint32_t panel)
 {
-    if (panel == WQVGA)
+    if (panel == QVGA)
+    {
+        EVE_DISP_WIDTH = 320;
+        EVE_DISP_HEIGHT = 240;
+        EVE_DISP_HCYCLE = 408;
+        EVE_DISP_VCYCLE = 263;
+        EVE_DISP_HOFFSET = 70;
+        EVE_DISP_VOFFSET = 13;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 10;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 2;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 2;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK = 8;
+        EVE_DISP_PCLK_FREQ = 0x8A1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+    }
+    else if (panel == WQVGA)
     {
         EVE_DISP_WIDTH = 480;
         EVE_DISP_HEIGHT = 272;
@@ -194,14 +218,34 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
     }
+    else if (panel == WQVGAR)
+    {
+        EVE_DISP_WIDTH = 480;
+        EVE_DISP_HEIGHT = 480;
+        EVE_DISP_HCYCLE = 578;
+        EVE_DISP_VCYCLE = 576;
+        EVE_DISP_HOFFSET = 40;
+        EVE_DISP_VOFFSET = 12;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 40;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 10;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK_FREQ = 0x8A1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+    }
     else
     {
         // Panel type not defined.
         Serial.print("ERROR: No panel selected!\n");
     }
 
-#if IS_EVE_API(5)
+    /* ### BEGIN API >= 5 ### */
     EVE_DISP_LVDSTXCLKDIV = 3;
     EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
-#endif
+    /* ### END API ### */
 }

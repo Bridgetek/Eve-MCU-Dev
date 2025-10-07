@@ -50,13 +50,27 @@
 #endif // EVE_API
 
 // Definitions used for target display resolution selection
-#define QVGA    320        // e.g. VM800B with 3.5 inch display
-#define WQVGA   480        // e.g. VM800B with 5 or 4.3 inch display
-#define WVGA    800        // e.g. ME813A-WH50C or VM816
-#define WSVGA   1024       // e.g. ME817EV with 7 inch display
-#define WXGA    1280       // e.g. ME817EV with 10.1 inch display
-#define FULLHD  1920       // e.g. 15 inch high definition display
-#define WUXGA   19201200   // e.g. 10 inch high definition display
+#define QVGA    320        // 320x240   e.g. VM800B with 3.5 inch display
+#define WQVGA   480        // 480x272   e.g. IDM2040-43A with 4.3 inch display
+#define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
+#define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
+#define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
+#define WXGA    1280       // 1280x800  e.g. ME817EV with 10.1 inch display
+#define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
+#define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
+
+// Predefined module displays
+#define VM800B     QVGA    // VM800B35A-BK with 3.5 inch display
+#define VM800C35A  QVGA    // VM800C35A-D with 3.5 inch display
+#define VM800C43A  WQVGA   // VM800C43A-D with 4.3 inch display
+#define VM800C50A  WQVGA   // VM800C50A-D with 4.3 inch display
+#define VM810C     WVGA    // VM810C50A-D with 5 inch display
+#define ME812A     WVGA    // ME812A-WH50R, ME812AU-WH50R with 5 inch display
+#define ME813A     WVGA    // ME813A-WH50C with 5 inch display
+#define VM816C     WVGA    // VM816C50A-D, VM816CU50A-D with 5 inch display
+#define IDM204021R WQVGAR  // IDM2040-21R (FT8XX_TYPE is FT800)
+#define IDM204043A WQVGA   // IDM2040-43A (FT8XX_TYPE is BT883)
+#define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
 
 // Definitions used for touch controllers
 #define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
@@ -73,6 +87,7 @@
 #undef QUADSPI_ENABLE
 #endif
 
+/* ### BEGIN API >= 5 ### */
 // Setup RAM_G size for BT82X only
 // Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
 #define EVE_RAM_G_32_MBIT  0x100000UL
@@ -84,6 +99,7 @@
 #define EVE_RAM_G_2_GBIT   0x10000000UL
 #define EVE_RAM_G_4_GBIT   0x20000000UL
 #define EVE_RAM_G_8_GBIT   0x40000000UL
+/* ### END API ### */
 
 // Setup default parameters for various displays.
 // These can be overridden for different display modules.
@@ -96,8 +112,10 @@ extern uint32_t EVE_DISP_HOFFSET, EVE_DISP_VOFFSET;
 extern uint32_t EVE_DISP_HSYNC0, EVE_DISP_HSYNC1, EVE_DISP_VSYNC0, EVE_DISP_VSYNC1;
 extern uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 extern uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
-extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 extern uint32_t EVE_TOUCH_ADDR;
+/* ### BEGIN API >= 5 ### */
+extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 extern uint32_t EVE_RAM_G_CONFIG_SIZE;
+/* ### END API ### */
 
 #endif /* _EVE_CONFIG_H_ */

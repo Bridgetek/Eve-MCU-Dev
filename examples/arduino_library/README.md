@@ -135,7 +135,7 @@ The script needs a valid EVE-MCU-Dev directory with current files located either
 
 ### Manually Adding the Library to a Sketch
 
-The library can be added to a sketch by including the line in the example below. This example is for the API 5 library for BT82x, the number corresponds to the API.
+The library can be added to a sketch by including the lines in the example below. This example is for the API 5 library for BT82x, the number corresponds to the API.
 ```
 #include <BridgetekEVE5.h>
 

@@ -195,16 +195,16 @@ Various standard panels are included, if a new panel is needed then the settings
 The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
 
 The following are included in the distribution:
-- QVGA *320x240* (VM800B with 3.5 inch display)
-- WQVGA *480x272* (VM800B with 5 or 4.3 inch display)
-- WQVGAR *480480* (IDM2040-21R with 2.1 inch round display)
-- WVGA *800x480* (ME813A-WH50C or VM816)
-- WSVGA *1024x600* (ME817EV with 7 inch display)
-- WXGA *1280x800* (ME817EV with 10.1 inch display)
-- FULLHD *1920x1080* (15 inch high definition display)
-- WUXGA *1920x1200* (10 inch high definition display)
+- QVGA *320 x 240* (VM800B with 3.5 inch display)
+- WQVGA *480 x 272* (VM800B with 5 or 4.3 inch display)
+- WQVGAR *480 x 480* (IDM2040-21R with 2.1 inch round display)
+- WVGA *800 x 480* (ME813A-WH50C or VM816)
+- WSVGA *1024 x 600* (ME817EV with 7 inch display)
+- WXGA *1280 x 800* (ME817EV with 10.1 inch display)
+- FULLHD *1920 x 1080* (15 inch high definition display)
+- WUXGA *1920 x 1200* (10 inch high definition display)
 
-This line will set the panel to a ME-813A-WH50C (800 x 400).
+This line will set the panel to a resolution of 800 x 400 for a ME813A-WH50C panel.
 ```
 #define DISPLAY_RES WVGA
 ```

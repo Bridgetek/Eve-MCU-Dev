@@ -1600,10 +1600,10 @@ void EVE_CMD_VIDEOSTART(void)
     HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_SETBASE(uint32_t eve_base)
+void EVE_CMD_SETBASE(uint32_t base)
 {
     HAL_Write32(EVE_ENC_CMD_SETBASE);
-    HAL_Write32(eve_base);
+    HAL_Write32(base);
     HAL_IncCmdPointer(8);
 }
 

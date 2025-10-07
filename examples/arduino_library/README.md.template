@@ -6,7 +6,19 @@ This library is to provide an API to control the Bridgetek ### EVE LIB NAME ### 
 
 The class name of the library is "### EVE CLASS ###".
 
+The library provides an Arduino IDE interface to the EVE embedded development library [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev).
+It is programmed in the same way with minor changes and ensures that code is easily transferrable.
+
 The example code is set to the ### EVE RES ### display resolution.
+
+## Contents
+
+- [Hardware](#hardware)
+- [Using the Library](#using-the-library)
+  - [Programming Guide](#programming-guide)
+  - [Library API](#library-api)
+  - [Library Constants](#library-constants)
+- [Examples](#examples)
 
 ## Hardware
 
@@ -22,8 +34,149 @@ The Arduino port was developed using an Arduino Zero and Arduino Leonardo. The A
 | - | ISCP 2 | 5V |
 | - | ISCP 6 / GND | GND |
 
-Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
+If using the 5V power from the Arduino ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, 
+a separate power connection to the EVE module could be used, with the grounds of the Arduino and EVE modules common to both power sources.
+
+## Using the Library
+
+The library can be added to a sketch by including the lines in the example below. This example is for the API ### EVE API VER ### library for ### EVE LIB NAME ###, 
+the number corresponds to the API.
+
+The sketch must include the following code:
+
+```
+#include <BridgetekEVE### EVE API VER ###.h>
+
+### EVE CLASS ### eve;
+
+void setup(){
+  eve.setup(WVGA);
+  eve.Init()
+}
+```
+
+The `#include <BridgetekEVE### EVE API VER ###.h>` line will add in the header for this library and the declarations and constants included in the library API.
+
+The `### EVE CLASS ### eve` creates a class for the library which is required to direct accesses to the EVE device to the library.
+
+The `eve.setup(WVGA)` command initialises the library to use a WVGA display which is 800 by 480 pixels.
+
+Finally, `eve.Init()` calls the library and initialises the SPI interface to the EVE device and then configures the EVE device for use. 
+Once this command is complete the EVE device is usable for creating displays using coprocessor commands via the library's API.
+
+Display lists can be generated through the coprocessor in the same way as they are in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev), 
+the display list entries and coprocessor commands are added using calls to the library API. 
+
+### Programming Guide
+
+The latest Programming Guide for the ### EVE LIB NAME ### can be found on the [Bridgetek Programming Guides](https://brtchip.com/document/programming-guides/) page. 
+This covers the command set implemented by the device and methods for acheiving the desired output on the screen.
+
+### Library API
+
+This library functions provide an API for sending commands to the device and receiving results and status from a sketch. 
+
+API calls in a sketch to this library call an equivalent function in the [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
+Each API function in this library maps to a function with a prefix `EVE_` in the EVE-MCU-Dev library. 
+Therefore, taking `eve` as the name of the library class in a sketch, calling the function `eve.CMD_SWAP()` will call the function `EVE_CMD_SWAP()` in EVE-MCU-Dev.
+
+The full API available to the Arduino IDE is as follows:
+
+```
+/* ### BEGIN API PROTO ### */
+/* ### END API ### */
+```
+
+### Library Public Variables
+
+There are several variables that are public in the library. These can be read from a sketch. 
+
+The following variables are set depending on the panel chosen and set
+```
+uint32_t EVE_DISP_WIDTH
+uint32_t EVE_DISP_HEIGHT
+uint32_t EVE_DISP_HCYCLE
+uint32_t EVE_DISP_VCYCLE
+uint32_t EVE_DISP_HOFFSET
+uint32_t EVE_DISP_VOFFSET
+uint32_t EVE_DISP_HSYNC0
+uint32_t EVE_DISP_HSYNC1
+uint32_t EVE_DISP_VSYNC0
+uint32_t EVE_DISP_VSYNC1
+uint32_t EVE_DISP_PCLKPOL
+uint32_t EVE_DISP_SWIZZLE
+uint32_t EVE_DISP_CSPREAD
+uint32_t EVE_DISP_DITHER
+uint32_t EVE_DISP_PCLK
+uint32_t EVE_DISP_PCLK_FREQ
+```
+
+If a touch controller is explicitly set in `EVE_config.h` then the following value is set. If it is zero then the touch controller has been determined automatically by the device.
+
+```
+uint32_t EVE_TOUCH_ADDR
+```
+/* ### BEGIN API >= 5 ### */
+
+The BT82x has 2 variables for setting up the LVDS Tx port (graphics output format) and another holding the total configured size of RAM_G.
+
+```
+uint32_t EVE_DISP_LVDSTXCLKDIV
+uint32_t EVE_DISP_LVDSTXFORMAT
+uint32_t EVE_RAM_G_CONFIG_SIZE
+```
+/* ### END API ### */
+
+### Library Constants
+
+In a similar way to the API functions, the library provides a set of constant values used in sketch commands sent to the device.
+
+Constant names in this library are mapped to constant values in the [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
+Each constant in this library maps to a constant with a prefix `EVE_` in the EVE-MCU-Dev library. 
+Therefore, taking `eve` as the name of the library class in a sketch, calling the function `eve.OPT_FILL` will call the function `EVE_OPT_FILL` in EVE-MCU-Dev.
+
+```
+/* ### BEGIN API CONST ### */
+/* ### END API ### */
+```
 
 ## Examples
 
-Please refer to the examples for how to use the library in an Arduino sketch.
+A simple program for Arduino would add a set of display list items to the screen. This example will write the phrase "Testing ### EVE LIB NAME ###" 
+in white in the centre of a black background.
+
+```
+#include <BridgetekEVE### EVE API VER ###.h>
+
+### EVE CLASS ### eve;
+
+void setup() {
+  Serial.begin(9600);
+  eve.setup(WUXGA);
+  eve.Init();
+}
+
+void loop() {
+  // Initialise the display
+  Serial.print("Starting demo...\n");
+  eve.LIB_BeginCoProList();
+  eve.CMD_DLSTART();
+  eve.CLEAR_COLOR_RGB(0, 0, 0);
+  eve.CLEAR(1,1,1);
+  eve.COLOR_RGB(255, 255, 255);
+  eve.CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2, 
+                28, eve.OPT_CENTERX, "Testing ### EVE LIB NAME ###");
+  eve.DISPLAY();
+  eve.CMD_SWAP();
+  eve.LIB_EndCoProList();
+  eve.LIB_AwaitCoProEmpty();
+}
+```
+
+### Arduino IDE Examples
+
+The examples in this library can be used to make a new Arduino IDE sketch. 
+Complete example sketches added by this library can be found in "File -> Examples -> Bridgetek ### EVE LIB NAME ###".
+
+The `simple_### EVE API VER ###` example is an ideal sketch to start with as it shows many aspects of writing a sketch for Arduino. 
+It provides exactly the same display, functions and result as the `simple` example in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 

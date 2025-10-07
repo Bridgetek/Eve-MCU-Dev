@@ -73,9 +73,9 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_version, apidefs):
+def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconst):
     cppfile = []
-    flag = True
+    flag = 0
         
     # defaults for each generation
     if api == 1:
@@ -107,8 +107,6 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
     # Replace markers with values
     with open(file_in, "r") as file:
         while line := file.readline():
-            if re.findall(r"/\* ### END API ### \*/", line): 
-                flag = True
             line = re.sub(r"### EVE API VER ###", str_full_version, line)
             line = re.sub(r"### EVE API ###", str_api_version, line)
             line = re.sub(r"### EVE SUB API ###", str_api_sub_version, line)
@@ -116,11 +114,40 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
             line = re.sub(r"### EVE LIB NAME ###", apilib, line)
             line = re.sub(r"### EVE CLASS ###", cpplib, line)
             line = re.sub(r"### EVE RES ###", defres, line)
-            if flag: 
-                cppfile.append(line.rstrip())
             if re.findall(r"/\* ### BEGIN API ### \*/", line):
-                flag = False
+                flag = 1
                 cppfile.extend(apidefs)
+            if re.findall(r"/\* ### BEGIN API PROTO ### \*/", line):
+                flag = 2
+                cppfile.extend(apiproto)
+            if re.findall(r"/\* ### BEGIN API CONST ### \*/", line):
+                flag = 3
+                cppfile.extend(apiconst)
+            if re.findall(r"/\* ### BEGIN API == 1 ### \*/", line):
+                if api != 1:
+                    flag = -1
+                continue
+            if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
+                if api < 2:
+                    flag = -1
+                continue
+            if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
+                if api < 4:
+                    flag = -1
+                continue
+            if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):
+                if api >= 5:
+                    flag = -1
+                continue
+            if re.findall(r"/\* ### BEGIN API >= 5 ### \*/", line):
+                if api < 5:
+                    flag = -1
+                continue
+            if re.findall(r"/\* ### END API ### \*/", line): 
+                flag = 0
+                continue
+            if flag == 0: 
+                cppfile.append(line.rstrip())
 
     with open(file_out, "w") as file:
         for line in cppfile:
@@ -159,7 +186,7 @@ try:
     for d in dist_source_files:
         srcf, destf = d
         print(f"{srcf} -> {destf}")
-        template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
+        template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
@@ -174,13 +201,11 @@ template_files.append(("EVE_config.h.template", os.path.join(dest_lib,"EVE_confi
 # library.properties file
 template_files.append(("library.properties.template", os.path.join(dest_lib,"library.properties")))
 # README.md file
-template_files.append(("README.md.template", os.path.join(dest_lib,"README.md")))
-# README.md file
 template_files.append(("test.ino.template", os.path.join(test_dir,"test.ino")))
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 
 # Command line for preprocessor
 cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
@@ -207,7 +232,9 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
             cfndefs.append(line)
     cfndefs = list(dict.fromkeys(cfndefs))
 
-    cppdefs = []
+    cppapi = []
+    cppapiconsts = []
+    cppapiproto = []
     for line in cfndefs:
         cdefl = cppre.split(line)
         # cdefl[0] = ""
@@ -257,7 +284,9 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
         elif cdefl[0].startswith("LIB_") and not cdefl[1].startswith("void"):
             addnret = "return "
         cppline = f"    {cdefl[1]} {cdefl[0]}({cppparamtext}) {{ {addnvariac}{addnret}::{cdefl[2]}({cparamtext}); {addevariac}}};"
-        cppdefs.append(cppline)
+        cppapi.append(cppline)
+        cppprotoline = f"{cdefl[1]} {cdefl[0]}({cppparamtext})"
+        cppapiproto.append(cppprotoline)
 
     cppdefouput = defineres.stdout.decode('utf-8')
     definelines = cppdefouput.splitlines()
@@ -272,24 +301,85 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                 definep[0] = re.sub("EVE_", "", definep[1])
                 if line.endswith("}"):
                     # deal with arrays
-                    cppline = f"    /*array for {definep[0]} */"
+                    if definep[0].startswith("ROMFONT"):
+                        cppvals = ""
+                        for dp in definep[2:]:
+                            dp = re.sub(r"EVE_", "(uint8_t)", dp)
+                            cppvals += dp
+                        dpc = cppvals.count(',') + 1
+                        cppline = f"    const uint8_t {definep[0]}[{dpc}] = "
+                        cppline += cppvals
+                        cppline += ";"
                 elif definep[0].startswith("ENC_"):
                     pass
                 else:
                     cppline = f"    const uint32_t {definep[0]} = {definep[2]};"
                 if cppline:
-                    cppdefs.append(cppline)
+                    cppapi.append(cppline)
+                    cppapiconsts.append(definep[0])
     #cconstdefs = list(dict.fromkeys(cconstdefs))
+
+def sortapi(slist):
+    ordered = []
+    def flib(w):
+        return re.findall(r"^\w+ LIB_", w)
+    def fcmd(w):
+        return re.findall(r"^\w+ CMD_", w)
+    def feve(w):
+        return re.findall(r"^\w+ eve_", w)
+    llib = list(filter(flib, slist))
+    llib.sort()
+    lcmd = list(filter(fcmd, slist))
+    lcmd.sort()
+    leve = list(filter(feve, slist))
+    leve.sort()
+    ordered += llib
+    ordered += [""]
+    ordered += lcmd
+    ordered += [""]
+    ordered += leve
+    ordered += [""]
+    for done in ordered:
+        try:
+            slist.remove(done)
+        except:
+            pass
+    slist.sort()
+    ordered += slist
+    return ordered
+
+def sortconst(slist):
+    ordered = []
+    def freg(w):
+        return re.findall(r"^REG_", w)
+    lreg = list(filter(freg, slist))
+    lreg.sort()
+    for done in lreg:
+        try:
+            slist.remove(done)
+        except:
+            pass
+    slist.sort()
+    ordered += slist
+    ordered += [""]
+    ordered += lreg
+    return ordered
+
+cppapi.sort()
+cppapiproto = sortapi(cppapiproto)
+cppapiconsts = sortconst(cppapiconsts)
 
 # Library main class files (template files pass 2)
 template_files = []
 template_files.append(("bteve.cpp.template", os.path.join(dest_lib,f"{str_lib_name}.cpp")))
 template_files.append(("bteve.h.template", os.path.join(dest_lib,f"{str_lib_name}.h")))
+# README.md file
+template_files.append(("README.md.template", os.path.join(dest_lib,"README.md")))
 
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppdefs)
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconsts)
 
 # Make the examples directory
 examples_dir = os.path.join(dest_lib, "examples")
@@ -314,4 +404,4 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
 for t in example_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "")
+    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")

@@ -46,7 +46,7 @@
 ### EVE CLASS ### eve;
 
 extern const uint8_t font0[];
-const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = (const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *)font0;
 
 /**
  * @brief Functions used to store calibration data in file.
@@ -112,15 +112,16 @@ void loop() {
   eve.COLOR_RGB(255, 255, 255);
 
   eve.BEGIN(eve.BEGIN_BITMAPS);
-#if IS_EVE_API(2, 3, 4, 5)
+/* ### BEGIN API >= 2 ### */
   // Set origin on canvas using EVE_VERTEX_TRANSLATE.
   eve.VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH / 2) - (eve_img_bridgetek_logo_width / 2)) * 16);
   eve.VERTEX2II(0, 0, BITMAP_BRIDGETEK_LOGO, 0);
   eve.VERTEX_TRANSLATE_X(0);
-#else
+/* ### END API ### */
+/* ### BEGIN API == 1 ### */
   // Place directly on canvas eve.VERTEX_TRANSLATE not available.
   eve.VERTEX2II((EVE_DISP_WIDTH / 2) - (eve_img_bridgetek_logo_width / 2), 0, BITMAP_BRIDGETEK_LOGO, 0);
-#endif
+/* ### END API ### */
 
   eve.CMD_TEXT(EVE_DISP_WIDTH / 2, eve_img_bridgetek_logo_height,
                28, eve.OPT_CENTERX, "Touch the counter");
@@ -132,21 +133,21 @@ void loop() {
   eve.BEGIN(eve.BEGIN_BITMAPS);
   units = 1;
 
-#if IS_EVE_API(2, 3, 4, 5)
+/* ### BEGIN API >= 2 ### */
   eve.VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 2) * 16);
-
   for (i = 0; i < 5; i++) {
     eve.VERTEX_TRANSLATE_X((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))) * 16);
     eve.VERTEX2II(0, 0, FONT_CUSTOM, ((counter / units) % 10) + 1);  //+1 as in the converted font the number '0' is in position 1 in the font table
     units *= 10;
   }
-#else
+/* ### END API ### */
+/* ### BEGIN API == 1 ### */
   for (i = 0; i < 5; i++) {
     eve.VERTEX2II((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))),
                   (EVE_DISP_HEIGHT / 2), FONT_CUSTOM, ((counter / units) % 10) + 1);  //+1 as in the converted font the number '0' is in position 1 in the font table
     units *= 10;
   }
-#endif
+/* ### END API ### */
 
   eve.DISPLAY();
   eve.CMD_SWAP();

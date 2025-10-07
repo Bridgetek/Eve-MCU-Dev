@@ -41,22 +41,23 @@
 #include "eve_example.h"
 
 uint8_t eve_read_tag(uint8_t *key) {
-	uint8_t Read_tag;
-	uint8_t key_detect = 0;
+    uint8_t Read_tag;
+    uint8_t key_detect = 0;
 
-#if IS_EVE_API(1, 2, 3, 4)
-	Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
-	if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000)) {
-		key_detect = 1;
-		*key = Read_tag;
-	}
-#else
-	Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-	if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff) {
-		key_detect = 1;
-		*key = Read_tag;
-	}
-#endif
+/* ### BEGIN API < 5 ### */
+    Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
+    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000)) {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+/* ### END API ### */
+/* ### BEGIN API >= 5 ### */
+    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
+    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff) {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+/* ### END API ### */
 
-	return key_detect;
+    return key_detect;
 }
