@@ -8,7 +8,7 @@ The custom font provides a character set that contains the numbers 0 to 9 resemb
 
 The following is an screenshot of the simple example.
 
-![Simple Example](docs/simple.png)
+![Simple Example](simple.png)
 
 ### `simple.ino`
 
@@ -180,8 +180,8 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [simple.ino](simple.ino) | Example source code file |
+| [eve_example.h](eve_example.h) | Header file for examaple |
 | [eve_calibrate.ino](eve_calibrate.ino) | Calibrations routines |
 | [eve_fonts.ino](eve_fonts.ino) | Font helper routines |
 | [eve_helper.ino](eve_helper.ino) | General helper routines (touch detection) |
 | [eve_images.ino](eve_images.ino) | Image helper routines |
-| [docs](docs) | Documentation support files |
