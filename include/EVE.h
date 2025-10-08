@@ -70,39 +70,39 @@
 void EVE_Init(void);
 
 /**
- @brief EVE API: Begin coprocessor list
- @details Starts a coprocessor list. Waits for the coprocessor to be idle
+ @brief EVE API: Begin co-processor list
+ @details Starts a co-processor list. Waits for the co-processor to be idle
       before asserting chip select.
  */
 void EVE_LIB_BeginCoProList(void);
 
 /**
- @brief EVE API: End coprocessor list
- @details Ends a coprocessor list. Deasserts chip select.
+ @brief EVE API: End co-processor list
+ @details Ends a co-processor list. Deasserts chip select.
  */
 void EVE_LIB_EndCoProList(void);
 
 /**
- @brief EVE API: Waits for coprocessor list to end
- @details Will poll the coprocessor command list until it has been completed.
- @returns 0 for successful completion, 0xff for coprocessor exception.
+ @brief EVE API: Waits for co-processor list to end
+ @details Will poll the co-processor command list until it has been completed.
+ @returns 0 for successful completion, 0xff for co-processor exception.
  */
 int EVE_LIB_AwaitCoProEmpty(void);
 
 /**
- @brief EVE API: Returns a result from the coprocessor command buffer
+ @brief EVE API: Returns a result from the co-processor command buffer
  @details Will return a result value from "offset" words back in the command buffer.
- If the value of offset is 1 then the previous value from the coprocessor
+ If the value of offset is 1 then the previous value from the co-processor
  command buffer is returned.
- @returns result of a previous coprocessor command.
+ @returns result of a previous co-processor command.
  */
 uint32_t EVE_LIB_GetResult(int offset);
 
 #if IS_EVE_API(5)
 /**
- @brief EVE API: Get coprocessor exception description
- @details Will query the coprocessor exception description to a string.
- @returns Coprocessor exception description. This is a pointer to a string
+ @brief EVE API: Get co-processor exception description
+ @details Will query the co-processor exception description to a string.
+ @returns Co-processor exception description. This is a pointer to a string
   and must be sufficient to hold 256 characters.
  */
 void EVE_LIB_GetCoProException(char *desc);
@@ -127,11 +127,11 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
 void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcAddress);
 
 /**
- @brief EVE API: Write a buffer to the coprocessor command memory
- @details Writes a block of data via SPI to the EVE coprocessor.
-      This must be part of a coprocessor list. It will typically be called
-      after a coprocessor command to provide data for the operation.
-      The data will be added to the coprocessor command list therefore the
+ @brief EVE API: Write a buffer to the co-processor command memory
+ @details Writes a block of data via SPI to the EVE co-processor.
+      This must be part of a co-processor list. It will typically be called
+      after a co-processor command to provide data for the operation.
+      The data will be added to the co-processor command list therefore the
       write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
@@ -139,11 +139,11 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
 
 /**
- @brief EVE API: Write a string the coprocessor command memory
- @details Writes a string via SPI to the EVE coprocessor.
-      This must be part of a coprocessor list. It will typically be called
-      after a coprocessor command to provide a string for the operation.
-      The data will be added to the coprocessor command list therefore the
+ @brief EVE API: Write a string the co-processor command memory
+ @details Writes a string via SPI to the EVE co-processor.
+      This must be part of a co-processor list. It will typically be called
+      after a co-processor command to provide a string for the operation.
+      The data will be added to the co-processor command list therefore the
       write will block on available space in this list.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
@@ -153,8 +153,8 @@ uint16_t EVE_LIB_SendString(const char* string);
 /**
  @brief EVE API: Get properties of an CMD_LOADIMAGE operation
  @details Obtains the details of an image decoded by the CMD_LOADIMAGE
-      coprocessor command. The properties of the image are taken from
-      the coprocessor command list.
+      co-processor command. The properties of the image are taken from
+      the co-processor command list.
  @param addr - Pointer to variable to receive the image start address.
  @param width - Pointer to variable to receive the image width.
  @param height - Pointer to variable to receive the image height.
@@ -164,7 +164,7 @@ void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height);
 /**
  @brief EVE API: Get current allocation pointer
  @details Obtains the automatic allocation pointer of the last address
-      used for certain coprocessor operations.
+      used for certain co-processor operations.
  @returns addr - Last allocation address rounded up to the next 32-bit 
       boundary.
  */

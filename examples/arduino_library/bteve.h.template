@@ -126,7 +126,7 @@ class ### EVE CLASS ###
     } EVE_GPU_EXT_FONT_HEADER;
     /* ### END API ### */
 
-    /* ### BEGIN 5 ### */
+    /* ### BEGIN API >= 5 ### */
     /* On EVE5 onwards this is called the Extended 2 Font Structure. */
     typedef struct
     {

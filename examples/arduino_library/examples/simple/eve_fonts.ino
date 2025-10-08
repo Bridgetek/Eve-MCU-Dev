@@ -165,7 +165,6 @@ const uint8_t font0[] =
 
 
 uint32_t eve_init_fonts(void) {
-  const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = (const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *)font0;
   const uint32_t font0_size = sizeof(font0);
 
   eve.LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
@@ -176,6 +175,15 @@ uint32_t eve_init_fonts(void) {
   eve.CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
 /* ### END API ### */
 /* ### BEGIN API < 5 ### */
+  eve.CMD_DLSTART();
+  eve.BEGIN(eve.BEGIN_BITMAPS);
+  eve.BITMAP_HANDLE(FONT_CUSTOM);
+      eve.BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
+  eve.BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
+            font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
+  eve.BITMAP_SIZE(eve.FILTER_NEAREST, eve.WRAP_BORDER, eve.WRAP_BORDER,
+            font0_hdr->FontWidthInPixels,
+            font0_hdr->FontHeightInPixels);
   eve.CMD_SETFONT(FONT_CUSTOM, font0_offset);
 /* ### END API ### */
   eve.DISPLAY();

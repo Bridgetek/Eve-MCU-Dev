@@ -282,7 +282,7 @@ The 1x10 header can be connected as in the following picture.
 
 This callable layer is implemented in `EVE_API.c` and is called by the main loop of the application. 
 
-Its purpose is to allow theprogram to use the same syntax as the EVE Programmers Guide when writing to the co-processor and so make programming of the display simpler and more easily maintained. 
+Its purpose is to allow the program to use the same syntax as the EVE Programmers Guide when writing to the co-processor and so make programming of the display simpler and more easily maintained. 
 
 The file contains several types of helper function including: 
 - Functions which are used to begin, finish and check execution of co-processor lists. 
@@ -325,9 +325,12 @@ Using EVE commands via the co-processor requires some data formatting to convert
 
 #### Beginning and Ending Co-Processor Lists
 
-The co-processor has a command which initialises a new display list called `CMD_DLSTART`, this should be included in all lists.
+All co-processor lists must begin with a call to `EVE_LIB_BeginCoProList()`. 
+If any display list items or co-processor commands which use the display list are to be added then a call to `EVE_CMD_DLSTART()` is required immediately after this.
 
-All co-processor lists would be preceeded by:
+For the avoidance of doubt, commands that only read or write registers, read or write memory, access flash or access the SD card do not require the `EVE_CMD_DLSTART()` call.
+
+All co-processor lists displaying graphics would be preceeded by:
 ```
     EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
     EVE_CMD_DLSTART(); // When executed, EVE will begin a new DL
@@ -337,6 +340,8 @@ And followed by:
     EVE_LIB_EndCoProList(); // CS high
     EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
 ```
+A call to `EVE_LIB_AwaitCoProEmpty()` is implied in the call to `EVE_LIB_BeginCoProList()`. Therefore it is not necessary to wait at the end of the co-processor
+list for the completion of the commands allowing program to perform other tasks not related to programming the EVE device.
 
 #### Simple Co-Pocessor List
 
@@ -417,13 +422,13 @@ The usage is fundamentally the same as the library and examples described in BRT
 
 #### Limitations in RAM_DL and RAM_CMD
 
-It is important to note that the overall limit of 8K for the generated RAM_DL list still applies, even if lists are sent in multiple sections. It is also important to bear in mind that the size of a co-processor command is not always the same as the size of the resulting RAM_DL instructions which the coprocessor generates from the commands.
+It is important to note that the overall limit of 8K for the generated RAM_DL list still applies, even if lists are sent in multiple sections. It is also important to bear in mind that the size of a co-processor command is not always the same as the size of the resulting RAM_DL instructions which the co-processor generates from the commands.
 
 For example, the CMD_BUTTON uses 16 bytes of RAM_CMD plus the size of the string (plus any string arguments in BT81x) for the command, but the graphic operations in RAM_DL which the co-processor creates to render the button will be larger than this. The 8K RAM_DL limit does not therefore mean that 8K of co-processor commands can be used in one list.
 
 REG_CMD_DL indicates the next available location in RAM_DL and so after executing a list commands (but before the swap) this register can be used to check how full RAM_DL is. The value read will be between 0 and 8191 with 8191 indicating the RAM_DL is full. 
 
-The value of REG_CMD_DL is read after executing the commands above but before the swap is executed. The swap is sent using a separate transaction (beginning with EVE_LIB_BeginCoProList() and ending with EVE_LIB_EndCoProList() and EVE_LIB_AwaitCoProEmpty() ) because a register read or write cannot take place whilst an existing SPI transaction (burst write or read) is in progress.  Note that in this example the `EVE_LIB_Read16` is used and will work on EVE APIs 1 to 4, on EVE 5 only 32-bit reads and writes are supported.
+The value of REG_CMD_DL is read after executing the commands above but before the swap is executed. The swap is sent using a separate transaction (beginning with `EVE_LIB_BeginCoProList()` and ending with `EVE_LIB_EndCoProList()` and `EVE_LIB_AwaitCoProEmpty()` ) because a register read or write cannot take place whilst an existing SPI transaction (burst write or read) is in progress.  Note that in this example the `EVE_LIB_Read16` is used and will work on EVE APIs 1 to 4, on EVE 5 only 32-bit reads and writes are supported.
 
 ```
   EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD

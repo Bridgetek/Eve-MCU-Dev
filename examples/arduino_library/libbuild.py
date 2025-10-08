@@ -106,52 +106,59 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
 
     # Replace markers with values
     with open(file_in, "r") as file:
-        while line := file.readline():
-            line = re.sub(r"### EVE API VER ###", str_full_version, line)
-            line = re.sub(r"### EVE API ###", str_api_version, line)
-            line = re.sub(r"### EVE SUB API ###", str_api_sub_version, line)
-            line = re.sub(r"### EVE DEV ###", apidev, line)
-            line = re.sub(r"### EVE LIB NAME ###", apilib, line)
-            line = re.sub(r"### EVE CLASS ###", cpplib, line)
-            line = re.sub(r"### EVE RES ###", defres, line)
-            if re.findall(r"/\* ### BEGIN API ### \*/", line):
-                flag = 1
-                cppfile.extend(apidefs)
-            if re.findall(r"/\* ### BEGIN API PROTO ### \*/", line):
-                flag = 2
-                cppfile.extend(apiproto)
-            if re.findall(r"/\* ### BEGIN API CONST ### \*/", line):
-                flag = 3
-                cppfile.extend(apiconst)
-            if re.findall(r"/\* ### BEGIN API == 1 ### \*/", line):
-                if api != 1:
-                    flag = -1
-                continue
-            if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
-                if api < 2:
-                    flag = -1
-                continue
-            if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
-                if api < 4:
-                    flag = -1
-                continue
-            if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):
-                if api >= 5:
-                    flag = -1
-                continue
-            if re.findall(r"/\* ### BEGIN API >= 5 ### \*/", line):
-                if api < 5:
-                    flag = -1
-                continue
-            if re.findall(r"/\* ### END API ### \*/", line): 
-                flag = 0
-                continue
-            if flag == 0: 
-                cppfile.append(line.rstrip())
+        try:
+            while line := file.readline():
+                line = re.sub(r"### EVE API VER ###", str_full_version, line)
+                line = re.sub(r"### EVE API ###", str_api_version, line)
+                line = re.sub(r"### EVE SUB API ###", str_api_sub_version, line)
+                line = re.sub(r"### EVE DEV ###", apidev, line)
+                line = re.sub(r"### EVE LIB NAME ###", apilib, line)
+                line = re.sub(r"### EVE CLASS ###", cpplib, line)
+                line = re.sub(r"### EVE RES ###", defres, line)
+                if re.findall(r"/\* ### BEGIN API ### \*/", line):
+                    flag = 1
+                    cppfile.extend(apidefs)
+                if re.findall(r"/\* ### BEGIN API PROTO ### \*/", line):
+                    flag = 2
+                    cppfile.extend(apiproto)
+                if re.findall(r"/\* ### BEGIN API CONST ### \*/", line):
+                    flag = 3
+                    cppfile.extend(apiconst)
+                if re.findall(r"/\* ### BEGIN API == 1 ### \*/", line):
+                    if api != 1:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
+                    if api < 2:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
+                    if api < 4:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):
+                    if api >= 5:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API >= 5 ### \*/", line):
+                    if api < 5:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### END API ### \*/", line): 
+                    flag = 0
+                    continue
+                if flag == 0: 
+                    cppfile.append(line.rstrip())
 
-    with open(file_out, "w") as file:
-        for line in cppfile:
-            file.write(line + "\n")
+            with open(file_out, "w") as file:
+                for line in cppfile:
+                    file.write(line + "\n")
+        except:
+            # File is binary or could not be parsed
+            with open(file_in, "rb") as file:
+                bdata = file.read()
+            with open(file_out, "wb") as file:
+                file.write(bdata)
 
 # Collate header files needed (from include directory)
 dist_inc_files = ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h"]
@@ -374,6 +381,9 @@ template_files = []
 template_files.append(("bteve.cpp.template", os.path.join(dest_lib,f"{str_lib_name}.cpp")))
 template_files.append(("bteve.h.template", os.path.join(dest_lib,f"{str_lib_name}.h")))
 # README.md file
+template_files.append((os.path.join(src_api, "docs", "arduino.png"), os.path.join(dest_lib,"arduino.png")))
+template_files.append((os.path.join(src_api, "docs", "header1x10.png"), os.path.join(dest_lib,"header1x10.png")))
+template_files.append((os.path.join(src_api, "docs", "header2x8.png"), os.path.join(dest_lib,"header2x8.png")))
 template_files.append(("README.md.template", os.path.join(dest_lib,"README.md")))
 
 for t in template_files:

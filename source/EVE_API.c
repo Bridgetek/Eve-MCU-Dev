@@ -318,7 +318,7 @@ uint32_t EVE_LIB_GetResult(int offset)
 }
 
 #if IS_EVE_API(5)
-// Obtain the coprocessor exception description
+// Obtain the co-processor exception description
 void EVE_LIB_GetCoProException(char* desc)
 {
     uint32_t report = EVE_COPROC_REPORT;
@@ -432,7 +432,7 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
     }
 }
 
-// Write a block of data to the coprocessor
+// Write a block of data to the co-processor
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 {
     uint32_t CurrentIndex = 0;

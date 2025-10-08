@@ -15,10 +15,15 @@ The example code is set to the ### EVE RES ### display resolution.
 
 - [Hardware](#hardware)
 - [Using the Library](#using-the-library)
-  - [Programming Guide](#programming-guide)
+- [Programming Guide](#programming-guide)
   - [Library API](#library-api)
   - [Library Constants](#library-constants)
 - [Examples](#examples)
+  - [Arduino IDE Examples](#arduino-ide-examples)
+- [Module Connections](#module-connections)
+  - [Through-Board 2x8 Pins](#through-board-2x8-pins)
+  - [Header 1x10 Pins](#header-1x10-pins)
+  - [Arduino Connection](#arduino-connection)
 
 ## Hardware
 
@@ -34,12 +39,15 @@ The Arduino port was developed using an Arduino Zero and Arduino Leonardo. The A
 | - | ISCP 2 | 5V |
 | - | ISCP 6 / GND | GND |
 
-If using the 5V power from the Arduino ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, 
-a separate power connection to the EVE module could be used, with the grounds of the Arduino and EVE modules common to both power sources.
+If using the 5V power from the Arduino ensure that the power supply from the Arduino module 
+is capable of also powering the EVE board. If using third-party modules which may consume 
+more current, a separate power connection to the EVE module could be used, with the grounds 
+of the Arduino and EVE modules common to both power sources.
 
 ## Using the Library
 
-The library can be added to a sketch by including the lines in the example below. This example is for the API ### EVE API VER ### library for ### EVE LIB NAME ###, 
+The library can be added to a sketch by including the lines in the example below. This example 
+is for the API ### EVE API VER ### library for ### EVE LIB NAME ###, 
 the number corresponds to the API.
 
 The sketch must include the following code:
@@ -55,30 +63,131 @@ void setup(){
 }
 ```
 
-The `#include <BridgetekEVE### EVE API VER ###.h>` line will add in the header for this library and the declarations and constants included in the library API.
+The `#include <BridgetekEVE### EVE API VER ###.h>` line will add in the header for this 
+library and the declarations and constants included in the library API.
 
-The `### EVE CLASS ### eve` creates a class for the library which is required to direct accesses to the EVE device to the library.
+The `### EVE CLASS ### eve` creates a class for the library which is required to direct 
+accesses to the EVE device to the library.
 
-The `eve.setup(WVGA)` command initialises the library to use a WVGA display which is 800 by 480 pixels.
+The `eve.setup(WVGA)` command initialises the library to use a WVGA display which is 
+800 by 480 pixels.
 
-Finally, `eve.Init()` calls the library and initialises the SPI interface to the EVE device and then configures the EVE device for use. 
-Once this command is complete the EVE device is usable for creating displays using coprocessor commands via the library's API.
+Finally, `eve.Init()` calls the library and initialises the SPI interface to the EVE 
+device and then configures the EVE device for use. Once this command is complete the 
+EVE device is usable for creating displays using co-processor commands via the library's 
+API.
 
-Display lists can be generated through the coprocessor in the same way as they are in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev), 
-the display list entries and coprocessor commands are added using calls to the library API. 
+Display lists can be generated through the co-processor in the same way as they are in 
+[EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev), the display list entries and 
+  co-processor commands are added using calls to the library API. 
 
-### Programming Guide
+## Programming Guide
 
-The latest Programming Guide for the ### EVE LIB NAME ### can be found on the [Bridgetek Programming Guides](https://brtchip.com/document/programming-guides/) page. 
-This covers the command set implemented by the device and methods for acheiving the desired output on the screen.
+The latest Programming Guide for the ### EVE LIB NAME ### can be found on the 
+[Bridgetek Programming Guides](https://brtchip.com/document/programming-guides/) page. 
+
+This covers the command set implemented by the device and methods for acheiving the 
+desired output on the screen.
+
+### Co-Processor Helpers
+
+These functions perform the necessary tasks to begin and execute co-processor lists.
+
+`void LIB_BeginCoProList(void)`
+
+Puts Chip Select low and sends the starting address of the RAM_CMD location where the 
+commands will be written. Chip Select remains low.
+
+`void LIB_EndCoProList(void)`
+
+Brings Chip Select high to end the burst and ensures that the co-processor will execute 
+the newly added commands.
+
+`void LIB_AwaitCoProEmpty(void)`
+
+Waits for the completion of the current commands sent to the co-processor.
+
+### Creating screens and executing commands
+
+The API Layer provides functions to begin and end lists of co-processor commands. The co-processor 
+commands must be preceeded and followed by co-processor management functions. 
+
+#### Writing DL Instructions and Co-Processor Commands
+
+Using EVE commands via the co-processor requires some data formatting to convert the parameters of the 
+command into the correct hex values to be sent as well as keeping track of the number of bytes sent to 
+update the write pointer correctly. Some commands also require padding to make their total size including 
+parameters a multiple of 4 bytes. The functions in the library hide this from the main application.
+
+#### Beginning and Ending Co-Processor Lists
+
+All co-processor lists must begin with a call to `LIB_BeginCoProList()`. 
+If any display list items or co-processor commands which use the display list are to be added then a 
+call to `CMD_DLSTART()` is required immediately after this.
+
+For the avoidance of doubt, commands that only read or write registers, read or write memory, access 
+flash or access the SD card do not require the `CMD_DLSTART()` call.
+
+All co-processor lists displaying graphics would be preceeded by:
+```
+    eve.LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
+    eve.CMD_DLSTART(); // When executed, EVE will begin a new DL
+```
+And followed by:
+```
+    eve.LIB_EndCoProList(); // CS high
+    eve.LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
+```
+A call to `LIB_AwaitCoProEmpty()` is implied in the call to `LIB_BeginCoProList()`. Therefore 
+it is not necessary to wait at the end of the co-processor
+list for the completion of the commands allowing program to perform other tasks not related to 
+programming the EVE device.
+
+#### Simple Co-Pocessor List
+
+The following is a simple list to write text on the screen in white letters:
+
+```
+    eve.LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
+    eve.CMD_DLSTART(); // When executed, EVE will begin a new DL
+    
+    eve.CLEAR_COLOR_RGB(0, 0, 0); // Select colour to clear screen to 
+    eve.CLEAR(1,1,1); // Clear screen
+
+    eve.COLOR_RGB(255, 255, 255);
+    eve.CMD_TEXT(100, 100, 28, eve.OPT_CENTERX | eve.OPT_CENTERY, "Hello");
+    
+    eve.DISPLAY(); // Tells EVE that this is the end 
+    eve.CMD_SWAP(); // Swaps new list into foreground buffer  
+    eve.LIB_EndCoProList(); // CS high and end list 
+    eve.LIB_AwaitCoProEmpty(); // Wait for FIFO to be empty 
+    // (commands executed) 
+```
+
+#### Executing a Single Co-Processor Command
+
+When just executing a co-processor command (for example calling CMD_SETROTATE during set-up 
+of the application to set the screen orientation) then the following can be used:
+
+```
+    eve.LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
+    eve.CMD_DLSTART(); // When executed, EVE will begin a new DL
+
+    eve.CMD_SETROTATE(2);
+
+    eve.LIB_EndCoProList(); // CS high
+    eve.LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
+```
 
 ### Library API
 
-This library functions provide an API for sending commands to the device and receiving results and status from a sketch. 
+This library functions provide an API for sending commands to the device and receiving results and 
+status from a sketch. 
 
 API calls in a sketch to this library call an equivalent function in the [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
 Each API function in this library maps to a function with a prefix `EVE_` in the EVE-MCU-Dev library. 
-Therefore, taking `eve` as the name of the library class in a sketch, calling the function `eve.CMD_SWAP()` will call the function `EVE_CMD_SWAP()` in EVE-MCU-Dev.
+Therefore, taking `eve` as the name of the library class in a sketch, calling the function 
+`eve.CMD_SWAP()` will call the function `EVE_CMD_SWAP()` in EVE-MCU-Dev.
 
 The full API available to the Arduino IDE is as follows:
 
@@ -111,14 +220,16 @@ uint32_t EVE_DISP_PCLK
 uint32_t EVE_DISP_PCLK_FREQ
 ```
 
-If a touch controller is explicitly set in `EVE_config.h` then the following value is set. If it is zero then the touch controller has been determined automatically by the device.
+If a touch controller is explicitly set in `EVE_config.h` then the following value is set. If it is 
+zero then the touch controller has been determined automatically by the device.
 
 ```
 uint32_t EVE_TOUCH_ADDR
 ```
 /* ### BEGIN API >= 5 ### */
 
-The BT82x has 2 variables for setting up the LVDS Tx port (graphics output format) and another holding the total configured size of RAM_G.
+The BT82x has 2 variables for setting up the LVDS Tx port (graphics output format) and another 
+holding the total configured size of RAM_G.
 
 ```
 uint32_t EVE_DISP_LVDSTXCLKDIV
@@ -129,11 +240,13 @@ uint32_t EVE_RAM_G_CONFIG_SIZE
 
 ### Library Constants
 
-In a similar way to the API functions, the library provides a set of constant values used in sketch commands sent to the device.
+In a similar way to the API functions, the library provides a set of constant values used in 
+sketch commands sent to the device.
 
 Constant names in this library are mapped to constant values in the [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
 Each constant in this library maps to a constant with a prefix `EVE_` in the EVE-MCU-Dev library. 
-Therefore, taking `eve` as the name of the library class in a sketch, calling the function `eve.OPT_FILL` will call the function `EVE_OPT_FILL` in EVE-MCU-Dev.
+Therefore, taking `eve` as the name of the library class in a sketch, calling the function 
+`eve.OPT_FILL` will call the function `EVE_OPT_FILL` in EVE-MCU-Dev.
 
 ```
 /* ### BEGIN API CONST ### */
@@ -142,7 +255,8 @@ Therefore, taking `eve` as the name of the library class in a sketch, calling th
 
 ## Examples
 
-A simple program for Arduino would add a set of display list items to the screen. This example will write the phrase "Testing ### EVE LIB NAME ###" 
+A simple program for Arduino would add a set of display list items to the screen. This example 
+will write the phrase "Testing ### EVE LIB NAME ###" 
 in white in the centre of a black background.
 
 ```
@@ -178,5 +292,81 @@ void loop() {
 The examples in this library can be used to make a new Arduino IDE sketch. 
 Complete example sketches added by this library can be found in "File -> Examples -> Bridgetek ### EVE LIB NAME ###".
 
-The `simple_### EVE API VER ###` example is an ideal sketch to start with as it shows many aspects of writing a sketch for Arduino. 
-It provides exactly the same display, functions and result as the `simple` example in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
+The `simple_EVE### EVE API VER ###` example is an ideal sketch to start with as it shows many 
+aspects of writing a sketch for Arduino. It provides exactly the same display, functions 
+and result as the `simple` example in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
+
+## Module Connections
+
+There are 2 standard connectors for EVE modules used by BridgeTek. 
+
+The wiring colours in the section for each connection are defined in the following table.
+
+| Colour | EVE Signal |
+| --- | --- |
+| Blue | SCK |
+| Green | MOSI |
+| Yellow | MISO |
+| Orange | CS# |
+| Red | PD# |
+| Brown | GND |
+
+### Through-Board 2x8 Pins
+
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+
+| Pin | EVE Signal | Pin | EVE Signal |
+| --- | --- | --- | --- |
+| 1 | N/C | 2 | N/C |
+| 3 | N/C | 4 | PD# |
+| 5 | GND | 6 | N/C |
+| 7 | 5V | 8 | N/C |
+| 9 | N/C | 10 | N/C |
+| 11 | N/C | 12 | N/C |
+| 13 | MOSI | 14 | MISO |
+| 15 | CS# | 16 | SCK |
+
+The 2x8 header can be connected as in the following picture.
+
+![Wiring for 2x8 Header](header2x8.png)
+
+### Header 1x10 Pins
+
+This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the VA800A-SPI board. 
+
+| Pin | EVE Signal |
+| --- | --- |
+| 1 | SCK |
+| 2 | MOSI |
+| 3 | MISO |
+| 4 | CS# |
+| 5 | INT# |
+| 6 | PD# |
+| 7 | 5V |
+| 8 | N/C |
+| 9 | GND |
+| 10 | GND |
+
+The 1x10 header can be connected as in the following picture.
+
+![Wiring for 1x10 Header](header1x10.png)
+
+### Arduino Connection 
+
+The Arduino module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Arduino Datasheet for more information.
+
+| Arduino Name | Arduino Pin | EVE Signal |
+| --- | --- | --- |
+| SCLK | ISCP 3 | SCK |
+| COPI | ISCP 4 | MOSI |
+| CIPO | ISCP 1 | MISO |
+| D10 | PB6 | CS# |
+| D9 | PB5 | PD# |
+| - | ISCP 2 | 5V |
+| - | ISCP 6 / GND | GND |
+
+Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
+
+An Arduino board can be connected to an EVE board as in the following picture.
+
+![Arduino Wiring Picture](arduino.png)

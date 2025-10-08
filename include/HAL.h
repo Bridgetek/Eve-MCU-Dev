@@ -89,7 +89,7 @@ void HAL_PowerDown(int8_t enable);
 /**
  @brief Increment command memory write pointer
  @details The command memory write pointer stores the current
-     location where coprocessor commands are written. This is
+     location where co-processor commands are written. This is
      kept internally in the HAL and is NOT written to the
      REG_CMD_WRITE register on EVE until the HAL_WriteCmdPointer
      function is called. This allows multiple commands (up-to
@@ -121,7 +121,7 @@ void HAL_ResetCmdPointer(void);
 /**
  @brief Commits the current command memory write pointer
  @details Stores the internal HAL command memory write pointer to
-     the REG_CMD_WRITE register. This will start the coprocessor
+     the REG_CMD_WRITE register. This will start the co-processor
      working through items in the display list.
  */
 void HAL_WriteCmdPointer(void);
@@ -130,7 +130,7 @@ void HAL_WriteCmdPointer(void);
  @brief Wait for display list to complete
  @details Polls the REG_CMD_READ register until it matches the
      current command memory write pointer. This will indicate that
-     the coprocessor has completed working through the items in the
+     the co-processor has completed working through the items in the
      display list.
  @returns Zero for normal completion or 0xff for an error condition.
  */

@@ -81,10 +81,10 @@
 #define EVE_ROMFONT_TABLEADDRESS       0x2ffffcul
 #define EVE_ROM_CHIPID                 0x0c0000ul      // Chip ID
 
-// Coprocessor Method
+// Co-processor Method
 
-// Use REG_CMDB_WRITE to fill coprocessor buffer.
-// Undefine to write directly to coprocessor buffer.
+// Use REG_CMDB_WRITE to fill co-processor buffer.
+// Undefine to write directly to co-processor buffer.
 #define EVE_USE_CMDB_METHOD
 
 // Chip ID Register

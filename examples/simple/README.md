@@ -109,6 +109,14 @@ Once this has been written to RAM_G then the EVE device must be instructed how m
 #if IS_EVE_API(5)
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
 #else
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BITMAP_HANDLE(FONT_CUSTOM);
+    EVE_BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
+    EVE_BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
+            font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
+    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
+            font0_hdr->FontWidthInPixels,
+            font0_hdr->FontHeightInPixels);
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset);
 #endif
     EVE_DISPLAY();

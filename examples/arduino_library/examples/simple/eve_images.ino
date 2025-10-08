@@ -292,7 +292,7 @@ uint32_t eve_load_images(uint32_t start_addr) {
     EVE_LIB_BeginCoProList();
     EVE_CMD_LOADIMAGE(start_addr, 0);
 
-    // Send raw JPEG encoded image data to coprocessor. It will be decoded
+    // Send raw JPEG encoded image data to co-processor. It will be decoded
     // as the data is received.
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {

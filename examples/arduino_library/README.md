@@ -4,6 +4,23 @@
 
 This directory is used to build an EVE library for Arduino. There are template files which are used to supplement the EVE-MCU-Dev library to make it accessible as a library when called by an Arduino sketch.
 
+## Contents
+
+- [Introduction](#introduction)
+- [Setting Up the Arduino Library](#setting-up-the-arduino-library)
+  - [Files copied to the Arduino Library](#files-copied-to-the-arduino-library)
+  - [Manually Adding the Library to a Sketch](#manually-adding-the-library-to-a-sketch)
+  - [Adding the Library to a Sketch](#adding-the-library-to-a-sketch)
+- [Distributing the Arduino Library](#distributing-the-arduino-library)
+  - [Adding the ZIP file to the Arduino IDE](#adding-the-library-to-a-sketch)
+  - [Publishing the Library](#publishing-the-library)
+- [Module Connections](#module-connections)
+  - [Through-Board 2x8 Pins](#through-board-2x8-pins)
+  - [Header 1x10 Pins](#header-1x10-pins)
+  - [Arduino Connection](#arduino-connection)
+
+## Introducion
+
 The script will build a library for one generation of EVE device. Each generation requires a seperate library since the API and supported options on each device are different. Supporting multiple APIs with a single library would lead to larger code size of the library.
 
 The display panel settings can be chosen at runtime from a set configured into the template files.
@@ -166,3 +183,78 @@ Alternatively, the contents of the output directory can be copied into a directo
 ### Publishing the Library
 
 Adding the URL of the library's GitHub repository to the Arduino library register will allow the library to be searched for and loaded directly in the Arduino IDE. Bridgetek will manage the updates of this feature.
+
+## Module Connections
+
+There are 2 standard connectors for EVE modules used by BridgeTek. 
+
+The wiring colours in the section for each connection are defined in the following table.
+
+| Colour | EVE Signal |
+| --- | --- |
+| Blue | SCK |
+| Green | MOSI |
+| Yellow | MISO |
+| Orange | CS# |
+| Red | PD# |
+| Brown | GND |
+
+### Through-Board 2x8 Pins
+
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+
+| Pin | EVE Signal | Pin | EVE Signal |
+| --- | --- | --- | --- |
+| 1 | N/C | 2 | N/C |
+| 3 | N/C | 4 | PD# |
+| 5 | GND | 6 | N/C |
+| 7 | 5V | 8 | N/C |
+| 9 | N/C | 10 | N/C |
+| 11 | N/C | 12 | N/C |
+| 13 | MOSI | 14 | MISO |
+| 15 | CS# | 16 | SCK |
+
+The 2x8 header can be connected as in the following picture.
+
+![Wiring for 2x8 Header](docs/header2x8.png)
+
+### Header 1x10 Pins
+
+This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the VA800A-SPI board. 
+
+| Pin | EVE Signal |
+| --- | --- |
+| 1 | SCK |
+| 2 | MOSI |
+| 3 | MISO |
+| 4 | CS# |
+| 5 | INT# |
+| 6 | PD# |
+| 7 | 5V |
+| 8 | N/C |
+| 9 | GND |
+| 10 | GND |
+
+The 1x10 header can be connected as in the following picture.
+
+![Wiring for 1x10 Header](docs/header1x10.png)
+
+### Arduino Connection 
+
+The Arduino module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Arduino Datasheet for more information.
+
+| Arduino Name | Arduino Pin | EVE Signal |
+| --- | --- | --- |
+| SCLK | ISCP 3 | SCK |
+| COPI | ISCP 4 | MOSI |
+| CIPO | ISCP 1 | MISO |
+| D10 | PB6 | CS# |
+| D9 | PB5 | PD# |
+| - | ISCP 2 | 5V |
+| - | ISCP 6 / GND | GND |
+
+Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
+
+An Arduino board can be connected to an EVE board as in the following picture.
+
+![Arduino Wiring Picture](../../docs/arduino.png)

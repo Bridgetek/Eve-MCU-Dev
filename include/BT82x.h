@@ -71,10 +71,10 @@
 #define EVE_RAM_REPORT                 0x00309800ul
 #define EVE_COPROC_REPORT              0x7f004800ul
 
-// Coprocessor Method
+// Co-processor Method
 
-// Use REG_CMDB_WRITE to fill coprocessor buffer.
-// Undefine to write directly to coprocessor buffer.
+// Use REG_CMDB_WRITE to fill co-processor buffer.
+// Undefine to write directly to co-processor buffer.
 #define EVE_USE_CMDB_METHOD
 
 // Chip ID Register
@@ -84,7 +84,7 @@
 // Control Registers
 
 #define EVE_RAM_BIST                   0x7f8001c0ul
-#define EVE_REG_CPURESET               0x7f006088ul   //  Coprocessor reset bits 2:JA 1:JT 0:J1
+#define EVE_REG_CPURESET               0x7f006088ul   //  Co-processor reset bits 2:JA 1:JT 0:J1
 #define EVE_REG_BOOT_CONTROL           0x7f006628ul   //  Boot control byte
 #define EVE_REG_PIN_DRV_0              0x7f800408ul   //   Pin drive strength setting
 #define EVE_REG_PIN_DRV_1              0x7f80040Cul   //   Pin drive strength setting
