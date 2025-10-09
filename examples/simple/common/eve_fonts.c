@@ -177,6 +177,8 @@ uint32_t eve_init_fonts(void)
     EVE_CMD_DLSTART();
 #if IS_EVE_API(5)
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
+#elif IS_EVE_API(2,3,4)
+    EVE_CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
 #else
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);

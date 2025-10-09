@@ -25,9 +25,9 @@ if (args.apisub): eve_sub_api = int(args.apisub)
 
 # Check valid input
 if (eve_api < 1) or (eve_api > 5):
-    raise Exception("Invalid EVE API")
+    raise Exception("Invalid value for --api")
 if (eve_api == 2) and ((eve_sub_api < 1) or (eve_sub_api > 2)):
-    raise Exception("Invalid EVE SUB API for EVE API 2")
+    raise Exception("Invalid value for --apisub required when --api is 2")
 
 # Check for a suitable preprocessor
 try:
@@ -128,12 +128,20 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
                     if api != 1:
                         flag = -1
                     continue
+                if re.findall(r"/\* ### BEGIN API == 2 ### \*/", line):
+                    if api != 2:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API == 3 or 4 ### \*/", line):
+                    if api != 3 and api != 4:
+                        flag = -1
+                    continue
                 if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
                     if api < 2:
                         flag = -1
                     continue
-                if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
-                    if api < 4:
+                if re.findall(r"/\* ### BEGIN API >= 3 ### \*/", line):
+                    if api < 3:
                         flag = -1
                     continue
                 if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):

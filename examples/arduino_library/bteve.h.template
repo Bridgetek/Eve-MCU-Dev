@@ -99,7 +99,7 @@ class ### EVE CLASS ###
         uint32_t    PointerToFontGraphicsData;
     } EVE_GPU_FONT_HEADER;
 
-    /* ### BEGIN API >= 4 ### */
+    /* ### BEGIN API >= 3 ### */
     /* On EVE4 onwards this is called the Extended Font Structure. */
     typedef struct
     {

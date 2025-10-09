@@ -174,8 +174,13 @@ uint32_t eve_init_fonts(void) {
 /* ### BEGIN API >= 5 ### */
   eve.CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
 /* ### END API ### */
-/* ### BEGIN API < 5 ### */
-  eve.CMD_DLSTART();
+/* ### BEGIN API == 2 ### */
+  eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
+/* ### END API ### */
+/* ### BEGIN API == 3 or 4 ### */
+  eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
+/* ### END API ### */
+/* ### BEGIN API == 1 ### */
   eve.BEGIN(eve.BEGIN_BITMAPS);
   eve.BITMAP_HANDLE(FONT_CUSTOM);
       eve.BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
