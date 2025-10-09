@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- * Nov 2023        Added BT88x definitions, added CMD_FLASHPROGRAM
- * Dec 2024        Updates for BT82x and split into devices
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *

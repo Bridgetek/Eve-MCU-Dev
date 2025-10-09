@@ -1,22 +1,10 @@
 /**
- @file EVE_MCU.c
+ @file main.c
  */
 /*
- *
-============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
- * (C) Copyright Bridgetek Pte Ltd
- *
-============================================================================
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
@@ -25,8 +13,7 @@
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
  *
- * Without prejudice to the Licence Terms, here is a summary of some of the
-key
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
  * terms of the Licence Terms (and in the event of any conflict between this
  * summary and the Licence Terms then the text of the Licence Terms will
  * prevail).
@@ -49,8 +36,7 @@ of loss
  * have additional licence terms that apply to those amendments. However,
 Bridgetek
  * has no liability in relation to those amendments.
- *
-============================================================================
+ * ============================================================================
  */
 
 
