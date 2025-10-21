@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
- * Dec 2024		Add BT82x support
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -51,15 +41,13 @@
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdarg.h>
 
-#include "../include/EVE.h"
-#include "../include/HAL.h"
+#include <EVE.h>
+#include <HAL.h>
+#include <MCU.h>
 
 #if IS_EVE_API(5)
 #include "patch_base.h"
 #endif
-
-// Set beginning of graphics command memory
-//static uint32_t RAMCommandBuffer = EVE_RAM_CMD;
 
 //##############################################################################
 // Library functions
@@ -78,36 +66,36 @@ void EVE_Init(void)
     uint8_t regGpio;
 
     // Active width of LCD display
-    HAL_MemWrite16(EVE_REG_HSIZE,   EVE_DISP_WIDTH);
+    HAL_MemWrite16(EVE_REG_HSIZE,   (uint16_t)EVE_DISP_WIDTH);
     // Total number of clocks per line
-    HAL_MemWrite16(EVE_REG_HCYCLE,  EVE_DISP_HCYCLE);
+    HAL_MemWrite16(EVE_REG_HCYCLE,  (uint16_t)EVE_DISP_HCYCLE);
     // Start of active line
-    HAL_MemWrite16(EVE_REG_HOFFSET, EVE_DISP_HOFFSET);
+    HAL_MemWrite16(EVE_REG_HOFFSET, (uint16_t)EVE_DISP_HOFFSET);
     // Start of horizontal sync pulse
-    HAL_MemWrite16(EVE_REG_HSYNC0,  EVE_DISP_HSYNC0);
+    HAL_MemWrite16(EVE_REG_HSYNC0,  (uint16_t)EVE_DISP_HSYNC0);
     // End of horizontal sync pulse
-    HAL_MemWrite16(EVE_REG_HSYNC1,  EVE_DISP_HSYNC1);
+    HAL_MemWrite16(EVE_REG_HSYNC1,  (uint16_t)EVE_DISP_HSYNC1);
     // Active height of LCD display
-    HAL_MemWrite16(EVE_REG_VSIZE,   EVE_DISP_HEIGHT);
+    HAL_MemWrite16(EVE_REG_VSIZE,   (uint16_t)EVE_DISP_HEIGHT);
     // Total number of lines per screen
-    HAL_MemWrite16(EVE_REG_VCYCLE,  EVE_DISP_VCYCLE);
+    HAL_MemWrite16(EVE_REG_VCYCLE,  (uint16_t)EVE_DISP_VCYCLE);
     // Start of active screen
-    HAL_MemWrite16(EVE_REG_VOFFSET, EVE_DISP_VOFFSET);
+    HAL_MemWrite16(EVE_REG_VOFFSET, (uint16_t)EVE_DISP_VOFFSET);
     // Start of vertical sync pulse
-    HAL_MemWrite16(EVE_REG_VSYNC0,  EVE_DISP_VSYNC0);
+    HAL_MemWrite16(EVE_REG_VSYNC0,  (uint16_t)EVE_DISP_VSYNC0);
     // End of vertical sync pulse
-    HAL_MemWrite16(EVE_REG_VSYNC1,  EVE_DISP_VSYNC1);
+    HAL_MemWrite16(EVE_REG_VSYNC1,  (uint16_t)EVE_DISP_VSYNC1);
     // Define active edge of PCLK
-    HAL_MemWrite8(EVE_REG_PCLK_POL, EVE_DISP_PCLKPOL);
+    HAL_MemWrite8(EVE_REG_PCLK_POL, (uint16_t)EVE_DISP_PCLKPOL);
     // Define RGB output pins
-    HAL_MemWrite8(EVE_REG_SWIZZLE,  EVE_DISP_SWIZZLE);
+    HAL_MemWrite8(EVE_REG_SWIZZLE,  (uint16_t)EVE_DISP_SWIZZLE);
     // Turn on or off CSpread
-    HAL_MemWrite8(EVE_REG_CSPREAD,  EVE_DISP_CSPREAD);
+    HAL_MemWrite8(EVE_REG_CSPREAD,  (uint16_t)EVE_DISP_CSPREAD);
     // Turn on or off Dither
-    HAL_MemWrite8(EVE_REG_DITHER,  EVE_DISP_DITHER);
+    HAL_MemWrite8(EVE_REG_DITHER,  (uint16_t)EVE_DISP_DITHER);
 
     #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
-    HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, EVE_TOUCH_ADDR << 4);
+    HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, (uint16_t)EVE_TOUCH_ADDR << 4);
     #endif
 
     // Write first display list
@@ -119,21 +107,21 @@ void EVE_Init(void)
     // Read the  GPIO register for a read/modify/write operation
     regGpio = HAL_MemRead8(EVE_REG_GPIO);
     // set bit 7 of  GPIO register (DISP) - others are inputs
-    regGpio = regGpio | 0x80;
+    regGpio = regGpio | 0x80u;
     // Enable the DISP signal to the LCD panel
     HAL_MemWrite8(EVE_REG_GPIO, regGpio);
 
     // Write the PCLK or PCLK_FREQ register
     // If setting PCLK_FREQ then also set REG_PCLK to 1 to enable extsync mode
     #if IS_EVE_API(4) && (defined SET_PCLK_FREQ)
-    HAL_MemWrite16(EVE_REG_PCLK_FREQ,  EVE_DISP_PCLK_FREQ);
+    HAL_MemWrite16(EVE_REG_PCLK_FREQ,  (uint16_t)EVE_DISP_PCLK_FREQ);
     HAL_MemWrite8(EVE_REG_PCLK, 1);
     #else
     // Now start clocking data to the LCD panel
-    HAL_MemWrite8(EVE_REG_PCLK, EVE_DISP_PCLK);
+    HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
     #endif
 
-    HAL_MemWrite8(EVE_REG_PWM_DUTY, 127);
+    HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
 
     // ---------------------- Touch and Audio settings -------------------------
     // Eliminate any false touches
@@ -151,13 +139,13 @@ void EVE_Init(void)
 
     EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
-    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, EVE_RAM_G_SIZE - 0x280000 - (EVE_DISP_WIDTH * EVE_DISP_HEIGHT * 3));
-    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR1, EVE_RAM_G_SIZE - 0x280000 - (2 * EVE_DISP_WIDTH * EVE_DISP_HEIGHT * 3));
+    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, (EVE_RAM_G_SIZE - 0x280000UL - ((uint32_t)EVE_DISP_WIDTH * (uint32_t)EVE_DISP_HEIGHT * 3UL)));
+    EVE_CMD_REGWRITE(EVE_REG_SC0_PTR1, (EVE_RAM_G_SIZE - 0x280000UL - (2UL * (uint32_t)EVE_DISP_WIDTH * (uint32_t)EVE_DISP_HEIGHT * 3UL)));
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
     EVE_LIB_BeginCoProList();
-    EVE_CMD_RENDERTARGET(EVE_SWAPCHAIN_0, EVE_DISP_LVDSTXFORMAT, EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+    EVE_CMD_RENDERTARGET(EVE_SWAPCHAIN_0, (uint32_t)EVE_DISP_LVDSTXFORMAT, (uint32_t)EVE_DISP_WIDTH, (uint32_t)EVE_DISP_HEIGHT);
     EVE_CLEAR(1,1,1);
     EVE_CMD_SWAP();
     EVE_CMD_GRAPHICSFINISH();
@@ -165,53 +153,53 @@ void EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 
     EVE_LIB_BeginCoProList();
-    EVE_CMD_REGWRITE(EVE_REG_GPIO, 0x80);
-    EVE_CMD_REGWRITE(EVE_REG_DISP, 1);
+    EVE_CMD_REGWRITE(EVE_REG_GPIO, 0x80ul);
+    EVE_CMD_REGWRITE(EVE_REG_DISP, 1ul);
 
     // Total number of clocks per line
-    EVE_CMD_REGWRITE(EVE_REG_HCYCLE, EVE_DISP_HCYCLE);
+    EVE_CMD_REGWRITE(EVE_REG_HCYCLE,  (uint32_t)EVE_DISP_HCYCLE);
     // Active width of LCD display
-    EVE_CMD_REGWRITE(EVE_REG_HSIZE, EVE_DISP_WIDTH);
+    EVE_CMD_REGWRITE(EVE_REG_HSIZE,   (uint32_t)EVE_DISP_WIDTH);
     // Start of active line
-    EVE_CMD_REGWRITE(EVE_REG_HOFFSET, EVE_DISP_HOFFSET);
+    EVE_CMD_REGWRITE(EVE_REG_HOFFSET, (uint32_t)EVE_DISP_HOFFSET);
     // Start of horizontal sync pulse
-    EVE_CMD_REGWRITE(EVE_REG_HSYNC0, EVE_DISP_HSYNC0);
+    EVE_CMD_REGWRITE(EVE_REG_HSYNC0,  (uint32_t)EVE_DISP_HSYNC0);
     // End of horizontal sync pulse
-    EVE_CMD_REGWRITE(EVE_REG_HSYNC1, EVE_DISP_HSYNC1);
+    EVE_CMD_REGWRITE(EVE_REG_HSYNC1,  (uint32_t)EVE_DISP_HSYNC1);
 
     // Total number of lines per screen
-    EVE_CMD_REGWRITE(EVE_REG_VCYCLE, EVE_DISP_VCYCLE);
+    EVE_CMD_REGWRITE(EVE_REG_VCYCLE,  (uint32_t)EVE_DISP_VCYCLE);
     // Active height of LCD display
-    EVE_CMD_REGWRITE(EVE_REG_VSIZE, EVE_DISP_HEIGHT);
+    EVE_CMD_REGWRITE(EVE_REG_VSIZE,   (uint32_t)EVE_DISP_HEIGHT);
     // Start of active screen
-    EVE_CMD_REGWRITE(EVE_REG_VOFFSET, 10);
+    EVE_CMD_REGWRITE(EVE_REG_VOFFSET, (uint32_t)EVE_DISP_VOFFSET);
     // Start of vertical sync pulse
-    EVE_CMD_REGWRITE(EVE_REG_VSYNC0, 0);
+    EVE_CMD_REGWRITE(EVE_REG_VSYNC0,  (uint32_t)EVE_DISP_VSYNC0);
     // End of vertical sync pulse
-    EVE_CMD_REGWRITE(EVE_REG_VSYNC1, 3);
+    EVE_CMD_REGWRITE(EVE_REG_VSYNC1,  (uint32_t)EVE_DISP_VSYNC1);
 
     // Define active edge of PCLK
-    EVE_CMD_REGWRITE(EVE_REG_PCLK_POL, 0);
-    EVE_CMD_REGWRITE(EVE_REG_RE_DITHER, 1);
+    EVE_CMD_REGWRITE(EVE_REG_PCLK_POL, 0ul);
+    EVE_CMD_REGWRITE(EVE_REG_RE_DITHER, 1ul);
 
     #if defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
-    EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, (EVE_TOUCH_ADDR << 4) | (EVE_TOUCH_TYPE) | (1 << 11));
+    EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, ((uint32_t)EVE_TOUCH_ADDR << 4) | ((uint32_t)EVE_TOUCH_TYPE) | (1 << 11));
     #endif
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
-    unsigned long extsyncmode = 3;
-    unsigned long lvdstlldiv = EVE_DISP_LVDSTXCLKDIV;
-    unsigned long pllcfg = 0;
+    uint32_t extsyncmode = 3;
+    uint32_t lvdstlldiv = EVE_DISP_LVDSTXCLKDIV;
+    uint32_t pllcfg = 0;
     if (lvdstlldiv > 4) pllcfg = 0x00300870 + lvdstlldiv;
     else pllcfg = 0x00301070 + lvdstlldiv;
 
     EVE_CMD_APBWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
-    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 6); // Enable PLLs for LVDS CH1 and CH2
+    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 6ul); // Enable PLLs for LVDS CH1 and CH2
     
     EVE_CMD_REGWRITE(EVE_REG_SO_MODE, extsyncmode);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
-    EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, EVE_DISP_LVDSTXFORMAT);
-    EVE_CMD_REGWRITE(EVE_REG_SO_EN, 1);
+    EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, (uint32_t)EVE_DISP_LVDSTXFORMAT);
+    EVE_CMD_REGWRITE(EVE_REG_SO_EN, 1ul);
     
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
@@ -265,7 +253,6 @@ void EVE_Init(void)
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-
 #endif
 }
 
@@ -321,7 +308,7 @@ uint32_t EVE_LIB_GetResult(int offset)
 }
 
 #if IS_EVE_API(5)
-// Obtain the coprocessor exception description
+// Obtain the co-processor exception description
 void EVE_LIB_GetCoProException(char* desc)
 {
     uint32_t report = EVE_COPROC_REPORT;
@@ -435,7 +422,7 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
     }
 }
 
-// Write a block of data to the coprocessor
+// Write a block of data to the co-processor
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 {
     uint32_t CurrentIndex = 0;
@@ -510,9 +497,39 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
             break;
         }
     }
-
-    //HAL_ChipSelect(1);
 }
+
+void EVE_LIB_MemWrite32(uint32_t addr, uint32_t value)
+{
+     HAL_MemWrite32(addr, value);
+}
+
+uint32_t EVE_LIB_MemRead32(uint32_t address)
+{
+     return HAL_MemRead32(address);
+}
+
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
+void EVE_LIB_MemWrite16(uint32_t addr, uint16_t value)
+{
+     HAL_MemWrite16(addr, value);
+}
+
+uint16_t EVE_LIB_MemRead16(uint32_t address)
+{
+     return HAL_MemRead16(address);
+}
+
+void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value)
+{
+     HAL_MemWrite8(addr, value);
+}
+
+uint8_t EVE_LIB_MemRead8(uint32_t address)
+{
+     return HAL_MemRead8(address);
+}
+#endif  // IS_EVE_API(1, 2, 3, 4)
 
 // Writes a string over SPI
 uint16_t EVE_LIB_SendString(const char* string)
@@ -1573,10 +1590,10 @@ void EVE_CMD_VIDEOSTART(void)
     HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_SETBASE(uint32_t eve_base)
+void EVE_CMD_SETBASE(uint32_t base)
 {
     HAL_Write32(EVE_ENC_CMD_SETBASE);
-    HAL_Write32(eve_base);
+    HAL_Write32(base);
     HAL_IncCmdPointer(8);
 }
 
@@ -1887,9 +1904,9 @@ void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *fdata)
   {
       /* Pack 4 bytes into a 32-bit data each sending package */
       send_data32 = *fdata++;
-      send_data32 |= (*fdata++) << 8;
-      send_data32 |= (*fdata++) << 16;
-      send_data32 |= (*fdata++) << 24;
+      send_data32 |= (uint32_t)(*fdata++) << 8;
+      send_data32 |= (uint32_t)(*fdata++) << 16;
+      send_data32 |= (uint32_t)(*fdata++) << 24;
       HAL_Write32(send_data32);
   }
   HAL_IncCmdPointer(4*(3+totalnum));
@@ -2068,7 +2085,7 @@ void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h)
 {
     HAL_Write32(EVE_ENC_CMD_RENDERTARGET);
     HAL_Write32(dest);
-    HAL_Write32(fmt | (w << 16));
+    HAL_Write32(fmt | ((uint32_t)w << 16));
     HAL_Write32(h);
     HAL_IncCmdPointer(16);
 }

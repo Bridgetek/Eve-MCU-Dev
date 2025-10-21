@@ -10,16 +10,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -65,7 +55,7 @@
 #include <hardware/flash.h>
 #include <hardware/sync.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -100,7 +90,7 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
     uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE);
     uint32_t ints = save_and_disable_interrupts();
 
-	calib->key = VALID_KEY_TOUCHSCREEN;
+    calib->key = VALID_KEY_TOUCHSCREEN;
     memset(config, 0xff, FLASH_PAGE_SIZE);
     memcpy(config, calib, sizeof(struct touchscreen_calibration));
 
@@ -114,7 +104,7 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
     struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-	if (p->key == VALID_KEY_TOUCHSCREEN)
+    if (p->key == VALID_KEY_TOUCHSCREEN)
     {
         memcpy(calib, p, sizeof(struct touchscreen_calibration));
         return 0;
@@ -157,14 +147,14 @@ void setup(void)
     printf ("---------------------------------------------------------------- \r\n");
     printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
-	printf ("Pin configuration for example:\n");
-	printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");
-	printf ("Pin 15 - MOSI (GPIO11)\n");
-	printf ("Pin 16 - MISO (GPIO12)\n");
-	printf ("Pin 14 - SCLK (GPIO10)\n");
-	printf ("Pin 17 - CS (GPIO13) - Note this is not the SPI0_CS0 pin\n");
-	printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
-	printf ("Pin 40 - 5v supply for FT8xx\n");
-	printf ("Pin 23 - signal GND for SPI\n");
+    printf ("Pin configuration for example:\n");
+    printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");
+    printf ("Pin 15 - MOSI (GPIO11)\n");
+    printf ("Pin 16 - MISO (GPIO12)\n");
+    printf ("Pin 14 - SCLK (GPIO10)\n");
+    printf ("Pin 17 - CS (GPIO13) - Note this is not the SPI0_CS0 pin\n");
+    printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
+    printf ("Pin 40 - 5v supply for FT8xx\n");
+    printf ("Pin 23 - signal GND for SPI\n");
 #endif
 }

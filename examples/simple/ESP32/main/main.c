@@ -5,16 +5,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -64,7 +54,7 @@
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

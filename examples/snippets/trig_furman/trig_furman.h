@@ -3,13 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial version FT81x and FT80x
- * Mar 2020        BT815/6 support added
- * Mar 2021        BT817/8 support added
- * Jun 2025        BT82x support added
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *

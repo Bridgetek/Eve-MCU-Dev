@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -49,10 +39,9 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
 
-#include "eve_helper.h"
+#include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
 
@@ -91,21 +80,21 @@ void eve_calibrate(void)
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
 
-        calib.transform[0] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
-        calib.transform[1] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
-        calib.transform[2] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
-        calib.transform[3] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
-        calib.transform[4] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
-        calib.transform[5] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
+        calib.transform[0] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
+        calib.transform[1] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
+        calib.transform[2] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
+        calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
+        calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
+        calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
         platform_calib_write(&calib);
     }
     else
     {
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-        HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
     }
 }

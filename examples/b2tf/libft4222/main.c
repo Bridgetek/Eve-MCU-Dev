@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -54,9 +44,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
-#include "eve_helper.h"
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -84,17 +73,13 @@ int8_t platform_calib_init(void)
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
     FILE *h1;
-#ifdef _WIN32
-	errno_t err;
+    errno_t err;
 
     if ((err = fopen_s(&h1, config_file, "w")) == 0)
-#else // _WIN32
-    if ((h1 = fopen(config_file, "w")) != 0)
-#endif // _WIN32
     {
         fwrite(calib, sizeof(struct touchscreen_calibration), 1, h1);
         fclose(h1); 
-		return 0;
+        return 0;
     }
 
     return -1;
@@ -103,20 +88,16 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
     FILE *h1;
-#ifdef _WIN32
-	errno_t err;
+    errno_t err;
 
     if ((err = fopen_s(&h1, config_file, "r")) == 0)
-#else // _WIN32
-    if ((h1 = fopen(config_file, "r")) != 0)
-#endif // _WIN32
     {
         fread(calib, sizeof(struct touchscreen_calibration), 1, h1);
         fclose(h1); 
-		return 0;
+        return 0;
     }
 
-	return -1;
+    return -1;
 }
 //@}
 

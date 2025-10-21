@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -52,9 +42,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 
 #if IS_EVE_API(1,2,3,4)
 #error This example requires EVE API 5 or above.
@@ -62,7 +50,7 @@
 
 #include "patch_dronefpv.h"
 
-#include "eve_helper.h"
+#include "eve_example.h"
 #include "flightcontrols.h"
 #include "trig_furman.h"
 
@@ -262,7 +250,7 @@ void eve_display(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    printf("Swapchain 2: 0x%x and 0x%x\n", HAL_MemRead32(EVE_REG_SC2_PTR0), HAL_MemRead32(EVE_REG_SC2_PTR1));
+    printf("Swapchain 2: 0x%x and 0x%x\n", EVE_LIB_MemRead32(EVE_REG_SC2_PTR0), EVE_LIB_MemRead32(EVE_REG_SC2_PTR1));
 
     video_LVDS();
 }

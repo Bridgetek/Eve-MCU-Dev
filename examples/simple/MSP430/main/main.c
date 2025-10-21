@@ -1,15 +1,5 @@
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -43,14 +33,11 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-
-#include "EVE.h"
-#include "EVE_config.h"
-#include "FT8xx.h"
-#include "HAL.h"
-#include "MCU.h"
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+
+#include <EVE.h>
+
 #include "eve_example.h"
 
 /**

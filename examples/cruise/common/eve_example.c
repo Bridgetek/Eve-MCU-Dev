@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -49,11 +39,9 @@
 #include <stdio.h>
 
 #include <stdint.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+#include <EVE.h>
 
-#include "eve_helper.h"
+#include "eve_example.h"
 #include "sevenseg.h"
 
 #if IS_EVE_API(1)
@@ -424,7 +412,7 @@ void eve_display(void)
             if (key == 103)
             {
                 uint32_t tracker;
-                tracker = HAL_MemRead32(EVE_REG_TRACKER);
+                tracker = EVE_LIB_MemRead32(EVE_REG_TRACKER);
                 if ((tracker & 0xff) == 103)
                 {
                     // 65535 -> MAX_SPEED

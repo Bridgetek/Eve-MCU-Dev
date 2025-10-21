@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021		Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -49,7 +39,7 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -179,15 +169,17 @@ const uint8_t font0[] =
 
 uint32_t eve_init_fonts(void)
 {
-    const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
     const uint32_t font0_size = sizeof(font0);
 
     EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
-    EVE_CLEAR(1,1,1);
-    EVE_COLOR_RGB(255, 255, 255);
+#if IS_EVE_API(5)
+    EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
+#elif IS_EVE_API(2,3,4)
+    EVE_CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
+#else
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);
     // Suggest to mask the bitmap source here with 0x3FFFFF to ensure that only the valid bits for addressing within RAM_G are set.
@@ -203,12 +195,8 @@ uint32_t eve_init_fonts(void)
     EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
             font0_hdr->FontWidthInPixels,
             font0_hdr->FontHeightInPixels);
-#if IS_EVE_API(5)
-    EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
-#else
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset);
 #endif
-    EVE_END();
     EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();

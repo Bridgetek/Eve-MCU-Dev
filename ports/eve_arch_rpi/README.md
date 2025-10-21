@@ -6,8 +6,8 @@ There are two separate ports for Raspberry Pi products:
 
 | Port | PLATFORM macro | Port File |
 | --- | --- | --- |
-| [RP2040](#hardware-rp2040) | PLATFORM_RP2040 | [EVE_MCU_RP2040.c](EVE_MCU_RP2040.c) |
-| [Raspberry Pi](#hardware-raspberry-pi) | PLATFORM_RASPBERRYPI | [EVE_Linux_RPi.c](EVE_Linux_RPi.c) |
+| [RP2040](#hardware-rp2040) | `PLATFORM_RP2040` | [EVE_MCU_RP2040.c](EVE_MCU_RP2040.c) |
+| [Raspberry Pi](#hardware-raspberry-pi) | `PLATFORM_RASPBERRYPI` | [EVE_Linux_RPi.c](EVE_Linux_RPi.c) |
 
 ## Hardware RP2040
 
@@ -25,6 +25,40 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 
+A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
+
+![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
+
+### IDM2040-7A Module
+
+The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT817Q. The screen resolution is 800x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE BT817
+#define DISPLAY_RES IDM20407A
+```
+
+### IDM2040-43A Module
+
+The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT883. The screen resolution is 480x272.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE BT883
+#define DISPLAY_RES IDM204043A
+```
+
+### IDM2040-21R Module
+
+The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 pico and a FT800Q. The screen resolution is 480x480.
+
+The settings required in `EVE_config.h` are:
+```
+#define FT8XX_TYPE FT800
+#define DISPLAY_RES IDM204021R
+```
+
 ## Hardware Raspberry Pi
 
 The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However it is compatible with all of the Raspberry Pi SBCs sharing the same 40-pin GPIO header. Please reference the Raspberry Pi documentation for more information.
@@ -41,3 +75,6 @@ The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However 
 
 Ensure that the power supply from the Raspberry Pi SBC is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Raspberry Pi SBC and EVE modules common to both power sources.
 
+A Raspberry Pi can be connected to an EVE board as in the following picture.
+
+![Raspberry Pi Wiring Picture](../../docs/rpi400.png)

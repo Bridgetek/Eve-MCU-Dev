@@ -19,3 +19,7 @@ The Beaglebone Black port was developed using a Beaglebone Black. The Beaglebone
 | - | GND | GND |
 
 Ensure that the power supply from the Beaglebone Black module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
+
+## Software
+
+Please refer to the [BeagleBone Simple example](../../examples/simple/BeagleBone/README.md) for instructions on using the hardware library in an EVE-MCU-Dev project.

@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Mar 2022		Initial beta for RP2040
- * 
- * 
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -57,8 +47,8 @@
 #include <stdio.h>
 #include <machine/endian.h>
 
-#include "../include/EVE.h"
-#include "../include/MCU.h"
+#include <EVE.h>
+#include <MCU.h>
 
 #include <hardware/gpio.h>
 #include <hardware/spi.h>

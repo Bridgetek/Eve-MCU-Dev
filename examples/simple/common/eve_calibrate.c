@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021     Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -49,8 +39,7 @@
 
 #include <stdint.h>
 
-#include "EVE.h"
-#include "HAL.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -69,47 +58,47 @@
 
 int eve_calibrate(void)
 {
-	struct touchscreen_calibration calib;
-	uint8_t dummy;
+    struct touchscreen_calibration calib;
+    uint8_t dummy;
     
-	platform_calib_init();
+    platform_calib_init();
 
-	// If no store of calibration or current screen touch.
-	if ((platform_calib_read(&calib) != 0) || (eve_read_tag(&dummy)))
-	{
-		// Wait for end of touch.
-		while (eve_read_tag(&dummy));
+    // If no store of calibration or current screen touch.
+    if ((platform_calib_read(&calib) != 0) || (eve_read_tag(&dummy)))
+    {
+        // Wait for end of touch.
+        while (eve_read_tag(&dummy));
 
-		EVE_LIB_BeginCoProList();
-		EVE_CMD_DLSTART();
-		EVE_CLEAR_COLOR_RGB(0, 0, 0);
-		EVE_CLEAR(1,1,1);
-		EVE_COLOR_RGB(255, 255, 255);
-		EVE_CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2,
-				28, EVE_OPT_CENTERX | EVE_OPT_CENTERY,"Please tap on the dots");
-		EVE_CMD_CALIBRATE(0);
-		EVE_LIB_EndCoProList();
-		if (EVE_LIB_AwaitCoProEmpty() != 0)
-		{
-			return -1;
-		}
+        EVE_LIB_BeginCoProList();
+        EVE_CMD_DLSTART();
+        EVE_CLEAR_COLOR_RGB(0, 0, 0);
+        EVE_CLEAR(1,1,1);
+        EVE_COLOR_RGB(255, 255, 255);
+        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2,
+                28, EVE_OPT_CENTERX | EVE_OPT_CENTERY,"Please tap on the dots");
+        EVE_CMD_CALIBRATE(0);
+        EVE_LIB_EndCoProList();
+        if (EVE_LIB_AwaitCoProEmpty() != 0)
+        {
+            return -1;
+        }
 
-		calib.transform[0] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
-		calib.transform[1] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
-		calib.transform[2] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
-		calib.transform[3] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
-		calib.transform[4] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
-		calib.transform[5] = HAL_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
-		platform_calib_write(&calib);
-	}
-	else
-	{
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-		HAL_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
-	}
-	return 0;
+        calib.transform[0] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
+        calib.transform[1] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
+        calib.transform[2] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
+        calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
+        calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
+        calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
+        platform_calib_write(&calib);
+    }
+    else
+    {
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+    }
+    return 0;
 }

@@ -37,6 +37,7 @@ add_executable(${PROJECT_NAME}
         main.c
 )
 include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
 )
@@ -58,6 +59,7 @@ add_library(eve_library # EVE library name
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         release/include
@@ -85,8 +87,11 @@ add_library(eve_example # Example code library name
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
-        ${EXAMPLE_COMMON}/ # Headers for example code
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${EXAMPLE_COMMON}/ # Headers for example code
+
 )
 # Example code dependencies
 target_link_libraries(eve_example

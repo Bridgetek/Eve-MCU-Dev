@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -48,9 +38,8 @@
  */
 #include <stdint.h>
 #include <stdlib.h>
-#include "EVE.h"
-#include "../include/HAL.h"
-#include "MCU.h"
+
+#include <EVE.h>
 
 #include "trig_furman.h"
 

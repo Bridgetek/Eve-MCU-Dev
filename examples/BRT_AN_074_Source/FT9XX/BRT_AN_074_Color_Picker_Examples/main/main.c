@@ -5,16 +5,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial beta for FT81x and FT80x
- * Mar 2020		Updated beta - added BT815/6 commands
- * Mar 2021     Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -60,7 +50,7 @@
 #include <ft900_dlog.h>
 #include <ft900_memctl.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

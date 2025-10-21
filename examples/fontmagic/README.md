@@ -94,7 +94,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 ### `eve_fonts.c`
 
-This file contains the data array of a font which was produced by the Font Converter tool which is part of EVE Asset Builder. The code in this file will send the commands to the coprocessor to load the font into RAM_G and set-up the font for use. The font loaded is used as the custom font `FONT_CUSTOM` in the code.
+This file contains the data array of a font which was produced by the Font Converter tool which is part of EVE Asset Builder. The code in this file will send the commands to the co-processor to load the font into RAM_G and set-up the font for use. The font loaded is used as the custom font `FONT_CUSTOM` in the code.
 
 ## Files and Folders
 

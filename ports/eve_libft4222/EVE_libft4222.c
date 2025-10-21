@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright Bridgetek Pte Ltd
  * ============================================================================
  *
@@ -76,7 +66,7 @@
 // enable the GPIO and SPI interfaces.
 
 #define FT8XX_CS_N_PIN   1    /* GPIO is not utilized in Lib4222 as it is directly managed by firmware */
-#define FT8XX_PD_N_PIN      GPIO_PORT0
+#define FT8XX_PD_N_PIN   GPIO_PORT0
 /* GPIO0         , GPIO1      , GPIO2       , GPIO3         } */
 GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_OUTPUT, GPIO_OUTPUT };
 

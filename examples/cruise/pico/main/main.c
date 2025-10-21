@@ -10,16 +10,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019		Initial version
- *
- *
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -65,7 +55,7 @@
 #include <hardware/flash.h>
 #include <hardware/sync.h>
 
-#include "EVE.h"
+#include <EVE.h>
 
 #include "eve_example.h"
 

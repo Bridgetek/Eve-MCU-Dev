@@ -3,16 +3,6 @@
  */
 /*
  * ============================================================================
- * History
- * =======
- * Nov 2019        Initial beta for FT81x and FT80x
- * Mar 2020        Updated beta - added BT815/6 commands
- * Mar 2021        Beta with BT817/8 support added
- *
- *
- *
- *
- *
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
@@ -60,8 +50,8 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-#include "../include/EVE.h"
-#include "../include/MCU.h"
+#include <EVE.h>
+#include <MCU.h>
 
 // SPI Master pins
 #if defined(__FT900__)

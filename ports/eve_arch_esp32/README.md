@@ -10,12 +10,16 @@ The ESP32 port was developed using a [ESP32 Thing](https://www.sparkfun.com/prod
 
 | ESP32 Thing Pin Label | EVE Signal |
 | --- | --- |
-| 22 | CS# |
+| 18 | SCK |
 | 19 | MISO |
 | 23 | MOSI |
-| 18 | SCK |
+| 22 | CS# |
 | 15 | PD# |
 | VUSB | 5V |
 | GND | GND |
 
 Ensure that the power supply from the ESP32 Thing module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the ESP32 Thing and EVE modules common to both power sources.
+
+An ESP32 Thing board can be connected to an EVE board as in the following picture.
+
+![ESP32 Thing Wiring Picture](../../docs/esp32thing.png)
