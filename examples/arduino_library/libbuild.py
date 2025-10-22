@@ -42,9 +42,9 @@ if eve_sub_api > 0:
 
 # Generate name of library
 if eve_sub_api > 1:
-    str_lib_name = f"BridgetekEVE{eve_api}_{eve_sub_api}"
+    str_lib_name = f"Bridgetek_EVE{eve_api}_{eve_sub_api}"
 else:
-    str_lib_name = f"BridgetekEVE{eve_api}"
+    str_lib_name = f"Bridgetek_EVE{eve_api}"
 print(f"Library name is {str_lib_name}")
 
 str_api_version = f"{eve_api}"
@@ -194,6 +194,7 @@ if eve_api == 5:
     dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
 for d in dist_inc_files:
     dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(dest_lib,d)))
+dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 
 # Copy API source and header files
 try:
