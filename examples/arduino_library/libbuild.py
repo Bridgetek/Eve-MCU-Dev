@@ -16,7 +16,7 @@ src_api = os.path.normpath(os.path.join("..",".."))
 
 parser = argparse.ArgumentParser(description="Library Builder for EVE")
 parser.add_argument("--src", default=src_api, help="distribution directory for EVE-MCU-Dev")
-parser.add_argument("--dest", help="destination directory for Arduino library (default is BtEve<API>)")
+parser.add_argument("--dest", help="destination directory for Arduino library (default is Bridgetek_EVE<API>)")
 parser.add_argument("--api", default=eve_api, help="EVE API to build library for (valid values are 1 to 5)")
 parser.add_argument("--apisub", default=eve_sub_api, help="EVE SUB API to build library for (for EVE API 2 must be 1 or 2)")
 (args, rem) = parser.parse_known_args()
