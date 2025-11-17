@@ -49,7 +49,7 @@
 
 #if IS_EVE_API(5)
 // Base patch for BT82x
-#include "patch_base.h"
+#include <patch_base.h>
 #endif
 
 /**

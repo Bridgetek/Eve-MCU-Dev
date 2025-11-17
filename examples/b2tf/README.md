@@ -18,9 +18,13 @@ Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
+| No | Awaiting Test | Yes | Yes | Yes |
 
-The following is an screenshot of the simple example.
+The minimum screen resolution required is 480 pixels (WQVGA).
+
+NOTE this example will only display a 24 hour clock on EVE API 2, 3 and 4; on EVE API 5 it will display month, date, year and 24 hour clock. The macro `IS_EVE_API(5)` will conditionally compile code for EVE API 5.
+
+The following is an screenshot of the simple example on BT82x.
 
 ![B2tf Example](docs/b2tf.png)
 
