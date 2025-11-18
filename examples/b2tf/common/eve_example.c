@@ -147,6 +147,7 @@ void eve_display(void)
         uint16_t w = segsize * 10;
         uint16_t dx = x;
         uint16_t dy = y;
+
         EVE_COLOR_RGB(0x80, 0x80, 0x80);
         EVE_SAVE_CONTEXT();
         gradbox(dx - segsize / 2, dy - segsize / 2, 20 * segsize, segsize * 4);
@@ -163,8 +164,8 @@ void eve_display(void)
         tapebox(cx - w/2, dy + 5 * segsize / 2, w, (eve_romfont_height(font) * 4) / 3);
         dy = dy + segsize * 4;
         tapebox(cx - w/2, dy + 5 * segsize / 2, w, (eve_romfont_height(font) * 4) / 3);
-
         dy = y;
+
         EVE_COLOR_RGB(255, 255, 255);
         EVE_CMD_TEXT(cx, dy + 5 * segsize / 2 + (eve_romfont_height(font) * 2) / 3, font, EVE_OPT_CENTER, "DESTINATION TIME");
         dy = dy + segsize * 4;
@@ -176,13 +177,13 @@ void eve_display(void)
         // Bacground colour of non-active LED segments
         uint32_t bg = 0x100000;
         EVE_CMD_BGCOLOR(bg);
-
         // Red LEDs
         uint32_t fg = 0xff0000;
         EVE_CMD_FGCOLOR(fg);
 
         dx = x;
         dy = y;
+#if IS_EVE_API(5)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
         lednumber(dx, dy, 2, segsize, destination.tm_mon + 1, fg, bg);
@@ -196,7 +197,7 @@ void eve_display(void)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 4, segsize);
         lednumber(dx, dy, 4, segsize, destination.tm_year + 1900, fg, bg);
-
+#endif
         dx = dx + (25 * segsize / 4);
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
@@ -213,7 +214,7 @@ void eve_display(void)
 
         dx = x;
         dy = dy + segsize * 4;
-
+#if IS_EVE_API(5)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
         lednumber(dx, dy, 2, segsize, present.tm_mon + 1, fg, bg);
@@ -227,7 +228,7 @@ void eve_display(void)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 4, segsize);
         lednumber(dx, dy, 4, segsize, present.tm_year + 1900, fg, bg);
-
+#endif
         dx = dx + (25 * segsize / 4);
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
@@ -236,7 +237,11 @@ void eve_display(void)
         dx = dx + (7 * segsize / 2);
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
+#if IS_EVE_API(5)
         lednumber(dx, dy, 2, segsize, 88, fg, bg);
+#else
+        lednumber(dx, dy, 2, segsize, present.tm_min, fg, bg);
+#endif
 
         // Amber LEDs
         fg = 0xffff00;
@@ -244,8 +249,7 @@ void eve_display(void)
         
         dx = x;
         dy = dy + segsize * 4;
-
-        EVE_COLOR_RGB(0, 0, 0);
+#if IS_EVE_API(5)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
         lednumber(dx, dy, 2, segsize, lasttime.tm_mon + 1, fg, bg);
@@ -259,7 +263,7 @@ void eve_display(void)
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 4, segsize);
         lednumber(dx, dy, 4, segsize, lasttime.tm_year + 1900, fg, bg);
-
+#endif
         dx = dx + (25 * segsize / 4);
         EVE_COLOR_RGB(0, 0, 0);
         ledbox(dx, dy, 2, segsize);
@@ -275,7 +279,11 @@ void eve_display(void)
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
 
+#if IS_EVE_API(5)
         present.tm_hour = present.tm_hour - 1;
+#else
+        present.tm_min = present.tm_min - 1;
+#endif
         mktime(&present);
         ptime = time(NULL);
         gmtime_s(&lasttime, &ptime);

@@ -17,7 +17,7 @@ else()
 endif()
 set(sdkVersion 2.2.0)
 set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0)
+set(picotoolVersion 2.2.0-a4)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -67,8 +67,8 @@ include_directories(
 )
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+pico_enable_stdio_uart(${PROJECT_NAME} 1)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
@@ -123,9 +123,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(eve_library 
+	pico_stdlib
         hardware_spi
         pico_time
         )
 
 pico_add_extra_outputs(${PROJECT_NAME})
 
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
+    VERBATIM
+)

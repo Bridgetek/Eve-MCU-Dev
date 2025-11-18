@@ -40,6 +40,7 @@
 // Guard against being used for incorrect CPU type.
 #if defined(ARDUINO)
 
+#include <Arduino.h>
 #include <SPI.h>
 
 /** @brief Library Includes
