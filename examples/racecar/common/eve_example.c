@@ -73,7 +73,7 @@
 // These are predominately PNG images
 #define USE_C_PNG 4
 // Chose the methods for storing assets
-#define ASSETS USE_FLASHIMAGE
+#define ASSETS USE_FLASH
 
 typedef struct
 {
@@ -568,9 +568,9 @@ void eve_display_load_assets(void)
 
     Carbon_Fiber_800x480_asset.RAM_G_Start = 0;
     Carbon_Fiber_800x480_asset.Handle = AssetHandle;
-#if IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)
+#if (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
     assetLoad(&Carbon_Fiber_800x480_asset); // Destination, Source, Size
-#endif // IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)
+#endif // (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
     
     AssetHandle ++;
 
@@ -2270,11 +2270,11 @@ void configure_bitmaps(void){
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
 
     // Configure images and fonts for use in the screen
-#if IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)
+#if (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
     // Do not use a screen background on BT81x when the images are decoded from PNG files
     EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
     EVE_CMD_SETBITMAP(Carbon_Fiber_800x480_asset.RAM_G_Start, Carbon_Fiber_800x480_asset.Format, Carbon_Fiber_800x480_asset.Width, Carbon_Fiber_800x480_asset.CellHeight);
-#endif // IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)
+#endif // (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
 
     EVE_BITMAP_HANDLE(LED_32x32_asset.Handle);
     EVE_CMD_SETBITMAP(LED_32x32_asset.RAM_G_Start, LED_32x32_asset.Format, LED_32x32_asset.Width, LED_32x32_asset.CellHeight);
@@ -2396,12 +2396,12 @@ void eve_display(void)
         // We want to darken this image slightly, so we use a COLOR_RGB command here to do this.
         // Only draw if the background image is ASTC
         EVE_COLOR_RGB(80,80,120); // slight purple tint
-#if IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)
+#if (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
         // Draw the background image if it can be drawn.
         EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
         // Place BG carbon fiber at 0,0
         EVE_VERTEX2F(0*16, 0*16);
-#else
+#else // (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
         // For BT81x when the background image is decoded from a PNG just draw a purple tinged background.
         EVE_BEGIN(EVE_BEGIN_RECTS);
         EVE_VERTEX2F(0*16, 0*16);
@@ -2523,7 +2523,6 @@ void eve_display(void)
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
 
-
         // Perform some logic for screen updates
         //----------------------------------------------------------------
         count ++;
@@ -2630,7 +2629,7 @@ void eve_example(void)
 
     EVE_Init();                 // Initialise the display
 
-    //eve_calibrate();          // Calibrate the display
+    eve_calibrate();          // Calibrate the display
 
     flash_full_speed();         // Ensure flash can enter Full speed
 
