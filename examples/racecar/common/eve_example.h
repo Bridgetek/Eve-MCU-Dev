@@ -70,6 +70,8 @@ void eve_calibrate(void);
 int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
+uint32_t platform_get_time(void);
+
 uint8_t eve_read_tag(uint8_t *key);
 
 /* Entry point to the example code */

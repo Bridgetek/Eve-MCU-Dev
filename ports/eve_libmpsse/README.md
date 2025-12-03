@@ -8,7 +8,7 @@ The port for libmpsse comprises a host PC with a USB host controller connecting 
 
 This code requires a USB-MPSSE adapter to connect to the EVE module. The USB-MPSSE adapter is normally based around the FTDI FT232H USB bridging chip.
 
-A popular solution which makes it easy to get up and running quickly is the range of C232HM cables from FTDI such as [C232HM-EDHSL](https://ftdichip.com/products/c232hm-edhsl-0/). These can also be purchased from [Connective Peripherals](https://connectiveperipherals.com/) as a version with Type C USB connector (part USBC-HS-MPSSE-5V-3.3V-500-SPR). 
+A popular solution which makes it easy to get up and running quickly is the range of C232HM cables from FTDI such as [C232HM-EDHSL](https://ftdichip.com/products/c232hm-edhsl-0/) or [Connective Peripherals High Speed MPSSE Type-C](https://connectiveperipherals.com/products/usb-type-c-high-speed-mpsse).
 
 The C232HM uses the FT232H chipset and has a 50cm cable with ten single pole receptacles. These can be connected to the associated pins of the EVE module.
 
@@ -16,7 +16,7 @@ For the versions with 5V output on the red wire (C232HM-EDHSL and USBC-HS-MPSSE-
 
 If the version of the cable is used which has the 3.3V power output (or if using the 5V version but the EVE module requires more current than can be provided) then a separate power connection to the EVE module could be used, with the grounds of the C232HM / USBC-HS-MPSSE and the separate power source common together to EVE.
 
-| Wire color | EVE Signal |
+| Wire colour | EVE Signal |
 | --- | --- |
 | Orange | SCK |
 | Yellow | MOSI |

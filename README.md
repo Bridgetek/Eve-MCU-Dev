@@ -225,9 +225,9 @@ The [simple](examples/simple) example has build environments for all platforms a
 
 ## Module Connections
 
-There are 2 standard connectors for EVE modules used by BridgeTek. 
+There are 2 standard connectors for EVE modules used by BridgeTek. Alternatively, an MPSSE cable can be used to interface with a host PC via USB.
 
-The wiring colours in the section for each connection are defined in the following table.
+The connectors can be interfaced with a host MCU using jumper wires. The wiring colours in photographs in this section for each connection are defined in the following table.
 
 | Colour | EVE Signal |
 | --- | --- |
@@ -277,6 +277,22 @@ This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly
 The 1x10 header can be connected as in the following picture.
 
 ![Wiring for 1x10 Header](docs/header1x10.png)
+
+### MPSSE USB Cables
+
+MPSSE USB cables such as the [MPSSE cables from FTDI](https://ftdichip.com/product-category/products/cables/usb-mpsse-spi-i2c-jtag-master-cable-series/) or [Connective Peripherals High Speed MPSSE Type-C](https://connectiveperipherals.com/products/usb-type-c-high-speed-mpsse) can be used to connect a host PC to an EVE module. 
+
+These cables have wire-ends colour coded as follows.
+
+| Wire colour | EVE Signal |
+| --- | --- |
+| Orange | SCK |
+| Yellow | MOSI |
+| Green | MISO |
+| Brown | CS# |
+| Blue | PD# |
+| Red | 5V |
+| Black | GND |
 
 ## Library Usage
 

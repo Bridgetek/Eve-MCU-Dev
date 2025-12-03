@@ -457,7 +457,7 @@ void assetLoad(EVE_ASSET_PROPS *asset)
 
     // Read directy from flash
     EVE_LIB_BeginCoProList();
-    printf("RAM_G: %d Flash: %d for %d\n", asset->RAM_G_Start, asset->Flash_Start, asset->Flash_Size);
+    DEBUG_PRINTF("RAM_G: %d Flash: %d for %d\n", asset->RAM_G_Start, asset->Flash_Start, asset->Flash_Size);
     EVE_CMD_FLASHREAD(asset->RAM_G_Start, asset->Flash_Start, asset->Flash_Size); // Destination, Source, Size
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
@@ -481,7 +481,7 @@ void assetLoad(EVE_ASSET_PROPS *asset)
 #endif
     {
         int res;
-        printf("RAM_G: %d Flash: %d for %d\n", asset->RAM_G_Start, asset->Flash_Start, asset->Flash_Size);
+        DEBUG_PRINTF("RAM_G: %d Flash: %d for %d\n", asset->RAM_G_Start, asset->Flash_Start, asset->Flash_Size);
         res = fseek(h1, asset->Flash_Start, SEEK_SET);
         do {
             chunk = (size_t)(asset->Flash_Size - total);
@@ -500,7 +500,7 @@ void assetLoad(EVE_ASSET_PROPS *asset)
     }
     else
     {
-        printf("file error\n");
+        DEBUG_PRINTF("file error\n");
     }
 
     final = asset->RAM_G_Start + asset->Flash_Size;
@@ -542,12 +542,12 @@ void assetLoad(EVE_ASSET_PROPS *asset)
         EVE_LIB_GetImage(&offset, &asset->Format, &offset, &offset, &offset);
 #endif
 
-        printf("RAM_G: %d Loadimage: %d\n", asset->RAM_G_Start, final - asset->RAM_G_Start);
+        DEBUG_PRINTF("RAM_G: %d Loadimage: %d\n", asset->RAM_G_Start, final - asset->RAM_G_Start);
     }
     else
     {
         // Load RAW data
-        printf("RAM_G: %d Array: %d\n", asset->RAM_G_Start, asset->Array_Size);
+        DEBUG_PRINTF("RAM_G: %d Array: %d\n", asset->RAM_G_Start, asset->Array_Size);
         EVE_LIB_WriteDataToRAMG(asset->Array_Ptr, asset->Array_Size, asset->RAM_G_Start);
         final = asset->RAM_G_Start + asset->Array_Size;
     }
@@ -642,13 +642,13 @@ void eve_display_load_assets(void)
 
 
 void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint16_t count, int16_t *acc_x, int16_t *acc_y) {
-
+ 
     //total width 90, height 90
     //----------------------------------------
-
+ 
     //save graphics context
     EVE_SAVE_CONTEXT();
-
+ 
     //set alpha and color for background shading
     EVE_COLOR_A(120);
     EVE_COLOR_RGB(0,0,0);
@@ -657,16 +657,15 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_VERTEX_FORMAT(0);
     EVE_VERTEX2F((input_x + 5), (input_y + 5));
     EVE_VERTEX2F((input_x + 105), (input_y + 105));
-    
     //reset color and alpha
     EVE_COLOR_A(255);
     EVE_COLOR_RGB(255, 255, 255);
-
+ 
     //centre point
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(32); //2
     EVE_VERTEX2F((input_x + 55), (input_y +  55));
-
+ 
     //draw cross hair lines 
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(5); // 0.3125
@@ -676,14 +675,14 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     //horizontal line
     EVE_VERTEX2F((input_x + 10), (input_y + 55));
     EVE_VERTEX2F((input_x + 100), (input_y + 55));
-
+ 
     //alpha blednding section for circles on graph
     //diables all colours, leave alpha enabled
     EVE_COLOR_MASK(0,0,0,1);
-
+ 
     //clear color buffer before doing blending
     EVE_CLEAR(1,0,0);
-
+ 
     //draw circles
     EVE_BEGIN(EVE_BEGIN_POINTS);
     //add to alpha nuffer
@@ -696,7 +695,7 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 40); // inner circle
     EVE_VERTEX2F((input_x + 55), (input_y + 55));
-
+ 
     //3g circle outer edge
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 31); // outer circle
@@ -706,7 +705,7 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 30); // inner circle
     EVE_VERTEX2F((input_x + 55), (input_y + 55));
-
+ 
     //2g circle outer edge
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 21); // outer circle
@@ -716,7 +715,7 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 20); // inner circle
     EVE_VERTEX2F((input_x + 55), (input_y + 55));
-
+ 
     //1g circle outer edge
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 11); // outer circle
@@ -726,28 +725,39 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(16 * 10); // inner circle
     EVE_VERTEX2F((input_x + 55), (input_y + 55));
-
+ 
     //re-enable colours
     EVE_COLOR_MASK(1,1,1,1);
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE);
     EVE_BEGIN(EVE_BEGIN_RECTS); // Visit every pixel on the screen
     EVE_VERTEX2F(input_x,input_y);
     EVE_VERTEX2F((input_x + 110), (input_y + 110));
-
+ 
     //stop blending
     EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-
+ 
     //draw current G reading on the graph
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    EVE_POINT_SIZE(64); // 4
-    EVE_COLOR_RGB(255, 5, 5);
+ 
     //set back to 1/16th pixel precision as the accel data has been nomralised to this
     EVE_VERTEX_FORMAT(4);
-
+ 
+    //set colour to red
+    EVE_COLOR_RGB(255, 5, 5);
+ 
+    //line from centre to current point
+    EVE_BEGIN(EVE_BEGIN_LINES);
+    EVE_LINE_WIDTH(18); // 1.25
+    EVE_VERTEX2F(((input_x + 55) * 16), ((input_y +  55) * 16));
+    EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[count], ((input_y + 55)* 16) - acc_y[count]);
+ 
+    //draw points
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    EVE_POINT_SIZE(64); // 4
     //draw current g force point
     EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[count], ((input_y + 55)* 16) - acc_y[count]);
-
+ 
     //draw historical points
+#ifdef MOTION_BLUR_TRACTION // Normally not defined
     //nominally we would wait until we have some histroical data, but as we are using a fixed array to loop through for screen updates
     //we can take values from the back end of the array to act as our historical data at the beginning of the loop
     EVE_POINT_SIZE(48); // 3
@@ -755,20 +765,20 @@ void tractionCircle(uint16_t input_x, uint16_t input_y, uint16_t array_end, uint
     EVE_COLOR_A(100);
     //take current count through data array, display value before this, ensuring we stay within array data set using the moduulo of the array size
     EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[((count-1) + array_end) % array_end], ((input_y + 55)* 16) - acc_y[((count-1) + array_end) % array_end]);
-
+ 
     //second last data point
     EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[((count-2) + array_end) % array_end], ((input_y + 55)* 16) - acc_y[((count-2) + array_end) % array_end]);
-
+ 
     //third last data point
     EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[((count-2) + array_end) % array_end], ((input_y + 55)* 16) - acc_y[((count-3) + array_end) % array_end]);
-
+ 
     //4th last data point
     EVE_VERTEX2F(((input_x + 55) * 16) + acc_x[((count-4) + array_end) % array_end], ((input_y + 55)* 16) - acc_y[((count-4) + array_end) % array_end]);
+#endif // MOTION_BLUR_TRACTION
 
     //restore graphics context
     EVE_RESTORE_CONTEXT();
 }
-
 
 void shiftLight(uint16_t input_x, uint16_t input_y, uint8_t value){
 
@@ -2307,6 +2317,16 @@ void configure_bitmaps(void){
 void eve_display(void)
 {
 
+    //varibles for determining FPS and dataframerate
+    uint32_t currentMs = 0;
+    uint32_t previousMs = 0; 
+    uint32_t currentFrames = 0;
+    uint32_t previousFrames = 0;
+    uint32_t FPS = 0;
+    uint32_t currentDataSec = 0;
+    uint32_t dataSec = 0;
+
+
     //laptime arrays
     uint32_t laptime_msec [] = {0, 38, 157, 198, 337, 398, 577, 758, 817, 958, 997, 1118, 1297, 1337, 1398, 1557, 1678, 1797, 1958, 1977, 2337, 2358, 2517, 2697, 2718, 2878, 2977, 3078, 3197, 3257, 3278, 3516, 3518, 3717, 3718, 3997, 3998, 4217, 4238, 4257, 4478, 4537, 4678, 4737, 4878, 4897, 5077, 5119, 5417, 5439, 5639, 5717, 5839, 6017, 6039, 6237, 6279, 6397, 6577, 6678, 6857, 7037, 7038, 7238, 7277, 7357, 7478, 7537, 7917, 7918, 8097, 8118, 8257, 8438, 8497, 8598, 8697, 8918, 9057, 9318, 9377, 9478, 9777, 9878, 10036, 10217, 10398, 10537, 10678, 10817, 10838, 11198, 11237, 11277, 11537, 11598, 11837, 11839, 12057, 12199, 12237, 12457, 12639, 12877, 13039, 13177, 13198, 13477, 13678, 13697, 13998, 14117, 14198, 14337, 14397, 14438, 14598, 14677, 14878, 14957, 15318, 15377, 15518, 15637, 15838, 15877, 16137, 16158, 16317, 16438, 16477, 16758, 16817, 17078, 17117, 17357, 17438, 17557, 17758, 17857, 17958, 18117, 18158, 18359, 18417, 18599, 18837, 18839, 18999, 19057, 19199, 19397, 19479, 19597, 19759, 19857, 20037, 20078, 20457, 20518, 20617, 20937, 20958, 21118, 21157, 21278, 21337, 21438, 21477, 21678, 21777, 21878, 21977, 22197, 22358, 22437, 22558, 22637, 22758, 22917, 22958, 23158, 23318, 23437, 23478, 23617, 23678, 23997, 24038, 24197, 24238, 24438, 24457, 25257, 25359, 25639, 25657, 25857, 25959, 26117, 26199, 26377, 26599, 26737, 26998, 27017, 27277, 27278, 27437, 27478, 27638, 27717, 27917, 28038, 28157, 28278, 28337, 28417, 28438, 28657, 28678, 28877, 28958, 29137, 29278, 29438, 29577, 29718, 29878, 29977, 30078, 30157, 30278, 30377, 30438, 30537, 30638, 30838, 30917, 31158, 31177, 31359, 31437, 31557, 31559, 31719, 31737, 31957, 32039, 32217, 32239, 32439, 32677, 32879, 32897, 33079, 33239, 33257, 33478, 33517, 33678, 33697, 33918, 34037, 34297, 34358, 34377, 34518, 34657, 34758, 35078, 35157, 35278, 35317, 35518, 35597, 35797, 35798, 35998, 36158, 36217, 36318, 36436, 36477, 36478, 36678, 36717, 36878, 37158, 37257, 37437, 37597, 37598, 37857, 38077, 38079, 38297, 38319, 38597, 38679, 38857, 39079, 39097, 39239, 39399, 39477, 39657, 39679, 39879, 40079, 40117, 40238, 40417, 40478, 40657, 40817, 40878, 41137, 41358, 41517, 41718, 41877, 41918, 42198, 42217, 42358, 42437, 42457, 42558, 42677, 42758, 42916, 43118, 43157, 43318, 43517, 43598, 43697, 43958, 44057, 44118, 44437, 44478, 44517, 44719, 44777, 45077, 45079, 45257, 45319, 45639, 45717, 45919, 46037, 46199, 46337, 46479, 46537, 46639, 46717, 46839, 46937, 46998, 47137, 47317, 47358, 47477, 47638, 47677, 48238, 48317, 48477, 48598, 48697, 48838, 48957, 49177, 49238, 49456, 49556, 49638, 49797, 49997, 50078, 50177, 50238, 50357, 50518, 50577, 50758, 50817, 51037, 51038, 51357, 51479, 51617, 51719, 51877, 52057, 52119, 52279, 52517, 52559, 52617, 52917, 52959, 53239, 53277, 53477, 53479, 53657, 53758, 53857, 54037, 54078, 54317, 54398, 54557, 54598, 54737, 54798, 55158, 55177, 55438, 55598, 55677, 55877, 55998, 56136, 56198, 56417, 56438, 56597, 56798, 57078, 57097, 57398, 57477, 57638, 57677, 57857, 57919, 58157, 58279, 58357, 58479, 58737, 58839, 59079, 59157, 59239, 59439, 59537, 59599, 59737, 59959, 60017, 60297, 60319, 60577, 60797, 60798, 60998, 61057, 61397, 61398, 61617, 61757, 61798, 61917, 62198, 62217, 62397, 62438, 62616, 62678, 62716, 62917, 63038, 63157, 63398, 63557, 63718, 63857, 63918, 64197, 64198, 64457, 64557, 64639, 64857, 64919, 65177, 65239, 65439, 65637, 65797, 65799, 65999, 66077, 66279, 66297, 66439, 66637, 66639, 66799, 66937, 66999, 67277, 67318, 67478, 67557, 67697, 67918, 67937, 68198, 68377, 68478, 68758, 68777, 68977, 68998, 69137, 69358, 69397, 69558, 69597, 69677, 69838, 69937, 69998, 70198, 70237, 70397, 70438, 70557, 70598, 70777, 70937, 71039, 71239, 71297, 71479, 71677, 71799, 71999, 72117, 72319, 72517, 72677, 72719, 72957, 73079, 73277, 73399, 73517, 73717, 73719, 73879, 73937, 74078, 74297, 74358, 74518, 74697, 74718, 74857, 75118, 75157, 75317, 75318, 75577, 75598, 75836, 75998, 76057, 76238, 76437, 76438, 76677, 77278, 77437, 77479, 77737, 77759, 77959, 78057, 78119, 78359, 78377, 78519, 78537, 78717, 78719, 78959, 79017, 79239, 79417, 79439, 79657, 79837, 79879, 80197, 80239, 80399, 80517, 80679, 80697, 80917, 80918, 81118, 81137, 81278, 81337, 81518, 81717, 81718, 81878, 81897, 82078, 82157, 82278, 82376, 82478, 82557, 82617, 82718, 82937, 83078, 83278, 83417, 83558, 83757, 83878, 83997, 84159, 84217, 84377, 84637, 84639, 84677, 85039, 85057, 85277, 85477, 85479, 85679, 85897, 85919, 86097, 86119, 86319, 86437, 86559, 86657, 86759, 86917, 86959, 87137, 87319, 87397, 87637, 87678, 87838, 87937, 87998, 88238, 88317, 88398, 88617, 88718, 88936, 88998, 89318, 89337, 89518, 89537, 89757, 89918, 89977, 90158, 90397, 90478, 90557, 90657, 90719, 90999, 91037, 91239, 91297, 91537, 91559, 91857, 91999, 92277, 92279, 92477, 92479, 92839, 92877, 93039, 93117, 93417, 93519, 93717, 93839, 93917, 94119, 94237, 94399, 94417, 94617, 94758, 94837, 94998, 95037, 95237, 95358, 95516, 95777, 95798, 95957, 95998, 96117, 96278, 96417, 96438, 96637, 96677, 96798, 96937, 97157, 97239, 97317, 97517, 97599, 97757, 97759, 97959, 97977, 98119, 98211};
     uint32_t sector_times [] = {0, 0};
@@ -2493,6 +2513,10 @@ void eve_display(void)
         if(battery_level < 21)
             batteryIndicator(690, 380, Battery_Cells_40x720_asset.Handle, 0xEE0000, battery_level); //colour red
 
+        //print FPS and screen update info on screen
+        EVE_CMD_TEXT(0, 0, 20, EVE_OPT_FORMAT, "%d FPS", FPS);
+        EVE_CMD_TEXT(EVE_DISP_WIDTH, 0, 20, EVE_OPT_FORMAT | EVE_OPT_RIGHTX, "%d DL/sec", dataSec);
+
         // Send display to EVE
         EVE_DISPLAY();
         EVE_CMD_SWAP();
@@ -2576,6 +2600,22 @@ void eve_display(void)
         // Delay so we can slow down the updates to the screen
         //MCU_Delay_20ms();
 
+        currentMs = platform_get_time();
+        currentDataSec ++;
+
+        if ((currentMs - previousMs) > 1000){
+            //work out elspaed time
+            previousMs = currentMs;
+            //work out frame rate
+            previousFrames = currentFrames;
+            currentFrames = EVE_LIB_MemRead32(EVE_REG_FRAMES);
+            //FPS calc
+            FPS = currentFrames - previousFrames;
+            //update varible for current data updates/sec
+            dataSec = currentDataSec;
+            currentDataSec = 0;
+            DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, dataSec);
+        } 
     }
 }
 

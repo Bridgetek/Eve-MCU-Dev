@@ -43,6 +43,21 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
+#ifndef _WIN32
+#include <sys/time.h>
+#endif
+#if defined(PLATFORM_RP2040)
+#include <pico/time.h>
+#endif
+
+typedef
+#if defined(PLATFORM_RP2040)
+    absolute_time_t
+#else
+    struct timespec
+#endif
+    platform_time_t;
 
 #include <EVE.h>
 
@@ -98,6 +113,77 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     }
 
     return -1;
+}
+
+#ifdef _MSC_VER
+// Code only needed for Windows MSVC compilations
+// This will make a glock_gettime function similar enough to POSIX.
+#include <windows.h>
+#include <winnt.h>
+
+#define CLOCK_MONOTONIC 0
+#define MS_PER_SEC      1000ULL     // MS = milliseconds
+#define US_PER_MS       1000ULL     // US = microseconds
+#define HNS_PER_US      10ULL       // HNS = hundred-nanoseconds (e.g., 1 hns = 100 ns)
+#define NS_PER_US       1000ULL
+
+#define HNS_PER_SEC     (MS_PER_SEC * US_PER_MS * HNS_PER_US)
+#define NS_PER_HNS      (100ULL)    // NS = nanoseconds
+#define NS_PER_SEC      (MS_PER_SEC * US_PER_MS * NS_PER_US)
+
+static int clock_gettime(int clockname, struct timespec* tv)
+{
+    static LARGE_INTEGER ticksPerSec;
+    LARGE_INTEGER ticks;
+
+    (void)clockname;
+
+    if (!ticksPerSec.QuadPart) 
+    {
+        QueryPerformanceFrequency(&ticksPerSec);
+        if (!ticksPerSec.QuadPart) 
+        {
+            errno = ENOTSUP;
+            return -1;
+        }
+    }
+
+    QueryPerformanceCounter(&ticks);
+
+    tv->tv_sec = (long)(ticks.QuadPart / ticksPerSec.QuadPart);
+    tv->tv_nsec = (long)(((ticks.QuadPart % ticksPerSec.QuadPart) * NS_PER_SEC) / ticksPerSec.QuadPart);
+
+    return 0;
+}
+#endif
+
+static void get_platform_time(platform_time_t *tm)
+{
+#if defined(PLATFORM_RP2040)
+    *tm = get_absolute_time();
+#else
+    clock_gettime(CLOCK_MONOTONIC, tm);
+#endif
+}
+
+static uint32_t diff_platform_time(platform_time_t *start, platform_time_t *end)
+{
+    uint32_t diff;
+#if defined(PLATFORM_RP2040)
+    diff = (absolute_time_diff_us(*start, *end) / 1000);
+#else
+    diff = (uint32_t)((end->tv_sec - start->tv_sec) * 1000 + (end->tv_nsec - start->tv_nsec) / 1000000);
+#endif
+    return diff;
+}
+
+uint32_t platform_get_time(void)
+{
+    uint32_t time_ms;
+    platform_time_t now;
+    get_platform_time(&now);
+    time_ms = (uint32_t)now.tv_sec * 1000 + (uint32_t)now.tv_nsec / 1000000;
+    return time_ms;
 }
 //@}
 

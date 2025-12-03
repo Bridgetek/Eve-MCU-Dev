@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include "pico/stdlib.h"
+#include "pico/time.h"
 
 /**
   @file main.c
@@ -113,6 +114,13 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     }
 
     return -2;
+}
+
+uint32_t platform_get_time(void)
+{
+    uint32_t time_ms;
+    time_ms = to_ms_since_boot(get_absolute_time());
+    return time_ms;
 }
 //@}
 
