@@ -75,6 +75,10 @@
 // Chose the methods for storing assets
 #define ASSETS USE_FLASH
 
+#if (ASSETS == USE_FLASHIMAGE)
+#include <stdio.h>
+#endif
+
 typedef struct
 {
     uint8_t Handle;
@@ -2317,14 +2321,18 @@ void configure_bitmaps(void){
 void eve_display(void)
 {
 
-    //varibles for determining FPS and dataframerate
+    //varibles for determining FPS 
     uint32_t currentMs = 0;
-    uint32_t previousMs = 0; 
+    uint32_t previousMs = 0;
+    // Desired framerate
+    const uint32_t frameMs = 40;
+    // Clock for working out FPS update timing (1 per second)
+    uint32_t clockMs = 0; 
     uint32_t currentFrames = 0;
     uint32_t previousFrames = 0;
     uint32_t FPS = 0;
-    uint32_t currentDataSec = 0;
-    uint32_t dataSec = 0;
+    uint32_t DLCount = 0;
+    uint32_t DLPS = 0;
 
 
     //laptime arrays
@@ -2395,7 +2403,7 @@ void eve_display(void)
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         // We want to darken this image slightly, so we use a COLOR_RGB command here to do this.
         // Only draw if the background image is ASTC
-        EVE_COLOR_RGB(80,80,120); // slight purple tint
+        EVE_COLOR_RGB(150,150,225); // slight purple tint
 #if (IS_EVE_API(3,4) && (ASSETS != USE_C_PNG)) || IS_EVE_API(5)
         // Draw the background image if it can be drawn.
         EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
@@ -2515,13 +2523,12 @@ void eve_display(void)
 
         //print FPS and screen update info on screen
         EVE_CMD_TEXT(0, 0, 20, EVE_OPT_FORMAT, "%d FPS", FPS);
-        EVE_CMD_TEXT(EVE_DISP_WIDTH, 0, 20, EVE_OPT_FORMAT | EVE_OPT_RIGHTX, "%d DL/sec", dataSec);
+        EVE_CMD_TEXT(800, 0, 20, EVE_OPT_FORMAT | EVE_OPT_RIGHTX, "%d DL/sec", DLPS);
 
         // Send display to EVE
         EVE_DISPLAY();
         EVE_CMD_SWAP();
         EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
 
         // Perform some logic for screen updates
         //----------------------------------------------------------------
@@ -2596,24 +2603,28 @@ void eve_display(void)
             }
         }
 
-        // Delay so we can slow down the updates to the screen
-        //MCU_Delay_20ms();
+        // Await here for a synchronised next screen update
+        while (1)
+        {
+            currentMs = platform_get_time();
+            if ((uint32_t)(currentMs - previousMs) >= frameMs) break;
+        }
+        previousMs = currentMs;
 
-        currentMs = platform_get_time();
-        currentDataSec ++;
+        DLCount ++;
 
-        if ((currentMs - previousMs) > 1000){
+        if ((currentMs - clockMs) > 1000){
             //work out elspaed time
-            previousMs = currentMs;
+            clockMs = currentMs;
             //work out frame rate
             previousFrames = currentFrames;
             currentFrames = EVE_LIB_MemRead32(EVE_REG_FRAMES);
             //FPS calc
             FPS = currentFrames - previousFrames;
             //update varible for current data updates/sec
-            dataSec = currentDataSec;
-            currentDataSec = 0;
-            DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, dataSec);
+            DLPS = DLCount;
+            DLCount = 0;
+            DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, DLPS);
         } 
     }
 }
