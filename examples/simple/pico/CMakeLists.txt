@@ -25,8 +25,10 @@ endif()
 # ====================================================================================
 set(PICO_BOARD pico CACHE STRING "Board type")
 
-if (NOT DEFINED ENV{PICO_SDK_PATH})
-        message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
+if (NOT EXISTS ${picoVscode})
+        if (NOT DEFINED ENV{PICO_SDK_PATH})
+                message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
+        endif()
 endif()
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
