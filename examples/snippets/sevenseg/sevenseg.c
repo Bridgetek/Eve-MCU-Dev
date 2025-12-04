@@ -40,6 +40,8 @@
 
 #include <EVE.h>
 
+#include "sevenseg.h"
+
 /*
  * x,y - top left of seven segment graphic in pixels
  * size - width/height of each segment in pixels
@@ -47,7 +49,7 @@
  * fgcolor - colour of on/highlighted segment
  * bgcolor - colour of off segment
 */
-void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgcolour, uint32_t bgcolour)
+void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
 {
 #if IS_EVE_API(2, 3, 4, 5)
     const int32_t vertex = 4;
@@ -144,33 +146,51 @@ void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgco
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(width);
     // Top segment
-    EVE_COLOR(map[(int)digit][0]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][0]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(right, top);
     // Top left segment
-    EVE_COLOR(map[(int)digit][1]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][1]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, top);
     EVE_VERTEX2F(left, centre);
     // Top right segment
-    EVE_COLOR(map[(int)digit][2]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][2]?fgcolour:bgcolour);
     EVE_VERTEX2F(right, top);
     EVE_VERTEX2F(right, centre);
     // Centre segment
-    EVE_COLOR(map[(int)digit][3]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][3]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(right, centre);
     // Bottom left segment
-    EVE_COLOR(map[(int)digit][4]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][4]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, centre);
     EVE_VERTEX2F(left, bottom);
     // Bottom right segment
-    EVE_COLOR(map[(int)digit][5]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][5]?fgcolour:bgcolour);
     EVE_VERTEX2F(right, centre);
     EVE_VERTEX2F(right, bottom);
     // Bottom segment
-    EVE_COLOR(map[(int)digit][6]?fgcolour:bgcolour);
+    EVE_COLOR(map[(int)digit & EVE_OPT_NUMBER][6]?fgcolour:bgcolour);
     EVE_VERTEX2F(left, bottom);
     EVE_VERTEX2F(right, bottom);
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    EVE_RESTORE_CONTEXT();
+
+    EVE_SAVE_CONTEXT();
+#if IS_EVE_API(2, 3, 4, 5)
+    EVE_VERTEX_FORMAT(2);
+#endif
+    EVE_COLOR((digit & EVE_OPT_FILL)?fgcolour:bgcolour);
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    EVE_POINT_SIZE(width);
+    if (digit & EVE_OPT_DECIMAL)
+    {
+        EVE_VERTEX2F(right + (width / 2), bottom);
+    }
+    else if (digit & EVE_OPT_TIMECOLON)
+    {
+        EVE_VERTEX2F(right + width, (top + centre) / 2);
+        EVE_VERTEX2F(right + width, (bottom + centre) / 2);
+    }
     EVE_RESTORE_CONTEXT();
 }
