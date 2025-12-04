@@ -18,15 +18,19 @@ endif()
 set(sdkVersion 2.2.0)
 set(toolchainVersion 14_2_Rel1)
 set(picotoolVersion 2.2.0-a4)
-set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+set(picoVscode ${PICO_SDK_PATH}/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
 set(PICO_BOARD pico CACHE STRING "Board type")
 
+if (NOT DEFINED ENV{PICO_SDK_PATH})
+        message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
+endif()
+
 # Pull in Raspberry Pi Pico SDK (must be before project)
-include(pico_sdk_import.cmake)
+include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
 project(racecar C CXX ASM)
 

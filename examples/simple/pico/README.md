@@ -18,6 +18,8 @@ The instructions for compiling and programming the pico can be followed from the
 
 The pico toolchain is also available from the command line. It can be accessed from the command line if the Raspberry Pi pico VSCode Extension is loaded or the Raspberry Pi pico toolchain is configured manually (see "Appendix C: Manual toolchain setup" in the Getting Started With pico document).
 
+The build depends on the `PICO_SDK_PATH` environment variable. This __must__ be set to the correct Pico SDK directory on all platforms before building.
+
 ### Setting Up the Simple Raspberry Pi pico Example Manually
 
 To configure the build environment using CMake:
