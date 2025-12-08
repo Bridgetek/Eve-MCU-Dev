@@ -6,6 +6,12 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if (NOT EXISTS ${VSCODE_CWD})
+        if (NOT DEFINED ENV{PICO_SDK_PATH})
+                message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
+        endif()
+endif()
+
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
@@ -18,21 +24,19 @@ endif()
 set(sdkVersion 2.2.0)
 set(toolchainVersion 14_2_Rel1)
 set(picotoolVersion 2.2.0-a4)
-set(picoVscode ${set}/cmake/pico-vscode.cmake)
+set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
 set(PICO_BOARD pico CACHE STRING "Board type")
 
-if (NOT EXISTS ${picoVscode})
-        if (NOT DEFINED ENV{PICO_SDK_PATH})
-                message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
-        endif()
-endif()
-
 # Pull in Raspberry Pi Pico SDK (must be before project)
-include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+if (EXISTS ${VSCODE_CWD})
+        include(pico_sdk_import.cmake)
+else ()
+        include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+endif ()
 
 project(racecar C CXX ASM)
 
@@ -81,6 +85,9 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 add_compile_definitions(USE_TRIG_TABLE) #use look up table instead of maths funcitons for trig
+
+# Enable debug logging output to stdio
+add_compile_definitions(DEBUG_LEVEL=1)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
@@ -143,9 +150,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(eve_library 
+        pico_stdlib
         hardware_spi
         pico_time
         )
 
 pico_add_extra_outputs(${PROJECT_NAME})
 
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
+    VERBATIM
+)
