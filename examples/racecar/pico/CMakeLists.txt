@@ -23,7 +23,7 @@ else()
 endif()
 set(sdkVersion 2.2.0)
 set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0-a4)
+set(picotoolVersion 2.2.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -161,4 +161,5 @@ add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
     VERBATIM
+
 )
