@@ -51,6 +51,7 @@
 #include <pico/time.h>
 #endif
 
+#include <EVE.h>
 typedef
 #if defined(PLATFORM_RP2040)
     absolute_time_t
@@ -58,8 +59,6 @@ typedef
     struct timespec
 #endif
     platform_time_t;
-
-#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -187,13 +186,20 @@ uint32_t platform_get_time(void)
 }
 //@}
 
-int main(void)
+int main(int argc, char **argv)
 {
+    char *assets = NULL;
+
     /* Setup UART */
     setup();
 
+    if (argc > 1)
+    {
+        assets = argv[1];
+    }
+
     /* Start example code */
-    eve_example();
+    eve_example(assets);
 }
 
 void setup(void)

@@ -48,6 +48,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include "patch_textscale.h"
+#include "trig_furman.h"
+
 /**
  @brief Key for identifying if touchscreen calibration values are programmed correctly.
  */
@@ -75,7 +78,81 @@ uint32_t platform_get_time(void);
 uint8_t eve_read_tag(uint8_t *key);
 
 /* Entry point to the example code */
-void eve_example(void);
+void eve_example(const char *assets);
+
+// ---- Method for storing assets ----
+
+// Use Flash storage to keep preconverted assets
+#define USE_FLASH 1
+// Use local file system (on host device) to keep preconverted assets
+#define USE_FLASHIMAGE 2
+// Use C arrays to store PNG files and raw assets
+#define USE_C_ARRAYS 3
+// Use local file system to store PNG files and raw assets
+// (Convert to EVE assets as required)
+#define USE_FILES 4
+
+// Choose the methods for storing assets
+#ifndef ASSETS
+#define ASSETS USE_C_ARRAYS
+#endif
+
+// Validate asset storage method is appropriate
+// Asset storage options which require a filesystem use the stdio library
+#if (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
+// If the target platform does not support stdio 
+// then this line will result in a compilation error
+#include <stdio.h>
+#endif
+
+/* Array containing the bitmap sizes of ROM fonts. */
+uint8_t eve_romfont_width(uint8_t font);
+uint8_t eve_romfont_height(uint8_t font);
+void eve_set_romfont_width(uint8_t font, uint8_t w);
+void eve_set_romfont_height(uint8_t font, uint8_t h);
+// Asset storage information
+typedef struct EVE_ASSET_PROPS_s
+{
+    uint8_t Handle;
+    uint8_t Cell;
+#if ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))
+    uint32_t Flash_Start;
+    uint32_t Flash_Size;
+#elif (ASSETS == USE_C_ARRAYS) 
+    const uint8_t * Array_Ptr;
+    uint32_t Array_Size;
+#elif (ASSETS == USE_FILES)
+    const char *filename;
+#endif
+    uint32_t RAM_G_Start;
+    uint32_t RAM_G_EndAddr;
+    uint32_t Format;
+    uint16_t Width;
+    uint16_t Height;
+    uint16_t CellHeight;
+} EVE_ASSET_PROPS;
+
+extern EVE_ASSET_PROPS patch_asset; 
+extern EVE_ASSET_PROPS Carbon_Fiber_800x480_asset; 
+extern EVE_ASSET_PROPS LED_32x32_asset;  
+extern EVE_ASSET_PROPS Trackmap_96x96_asset;
+extern EVE_ASSET_PROPS Arrows_96x192_asset;
+extern EVE_ASSET_PROPS Widget_Gear_152x152_asset;
+extern EVE_ASSET_PROPS Widget_RPM_152x56_asset;
+extern EVE_ASSET_PROPS Widget_Speed_104x56_asset;
+extern EVE_ASSET_PROPS Bottom_Bar_800x8_asset;
+extern EVE_ASSET_PROPS Car_Overhead_44x80_asset;
+extern EVE_ASSET_PROPS Battery_Cells_40x1440_asset;
+extern EVE_ASSET_PROPS eurostile_150_L8;
+
+/* Asset loading function depends on the storage method in ASSETS macro */
+void eve_asset_properties(const char *assets);
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage);
+int eve_loadpatch_impl(void);
+
+#if ASSETS == USE_FLASH
+void eve_flash_full_speed(void);
+#endif
 
 #ifdef __cplusplus
 } /* extern "C" */

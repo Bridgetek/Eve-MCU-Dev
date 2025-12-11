@@ -78,16 +78,21 @@ include_directories(
 	${EXAMPLE_SNIPPETS}/trig_furman
 )
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
-add_compile_definitions(USE_TRIG_TABLE) #use look up table instead of maths funcitons for trig
+
+# The pico port can only use the EVE Flash for storage of assets
+add_compile_definitions(ASSETS=USE_FLASH)
+
+# Trig tables are used instead of maths functions
+add_compile_definitions(USE_TRIG_TABLE)
 
 # Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=1)
+add_compile_definitions(DEBUG_LEVEL=0)
+
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(${PROJECT_NAME} 1)
+pico_enable_stdio_usb(${PROJECT_NAME} 0)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
@@ -95,7 +100,7 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_MCU_RP2040.c
-        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+        #${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
@@ -111,6 +116,13 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_helper.c
         ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
+        ${EXAMPLE_COMMON}/eve_assetload_array.c
+        ${EXAMPLE_COMMON}/eve_assetload_file.c
+        ${EXAMPLE_COMMON}/eve_assetload_flash.c
+        ${EXAMPLE_COMMON}/eve_assetload_flash_eve3.c
+        ${EXAMPLE_COMMON}/eve_assetload_flash_eve4.c
+        ${EXAMPLE_COMMON}/eve_assetload_flash_eve5.c
+        ${EXAMPLE_COMMON}/patch_textscale.c
 )
 
 # Example code assets
@@ -118,9 +130,8 @@ add_library(eve_example # Example code library name
 file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
         "${EXAMPLE_ASSETS}/eve5/*.c" 
         "${EXAMPLE_ASSETS}/eve34/*.c"
-        "${EXAMPLE_ASSETS}/png/*.c")
+        "${EXAMPLE_ASSETS}/c_array_assets/*.c")
 target_sources(eve_example PUBLIC
-        ${EXAMPLE_ASSETS}/eurostile_150_L8.c
         ${EVE_ASSET_LIST})
 
 # Header files used for example code library
