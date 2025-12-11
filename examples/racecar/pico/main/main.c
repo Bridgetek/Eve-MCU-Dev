@@ -130,7 +130,7 @@ int main(void)
     setup();
 
     /* Start example code */
-    eve_example();
+    eve_example(NULL);
 
     // function never returns
     for (;;) ;

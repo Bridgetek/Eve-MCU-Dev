@@ -249,7 +249,7 @@
 #define EVE_ENC_STENCIL_OP(sfail,spass)     ((0xcul << 24)|(((sfail) & 0x7ul) << 3)|(((spass) & 0x7ul) << 0))
 #define EVE_ENC_TAG_MASK(mask)              ((0x14ul << 24)|(((mask) & 0x1ul) << 0))
 #define EVE_ENC_TAG(s)                      ((0x3ul << 24)|((((uint32_t)(s)) & 0xfful) << 0))
-#define EVE_ENC_VERTEX2F(x,y)               ((0x1ul << 30)|((((uint32_t)(x)) & 0xfffful) << 15)|((((uint32_t)(y)) & 0xfffful) << 0))
+#define EVE_ENC_VERTEX2F(x,y)               ((0x1ul << 30)|((((uint32_t)(x)) & 0x7ffful) << 15)|((((uint32_t)(y)) & 0x7ffful) << 0))
 #define EVE_ENC_VERTEX2II(x,y,handle,cell)  ((0x2ul << 30)|((((uint32_t)(x)) & 0x1fful) << 21)|((((uint32_t)(y)) & 0x1fful) << 12)|(((handle) & 0x1ful) << 7)|(((cell) & 0x7ful) << 0))
 
 // Co-processor Commands
