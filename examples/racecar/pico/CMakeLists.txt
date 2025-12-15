@@ -38,6 +38,8 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
+project(racecar C CXX ASM)
+
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
@@ -90,7 +92,7 @@ add_compile_definitions(DEBUG_LEVEL=0)
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
