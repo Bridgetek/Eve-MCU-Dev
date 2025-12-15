@@ -20,7 +20,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\cruise_libft4222.exe`. This can be run from the command line. 
+The executable file is `build\Debug\racecar_libft4222.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 

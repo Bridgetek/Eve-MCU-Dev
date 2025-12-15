@@ -123,15 +123,6 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/patch_textscale.c
 )
 
-# Example code assets
-# Add all C files, the EVE generation macro selects the correct data
-file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
-        "${EXAMPLE_ASSETS}/eve5/*.c" 
-        "${EXAMPLE_ASSETS}/eve34/*.c"
-        "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PUBLIC
-        ${EVE_ASSET_LIST})
-
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
