@@ -586,15 +586,27 @@
 #define EVE_STENCIL_INVERT             0x5ul
 
 #define EVE_OPT_3D                     0x0ul
+#define EVE_OPT_BASELINE               0x8000ul
+#define EVE_OPT_CASESENSITIVE          0x2ul
 #define EVE_OPT_CENTER                 0x600ul
 #define EVE_OPT_CENTERX                0x200ul
 #define EVE_OPT_CENTERY                0x400ul
+#define EVE_OPT_COMPLETEREG            0x1000ul
+#define EVE_OPT_DITHER                 0x100ul
+#define EVE_OPT_DIRECT                 0x800ul
+#define EVE_OPT_DIRSEP_WIN             0x4ul
+#define EVE_OPT_DIRSEP_UNIX            0x8ul
 #define EVE_OPT_FILL                   0x2000ul
 #define EVE_OPT_FLASH                  0x40ul
 #define EVE_OPT_FLAT                   0x100ul
 #define EVE_OPT_FORMAT                 0x1000ul
+#define EVE_OPT_FS                     0x2000ul
 #define EVE_OPT_FULLSCREEN             0x8ul
+#define EVE_OPT_FULLSPEED              0x0ul
+#define EVE_OPT_HALFSPEED              0x4ul
+#define EVE_OPT_IS_SD                  0x20ul
 #define EVE_OPT_MEDIAFIFO              0x10ul
+#define EVE_OPT_IS_MMC                 0x10ul
 #define EVE_OPT_MONO                   0x1ul
 #define EVE_OPT_NOBACK                 0x1000ul
 #define EVE_OPT_NODL                   0x2ul
@@ -605,12 +617,16 @@
 #define EVE_OPT_NOTEAR                 0x4ul
 #define EVE_OPT_NOTICKS                0x2000ul
 #define EVE_OPT_OVERLAY                0x80ul
+#define EVE_OPT_QUARTERSPEED           0x8ul
 #define EVE_OPT_RGB565                 0x0ul
 #define EVE_OPT_RIGHTX                 0x800ul
+#define EVE_OPT_SFNLOWER               0x1ul
 #define EVE_OPT_SIGNED                 0x100ul
 #define EVE_OPT_SOUND                  0x20ul
+#define EVE_OPT_TRUECOLOR              0x200ul
+#define EVE_OPT_YCBCR                  0x400ul
 #define EVE_OPT_1BIT                   0x0ul
-#define EVE_OPT_FULLSPEED              0x0ul
+#define EVE_OPT_4BIT                   0x2ul
 
 // Touchmode Options
 

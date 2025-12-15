@@ -44,7 +44,7 @@
 
 #include "eve_example.h"
 extern const uint8_t font0[];
-const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+extern const EVE_GPU_FONT_HEADER *font0_hdr;
 
 void eve_display(void)
 {

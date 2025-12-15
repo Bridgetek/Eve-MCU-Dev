@@ -543,6 +543,7 @@
 #define EVE_OPT_CENTER                 0x600ul
 #define EVE_OPT_CENTERX                0x200ul
 #define EVE_OPT_CENTERY                0x400ul
+#define EVE_OPT_DITHER                 0x100ul
 #define EVE_OPT_FILL                   0x2000ul
 #define EVE_OPT_FLASH                  0x40ul
 #define EVE_OPT_FLAT                   0x100ul

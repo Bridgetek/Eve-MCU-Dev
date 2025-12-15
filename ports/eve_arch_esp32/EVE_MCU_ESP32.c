@@ -82,11 +82,9 @@ static spi_device_handle_t spi;
 // MCU registers. If porting the code to another MCU, these should be modified
 // to suit the registers of the selected MCU.
 
-// ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+void mcu_setup_spi(int speed)
 {
     esp_err_t ret;
-    gpio_config_t io_conf;
 
     spi_bus_config_t buscfg={
         .miso_io_num = PIN_NUM_MISO,
@@ -96,10 +94,8 @@ void MCU_Init(void)
         .quadhd_io_num=-1
     };
 
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-
     spi_device_interface_config_t devcfg={
-        .clock_speed_hz = 1000000, //Clock out at 10 MHz
+        .clock_speed_hz = speed, // Clock out
         .mode=0, //SPI mode 0
         .spics_io_num= -1, // CS pin operated manually
         .queue_size = 7,
@@ -113,6 +109,17 @@ void MCU_Init(void)
     //Attach the SPI bus
     ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
     assert(ret==ESP_OK);
+}
+
+// ------------------- MCU specific initialisation  ----------------------------
+void MCU_Init(void)
+{
+    gpio_config_t io_conf;
+
+    // Set SPI clock speed to 1 MHz
+    // 1 MHz allows all EVE devices to initialise correctly
+    // After initialisation the SPI speed can be increased in the MCU_Setup()
+    mcu_setup_spi(1000000);
 
     //disable interrupt
     io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
@@ -140,7 +147,11 @@ void MCU_Deinit(void)
 
 void MCU_Setup(void)
 {
-    // No action required.
+    // Increase SPI speed to 25 MHz after initialisation is complete
+    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    MCU_Deinit();
+    MCU_Delay_20ms();
+    mcu_setup_spi(25000000);
 }
 
 // ########################### GPIO CONTROL ####################################

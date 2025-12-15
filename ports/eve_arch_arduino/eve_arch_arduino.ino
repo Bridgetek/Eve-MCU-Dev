@@ -81,6 +81,9 @@ void MCU_Init(void) {
   digitalWrite(PIN_CHIPSELECT, HIGH);  //disable CS#
   digitalWrite(PIN_POWERDOWN, HIGH);   //disable HD#
 
+  // Set SPI speed to 1 MHz 
+  // 1 MHz allows all EVE devices to initialise correctly
+  // After initialisation the SPI speed can be increased in the MCU_Setup()
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
 }
 
@@ -90,6 +93,11 @@ void MCU_Deinit(void) {
 }
 
 void MCU_Setup(void) {
+  SPI.endTransaction();
+  
+  // Increase SPI speed to 8 MHz after initialisation is complete
+  // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
 }
 
 // Simple endian alignment for tested Arduino devices

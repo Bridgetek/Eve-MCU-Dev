@@ -6,6 +6,12 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if (NOT EXISTS ${VSCODE_CWD})
+        if (NOT DEFINED ENV{PICO_SDK_PATH})
+                message(FATAL_ERROR "PICO_SDK_PATH environment variable is not set")
+        endif()
+endif()
+
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
@@ -26,7 +32,11 @@ endif()
 set(PICO_BOARD pico CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
-include(pico_sdk_import.cmake)
+if (EXISTS ${VSCODE_CWD})
+        include(pico_sdk_import.cmake)
+else ()
+        include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+endif ()
 
 project(simple C CXX ASM)
 
@@ -53,6 +63,7 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
+set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
@@ -73,6 +84,9 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
+# Enable debug logging output to stdio
+add_compile_definitions(DEBUG_LEVEL=1)
+
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
         # Source code for EVE library
@@ -91,8 +105,8 @@ target_include_directories(eve_library PUBLIC
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_fonts.c
         ${EXAMPLE_COMMON}/eve_helper.c
         ${EXAMPLE_COMMON}/eve_images.c
@@ -123,7 +137,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(eve_library 
-	pico_stdlib
+        pico_stdlib
         hardware_spi
         pico_time
         )

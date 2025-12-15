@@ -2,7 +2,7 @@
 
 set(COMPONENT_NAME "eve_mcu_esp32")
 # Tell EVE library to use ESP32 as base class
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_ESP32=")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_ESP32= -DDEBUG_LEVEL=1")
 
 idf_component_register(SRCS 
                         "EVE_MCU_ESP32.c" 

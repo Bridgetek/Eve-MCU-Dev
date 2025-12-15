@@ -53,6 +53,7 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
+#include "soc/rtc.h"
 
 #include <EVE.h>
 
@@ -137,11 +138,11 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 void main_thread(void *p)
 {
-    ESP_LOGE(__FUNCTION__, "setup starting");
+    ESP_LOGI(__FUNCTION__, "setup starting");
     /* Setup UART */
     setup();
 
-    ESP_LOGE(__FUNCTION__, "example starting");
+    ESP_LOGI(__FUNCTION__, "example starting");
     /* Start example code */
     eve_example();
 
@@ -156,5 +157,5 @@ void setup(void)
 void app_main()
 {
     ESP_ERROR_CHECK( nvs_flash_init() );
-    xTaskCreate(&main_thread, "main", 4096, NULL, 5, NULL);
+    xTaskCreate(&main_thread, "main", 4 * 1024, NULL, 5, NULL);
 }
