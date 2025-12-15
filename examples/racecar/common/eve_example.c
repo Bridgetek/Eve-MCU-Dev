@@ -739,18 +739,6 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
     uint16_t gauge_circle_x = (((line_width * 2) + CIRC_X(gauge_radius, DEG2FURMAN(arc_min_limit)))); //take the min limit to offset x
     uint16_t gauge_circle_y = ((line_width - CIRC_Y(gauge_radius, DEG2FURMAN(180)))); // 180 degrees will offset y to top of the arc
 
-    //variables for x/y positions we will use in the stencil and underline
-    // perform some maths that will be used to define where the stencil is drawn for the underline
-    // we need to use the start and end angle of the arc then calculate their x/y coordinates + 1 degrees so we dont stencil the middle of the line that is drawn
-    uint16_t stencil_arc_min_limit_x = CIRC_X_DEG(gauge_radius, (arc_min_limit - 1));
-    uint16_t stencil_arc_min_limit_y = CIRC_Y_DEG(gauge_radius, (arc_min_limit - 1));
-    uint16_t stencil_arc_max_limit_x = CIRC_X_DEG(gauge_radius, (arc_max_limit + 1));
-    uint16_t stencil_arc_max_limit_y = CIRC_Y_DEG(gauge_radius, (arc_max_limit + 1));
-
-    //caluclate the redline end point for the underline
-    uint16_t redline_end_x = CIRC_X_DEG(gauge_radius, redline_start);
-    uint16_t redline_end_y = CIRC_Y_DEG(gauge_radius, redline_start);
-
     //ensure value does not exceeed accetable reading limits
     if (value > reading_limit)
         value = reading_limit;
@@ -824,14 +812,8 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
 
     //--------------------------------------------------------------------------------------
     //add numbers for every 1 K revs onto the gauge
-
-    //reset scissor
-    EVE_SCISSOR_SIZE(2048,2048);
-    EVE_SCISSOR_XY(0, 0);
-
-    //stop the stencil tests so we can drawn anywhere
-    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 0);
-    //ensure alpah is set to full
+	
+    //ensure alpha is set to full
     EVE_COLOR_A(255);
     //color these white
     EVE_COLOR_RGB(255,255,255);
@@ -850,10 +832,7 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
 
         rev_number = rev_number + 1;
 
-    }
-
-    // Clear the stencil buffer to ensure it does not affect other items on the screen
-    EVE_CLEAR(0, 1, 0);              
+    }            
 
     //restore graphics context
     EVE_RESTORE_CONTEXT();
@@ -2201,7 +2180,7 @@ while(1)
         }
 
         // Draw rev counter
-        revCounter(scale, x + 8, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
+        revCounter(scale, x + 10, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
 
         // Draw RPM widget and colour when we hit redline
         if(RPM[count] > redline)
