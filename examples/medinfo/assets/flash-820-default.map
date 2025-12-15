@@ -1,0 +1,19 @@
+Name                : Offset : Size
+
+patch_medinfo2.bin  : 0      : 3912
+hrm.bin             : 3968   : 256 
+resp.bin            : 4224   : 688 
+sats.bin            : 4928   : 256 
+bad.png             : 5184   : 4075
+good.png            : 9280   : 3627
+lock.png            : 12928  : 2188
+lock_open_right.png : 15168  : 2190
+off_on.png          : 17408  : 2643
+sick.png            : 20096  : 3871
+volume_down.png     : 24000  : 1653
+volume_off.png      : 25664  : 2926
+volume_up.png       : 28608  : 2507
+ecg_heart.png       : 31168  : 6557
+pause_circle.png    : 37760  : 5857
+play_circle.png     : 43648  : 6411
+silence.png         : 50112  : 4424

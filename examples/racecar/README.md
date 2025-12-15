@@ -8,11 +8,11 @@ The `racecar` example demonstrates drawing a multi-function dashboard for a raci
 
 A racecar dashboard is drawn using blending, scissoring, scaling, arcs and custom fonts. The `racecar` code uses the `furman` snippet from the [snippets](../snippets) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
 
-The example is intended to show an imaginged dashboard for a racecar. In real life external inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
+The example is intended to show an imagined dashboard for a racecar. In real life external inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
 
 ## Screenshot
 
-The following is an screenshot of the simple example.
+The following is an screenshot of the racecar example.
 
 ![Race Car Dashboard Example](docs/racecar.png)
 

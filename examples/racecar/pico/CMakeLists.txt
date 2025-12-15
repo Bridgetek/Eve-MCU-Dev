@@ -38,8 +38,6 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(racecar C CXX ASM)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
