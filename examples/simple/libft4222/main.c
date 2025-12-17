@@ -106,9 +106,11 @@ int main(void)
 void setup(void)
 {
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    printf (" Minor changes for linux compilation (Piotr Romaniuk)\r\n");
+    printf (" Tested on RaspberryPi Zero W 2\r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Windows FT4222 Library\r\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for Linux FT4222 Library\r\n");
     printf ("\n");
 
 }

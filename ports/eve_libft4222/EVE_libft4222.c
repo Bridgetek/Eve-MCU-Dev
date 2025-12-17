@@ -86,8 +86,8 @@ void MCU_Init(void)
 	FT_STATUS ftStatus;
 
     DWORD numOfDevices = 0;
-	DWORD countSPI = USE_FT4222;
-	DWORD countGPIO = USE_FT4222;
+	DWORD countSPI = 0;
+	DWORD countGPIO = 0;
 
     ftStatus = FT_CreateDeviceInfoList(&numOfDevices);
 
@@ -111,7 +111,7 @@ void MCU_Init(void)
 
 		printf("FT4222 device % d: ", iDev);
 
-		if (devInfo.SerialNumber[0] == 'A')
+		if( ! strcmp( devInfo.Description, "FT4222 A"))
 		{
 			if (countSPI == 0)
 			{
@@ -128,7 +128,7 @@ void MCU_Init(void)
 			countSPI--;
 		}
 
-		if (devInfo.SerialNumber[0] == 'B')
+		if( ! strcmp( devInfo.Description, "FT4222 B"))
 		{
 			if (countGPIO == 0)
 			{
