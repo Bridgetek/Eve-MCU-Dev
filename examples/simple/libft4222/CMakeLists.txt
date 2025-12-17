@@ -24,9 +24,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
-        message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
-endif()
 
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
@@ -52,15 +49,13 @@ add_library(eve_library # EVE library name
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        imports/ftd2xx
-        imports/LibFT4222/inc
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch        
 )
 
 # EVE library dependencies
 target_link_libraries(eve_library
-        ${CMAKE_CURRENT_LIST_DIR}/imports/LibFT4222/dll/amd64/LibFT4222-64.lib
-        ${CMAKE_CURRENT_LIST_DIR}/imports/ftd2xx/dll/amd64/ftd2xx.lib
+		ft4222
+		ftd2xx        
 )
 
 # Copy the DLL to beside the executable for Windows
