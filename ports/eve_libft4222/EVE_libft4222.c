@@ -59,7 +59,7 @@
 #endif // _WIN32
 
 #include "ftd2xx.h"
-#include "LibFT4222.h"
+#include "libft4222.h"
 
 
 // This is the Windows Platform specific section and contains the functions which
