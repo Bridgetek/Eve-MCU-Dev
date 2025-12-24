@@ -53,13 +53,46 @@ target_include_directories(eve_library PUBLIC
 )
 
 # EVE library dependencies
-target_link_libraries(eve_library
-		ft4222
-		ftd2xx        
-)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    find_library(FT4222_LIBRARY
+        NAMES ft4222
+        )
+
+    find_library(FTD2XX_LIBRARY
+        NAMES ftd2xx
+        )
+
+    if (FT4222_LIBRARY AND FTD2XX_LIBRARY)
+        message(STATUS "libft4222 found")
+    else()
+        message(FATAL_ERROR "libft4222 not found")
+    endif()
+    
+    if (FTD2XX_LIBRARY)
+        message(STATUS "libftd2xx found")
+    else()
+        message(FATAL_ERROR "libftd2xx not found")
+    endif()
+
+    target_link_libraries(eve_library
+	ft4222
+	ftd2xx        
+    )
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        target_link_libraries(eve_library
+                ${CMAKE_CURRENT_LIST_DIR}/imports/LibFT4222/dll/amd64/LibFT4222-64.lib
+                ${CMAKE_CURRENT_LIST_DIR}/imports/ftd2xx/dll/amd64/ftd2xx.lib
+        )
+endif()
+
 
 # Copy the DLL to beside the executable for Windows
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
+                message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
+        endif()
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different "../imports/LibFT4222/dll/amd64/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
                 COMMAND_EXPAND_LISTS
@@ -83,6 +116,16 @@ target_include_directories(eve_example PUBLIC
         ${EXAMPLE_COMMON}/ # Headers for example code
 
 )
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        target_include_directories(eve_example PUBLIC
+                imports/ftd2xx
+                imports/LibFT4222/inc
+        )
+     
+endif()
+
+
 # Example code dependencies
 target_link_libraries(eve_example
         eve_library # Example code depends on EVE library
