@@ -59,7 +59,7 @@
 #endif // _WIN32
 
 #include "ftd2xx.h"
-#include "LibFT4222.h"
+#include "libft4222.h"
 
 
 // This is the Windows Platform specific section and contains the functions which
@@ -147,7 +147,7 @@ void MCU_Init(void)
 
         printf("FT4222 device % d: ", iDev);
 
-        if (devInfo.SerialNumber[0] == 'A')
+        if( ! strcmp( devInfo.Description, "FT4222 A"))
         {
             if (countSPI == 0)
             {
@@ -164,7 +164,7 @@ void MCU_Init(void)
             countSPI--;
         }
 
-        if (devInfo.SerialNumber[0] == 'B')
+        if( ! strcmp( devInfo.Description, "FT4222 B"))
         {
             if (countGPIO == 0)
             {

@@ -48,7 +48,7 @@
 // "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
 // Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
 #ifndef FT8XX_TYPE
-#define FT8XX_TYPE BT820
+#define FT8XX_TYPE BT816 //chip for evaluation board BridgeTek VM816CU50A-D
 #endif
 
 // Definitions used for target display resolution selection
@@ -76,7 +76,7 @@
 
 // Select the resolution
 #ifndef DISPLAY_RES
-#define DISPLAY_RES WUXGA
+#define DISPLAY_RES WVGA //resolution for evaluation board BridgeTek VM816CU50A-D
 #endif
 
 // Definitions used for touch controllers
