@@ -83,8 +83,10 @@ void MCU_Init(void)
     gpio_set_dir(pd_pin, GPIO_OUT);
     gpio_put(pd_pin, 1);
 
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-    spi_init(spi_port, 1000 * 1000);
+    // Set SPI clock speed to 1 MHz
+    // 1 MHz allows all EVE devices to initialise correctly
+    // After initialisation the SPI speed can be increased in the MCU_Setup()
+    spi_init(spi_port, 1 * 1000 * 1000);
 
     // Set SPI format
     spi_set_format( spi_port, 		// SPI instance
@@ -127,6 +129,10 @@ void MCU_Setup(void)
 #endif//(defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
 
 #endif// QUADSPI_ENABLE
+
+    // Increase SPI speed to 25 MHz after initialisation is complete
+    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    spi_init(spi_port, 25 * 1000 * 1000);
 }
 
 // ########################### GPIO CONTROL ####################################

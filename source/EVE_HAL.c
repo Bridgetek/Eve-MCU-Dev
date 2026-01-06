@@ -52,10 +52,6 @@
 #endif
 #endif
 
-#if DEBUG_LEVEL > 0
-#include <stdio.h>
-#endif
-
 #include <EVE.h>
 #include <HAL.h>
 #include <MCU.h>

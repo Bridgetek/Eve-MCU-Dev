@@ -86,19 +86,40 @@ uint16_t MCU_bufferLen;
 
 FT_HANDLE ftHandle;
 
-void MCU_Init(void)
+static void cmd_open_channel(uint32_t speed)
 {
-    FT_DEVICE_LIST_INFO_NODE devList;
     ChannelConfig channelConf;
-    DWORD channel;
-    DWORD channels;
-    FT_STATUS status;
 
     /* Set SPI clock speed to 15 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
     memset(&channelConf, 0, sizeof(ChannelConfig));
-    channelConf.ClockRate = 15000000;
+    channelConf.ClockRate = speed;
     channelConf.LatencyTimer = 10;
     channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW;
+
+    // Open the the channel specified by the USE_MPSSE macro.
+    // This must be defined to get this far.
+    channel = USE_MPSSE;
+
+    status = SPI_OpenChannel(channel, &ftHandle);
+    if (status != FT_OK)
+    {
+        fprintf(stderr, "Channel %d failed to open status %d\n", channel, status);
+        exit (-2);
+    }
+    status = SPI_InitChannel(ftHandle, &channelConf);
+    if (status != FT_OK)
+    {
+        fprintf(stderr, "Channel %d failed to initialise SPI status %d\n", channel, status);
+        exit (-3);
+    }
+}
+
+void MCU_Init(void)
+{
+    FT_DEVICE_LIST_INFO_NODE devList;
+    DWORD channel;
+    DWORD channels;
+    FT_STATUS status;
 
     Init_libMPSSE();
 
@@ -129,22 +150,10 @@ void MCU_Init(void)
 
     if (channels > USE_MPSSE)
     {
-        // Open the the channel specified by the USE_MPSSE macro.
-        // This must be defined to get this far.
-        channel = USE_MPSSE;
-
-        status = SPI_OpenChannel(channel, &ftHandle);
-        if (status != FT_OK)
-        {
-            fprintf(stderr, "Channel %d failed to open status %d\n", channel, status);
-            exit (-2);
-        }
-        status = SPI_InitChannel(ftHandle, &channelConf);
-        if (status != FT_OK)
-        {
-            fprintf(stderr, "Channel %d failed to initialise SPI status %d\n", channel, status);
-            exit (-3);
-        }
+        // Set SPI clock speed to 1 MHz
+        // 1 MHz allows all EVE devices to initialise correctly
+        // After initialisation the SPI speed can be increased in the MCU_Setup()
+        cmd_open_channel(1000000);
     }
     else
     {
@@ -171,6 +180,11 @@ void MCU_Deinit(void)
 
 void MCU_Setup(void)
 {
+    SPI_CloseChannel(ftHandle);
+
+    // Increase SPI speed to 15 MHz after initialisation is complete
+    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    cmd_open_channel(15000000);
 }
 
 // ------------------------- Output buffering ----------------------------------

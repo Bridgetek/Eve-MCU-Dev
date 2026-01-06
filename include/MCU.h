@@ -106,16 +106,16 @@
  */
 #if IS_EVE_API(5)
 #if defined(PLATFORM_FT9XX) 
-/* FT9xx SPI Bus is set to 25 MHz */
+/* FT9xx SPI Bus is set to 25 MHz by default */
 #define MCU_SPI_TIMEOUT 24
 
 #elif defined(PLATFORM_RASPBERRYPI) 
-/* Raspberry Pi SPI bus is set to 1 MHz */
+/* Raspberry Pi SPI bus is set to 1 MHz by default */
 #define MCU_SPI_TIMEOUT 8
 
 #elif defined(PLATFORM_RP2040)
-/* RP2040 SPI bus is set to 1 MHz */
-#define MCU_SPI_TIMEOUT 8
+/* RP2040 SPI bus is set to 10 MHz by default */
+#define MCU_SPI_TIMEOUT 16
 
 #elif defined (USE_MPSSE) 
 /* libMPSSE and libft4222 generate a 15 MHz SPI bus - 16 bytes is sufficient. */
@@ -126,7 +126,7 @@
 #define MCU_SPI_TIMEOUT 16
 
 #elif defined(USE_LINUX_SPI_DEV)
-/* Linux systems SPI busses are set to 1 MHz */
+/* Linux systems SPI busses are set to 1 MHz by default */
 #define MCU_SPI_TIMEOUT 8
 
 #elif defined (PLATFORM_STM32_CUBE) \
@@ -138,7 +138,7 @@
 #define MCU_SPI_TIMEOUT 8
 
 #elif defined(ARDUINO)
-/* Arduino SPI bus are set to 100 kHz */
+/* Arduino SPI bus is set to 1 MHz by default */
    #define MCU_SPI_TIMEOUT 8
 #endif
 #endif
@@ -154,16 +154,22 @@
  DEBUG_LEVEL 1 for error reports and information.
  */
 //@{
-#if DEBUG_LEVEL > 0 || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
-#else
-#define DEBUG_PRINTF(...)
-#endif
-
 #if defined(DEBUG_LEVEL) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#include <stdio.h>
 #define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
+#elif defined(DEBUG_LEVEL) || defined(PLATFORM_ESP32)
+#include "esp_log.h"
+#define DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
 #else
 #define DEBUG_ERROR(...)
+#endif
+#if DEBUG_LEVEL > 0 || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#elif DEBUG_LEVEL > 0 || defined(PLATFORM_ESP32)
+#error
+#define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
+#else
+#define DEBUG_PRINTF(...)
 #endif
 //@}
 

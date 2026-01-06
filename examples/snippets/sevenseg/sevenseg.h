@@ -37,4 +37,7 @@
  * ============================================================================
  */
 
-void sevensegment(int32_t x, int32_t y, uint16_t size, char digit, uint32_t fgcolour, uint32_t bgcolour);
+#define EVE_OPT_DECIMAL 16
+#define EVE_OPT_TIMECOLON 32
+#define EVE_OPT_NUMBER 15
+void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);
