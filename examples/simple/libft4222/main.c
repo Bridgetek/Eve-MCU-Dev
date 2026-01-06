@@ -110,7 +110,7 @@ void setup(void)
     printf (" Minor changes for linux compilation (Piotr Romaniuk)\r\n");
     printf (" Tested on RaspberryPi Zero W 2\r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Linux FT4222 Library\r\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for the FT4222 Library\r\n");
     printf ("\n");
 
 }

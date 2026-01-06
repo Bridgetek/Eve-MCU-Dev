@@ -24,7 +24,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
         main.c
@@ -49,7 +48,8 @@ add_library(eve_library # EVE library name
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch        
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 
 # EVE library dependencies
@@ -81,22 +81,27 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-        target_link_libraries(eve_library
-                ${CMAKE_CURRENT_LIST_DIR}/imports/LibFT4222/dll/amd64/LibFT4222-64.lib
-                ${CMAKE_CURRENT_LIST_DIR}/imports/ftd2xx/dll/amd64/ftd2xx.lib
-        )
-endif()
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_libft4222/libft4222.h")
+        message(FATAL_ERROR "The Windows LibFT4222 installation has not been completed. Follow the instructions in \"\\ports\\eve_libft4222\\README.md\"")
+    endif()
 
+    target_link_libraries(eve_library
+            ${API_DIRECTORY}/ports/eve_libft4222/libft4222.lib
+            ${API_DIRECTORY}/ports/eve_libft4222/libftd2xx.lib
+    )
 
-# Copy the DLL to beside the executable for Windows
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-        if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
-                message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
-        endif()
+    # Copy the DLL to beside the executable for Windows
+    if(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "../imports/LibFT4222/dll/amd64/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
                 COMMAND_EXPAND_LISTS
-        )
+    )
+    elseif(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    endif()
 endif()
 
 # Source for example code
@@ -116,15 +121,6 @@ target_include_directories(eve_example PUBLIC
         ${EXAMPLE_COMMON}/ # Headers for example code
 
 )
-
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-        target_include_directories(eve_example PUBLIC
-                imports/ftd2xx
-                imports/LibFT4222/inc
-        )
-     
-endif()
-
 
 # Example code dependencies
 target_link_libraries(eve_example
