@@ -145,6 +145,12 @@ void MCU_Init(void)
             continue;
         }
 
+        // Proceed with FT4222H devices configured in mode 0 (single SPI + GPIO)
+        if (devInfo.Type != FT_DEVICE_4222H_0)
+        {
+            continue;
+        }
+
         printf("FT4222 device % d: ", iDev);
 
         if( ! strcmp( devInfo.Description, "FT4222 A"))
@@ -152,7 +158,7 @@ void MCU_Init(void)
             if (countSPI == 0)
             {
                 devNumSPI = devInfo.LocId;
-                printf("selected\n");
+                printf("selected for SPI\n");
                 printf("\t\tVID/PID: 0x%04x/0x%04x\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);
@@ -169,7 +175,7 @@ void MCU_Init(void)
             if (countGPIO == 0)
             {
                 devNumGPIO = devInfo.LocId;
-                printf("selected\n");
+                printf("selected for GPIO\n");
                 printf("\t\tVID/PID: 0x%04x/0x%04x\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);

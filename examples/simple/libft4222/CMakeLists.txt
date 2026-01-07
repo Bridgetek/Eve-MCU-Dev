@@ -34,7 +34,8 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use libFT4222 as base class
-add_compile_definitions(USE_FT4222=1)
+# Choose the FT4222 device (0 for first, 1 for second etc)
+add_compile_definitions(USE_FT4222=0)
 
 # Source code for EVE library (targetted at FT4222)
 add_library(eve_library # EVE library name
