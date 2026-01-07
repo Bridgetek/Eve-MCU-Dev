@@ -1,0 +1,14 @@
+libmpsse.dll
+libmpsse.lib
+libmpsse_i2c.h
+libmpsse_spi.h
+ftd2xx.h
+WinTypes.h
+ftdi_common.h
+ftdi_infra.c
+ftdi_infra.h
+ftdi_spi.c
+ftdi_i2c.c
+ftdi_mid.c
+ftdi_mid.h
+memcpy.c

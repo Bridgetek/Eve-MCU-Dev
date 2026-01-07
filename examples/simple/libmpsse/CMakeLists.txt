@@ -24,16 +24,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/release)
-        message(FATAL_ERROR "libMPSSE installation cannot be found.\nThe libMPSSE library \"release\" directory must be copied to the current directory.")
-endif()
-
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
-        release/source/ftdi_infra.c
-        release/source/ftdi_spi.c
-        release/source/ftdi_i2c.c
-        release/source/ftdi_mid.c
         main.c
 )
 include_directories(
@@ -43,6 +35,7 @@ include_directories(
 )
 # Tell EVE library to use libFT4222 as base class
 add_compile_definitions(USE_MPSSE=0)
+
 # Add in flags for MPSSE header file.
 add_compile_definitions(FTDIMPSSE_STATIC)
 add_compile_definitions(FT_VER_MAJOR=1)
@@ -55,6 +48,10 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_infra.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_spi.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_i2c.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_mid.c
         ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
@@ -62,18 +59,23 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        release/include
-        release/libftd2xx
+        ${API_DIRECTORY}/ports/eve_libmpsse # MPSSE Library headers
 )
 
 # EVE library dependencies
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
         target_link_libraries(eve_library ${CMAKE_DL_LIBS})
         add_link_options(-lmpsse)
-else()
-        target_link_libraries(eve_library
-                ${CMAKE_CURRENT_LIST_DIR}/release/build/x64/LIB/libmpsse.lib
-)
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_libmpsse/libmpsse_spi.h")
+        message(FATAL_ERROR "The Windows libMPSSE installation has not been completed. Follow the instructions in \"\\ports\\eve_libmpsse\\README.md\"")
+    endif()
+
+    target_link_libraries(eve_library
+            ${API_DIRECTORY}/ports/eve_libmpsse/libmpsse.lib
+    )
 endif()
 
 # Source for example code

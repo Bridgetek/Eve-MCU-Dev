@@ -55,21 +55,60 @@ https://ftdichip.com/software-examples/mpsse-projects/
 
 Download the latest version of the libMPSSE library distribution. The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
 
-The following files are used in this sample code.
+The library is installed *once* into the `ports\eve_libmpsse` directory. When building the example code the library files (H, C and LIB files) are loaded from this location.
 
-- release\build\libmpsse.dll
-- release\build\libmpsse.lib
-- release\include\libmpsse_i2c.h
-- release\include\libmpsse_spi.h
-- release\libftd2xx\ftd2xx.h
+### Install the LibMPSSE SPI Middleware Library in EVE-MCU-Dev library
 
-There may be other, possibly older, versions of this FT8xx-SPI sample code in the "samples" folder of the distribution. 
+The LibMPSSE library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `release`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32-bit Windows).
 
-The example application will load and use the `libmpsse.dll` file. This file must be available either locally (in the same directory as the example application) or on the system path (recommended "C:\Windows\System32").
+Each architecture has:
+- A DLL file for LibMPSSE and LIB files for connecting the application to the LibMPSSE DLLs
+- A static LibMPSSE LIB file
+- C header files for LibMPSSE
+- Source code for I2C and SPI layers
+
+A Windows Command Line BAT file `install_libmpsse.bat` is included in this folder. This will copy the correct files from a LibMPSSE library distribution to the 
+current directory (`ports\eve_libmpsse`).
+
+To run the BAT file change directory to the `ports\eve_libmpsse` directory. The path to the `release` directory in the extracted distribution folder is passed as the first parameter to the BAT file. For example:
+
+```
+> cd ports\eve_libmpsse
+> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.8\release
+Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.8\release"
+Copying "..\..\..\libmpsse-windows-1.0.8\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_spi.h" to libmpsse_spi.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_common.h" to ftdi_common.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.c" to ftdi_infra.c
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.h" to ftdi_infra.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_spi.c" to ftdi_spi.c
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_i2c.c" to ftdi_i2c.c
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.c" to ftdi_mid.c
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.h" to ftdi_mid.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\source\memcpy.c" to memcpy.c
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\ftd2xx.h" to ftd2xx.h
+        1 file(s) copied.
+Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\WinTypes.h" to WinTypes.h
+        1 file(s) copied.
+```
+
+Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
 
 Due to limitations in the libMPSSE distribution, a small modification is required:
 
-Line 239 of "release\source\ftdi_infra.c":
+Line 239 of "ftdi_infra.c":
     #else // _WIN32
 	    hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
     #endif // _WIN32
@@ -78,8 +117,6 @@ Remove the "L" before the DLL name:
     #else // _WIN32
 	    hdll_d2xx = LoadLibrary("ftd2xx.dll");
     #endif // _WIN32
-
-Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
 
 ### Command Line Compilation
 
