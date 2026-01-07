@@ -61,6 +61,24 @@ void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
+/** @brief Portable version of fopen/fopen_s
+ */
+FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
+
 /**
  * @brief Functions used to store calibration data in file.
  */
@@ -72,10 +90,11 @@ int8_t platform_calib_init(void)
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
-	FILE *h1 = fopen( config_file, "w");
-	if( !h1 ){
-		    return -1;
-	}
+    FILE *h1 = port_fopen( config_file, "w");
+    if( !h1 )
+    {
+        return -1;
+    }
 
     fwrite(calib, sizeof(struct touchscreen_calibration), 1, h1);
     fclose(h1);
@@ -84,10 +103,11 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
 
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
-	FILE *h1 = fopen( config_file, "r");
-	if( !h1 ){
-	    return -1;
-	}
+    FILE *h1 = port_fopen( config_file, "r");
+    if( !h1 )
+    {
+        return -1;
+    }
     fread(calib, sizeof(struct touchscreen_calibration), 1, h1);
     fclose(h1);
     return 0;
@@ -112,5 +132,4 @@ void setup(void)
     printf ("---------------------------------------------------------------- \r\n");
     printf ("Welcome to EVE-MCU-Dev Simple Example for the FT4222 Library\r\n");
     printf ("\n");
-
 }

@@ -49,6 +49,12 @@
 
 #if ASSETS == USE_FILES
 
+/** @brief Portable version of fopen/fopen_s
+ *  @details This is provided in the main.c file if the platform is able to use
+ *           a file system for accessing assets.
+ */
+extern FILE *port_fopen(char const * _FileName, char const * _Mode);
+
 static const char *assetdir;
 
 const char *join(const char *dirname, const char *filename)
@@ -78,13 +84,13 @@ const char *join(const char *dirname, const char *filename)
 int eve_loadpatch_impl(void)
 {
     FILE *h1;
-    errno_t err;
     uint8_t buffer[256];
     uint32_t total = 0;
     uint32_t chunk;
     size_t xfer;
 
-    if ((err = fopen_s(&h1, patch_asset.filename, "rb")) == 0)
+    h1 = port_fopen(patch_asset.filename, "rb");
+    if (h1)
     {
         EVE_LIB_BeginCoProList();
         EVE_CMD_LOADPATCH(0);
@@ -116,7 +122,6 @@ int eve_loadpatch_impl(void)
 void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 {
     FILE *h1;
-    errno_t err;
     uint8_t buffer[512];
     uint32_t total = 0;
     uint32_t chunk;
@@ -138,7 +143,8 @@ void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
         }
     }
     
-    if ((err = fopen_s(&h1, asset->filename, "rb")) == 0)
+    h1 = port_fopen(asset->filename, "rb");
+    if (h1)
     {
         size_t sz;
         fseek(h1, 0L, SEEK_END);
