@@ -48,13 +48,15 @@ The settings required in `EVE_config.h` are:
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **LibFT4222** "middleware library" for Windows for each example. The recommended version is v1.4.7 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.7 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/ft4222h-software-examples/
 
 Download the latest version of the LibFT4222 library distribution. The file will typically have a name in the format `LibFT4222-vx.x.x.zip` where *vx.x.x* is the version number. 
 
-### Install the LibFT4222 Middleware Library in EVE-MCU-Dev library,
+The library is installed *once* into the `ports\eve_libft4222` directory. When building the example code the library files (H, DLL and LIB files) are loaded from this location.
+
+### Install the LibFT4222 Middleware Library in EVE-MCU-Dev library
 
 The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
 
@@ -89,3 +91,21 @@ Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\WinTypes.h" to WinTypes.h
 The example application will load and use the `LibFT4222-64.dll` or `LibFT4222.dll` file at runtime. This file must be available either locally (in the same directory as the example executable) or on the system path (recommended "C:\Windows\System32"). The `CMakeLists.txt` file in each example will copy the DLL to the same output directory as the executable.
 
 Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
+
+## Linux
+
+Important Information about Linux builds.
+
+To compile this you will have to download the **LibFT4222** "middleware library" for Linux. The recommended version is v1.4.7 or later. It is available from the FTDI website:
+
+https://ftdichip.com/software-examples/ft4222h-software-examples/
+
+Download the latest version of the LibFT4222 library distribution. The file will typically have a name in the format `LibFT4222-linux-vx.x.x.yyy.zip` where *vx.x.x* is the version number. 
+
+The library is installed *once* into the Linux file system. When building the example code the library files (H, DLL and LIB files) are found by the operating system.
+
+### Install the LibFT4222 Middleware Library in Linux
+
+The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a file called `ReadMe.txt` which describes in detail how to install the library on a Linux system. 
+
+Once the library is installed then the build will search the standard locations for include and library files.
