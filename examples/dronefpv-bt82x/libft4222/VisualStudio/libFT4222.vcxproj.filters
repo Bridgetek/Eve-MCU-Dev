@@ -72,13 +72,15 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\ftd2xx\ftd2xx.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">

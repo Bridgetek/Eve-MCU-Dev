@@ -70,22 +70,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -100,10 +100,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\i386\LibFT4222.lib;..\imports\ftd2xx\dll\i386\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\i386\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,10 +118,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\amd64\LibFT4222-64.lib;..\imports\ftd2xx\dll\amd64\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\amd64\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,10 +142,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\i386\LibFT4222.lib;..\imports\ftd2xx\dll\i386\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\i386\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,10 +166,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\amd64\LibFT4222-64.lib;..\imports\ftd2xx\dll\amd64\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\amd64\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -190,6 +190,9 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
     <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
@@ -197,8 +200,6 @@
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
-    <ClInclude Include="..\imports\ftd2xx\ftd2xx.h" />
-    <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
