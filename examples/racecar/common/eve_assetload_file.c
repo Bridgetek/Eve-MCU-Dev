@@ -104,7 +104,7 @@ int eve_loadpatch_impl(void)
     }
     else
     {
-        DEBUG_PRINTF("file error\n");
+        DEBUG_PRINTF("Patch file error\n");
         exit(-1);
     }
 

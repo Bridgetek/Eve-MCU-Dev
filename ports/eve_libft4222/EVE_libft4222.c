@@ -145,7 +145,7 @@ void MCU_Init(void)
             continue;
         }
 
-        // Proceed with FT4222H devices configured in mode 0 (single SPI + GPIO)
+        // Proceed only with FT4222H devices configured in mode 0 (single SPI + GPIO)
         if (devInfo.Type != FT_DEVICE_4222H_0)
         {
             continue;
