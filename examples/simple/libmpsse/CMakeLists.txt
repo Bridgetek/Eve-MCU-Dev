@@ -51,7 +51,7 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-add_library(eve_library # EVE library name
+target_sources(eve_library PRIVATE # EVE library name
         # Source code for MPSSE library
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_infra.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_spi.c

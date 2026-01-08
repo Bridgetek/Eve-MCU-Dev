@@ -132,7 +132,7 @@ add_library(eve_example # Example code library name
 file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
         # Add any assets that are compiled in
         "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PUBLIC
+target_sources(eve_example PRIVATE
         # Add specific asset files that are compiled in
         ${EVE_ASSET_LIST})
 

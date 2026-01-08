@@ -131,7 +131,7 @@ file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS
         "${EXAMPLE_ASSETS}/eve5/*.c" 
         "${EXAMPLE_ASSETS}/eve34/*.c"
         "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PUBLIC
+target_sources(eve_example PRIVATE
         ${EVE_ASSET_LIST})
 
 # Header files used for example code library

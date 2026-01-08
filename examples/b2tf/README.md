@@ -12,7 +12,7 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 Supported EVE APIs in this example:
 
