@@ -48,12 +48,17 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
+        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+add_library(eve_library # EVE library name
+        # Source code for MPSSE library
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_infra.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_spi.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_i2c.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_mid.c
-        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
+endif()
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -64,8 +69,30 @@ target_include_directories(eve_library PUBLIC
 
 # EVE library dependencies
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-        target_link_libraries(eve_library ${CMAKE_DL_LIBS})
-        add_link_options(-lmpsse)
+    find_library(MPSSE_LIBRARY
+        NAMES mpsse
+        )
+
+    find_library(FTD2XX_LIBRARY
+        NAMES ftd2xx
+        )
+
+    if (MPSSE_LIBRARY AND FTD2XX_LIBRARY)
+        message(STATUS "libmpsse found")
+    else()
+        message(FATAL_ERROR "libmpsse not found")
+    endif()
+    
+    if (FTD2XX_LIBRARY)
+        message(STATUS "libftd2xx found")
+    else()
+        message(FATAL_ERROR "libftd2xx not found")
+    endif()
+
+    #target_link_libraries(eve_library ${CMAKE_DL_LIBS})
+    target_link_libraries(eve_library
+	mpsse
+    )
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")

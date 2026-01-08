@@ -154,4 +154,27 @@ When the example application is launched in Visual Studio it will add the locati
 
 ## Linux
 
-The cmake command line examples for Windows will compile the required files for the example application under Linux. The libMPSSE library for Linux will be taken from the `/usr/local/lib` directory and the include files from `/usr/local/include`.
+Important Information about Linux builds.
+
+To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.8 or later. It is available from the FTDI website:
+
+https://ftdichip.com/software-examples/mpsse-projects/libmpsse-spi-examples/
+
+Download the latest version of the LibMPSSE-SPI library distribution. The file will typically have a name in the format `libmpsse-x86_64-x.x.x.tgz` where *x.x.x* is the version number. 
+
+The library is installed *once* into the Linux file system. When building the example code the library files (H, DLL and LIB files) are found by the operating system.
+
+### Install the LibMPSSE-SPI Middleware Library in Linux
+
+The LibMPSSE-SPI library distribution tar file must be extracted into a new directory. The new directory will have a file called `ReadMe.txt` which describes in detail how to install the library on a Linux system. 
+
+Once the library is installed then the build will search the standard locations for include and library files.
+
+The LibMPSSE-SPI library calls the FTDI D2XX driver. The version of FTDI D2XX driver for Linux may be important on certain Linux distributions. Version v1.4.33 has been tested on Ubuntu and is compiled for glibc version "GLIBC\_2.31".  Later versions require a system supporting "GLIBC\_2.34". If the glibc version is not supported then a message such as this will be reported.
+
+```
+ sudo ./build/simple_libmpsse
+dlopen failed: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by /usr/local/lib/libftd2xx.so)
+source/ftdi_infra.c:254:Init_libMPSSE(): NULL expression encountered
+```
+
