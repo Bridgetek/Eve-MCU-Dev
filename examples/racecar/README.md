@@ -89,7 +89,7 @@ This example supports the following platforms:
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 |Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 ## EVE API Support
 

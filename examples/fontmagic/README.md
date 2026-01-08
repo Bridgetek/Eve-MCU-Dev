@@ -20,7 +20,7 @@ This example supports the following platforms:
 | --- | --- | --- |
 |ST STM32 (Keil) | STM32 | Yes (1) |
 |ST STM32Cube | STM32CUBE | Yes (1) |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 (1) - EVE API 5 support in progress
 
