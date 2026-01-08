@@ -94,7 +94,7 @@ void eve_example(const char *assets);
 
 // Choose the methods for storing assets
 #ifndef ASSETS
-#define ASSETS USE_C_ARRAYS
+#define ASSETS USE_FLASHIMAGE
 #endif
 
 // Validate asset storage method is appropriate

@@ -22,9 +22,6 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\patch_medinfo.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_assetload_array.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -45,6 +42,54 @@
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c">
       <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\patch_medinfo.c">
+      <Filter>Example\Patch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\bad.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\ecg_heart.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\good.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\lock.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\lock_open_right.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\off_on.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\patch_medinfo2.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\pause_circle.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\play_circle.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\sick.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\silence.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_down.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_off.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_up.c">
+      <Filter>Example\Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,20 +126,21 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\ftd2xx\ftd2xx.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\patch_medinfo.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
       <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
+    <ClInclude Include="..\..\common\patch_medinfo.h">
+      <Filter>Example\Patch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +173,12 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Patch">
+      <UniqueIdentifier>{1b329021-10e2-499a-86fa-f609c5bc3e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Assets">
+      <UniqueIdentifier>{38e13919-88dc-436b-aed2-eb1d434bc8da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

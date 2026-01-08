@@ -18,7 +18,7 @@ This example supports the following platforms:
 | --- | --- | --- |
 |Bridgetek FT9xx | [ft900](ft900/README.md) | Yes | 
 |Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 Supported EVE APIs in this example:
 

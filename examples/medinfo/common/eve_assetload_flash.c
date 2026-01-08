@@ -55,6 +55,12 @@
 const char *flashimage;
 const char *assetdir;
 
+/** @brief Portable version of fopen/fopen_s
+ *  @details This is provided in the main.c file if the platform is able to use
+ *           a file system for accessing assets.
+ */
+extern FILE *port_fopen(char const * _FileName, char const * _Mode);
+
 const char *join(const char *dirname, const char *filename)
 {
     size_t joinedlen = strlen(dirname) + strlen(filename) + 16;
@@ -181,13 +187,13 @@ int eve_loadpatch_impl(void)
 #elif ASSETS == USE_FLASHIMAGE
 
     FILE *h1;
-    errno_t err;
     uint8_t buffer[256];
     uint32_t total = 0;
     uint32_t chunk;
     size_t xfer;
     
-    if ((err = fopen_s(&h1, flashimage, "rb")) == 0)
+    h1 = port_fopen(flashimage, "rb");
+    if (h1)
     {
         int res;
 
@@ -284,13 +290,13 @@ void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 #elif ASSETS == USE_FLASHIMAGE
 
     FILE *h1;
-    errno_t err;
     uint8_t buffer[256];
     uint32_t total = 0;
     uint32_t chunk;
     size_t xfer;
     
-    if ((err = fopen_s(&h1, flashimage, "rb")) == 0)
+    h1 = port_fopen(flashimage, "rb");
+    if (h1)
     {
         int res;
         res = fseek(h1, asset->Flash_Start, SEEK_SET);

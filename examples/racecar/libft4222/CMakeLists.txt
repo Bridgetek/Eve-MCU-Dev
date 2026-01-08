@@ -25,10 +25,6 @@ set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
-        message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
-endif()
-
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
         main.c
@@ -39,6 +35,7 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use libFT4222 as base class
+# Choose the FT4222 device (0 for first, 1 for second etc)
 add_compile_definitions(USE_FT4222=0)
 
 # Enable debug logging output to stdio
@@ -57,22 +54,59 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        imports/ftd2xx
-        imports/LibFT4222/inc
+        ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 
 # EVE library dependencies
-target_link_libraries(eve_library
-        ${CMAKE_CURRENT_LIST_DIR}/imports/LibFT4222/dll/amd64/LibFT4222-64.lib
-        ${CMAKE_CURRENT_LIST_DIR}/imports/ftd2xx/dll/amd64/ftd2xx.lib
-)
-
-# Copy the DLL to beside the executable for Windows
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "../imports/LibFT4222/dll/amd64/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                COMMAND_EXPAND_LISTS
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    find_library(FT4222_LIBRARY
+        NAMES ft4222
         )
+
+    find_library(FTD2XX_LIBRARY
+        NAMES ftd2xx
+        )
+
+    if (FT4222_LIBRARY AND FTD2XX_LIBRARY)
+        message(STATUS "libft4222 found")
+    else()
+        message(FATAL_ERROR "libft4222 not found")
+    endif()
+    
+    if (FTD2XX_LIBRARY)
+        message(STATUS "libftd2xx found")
+    else()
+        message(FATAL_ERROR "libftd2xx not found")
+    endif()
+
+    target_link_libraries(eve_library
+	ft4222
+	ftd2xx        
+    )
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_libft4222/libft4222.h")
+        message(FATAL_ERROR "The Windows LibFT4222 installation has not been completed. Follow the instructions in \"\\ports\\eve_libft4222\\README.md\"")
+    endif()
+
+    target_link_libraries(eve_library
+            ${API_DIRECTORY}/ports/eve_libft4222/libft4222.lib
+            ${API_DIRECTORY}/ports/eve_libft4222/libftd2xx.lib
+    )
+
+    # Copy the DLL to beside the executable for Windows
+    if(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    elseif(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    endif()
 endif()
 
 # Source for example code
@@ -97,7 +131,7 @@ file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS
         "${EXAMPLE_ASSETS}/eve5/*.c" 
         "${EXAMPLE_ASSETS}/eve34/*.c"
         "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PUBLIC
+target_sources(eve_example PRIVATE
         ${EVE_ASSET_LIST})
 
 # Header files used for example code library
@@ -108,6 +142,7 @@ target_include_directories(eve_example PUBLIC
         ${EXAMPLE_COMMON}/ # Headers for example code
         ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
 )
+
 # Example code dependencies
 target_link_libraries(eve_example
         eve_library # Example code depends on EVE library

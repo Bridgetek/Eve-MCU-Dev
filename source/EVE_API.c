@@ -1010,12 +1010,6 @@ void EVE_BITMAP_ZORDER(uint8_t o)
     HAL_IncCmdPointer(4);
 }
 
-void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
-{
-    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
-    HAL_IncCmdPointer(4);
-}
-
 void EVE_PALLETE_SOURCE_H(uint8_t addr)
 {
     HAL_Write32(EVE_ENC_PALLETE_SOURCE_H(addr));
@@ -1710,6 +1704,18 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
     HAL_Write32(ptr);
     HAL_Write32(num);
     HAL_IncCmdPointer(12);
+}
+
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
+{
+    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
+    HAL_IncCmdPointer(4);
+}
+
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
+    HAL_IncCmdPointer(4);
 }
 
 #endif

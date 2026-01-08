@@ -74,7 +74,9 @@ extern uint32_t eve_img_bridgetek_logo_width;
 extern uint32_t eve_img_bridgetek_logo_height;
 
 /* Functions called within the eve_example code */
+/* Functions called within the eve_example code */
 int eve_calibrate(void);
+uint8_t eve_read_tag(uint8_t *key);
 uint32_t eve_load_images(uint32_t);
 
 /* Functions called from eve_example code to platform specific code */
