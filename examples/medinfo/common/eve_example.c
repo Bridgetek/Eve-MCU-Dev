@@ -141,8 +141,8 @@ const uint32_t black = 0x000000;
 const uint32_t red = 0xff0000;
 const uint32_t green = 0x00ff00;
 const uint32_t blue = 0x0000ff;
-const uint32_t red_dark = 0x330000;
-const uint32_t green_dark = 0x003300;
+const uint32_t red_dark = 0x220000;
+const uint32_t green_dark = 0x002200;
 const uint32_t blue_dark = 0x000033;
 const uint32_t orange = 0xffaa00;
 const uint32_t purple = 0xaaaaff;
@@ -376,7 +376,7 @@ void eve_display(void)
     uint16_t tooltip_y;
 
     // Brightness display position
-    uint32_t brightness_val = 50;
+    uint32_t brightness_val = brightness_range;
     // Tracker for tooltip on slider
     uint16_t brightness_tracker = 0;
 
@@ -474,9 +474,12 @@ void eve_display(void)
                 }
             }
             
-            // Boundary of FullHD screen
-            EVE_VERTEX2F(0, 1024);
-            EVE_VERTEX2F(EVE_DISP_WIDTH, 1024);
+            // Boundary of FullHD screen drawn on WUXGA screen
+            if (EVE_DISP_HEIGHT > 1080)
+            {
+                EVE_VERTEX2F(0, 1080);
+                EVE_VERTEX2F(EVE_DISP_WIDTH, 1080);
+            }
 
             // Draw the three graphs
             EVE_COLOR(white);
