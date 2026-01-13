@@ -79,18 +79,21 @@ include_directories(
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
-# The pico port can only use the EVE Flash for storage of assets
-add_compile_definitions(ASSETS=USE_FLASH)
+# The pico port can only use the EVE Flash or C arrays for storage of assets
+# Comment out this line to set the method in common/eve_example.h
+add_compile_definitions(ASSETS=USE_C_ARRAYS)
 
 # Trig tables are used instead of maths functions
 add_compile_definitions(USE_TRIG_TABLE)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+# Milliseconds to wait for stdio connection
+# (will also have stdio_usb_connected() call in main to wait for connection)
+add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+# Modify the below lines to enable/disable output over USB
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
@@ -122,6 +125,15 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_graph_vertexes.c
         ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
 )
+
+# Example code assets
+# Add all C files, the EVE generation macro selects the correct data
+file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
+        # Add any assets that are compiled in
+        "${EXAMPLE_ASSETS}/c_array_assets/*.c")
+target_sources(eve_example PRIVATE
+        # Add specific asset files that are compiled in
+        ${EVE_ASSET_LIST})
 
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC

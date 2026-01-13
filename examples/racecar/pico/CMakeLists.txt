@@ -38,8 +38,6 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(racecar C CXX ASM)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
@@ -82,6 +80,7 @@ include_directories(
 add_compile_definitions(PLATFORM_RP2040)
 
 # The pico port can only use the EVE Flash for storage of assets
+# Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_FLASH)
 
 # Trig tables are used instead of maths functions
@@ -89,9 +88,11 @@ add_compile_definitions(USE_TRIG_TABLE)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+# Milliseconds to wait for stdio connection
+# (will also have stdio_usb_connected() call in main to wait for connection)
+add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
+# Modify the below lines to enable/disable output over USB
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
