@@ -54,6 +54,17 @@
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
+static int calib_key_pressed(void)
+{
+    // Detect screen is being touched at startup
+    // NOTE: Not available on BT82x (EVE API 5)
+#if IS_EVE_API(1, 2, 3, 4)
+    return eve_key_detect();
+#else
+    return 0;
+#endif
+}
+
 /* FUNCTIONS ***********************************************************************/
 
 int eve_key_detect(void)
@@ -134,18 +145,22 @@ int eve_calibrate(void)
 #else
     // Uncharacterised panels
     int valid = 0;
-    platform_calib_init();
-
-    // Do not read calibration information if screen is being touched at start
-    if (!eve_key_detect())
+    // Try to read a touch configuration if the platform support it
+    // NOTE: platform_calib_init to return zero if supported non-zero if now
+    if (platform_calib_init() == 0)
     {
-        // Read calibration information from platform
-        if (platform_calib_read(&calib))
+        // Do not read calibration information if screen is being touched at start
+        // NOTE: Not available on BT82x (EVE API 5)
+        if (!calib_key_pressed())
         {
-            // Verify the information is valid
-            if (calib.key == VALID_KEY_TOUCHSCREEN)
+            // Read calibration information from platform
+            if (platform_calib_read(&calib) == 0)
             {
-                valid = 1;
+                // Verify the information is valid
+                if (calib.key == VALID_KEY_TOUCHSCREEN)
+                {
+                    valid = 1;
+                }
             }
         }
     }
@@ -154,7 +169,8 @@ int eve_calibrate(void)
     if (!valid)
     {
         // Wait for end of touch.
-        while (!eve_key_detect()) {};
+        // NOTE: Not available on BT82x (EVE API 5)
+        while (calib_key_pressed()) {};
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();

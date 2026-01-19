@@ -14,6 +14,7 @@
                 <sourceRootElem>../../../source</sourceRootElem>
                 <sourceRootElem>../../../ports/eve_arch_pic</sourceRootElem>
                 <sourceRootElem>../../../include</sourceRootElem>
+                <sourceRootElem>../../snippets</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

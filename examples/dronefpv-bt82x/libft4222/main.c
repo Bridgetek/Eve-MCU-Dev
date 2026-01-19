@@ -85,7 +85,7 @@ FILE *port_fopen(char const * _FileName, char const * _Mode)
 //@{
 int8_t platform_calib_init(void)
 {
-    return 1;
+    return 0;
 }
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)

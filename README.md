@@ -140,9 +140,24 @@ The examples directory contains all the examples provided. There are more detail
 
 ### Device and Panel Selection
 
-The library __must__ be built for the correct EVE device and panel type. This is defined in the file [include/EVE_config.h](include/EVE_config.h).
+The library __must__ be built for the correct EVE device and panel type. The target EVE device and panel type are defined in the file [include/EVE_config.h](include/EVE_config.h).
 
-The `EVE_config.h` file may be overridden in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
+It is recommended that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
+
+There are three methods of configuring the EVE device and panel type. 
+- The `FT8XX_TYPE` macro and `DISPLAY_RES` macro.
+  This is the simplest method if a configuration is fixed. The `MODULE_TYPE` and `PANEL_TYPE` macros may be removed or be set to `NO_MODULE` and `NO_PANEL` respectively.
+- The `FT8XX_TYPE` macro and `PANEL_TYPE` macro.
+  This sets the `DISPLAY_RES` for a panel. The `MODULE_TYPE` macros may be removed or be set to `NO_MODULE`.
+- A Bridgetek module type may be set. 
+  This will configure the `FT8XX_TYPE` and `PANEL_TYPE` macros. 
+  The `PANEL_TYPE` macro will be further expanded into a `DISPLAY_RES` macro.
+  
+In all cases the `DISPLAY_RES` macro will lead to the `EVE_DISP_*` macros being set for configuring the registers on in on the EVE device. 
+
+The `DISPLAY_RES` macro is not used in the library.
+
+The `PANEL_TYPE` macro is not used in the library, however it is optionally used in the `examples\snippets\touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
 
 #### Device Selection
 
@@ -188,9 +203,9 @@ Note that the example programs will take the `EVE_config.h` file from the `inclu
 
 #### Display Panel Selection
 
-The display panel dimensions to use are set in the file `EVE_config.h` using the macro `DISPLAY_RES`. 
+The display panel dimensions to use are set in the file `EVE_config.h` using the `DISPLAY_RES` or `PANEL_TYPE` macros.
 
-Various standard panels are included, if a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
+The macro `DISPLAY_RES` will enable one of the pre-defined panel settings to be configured with the register values needed for that panel type. The registers are calculated for the standard Bridgetek panels in the resolution indicated by the `DISPLAY_RES` macro. Other panels may require different register settings. If a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
 
 The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
 
@@ -210,6 +225,14 @@ This line will set the panel to a resolution of 800 x 400 for a ME813A-WH50C pan
 ```
 
 **The default in the distribution will be a WUXGA panel**.
+
+#### Setting Device and Panel in Build Configuration
+
+The `MODULE_TYPE`, `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
+
+The `MODULE_TYPE` macro is parsed first. Setting this to `NO_MODULE` will allow one or all of the `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros to be picked up from the build file C definitions. 
+
+Note that the preprocessor may complain if it is asked to change the value of one of the macros. 
 
 ## Ports
 
