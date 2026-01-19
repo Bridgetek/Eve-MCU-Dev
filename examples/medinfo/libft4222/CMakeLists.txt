@@ -58,7 +58,6 @@ target_include_directories(eve_library PUBLIC
 )
 
 # EVE library dependencies
-# EVE library dependencies
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     find_library(FT4222_LIBRARY
         NAMES ft4222
@@ -115,16 +114,16 @@ endif()
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_COMMON}/patch_medinfo.c
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
         ${EXAMPLE_COMMON}/eve_assetload_flash.c
         ${EXAMPLE_COMMON}/eve_tracedata.c
         ${EXAMPLE_COMMON}/eve_graph_extension.c
         ${EXAMPLE_COMMON}/eve_graph_vertexes.c
-        ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
+        ${EXAMPLE_COMMON}/patch_medinfo.c
 )
 
 # Example code assets
@@ -142,7 +141,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/sevenseg/
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

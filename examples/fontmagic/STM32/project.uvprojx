@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>PLATFORM_STM32</Define>
               <Undefine></Undefine>
-              <IncludePath>..\common;..\..\..\include;..\..\..\ports\eve_bt82x</IncludePath>
+              <IncludePath>..\common;..\..\snippets;..\..\..\include;..\..\..\ports\eve_bt82x</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,14 +385,9 @@
           <GroupName>EVE Example</GroupName>
           <Files>
             <File>
-              <FileName>eve_calibrate.c</FileName>
+              <FileName>touch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\common\eve_calibrate.c</FilePath>
-            </File>
-            <File>
-              <FileName>eve_helper.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\common\eve_helper.c</FilePath>
+              <FilePath>..\..\snippets\touch.c</FilePath>
             </File>
             <File>
               <FileName>eve_example.c</FileName>

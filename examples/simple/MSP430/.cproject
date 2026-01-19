@@ -48,6 +48,7 @@
                                     <listOptionValue value="${PROJECT_ROOT}/../../../include"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../common"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../../../ports/eve_arch_msp"/>
+                                    <listOptionValue value="${PROJECT_ROOT}/../../snippets/"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../../../ports/eve_bt82x"/>
                                     <listOptionValue value="${PROJECT_ROOT}"/>
                                     <listOptionValue value="${CG_TOOL_ROOT}/include"/>
@@ -94,7 +95,7 @@
                         </toolChain>
                     </folderInfo>
                     <sourceEntries>
-                        <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="snippets/widgets|snippets/maths|snippets/dials|snippets/controls" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                     </sourceEntries>
                 </configuration>
             </storageModule>

@@ -113,7 +113,6 @@ endif()
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_helper.c
         ${EXAMPLE_COMMON}/eve_assetload_flash.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve3.c
@@ -121,7 +120,8 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve5.c
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_COMMON}/patch_textscale.c
 )
 
@@ -140,7 +140,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 
 # Example code dependencies

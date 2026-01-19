@@ -61,10 +61,9 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
 
     # Example project sources
     ${EXAMPLE_COMMON}/eve_example.c
-    ${EXAMPLE_COMMON}/eve_helper.c
-    ${EXAMPLE_COMMON}/eve_calibrate.c
     ${EXAMPLE_COMMON}/eve_images.c
     ${EXAMPLE_COMMON}/eve_fonts.c
+    ${EXAMPLE_SNIPPETS}/touch.c
 
     # API Sources
     ${API_DIRECTORY}/source/EVE_API.c
@@ -107,6 +106,8 @@ target_include_directories(${EXECUTABLE} PRIVATE
     ${API_DIRECTORY}/ports/eve_bt82x
     # Example project includes
     ${EXAMPLE_COMMON}
+    # Header for snippets 
+    ${EXAMPLE_SNIPPETS}
 
     # GENERATED: INCLUDES - DO NOT MODIFY - BEGIN
     # GENERATED: INCLUDES - DO NOT MODIFY - END

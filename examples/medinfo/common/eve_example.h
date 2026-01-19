@@ -50,31 +50,8 @@ extern "C" {
 
 #include "patch_medinfo.h"
 
-/**
- @brief Key for identifying if touchscreen calibration values are programmed correctly.
- */
-#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
-
-/**
- @brief Structure to hold touchscreen calibration settings.
- @details This is used to store the touchscreen calibration settings persistently
- in Flash and identify if the calibration needs to be re-performed.
- */
-struct touchscreen_calibration {
-    uint32_t key; // VALID_KEY_TOUCHSCREEN
-    uint32_t transform[6];
-};
-
-/* Functions called within the eve_example code */
-void eve_calibrate(void);
-
 /* Functions called from eve_example code to platform specific code */
-int8_t platform_calib_init(void);
-int8_t platform_calib_write(struct touchscreen_calibration *calib);
-int8_t platform_calib_read(struct touchscreen_calibration *calib);
 uint32_t platform_get_time(void);
-
-uint8_t eve_read_tag(uint8_t *key);
 
 /* Entry point to the example code */
 void eve_example(const char *assets);
@@ -243,6 +220,9 @@ void graph_draw(uint8_t num, uint32_t pos, uint32_t rpos, uint32_t x, uint32_t y
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
+
+#include "touch.h"
+#include "widgets/sevenseg.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -19,10 +19,10 @@ The script will report the names of the files copied. There are no parameters fo
 Sketch name is simple_arduino
 ..\common\eve_example.c -> simple_arduino\eve_example.c
 ..\common\eve_example.h -> simple_arduino\eve_example.h
-..\common\eve_calibrate.c -> simple_arduino\eve_calibrate.c
 ..\common\eve_fonts.c -> simple_arduino\eve_fonts.c
-..\common\eve_helper.c -> simple_arduino\eve_helper.c
 ..\common\eve_images.c -> simple_arduino\eve_images.c
+..\..\snippets\touch.c -> simple_arduino\touch.c
+..\..\snippets\touch.h -> simple_arduino\touch.h
 ..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.c
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.c
 ..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
@@ -64,12 +64,13 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - eve_arch_arduino.ino
   - README.md
 - From the `examples\simple\common` directory the files for the simple example functionality:
-  - eve_calibrate.c
   - eve_example.c
   - eve_example.h
   - eve_fonts.c
-  - eve_helper.c
   - eve_images.c
+- From the `examples\snippets` directory the files for the snippets functionality:
+  - touch.c
+  - touch.h
 
 ## Sketch Directory
 
@@ -83,13 +84,13 @@ BT82x.h
 EVE.h
 EVE_API.c
 eve_arch_arduino.ino
-eve_calibrate.c
+touch.c
+touch.h
 EVE_config.h
 eve_example.c
 eve_example.h
 eve_fonts.c
 EVE_HAL.c
-eve_helper.c
 eve_images.c
 FT80x.h
 FT81x.h
@@ -121,7 +122,7 @@ The sketch can be verified and uploaded to the Arduino device. Please follow the
 
 ## Reusing the Example Code
 
-This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_helper.c`, `eve_images.c`, `eve_fonts.c`, and `eve_calibrate.c`. If using the python script then the list of files for the example code will need updated.
+This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_images.c`, `eve_fonts.c`, and `touch.c`. If using the python script then the list of files for the example code will need updated.
 
 ## Updating the Configuration
 

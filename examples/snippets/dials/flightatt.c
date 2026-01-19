@@ -41,7 +41,7 @@
 
 #include <EVE.h>
 
-#include "trig_furman.h"
+#include "maths/trig_furman.h"
 
 /*
  * x,y - top left of seven segment graphic in pixels

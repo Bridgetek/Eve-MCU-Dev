@@ -43,6 +43,8 @@
 #include <MCU.h> // For DEBUG_PRINTF
 
 #include "eve_example.h"
+#include "touch.h"
+
 extern const uint8_t font0[];
 extern const EVE_GPU_FONT_HEADER *font0_hdr;
 

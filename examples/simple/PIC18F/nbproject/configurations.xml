@@ -52,10 +52,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="common" displayName="common" projectFiles="true">
-        <itemPath>../common/eve_calibrate.c</itemPath>
+        <itemPath>../../snippets/touch.c</itemPath>
         <itemPath>../common/eve_example.c</itemPath>
         <itemPath>../common/eve_fonts.c</itemPath>
-        <itemPath>../common/eve_helper.c</itemPath>
         <itemPath>../common/eve_images.c</itemPath>
       </logicalFolder>
       <logicalFolder name="eve_arch_pic"

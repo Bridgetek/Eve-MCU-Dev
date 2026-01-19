@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include "pico/stdlib.h"
+#include "pico/time.h"
 
 /**
   @file main.c
@@ -58,6 +59,7 @@
 #include <EVE.h>
 
 #include "eve_example.h"
+#include "touch.h"
 
 /* CONSTANTS ***********************************************************************/
 
@@ -106,6 +108,13 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     memcpy(calib, p, sizeof(struct touchscreen_calibration));
     return 0;
 }
+
+uint32_t platform_get_time(void)
+{
+    uint32_t time_ms;
+    time_ms = to_ms_since_boot(get_absolute_time());
+    return time_ms;
+}
 //@}
 
 int main(void)
@@ -126,7 +135,8 @@ void setup(void)
 
 #if DEBUG_LEVEL > 0
     // Initialise stdio ports as configured in CMakeLists.txt
-    stdio_init_all();
+    stdio_usb_init();
+    while (!stdio_usb_connected()) { sleep_ms(100);  }
 #endif
 
     // Turn on the pico LED to show activity
@@ -139,7 +149,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to BRT_AN_025 Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
     printf ("Pin configuration for example:\n");
     printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

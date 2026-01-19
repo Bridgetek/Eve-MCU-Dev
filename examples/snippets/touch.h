@@ -1,6 +1,6 @@
 /**
- @file eve_helper.c
- */
+    @file touch.h
+ **/
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -37,33 +37,64 @@
  * ============================================================================
  */
 
+#ifndef EVE_TOUCH_H
+#define EVE_TOUCH_H
+
 #include <stdint.h>
 
-#include <EVE.h>
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-#include "eve_example.h"
+/**
+ @brief Key for identifying if touchscreen calibration values are programmed correctly.
+ @details This is used to determine if the stored calibration information on a 
+    platform is correct. If the key is not correct then the calibration will be
+    redone. If one MCU is used with different panel types (or display resolutions)
+    then the following modification will ensure that calibration is rerun each time
+    there is a change of panel in EVE_config.h.
+        #define VALID_KEY_TOUCHSCREEN (0xd72f91a3 ^ PANEL_TYPE)
+ */
+#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
 
-uint8_t eve_read_tag(uint8_t *key)
-{
-    uint8_t Read_tag;
-    uint8_t key_detect = 0;
+/**
+ @brief Structure to hold touchscreen calibration settings.
+ @details This is used to store the touchscreen calibration settings persistently
+ in Flash and identify if the calibration needs to be re-performed.
+ */
+struct touchscreen_calibration {
+    uint32_t key; // VALID_KEY_TOUCHSCREEN
+    uint32_t transform[6];
+};
 
-#if IS_EVE_API(1, 2, 3, 4)
-    Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
-    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-#else
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-#endif
+/**
+ @brief Calibration Function
+ */
+int eve_calibrate(void);
 
-    return key_detect;
-}
+/**
+ @brief Simple Touch Detect Function
+ */
+int eve_key_detect(void);
 
+/**
+ @brief Touch Detect Function returning Tag Value
+ */
+int eve_read_tag(uint8_t *key);
+
+/**
+ @brief Functions called from eve_example code to platform specific code 
+ @details These will not be called if there is a preconfigured touchscreen
+ setting for a panel. e.g. DP_1012_01A and DP_1561_01A.
+ */
+//@{
+int8_t platform_calib_init(void);
+int8_t platform_calib_write(struct touchscreen_calibration *calib);
+int8_t platform_calib_read(struct touchscreen_calibration *calib);
+//@}
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
+
+#endif /* EVE_TOUCH_H */

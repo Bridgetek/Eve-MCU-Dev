@@ -43,7 +43,6 @@
 #include <EVE.h>
 
 #include "eve_example.h"
-#include "sevenseg.h"
 
 #if IS_EVE_API(1)
 #error This example requires EVE API 2 or above.

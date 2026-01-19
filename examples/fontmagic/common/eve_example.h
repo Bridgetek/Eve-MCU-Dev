@@ -55,21 +55,6 @@ extern "C" {
 //@}
 
 /**
- @brief Key for identifying if touchscreen calibration values are programmed correctly.
- */
-#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
-
-/**
- @brief Structure to hold touchscreen calibration settings.
- @details This is used to store the touchscreen calibration settings persistently
- in Flash and identify if the calibration needs to be re-performed.
- */
-struct touchscreen_calibration {
-	uint32_t key; // VALID_KEY_TOUCHSCREEN
-	uint32_t transform[6];
-};
-
-/**
  @brief Globals available within the example code.
  */
 //{
@@ -115,24 +100,15 @@ struct eve_font_cache {
  @brief Functions called within the eve_example code. 
  */
 //{
-void eve_calibrate(void);
 uint32_t eve_init_fonts(uint8_t fontnumber);
-uint8_t eve_read_tag(uint8_t *key);
-//}
-
-/**
- @brief Functions called from example code to platform specific code. 
- */
-//{
-int8_t platform_calib_init(void);
-int8_t platform_calib_write(struct touchscreen_calibration *calib);
-int8_t platform_calib_read(struct touchscreen_calibration *calib);
 //}
 
 /**
  @brief Entry point to the example code .
  */
 void eve_example(void);
+
+#include "touch.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

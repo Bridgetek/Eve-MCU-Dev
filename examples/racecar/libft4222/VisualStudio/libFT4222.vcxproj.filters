@@ -10,19 +10,19 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
+    <ClCompile Include="..\..\common\eve_helper.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_assetload_array.c">
@@ -102,9 +102,6 @@
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -116,9 +113,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
@@ -132,11 +126,17 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\patch_textscale.h">
       <Filter>Example\Patch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

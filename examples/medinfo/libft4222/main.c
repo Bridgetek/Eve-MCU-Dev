@@ -61,6 +61,7 @@ typedef
     platform_time_t;
 
 #include "eve_example.h"
+#include "touch.h"
 
 /* CONSTANTS ***********************************************************************/
 

@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_helper.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
+SOURCEFILES_QUOTED_IF_SPACED=../..snippets/touch.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d ${OBJECTDIR}/main/main.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1270477542/touch.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1270477542/touch.p1.d ${OBJECTDIR}/_ext/1270477542/eve_example.p1.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d ${OBJECTDIR}/_ext/1270477542/eve_images.p1.d ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1.d ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/system.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1.d ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_API.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1.d ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1.d ${OBJECTDIR}/main/main.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
+OBJECTFILES=${OBJECTDIR}/_ext/1270477542/touch.p1 ${OBJECTDIR}/_ext/1270477542/eve_example.p1 ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ${OBJECTDIR}/_ext/1270477542/eve_images.p1 ${OBJECTDIR}/_ext/366209512/EVE_MCU_PIC.p1 ${OBJECTDIR}/mcc_generated_files/spi/src/mssp1.p1 ${OBJECTDIR}/mcc_generated_files/system/src/interrupt.p1 ${OBJECTDIR}/mcc_generated_files/system/src/clock.p1 ${OBJECTDIR}/mcc_generated_files/system/src/system.p1 ${OBJECTDIR}/mcc_generated_files/system/src/config_bits.p1 ${OBJECTDIR}/mcc_generated_files/system/src/pins.p1 ${OBJECTDIR}/_ext/1366059434/EVE_API.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL.p1 ${OBJECTDIR}/_ext/1366059434/EVE_HAL_Linux.p1 ${OBJECTDIR}/main/main.p1
 
 # Source Files
-SOURCEFILES=../common/eve_calibrate.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_helper.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
+SOURCEFILES=../../snippets/touch.c ../common/eve_example.c ../common/eve_fonts.c ../common/eve_images.c ../../../ports/eve_arch_pic/EVE_MCU_PIC.c mcc_generated_files/spi/src/mssp1.c mcc_generated_files/system/src/interrupt.c mcc_generated_files/system/src/clock.c mcc_generated_files/system/src/system.c mcc_generated_files/system/src/config_bits.c mcc_generated_files/system/src/pins.c ../../../source/EVE_API.c ../../../source/EVE_HAL.c ../../../source/EVE_HAL_Linux.c main/main.c
 
 
 
@@ -88,13 +88,13 @@ MP_PROCESSOR_OPTION=18F46K22
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1: ../common/eve_calibrate.c  nbproject/Makefile-${CND_CONF}.mk 
+${OBJECTDIR}/_ext/1270477542/touch.p1: ../../snippets/touch.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.d ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	@${RM} ${OBJECTDIR}/_ext/1270477542/touch.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/touch.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/touch.p1 ../../snippets/touch.c 
+	@-${MV} ${OBJECTDIR}/_ext/1270477542/touch.d ${OBJECTDIR}/_ext/1270477542/touch.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/touch.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_example.p1: ../common/eve_example.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
@@ -111,14 +111,6 @@ ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1: ../common/eve_fonts.c  nbproject/Make
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_fonts.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1270477542/eve_helper.p1: ../common/eve_helper.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=none   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_helper.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
@@ -217,13 +209,13 @@ ${OBJECTDIR}/main/main.p1: main/main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} ${OBJECTDIR}/main/main.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 else
-${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1: ../common/eve_calibrate.c  nbproject/Makefile-${CND_CONF}.mk 
+${OBJECTDIR}/_ext/1270477542/touch.p1: ../../snippets/touch.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1 ../common/eve_calibrate.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.d ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_calibrate.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	@${RM} ${OBJECTDIR}/_ext/1270477542/touch.p1.d 
+	@${RM} ${OBJECTDIR}/_ext/1270477542/touch.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/touch.p1 ../../snippets/touch.c 
+	@-${MV} ${OBJECTDIR}/_ext/1270477542/touch.d ${OBJECTDIR}/_ext/1270477542/touch.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/touch.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_example.p1: ../common/eve_example.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
@@ -240,14 +232,6 @@ ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1: ../common/eve_fonts.c  nbproject/Make
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1 ../common/eve_fonts.c 
 	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_fonts.d ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_fonts.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
-	
-${OBJECTDIR}/_ext/1270477542/eve_helper.p1: ../common/eve_helper.c  nbproject/Makefile-${CND_CONF}.mk 
-	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
-	@${RM} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 
-	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -memi=wordwrite -O1 -fasmfile -maddrqual=ignore -DPLATFORM_PIC -xassembler-with-cpp -I"../common" -I"../../../include" -mwarn=0 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-download -mno-default-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto:auto     -o ${OBJECTDIR}/_ext/1270477542/eve_helper.p1 ../common/eve_helper.c 
-	@-${MV} ${OBJECTDIR}/_ext/1270477542/eve_helper.d ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d 
-	@${FIXDEPS} ${OBJECTDIR}/_ext/1270477542/eve_helper.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 ${OBJECTDIR}/_ext/1270477542/eve_images.p1: ../common/eve_images.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}/_ext/1270477542" 

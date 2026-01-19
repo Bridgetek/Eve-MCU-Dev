@@ -45,6 +45,7 @@
                                     <listOptionValue value="${CG_TOOL_ROOT}/arm-none-eabi/include"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../common"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../../../include"/>
+                                    <listOptionValue value="${PROJECT_ROOT}/../../snippets/"/>
                                     <listOptionValue value="${PROJECT_ROOT}/../../../ports/eve_bt82x"/>
                                 </option>
                                 <option id="com.ti.ccstudio.buildDefinitions.TMS470_GNU_9.0.compilerID.DEFINE.513415736" superClass="com.ti.ccstudio.buildDefinitions.TMS470_GNU_9.0.compilerID.DEFINE" valueType="definedSymbols">
@@ -109,6 +110,9 @@
                             </tool>
                         </toolChain>
                     </folderInfo>
+                    <sourceEntries>
+                        <entry excluding="snippets/widgets|snippets/maths|snippets/controls|snippets/dials" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                    </sourceEntries>
                 </configuration>
             </storageModule>
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

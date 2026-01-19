@@ -46,7 +46,14 @@
 
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
+// Choose a suitable font for the display
+#if EVE_DISP_WIDTH <= 480
+const uint8_t font = 26;
+#elif EVE_DISP_WIDTH <= 800
+const uint8_t font = 28;
+#else
 const uint8_t font = 30;
+#endif
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
@@ -173,11 +180,13 @@ void eve_display(void)
             uint16_t xr = (xyr>>16);
             uint16_t yr = xyr & 0xffff;
 
+            // Write the touch position on the screen.
             EVE_CMD_NUMBER(widths[font] * 6, ypos, font, 0, x);
             EVE_CMD_NUMBER(widths[font] * 9, ypos, font, 0, y);
             EVE_CMD_NUMBER(widths[font] * 6, ypos + heights[font], font, 0, xr);
             EVE_CMD_NUMBER(widths[font] * 9, ypos + heights[font], font, 0, yr);
 
+            // Draw cross-hairs for the touch position.
             EVE_BEGIN(EVE_BEGIN_LINES);
             EVE_VERTEX_FORMAT(0);
             EVE_COLOR_RGB(255,255,255);

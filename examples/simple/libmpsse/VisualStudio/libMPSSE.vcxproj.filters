@@ -13,16 +13,10 @@
     <ClCompile Include="..\..\common\eve_images.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_fonts.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c">
@@ -43,6 +37,9 @@
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -62,9 +59,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">
       <Filter>Library\eve\include</Filter>
@@ -98,6 +92,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

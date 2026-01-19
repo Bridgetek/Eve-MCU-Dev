@@ -1,5 +1,5 @@
 /**
- @file eve_calibrate.c
+ @file touch.c
  */
 /*
  * ============================================================================
@@ -37,11 +37,12 @@
  * ============================================================================
  */
 
+#include <stdio.h>
 #include <stdint.h>
 
 #include <EVE.h>
 
-#include "eve_example.h"
+#include "touch.h"
 
 /* CONSTANTS ***********************************************************************/
 
@@ -53,21 +54,107 @@
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
-
 /* FUNCTIONS ***********************************************************************/
+
+int eve_key_detect(void)
+{
+    int key_detect = 0;
+
+#if IS_EVE_API(1, 2, 3, 4)
+    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+    {
+        key_detect = 1;
+    }
+#else // IS_EVE_API(5)
+    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+    {
+        key_detect = 1;
+    }
+#endif
+
+    return key_detect;
+}
+
+/* Read a (single) touch tag from the touch controller. 
+ * Return non-zero if there is a valid touch tag. Zero if no touch. 
+ */
+int eve_read_tag(uint8_t *key)
+{
+    uint8_t Read_tag;
+    int key_detect = 0;
+
+#if IS_EVE_API(1, 2, 3, 4)
+    Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
+    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+#else
+    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
+    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+#endif
+
+    return key_detect;
+}
 
 int eve_calibrate(void)
 {
     struct touchscreen_calibration calib;
-    uint8_t dummy;
-    
+
+    // Transform matrix definition
+    // x' = x * A + y * B + C
+    // y' = x * D + y * E + F
+
+#if PANEL_TYPE == DP_1012_01A
+    // Predefined transform matrix for DP-1012-01A display panel
+    // X-axis 1920 pixels. Raw 1919 -> 0 (0x780)
+    // Y-axis 1200 pixels. Raw 1199 -> 0 (0x4b0)
+    calib.transform[0] = 0xffff0000; // - 1.0
+    calib.transform[1] = 0x00000000; // 0.0
+    calib.transform[2] = 0x07800000; // + 1200
+    calib.transform[3] = 0x00000000; // 0.0
+    calib.transform[4] = 0xffff0000; // - 1.0
+    calib.transform[5] = 0x04b00000; // + 1200.0
+#elif PANEL_TYPE == DP_1561_01A
+    // Predefined transform matrix for DP-1561-01A display panel
+    // X-axis 1920 pixels. Raw 0 -> 16383 (0x4000)
+    // Y-axis 1080 pixels. Raw 0 -> 9599 (0x2580)
+    // Note: Transforms are valid for base_patch 1.2.
+    calib.transform[0] = 0x00001e00; // + 0.1171875
+    calib.transform[1] = 0x00000000; // 0.0
+    calib.transform[2] = 0x00000000; // 0.0
+    calib.transform[3] = 0x00000000; // 0.0
+    calib.transform[4] = 0x00001ccc; // + 0.1125
+    calib.transform[5] = 0x00000000; // 0.0
+#else
+    // Uncharacterised panels
+    int valid = 0;
     platform_calib_init();
 
+    // Do not read calibration information if screen is being touched at start
+    if (!eve_key_detect())
+    {
+        // Read calibration information from platform
+        if (platform_calib_read(&calib))
+        {
+            // Verify the information is valid
+            if (calib.key == VALID_KEY_TOUCHSCREEN)
+            {
+                valid = 1;
+            }
+        }
+    }
+
     // If no store of calibration or current screen touch.
-    if ((platform_calib_read(&calib) != 0) || (eve_read_tag(&dummy)))
+    if (!valid)
     {
         // Wait for end of touch.
-        while (eve_read_tag(&dummy));
+        while (!eve_key_detect()) {};
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
@@ -83,6 +170,7 @@ int eve_calibrate(void)
             return -1;
         }
 
+        calib.key = VALID_KEY_TOUCHSCREEN;
         calib.transform[0] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
         calib.transform[1] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
         calib.transform[2] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
@@ -91,14 +179,23 @@ int eve_calibrate(void)
         calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
         platform_calib_write(&calib);
     }
-    else
-    {
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-        EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
-    }
+#endif
+
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+    
+    // Reset the touch controller with the new transform (not strictly needed)
+#if IS_EVE_API(1, 2, 3, 4)
+    EVE_LIB_MemWrite8(EVE_REG_CPURESET, 2);
+    EVE_LIB_MemWrite8(EVE_REG_CPURESET, 0);
+#else // IS_EVE_API(5)
+    EVE_LIB_MemWrite32(EVE_REG_CPURESET, 2);
+    EVE_LIB_MemWrite32(EVE_REG_CPURESET, 0);
+#endif
+
     return 0;
 }

@@ -39,6 +39,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/include</locationURI>
 		</link>
 		<link>
+			<name>snippets</name>
+			<type>2</type>
+			<locationURI>PARENT-2-PROJECT_LOC/snippets</locationURI>
+		</link>
+		<link>
 			<name>source</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/source</locationURI>

@@ -61,31 +61,22 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
-set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
 # point out the CMake, where to find the executable source file
 add_executable(${PROJECT_NAME}
         main/main.c
 )
-pico_set_program_name(${PROJECT_NAME} "medinfo")
+pico_set_program_name(${PROJECT_NAME} "touchscreentest")
 pico_set_program_version(${PROJECT_NAME} "0.1")
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
-	${EXAMPLE_SNIPPETS}/widgets
 )
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
-
-# The pico port can only use the EVE Flash or C arrays for storage of assets
-# Comment out this line to set the method in common/eve_example.h
-add_compile_definitions(ASSETS=USE_C_ARRAYS)
-
-# Trig tables are used instead of maths functions
-add_compile_definitions(USE_TRIG_TABLE)
-
+add_compile_definitions(USE_TRIG_TABLE) #use look up table instead of maths funcitons for trig
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
 # Milliseconds to wait for stdio connection
@@ -101,7 +92,7 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_MCU_RP2040.c
-        #${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
@@ -114,25 +105,12 @@ target_include_directories(eve_library PUBLIC
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_assetload_array.c
-        ${EXAMPLE_COMMON}/eve_assetload_file.c
-        ${EXAMPLE_COMMON}/eve_assetload_flash.c
-        ${EXAMPLE_COMMON}/eve_tracedata.c
-        ${EXAMPLE_COMMON}/eve_graph_extension.c
-        ${EXAMPLE_COMMON}/eve_graph_vertexes.c
+        ${EXAMPLE_COMMON}/eve_images.c
         ${EXAMPLE_SNIPPETS}/touch.c
-        ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
-        ${EXAMPLE_COMMON}/patch_medinfo.c
 )
-
-# Example code assets
-# Add all C files, the EVE generation macro selects the correct data
-file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
-        # Add any assets that are compiled in
-        "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PRIVATE
-        # Add specific asset files that are compiled in
-        ${EVE_ASSET_LIST})
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(eve_example 0)
+pico_enable_stdio_usb(eve_example 1)
 
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
@@ -145,6 +123,7 @@ target_include_directories(eve_example PUBLIC
 # Example code dependencies
 target_link_libraries(eve_example
         eve_library # Example code depends on EVE library
+        pico_stdlib
 )
 
 # Add the standard library to the build
@@ -161,8 +140,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(eve_library 
-        pico_stdlib
+	pico_stdlib
         hardware_spi
+	hardware_gpio
         pico_time
         )
 
@@ -173,3 +153,4 @@ add_custom_command(TARGET ${PROJECT_NAME}
     COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
     VERBATIM
 )
+

@@ -385,9 +385,9 @@
           <GroupName>EVE Example</GroupName>
           <Files>
             <File>
-              <FileName>eve_calibrate.c</FileName>
+              <FileName>touch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\common\eve_calibrate.c</FilePath>
+              <FilePath>..\..\snippets\touch.c</FilePath>
             </File>
             <File>
               <FileName>eve_example.c</FileName>
@@ -398,11 +398,6 @@
               <FileName>eve_fonts.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\common\eve_fonts.c</FilePath>
-            </File>
-            <File>
-              <FileName>eve_helper.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\common\eve_helper.c</FilePath>
             </File>
             <File>
               <FileName>eve_images.c</FileName>

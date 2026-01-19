@@ -16,13 +16,13 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c">
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
@@ -48,9 +48,6 @@
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -71,14 +68,21 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
       <Filter>Header Files</Filter>
-    </ClInclude>    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
-      <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

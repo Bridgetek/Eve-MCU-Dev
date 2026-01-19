@@ -41,7 +41,7 @@
 
 #include <EVE.h>
 
-#include "trig_furman.h"
+#include "maths/trig_furman.h"
 
 #ifndef min
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))

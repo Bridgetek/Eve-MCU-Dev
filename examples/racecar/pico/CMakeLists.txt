@@ -73,7 +73,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
-	${EXAMPLE_SNIPPETS}/trig_furman
+	${EXAMPLE_SNIPPETS}/maths
 )
 
 # Tell EVE library to use RP2040 as base class
@@ -114,15 +114,15 @@ target_include_directories(eve_library PUBLIC
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
         ${EXAMPLE_COMMON}/eve_assetload_flash.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve3.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve4.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve5.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_COMMON}/patch_textscale.c
 )
 
@@ -132,7 +132,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

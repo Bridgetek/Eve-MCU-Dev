@@ -19,7 +19,7 @@ if not os.path.exists(src_example):
     raise Exception("The example directory doesn't exist")
 
 # Collate example files needed (from example common directory)
-example_common_files = ["eve_example.c", "eve_example.h", "eve_calibrate.c", "eve_fonts.c", "eve_helper.c", "eve_images.c"]
+example_common_files = ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]
 
 # Copy example source and header files
 try:
@@ -29,6 +29,22 @@ try:
         shutil.copyfile(srcf, destf)
 except:
     raise Exception("The example common directory doesn't look correct")
+
+src_snippets = os.path.normpath("../../snippets")
+if not os.path.exists(src_snippets):
+    raise Exception("The snippets directory doesn't exist")
+
+# Collate snippet files needed (from example snippets directory)
+example_snippet_files = ["touch.c", "touch.h"]
+
+# Copy example snippet and header files
+try:
+    for d in example_snippet_files:
+        srcf, destf = (os.path.join(src_snippets,d), os.path.join(sketch,d))
+        print(f"{srcf} -> {destf}")
+        shutil.copyfile(srcf, destf)
+except:
+    raise Exception("The example snippet directory doesn't look correct")
 
 # Get the API directory
 src_api = os.path.normpath("../../../")

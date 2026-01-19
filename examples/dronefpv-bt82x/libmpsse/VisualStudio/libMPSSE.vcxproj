@@ -70,22 +70,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\release\include;..\release\libftd2xx;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\release\include;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\trig_furman;..\..\..\snippets\flightcontrols;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\release\include;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -161,13 +161,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightalt.c" />
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightatt.c" />
-    <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c" />
-    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\dials\flightalt.c" />
+    <ClCompile Include="..\..\..\snippets\dials\flightatt.c" />
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
-    <ClCompile Include="..\..\common\eve_calibrate.c" />
-    <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
@@ -183,9 +182,10 @@
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
-    <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h" />
-    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h" />
-    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h" />
+    <ClInclude Include="..\..\..\snippets\dial\flightcontrols.h" />
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
+    <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="release\libftd2xx\ftd2xx.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />

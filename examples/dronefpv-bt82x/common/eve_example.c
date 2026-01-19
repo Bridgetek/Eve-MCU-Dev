@@ -51,8 +51,6 @@
 #include "patch_dronefpv.h"
 
 #include "eve_example.h"
-#include "flightcontrols.h"
-#include "trig_furman.h"
 
 #if EVE_DISP_WIDTH < 480
 #error This example needs a screen width of 480 pixels or above.
