@@ -1,0 +1,55 @@
+name: Build Simple Example for Pico
+
+on:
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      - development
+      # Trigger script on push to 'main' branch
+      - main
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/build_pico.yml'
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: install build packages
+      run: sudo apt-get update && sudo apt-get install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi g++ libstdc++-arm-none-eabi-newlib build-essential
+    
+    - name: Get SDK and add PICO_SDK_PATH
+      run: git clone https://github.com/raspberrypi/pico-sdk.git && echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
+     
+    - name: Init submodules to get tinyUSB stack
+      run: ls && cd pico-sdk && git submodule update --init && cd ..
+      
+    - name: Configure CMake for Raspberry Pi Pico on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake -B ${{github.workspace}}/examples/simple/pico/build820WUXGA -S ${{github.workspace}}/examples/simple/pico -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820
+
+    - name: Build for Raspberry Pi Pico on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake --build ${{github.workspace}}/examples/simple/pico/build820WUXGA
+
+    - name: Configure CMake for Raspberry Pi Pico on IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
+      run: cmake -B ${{github.workspace}}/examples/simple/pico/buildIDM20407A -S ${{github.workspace}}/examples/simple/pico -DMODULE_TYPE=IDM20407A
+
+    - name: Build for Raspberry Pi Pico on IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
+      run: cmake --build ${{github.workspace}}/examples/simple/pico/buildIDM20407A
+
+    - name: Configure CMake for Raspberry Pi Pico on FT813 with DP_0501_01A panel (WVGA)
+      run: cmake -B ${{github.workspace}}/examples/simple/pico/build813WVGA -S ${{github.workspace}}/examples/simple/pico -DFT8XX_TYPE=FT813 -DPANEL_TYPE_TYPE=DP_0501_01A
+
+    - name: Build for Raspberry Pi Pico on IDM20407A module on FT813 with DP_0501_01A panel (WVGA)
+      run: cmake --build ${{github.workspace}}/examples/simple/pico/build813WVGA
+
+    - name: Configure CMake for Raspberry Pi Pico on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: cmake -B ${{github.workspace}}/examples/simple/pico/build800C43A -S ${{github.workspace}}/examples/simple/pico -DFT8XX_TYPE=FT813 -DPANEL_TYPE_TYPE=DP_0501_01A
+
+    - name: Build for Raspberry Pi Pico on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: cmake --build ${{github.workspace}}/examples/simple/pico/build800C43A

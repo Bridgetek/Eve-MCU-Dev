@@ -21,10 +21,29 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# Setup command line options for build - feeds into EVE_config.h
+option(MODULE_TYPE "EVE Module Name" )
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+ENDIF(MODULE_TYPE)
+option(FT8XX_TYPE "EVE Device Type Name" )
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+ENDIF(FT8XX_TYPE)
+option(PANEL_TYPE "EVE Panel Type" )
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+ENDIF(PANEL_TYPE)
+option(DISPLAY_RES "Panel Display Resolution" )
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+ENDIF(DISPLAY_RES)
+
+# Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-# point out the CMake, where to find the executable source file
+# Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
         main.c
 )
