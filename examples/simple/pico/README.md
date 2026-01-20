@@ -2,9 +2,11 @@
 
 [Back](../README.md)
 
-## Compiling using the pico VSCode Extension
+## Compiling using the Raspberry Pi pico VSCode Extension
 
-The workspace file `simple.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
+Ensure that the "Raspberry Pi pico VSCode Extension" is installed on Visual Studio Code (VS Code).
+
+The workspace file `simple.code-workspace` can be loaded directly in VS Code to load the project as a workspace.
 
 ### Setting Up the Simple Raspberry Pi pico VSCode Example
 
