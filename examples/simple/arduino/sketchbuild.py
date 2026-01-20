@@ -35,6 +35,7 @@ def copy_norm(src_file, dest_file):
     with open(srcf, "r") as fsrc:
         with open(destf, "w") as fdest:
             strsrc = fsrc.read()
+            # Modify include statements to use local copy for sketch
             strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
             strsrc = strsrc.replace("<HAL.h>", "\"HAL.h\"")
             strsrc = strsrc.replace("<MCU.h>", "\"MCU.h\"")
@@ -42,13 +43,11 @@ def copy_norm(src_file, dest_file):
             strsrc = strsrc.replace("<EVE_config.h>", "\"EVE_config.h\"")
             strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
             fdest.write(strsrc) 
-     
-     #shutil.copyfile(srcf, destf)
-
 
 # Collate source files needed
 dist_source_files = []
 
+# Source directories for source files to be copied to sketch
 src_example = os.path.normpath("../common")
 src_snippets = os.path.normpath("../../snippets")
 src_api_source = os.path.normpath("../../../source")
@@ -56,7 +55,7 @@ src_api_include = os.path.normpath("../../../include")
 src_port = os.path.normpath("../../../ports/eve_arch_arduino")
 src_patch = os.path.normpath("../../../ports/eve_bt82x")
 
-# Collate example files needed (from example common directory)
+# Collate files needed for sketch
 dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h", "EVE_config.h",
@@ -65,7 +64,7 @@ dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HA
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
 dist_source_files.extend(add_files(src_patch, sketch, ["patch_base.c", "patch_base.h"]))
 
-# Copy API source and header files
+# Copy files into sketch
 try:
     for d in dist_source_files:
         srcf, destf = d

@@ -17,17 +17,12 @@ The script will report the names of the files copied. There are no parameters fo
 ```
 > python .\sketchbuild.py
 Sketch name is simple_arduino
-..\common\eve_example.c -> simple_arduino\eve_example.c
+..\common\eve_example.c -> simple_arduino\eve_example.ino
 ..\common\eve_example.h -> simple_arduino\eve_example.h
-..\common\eve_fonts.c -> simple_arduino\eve_fonts.c
-..\common\eve_images.c -> simple_arduino\eve_images.c
-..\..\snippets\touch.c -> simple_arduino\touch.c
+..\common\eve_fonts.c -> simple_arduino\eve_fonts.ino
+..\common\eve_images.c -> simple_arduino\eve_images.ino
+..\..\snippets\touch.c -> simple_arduino\touch.ino
 ..\..\snippets\touch.h -> simple_arduino\touch.h
-..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.c
-..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.c
-..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
-..\..\..\ports\eve_bt82x\patch_base.c -> simple_arduino\patch_base.c
-..\..\..\ports\eve_bt82x\patch_base.h -> simple_arduino\patch_base.h
 ..\..\..\include\EVE.h -> simple_arduino\EVE.h
 ..\..\..\include\HAL.h -> simple_arduino\HAL.h
 ..\..\..\include\MCU.h -> simple_arduino\MCU.h
@@ -38,6 +33,12 @@ Sketch name is simple_arduino
 ..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
 ..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
 ..\..\..\include\BT82x.h -> simple_arduino\BT82x.h
+..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
+..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
+..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
+..\..\..\ports\eve_arch_arduino\README.md -> simple_arduino\README.md
+..\..\..\ports\eve_bt82x\patch_base.c -> simple_arduino\patch_base.ino
+..\..\..\ports\eve_bt82x\patch_base.h -> simple_arduino\patch_base.h
 ```
 
 ### Copy Files Manually
@@ -72,6 +73,15 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - touch.c
   - touch.h
 
+All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
+
+- `#include <EVE.h>` --> `#include "EVE.h"`
+- `#include <HAL.h>` --> `#include "HAL.h"`
+- `#include <MCU.h>` --> `#include "MCU.h"`
+- `#include <FT8xx.h>` --> `#include "FT8xx.h"`
+- `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <patch_base.h>` --> `#include "patch_base.h"`
+
 ## Sketch Directory
 
 The directory will look similar to this:
@@ -79,42 +89,30 @@ The directory will look similar to this:
 ```
  Directory of <path>EVE-MCU-Dev\examples\simple\arduino\simple_arduino
 
-BT81x.h
-BT82x.h
-EVE.h
-EVE_API.c
-eve_arch_arduino.ino
-touch.c
-touch.h
-EVE_config.h
-eve_example.c
-eve_example.h
-eve_fonts.c
-EVE_HAL.c
-eve_images.c
-FT80x.h
-FT81x.h
-FT8xx.h
-HAL.h
-MCU.h
-patch_base.c
-patch_base.h
-README.md
+EVE.h    
+MCU.h      
+HAL.h      
+EVE_config.h  
+FT8xx.h  
+BT81x.h  
+BT82x.h  
+FT80x.h  
+FT81x.h  
+EVE_API.ino   
+EVE_HAL.ino   
+patch_base.ino      
+patch_base.h    
+eve_arch_arduino.ino  
+README.md  
+eve_example.ino       
+eve_example.h         
+eve_fonts.ino   
+eve_images.ino  
 simple_arduino.ino
+touch.ino
+touch.h
 ```
 The files above will appear as tabs in the sketch in the Arduino IDE.
-
-Finally, in the file `patch_base.c`, edit the file so that the variable `patchdata` is a global. This ensures that the data in the patch file is not stored on the stack but can be read from program memory.
-
-```
-const uint8_t patchdata[] =
-{
-    ...
-};
-
-int eve_loadpatch(void)
-{
-```
 
 ## Compiling the Simple Arduino Example
 
