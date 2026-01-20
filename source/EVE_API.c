@@ -55,7 +55,7 @@
 
 void EVE_Init(void)
 {
-    int i;
+    uint8_t i;
 
     HAL_EVE_Init();
 
@@ -1030,8 +1030,8 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_KEYS);
     HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
@@ -1425,8 +1425,8 @@ uint8_t COUNT_ARGS(const char* string)
 void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -1457,8 +1457,8 @@ void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const ch
 void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -1490,8 +1490,8 @@ void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, ui
 void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -2051,8 +2051,8 @@ void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t 
 void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -2187,7 +2187,7 @@ void EVE_CMD_FSOPTIONS(uint32_t options)
 
 void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSREAD);
     HAL_Write32(dst);
@@ -2198,7 +2198,7 @@ void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 
 void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSSIZE);
     StringLength = EVE_LIB_SendString(filename);
@@ -2208,7 +2208,7 @@ void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 
 void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSSOURCE);
     StringLength = EVE_LIB_SendString(filename);
@@ -2218,7 +2218,7 @@ void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 
 void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSDIR);
     HAL_Write32(dst);
