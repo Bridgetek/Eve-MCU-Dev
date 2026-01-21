@@ -195,14 +195,14 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
 
 - `PANEL_TYPE` The Bridgetek panel type of the display panel.
   The following panels are defined:
-  - DP-0351-11A 3.5 inch QVGA (Resistive)
-  - DP-0431-11A 4.3 inch WQVGA (Resistive)
-  - DP-0501-01A 5 inch WVGA (Capacitive)
-  - DP-0351-11A 5 inch WVGA (Resistive)
-  - DP-0502-11A 5 inch WQVGA (Resistive)
-  - DP-0701-11A 7 inch WVGA (Capacitive)
-  - DP-1012-01A 10 inch WUXGA (Capacitive)
-  - DP-1561-01A 15 inch FullHD (Capacitive)
+  - DP_0351_11A 3.5 inch QVGA (Resistive)
+  - DP_0431_11A 4.3 inch WQVGA (Resistive)
+  - DP_0501_01A 5 inch WVGA (Capacitive)
+  - DP_0351_11A 5 inch WVGA (Resistive)
+  - DP_0502_11A 5 inch WQVGA (Resistive)
+  - DP_0701_11A 7 inch WVGA (Capacitive)
+  - DP_1012_01A 10 inch WUXGA (Capacitive)
+  - DP_1561_01A 15 inch FullHD (Capacitive)
   - IDM204043A 4.3 inch WQVGA (Capacitive)
   - IDM204021R 2.1 inch WQVGAR (Capacitive)
 
