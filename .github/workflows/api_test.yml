@@ -4,12 +4,17 @@ on:
   push:
     branches:
       # Trigger script on push to 'development' branch
-      - development
+      #- development
       # Trigger script on push to 'main' branch
       - main
     paths:
       # Trigger if this workflow file changes
       - '.github/workflows/api_test.yml'
+      # Trigger script on push to test directory
+      - test
+      # Trigger script on push to API
+      - include
+      - source
   # Add "Run workflow" button
   workflow_dispatch:
 
