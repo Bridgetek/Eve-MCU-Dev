@@ -120,7 +120,7 @@ Remove the "L" before the DLL name:
 
 ### Command Line Compilation
 
-To compile the project with the default C compiler:
+To configure the project with the default C compiler:
 ```
     cmake -B build -S .
 ```

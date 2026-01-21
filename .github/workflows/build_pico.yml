@@ -10,6 +10,8 @@ on:
     paths:
       # Trigger if this workflow file changes
       - '.github/workflows/build_pico.yml'
+      # Trigger script on push to pico simple example
+      - examples/simple/pico
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -40,11 +42,11 @@ jobs:
       run: cmake --build ${{github.workspace}}/examples/simple/pico/build820WUXGA
 
     # Test BT816 (EVE API 3)
-    - name: Configure CMake for Raspberry Pi Pico on IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake -B ${{github.workspace}}/examples/simple/pico/buildIDM20407A -S ${{github.workspace}}/examples/simple/pico -DMODULE_TYPE=IDM20407A
+    #- name: Configure CMake for Raspberry Pi Pico on IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
+    #  run: cmake -B ${{github.workspace}}/examples/simple/pico/buildIDM20407A -S ${{github.workspace}}/examples/simple/pico -DMODULE_TYPE=IDM20407A
 
-    - name: Build for Raspberry Pi Pico on IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake --build ${{github.workspace}}/examples/simple/pico/buildIDM20407A
+    #- name: Build for Raspberry Pi Pico on IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
+    #  run: cmake --build ${{github.workspace}}/examples/simple/pico/buildIDM20407A
 
     # Test FT813 (EVE API 2 SUB API 1)
     - name: Configure CMake for Raspberry Pi Pico on FT813 with DP_0501_01A panel (WVGA)

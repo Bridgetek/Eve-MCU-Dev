@@ -4,7 +4,7 @@ Please follow instructions to install the LibFT4222 Middleware Library in EVE-MC
 
 ## Command Line Compilation
 
-To compile the project with the default C compiler:
+To configure the project with the default C compiler:
 ```
     cmake -B build -S .
 ```

@@ -9,16 +9,23 @@ The build environment depends on the presence of the build tools, GCC compiler a
 ```
 sudo apt-get install build-essential
 ```
-To build the example code the `Makefile` in the current directory is run using the `make` command.
+To configure the project with the default C compiler:
 ```
-make
+    cmake -B build -S .
 ```
+Then to compile:
+```
+    cmake --build build
+```
+Default builds are compiled with debugging enabled. 
+
+The executable file is `build/simple_BeagleBone`. This can be run from the command line. 
 
 ## Running the Simple Beaglebone Black Example
 
 The executable image is found in the file `simple_BeagleBone` in the current directory. To run this file simple call it from the command line.
 ```
-./simple_BeagleBone
+./build/simple_BeagleBone
 ```
 The program will output:
 ```

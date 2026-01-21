@@ -159,6 +159,67 @@ The `DISPLAY_RES` macro is not used in the library.
 
 The `PANEL_TYPE` macro is not used in the library, however it is optionally used in the `examples\snippets\touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
 
+#### Device and Panel Options
+
+The following options are supported in [include/EVE_config.h](include/EVE_config.h):
+
+- `FT8XX_TYPE` The EVE device type. The following devices are supported:
+  - FT800 
+  - FT801 
+  - FT810 
+  - FT811 
+  - FT812 
+  - FT813 
+  - BT880 
+  - BT881 
+  - BT882 
+  - BT883 
+  - BT815 
+  - BT816 
+  - BT817 
+  - BT818 
+  - BT820 
+
+- `DISPLAY_RES` The resolution of the display panel.
+  The following resolutions are defined:
+  - QVGA      - 320x240   e.g. VM800B with 3.5 inch display
+  - WQVGA     - 480x272   e.g. IDM2040-43A with 4.3 inch display
+  - WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
+  - WVGA      - 800x480   e.g. ME813A-WH50C with 5 inch display
+  - WSVGA     - 1024x600  e.g. ME817EV with 7 inch display
+  - WXGA      - 1280x800  e.g. ME817EV with 10.1 inch display
+  - FULLHD    - 1920x1080 e.g. BT820 with 15 inch high definition display
+  - WUXGA     - 1920x1200 e.g. BT820 with 10 inch high definition display
+  - DP101201A - same as WUXGA  e.g. DP-1012-01A
+  - DP156101A - same as FULLHD e.g. DP-1561-01A
+
+- `PANEL_TYPE` The Bridgetek panel type of the display panel.
+  The following panels are defined:
+  - DP-0351-11A 3.5 inch QVGA (Resistive)
+  - DP-0431-11A 4.3 inch WQVGA (Resistive)
+  - DP-0501-01A 5 inch WVGA (Capacitive)
+  - DP-0351-11A 5 inch WVGA (Resistive)
+  - DP-0502-11A 5 inch WQVGA (Resistive)
+  - DP-0701-11A 7 inch WVGA (Capacitive)
+  - DP-1012-01A 10 inch WUXGA (Capacitive)
+  - DP-1561-01A 15 inch FullHD (Capacitive)
+  - IDM204043A 4.3 inch WQVGA (Capacitive)
+  - IDM204021R 2.1 inch WQVGAR (Capacitive)
+
+- `MODULE_TYPE` The Bridgetek module type for EVE device and display panel
+  The following options are defined:
+  - VM800B     - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
+  - VM800C35A  - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
+  - VM800C43A  - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
+  - VM800C50A  - VM800C50A-D with 4.3 inch display (FT800 with DP-0502-11A)
+  - VM810C     - VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
+  - ME812A     - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812)
+  - ME813A     - ME813A-WH50C with 5 inch display (FT813)
+  - VM816C     - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0502-11A)
+  - IDM204021R - IDM2040-21R (FT800)
+  - IDM204043A - IDM2040-43A (BT883 with DP-0431-11A)
+  - IDM20407A  - IDM2040-7A (BT817 with DP-0701-01A)
+
 #### Device Selection
 
 The EVE device to target is set in the file `EVE_config.h`. The macro `FT8XX_TYPE` or `EVE_API`/`EVE_SUB_API` is set to choose the device or the API respectively. One or other of these macros **must** be set correctly for the device being used.
@@ -208,21 +269,6 @@ The display panel dimensions to use are set in the file `EVE_config.h` using the
 The macro `DISPLAY_RES` will enable one of the pre-defined panel settings to be configured with the register values needed for that panel type. The registers are calculated for the standard Bridgetek panels in the resolution indicated by the `DISPLAY_RES` macro. Other panels may require different register settings. If a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
 
 The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
-
-The following are included in the distribution:
-- QVGA *320 x 240* (VM800B with 3.5 inch display)
-- WQVGA *480 x 272* (VM800B with 5 or 4.3 inch display)
-- WQVGAR *480 x 480* (IDM2040-21R with 2.1 inch round display)
-- WVGA *800 x 480* (ME813A-WH50C or VM816)
-- WSVGA *1024 x 600* (ME817EV with 7 inch display)
-- WXGA *1280 x 800* (ME817EV with 10.1 inch display)
-- FULLHD *1920 x 1080* (15 inch high definition display)
-- WUXGA *1920 x 1200* (10 inch high definition display)
-
-This line will set the panel to a resolution of 800 x 400 for a ME813A-WH50C panel.
-```
-#define DISPLAY_RES WVGA
-```
 
 **The default in the distribution will be a WUXGA panel**.
 

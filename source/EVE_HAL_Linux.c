@@ -37,7 +37,7 @@
  * ============================================================================
  */
 
-/* Only compile for linux platforms unless MPSSE is being used. */
+/* Only compile for linux platforms. Do not compile if libMPSSE/libFT4222 are being used. */
 #if defined(USE_LINUX_SPI_DEV) && !defined(USE_MPSSE) && !defined(USE_FT4222)
 
 #include <string.h>
