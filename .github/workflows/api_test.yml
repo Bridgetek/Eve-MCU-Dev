@@ -48,7 +48,7 @@ jobs:
 
     # Test BT816 (EVE API 3)
     - name: Configure CMake for IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake--fresh -B ${{github.workspace}}/test/boottester/buildIDM20407A -S ${{github.workspace}}/test/boottester -DMODULE_TYPE=IDM20407A
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/buildIDM20407A -S ${{github.workspace}}/test/boottester -DMODULE_TYPE=IDM20407A
 
     - name: Build for IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
       run: cmake --build ${{github.workspace}}/test/boottester/buildIDM20407A
