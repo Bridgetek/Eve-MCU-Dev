@@ -233,7 +233,7 @@ void MCU_Init(void)
 
     printf("EVE_API: %d\n", EVE_API);
 #if IS_EVE_API(2)
-    printf("EVE_SUB_API: %d\n" EVE_SUB_API);
+    printf("EVE_SUB_API: %d\n", EVE_SUB_API);
 #endif
 
 #ifdef MODULE_TYPE

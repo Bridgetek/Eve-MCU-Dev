@@ -33,12 +33,18 @@ jobs:
     - name: Build for BT820 with DP_1012_01A (WUXGA) panel
       run: cmake --build ${{github.workspace}}/test/boottester/build820WUXGA
 
+    - name: Run test for BT820 with DP_1012_01A (WUXGA) panel
+      run: ${{github.workspace}}/test/boottester/build820WUXGA/boottester
+
     # Test BT817 (EVE API 4)
     - name: Configure CMake for BT817 with WXGA resolution panel
       run: cmake -B ${{github.workspace}}/test/boottester/buildWXGA -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=BT817 -DDISPLAY_RES=WXGA
 
     - name: Build for BT817 with WXGA resolution panel
       run: cmake --build ${{github.workspace}}/test/boottester/buildWXGA
+
+    - name: Run test for BT817 with WXGA resolution panel
+      run: ${{github.workspace}}/test/boottester/buildWXGA/boottester
 
     # Test BT816 (EVE API 3)
     - name: Configure CMake for IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
@@ -47,6 +53,9 @@ jobs:
     - name: Build for IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
       run: cmake --build ${{github.workspace}}/test/boottester/buildIDM20407A
 
+    - name: Run test for IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
+      run: ${{github.workspace}}/test/boottester/buildIDM20407A/boottester
+
     # Test FT813 (EVE API 2 SUB API 1)
     - name: Configure CMake for FT813 with DP_0501_01A panel (WVGA)
       run: cmake -B ${{github.workspace}}/test/boottester/build813WVGA -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A
@@ -54,9 +63,15 @@ jobs:
     - name: Build for IDM20407A module on FT813 with DP_0501_01A panel (WVGA)
       run: cmake --build ${{github.workspace}}/test/boottester/build813WVGA
 
+    - name: Run test for FT813 with DP_0501_01A panel (WVGA)
+      run: ${{github.workspace}}/test/boottester/build813WVGA/boottester
+
     # Test FT800 (EVE API 1)
     - name: Configure CMake for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
       run: cmake -B ${{github.workspace}}/test/boottester/build800C43A -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A
 
     - name: Build for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
       run: cmake --build ${{github.workspace}}/test/boottester/build800C43A
+
+    - name: Run test for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: ${{github.workspace}}/test/boottester/build800C43A/boottester
