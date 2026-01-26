@@ -308,21 +308,27 @@ uint32_t EVE_LIB_GetResult(int offset)
 }
 
 #if IS_EVE_API(5)
-// Obtain the co-processor exception description
+// Obtain the co-processor exception description (up-to 128 characters)
 void EVE_LIB_GetCoProException(char* desc)
 {
-    uint32_t report = EVE_COPROC_REPORT;
-    uint32_t j;
-    int i;
-    for (j = 0; j < 256; j += 4)
+    uint8_t j;
+    uint8_t i;
+    char c;
+    for (j = 0; j < 128; j += 4)
     {
-        uint32_t w = HAL_MemRead32(report + j);
+        // Read the text from the report register
+        uint32_t w = HAL_MemRead32(EVE_COPROC_REPORT + j);
+        // Immediately clear the report register
+        HAL_MemWrite32(EVE_COPROC_REPORT + j, 0);
+        // Add the 4 characters to the report string
         for (i = 0; i < 4; i++)
         {
-            char c = (w >> (i * 8)) & 0x7f;
+            c = (w >> (i * 8)) & 0x7f;
             *desc++ = c;
+            // Break at the end of the report
             if (c == '\0') break;
         }
+        if (c == '\0') break;
     }
 }
 #endif

@@ -93,7 +93,7 @@ uint32_t EVE_LIB_GetResult(int offset);
  @brief EVE API: Get co-processor exception description
  @details Will query the co-processor exception description to a string.
  @returns Co-processor exception description. This is a pointer to a string
-  and must be sufficient to hold 256 characters.
+  and must be sufficient to hold 128 characters.
  */
 void EVE_LIB_GetCoProException(char *desc);
 #endif
