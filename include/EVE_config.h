@@ -91,7 +91,7 @@
 #define DP_0351_11A 0351   // DP-0351-11A QVGA (Resistive)
 #define DP_0431_11A 0431   // DP-0431-11A WQVGA (Resistive)
 #define DP_0501_01A 050101 // DP-0501-01A WVGA (Capacitive)
-#define DP_0501_11A 050111 // DP-0351-11A WVGA (Resistive)
+#define DP_0501_11A 050111 // DP-0501-11A WVGA (Resistive)
 #define DP_0502_11A 0502   // DP-0502-11A WQVGA (Resistive)
 #define DP_0701_11A 0701   // DP-0701-11A WVGA (Capacitive)
 #define DP_1012_01A 1012   // DP-1012-01A WUXGA (Capacitive)

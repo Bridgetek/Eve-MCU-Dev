@@ -296,7 +296,7 @@
 #define EVE_ENC_BITMAP_SIZE(filter,wrapx,wrapy,width,height) ((0x8ul<<24)|(((filter)&0x1ul)<<20)|(((wrapx)&0x1ul)<<19)|(((wrapy)&0x1ul)<<18)|(((width)&0x1FFul)<<9)|(((height)&0x1FFul)<<0))
 #define EVE_ENC_BITMAP_SIZE_H(width,height) ((0x29ul<<24)|(((width)&0x3ul)<<2)|(((height)&0x3ul)<<0))
 #define EVE_ENC_BITMAP_SOURCE(addr)         ((0x1ul << 24) | ((addr)&EVE_ENC_BITMAP_ADDR_MASK))
-#define EVE_ENC_BITMAP_SOURCE2(flash_or_ram, addr) ((0x1ul << 24) | ((flash_or_ram) << 23) | (((addr) & (EVE_ENC_BITMAP_ADDR_MASK >> 1)) << 0))
+#define EVE_ENC_BITMAP_SOURCE2(flash_or_ram, addr) ((0x1ul << 24) | (((flash_or_ram)&1) << 23) | (((addr) & (EVE_ENC_BITMAP_ADDR_MASK >> 1)) << 0))
 #define EVE_ENC_BITMAP_SWIZZLE(r,g,b,a)     ((0x2ful<<24)|(((r)&0x7ul)<<9)|(((g)&0x7ul)<<6)|(((b)&0x7ul)<<3)|(((a)&0x7ul)<<0))
 #define EVE_ENC_BITMAP_TRANSFORM_A_EXT(p,v) ((0x15ul<<24)|(((p)&0x1ul)<<17)|(((v)&0x1FFFFul)<<0))
 #define EVE_ENC_BITMAP_TRANSFORM_B_EXT(p,v) ((0x16ul<<24)|(((p)&0x1ul)<<17)|(((v)&0x1FFFFul)<<0))

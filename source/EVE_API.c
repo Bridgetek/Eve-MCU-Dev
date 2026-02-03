@@ -747,7 +747,7 @@ void EVE_BITMAP_SOURCE(int32_t addr)
 #if IS_EVE_API(3, 4)
 void EVE_BITMAP_SOURCE2(uint8_t flash_or_ram, int32_t addr)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SOURCE2(flash_or_ram, (int32_t)addr));
+    HAL_Write32(EVE_ENC_BITMAP_SOURCE2((uint32_t)flash_or_ram, (int32_t)addr));
     HAL_IncCmdPointer(4);
 }
 #endif

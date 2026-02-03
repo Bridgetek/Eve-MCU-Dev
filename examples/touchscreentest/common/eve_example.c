@@ -251,6 +251,16 @@ void eve_example(void)
     DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
 
+    // Reset calibration data to force re-calibration on first call
+    calib.key = 0;
+    calib.transform[0] = 0;
+    calib.transform[1] = 0;
+    calib.transform[2] = 0;
+    calib.transform[3] = 0;
+    calib.transform[4] = 0;
+    calib.transform[5] = 0;
+    platform_calib_write(&calib);
+
     while (1)
     {
         // Calibrate the display
