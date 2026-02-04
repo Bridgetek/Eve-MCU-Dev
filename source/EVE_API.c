@@ -135,6 +135,12 @@ void EVE_Init(void)
     // set synthesizer to mute
     HAL_MemWrite16(EVE_REG_SOUND, 0x6000);
 
+#ifndef EVE_USE_CMDB_METHOD
+    HAL_MemWrite32(EVE_REG_CMD_READ, 0);
+    HAL_ResetCmdPointer();
+    HAL_WriteCmdPointer();
+#endif
+
 #elif IS_EVE_API(5) 
 
     EVE_LIB_BeginCoProList();

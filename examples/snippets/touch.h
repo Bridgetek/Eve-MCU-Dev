@@ -53,9 +53,9 @@ extern "C" {
     redone. If one MCU is used with different panel types (or display resolutions)
     then the following modification will ensure that calibration is rerun each time
     there is a change of panel in EVE_config.h.
-        #define VALID_KEY_TOUCHSCREEN (0xd72f91a3 ^ PANEL_TYPE)
+        #define VALID_KEY_TOUCHSCREEN ((0xd72f91a3 ^ PANEL_TYPE) ^ DISPLAY_RES)
  */
-#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
+#define VALID_KEY_TOUCHSCREEN ((0xd72f91a3 ^ PANEL_TYPE) ^ DISPLAY_RES)
 
 /**
  @brief Structure to hold touchscreen calibration settings.

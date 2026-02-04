@@ -1,8 +1,23 @@
 #include <SPI.h>
 
 extern "C" {
-#include <EVE.h>
+#include "EVE.h"
 #include "eve_example.h"
+}
+
+int8_t platform_calib_init(void)
+{
+    return -1;
+}
+
+int8_t platform_calib_write(struct touchscreen_calibration *calib)
+{
+    return 0;
+}
+
+int8_t platform_calib_read(struct touchscreen_calibration *calib)
+{
+    return -1;
 }
 
 void setup() {
