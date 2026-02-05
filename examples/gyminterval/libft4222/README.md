@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Touch Screen Test Example for libft4222
+# EVE-MCU-Dev Gym Interval Example for libft4222
 
 Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
 
