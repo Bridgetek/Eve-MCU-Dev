@@ -105,6 +105,7 @@ const int timer_max = (59*60) + 59;
 
 const int key_debounce_filter = 3;
 
+// Turn an unsigned integer into a string.
 static void uint2str(uint8_t val, char *str)
 {
     if (val < 10)
@@ -127,6 +128,7 @@ static void uint2str(uint8_t val, char *str)
     }
 }
 
+// Turn a number of seconds (val) into a time string.
 static void time2str(uint16_t val, char *str)
 {
     int i = 0;

@@ -1130,13 +1130,6 @@ void EVE_CMD_SWAP(void)
     HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_INFLATE(uint32_t ptr)
-{
-    HAL_Write32(EVE_ENC_CMD_INFLATE);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(8);
-}
-
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty)
 {
     HAL_Write32(EVE_ENC_CMD_TRANSLATE);
@@ -1265,6 +1258,13 @@ void EVE_CMD_CALIBRATE(uint32_t result)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // FT82x API change
+
+void EVE_CMD_INFLATE(uint32_t ptr)
+{
+    HAL_Write32(EVE_ENC_CMD_INFLATE);
+    HAL_Write32(ptr);
+    HAL_IncCmdPointer(8);
+}
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);
@@ -1273,6 +1273,13 @@ void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
     HAL_IncCmdPointer(12);
 }
 #elif IS_EVE_API(5) // FT81x API change
+void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options)
+{
+  HAL_Write32(EVE_ENC_CMD_INFLATE);
+  HAL_Write32(ptr);
+  HAL_Write32(options);
+  HAL_IncCmdPointer(12);
+}
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);

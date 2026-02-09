@@ -317,7 +317,6 @@ void EVE_CMD_MEMCPY(uint32_t dest, uint32_t src, uint32_t num);
 void EVE_CMD_SPINNER(int16_t x, int16_t y, uint16_t style, uint16_t scale);
 void EVE_CMD_BGCOLOR(uint32_t c);
 void EVE_CMD_SWAP(void);
-void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty);
 void EVE_CMD_STOP(void);
 void EVE_CMD_SLIDER(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t range);
@@ -333,8 +332,10 @@ void EVE_CMD_GRADCOLOR(uint32_t c);
 void EVE_CMD_BITMAP_TRANSFORM(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2, uint16_t result);
 void EVE_CMD_CALIBRATE(uint32_t result);
 #if IS_EVE_API(1, 2, 3, 4) // BT82x API change
+void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr);
 #else
+void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar);
 #endif
 void EVE_CMD_LOGO(void);
