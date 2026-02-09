@@ -136,7 +136,7 @@ char MCU_SPIReadWrite8(uint8_t val) {
 
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) {
   uint16_t DataRead = 0;
-  DataRead = MCU_SPIReadWrite8(DataToWrite & 0xff);
+  DataRead = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
   DataRead |= MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
 
   return DataRead;
@@ -146,11 +146,11 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
 
-  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
   DataRead |= (temp << 8);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
   DataRead |= (temp << 16);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
   DataRead |= (temp << 24);
 
   return DataRead;
