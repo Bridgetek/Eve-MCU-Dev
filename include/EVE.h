@@ -103,7 +103,7 @@ void EVE_LIB_GetCoProException(char *desc);
  @details Writes a block of data via SPI to the EVE.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
- @param DestAddress - 24 bit memory mapped address on EVE.
+ @param DestAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t DestAddress);
 
@@ -112,7 +112,7 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
  @details Reads a block of data via SPI from the EVE.
  @param ImgData - Pointer to start of receive data buffer.
  @param DataSize - Number of bytes to read (rounded up to be 32-bit aligned).
- @param DestAddress - 24 bit memory mapped address on EVE.
+ @param SrcAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcAddress);
 

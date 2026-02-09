@@ -129,12 +129,23 @@ static void uint2str(uint8_t val, char *str)
 
 static void time2str(uint16_t val, char *str)
 {
-    str[0] = '0' + ((val / 600) % 10);
-    str[1] = '0' + ((val / 60) % 10);
-    str[2] = ':';
-    str[3] = '0' + ((val % 60) / 10);
-    str[4] = '0' + (val % 10);
-    str[5] = '\0';
+    int i = 0;
+    if (val >= 3600)
+    {
+        if (val >= 36000)
+        {
+            str[i++] = '0' + ((val / 36000) % 10);
+        }
+        str[i++] = '0' + ((val / 3600) % 10);
+        str[i++] = '.';
+        val = (val % 3600);
+    }
+    str[i++] = '0' + ((val / 600) % 10);
+    str[i++] = '0' + ((val / 60) % 10);
+    str[i++] = ':';
+    str[i++] = '0' + ((val % 60) / 10);
+    str[i++] = '0' + (val % 10);
+    str[i++] = '\0';
 }
 
 static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch)
@@ -497,7 +508,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         {
             stringdraw(&clockfont, button_zoom, 
                 button_x2_zoom, 
-                button_y2_zoom, "START");
+                button_y2_zoom, "GO!");
         }
         EVE_TAG_MASK(0);
 
@@ -691,8 +702,12 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     int key_debounce = 0;
     uint8_t key_prev =0;
 
+    uint32_t total_time = 0;
+
     while (1)
     {
+        total_time = *cycle_count * (*cycle_rest_count + (*interval_count * (*interval_rest_count + *timer_count)));
+
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -753,23 +768,6 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 #endif
         }
 
-        EVE_COLOR(col_selected);
-        EVE_TAG(101);
-        // Start active area
-#if IS_EVE_API(2, 3, 4, 5)
-        EVE_VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH / 2) - (font_getwidth(&clockfont) * 5 / 2)) * 16);
-        EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13)) * 16);
-        EVE_VERTEX2F(0, 0);
-        EVE_VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH / 2) + (font_getwidth(&clockfont) * 5 / 2)) * 16);
-        EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14)) * 16);
-        EVE_VERTEX2F(0, 0);
-#else
-        EVE_VERTEX2F(((EVE_DISP_WIDTH / 2) - (font_getwidth(&clockfont) * 5 / 2)) * 16,
-            ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13)) * 16);
-        EVE_VERTEX2F(((EVE_DISP_WIDTH / 2) + (font_getwidth(&clockfont) * 5 / 2)) * 16,
-            ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14)) * 16);
-#endif
-
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(0);
         EVE_VERTEX_TRANSLATE_Y(0);
@@ -802,11 +800,6 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         stringdraw(&clockfont, text_zoom, 
             (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
             (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 1), msg_text);
-
-        msg_text = "START";
-        stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH / 2) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13), msg_text);
 
         // Second row titles
         msg_text = "RECOVERY";
@@ -873,6 +866,40 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         EVE_CMD_TRACK((EVE_DISP_WIDTH * 3 / 4), 
             (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10),
             1, 1, 100); 
+
+        setupzoom(&clockfont, text_zoom);
+        EVE_TAG_MASK(0); // disable tagging
+        msg_text = "WORKOUT LENGTH:  ";
+        stringdraw(&clockfont, text_zoom, 
+            (EVE_DISP_WIDTH * 1 / 4), 
+            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), msg_text);
+        time2str(total_time, num_text);
+        stringdraw(&clockfont, text_zoom, 
+            (EVE_DISP_WIDTH * 1 / 4) + (stringwidth(&clockfont, text_zoom, msg_text)), 
+            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), num_text);
+
+
+        EVE_TAG_MASK(1); // enable tagging
+        msg_text = "GO";
+        EVE_COLOR(col_selected);
+        EVE_TAG(101);
+        // Start active area
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        EVE_POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
+#if IS_EVE_API(2, 3, 4, 5)
+        EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * 3 / 4) * 16);
+        EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
+        EVE_VERTEX2F(0, 0);
+#else
+        EVE_VERTEX2F((EVE_DISP_WIDTH * 3 / 4) * 16,
+            (((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
+#endif
+
+        EVE_COLOR(col_text);
+        setupzoom(&clockfont, time_zoom);
+        stringdraw(&clockfont, time_zoom, 
+            (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, time_zoom, msg_text) / 2), 
+            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 9), msg_text);
         EVE_TAG_MASK(0); 
 
         EVE_DISPLAY();
