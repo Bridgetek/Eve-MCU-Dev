@@ -20,7 +20,7 @@ This example supports the following platforms:
 | --- | --- | --- |
 |ST STM32 (Keil) | STM32 | Yes (1) |
 |ST STM32Cube | STM32CUBE | Yes (1) |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 (1) - EVE API 5 support in progress
 
@@ -69,7 +69,7 @@ void eve_example(void)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `eve_calibrate.c` below).
+Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Once calibration is complete, the code will load in the custom font and create a cache data structure of font information.
 
@@ -86,7 +86,7 @@ Once calibration is complete, the code will load in the custom font and create a
 
 The code will then draw various versions of output to the screen depending on the `action` variable. When a touch event is detected then it will move to the next action.
 
-### `eve_calibrate.c`
+### `touch.c`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
@@ -103,7 +103,6 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
-| [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
 | [docs](docs) | Documentation support files |

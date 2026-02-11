@@ -67,7 +67,7 @@ void setup(void);
 //@{
 int8_t platform_calib_init(void)
 {
-    return 1;
+    return 0;
 }
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)

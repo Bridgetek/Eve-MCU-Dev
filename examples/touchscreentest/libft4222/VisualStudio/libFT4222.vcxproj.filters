@@ -13,13 +13,10 @@
     <ClCompile Include="..\..\common\eve_images.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
+    <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
@@ -74,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

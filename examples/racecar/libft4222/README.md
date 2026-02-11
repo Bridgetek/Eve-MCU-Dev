@@ -1,8 +1,10 @@
 # EVE-MCU-Dev Race Car Dashboard Example for libft4222
 
+Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
+
 ## Command Line Compilation
 
-To compile the project with the default C compiler:
+To configure the project with the default C compiler:
 ```
     cmake -B build -S .
 ```
@@ -20,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\cruise_libft4222.exe`. This can be run from the command line. 
+The executable file is `build\Debug\racecar_libft4222.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 

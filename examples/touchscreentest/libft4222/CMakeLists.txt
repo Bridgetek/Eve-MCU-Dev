@@ -21,14 +21,29 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# Setup command line options for build - feeds into EVE_config.h
+option(MODULE_TYPE "EVE Module Name" )
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+ENDIF(MODULE_TYPE)
+option(FT8XX_TYPE "EVE Device Type Name" )
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+ENDIF(FT8XX_TYPE)
+option(PANEL_TYPE "EVE Panel Type" )
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+ENDIF(PANEL_TYPE)
+option(DISPLAY_RES "Panel Display Resolution" )
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+ENDIF(DISPLAY_RES)
+
+# Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imports)
-        message(FATAL_ERROR "libFT4222 installation cannot be found.\nThe libFT4222 library \"imports\" directory must be copied to the current directory.")
-endif()
-
-# point out the CMake, where to find the executable source file
+# Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
         main.c
 )
@@ -38,6 +53,7 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use libFT4222 as base class
+# Choose the FT4222 device (0 for first, 1 for second etc)
 add_compile_definitions(USE_FT4222=0)
 
 # Source code for EVE library (targetted at FT4222)
@@ -53,31 +69,67 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        imports/ftd2xx
-        imports/LibFT4222/inc
+        ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 
 # EVE library dependencies
-target_link_libraries(eve_library
-        ${CMAKE_CURRENT_LIST_DIR}/imports/LibFT4222/dll/amd64/LibFT4222-64.lib
-        ${CMAKE_CURRENT_LIST_DIR}/imports/ftd2xx/dll/amd64/ftd2xx.lib
-)
-
-# Copy the DLL to beside the executable for Windows
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "../imports/LibFT4222/dll/amd64/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                COMMAND_EXPAND_LISTS
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    find_library(FT4222_LIBRARY
+        NAMES ft4222
         )
+
+    find_library(FTD2XX_LIBRARY
+        NAMES ftd2xx
+        )
+
+    if (FT4222_LIBRARY AND FTD2XX_LIBRARY)
+        message(STATUS "libft4222 found")
+    else()
+        message(FATAL_ERROR "libft4222 not found")
+    endif()
+    
+    if (FTD2XX_LIBRARY)
+        message(STATUS "libftd2xx found")
+    else()
+        message(FATAL_ERROR "libftd2xx not found")
+    endif()
+
+    target_link_libraries(eve_library
+	ft4222
+	ftd2xx        
+    )
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_libft4222/libft4222.h")
+        message(FATAL_ERROR "The Windows LibFT4222 installation has not been completed. Follow the instructions in \"\\ports\\eve_libft4222\\README.md\"")
+    endif()
+
+    target_link_libraries(eve_library
+            ${API_DIRECTORY}/ports/eve_libft4222/libft4222.lib
+            ${API_DIRECTORY}/ports/eve_libft4222/libftd2xx.lib
+    )
+
+    # Copy the DLL to beside the executable for Windows
+    if(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222-64.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    elseif(EXISTS "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_libft4222/LibFT4222.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    endif()
 endif()
 
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_calibrate.c
-        ${EXAMPLE_COMMON}/eve_helper.c
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/eve_images.c
+        ${EXAMPLE_SNIPPETS}/touch.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
@@ -85,8 +137,10 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 
 )
+
 # Example code dependencies
 target_link_libraries(eve_example
         eve_library # Example code depends on EVE library

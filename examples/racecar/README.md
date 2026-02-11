@@ -8,11 +8,11 @@ The `racecar` example demonstrates drawing a multi-function dashboard for a raci
 
 A racecar dashboard is drawn using blending, scissoring, scaling, arcs and custom fonts. The `racecar` code uses the `furman` snippet from the [snippets](../snippets) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
 
-The example is intended to show an imaginged dashboard for a racecar. In real life external inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
+The example is intended to show an imagined dashboard for a racecar. In real life external inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
 
 ## Screenshot
 
-The following is an screenshot of the simple example.
+The following is an screenshot of the racecar example.
 
 ![Race Car Dashboard Example](docs/racecar.png)
 
@@ -89,7 +89,7 @@ This example supports the following platforms:
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 |Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 ## EVE API Support
 
@@ -123,8 +123,7 @@ The example contains a common directory with several files which comprises all t
 | --- | --- |
 | [README.md](README.md) | This file |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
-| [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [common/eve_assetload_array.c](common/eve_assetload_array.c) | Load assets from C arrays - used in `USE_C_ARRAYS` |
 | [common/eve_assetload_file.c](common/eve_assetload_file.c) | Load assets from files - used in `USE_FILES` |
 | [common/eve_assetload_flash.c](common/eve_assetload_flash.c) | Load assets from flash or flash image file - used in `USE_FLASH` and `USE_FLASHIMAGE` |
@@ -159,13 +158,13 @@ void eve_example(const char *assets)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `eve_calibrate.c` below).
+Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Following this the `eve_asset_properties()` function is called to configure specific properties for each asset (size, height, witdth, format, etc), which are then used in the `eve_display_load_assets()` funciton to load the assets into RAM_G fo use in the applciation.
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
-### `eve_calibrate.c`
+### `touch.c`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
@@ -173,7 +172,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 ### `eve_helper.c`
 
-In this file are a helper routine to detect and report touch events on the screen and functions to find the maximum width and height of the built-in ROM fonts.
+In this file are functions to find the maximum width and height of the built-in ROM fonts.
 
 ### `eve_assetload_array.c`
 

@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -166,7 +166,6 @@
 #if DEBUG_LEVEL > 0 || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #elif DEBUG_LEVEL > 0 || defined(PLATFORM_ESP32)
-#error
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
 #else
 #define DEBUG_PRINTF(...)

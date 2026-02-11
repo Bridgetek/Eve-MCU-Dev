@@ -739,18 +739,6 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
     uint16_t gauge_circle_x = (((line_width * 2) + CIRC_X(gauge_radius, DEG2FURMAN(arc_min_limit)))); //take the min limit to offset x
     uint16_t gauge_circle_y = ((line_width - CIRC_Y(gauge_radius, DEG2FURMAN(180)))); // 180 degrees will offset y to top of the arc
 
-    //variables for x/y positions we will use in the stencil and underline
-    // perform some maths that will be used to define where the stencil is drawn for the underline
-    // we need to use the start and end angle of the arc then calculate their x/y coordinates + 1 degrees so we dont stencil the middle of the line that is drawn
-    uint16_t stencil_arc_min_limit_x = CIRC_X_DEG(gauge_radius, (arc_min_limit - 1));
-    uint16_t stencil_arc_min_limit_y = CIRC_Y_DEG(gauge_radius, (arc_min_limit - 1));
-    uint16_t stencil_arc_max_limit_x = CIRC_X_DEG(gauge_radius, (arc_max_limit + 1));
-    uint16_t stencil_arc_max_limit_y = CIRC_Y_DEG(gauge_radius, (arc_max_limit + 1));
-
-    //caluclate the redline end point for the underline
-    uint16_t redline_end_x = CIRC_X_DEG(gauge_radius, redline_start);
-    uint16_t redline_end_y = CIRC_Y_DEG(gauge_radius, redline_start);
-
     //ensure value does not exceeed accetable reading limits
     if (value > reading_limit)
         value = reading_limit;
@@ -824,14 +812,8 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
 
     //--------------------------------------------------------------------------------------
     //add numbers for every 1 K revs onto the gauge
-
-    //reset scissor
-    EVE_SCISSOR_SIZE(2048,2048);
-    EVE_SCISSOR_XY(0, 0);
-
-    //stop the stencil tests so we can drawn anywhere
-    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 0);
-    //ensure alpah is set to full
+	
+    //ensure alpha is set to full
     EVE_COLOR_A(255);
     //color these white
     EVE_COLOR_RGB(255,255,255);
@@ -850,10 +832,7 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
 
         rev_number = rev_number + 1;
 
-    }
-
-    // Clear the stencil buffer to ensure it does not affect other items on the screen
-    EVE_CLEAR(0, 1, 0);              
+    }            
 
     //restore graphics context
     EVE_RESTORE_CONTEXT();
@@ -1720,7 +1699,7 @@ void sectorWidget(uint32_t scale, int16_t center_x, int16_t center_y, uint16_t r
 
     //black
     EVE_COLOR_RGB(0,0,0);
-    scaledPointSize(scale, ((radius - ((thickness * 2) - 2)) * 16));
+    scaledPointSize(scale, ((radius - (thickness * 2) - 2) * 16));
     scaledVertex(scale, 0, 0);
 
     EVE_BEGIN(EVE_BEGIN_LINES);
@@ -1829,18 +1808,15 @@ void lapAndSectorTimes(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t
     EVE_COLOR_RGB(255,255,255); //white
 
     //add overall laptime
-    scaledNumber(scale, (input_x +  12 + (wdata * 0)), (input_y + 10), data_font, 0, minutes);
-    scaledText(scale, (input_x +  12 + (wdata * 1)), (input_y + 10), data_font, 0, ":");
-    scaledNumber(scale, (input_x +  12 + ((wdata * 3)/2)), (input_y + 10), data_font, 0, (seconds / 10) % 10);
-    scaledNumber(scale, (input_x +  12 + ((wdata * 5)/2)), (input_y + 10), data_font, 0, (seconds / 1) % 10);
-    scaledText(scale, (input_x +  12 + ((wdata * 7)/2)), (input_y + 10), data_font, 0, ".");
+    scaledNumber(scale, (input_x +  13 + (wdata * 0)), (input_y + 9), data_font, 0, minutes);
+    scaledText(scale, (input_x +  13 + (wdata * 1)), (input_y + 9), data_font, 0, ":");
+    scaledNumber(scale, (input_x +  13 + ((wdata * 3)/2)), (input_y + 9), data_font, 0, (seconds / 10) % 10);
+    scaledNumber(scale, (input_x +  13 + ((wdata * 5)/2)), (input_y + 9), data_font, 0, (seconds / 1) % 10);
+    scaledText(scale, (input_x +  13 + ((wdata * 7)/2)), (input_y + 9), data_font, 0, ".");
 
-    scaledNumber(scale, (input_x +  12 + (wdata * 4)), (input_y + 10), data_font, 0, (milliseconds / 100) % 10);
-    scaledNumber(scale, (input_x +  12 + (wdata * 5)), (input_y + 10), data_font, 0, (milliseconds / 10) % 10);
-    scaledNumber(scale, (input_x +  12 + (wdata * 6)), (input_y + 10), data_font, 0, (milliseconds / 1) % 10);
-    
-
-    //scaledText(scale, (input_x + 100), (input_y + 30), data_font, EVE_OPT_CENTER | EVE_OPT_FORMAT, "%d:%.2d.%.3d", minutes, seconds, milliseconds);
+    scaledNumber(scale, (input_x +  13 + (wdata * 4)), (input_y + 9), data_font, 0, (milliseconds / 100) % 10);
+    scaledNumber(scale, (input_x +  13 + (wdata * 5)), (input_y + 9), data_font, 0, (milliseconds / 10) % 10);
+    scaledNumber(scale, (input_x +  13 + (wdata * 6)), (input_y + 9), data_font, 0, (milliseconds / 1) % 10);
     
     //add sector times, but only if there is a valid sector time, if there isnt then print dash marks
     
@@ -1861,11 +1837,11 @@ void lapAndSectorTimes(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t
         // Calculate final remaining milliseconds
         milliseconds = remaining_ms_after_minutes % 1000;
 
-        scaledText(scale, input_x + 48, input_y + 62, label_font, EVE_OPT_FORMAT, "%02d.%03d", seconds, milliseconds);
+        scaledText(scale, input_x + 46, input_y + 62, label_font, EVE_OPT_FORMAT, "%02d.%03d", seconds, milliseconds);
     }
     else{
         //manually draw dashed indicators to signify there isnt a valid time
-        scaledText(scale, input_x + 48, input_y + 62, label_font, 0, "- - . - - -");
+        scaledText(scale, input_x + 46, input_y + 62, label_font, 0, "- - . - - -");
     }
 
     //----------------------------------------
@@ -1885,11 +1861,11 @@ void lapAndSectorTimes(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t
         // Calculate final remaining milliseconds
         milliseconds = remaining_ms_after_minutes % 1000;
 
-        scaledText(scale, input_x + 142, input_y + 62, label_font, EVE_OPT_FORMAT, "%02d.%03d", seconds, milliseconds);
+        scaledText(scale, input_x + 140, input_y + 62, label_font, EVE_OPT_FORMAT, "%02d.%03d", seconds, milliseconds);
     }else
     {
         //manually draw dashed indicators to signify there isnt a valid time
-        scaledText(scale, input_x + 142, input_y + 62, label_font, 0, "- - . - - -");
+        scaledText(scale, input_x + 140, input_y + 62, label_font, 0, "- - . - - -");
     }
 
     //restore grpahics context
@@ -1955,7 +1931,6 @@ void configure_bitmaps(uint32_t scale){
     // Configure images and fonts for use in the screen
 #if (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
     // Do not use a screen background on BT81x when the images are decoded from PNG files
-    printf("%d %d %d %d\n", Carbon_Fiber_800x480_asset.Handle, Carbon_Fiber_800x480_asset.RAM_G_Start, Carbon_Fiber_800x480_asset.Width, Carbon_Fiber_800x480_asset.CellHeight);
     EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
     EVE_CMD_SETBITMAP(Carbon_Fiber_800x480_asset.RAM_G_Start, Carbon_Fiber_800x480_asset.Format, Carbon_Fiber_800x480_asset.Width, Carbon_Fiber_800x480_asset.CellHeight);
     EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, SCALE(Carbon_Fiber_800x480_asset.Width, scale), SCALE(Carbon_Fiber_800x480_asset.CellHeight, scale));
@@ -2201,7 +2176,7 @@ while(1)
         }
 
         // Draw rev counter
-        revCounter(scale, x + 8, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
+        revCounter(scale, x + 10, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
 
         // Draw RPM widget and colour when we hit redline
         if(RPM[count] > redline)

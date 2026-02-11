@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -93,7 +93,7 @@ uint32_t EVE_LIB_GetResult(int offset);
  @brief EVE API: Get co-processor exception description
  @details Will query the co-processor exception description to a string.
  @returns Co-processor exception description. This is a pointer to a string
-  and must be sufficient to hold 256 characters.
+  and must be sufficient to hold 128 characters.
  */
 void EVE_LIB_GetCoProException(char *desc);
 #endif
@@ -103,7 +103,7 @@ void EVE_LIB_GetCoProException(char *desc);
  @details Writes a block of data via SPI to the EVE.
  @param ImgData - Pointer to start of data buffer.
  @param DataSize - Number of bytes in buffer.
- @param DestAddress - 24 bit memory mapped address on EVE.
+ @param DestAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t DestAddress);
 
@@ -112,7 +112,7 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
  @details Reads a block of data via SPI from the EVE.
  @param ImgData - Pointer to start of receive data buffer.
  @param DataSize - Number of bytes to read (rounded up to be 32-bit aligned).
- @param DestAddress - 24 bit memory mapped address on EVE.
+ @param SrcAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcAddress);
 
@@ -317,7 +317,6 @@ void EVE_CMD_MEMCPY(uint32_t dest, uint32_t src, uint32_t num);
 void EVE_CMD_SPINNER(int16_t x, int16_t y, uint16_t style, uint16_t scale);
 void EVE_CMD_BGCOLOR(uint32_t c);
 void EVE_CMD_SWAP(void);
-void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty);
 void EVE_CMD_STOP(void);
 void EVE_CMD_SLIDER(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t range);
@@ -333,8 +332,10 @@ void EVE_CMD_GRADCOLOR(uint32_t c);
 void EVE_CMD_BITMAP_TRANSFORM(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2, uint16_t result);
 void EVE_CMD_CALIBRATE(uint32_t result);
 #if IS_EVE_API(1, 2, 3, 4) // BT82x API change
+void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr);
 #else
+void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar);
 #endif
 void EVE_CMD_LOGO(void);

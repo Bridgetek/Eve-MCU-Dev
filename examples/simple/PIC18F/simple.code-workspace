@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../common"
+		},
+		{
+			"path": "../../../source"
+		},
+		{
+			"path": "../../../include"
+		},
+		{
+			"path": "../../../ports/eve_arch_pic"
+		},
+		{
+			"path": "../../../ports/eve_bt82x"
+		},
+		{
+			"path": "../../snippets"
+		}
+	],
+	"settings": {
+		"mplab.clangd.arguments": [
+			"--compile-commands-dir=${workspaceFolder}\\_build\\PIC18F44K22\\default"
+		],
+		"mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v3.10\\bin\\xc8-clangd.exe"
+	}
+}

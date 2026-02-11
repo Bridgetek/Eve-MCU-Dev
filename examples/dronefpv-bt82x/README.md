@@ -14,8 +14,8 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Generic using libMPSSE | libft4222 | Yes |
-|Generic using libFT4222 | libmpsse | Yes |
+|Generic using libMPSSE | libmpsse | Yes |
+|Generic using libFT4222 | libft4222 | Yes |
 
 Supported EVE APIs in this example:
 
@@ -56,11 +56,11 @@ void eve_example(void)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `eve_calibrate.c` below).
+Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Once calibration is complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
-### `eve_calibrate.c`
+### `touch.c`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
@@ -73,6 +73,5 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [common/dronefpv.c](common/dronefpv.c) | Example source code file |
-| [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
-| [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [docs](docs) | Documentation support files |

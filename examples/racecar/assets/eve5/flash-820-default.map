@@ -1,0 +1,14 @@
+Name                               : Offset : Size 
+
+patch_textscale.bin                : 0      : 2424 
+Carbon_Fiber_800x480_ASTC_8X8.raw  : 2432   : 96000
+trackmap_96x96_ASTC_4X4.raw        : 98432  : 9216 
+LED_32x32_ASTC_4X4.raw             : 107648 : 1024 
+Widget_Gear_152x152_ASTC_4X4.raw   : 108672 : 23104
+Widget_RPM_152x56_ASTC_4X4.raw     : 131776 : 8512 
+Widget_Speed_104x56_ASTC_4X4.raw   : 140288 : 5824 
+arrows_96x192_ASTC_4X4.raw         : 146112 : 18432
+Battery_Cells_40x1440_ASTC_4X4.raw : 164544 : 57600
+Bottom_Bar_800x8_ASTC_4X4.raw      : 222144 : 6400 
+Car_Overhead_44x80_ASTC_4X4.raw    : 228544 : 3520 
+eurostile_150_L8.raw               : 232064 : 93988

@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -56,38 +56,20 @@ extern "C" {
 #define BITMAP_BRIDGETEK_LOGO 7
 //@}
 
-/**
- @brief Key for identifying if touchscreen calibration values are programmed correctly.
- */
-#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
-
-/**
- @brief Structure to hold touchscreen calibration settings.
- @details This is used to store the touchscreen calibration settings persistently
- in Flash and identify if the calibration needs to be re-performed.
- */
-struct touchscreen_calibration {
-    uint32_t key; // VALID_KEY_TOUCHSCREEN
-    uint32_t transform[6];
-};
-
 /* Globals available within the eve_example code */
 extern uint32_t eve_img_bridgetek_logo_width;
 extern uint32_t eve_img_bridgetek_logo_height;
 
 /* Functions called within the eve_example code */
-void eve_calibrate(void);
-uint8_t eve_read_tag(uint8_t *key);
 uint8_t eve_romfont_width(uint8_t font);
 uint8_t eve_romfont_height(uint8_t font);
 
-/* Functions called from eve_example code to platform specific code */
-int8_t platform_calib_init(void);
-int8_t platform_calib_write(struct touchscreen_calibration *calib);
-int8_t platform_calib_read(struct touchscreen_calibration *calib);
-
 /* Entry point to the example code */
 void eve_example(void);
+
+#include "touch.h"
+#include "maths/trig_furman.h"
+#include "dials/flightcontrols.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

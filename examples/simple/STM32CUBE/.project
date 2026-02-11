@@ -51,6 +51,11 @@
 			<locationURI>$%7BAPI_DIRECTORY%7D/include</locationURI>
 		</link>
 		<link>
+			<name>snippets</name>
+			<type>2</type>
+			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Dev/examples/snippets</location>
+		</link>
+		<link>
 			<name>source</name>
 			<type>2</type>
 			<locationURI>$%7BAPI_DIRECTORY%7D/source</locationURI>

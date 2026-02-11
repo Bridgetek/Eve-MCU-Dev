@@ -10,32 +10,29 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c">
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightalt.c">
+    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightatt.c">
+    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\patch_dronefpv.c">
-      <Filter>Example</Filter>
+      <Filter>Example\Patch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +54,6 @@
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -72,32 +66,41 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\ftd2xx\ftd2xx.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
-      <Filter>Example</Filter>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h">
-      <Filter>Example</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\common\patch_dronefpv.h">
-      <Filter>Example</Filter>
+      <Filter>Example\Patch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\dials\flightcontrols.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +133,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Patch">
+      <UniqueIdentifier>{2c8df202-32bb-4411-888f-fba197874d00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

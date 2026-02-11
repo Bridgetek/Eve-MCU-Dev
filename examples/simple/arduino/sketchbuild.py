@@ -14,47 +14,60 @@ if sketch == None:
 
 print(f"Sketch name is {sketch}")
 
-src_example = os.path.normpath("../common")
-if not os.path.exists(src_example):
-    raise Exception("The example directory doesn't exist")
+# Add files to list of files to copy
+def add_files(src_dir, dest_dir, file_list):
+    added_files = []
+    if not os.path.exists(src_dir):
+        raise Exception(f"The directory \"{src_dir}\" doesn't exist")
+    # Add files to the list
+    try:
+        for d in file_list:
+            dino = d
+            if os.path.splitext(d)[1] == '.c':
+                dino = os.path.splitext(d)[0] + '.ino'
+            added_files.append((os.path.join(src_dir,d), os.path.join(dest_dir,dino)))
+    except:
+        raise Exception("The directory \"{src_dir}\" doesn't look correct")
+    return added_files
 
-# Collate example files needed (from example common directory)
-example_common_files = ["eve_example.c", "eve_example.h", "eve_calibrate.c", "eve_fonts.c", "eve_helper.c", "eve_images.c"]
-
-# Copy example source and header files
-try:
-    for d in example_common_files:
-        srcf, destf = (os.path.join(src_example,d), os.path.join(sketch,d))
-        print(f"{srcf} -> {destf}")
-        shutil.copyfile(srcf, destf)
-except:
-    raise Exception("The example common directory doesn't look correct")
-
-# Get the API directory
-src_api = os.path.normpath("../../../")
-if not os.path.exists(src_api):
-    raise Exception("The distribution directory doesn't exist")
-
-# Collate header files needed (from include directory)
-dist_inc_files = ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h", "EVE_config.h",
-    "FT80x.h", "FT81x.h", "BT81x.h", "BT81x.h", "BT82x.h"]
+def copy_norm(src_file, dest_file):
+    print(f"{srcf} -> {destf}")
+    with open(srcf, "r") as fsrc:
+        with open(destf, "w") as fdest:
+            strsrc = fsrc.read()
+            # Modify include statements to use local copy for sketch
+            strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
+            strsrc = strsrc.replace("<HAL.h>", "\"HAL.h\"")
+            strsrc = strsrc.replace("<MCU.h>", "\"MCU.h\"")
+            strsrc = strsrc.replace("<FT8xx.h>", "\"FT8xx.h\"")
+            strsrc = strsrc.replace("<EVE_config.h>", "\"EVE_config.h\"")
+            strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
+            fdest.write(strsrc) 
 
 # Collate source files needed
 dist_source_files = []
-dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), os.path.join(sketch,"EVE_API.c")))
-dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(sketch,"EVE_HAL.c")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(sketch,"eve_arch_arduino.ino")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","README.md"), os.path.join(sketch,"README.md")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.c"), os.path.join(sketch,"patch_base.c")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.h"), os.path.join(sketch,"patch_base.h")))
-for d in dist_inc_files:
-    dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(sketch,d)))
 
-# Copy API source and header files
+# Source directories for source files to be copied to sketch
+src_example = os.path.normpath("../common")
+src_snippets = os.path.normpath("../../snippets")
+src_api_source = os.path.normpath("../../../source")
+src_api_include = os.path.normpath("../../../include")
+src_port = os.path.normpath("../../../ports/eve_arch_arduino")
+src_patch = os.path.normpath("../../../ports/eve_bt82x")
+
+# Collate files needed for sketch
+dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
+dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
+dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h", "EVE_config.h",
+    "FT80x.h", "FT81x.h", "BT81x.h", "BT81x.h", "BT82x.h"]))
+dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
+dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
+dist_source_files.extend(add_files(src_patch, sketch, ["patch_base.c", "patch_base.h"]))
+
+# Copy files into sketch
 try:
     for d in dist_source_files:
         srcf, destf = d
-        print(f"{srcf} -> {destf}")
-        shutil.copyfile(srcf, destf)
+        copy_norm(srcf, destf)
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")

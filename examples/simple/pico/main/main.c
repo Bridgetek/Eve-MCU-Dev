@@ -90,7 +90,6 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
     uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE);
     uint32_t ints = save_and_disable_interrupts();
 
-    calib->key = VALID_KEY_TOUCHSCREEN;
     memset(config, 0xff, FLASH_PAGE_SIZE);
     memcpy(config, calib, sizeof(struct touchscreen_calibration));
 
@@ -104,13 +103,8 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
     struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    if (p->key == VALID_KEY_TOUCHSCREEN)
-    {
-        memcpy(calib, p, sizeof(struct touchscreen_calibration));
-        return 0;
-    }
-
-    return -2;
+    memcpy(calib, p, sizeof(struct touchscreen_calibration));
+    return 0;
 }
 //@}
 

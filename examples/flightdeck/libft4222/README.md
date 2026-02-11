@@ -1,8 +1,10 @@
 # EVE-MCU-Dev Flightdeck Example for libft4222
 
+Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
+
 ## Command Line Compilation
 
-To compile the project with the default C compiler:
+To configure the project with the default C compiler:
 ```
     cmake -B build -S .
 ```

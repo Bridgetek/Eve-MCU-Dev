@@ -1,0 +1,82 @@
+name: Test API
+
+on:
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - main
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/api_test.yml'
+      # Trigger script on push to test directory
+      - test
+      # Trigger script on push to API
+      - include
+      - source
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: install build packages
+      run: sudo apt-get update && sudo apt-get install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi g++ libstdc++-arm-none-eabi-newlib build-essential
+    
+    # Test BT820 (EVE API 5)
+    - name: Configure CMake for BT820 with DP_1012_01A (WUXGA) panel
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/build820WUXGA -S ${{github.workspace}}/test/boottester -DPANEL_TYPE=DP_1012_01A -DFT8XX_TYPE=BT820
+
+    - name: Build for BT820 with DP_1012_01A (WUXGA) panel
+      run: cmake --build ${{github.workspace}}/test/boottester/build820WUXGA
+
+    - name: Run test for BT820 with DP_1012_01A (WUXGA) panel
+      run: ${{github.workspace}}/test/boottester/build820WUXGA/boottester
+
+    # Test BT817 (EVE API 4)
+    - name: Configure CMake for BT817 with WXGA resolution panel
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/buildWXGA -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=BT817 -DDISPLAY_RES=WXGA
+
+    - name: Build for BT817 with WXGA resolution panel
+      run: cmake --build ${{github.workspace}}/test/boottester/buildWXGA
+
+    - name: Run test for BT817 with WXGA resolution panel
+      run: ${{github.workspace}}/test/boottester/buildWXGA/boottester
+
+    # Test BT816 (EVE API 3)
+    - name: Configure CMake for IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/buildIDM20407A -S ${{github.workspace}}/test/boottester -DMODULE_TYPE=IDM20407A
+
+    - name: Build for IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
+      run: cmake --build ${{github.workspace}}/test/boottester/buildIDM20407A
+
+    - name: Run test for IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
+      run: ${{github.workspace}}/test/boottester/buildIDM20407A/boottester
+
+    # Test FT813 (EVE API 2 SUB API 1)
+    - name: Configure CMake for FT813 with DP_0501_01A panel (WVGA)
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/build813WVGA -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A
+
+    - name: Build for IDM20407A module on FT813 with DP_0501_01A panel (WVGA)
+      run: cmake --build ${{github.workspace}}/test/boottester/build813WVGA
+
+    - name: Run test for FT813 with DP_0501_01A panel (WVGA)
+      run: ${{github.workspace}}/test/boottester/build813WVGA/boottester
+
+    # Test FT800 (EVE API 1)
+    - name: Configure CMake for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: cmake --fresh -B ${{github.workspace}}/test/boottester/build800C43A -S ${{github.workspace}}/test/boottester -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A
+
+    - name: Build for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: cmake --build ${{github.workspace}}/test/boottester/build800C43A
+
+    - name: Run test for VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
+      run: ${{github.workspace}}/test/boottester/build800C43A/boottester

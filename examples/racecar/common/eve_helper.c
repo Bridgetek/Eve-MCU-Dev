@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,33 +42,6 @@
 #include <EVE.h>
 
 #include "eve_example.h"
-
-/* Read a (single) touch tag from the touch controller. 
- * Return non-zero if there is a valid touch tag. Zero if no touch. 
- */
-uint8_t eve_read_tag(uint8_t *key)
-{
-    uint8_t Read_tag;
-    uint8_t key_detect = 0;
-
-#if IS_EVE_API(1, 2, 3, 4)
-    Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
-    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000))
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-#else
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-#endif
-
-    return key_detect;
-}
 
 /* Array containing the bitmap sizes of ROM fonts. */
 const uint8_t eve_rom_font_widths[] = EVE_ROMFONT_WIDTHS;

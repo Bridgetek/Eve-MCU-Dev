@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -59,7 +59,7 @@
 #endif // _WIN32
 
 #include "ftd2xx.h"
-#include "LibFT4222.h"
+#include "libft4222.h"
 
 
 // This is the Windows Platform specific section and contains the functions which
@@ -68,7 +68,7 @@
 #define FT8XX_CS_N_PIN   1    /* GPIO is not utilized in Lib4222 as it is directly managed by firmware */
 #define FT8XX_PD_N_PIN   GPIO_PORT0
 /* GPIO0         , GPIO1      , GPIO2       , GPIO3         } */
-GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_OUTPUT, GPIO_OUTPUT };
+GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTPUT };
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
@@ -145,14 +145,20 @@ void MCU_Init(void)
             continue;
         }
 
+        // Proceed only with FT4222H devices configured in mode 0 (single SPI + GPIO)
+        if (devInfo.Type != FT_DEVICE_4222H_0)
+        {
+            continue;
+        }
+
         printf("FT4222 device % d: ", iDev);
 
-        if (devInfo.SerialNumber[0] == 'A')
+        if( ! strcmp( devInfo.Description, "FT4222 A"))
         {
             if (countSPI == 0)
             {
                 devNumSPI = devInfo.LocId;
-                printf("selected\n");
+                printf("selected for SPI\n");
                 printf("\t\tVID/PID: 0x%04x/0x%04x\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);
@@ -164,12 +170,12 @@ void MCU_Init(void)
             countSPI--;
         }
 
-        if (devInfo.SerialNumber[0] == 'B')
+        if( ! strcmp( devInfo.Description, "FT4222 B"))
         {
             if (countGPIO == 0)
             {
                 devNumGPIO = devInfo.LocId;
-                printf("selected\n");
+                printf("selected for GPIO\n");
                 printf("\t\tVID/PID: 0x%04x/0x%04x\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);

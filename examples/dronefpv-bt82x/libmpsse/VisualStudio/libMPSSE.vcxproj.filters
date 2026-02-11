@@ -10,12 +10,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClCompile>
@@ -28,18 +22,22 @@
     <ClCompile Include="..\release\source\ftdi_spi.c">
       <Filter>Library\libmpsse_spi</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\sevenseg\sevenseg.c">
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightalt.c">
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\flightcontrols\flightatt.c">
+    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\trig_furman\trig_furman.c">
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\patch_dronefpv.c">
@@ -89,17 +87,20 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\sevenseg\sevenseg.h">
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\..\snippets\flightcontrols\flightcontrols.h">
+    <ClInclude Include="..\..\..\snippets\dials\flightcontrols.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\trig_furman\trig_furman.h">
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />

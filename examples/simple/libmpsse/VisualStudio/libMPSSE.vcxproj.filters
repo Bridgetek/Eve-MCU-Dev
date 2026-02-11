@@ -13,38 +13,35 @@
     <ClCompile Include="..\..\common\eve_images.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_fonts.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_calibrate.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
-    </ClCompile>
-    <ClCompile Include="..\release\source\ftdi_infra.c">
-      <Filter>Library\libmpsse_spi</Filter>
-    </ClCompile>
-    <ClCompile Include="..\release\source\ftdi_mid.c">
-      <Filter>Library\libmpsse_spi</Filter>
-    </ClCompile>
-    <ClCompile Include="..\release\source\ftdi_spi.c">
-      <Filter>Library\libmpsse_spi</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.c">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="release\libftd2xx\ftd2xx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -63,15 +60,6 @@
     <ClInclude Include="..\..\..\..\include\EVE.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\release\include\libmpsse_i2c.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\release\include\libmpsse_spi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\BT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -89,6 +77,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.h">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_i2c.h">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h">
+      <Filter>Library\eve\ports\eve_libmpsse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -118,9 +127,6 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_libmpsse">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\libmpsse_spi">
-      <UniqueIdentifier>{88fcadda-2e2e-48b4-99de-f99cc668e1e9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>

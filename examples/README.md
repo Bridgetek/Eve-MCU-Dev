@@ -31,8 +31,7 @@ In each example directory there is a folder called `common` which contains all t
 
 - `\examples\<demo>\common\eve_example.h` The header file containing the declarations for the following files and `eve_example()` function.
 - `\examples\<demo>\common\eve_example.c` The C file containing the `eve_example()` function called from the platform `main()` function.
-- `\examples\<demo>\common\eve_calibrate.c` A helper file that contains functions that are useful in calibrating the display touch. This will call functions in the MCU-specific part of the example to store and load touch calibration information.
-- `\examples\<demo>\common\eve_helper.c` Several extra functions that are used commonly in examples.
+- `\examples\snippets\touch.c` A helper file that contains functions that are useful in calibrating the display touch. This will call functions in the MCU-specific part of the example to store and load touch calibration information.
 
 ### MCU Specific Folders
 

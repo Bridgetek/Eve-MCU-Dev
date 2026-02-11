@@ -38,8 +38,6 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(racecar C CXX ASM)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
@@ -61,11 +59,30 @@ message(PROJECT_NAME="${PROJECT_NAME}")
 message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
 message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
+# Setup command line options for build - feeds into EVE_config.h
+option(MODULE_TYPE "EVE Module Name" )
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+ENDIF(MODULE_TYPE)
+option(FT8XX_TYPE "EVE Device Type Name" )
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+ENDIF(FT8XX_TYPE)
+option(PANEL_TYPE "EVE Panel Type" )
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+ENDIF(PANEL_TYPE)
+option(DISPLAY_RES "Panel Display Resolution" )
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+ENDIF(DISPLAY_RES)
+
+# Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
-# point out the CMake, where to find the executable source file
+# Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
         main/main.c
 )
@@ -75,13 +92,14 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
-	${EXAMPLE_SNIPPETS}/trig_furman
+	${EXAMPLE_SNIPPETS}/maths
 )
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
 # The pico port can only use the EVE Flash for storage of assets
+# Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_FLASH)
 
 # Trig tables are used instead of maths functions
@@ -89,10 +107,12 @@ add_compile_definitions(USE_TRIG_TABLE)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+# Milliseconds to wait for stdio connection
+# (will also have stdio_usb_connected() call in main to wait for connection)
+add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
+# Modify the below lines to enable/disable output over USB
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name
@@ -113,26 +133,17 @@ target_include_directories(eve_library PUBLIC
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
         ${EXAMPLE_COMMON}/eve_assetload_flash.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve3.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve4.c
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve5.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_COMMON}/patch_textscale.c
 )
-
-# Example code assets
-# Add all C files, the EVE generation macro selects the correct data
-file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
-        "${EXAMPLE_ASSETS}/eve5/*.c" 
-        "${EXAMPLE_ASSETS}/eve34/*.c"
-        "${EXAMPLE_ASSETS}/c_array_assets/*.c")
-target_sources(eve_example PUBLIC
-        ${EVE_ASSET_LIST})
 
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
@@ -140,7 +151,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

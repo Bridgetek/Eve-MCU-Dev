@@ -73,16 +73,30 @@ void eve_example(void)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `eve_calibrate.c` below).
+Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Once calibration is complete, the font for the counter and the image for the logo are both loaded  (see `eve_fonts.c` and `eve_images.c` below).
 Finally, the main program sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
-### `eve_calibrate.c`
+### `touch.c`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
+
+Another function of this file is to read a single touch tag from the screen.
+
+```
+    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
+    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+```
+
+A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
+If that register indicates a valid touch then this is flagged to the calling program.
 
 ### `eve_images.c`
 
@@ -206,22 +220,6 @@ supplied handle.
 A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the font handle on the device so that it can be used by subsequent display lists.
 
-### `eve_helper.c`
-
-Currently the only function of this file is to read a single touch tag from the screen.
-
-```
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-```
-
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
-If that register indicates a valid touch then this is flagged to the calling program.
-
 ## Files and Folders
 
 The example contains a common directory with several files which comprises all the demo functionality.
@@ -229,8 +227,7 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [common/eve_calibrate.c](common/eve_calibrate.c) | Calibrations routines |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
-| [common/eve_helper.c](common/eve_helper.c) | General helper routines (touch detection) |
 | [common/eve_images.c](common/eve_images.c) | Image helper routines |
 | [docs](docs) | Documentation support files |

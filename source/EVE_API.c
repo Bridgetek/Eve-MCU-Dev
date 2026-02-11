@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -55,7 +55,7 @@
 
 void EVE_Init(void)
 {
-    int i;
+    uint8_t i;
 
     HAL_EVE_Init();
 
@@ -134,6 +134,12 @@ void EVE_Init(void)
     HAL_MemWrite8(EVE_REG_VOL_SOUND, EVE_VOL_ZERO);
     // set synthesizer to mute
     HAL_MemWrite16(EVE_REG_SOUND, 0x6000);
+
+#ifndef EVE_USE_CMDB_METHOD
+    HAL_MemWrite32(EVE_REG_CMD_READ, 0);
+    HAL_ResetCmdPointer();
+    HAL_WriteCmdPointer();
+#endif
 
 #elif IS_EVE_API(5) 
 
@@ -308,21 +314,27 @@ uint32_t EVE_LIB_GetResult(int offset)
 }
 
 #if IS_EVE_API(5)
-// Obtain the co-processor exception description
+// Obtain the co-processor exception description (up-to 128 characters)
 void EVE_LIB_GetCoProException(char* desc)
 {
-    uint32_t report = EVE_COPROC_REPORT;
-    uint32_t j;
-    int i;
-    for (j = 0; j < 256; j += 4)
+    uint8_t j;
+    uint8_t i;
+    char c;
+    for (j = 0; j < 128; j += 4)
     {
-        uint32_t w = HAL_MemRead32(report + j);
+        // Read the text from the report register
+        uint32_t w = HAL_MemRead32(EVE_COPROC_REPORT + j);
+        // Immediately clear the report register
+        HAL_MemWrite32(EVE_COPROC_REPORT + j, 0);
+        // Add the 4 characters to the report string
         for (i = 0; i < 4; i++)
         {
-            char c = (w >> (i * 8)) & 0x7f;
+            c = (w >> (i * 8)) & 0x7f;
             *desc++ = c;
+            // Break at the end of the report
             if (c == '\0') break;
         }
+        if (c == '\0') break;
     }
 }
 #endif
@@ -741,7 +753,7 @@ void EVE_BITMAP_SOURCE(int32_t addr)
 #if IS_EVE_API(3, 4)
 void EVE_BITMAP_SOURCE2(uint8_t flash_or_ram, int32_t addr)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SOURCE2(flash_or_ram, (int32_t)addr));
+    HAL_Write32(EVE_ENC_BITMAP_SOURCE2((uint32_t)flash_or_ram, (int32_t)addr));
     HAL_IncCmdPointer(4);
 }
 #endif
@@ -1010,12 +1022,6 @@ void EVE_BITMAP_ZORDER(uint8_t o)
     HAL_IncCmdPointer(4);
 }
 
-void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
-{
-    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
-    HAL_IncCmdPointer(4);
-}
-
 void EVE_PALLETE_SOURCE_H(uint8_t addr)
 {
     HAL_Write32(EVE_ENC_PALLETE_SOURCE_H(addr));
@@ -1036,8 +1042,8 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_KEYS);
     HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
@@ -1122,13 +1128,6 @@ void EVE_CMD_SWAP(void)
 {
     HAL_Write32(EVE_ENC_CMD_SWAP);
     HAL_IncCmdPointer(4);
-}
-
-void EVE_CMD_INFLATE(uint32_t ptr)
-{
-    HAL_Write32(EVE_ENC_CMD_INFLATE);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(8);
 }
 
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty)
@@ -1259,6 +1258,13 @@ void EVE_CMD_CALIBRATE(uint32_t result)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // FT82x API change
+
+void EVE_CMD_INFLATE(uint32_t ptr)
+{
+    HAL_Write32(EVE_ENC_CMD_INFLATE);
+    HAL_Write32(ptr);
+    HAL_IncCmdPointer(8);
+}
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);
@@ -1267,6 +1273,13 @@ void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
     HAL_IncCmdPointer(12);
 }
 #elif IS_EVE_API(5) // FT81x API change
+void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options)
+{
+  HAL_Write32(EVE_ENC_CMD_INFLATE);
+  HAL_Write32(ptr);
+  HAL_Write32(options);
+  HAL_IncCmdPointer(12);
+}
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);
@@ -1431,8 +1444,8 @@ uint8_t COUNT_ARGS(const char* string)
 void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -1463,8 +1476,8 @@ void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const ch
 void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -1496,8 +1509,8 @@ void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, ui
 void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -1710,6 +1723,18 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
     HAL_Write32(ptr);
     HAL_Write32(num);
     HAL_IncCmdPointer(12);
+}
+
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
+{
+    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
+    HAL_IncCmdPointer(4);
+}
+
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
+    HAL_IncCmdPointer(4);
 }
 
 #endif
@@ -2045,8 +2070,8 @@ void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t 
 void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint32_t CommandSize;
-    uint32_t StringLength;
+    uint16_t CommandSize;
+    uint16_t StringLength;
     uint8_t i, num=0;
 
     va_start(args, string);
@@ -2181,7 +2206,7 @@ void EVE_CMD_FSOPTIONS(uint32_t options)
 
 void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSREAD);
     HAL_Write32(dst);
@@ -2192,7 +2217,7 @@ void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 
 void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSSIZE);
     StringLength = EVE_LIB_SendString(filename);
@@ -2202,7 +2227,7 @@ void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 
 void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSSOURCE);
     StringLength = EVE_LIB_SendString(filename);
@@ -2212,7 +2237,7 @@ void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 
 void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result)
 {
-    uint32_t StringLength;
+    uint16_t StringLength;
 
     HAL_Write32(EVE_ENC_CMD_FSDIR);
     HAL_Write32(dst);

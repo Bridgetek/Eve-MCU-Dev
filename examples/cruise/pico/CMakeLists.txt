@@ -51,10 +51,29 @@ message(PROJECT_NAME="${PROJECT_NAME}")
 message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
 message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
+# Setup command line options for build - feeds into EVE_config.h
+option(MODULE_TYPE "EVE Module Name" )
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+ENDIF(MODULE_TYPE)
+option(FT8XX_TYPE "EVE Device Type Name" )
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+ENDIF(FT8XX_TYPE)
+option(PANEL_TYPE "EVE Panel Type" )
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+ENDIF(PANEL_TYPE)
+option(DISPLAY_RES "Panel Display Resolution" )
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+ENDIF(DISPLAY_RES)
+
+# Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-# point out the CMake, where to find the executable source file
+# Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
         main/main.c
 )
@@ -91,10 +110,10 @@ target_include_directories(eve_library PUBLIC
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_calibrate.c
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_SNIPPETS}/sevenseg/sevenseg.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
@@ -102,7 +121,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/sevenseg # Header for seven segement
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

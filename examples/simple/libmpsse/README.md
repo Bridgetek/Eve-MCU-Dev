@@ -2,7 +2,7 @@
 
 ## Command Line Compilation
 
-To compile the project with the default C compiler:
+To configure the project with the default C compiler:
 ```
     cmake -B build -S .
 ```
@@ -37,3 +37,4 @@ The Visual Studio project files for the example are found in the `VisualStudio` 
 ## Linux
 
 The cmake command line examples for Windows will compile the required files for the example application under Linux. The LibMPSSE library for Linux will be taken from the `/usr/local/lib` directory and the include files from `/usr/local/include`.
+

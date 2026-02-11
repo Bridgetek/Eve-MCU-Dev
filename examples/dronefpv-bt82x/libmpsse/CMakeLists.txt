@@ -21,19 +21,30 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# Setup command line options for build - feeds into EVE_config.h
+option(MODULE_TYPE "EVE Module Name" )
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+ENDIF(MODULE_TYPE)
+option(FT8XX_TYPE "EVE Device Type Name" )
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+ENDIF(FT8XX_TYPE)
+option(PANEL_TYPE "EVE Panel Type" )
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+ENDIF(PANEL_TYPE)
+option(DISPLAY_RES "Panel Display Resolution" )
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+ENDIF(DISPLAY_RES)
+
+# Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/release)
-        message(FATAL_ERROR "libMPSSE installation cannot be found.\nThe libMPSSE library \"release\" directory must be copied to the current directory.")
-endif()
-
-# point out the CMake, where to find the executable source file
+# Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
-        release/source/ftdi_infra.c
-        release/source/ftdi_spi.c
-        release/source/ftdi_i2c.c
-        release/source/ftdi_mid.c
         main.c
 )
 include_directories(
@@ -43,6 +54,7 @@ include_directories(
 )
 # Tell EVE library to use libFT4222 as base class
 add_compile_definitions(USE_MPSSE=0)
+
 # Add in flags for MPSSE header file.
 add_compile_definitions(FTDIMPSSE_STATIC)
 add_compile_definitions(FT_VER_MAJOR=1)
@@ -56,36 +68,71 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
 )
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+target_sources(eve_library PRIVATE # EVE library name
+        # Source code for MPSSE library
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_infra.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_spi.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_i2c.c
+        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_mid.c
+)
+endif()
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        release/include
-        release/libftd2xx
+        ${API_DIRECTORY}/ports/eve_libmpsse # MPSSE Library headers
 )
 
 # EVE library dependencies
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        target_link_libraries(eve_library ${CMAKE_DL_LIBS})
-        add_link_options(-lmpsse)
-else()
-        target_link_libraries(eve_library
-                ${CMAKE_CURRENT_LIST_DIR}/release/build/x64/LIB/libmpsse.lib
-)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    find_library(MPSSE_LIBRARY
+        NAMES mpsse
+        )
+
+    find_library(FTD2XX_LIBRARY
+        NAMES ftd2xx
+        )
+
+    if (MPSSE_LIBRARY AND FTD2XX_LIBRARY)
+        message(STATUS "libmpsse found")
+    else()
+        message(FATAL_ERROR "libmpsse not found")
+    endif()
+    
+    if (FTD2XX_LIBRARY)
+        message(STATUS "libftd2xx found")
+    else()
+        message(FATAL_ERROR "libftd2xx not found")
+    endif()
+
+    #target_link_libraries(eve_library ${CMAKE_DL_LIBS})
+    target_link_libraries(eve_library
+	mpsse
+    )
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_libmpsse/libmpsse_spi.h")
+        message(FATAL_ERROR "The Windows libMPSSE installation has not been completed. Follow the instructions in \"\\ports\\eve_libmpsse\\README.md\"")
+    endif()
+
+    target_link_libraries(eve_library
+            ${API_DIRECTORY}/ports/eve_libmpsse/libmpsse.lib
+    )
 endif()
 
 # Source for example code
 add_library(eve_example # Example code library name
+        # Source files for example code library
+        ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/dials/flightalt.c
+        ${EXAMPLE_SNIPPETS}/dials/flightatt.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         # Patch file to override patch_base.c
         ${EXAMPLE_COMMON}/patch_dronefpv.c
-        # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_calibrate.c
-        ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_COMMON}/eve_helper.c
-        ${EXAMPLE_SNIPPETS}/flightcontrols/flightalt.c
-        ${EXAMPLE_SNIPPETS}/flightcontrols/flightatt.c
-        ${EXAMPLE_SNIPPETS}/trig_furman/trig_furman.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
@@ -93,8 +140,7 @@ target_include_directories(eve_example PUBLIC
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/trig_furman # Headers for snippets
-        ${EXAMPLE_SNIPPETS}/flightcontrols
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )
 # Example code dependencies
 target_link_libraries(eve_example

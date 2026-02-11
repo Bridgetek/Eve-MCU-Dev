@@ -22,7 +22,7 @@
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConsoleApplication2</RootNamespace>
-    <ProjectName>simple</ProjectName>
+    <ProjectName>touchscreentest</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,22 +70,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets\sevenseg;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\imports\ftd2xx;..\imports\LibFT4222\inc;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -175,9 +175,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
-    <ClCompile Include="..\..\common\eve_calibrate.c" />
+    <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
-    <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\common\eve_images.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
@@ -189,6 +188,7 @@
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
+    <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />

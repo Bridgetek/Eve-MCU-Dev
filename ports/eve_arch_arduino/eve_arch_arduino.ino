@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -136,39 +136,40 @@ char MCU_SPIReadWrite8(uint8_t val) {
 
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) {
   uint16_t DataRead = 0;
-  DataRead = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
-  DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff);
+  DataRead = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  DataRead |= MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
 
-  return MCU_be16toh(DataRead);
+  return DataRead;
 }
 
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
 
-  temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
-  DataRead |= (temp << 24);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
-  DataRead |= (temp << 16);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
   DataRead |= (temp << 8);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  DataRead |= (temp << 16);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+  DataRead |= (temp << 24);
 
-  return MCU_be32toh(DataRead);
+  return DataRead;
 }
 
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
 
-  temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
-  DataRead |= (temp << 24);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
-  DataRead |= (temp << 16);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  DataRead |= (temp << 0);
   temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
   DataRead |= (temp << 8);
-  DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff);
+  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+  DataRead |= (temp << 16);
+  temp |= MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
+  DataRead |= (temp << 24);
 
-  return MCU_be32toh(DataRead);
+  return DataRead;
 }
 
 void MCU_Delay_20ms(void) {
@@ -250,20 +251,22 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length) {
   }
 }
 
+// Arduino is Little Endian. 
+// Use toolchain defined functions.
 uint16_t MCU_htobe16(uint16_t h) {
-  return h;
-}
-
-uint32_t MCU_htobe32(uint32_t h) {
-  return h;
-}
-
-uint16_t MCU_htole16(uint16_t h) {
   return bswap16(h);
 }
 
-uint32_t MCU_htole32(uint32_t h) {
+uint32_t MCU_htobe32(uint32_t h) {
   return bswap32(h);
+}
+
+uint16_t MCU_htole16(uint16_t h) {
+  return h;
+}
+
+uint32_t MCU_htole32(uint32_t h) {
+  return h;
 }
 
 uint16_t MCU_be16toh(uint16_t h) {

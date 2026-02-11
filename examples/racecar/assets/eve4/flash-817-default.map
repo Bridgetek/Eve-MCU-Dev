@@ -1,0 +1,14 @@
+Name                               : Offset : Size 
+
+default-fl.blob                    : 0      : 4096 
+Carbon_Fiber_800x480_ASTC_8X8.raw  : 4096   : 96000
+trackmap_96x96_ASTC_4X4.raw        : 100096 : 9216 
+LED_32x32_ASTC_4X4.raw             : 109312 : 1024 
+Widget_Gear_152x152_ASTC_4X4.raw   : 110336 : 23104
+Widget_RPM_152x56_ASTC_4X4.raw     : 133440 : 8512 
+Widget_Speed_104x56_ASTC_4X4.raw   : 141952 : 5824 
+arrows_96x192_ASTC_4X4.raw         : 147776 : 18432
+Battery_Cells_40x1440_ASTC_4X4.raw : 166208 : 57600
+Bottom_Bar_800x8_ASTC_4X4.raw      : 223808 : 6400 
+Car_Overhead_44x80_ASTC_4X4.raw    : 230208 : 3520 
+eurostile_150_L8.raw               : 233728 : 93988
