@@ -45,6 +45,8 @@
 
 #include <### EVE CLASS ###.h>
 
+#include "touch.h"
+
 /**
  @brief EVE library handle.
  @details This is the one instance of the EVE library. Available as a global.
@@ -59,30 +61,13 @@ extern ### EVE CLASS ### eve;
 #define BITMAP_BRIDGETEK_LOGO 7
 //@}
 
-/**
- @brief Key for identifying if touchscreen calibration values are programmed correctly.
- */
-#define VALID_KEY_TOUCHSCREEN 0xd72f91a3
-
-/**
- @brief Structure to hold touchscreen calibration settings.
- @details This is used to store the touchscreen calibration settings persistently
- in Flash and identify if the calibration needs to be re-performed.
- */
-struct touchscreen_calibration {
-	uint32_t key;  // VALID_KEY_TOUCHSCREEN
-	uint32_t transform[6];
-};
-
 /* Globals available within the eve_example code */
 extern uint32_t eve_img_bridgetek_logo_width;
 extern uint32_t eve_img_bridgetek_logo_height;
 
 /* Functions called within the eve_example code */
-int eve_calibrate(void);
 uint32_t eve_init_fonts(void);
 uint32_t eve_load_images(uint32_t);
-uint8_t eve_read_tag(uint8_t *key);
 
 /* Functions called from eve_example code to platform specific code */
 int8_t platform_calib_init(void);
