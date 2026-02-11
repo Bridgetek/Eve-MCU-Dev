@@ -55,11 +55,13 @@
 //#include <stm32f0308_discovery.h>
 
 #include <string.h>
-#include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+#include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
+// Note there is no endian.h for this platform.
 
-#include <main.h>
 #include <EVE.h>
 #include <MCU.h>
+// This is required for the call to "Error_Handler" which must be provided in "main.c".
+#include <main.h>
 
 extern GPIO_TypeDef *config_gpio;
 extern uint16_t config_pin_pd;
@@ -153,6 +155,8 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
     
     TxBuffer = DataToWrite;
         
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits/receives of integers will be little endian.
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, 5000);
 
     // Note that this call to the STM32 HAL returns a status value which can be checked as shown below in order
@@ -185,6 +189,8 @@ uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
     uint16_t DataRead;
     uint16_t TxBuffer = MCU_htole16(DataToWrite);
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits/receives of integers will be little endian.
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, 5000);
 
     return MCU_le16toh(DataRead);
@@ -195,6 +201,8 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     uint32_t DataRead;
     uint32_t TxBuffer = MCU_htole32(DataToWrite);
     
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits/receives of integers will be little endian.
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, 5000);
 
     return MCU_le32toh(DataRead);
@@ -205,6 +213,8 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
     uint32_t DataRead;
     uint32_t TxBuffer = MCU_htole32(DataToWrite);
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits/receives of integers will be little endian.
     HAL_SPI_TransmitReceive(&SpiHandle, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, 5000);
  
     return MCU_le32toh(DataRead);
@@ -301,6 +311,9 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
         DataPointer += sizeof(uint8_t);
     }
 }
+
+// Note: This platform is LITTLE_ENDIAN. 
+// Endian-swaps are made using bswaps - there is no endian.h header.
 
 uint16_t MCU_htobe16 (uint16_t h)
 {

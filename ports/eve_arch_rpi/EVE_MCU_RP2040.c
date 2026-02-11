@@ -167,6 +167,8 @@ uint8_t MCU_SPIRead8(void)
 {
     uint8_t DataRead = 0;
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer receives of integers will be little endian.
     spi_read_blocking(spi_port, 0, &DataRead, 1);
 
     return DataRead;
@@ -174,6 +176,8 @@ uint8_t MCU_SPIRead8(void)
 
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits of integers will be little endian.
     spi_write_blocking(spi_port, &DataToWrite, 1);
 }
 
@@ -181,6 +185,8 @@ uint16_t MCU_SPIRead16(void)
 {
     uint16_t DataRead = 0;
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer receives of integers will be little endian.
     spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 2);
 
     return DataRead;
@@ -188,6 +194,8 @@ uint16_t MCU_SPIRead16(void)
 
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits of integers will be little endian.
     spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 2);
 }
 
@@ -195,6 +203,8 @@ uint32_t MCU_SPIRead24(void)
 {
     uint32_t DataRead = 0;
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer receives of integers will be little endian.
     spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 3);
 
     return DataRead;
@@ -202,6 +212,8 @@ uint32_t MCU_SPIRead24(void)
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits of integers will be little endian.
     spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 3);
 }
 
@@ -209,6 +221,8 @@ uint32_t MCU_SPIRead32(void)
 {
     uint32_t DataRead = 0;
 
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer receives of integers will be little endian.
     spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 4);
 
     return DataRead;
@@ -216,6 +230,8 @@ uint32_t MCU_SPIRead32(void)
 
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
+    // Note: This platform is LITTLE_ENDIAN. 
+    // Buffer transmits of integers will be little endian.
     spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 4);
 }
 
@@ -241,6 +257,7 @@ void MCU_Delay_500ms(void)
 
 // RP2040 is Little Endian. There is no sys/endian.h.
 // Use toolchain defined functions.
+
 uint16_t MCU_htobe16(uint16_t h)
 {
     return __bswap16(h);

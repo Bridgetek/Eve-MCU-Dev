@@ -53,21 +53,55 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef _WIN32 // Windows is always little-endian (for now)
+
+#if defined(__linux__) || defined(__CYGWIN__)
+// Linux endianness (not BSD variants)
 #include <endian.h>
 #include <unistd.h>
+#elif defined(_WIN32)
+// Windows endianness
+#include <winsock2.h>
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define htobe16(x) htons(x)
+#define htole16(x) (uint16_t)(x)
+#define be16toh(x) ntohs(x)
+#define le16toh(x) (uint16_t)(x)
+#define htobe32(x) htonl(x)
+#define htole32(x) (uint32_t)(x)
+#define be32toh(x) ntohl(x)
+#define le32toh(x) (uint32_t)(x)
+#elif BYTE_ORDER == BIG_ENDIAN
+#define htobe16(x) (uint16_t)(x)
+#define htole16(x) __builtin_bswap16(x)
+#define be16toh(x) (uint16_t)(x)
+#define le16toh(x) __builtin_bswap16(x)
+#define htobe32(x) (uint32_t)(x)
+#define htole32(x) __builtin_bswap32(x)
+#define be32toh(x) (uint32_t)(x)
+#define le32toh(x) __builtin_bswap32(x)
+#endif // BYTE_ORDER
+#else
+// Other endianness (check naming conventions)
+#include <sys/endian.h>
 #endif // _WIN32
 
 #include "ftd2xx.h"
 #include "libft4222.h"
 
+// From issue #25
+#if defined(BYTE_ORDER) && BYTE_ORDER == ORDER_LITTLE_ENDIAN
+#define HOST_IS_LITTLE_ENDIAN 1
+#elif defined(BYTE_ORDER) && BYTE_ORDER == ORDER_BIG_ENDIAN
+#define HOST_IS_LITTLE_ENDIAN 0
+#endif
 
-// This is the Windows Platform specific section and contains the functions which
+// This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-#define FT8XX_CS_N_PIN   1    /* GPIO is not utilized in Lib4222 as it is directly managed by firmware */
+// GPIO is not utilized in Lib4222 as it is directly managed by firmware.
+#define FT8XX_CS_N_PIN   1    
 #define FT8XX_PD_N_PIN   GPIO_PORT0
-/* GPIO0         , GPIO1      , GPIO2       , GPIO3         } */
+// GPIO0         , GPIO1      , GPIO2       , GPIO3         }
 GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTPUT };
 
 // ----------------------- MCU Transmit Buffering  -----------------------------

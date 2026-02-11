@@ -46,10 +46,9 @@
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
-
 #include <xc.h>
 #include <string.h>
-#include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+#include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
 
 #include <EVE.h>
 #include <MCU.h>
@@ -188,41 +187,42 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
     uint16_t DataRead = 0;
-    DataRead = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
-    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff);
+    DataRead = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+    DataRead |= MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
 
-    return MCU_be16toh(DataRead);
+    return DataRead;
 }
 
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
 {
     uint32_t DataRead = 0;
     uint32_t temp;
-    
-    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff); 
-    DataRead |= (temp<<24);
-    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
-    DataRead |= (temp<<16);
-    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
-    DataRead |= (temp<<8);
 
-    return MCU_be32toh(DataRead);
+    temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+    DataRead |= (temp << 8);
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+    DataRead |= (temp << 16);
+    temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+    DataRead |= (temp << 24);
+
+    return DataRead;
 }
 
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 {
     uint32_t DataRead = 0;
     uint32_t temp;
-          
-    temp = MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);    
-    DataRead |= (temp << 24);
+
+    temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+    DataRead |= (temp << 0);
+    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+    DataRead |= (temp << 8);
     temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
-    DataRead |= (temp << 16);      
-    temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);       
-    DataRead |= (temp << 8);      
-    DataRead |= MCU_SPIReadWrite8(DataToWrite & 0xff); 
-    
-    return MCU_be32toh(DataRead);
+    DataRead |= (temp << 16);
+    temp |= MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
+    DataRead |= (temp << 24);
+
+    return DataRead;
 }
 
 void MCU_Delay_20ms(void)
@@ -325,43 +325,46 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     }
 }
 
+// PIC18F is Little Endian. There is no sys/endian.h.
+// Use toolchain defined functions.
+
 uint16_t MCU_htobe16 (uint16_t h)
 {
-    return h;
+    return bswap16(h); 
 }
 
 uint32_t MCU_htobe32 (uint32_t h)
 {
-    return h;
+    return bswap32(h);
 }
 
 uint16_t MCU_htole16 (uint16_t h)
 {
-    return bswap16(h); 
+    return h;
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
-    return bswap32(h);
+    return h;
 }
 
 uint16_t MCU_be16toh (uint16_t h)
 {
-    return h;
+    return bswap16(h); 
 }
 uint32_t MCU_be32toh (uint32_t h)
 {
-     return h;
+    return bswap32(h);
 }
 
 uint16_t MCU_le16toh (uint16_t h)
 {
-    return bswap16(h); 
+    return h;
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-    return bswap32(h);
+     return h;
 }
 
 #endif /* defined(PLATFORM_PIC) */
