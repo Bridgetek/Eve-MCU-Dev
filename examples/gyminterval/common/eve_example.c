@@ -56,7 +56,7 @@
 #define SCALED_FONT 14
 
 // Speed of simulation... milliseconds per tick
-const uint32_t tick = 100;
+const uint32_t tick = 1000;
 
 const uint16_t furmans_top = 0x8000;
 
@@ -285,7 +285,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
         if (curr_time >= prev_time + tick)
         {
-            prev_time = curr_time;
+            // Ensure that timing is accurate
+            prev_time = prev_time + tick;
 
             // Flash on/off display when paused
             if (pause == 1)
@@ -602,7 +603,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             }
             else
             {
-                msg_text = 0;
+                msg_text = NULL;
                 msg_alpha = 0;
             }
         }
@@ -686,7 +687,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     num_zoom = text_zoom * 3;
     time_zoom = text_zoom * 2;
 
-    char *msg_text = NULL;
+    char *msg_text;
     char num_text[16];
     uint8_t selected = 1;
 
