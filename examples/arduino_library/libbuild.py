@@ -19,6 +19,7 @@ parser.add_argument("--src", default=src_api, help="distribution directory for E
 parser.add_argument("--dest", help="destination directory for Arduino library (default is Bridgetek_EVE<API>)")
 parser.add_argument("--api", default=eve_api, help="EVE API to build library for (valid values are 1 to 5)")
 parser.add_argument("--apisub", default=eve_sub_api, help="EVE SUB API to build library for (for EVE API 2 must be 1 or 2)")
+parser.add_argument("--ver", required=True, help="Arduino library version number")
 (args, rem) = parser.parse_known_args()
 if (args.api): eve_api = int(args.api)
 if (args.apisub): eve_sub_api = int(args.apisub)
@@ -73,7 +74,7 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconst):
+def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconst):
     cppfile = []
     flag = 0
         
@@ -115,6 +116,7 @@ def template(file_in, file_out, cpplib, api, subapi, str_full_version, str_api_v
                 line = re.sub(r"### EVE LIB NAME ###", apilib, line)
                 line = re.sub(r"### EVE CLASS ###", cpplib, line)
                 line = re.sub(r"### EVE RES ###", defres, line)
+                line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
                 if re.findall(r"/\* ### BEGIN API ### \*/", line):
                     flag = 1
                     cppfile.extend(apidefs)
@@ -202,7 +204,7 @@ try:
     for d in dist_source_files:
         srcf, destf = d
         print(f"{srcf} -> {destf}")
-        template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+        template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
@@ -221,7 +223,7 @@ template_files.append(("test.ino.template", os.path.join(test_dir,"test.ino")))
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 
 # Command line for preprocessor
 cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
@@ -398,7 +400,7 @@ template_files.append(("README.md.template", os.path.join(dest_lib,"README.md"))
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconsts)
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconsts)
 
 # Make the examples directory
 examples_dir = os.path.join(dest_lib, "examples")
@@ -423,4 +425,4 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
 for t in example_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")

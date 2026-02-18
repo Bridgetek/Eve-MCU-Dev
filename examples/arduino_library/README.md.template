@@ -4,7 +4,7 @@
 
 This library is to provide an API to control the Bridgetek ### EVE LIB NAME ### devices. It implements EVE API ### EVE API VER ###.
 
-The class name of the library is "### EVE CLASS ###".
+The class name of the library is "### EVE CLASS ###". This is version ### ARDUINO VERSION ### of the Arduino Library.
 
 The library provides an Arduino IDE interface to the EVE embedded development library [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev).
 It is programmed in the same way with minor changes and ensures that code is easily transferrable.

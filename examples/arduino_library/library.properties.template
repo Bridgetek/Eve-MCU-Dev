@@ -1,5 +1,5 @@
 name=Bridgetek_EVE### EVE API VER ###
-version=1.0.0
+version=### ARDUINO VERSION ###
 author=Bridgetek
 maintainer=Bridgetek <support.emea@brtchip.com>
 sentence=Library for Bridgetek ### EVE LIB NAME ### graphics controllers.
