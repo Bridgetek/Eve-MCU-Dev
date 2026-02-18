@@ -77,6 +77,7 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
 def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconst):
     cppfile = []
     flag = 0
+    str_full_url = re.sub(r"_", '-', str_full_version)
         
     # defaults for each generation
     if api == 1:
@@ -110,6 +111,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
         try:
             while line := file.readline():
                 line = re.sub(r"### EVE API VER ###", str_full_version, line)
+                line = re.sub(r"### EVE API URL ###", str_full_url, line)
                 line = re.sub(r"### EVE API ###", str_api_version, line)
                 line = re.sub(r"### EVE SUB API ###", str_api_sub_version, line)
                 line = re.sub(r"### EVE DEV ###", apidev, line)
