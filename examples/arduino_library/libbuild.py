@@ -119,6 +119,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 line = re.sub(r"### EVE CLASS ###", cpplib, line)
                 line = re.sub(r"### EVE RES ###", defres, line)
                 line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
+                # Global static consts moved into PROGMEM storage on Arduino
+                line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
                 if re.findall(r"/\* ### BEGIN API ### \*/", line):
                     flag = 1
                     cppfile.extend(apidefs)

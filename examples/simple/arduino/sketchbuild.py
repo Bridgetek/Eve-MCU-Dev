@@ -2,6 +2,7 @@
 # This will find the first subdirectory name ending in _arduino which it will use as the sketch name
 import shutil
 import os
+import re
 
 sketch = None
 for x in os.scandir('.'):
@@ -34,15 +35,17 @@ def copy_norm(src_file, dest_file):
     print(f"{srcf} -> {destf}")
     with open(srcf, "r") as fsrc:
         with open(destf, "w") as fdest:
-            strsrc = fsrc.read()
-            # Modify include statements to use local copy for sketch
-            strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
-            strsrc = strsrc.replace("<HAL.h>", "\"HAL.h\"")
-            strsrc = strsrc.replace("<MCU.h>", "\"MCU.h\"")
-            strsrc = strsrc.replace("<FT8xx.h>", "\"FT8xx.h\"")
-            strsrc = strsrc.replace("<EVE_config.h>", "\"EVE_config.h\"")
-            strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
-            fdest.write(strsrc) 
+            while strsrc := fsrc.readline():
+                # Modify include statements to use local copy for sketch
+                strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
+                strsrc = strsrc.replace("<HAL.h>", "\"HAL.h\"")
+                strsrc = strsrc.replace("<MCU.h>", "\"MCU.h\"")
+                strsrc = strsrc.replace("<FT8xx.h>", "\"FT8xx.h\"")
+                strsrc = strsrc.replace("<EVE_config.h>", "\"EVE_config.h\"")
+                strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
+                # Global static consts moved into PROGMEM storage on Arduino
+                strsrc = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", strsrc)
+                fdest.write(strsrc) 
 
 # Collate source files needed
 dist_source_files = []
