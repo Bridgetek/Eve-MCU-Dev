@@ -39,6 +39,8 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <avr/pgmspace.h>
+
 #include "eve_example.h"
 
 uint32_t eve_img_bridgetek_logo_width;
@@ -278,7 +280,7 @@ uint32_t eve_load_images(uint32_t start_addr) {
     uint8_t buf[128];
     uint32_t img_width = 0;
     uint32_t img_height = 0;
-    uint8_t *img = (uint8_t *)img_bridgetek_logo;
+    const uint8_t *img = (const uint8_t *)img_bridgetek_logo;
     int8_t flag;
     uint32_t eve_addr;
     unsigned int i;
@@ -292,7 +294,7 @@ uint32_t eve_load_images(uint32_t start_addr) {
     // as the data is received.
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
-            buf[i] = *img++;
+            buf[i] = pgm_read_byte(img++);
             if (buf[i] == 0xff) {
                 flag = 1;
             } else {

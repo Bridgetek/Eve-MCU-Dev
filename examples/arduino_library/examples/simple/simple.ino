@@ -45,8 +45,7 @@
  */
 ### EVE CLASS ### eve;
 
-extern const uint8_t font0[];
-const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = (const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *)font0;
+extern const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr;
 
 /**
  * @brief Functions used to store calibration data in file.

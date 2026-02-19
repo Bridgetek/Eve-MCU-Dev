@@ -74,11 +74,11 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconst):
+def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconstlist):
     cppfile = []
     flag = 0
     str_full_url = re.sub(r"_", '-', str_full_version)
-        
+    
     # defaults for each generation
     if api == 1:
         apidev = "FT800/FT801"
@@ -129,7 +129,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                     cppfile.extend(apiproto)
                 if re.findall(r"/\* ### BEGIN API CONST ### \*/", line):
                     flag = 3
-                    cppfile.extend(apiconst)
+                    cppfile.extend(apiconstlist)
                 if re.findall(r"/\* ### BEGIN API == 1 ### \*/", line):
                     if api != 1:
                         flag = -1
@@ -256,6 +256,7 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
 
     cppapi = []
     cppapiconsts = []
+    cppapiconstslist = []
     cppapiproto = []
     for line in cfndefs:
         cdefl = cppre.split(line)
@@ -312,7 +313,7 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
 
     cppdefouput = defineres.stdout.decode('utf-8')
     definelines = cppdefouput.splitlines()
-
+    
     defre = re.compile(r'^\#define\s(EVE_\w*)\s*(.+)')
     cconstdefs = []
     for line in definelines:
@@ -332,64 +333,73 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                         cppline = f"    const uint8_t {definep[0]}[{dpc}] = "
                         cppline += cppvals
                         cppline += ";"
+                        cppapi.append(cppline)
+                        cppapiconstslist.append(definep[0])
                 elif definep[0].startswith("ENC_"):
                     pass
                 else:
-                    cppline = f"    const uint32_t {definep[0]} = {definep[2]};"
-                if cppline:
-                    cppapi.append(cppline)
-                    cppapiconsts.append(definep[0])
+                    cppline = f"      {definep[0]} = {definep[2]},"
+                    cppapiconsts.append(cppline)
+                    cppapiconstslist.append(definep[0])
     #cconstdefs = list(dict.fromkeys(cconstdefs))
 
 def sortapi(slist):
     ordered = []
     def flib(w):
-        return re.findall(r"^\w+ LIB_", w)
+        return re.findall(r"^\s*\w+ LIB_", w)
     def fcmd(w):
-        return re.findall(r"^\w+ CMD_", w)
-    def feve(w):
-        return re.findall(r"^\w+ eve_", w)
+        return re.findall(r"^\s*\w+ CMD_", w)
+    def fconst(w):
+        return re.findall(r"^\s*const ", w)
+    def frem(w):
+        return not(fcmd(w) or flib(w) or fconst(w))
     llib = list(filter(flib, slist))
     llib.sort()
     lcmd = list(filter(fcmd, slist))
     lcmd.sort()
-    leve = list(filter(feve, slist))
-    leve.sort()
+    lrem = list(filter(frem, slist))
+    lrem.sort()
+    lconst = list(filter(fconst, slist))
+    lconst.sort()
     ordered += llib
     ordered += [""]
     ordered += lcmd
     ordered += [""]
-    ordered += leve
+    ordered += lrem
     ordered += [""]
-    for done in ordered:
-        try:
-            slist.remove(done)
-        except:
-            pass
-    slist.sort()
-    ordered += slist
+    ordered += lconst
     return ordered
 
 def sortconst(slist):
     ordered = []
     def freg(w):
-        return re.findall(r"^REG_", w)
+        return re.findall(r"^\s*REG_", w)
+    def fapi(w):
+        return (re.findall(r"_", w) and not freg(w))
+    def frem(w):
+        return not(freg(w) or fapi(w))
     lreg = list(filter(freg, slist))
     lreg.sort()
-    for done in lreg:
-        try:
-            slist.remove(done)
-        except:
-            pass
-    slist.sort()
-    ordered += slist
+    lapi = list(filter(fapi, slist))
+    lapi.sort()
+    lrem = list(filter(frem, slist))
+    lrem.sort()
+    ordered += lapi
+    ordered += [""]
+    ordered += lrem
     ordered += [""]
     ordered += lreg
     return ordered
 
-cppapi.sort()
+cppapi = sortapi(cppapi)
 cppapiproto = sortapi(cppapiproto)
 cppapiconsts = sortconst(cppapiconsts)
+cppapi.append("")
+cppapi.append("    enum {")
+for c in cppapiconsts:
+    cppapi.append(c)
+cppapi.append("    };")
+cppapiconstslist = sortconst(cppapiconstslist)
 
 # Library main class files (template files pass 2)
 template_files = []
@@ -404,7 +414,7 @@ template_files.append(("README.md.template", os.path.join(dest_lib,"README.md"))
 for t in template_files:
     srcf, destf = t
     print(f"{srcf} -> {destf}")
-    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconsts)
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconstslist)
 
 # Make the examples directory
 examples_dir = os.path.join(dest_lib, "examples")

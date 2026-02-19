@@ -38,11 +38,15 @@
  */
 
 #include <stdint.h>
+#include <avr/pgmspace.h>
+
 #include "eve_example.h"
 
 const uint32_t font0_offset = 1000;  // Taken from commmand line
 
-constexpr PROGMEM const uint8_t font0[] __attribute__((aligned(4))) =
+### EVE CLASS ###::EVE_GPU_FONT_HEADER font0_header;
+const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = &font0_header;
+constexpr PROGMEM static const uint8_t font0[] __attribute__((aligned(4))) =
   /*10 characters have been converted */
 
   /* 148 Metric Block Begin +++  */
@@ -163,7 +167,23 @@ constexpr PROGMEM const uint8_t font0[] __attribute__((aligned(4))) =
 uint32_t eve_init_fonts(void) {
   const uint32_t font0_size = sizeof(font0);
 
-  eve.LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
+  memcpy_P(&font0_header, font0, sizeof(font0_header));
+
+  /* Read the data from the program memory into RAM. */
+  uint8_t pgm[16];
+  uint32_t pgmoffset, pgmchunk;
+  for (pgmoffset = 0; pgmoffset < font0_size; pgmoffset+=16)
+  {
+    // Maximum of pgm buffer
+    uint32_t chunk = sizeof(pgm);
+    if (pgmoffset + chunk > font0_size)
+    {
+      chunk = font0_size - pgmoffset;
+    }
+    // Load the pgm buffer
+    memcpy_P(pgm, &font0[pgmoffset], chunk);
+    eve.LIB_WriteDataToRAMG(pgm, chunk, font0_offset + pgmoffset);
+  }
 
   eve.LIB_BeginCoProList();
   eve.CMD_DLSTART();
