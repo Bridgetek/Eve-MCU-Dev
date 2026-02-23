@@ -48,8 +48,20 @@ def copy_norm(src_file, dest_file):
                 # Add PROGMEM storage linkage for eve_example.h
                 if dest_file.endswith("eve_example.h"):
                     if strsrc == "#include <stdint.h>\n":
-                        fdest.write(strsrc) 
-                        strsrc = "#include <avr/pgmspace.h>\n"
+                        fdest.writelines(
+                            (
+                                "#include <stdint.h>\n",
+                                "#include <string.h>\n",
+                                "\n",
+                                "#if defined(ESP8266) || defined(ESP32)\n",
+                                "#include <pgmspace.h>\n",
+                                "#else\n",
+                                "#include <avr/pgmspace.h>\n",
+                                "#endif\n",
+                                "\n",
+                            )
+                        )
+                        strsrc = ""
                         print("eve_example.h updated for PROGMEM")
                 # Add PROGMEM storage read for eve_images.ino
                 if dest_file.endswith("eve_images.ino"):
