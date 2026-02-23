@@ -108,8 +108,8 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
 
         // Points for the indicator
 
-        indicator_x = CIRC_X(((r0 + r1)) / 2, arc_value);
-        indicator_y = CIRC_Y(((r0 + r1)) / 2, arc_value);
+        indicator_x = CIRC_X(((r0 + r1) * PIX_PRECISION) / 2, arc_value);
+        indicator_y = CIRC_Y(((r0 + r1) * PIX_PRECISION) / 2, arc_value);
     }
 
     // Calculate the coordinates of the points used to draw the arc
@@ -127,10 +127,11 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
     int16_t arc_int_y = CIRC_Y(r1 * 2, a0 + 0x4000);
 
     // Points for the rounded ends
-    int16_t point_start_x = CIRC_X((r0 + r1 + 2) / 2, a0);
-    int16_t point_start_y = CIRC_Y((r0 + r1 + 2) / 2, a0);
-    int16_t point_end_x = CIRC_X((r0 + r1 + 2) / 2, a1);
-    int16_t point_end_y = CIRC_Y((r0 + r1 + 2) / 2, a1);
+    // multiply by PIX_PRECISION here to add these values directly into VERTEX2F calls
+    int16_t point_start_x = CIRC_X(((r0 + r1) * PIX_PRECISION) / 2, a0);
+    int16_t point_start_y = CIRC_Y(((r0 + r1) * PIX_PRECISION) / 2, a0);
+    int16_t point_end_x = CIRC_X(((r0 + r1) * PIX_PRECISION) / 2, a1);
+    int16_t point_end_y = CIRC_Y(((r0 + r1) * PIX_PRECISION) / 2, a1);
 
     // Save current graphics context
     EVE_SAVE_CONTEXT();
@@ -143,7 +144,7 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
     EVE_COLOR_A(255);
 
     EVE_COLOR_MASK(0, 0, 0, 1);
-    // Scissor for the scize of the arc we wish to draw
+    // Scissor for the size of the arc we wish to draw
     EVE_SCISSOR_SIZE((r1 * 2) + 1, (r1 * 2) + 1);
     EVE_SCISSOR_XY((x - r1), (y - r1));
 
@@ -180,16 +181,20 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
  
     // Remove inner circle from alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE((r0) * 16);
+    EVE_POINT_SIZE(r0 * 16);
     EVE_VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
     
-    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 1, 1);
-    EVE_POINT_SIZE(((r1 - r0 - 1) * 16) / 2 );
-    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    // Start point
-    EVE_VERTEX2F((x - point_start_x) * PIX_PRECISION, (y + point_start_y) * PIX_PRECISION);
-    // End point
-    EVE_VERTEX2F((x - point_end_x) * PIX_PRECISION, (y + point_end_y) * PIX_PRECISION);
+    // add points to the end of the arc (only if requried)
+    if(range != 0xffff)
+    {
+        EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 1, 1);
+        EVE_POINT_SIZE(((r1 - r0) * 16) / 2 );
+        EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+        // Start point
+        EVE_VERTEX2F((x * PIX_PRECISION) - point_start_x, (y * PIX_PRECISION) + point_start_y);
+        // End point
+        EVE_VERTEX2F((x * PIX_PRECISION) - point_end_x, (y * PIX_PRECISION) + point_end_y);
+    }
 
     // Draw the indicator
     if (opt & OPT_INDICATOR)
@@ -199,17 +204,17 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
         EVE_POINT_SIZE((((r1 - r0) / 2) + indicator_size) * 16);
     
         // Draw point based on current input value for the indicator
-        EVE_VERTEX2F((x - indicator_x) * PIX_PRECISION, (y + indicator_y) * PIX_PRECISION);
+        EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     
         // Add inner of the indicator to alpha buffer
         EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
         EVE_POINT_SIZE(((r1 - r0) / 2) * 16); 
     
         // Draw point based on current input value for the indicator
-        EVE_VERTEX2F((x - indicator_x) * PIX_PRECISION, (y + indicator_y) * PIX_PRECISION);
+        EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     }
 
-    // Draw a circle which will fill the arc with the input colour
+    // Draw a circle which will fill the arc with the colour set in the graphics context before the funciton call
     EVE_COLOR_MASK(1, 1, 1, 0);
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
     EVE_POINT_SIZE(r1 * 16);
