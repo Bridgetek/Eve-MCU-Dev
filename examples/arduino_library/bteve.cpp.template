@@ -50,7 +50,7 @@ uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 uint32_t EVE_TOUCH_ADDR;
 /* ### BEGIN API >= 5 ### */
 uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
-uint32_t EVE_RAM_G_CONFIG_SIZE = EVE_RAM_G_1_GBIT;
+uint32_t EVE_RAM_G_SIZE = ### EVE CLASS ###::RAM_G_1_GBIT;
 /* ### END API ### */
 
 ### EVE CLASS ###::### EVE CLASS ###(void)
@@ -66,7 +66,7 @@ void ### EVE CLASS ###::setup(uint32_t panel)
 void ### EVE CLASS ###::setup(uint32_t panel, uint32_t ramg)
 {
     setpanel(panel);
-    EVE_RAM_G_CONFIG_SIZE = ramg;
+    EVE_RAM_G_SIZE = ramg;
 }
 /* ### END API ### */
 

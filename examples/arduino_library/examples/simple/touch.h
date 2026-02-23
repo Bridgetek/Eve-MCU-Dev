@@ -42,10 +42,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 /**
  @brief Key for identifying if touchscreen calibration values are programmed correctly.
  @details This is used to determine if the stored calibration information on a 
@@ -107,9 +103,5 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib);
  */
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
 //@}
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* EVE_TOUCH_H */

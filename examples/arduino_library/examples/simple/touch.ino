@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -77,7 +77,7 @@ int eve_key_detect(void)
     }
 /* ### END API ### */
 /* ### BEGIN API >= 5 ### */
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0xffff) != 0xffff) {
+    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
     }
 /* ### END API ### */
@@ -95,14 +95,14 @@ int eve_read_tag(uint8_t *key)
 
 /* ### BEGIN API < 5 ### */
     Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
-    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_RAW_XY) & 0x8000)) {
+    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
         *key = Read_tag;
     }
 /* ### END API ### */
 /* ### BEGIN API >= 5 ### */
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff) {
+    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
         *key = Read_tag;
     }

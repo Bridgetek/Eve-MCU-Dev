@@ -120,7 +120,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 line = re.sub(r"### EVE RES ###", defres, line)
                 line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
                 # Global static consts moved into PROGMEM storage on Arduino
-                line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
+                line = re.sub(r"^static const uint8_t ", "PROGMEM static const uint8_t ", line)
                 if re.findall(r"/\* ### BEGIN API ### \*/", line):
                     flag = 1
                     cppfile.extend(apidefs)
@@ -162,6 +162,46 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                     flag = 0
                     continue
                 if flag == 0: 
+                    # Add PROGMEM storage read for patch_base.ino
+                    if file_out.endswith("BT82x.h"):
+                        line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
+                    if file_out.endswith("patch_base.c"):
+                        if line == "#include \"patch_base.h\"\n":
+                            cppfile.append("")
+                            cppfile.append("#include <stdint.h>")
+                            cppfile.append("#include <string.h>")
+                            cppfile.append("")
+                            cppfile.append("#if defined(ESP8266) || defined(ESP32)")
+                            cppfile.append("#include <pgmspace.h>")
+                            cppfile.append("#else")
+                            cppfile.append("#include <avr/pgmspace.h>")
+                            cppfile.append("#endif")
+                            cppfile.append("")
+                            print("patch_base.c updated for PROGMEM")
+                        match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
+                        if match:
+                            len = int(match.group(3))
+                            repl = (
+                                f"/* Read the data from the program memory into CMD. */",
+                                f"uint8_t pgm[16];",
+                                f"uint32_t pgmoffset, pgmchunk;",
+                                f"for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
+                                f"{{",
+                                f"    // Maximum of pgm buffer",
+                                f"    uint32_t chunk = sizeof(pgm);",
+                                f"    if (pgmoffset + chunk > {len})",
+                                f"    {{",
+                                f"        chunk = {len} - pgmoffset;",
+                                f"    }}",
+                                f"    // Load the pgm buffer",
+                                f"    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
+                                f"    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                f"}}",
+                            )
+                            for r in repl: 
+                                cppfile.append(f"{match.group(1)}{r}")
+                            line = ""
+                            print("patch_base.c updated for accessing PROGMEM")
                     cppfile.append(line.rstrip())
 
             with open(file_out, "w") as file:
@@ -265,6 +305,9 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
         # cdefl[2] = "EVE_\w*"
         # cdefl[3] = "", "void", "uint32_t options", or "..."
         # cdefl[4] = ""
+        if cdefl[2] == "EVE_NOP":
+            # Don't make a functino called NOP()!
+            continue
         cdefl[0] = re.sub("EVE_", "", cdefl[2])
         capiparams = cdefl[3].split(",")
         cparam = []
@@ -306,6 +349,8 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
             addevariac = "va_end(myargs); "
         elif cdefl[0].startswith("LIB_") and not cdefl[1].startswith("void"):
             addnret = "return "
+        elif cdefl[0].startswith("eve_") and not cdefl[1].startswith("void"):
+            addnret = "return "
         cppline = f"    {cdefl[1]} {cdefl[0]}({cppparamtext}) {{ {addnvariac}{addnret}::{cdefl[2]}({cparamtext}); {addevariac}}};"
         cppapi.append(cppline)
         cppprotoline = f"{cdefl[1]} {cdefl[0]}({cppparamtext})"
@@ -337,11 +382,14 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                         cppapiconstslist.append(definep[0])
                 elif definep[0].startswith("ENC_"):
                     pass
+                elif definep[0].startswith("RAM_G_CONFIG_SIZE"):
+                    pass
+                elif definep[0].startswith("RAM_G_SIZE"):
+                    pass
                 else:
                     cppline = f"      {definep[0]} = {definep[2]},"
                     cppapiconsts.append(cppline)
                     cppapiconstslist.append(definep[0])
-    #cconstdefs = list(dict.fromkeys(cconstdefs))
 
 def sortapi(slist):
     ordered = []

@@ -9,7 +9,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,10 +42,15 @@
 #define _EVE_EXAMPLE_H
 
 #include <stdint.h>
+#include <string.h>
+
+#if defined(ESP8266) || defined(ESP32)
+#include <pgmspace.h>
+#else
+#include <avr/pgmspace.h>
+#endif
 
 #include <### EVE CLASS ###.h>
-
-#include "touch.h"
 
 /**
  @brief EVE library handle.
@@ -73,5 +78,7 @@ uint32_t eve_load_images(uint32_t);
 int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
+
+#include "touch.h"
 
 #endif /* _EVE_EXAMPLE_H */

@@ -115,7 +115,7 @@ extern uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 extern uint32_t EVE_TOUCH_ADDR;
 /* ### BEGIN API >= 5 ### */
 extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
-extern uint32_t EVE_RAM_G_CONFIG_SIZE;
+extern uint32_t EVE_RAM_G_SIZE;
 /* ### END API ### */
 
 #endif /* _EVE_CONFIG_H_ */
