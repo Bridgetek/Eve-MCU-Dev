@@ -32,9 +32,9 @@ def add_files(src_dir, dest_dir, file_list):
     return added_files
 
 def copy_norm(src_file, dest_file):
-    print(f"{srcf} -> {destf}")
-    with open(srcf, "r") as fsrc:
-        with open(destf, "w") as fdest:
+    print(f"{src_file} -> {dest_file}")
+    with open(src_file, "r") as fsrc:
+        with open(dest_file, "w") as fdest:
             while strsrc := fsrc.readline():
                 # Modify include statements to use local copy for sketch
                 strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
@@ -45,6 +45,84 @@ def copy_norm(src_file, dest_file):
                 strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
                 # Global static consts moved into PROGMEM storage on Arduino
                 strsrc = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", strsrc)
+                # Add PROGMEM storage linkage for eve_example.h
+                if dest_file.endswith("eve_example.h"):
+                    if strsrc == "#include <stdint.h>\n":
+                        fdest.write(strsrc) 
+                        strsrc = "#include <avr/pgmspace.h>\n"
+                        print("eve_example.h updated for PROGMEM")
+                # Add PROGMEM storage read for eve_images.ino
+                if dest_file.endswith("eve_images.ino"):
+                    match = re.match(r"^(\s*)(\w*\[i\]) = \*(img\+\+);", strsrc)
+                    if match:
+                        strsrc = f"{match.group(1)}{match.group(2)} = pgm_read_byte({match.group(3)});\n"
+                        print("eve_images.ino updated for accessing PROGMEM")
+                # Add PROGMEM storage read for eve_fonts.ino
+                if dest_file.endswith("eve_fonts.ino"):
+                    # EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
+                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToRAMG\((\w+),\s(\w+),\s(\w+)\);", strsrc)
+                    if match:
+                        fdest.writelines(
+                            (
+                                f"{match.group(1)}memcpy_P(&font0_header, {match.group(2)}, sizeof(font0_header));\n",
+                                "\n",
+                                f"{match.group(1)}/* Read the data from the program memory into RAM. */\n",
+                                f"{match.group(1)}uint8_t pgm[16];\n",
+                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;\n",
+                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {match.group(3)}; pgmoffset+=16)\n",
+                                f"{match.group(1)}{{\n",
+                                f"{match.group(1)}    // Maximum of pgm buffer\n",
+                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);\n",
+                                f"{match.group(1)}    if (pgmoffset + chunk > {match.group(3)})\n",
+                                f"{match.group(1)}    {{\n",
+                                f"{match.group(1)}        chunk = {match.group(3)} - pgmoffset;\n",
+                                f"{match.group(1)}    }}\n",
+                                f"{match.group(1)}    // Load the pgm buffer\n",
+                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);\n",
+                                f"{match.group(1)}    EVE_LIB_WriteDataToRAMG(pgm, chunk, {match.group(4)} + pgmoffset);\n",
+                                f"{match.group(1)}}}\n",
+                            )
+                        )
+                        strsrc = ""
+                        print("eve_fonts.ino updated for accessing PROGMEM")
+                    # const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+                    match = re.match(r"^const EVE_GPU_FONT_HEADER \*(\w+)\s=\s\(const EVE_GPU_FONT_HEADER \*\)(\w+);", strsrc)
+                    if match:
+                        fdest.writelines(
+                            (
+                                f"EVE_GPU_FONT_HEADER font0_header;\n",
+                                f"const EVE_GPU_FONT_HEADER *{match.group(1)} = &font0_header;\n",
+                            )
+                        )
+                        strsrc = ""
+                        print("eve_fonts.ino updated for PROGMEM compatible globals")
+                # Add PROGMEM storage read for patch_base.ino
+                if dest_file.endswith("patch_base.ino"):
+                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", strsrc)
+                    if match:
+                        len = int(match.group(3))
+                        fdest.writelines(
+                            (
+                                f"{match.group(1)}/* Read the data from the program memory into CMD. */\n",
+                                f"{match.group(1)}uint8_t pgm[16];\n",
+                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;\n",
+                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)\n",
+                                f"{match.group(1)}{{\n",
+                                f"{match.group(1)}    // Maximum of pgm buffer\n",
+                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);\n",
+                                f"{match.group(1)}    if (pgmoffset + chunk > {len})\n",
+                                f"{match.group(1)}    {{\n",
+                                f"{match.group(1)}        chunk = {len} - pgmoffset;\n",
+                                f"{match.group(1)}    }}\n",
+                                f"{match.group(1)}    // Load the pgm buffer\n",
+                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);\n",
+                                f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);\n",
+                                f"{match.group(1)}}}\n",
+                            )
+                        )
+                        strsrc = ""
+                        print("patch_base.ino updated for accessing PROGMEM")
+
                 fdest.write(strsrc) 
 
 # Collate source files needed
