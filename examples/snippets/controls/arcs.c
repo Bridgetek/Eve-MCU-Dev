@@ -55,8 +55,12 @@
 #define OPT_NONE 0
 #define OPT_INDICATOR 1
 
+#ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 /**
  @brief Function to draw a simple arc gauge, using an optional indicator point.

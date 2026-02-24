@@ -170,7 +170,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) {
   DataRead |= (temp << 8);
   temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
   DataRead |= (temp << 16);
-  temp |= (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
   DataRead |= (temp << 24);
 
   return DataRead;
