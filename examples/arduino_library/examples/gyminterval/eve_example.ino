@@ -279,6 +279,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
     // Initial message... motivate
     const char *msg_text = "Start!";
+    uint8_t msg_timer = 0;
     uint8_t msg_alpha = 0;
 
     while ((cycle > 0) || (rest > 0))
@@ -381,6 +382,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                 }
         
                 skip = 0;
+            }
+
+            if (msg_timer > 0)
+            {
+                msg_timer--;
             }
         }
 
@@ -589,6 +595,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             if (msg_alpha == 0)
             {
                 msg_alpha = 255;
+                msg_timer = 5;
             }
 
             EVE_COLOR(col_clock);
@@ -598,18 +605,18 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             stringdraw(&clockfont, msg_zoom, 
                 centre_x - (stringwidth(&clockfont, msg_zoom, msg_text) / 2), 
                 (EVE_DISP_HEIGHT / 32), msg_text);
-            if (msg_alpha >= 250)
+
+            if (msg_timer == 0)
             {
-                msg_alpha -= 1;
-            }
-            else if (msg_alpha > 64)
-            {
-                msg_alpha -= 16;
-            }
-            else
-            {
-                msg_text = NULL;
-                msg_alpha = 0;
+                if (msg_alpha > 16)
+                {
+                    msg_alpha -= 16;
+                }
+                else
+                {
+                    msg_text = NULL;
+                    msg_alpha = 0;
+                }
             }
         }
 
