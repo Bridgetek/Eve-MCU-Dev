@@ -539,7 +539,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     // draw start finish line marker 
     EVE_LINE_WIDTH(thickness); 
     EVE_VERTEX2F((centerx * pix_precision), ((centery + radius - thickness) * pix_precision));
-    EVE_VERTEX2F((centerx  * pix_precision), ((centery + radius) * pix_precision));
+    EVE_VERTEX2F((centerx * pix_precision), ((centery + radius) * pix_precision));
 
     //restore previous graphics context
     EVE_RESTORE_CONTEXT();
@@ -762,208 +762,6 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 
     // restore graphics context
     EVE_RESTORE_CONTEXT();
-}
-
-/**
- @brief Function to draw a simple arc gauge, using a indicator point with blanking.
- @details This function will draw and arc gauge and fill it based upon the user_value input variable, utilising a simple indicator 
- point which has a blanking outline within the gauge fill.
- @param arc_centerx x position for the center of the arc
- @param arc_centery y position for the center of the arc
- @param arc_start_deg degrees clockwise from the bottom of the circle where we wan the arc to start
- @param arc_end_deg degrees clockwise from the bottom of the circle where we wan the arc to end
- @param arc_radius radius value we wish to use to draw the arc
- @param arc_thickness thickness value for the arc 
- @param arc_active_color colour value for the arc fill
- @param user_value input value to the arc to determine current reading (range 0-255)
- */
-void arcPointGauge(uint16_t arc_centerx, uint16_t arc_centery, uint16_t arc_start_deg, uint16_t arc_end_deg, uint16_t arc_radius, uint16_t arc_thickness, uint32_t arc_active_color, uint8_t user_value)
-{
-    
-    // define arc min and max values in degrees (0 is the bottom of the circle)
-    // also ensure the start and end degrees are within limits (arbitrarily set at 20/340 for examples sake) 
-    uint16_t arc_min_limit = max(arc_start_deg, 20);
-    uint16_t arc_max_limit = min(arc_end_deg, 340);
-    // calculate arc range and indication value based on input user value
-    uint16_t arc_range = (arc_max_limit - arc_min_limit);
-    uint16_t arc_value = arc_min_limit + (((user_value) * arc_range) / 256);
-
-    // if this is 0 the point shadow will be the same size as the arc_thickness (increment this value to grow the shadow around the indicator point)
-    //uint8_t blanking_size = 5;
-    uint8_t blanking_size = (EVE_DISP_WIDTH/160);
- 
-    int32_t arc_activex = 0;
-    int32_t arc_activey = 0;
- 
-    int32_t arc_start_x = 0;
-    int32_t arc_start_y = 0;
- 
-    int32_t arc_end_x = 0;
-    int32_t arc_end_y = 0;
-
-    int32_t point_start_x = 0;
-    int32_t point_start_y = 0;
-
-    int32_t point_end_x = 0;
-    int32_t point_end_y = 0;
-
-    // Ensure the value is within limits
-    if (arc_value > arc_max_limit)
-       arc_value = arc_max_limit;
-    if (arc_value < arc_min_limit)
-       arc_value = arc_min_limit;
-
-    // ensure that the arc thickness is even number so we can simplify the maths later for positioning the end points and value indicator points
-    if((arc_thickness % 2) != 0)
-        arc_thickness ++;
-
-    //--------------------------------------------------------------------------------------------------------
-    // Process the angle data which will be used to make a uniform motion of the arc
-    //--------------------------------------------------------------------------------------------------------
- 
-    // Calculate the coordinates of the starting point, the gauge arc and the point at the tip of the arc
- 
-    // for the arc gauge value itself
-    // we want to draw this in the middle of the arc so we take the width and divide it by 2, then negate this from the radius
-    // multiply by 8 (or 16 for FT80x) so we can feed this number directly int the VERTEX2F command with our desired pixel precision
-    arc_activex = CIRC_X(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_value));
-    arc_activey = CIRC_Y(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_value));
-    
-    // multiply by 16 (or 32 for FT80x) so the edge strips we draw with these values extend past the edge of the circle
-    // for the starting angle 
-    arc_start_x = CIRC_X((arc_radius * (pix_precision *2)), DEG2FURMAN(arc_min_limit));
-    arc_start_y = CIRC_Y((arc_radius * (pix_precision *2)), DEG2FURMAN(arc_min_limit));
- 
-    // for the finishing angle 
-    arc_end_x = CIRC_X((arc_radius * (pix_precision *2)), DEG2FURMAN(arc_max_limit));
-    arc_end_y = CIRC_Y((arc_radius * (pix_precision *2)), DEG2FURMAN(arc_max_limit));
-
-    // for the rounded ends
-    point_start_x = CIRC_X(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_min_limit));
-    point_start_y = CIRC_Y(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_min_limit));
-    point_end_x = CIRC_X(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_max_limit));
-    point_end_y = CIRC_Y(((arc_radius - (arc_thickness/2)) * pix_precision), DEG2FURMAN(arc_max_limit));
-
-    //--------------------------------------------------------------------------------------------------------
-    // Write to the alpha buffer and disable writing colours to the screen to make an invisible arc
-    //--------------------------------------------------------------------------------------------------------
-
-    // save current graphics context
-    EVE_SAVE_CONTEXT();
-
-    // scissor for the size of the arc we wish to draw
-    EVE_SCISSOR_SIZE((arc_radius * 2) + 1, (arc_radius * 2) + 1);
-    EVE_SCISSOR_XY((arc_centerx - arc_radius), (arc_centery - arc_radius));
-
-    // set  desired pixel precision format
-    //EVE_VERTEX_FORMAT(3);
-    //set in main display list if required and carried through
- 
-    EVE_COLOR_MASK(0, 0, 0, 1);
-    EVE_CLEAR(1, 0, 0);
-    EVE_COLOR_A(255);
- 
-    // begin drawing circles for our arc
-    //-------------------------------------------------------------------------
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    // add to alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE(arc_radius * 16);
-    EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
- 
-    // remove from alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE((arc_radius - arc_thickness) * 16);
-    EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
-    
-    // edge strips to ensure nothing outwith the arc is coloured
-    //-------------------------------------------------------------------------
-    // adjust edge strip draw shape based on input angles
-    if(arc_min_limit >= 135){
-        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_L);
-        EVE_VERTEX2F((arc_centerx * pix_precision), ((arc_centery + arc_radius) * pix_precision));
-    }
-    else
-        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
-
-    EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
-    EVE_VERTEX2F(((arc_centerx * pix_precision) - arc_start_x), ((arc_centery * pix_precision) + arc_start_y));
-    
-
-    // adjust edge strip draw based on input angles
-    if(arc_max_limit <= 225){
-        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
-        EVE_VERTEX2F((arc_centerx * pix_precision), ((arc_centery + arc_radius) * pix_precision));
-    }
-    else
-        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
-    
-    EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
-    EVE_VERTEX2F(((arc_centerx * pix_precision) - arc_end_x), ((arc_centery * pix_precision) + arc_end_y));
-
-    // if we need to add some rectangles to cover the areas that are missed when swapping from a bottom to a right or left edge strip:
-    if(arc_min_limit >= 135){
-        EVE_BEGIN(EVE_BEGIN_RECTS);
-        EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
-        EVE_VERTEX2F(((arc_centerx - arc_radius) * pix_precision), ((arc_centery + arc_radius) * pix_precision));
-    }
-    if(arc_max_limit <= 225){
-        EVE_BEGIN(EVE_BEGIN_RECTS);
-        EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
-        EVE_VERTEX2F(((arc_centerx + arc_radius) * pix_precision), ((arc_centery + arc_radius) * pix_precision));
-    }
-
-    // add final shapes for rounded ends
-    //-------------------------------------------------------------------------
-
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    // add to alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE((arc_thickness/2) * 16);
-    // left side
-    EVE_VERTEX2F(((arc_centerx * pix_precision) - point_start_x) , ((arc_centery * pix_precision) + point_start_y));
-    // right side
-    EVE_VERTEX2F(((arc_centerx * pix_precision) - point_end_x) , ((arc_centery * pix_precision) + point_end_y));
- 
-    // these circles are used to indicate current value;
-    //-------------------------------------------------------------------------
-    // remove from alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE(((arc_thickness/2) + blanking_size) * 16); //guage thickness + blanking_size increase
- 
-    // draw point based on current input value
-    EVE_VERTEX2F((arc_centerx * pix_precision) - (arc_activex), (arc_centery * pix_precision) + (arc_activey));
- 
-    // add to alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE((arc_thickness/3) * 16); //this should be slighlty smaller than the guage thickness
- 
-    // draw point based on current input value
-    EVE_VERTEX2F((arc_centerx * pix_precision) - (arc_activex), (arc_centery * pix_precision) + (arc_activey));
- 
-    //--------------------------------------------------------------------------------------------------------
-    // Draw a circle which will fill the arc with the input colour
-    //--------------------------------------------------------------------------------------------------------
- 
-    // re-enable colours
-    EVE_COLOR_MASK(1, 1, 1, 1);
-    // blend in colour
-    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
-
-    // colour based on input colour
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    EVE_COLOR_RGB(((uint8_t)(arc_active_color >> 16)), ((uint8_t)(arc_active_color >> 8)), ((uint8_t)(arc_active_color)));
-    EVE_POINT_SIZE(arc_radius * 16);
-    EVE_VERTEX2F((arc_centerx * pix_precision), (arc_centery * pix_precision));
- 
-    // end drawing
-    EVE_END();
-    //--------------------------------------------------------------------------------------------------------
-    // Clean up to avoid affecting other items later in the display list
-    //--------------------------------------------------------------------------------------------------------
-    // restore previous graphics context
-    EVE_RESTORE_CONTEXT();
- 
 }
 
 /**
@@ -1232,9 +1030,11 @@ void LCDBacklightPage(){
     // save context
     EVE_SAVE_CONTEXT();
 
-    // add arc point gauge onto the screen to act as input control
-    // use the last valid angle, minus the start deg angle, normalised to an 8 bit number/total deg angles as the reading value of the arc
-    arcPointGauge(backlight_dial_x, backlight_dial_y, backlight_arc_start_deg, backlight_arc_end_deg, backlight_dial_radius, backlight_dial_thickness, colour1, (((last_valid_angle - backlight_arc_start_deg) * 255)/backlight_arc_total_deg));
+    // set desried colour
+    EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
+    // add arc simple gauge onto the screen to act as input control (from snippets/controls/)
+    // use the last valid angle, minus the start deg angle, normalised to an 16 bit number/total deg angles as the reading value of the arc
+    arc_simple_gauge(backlight_dial_x, backlight_dial_y, backlight_dial_thickness, backlight_dial_radius,  DEG2FURMAN(backlight_arc_start_deg), DEG2FURMAN(backlight_arc_end_deg), (((last_valid_angle - backlight_arc_start_deg) * 65535)/backlight_arc_total_deg));
 
     // tag and add a tracker to the arc gauge point
     EVE_TAG_MASK(1); // enable tagging
@@ -1260,7 +1060,7 @@ void LCDBacklightPage(){
     EVE_CMD_NUMBER(backlight_dial_x, backlight_dial_y, font_med_2, EVE_OPT_CENTER, backlight_value);
 
     // add text label
-    EVE_CMD_TEXT(backlight_dial_x, (backlight_dial_y + backlight_dial_radius - backlight_dial_thickness), font_small, EVE_OPT_CENTER, "Brightness");
+    EVE_CMD_TEXT(backlight_dial_x, (backlight_dial_y + ((backlight_dial_radius*3)/4)), font_small, EVE_OPT_CENTER, "Brightness");
 
     // restore context
     EVE_RESTORE_CONTEXT();
@@ -1466,8 +1266,8 @@ void renderScreenUpdate(){
 
     // add three circle gauges
     //--------------------------------------------------------------------------
-    circleGaugeShadow(circle_guage1_x, circle_guage1_y, circle_gauge_radius, circle_gauge_thickness, -10);
-    circleGaugeShadow(circle_guage2_x, circle_guage2_y, circle_gauge_radius, circle_gauge_thickness, 380);
+    circleGaugeShadow(circle_guage1_x, circle_guage1_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
+    circleGaugeShadow(circle_guage2_x, circle_guage2_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
     circleGaugeShadow(circle_guage3_x, circle_guage3_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
 
     // add readout numbers for gauges
