@@ -292,9 +292,13 @@ void loop() {
 The examples in this library can be used to make a new Arduino IDE sketch. 
 Complete example sketches added by this library can be found in "File -> Examples -> Bridgetek ### EVE LIB NAME ###".
 
-The `simple_EVE### EVE API VER ###` example is an ideal sketch to start with as it shows many 
+Available examples are:
+
+The [`simple_EVE### EVE API VER ###` example](examples/simple_EVE### EVE API VER ###) is an ideal sketch to start with as it shows many 
 aspects of writing a sketch for Arduino. It provides exactly the same display, functions 
 and result as the `simple` example in [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
+
+The [`gyminterval_EVE### EVE API VER ###` example](examples/gyminterval_EVE### EVE API VER ###) is a more complex example that animates countdown timers.
 
 ## Module Connections
 

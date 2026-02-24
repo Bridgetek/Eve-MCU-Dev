@@ -59,6 +59,11 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib) {
 }
 //@}
 
+uint32_t platform_get_time(void)
+{
+    return millis();
+}
+
 void setup() {
   Serial.begin(9600);
 }

@@ -1,5 +1,5 @@
 /**
- @file simple_EVE### EVE API VER ###.ino
+ @file arcs.h
  */
 /*
  * ============================================================================
@@ -37,35 +37,51 @@
  * ============================================================================
  */
 
-#include "eve_example.h"
+#ifndef EVE_ARCS_H
+#define EVE_ARCS_H
+
+#include "trig_furman.h"
 
 /**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
+ @brief Function to draw a simple arc gauge, using a indicator point with 
+        blanking.
+ @details This function will draw and arc guage and fill it based upon the 
+          user_value input vairble, utilising a simple indicator point which 
+          has a blanking outline within the gauge fill.
+ @param x x position for the center of the arc.
+ @param y y position for the center of the arc.
+ @param r0 radius value of inner part of the arc.
+ @param r1 radius value of outer part of the arc.
+ @param a0 degrees clockwise from the bottom of the circle where 
+                      we want the arc to start.
+ @param a1 degrees clockwise from the bottom of the circle where 
+                    we want the arc to end.
  */
-//@{
-int8_t platform_calib_init(void) {
-  return -1;
-}
+void arc_simple(int16_t x, int16_t y, 
+    uint16_t r0, uint16_t r1,
+    uint16_t a0, uint16_t a1
+);
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return 0;
-}
+/**
+ @brief Function to draw a simple arc gauge, using a indicator point with 
+        blanking.
+ @details This function will draw and arc guage and fill it based upon the 
+          user_value input vairble, utilising a simple indicator point which 
+          has a blanking outline within the gauge fill.
+ @param x x position for the center of the arc.
+ @param y y position for the center of the arc.
+ @param r0 radius value of inner part of the arc.
+ @param r1 radius value of outer part of the arc.
+ @param a0 degrees clockwise from the bottom of the circle where 
+                      we want the arc to start.
+ @param a1 degrees clockwise from the bottom of the circle where 
+                    we want the arc to end.
+ @param user_value position of indicator on the arc.
+ */
+void arc_simple_gauge(int16_t x, int16_t y, 
+    uint16_t r0, uint16_t r1,
+    uint16_t a0, uint16_t a1,
+    uint16_t val
+);
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return -1;
-}
-//@}
-
-void setup() {
-  Serial.begin(9600);
-}
-
-void loop() {
-  // Initialise the display
-  Serial.print("Starting EVE...\n");
-  
-  eve_example();
-}
+#endif // EVE_ARCS_H

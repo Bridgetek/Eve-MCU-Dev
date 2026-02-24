@@ -140,12 +140,20 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                     if api != 1:
                         flag = -1
                     continue
+                if re.findall(r"/\* ### BEGIN API > 1 ### \*/", line):
+                    if api == 1:
+                        flag = -1
+                    continue
                 if re.findall(r"/\* ### BEGIN API == 2 ### \*/", line):
                     if api != 2:
                         flag = -1
                     continue
-                if re.findall(r"/\* ### BEGIN API == 3 or 4 ### \*/", line):
+                if re.findall(r"/\* ### BEGIN API == 3, 4 ### \*/", line):
                     if api != 3 and api != 4:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API == 2, 3, 4 ### \*/", line):
+                    if api != 2 and api != 3 and api != 4:
                         flag = -1
                     continue
                 if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
@@ -154,6 +162,14 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                     continue
                 if re.findall(r"/\* ### BEGIN API >= 3 ### \*/", line):
                     if api < 3:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API < 4 ### \*/", line):
+                    if api >= 4:
+                        flag = -1
+                    continue
+                if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
+                    if api < 4:
                         flag = -1
                     continue
                 if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):
@@ -490,6 +506,13 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
         destdir = dir + "_EVE" + str_full_version
         # Make a unique destination directory
         os.makedirs(os.path.join(dest_lib, path, destdir), exist_ok=True)
+        # Add a docs directory
+        os.makedirs(os.path.join(dest_lib, path, destdir, "docs"), exist_ok=True)
+        # Copy any docs and assets from an identically named main example
+        docdir = os.path.normpath(os.path.join(src_api, "examples", dir, "docs"))
+        docfiles = [f for f in os.listdir(docdir) if os.path.isfile(os.path.join(docdir, f))]
+        for d in docfiles:
+            graphics_files.append((os.path.join(docdir, d), os.path.join(dest_lib, path, destdir, "docs", d)))
     for name in files:
         # Rename the destination file path
         destpath = path + "_EVE" + str_full_version

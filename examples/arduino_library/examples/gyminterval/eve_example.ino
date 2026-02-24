@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ @file eve_example.ino
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,14 +36,16 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
 
 #include "eve_example.h"
+
+/**
+ @brief EVE library handle.
+ @details This is the one instance of the EVE library. Available as a global to other files.
+ */
+### EVE CLASS ### eve;
+
+extern const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr;
 
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -137,10 +139,10 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
         // This is a legacy font.
         if ((y > 511) || (x > 511))
         {
-#if IS_EVE_API(2, 3, 4, 5)
+            /* ### BEGIN API > 1 ### */
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
-#endif
+            /* ### END API ### */
             EVE_VERTEX2II(0, 0, cache->handle, ch);
         }
         else
@@ -151,16 +153,16 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
     else
     {
         // This is a RAM font.
-#if IS_EVE_API(5)
+        /* ### BEGIN API >= 5 ### */
         EVE_BITMAP_SOURCE_H(cache->glyphs[(int)ch] >> 24);
-#endif
+        /* ### END API ### */
         EVE_BITMAP_SOURCE(cache->glyphs[(int)ch]);
         if ((y > 511) || (x > 511))
         {
-#if IS_EVE_API(2, 3, 4, 5)
+            /* ### BEGIN API > 1 ### */
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
-#endif
+            /* ### END API ### */
             EVE_VERTEX2F(0, 0);
         }
         else
@@ -169,10 +171,10 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
         }
     }
 
-#if IS_EVE_API(2, 3, 4, 5)
+    /* ### BEGIN API > 1 ### */
     EVE_VERTEX_TRANSLATE_X(0);
     EVE_VERTEX_TRANSLATE_Y(0);
-#endif
+    /* ### END API ### */
 }
 
 static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
@@ -182,10 +184,10 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
     EVE_CMD_LOADIDENTITY();
     // Select the handle for the font.
     EVE_BITMAP_HANDLE(cache->handle);
-#if IS_EVE_API(2, 3, 4, 5)
+    /* ### BEGIN API > 1 ### */
     EVE_BITMAP_SIZE_H((((uint32_t)font_getwidth(cache) * zoom) / 0x10000) >> 9, 
         (((uint32_t)font_getheight(cache) * zoom) / 0x10000) >> 9);
-#endif
+    /* ### END API ### */
     EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, 
         ((uint32_t)font_getwidth(cache) * zoom) / 0x10000, 
         ((uint32_t)font_getheight(cache) * zoom) / 0x10000);
@@ -193,9 +195,9 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
     EVE_CMD_SETMATRIX();
 }
 
-static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, char *str)
+static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
 {
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -207,11 +209,11 @@ static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, i
     }
 }
 
-static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, char *str)
+static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const char *str)
 {
     uint16_t x = 0;
     int i = 0;
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -276,7 +278,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     int16_t button_h_zoom = (font_getheight(&clockfont) * button_zoom) / 0x10000;
 
     // Initial message... motivate
-    char *msg_text = "Start!";
+    const char *msg_text = "Start!";
     uint8_t msg_alpha = 0;
 
     while ((cycle > 0) || (rest > 0))
@@ -440,43 +442,46 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_COLOR_MASK(0, 0, 0, 0);
         EVE_TAG(1);
         // Finish active area
-#if IS_EVE_API(2, 3, 4, 5)
+        /* ### BEGIN API > 1 ### */
         EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
         EVE_VERTEX_TRANSLATE_Y(button_y_zoom * 16);
         EVE_VERTEX2F(0, 0);
         EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
-#else
+        /* ### END API ### */
+        /* ### BEGIN API == 1 ### */
         EVE_VERTEX2F(button_x1_zoom, button_y_zoom);
         EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y_zoom + button_h_zoom);
-#endif
+        /* ### END API ### */
         EVE_TAG(2);
         // Skip active area
-#if IS_EVE_API(2, 3, 4, 5)
+        /* ### BEGIN API > 1 ### */
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
         EVE_VERTEX_TRANSLATE_Y(button_y1_zoom * 16);
         EVE_VERTEX2F(0, 0);
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
-#else
+        /* ### END API ### */
+        /* ### BEGIN API == 1 ### */
         EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
-#endif
+        /* ### END API ### */
         EVE_TAG(3);
         // Pause active area
-#if IS_EVE_API(2, 3, 4, 5)
+        /* ### BEGIN API > 1 ### */
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
         EVE_VERTEX_TRANSLATE_Y(button_y2_zoom * 16);
         EVE_VERTEX2F(0, 0);
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
-#else
+        /* ### END API ### */
+        /* ### BEGIN API == 1 ### */
         EVE_VERTEX2F(button_x2_zoom, button_y2_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
-#endif
+        /* ### END API ### */
         EVE_COLOR_MASK(1, 1, 1, 1);
         EVE_TAG_MASK(0);
 
@@ -687,7 +692,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     num_zoom = text_zoom * 3;
     time_zoom = text_zoom * 2;
 
-    char *msg_text;
+    const char *msg_text;
     char num_text[16];
     uint8_t selected = 1;
 
@@ -730,19 +735,20 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             {
                 EVE_COLOR(col_idle);
             }
-#if IS_EVE_API(2, 3, 4, 5)
+            /* ### BEGIN API > 1 ### */
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0) * 16);
             EVE_VERTEX2F(0, 0);
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6) * 16);
             EVE_VERTEX2F(0, 0);
-#else
+            /* ### END API ### */
+            /* ### BEGIN API == 1 ### */
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0)) * 16);
             EVE_VERTEX2F((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6)) * 16);
-#endif
+            /* ### END API ### */
         }        
         // Middle row active rectangles
         for (i = 0; i < 2; i++)
@@ -756,25 +762,26 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             {
                 EVE_COLOR(col_idle);
             }
-#if IS_EVE_API(2, 3, 4, 5)
+            /* ### BEGIN API > 1 ### */
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7) * 16);
             EVE_VERTEX2F(0, 0);
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13) * 16);
             EVE_VERTEX2F(0, 0);
-#else
+            /* ### END API ### */
+            /* ### BEGIN API == 1 ### */
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7)) * 16);
             EVE_VERTEX2F((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13)) * 16);
-#endif
+            /* ### END API ### */
         }
 
-#if IS_EVE_API(2, 3, 4, 5)
+        /* ### BEGIN API > 1 ### */
         EVE_VERTEX_TRANSLATE_X(0);
         EVE_VERTEX_TRANSLATE_Y(0);
-#endif
+        /* ### END API ### */
         EVE_TAG_MASK(0);
 
         EVE_COLOR(col_text);
@@ -889,14 +896,15 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Start active area
         EVE_BEGIN(EVE_BEGIN_POINTS);
         EVE_POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
-#if IS_EVE_API(2, 3, 4, 5)
+        /* ### BEGIN API > 1 ### */
         EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * 3 / 4) * 16);
         EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
         EVE_VERTEX2F(0, 0);
-#else
+        /* ### END API ### */
+        /* ### BEGIN API == 1 ### */
         EVE_VERTEX2F((EVE_DISP_WIDTH * 3 / 4) * 16,
             (((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
-#endif
+        /* ### END API ### */
 
         EVE_COLOR(col_text);
         setupzoom(&clockfont, time_zoom);
@@ -933,11 +941,12 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             {
                 uint32_t trackVal;
                 // register has a differnt name for the FT80x series
-#if IS_EVE_API(2,3,4,5)
+                /* ### BEGIN API > 1 ### */
                 trackVal = EVE_LIB_MemRead32(EVE_REG_TRACKER);
-#else
+                /* ### END API ### */
+                /* ### BEGIN API == 1 ### */
                 trackVal = EVE_LIB_MemRead32(EVE_REG_TRACK);
-#endif
+                /* ### END API ### */
                 trackVal >>= 16;
 
                 int isTime = 0;
@@ -1032,9 +1041,10 @@ void eve_display(void)
 
 void eve_example(void)
 {
+    // Setup the EVE library (### EVE RES ###)
+    eve.setup(### EVE RES ###);
     // Initialise the display
-    DEBUG_PRINTF("Initialising EVE...\n");
-    EVE_Init();
+    eve.Init();
 
     // Get a cache of the ROM font we want to use.
     font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
@@ -1051,14 +1061,14 @@ void eve_example(void)
     clockfont.handle = SCALED_FONT;
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    Serial.print("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
+        Serial.print("Exception...\n");
         while(1);
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    Serial.print("Starting demo...\n");
     eve_display();
 }

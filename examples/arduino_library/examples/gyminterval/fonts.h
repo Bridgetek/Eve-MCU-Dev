@@ -1,5 +1,5 @@
 /**
- @file simple_EVE### EVE API VER ###.ino
+ @file fonts.h
  */
 /*
  * ============================================================================
@@ -37,35 +37,43 @@
  * ============================================================================
  */
 
-#include "eve_example.h"
+#ifndef EVE_FONTS_H
+#define EVE_FONTS_H
 
 /**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
+ @brief Maximum number of characters to cache form a font.
  */
-//@{
-int8_t platform_calib_init(void) {
-  return -1;
-}
+#define FONT_MAX_CHARACTERS 128
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return 0;
-}
+ /**
+ @brief Structure to hold cache of font settings.
+ @details This is used to store the font parameters to accelerate drawing
+ the glyphs during the application.
+ */
+struct eve_font_cache {
+    uint8_t handle;
+    uint8_t legacy;
+    uint8_t widths[FONT_MAX_CHARACTERS];
+    uint32_t glyphs[FONT_MAX_CHARACTERS];
+    uint16_t height;
+    uint16_t width;
+    uint16_t format;
+    uint16_t linestride;
+    uint8_t first;
+};
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return -1;
-}
-//@}
+/* ### BEGIN API == 1 ### */
+// The FT800 does not have the CMD_ROMFONT feature. 
+// This routine will map a bitmap handle onto a ROM font.
+void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
+/* ### END API ### */
 
-void setup() {
-  Serial.begin(9600);
-}
+uint8_t font_getmax(void);
+uint32_t font_getromptr(uint8_t fontnumber);
+void font_getfontinforom(struct eve_font_cache *cache, uint8_t fontnumber);
+void font_getfontinfocustom(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character);
+uint16_t font_getheight(struct eve_font_cache *cache);
+uint16_t font_getwidth(struct eve_font_cache *cache);
+uint16_t font_getcharwidth(struct eve_font_cache *cache, uint8_t ch);
 
-void loop() {
-  // Initialise the display
-  Serial.print("Starting EVE...\n");
-  
-  eve_example();
-}
+#endif // EVE_FONTS_H

@@ -8,7 +8,7 @@ The custom font provides a character set that contains the numbers 0 to 9 resemb
 
 The following is an screenshot of the simple example.
 
-![Simple Example](simple.png)
+![Simple Example](docs/simple.png)
 
 ### `simple.ino`
 
@@ -24,7 +24,24 @@ The `setup` function in the sketch is as follows:
 ```
 void setup() {
   Serial.begin(9600);
+}
+```
+The `loop` function in the sketch is as follows:
+```
+void loop() {
+  // Initialise the display
+  Serial.print("Starting EVE...\n");
+  
+  eve_example();
+}
+```
 
+### `eve_example.ino`
+
+The control program for the example is in `eve_example.ino`. The sets up the EVE Library `eve` and loads fonts and images.
+
+```
+void eve_example(void) {
   uint32_t font_end;
 
   // Setup the EVE library (### EVE RES ###)
@@ -47,6 +64,7 @@ void setup() {
   eve_load_images(font_end);
 
   Serial.print("Starting demo...\n");
+  eve_display();
 }
 ```
 
@@ -56,9 +74,9 @@ Next, the function `eve_calibrate()` is then called which uses the calibration c
 
 Once calibration is complete, the font for the counter and the image for the logo are both loaded  (see `eve_fonts.ino` and `eve_images.ino below).
 
-Finally, the main program sits in a continuous loop within `loop()`. Each time round the loop, a screen is created using a co-processor list. 
+Finally, the main program sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
-### `eve_calibrate.ino`
+### `touch.ino`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
@@ -80,7 +98,7 @@ data (0xff 0xd9) and finish the transmission of the data to the co-processor.
     eve.CMD_LOADIMAGE(start_addr, 0);
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
-            buf[i] = *img++;
+            buf[i] = pgm_read_byte(img++);
             if (buf[i] == 0xff) {
                 flag = 1;
             } else {
@@ -139,11 +157,25 @@ const uint32_t font0_offset = 1000; // Taken from commmand line
 const uint8_t font0[] = { <data for font> };
 ```
 
-The font data in the array `font0` is directly written into RAM_G using the API call `EVE_LIB_WriteDataToRAMG`. 
-This function takes a pointer to an array and writes to RAM_G.
+The font data in the array `font0` is written into RAM_G using the API call `EVE_LIB_WriteDataToRAMG`. 
+This function takes a pointer to an array in program memory and writes to RAM_G.
 
 ```
-    eve.LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
+  /* Read the data from the program memory into RAM. */
+  uint8_t pgm[16];
+  uint32_t pgmoffset, pgmchunk;
+  for (pgmoffset = 0; pgmoffset < font0_size; pgmoffset+=16)
+  {
+    // Maximum of pgm buffer
+    uint32_t chunk = sizeof(pgm);
+    if (pgmoffset + chunk > font0_size)
+    {
+      chunk = font0_size - pgmoffset;
+    }
+    // Load the pgm buffer
+    memcpy_P(pgm, &font0[pgmoffset], chunk);
+    eve.LIB_WriteDataToRAMG(pgm, chunk, font0_offset + pgmoffset);
+  }
 ```
 
 Once this has been written to RAM_G then the EVE device must be instructed how make a font use the data in RAM_G. 
@@ -205,22 +237,6 @@ supplied handle.
 A `eve.CMD_SWAP()` command **must** be called to register the font handle on the device so that it can be used by 
 subsequent display lists.
 
-### `eve.helper.c`
-
-Currently the only function of this file is to read a single touch tag from the screen.
-
-```
-    Read_tag = eve.LIB_MemRead32(eve.REG_TOUCH_TAG);
-    if ((eve.LIB_MemRead32(eve.REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-```
-
-A TAG event is read from the eve.REG_TOUCH_TAG register. This is verified by reading the eve.REG_TOUCH_RAW_XY register. 
-If that register indicates a valid touch then this is flagged to the calling program.
-
 ## Files and Folders
 
 The example contains a common directory with several files which comprises all the demo functionality.
@@ -228,8 +244,9 @@ The example contains a common directory with several files which comprises all t
 | File/Folder | Description |
 | --- | --- |
 | [simple.ino](simple.ino) | Example source code file |
+| [eve_example.ino](eve_example.ino) | Sketch file for example |
 | [eve_example.h](eve_example.h) | Header file for examaple |
-| [eve_calibrate.ino](eve_calibrate.ino) | Calibrations routines |
+| [touch.ino](touch.ino) | Calibrations routines |
+| [touch.h](touch.h) | Calibrations routines header file |
 | [eve_fonts.ino](eve_fonts.ino) | Font helper routines |
-| [eve_helper.ino](eve_helper.ino) | General helper routines (touch detection) |
 | [eve_images.ino](eve_images.ino) | Image helper routines |

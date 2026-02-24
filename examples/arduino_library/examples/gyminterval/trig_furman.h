@@ -1,5 +1,5 @@
 /**
- @file simple_EVE### EVE API VER ###.ino
+ @file trig_furman.h
  */
 /*
  * ============================================================================
@@ -37,35 +37,57 @@
  * ============================================================================
  */
 
-#include "eve_example.h"
+#ifndef EVE_TRIG_FURMAN_H
+#define EVE_TRIG_FURMAN_H
 
-/**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
+/* Note that EVE furman angles are 16.16 format and have integer furmans in the
+ * upper 16-bits and fractional furmans in the lower 16-bits. */
+
+ /* USE_TRIG_TABLE
+ * This can be used on embedded systems or compilers which do not have a built-in 
+ * math.h implementation or floating point. If it is not set then the built-in
+ * compiler functions defined in math.h are used.
  */
-//@{
-int8_t platform_calib_init(void) {
-  return -1;
-}
+//#undef USE_TRIG_TABLE
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return 0;
-}
+/* Convert degrees into furmans
+ * Input degrees (modulus of 360 is used as the input)
+ * Returns furmans within range 0x0000 to 0xffff
+ * Note a furman value of zero returns zero degrees
+ */
+#define DEG2FURMAN(deg) ((0x10000 * ((deg) % 360)) / 360)
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return -1;
-}
-//@}
+/* Convert furmans into degrees
+ * Input range is 0x0000 to 0xffff (input is masked to this range)
+ * Returns degrees within range -180 degrees to + 180 degrees
+ * Note a furman value of zero is zero degrees
+ */
+#define FURMAN2DEG(fur) (((360 * (((fur) + 0x8000) & 0xffff)) / 0x10000) - 180)
 
-void setup() {
-  Serial.begin(9600);
-}
+/* Calculate X and Y components of circumferece
+ * Input raduis and angle in degrees
+ * Returns X or Y component of vector
+ */
+#define CIRC_X_DEG(radius, deg) ((radius) * sin_furman((deg) * 0x10000 / 360) / 0x8000)
+#define CIRC_Y_DEG(radius, deg) ((radius) * cos_furman((deg) * 0x10000 / 360) / 0x8000)
 
-void loop() {
-  // Initialise the display
-  Serial.print("Starting EVE...\n");
-  
-  eve_example();
-}
+/* Calculate X and Y components of circumferece
+ * Input raduis and angle in furmans
+ * Returns X or Y component of vector
+ */
+#define CIRC_X(radius, fur) ((radius) * sin_furman(fur) / 0x8000)
+#define CIRC_Y(radius, fur) ((radius) * cos_furman(fur) / 0x8000)
+
+/* Calculate sine of furman angle
+ * Input angle in furman
+ * Returns sine values from -0x7fff to + 0x7fff
+ */
+int16_t sin_furman(uint16_t furman16);
+
+/* Calculate cosine of furman angle
+ * Input angle in furman
+ * Returns cosine values from -0x7fff to + 0x7fff
+ */
+int16_t cos_furman(uint16_t furman16);
+
+#endif // EVE_TRIG_FURMAN_H

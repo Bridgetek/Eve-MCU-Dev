@@ -193,7 +193,7 @@ uint32_t eve_init_fonts(void) {
 /* ### BEGIN API == 2 ### */
   eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
 /* ### END API ### */
-/* ### BEGIN API == 3 or 4 ### */
+/* ### BEGIN API == 3, 4 ### */
   eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
 /* ### END API ### */
 /* ### BEGIN API == 1 ### */

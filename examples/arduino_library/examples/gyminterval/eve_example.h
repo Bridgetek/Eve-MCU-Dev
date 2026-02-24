@@ -1,6 +1,7 @@
 /**
- @file simple_EVE### EVE API VER ###.ino
- */
+    @file eve_example.h
+    @brief Target is ### EVE DEV ###
+**/
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -37,35 +38,51 @@
  * ============================================================================
  */
 
-#include "eve_example.h"
+#ifndef _EVE_EXAMPLE_H
+#define _EVE_EXAMPLE_H
+
+#include <stdint.h>
+
+#include <### EVE CLASS ###.h>
 
 /**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
+ @brief EVE library handle.
+ @details This is the one instance of the EVE library. Available as a global.
+ */
+extern ### EVE CLASS ### eve;
+
+/**
+ @brief Definitions of handles for custom fonts and bitmaps.
  */
 //@{
-int8_t platform_calib_init(void) {
-  return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return -1;
-}
+#define FONT_CUSTOM 8
+#define BITMAP_BRIDGETEK_LOGO 7
 //@}
 
-void setup() {
-  Serial.begin(9600);
-}
+/* Globals available within the eve_example code */
+extern uint32_t eve_img_bridgetek_logo_width;
+extern uint32_t eve_img_bridgetek_logo_height;
 
-void loop() {
-  // Initialise the display
-  Serial.print("Starting EVE...\n");
-  
-  eve_example();
-}
+/* Functions called within the eve_example code */
+uint32_t eve_init_fonts(void);
+uint32_t eve_load_images(uint32_t);
+
+/* Functions called from eve_example code to platform specific code */
+uint32_t platform_get_time(void);
+int8_t platform_calib_init(void);
+int8_t platform_calib_write(struct touchscreen_calibration *calib);
+int8_t platform_calib_read(struct touchscreen_calibration *calib);
+
+/* Entry point to the example code */
+void eve_example(void);
+
+/* Functions called within the eve_example code */
+uint8_t eve_romfont_width(uint8_t font);
+uint8_t eve_romfont_height(uint8_t font);
+
+#include "touch.h"
+#include "arcs.h"
+#include "fonts.h"
+#include "sound.h"
+
+#endif /* _EVE_EXAMPLE_H */
