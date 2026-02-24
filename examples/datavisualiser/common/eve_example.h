@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://www.ftdichip.com/FTSourceCodeLicenceTerms.htm ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -48,6 +48,7 @@ extern "C" {
 
 #include "touch.h"
 #include "maths/trig_furman.h"
+#include "controls/arcs.h"
 
 /**
  @brief Definitions background box positioning and sizes.
@@ -180,7 +181,7 @@ extern "C" {
 #define backlight_dial_x ((EVE_DISP_WIDTH * 34)/40) // 85%
 #define backlight_dial_y ((EVE_DISP_HEIGHT * 14)/40) // 30%
 #define backlight_dial_radius (EVE_DISP_HEIGHT/7) // 14.2 %
-#define backlight_dial_thickness (EVE_DISP_WIDTH/40) // 2.5 %
+#define backlight_dial_thickness (EVE_DISP_HEIGHT/10) // 12.5 %
 #define backlight_arc_start_deg 53
 #define backlight_arc_end_deg 308
 #define backlight_arc_total_deg (backlight_arc_end_deg - backlight_arc_start_deg)

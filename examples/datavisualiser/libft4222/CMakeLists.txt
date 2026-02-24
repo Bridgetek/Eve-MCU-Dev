@@ -130,6 +130,7 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/controls/arcs.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
