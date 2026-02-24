@@ -110,6 +110,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
     with open(file_in, "r") as file:
         try:
             while line := file.readline():
+                cppadd = []
+                line = line.rstrip()
+                # Modify markers in templates
                 line = re.sub(r"### EVE API VER ###", str_full_version, line)
                 line = re.sub(r"### EVE API URL ###", str_full_url, line)
                 line = re.sub(r"### EVE API ###", str_api_version, line)
@@ -119,8 +122,11 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 line = re.sub(r"### EVE CLASS ###", cpplib, line)
                 line = re.sub(r"### EVE RES ###", defres, line)
                 line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
+                # Update name of library header file to prevent clashes
+                line = re.sub(r"#include \<EVE.h\>", f"#include <EVE{str_full_version}.h>", line)
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r"^static const uint8_t ", "PROGMEM static const uint8_t ", line)
+                # Simulate preprocessor by excluding/replacing code
                 if re.findall(r"/\* ### BEGIN API ### \*/", line):
                     flag = 1
                     cppfile.extend(apidefs)
@@ -143,6 +149,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                         flag = -1
                     continue
                 if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
+                    print("found marker:", line)
                     if api < 2:
                         flag = -1
                     continue
@@ -162,52 +169,59 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                     flag = 0
                     continue
                 if flag == 0: 
-                    # Add PROGMEM storage read for patch_base.ino
+                    # Use variable EVE_RAM_G_SIZE for size of RAM_G
                     if file_out.endswith("BT82x.h"):
                         line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
-                    if file_out.endswith("patch_base.c"):
+                    # Add PROGMEM storage read for patch_base.c
+                    elif file_out.endswith("patch_base.c"):
                         if line == "#include \"patch_base.h\"\n":
-                            cppfile.append("")
-                            cppfile.append("#include <stdint.h>")
-                            cppfile.append("#include <string.h>")
-                            cppfile.append("")
-                            cppfile.append("#if defined(ESP8266) || defined(ESP32)")
-                            cppfile.append("#include <pgmspace.h>")
-                            cppfile.append("#else")
-                            cppfile.append("#include <avr/pgmspace.h>")
-                            cppfile.append("#endif")
-                            cppfile.append("")
+                            cppadd = [
+                                    "#include <string.h>",
+                                    "",
+                                    "#if defined(ESP8266) || defined(ESP32)",
+                                    "#include <pgmspace.h>",
+                                    "#else",
+                                    "#include <avr/pgmspace.h>",
+                                    "#endif",
+                                    "",
+                            ]
                             print("patch_base.c updated for PROGMEM")
-                        match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
-                        if match:
-                            len = int(match.group(3))
-                            repl = (
-                                f"/* Read the data from the program memory into CMD. */",
-                                f"uint8_t pgm[16];",
-                                f"uint32_t pgmoffset, pgmchunk;",
-                                f"for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
-                                f"{{",
-                                f"    // Maximum of pgm buffer",
-                                f"    uint32_t chunk = sizeof(pgm);",
-                                f"    if (pgmoffset + chunk > {len})",
-                                f"    {{",
-                                f"        chunk = {len} - pgmoffset;",
-                                f"    }}",
-                                f"    // Load the pgm buffer",
-                                f"    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
-                                f"    EVE_LIB_WriteDataToCMD(pgm, chunk);",
-                                f"}}",
-                            )
-                            for r in repl: 
-                                cppfile.append(f"{match.group(1)}{r}")
-                            line = ""
-                            print("patch_base.c updated for accessing PROGMEM")
-                    cppfile.append(line.rstrip())
+                        else:
+                            match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
+                            if match:
+                                len = int(match.group(3))
+                                line = None
+                                cppadd = [
+                                        f"{match.group(1)}/* Read the data from the program memory into CMD. */",
+                                        f"{match.group(1)}uint8_t pgm[16];",
+                                        f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
+                                        f"{match.group(1)}{{",
+                                        f"{match.group(1)}    // Maximum of pgm buffer",
+                                        f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
+                                        f"{match.group(1)}    if (pgmoffset + chunk > {len})",
+                                        f"{match.group(1)}    {{",
+                                        f"{match.group(1)}        chunk = {len} - pgmoffset;",
+                                        f"{match.group(1)}    }}",
+                                        f"{match.group(1)}    // Load the pgm buffer",
+                                        f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
+                                        f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                        f"{match.group(1)}}}",
+                                ]
+                                print("patch_base.c updated for accessing PROGMEM")
+
+                    if line != None:
+                        cppfile.append(line)
+
+                    for a in cppadd:
+                        cppfile.append(a)
 
             with open(file_out, "w") as file:
                 for line in cppfile:
                     file.write(line + "\n")
-        except:
+
+        except Exception as inst:
+            print("Error: default file handling -", inst)
             # File is binary or could not be parsed
             with open(file_in, "rb") as file:
                 bdata = file.read()
@@ -215,7 +229,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 file.write(bdata)
 
 # Collate header files needed (from include directory)
-dist_inc_files = ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h"]
+dist_inc_files = ["HAL.h", "MCU.h", "FT8xx.h"]
 if eve_api == 1:
     dist_inc_files.append("FT80x.h")
 elif eve_api == 2:
@@ -232,14 +246,15 @@ dest_api = os.path.join(dest_lib,"EVE_API.c")
 
 # Collate source files needed
 dist_source_files = []
+dist_source_files.append((os.path.join(src_api,"include","EVE.h"), os.path.join(dest_lib,f"EVE{str_full_version}.h")))
+for d in dist_inc_files:
+    dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(dest_lib,d)))
 dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), dest_api))
 dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(dest_lib,"EVE_HAL.c")))
 dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
 if eve_api == 5:
     dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.c"), os.path.join(dest_lib,"patch_base.c")))
     dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
-for d in dist_inc_files:
-    dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(dest_lib,d)))
 dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 
 # Copy API source and header files
@@ -247,7 +262,7 @@ try:
     os.makedirs(dest_lib, exist_ok=True)
     for d in dist_source_files:
         srcf, destf = d
-        print(f"{srcf} -> {destf}")
+        print(f"API: {srcf} -> {destf}")
         template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
@@ -266,7 +281,7 @@ template_files.append(("library.properties.template", os.path.join(dest_lib,"lib
 template_files.append(("test.ino.template", os.path.join(test_dir,"test.ino")))
 for t in template_files:
     srcf, destf = t
-    print(f"{srcf} -> {destf}")
+    print(f"template: {srcf} -> {destf}")
     template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
 
 # Command line for preprocessor
@@ -451,17 +466,19 @@ cppapiconstslist = sortconst(cppapiconstslist)
 
 # Library main class files (template files pass 2)
 template_files = []
+# Library graphics / binary files
+graphics_files = []
+# Example files
+example_files = []
+
 template_files.append(("bteve.cpp.template", os.path.join(dest_lib,f"{str_lib_name}.cpp")))
 template_files.append(("bteve.h.template", os.path.join(dest_lib,f"{str_lib_name}.h")))
 # README.md file
-template_files.append((os.path.join(src_api, "docs", "arduino.png"), os.path.join(dest_lib,"arduino.png")))
-template_files.append((os.path.join(src_api, "docs", "header1x10.png"), os.path.join(dest_lib,"header1x10.png")))
-template_files.append((os.path.join(src_api, "docs", "header2x8.png"), os.path.join(dest_lib,"header2x8.png")))
 template_files.append(("README.md.template", os.path.join(dest_lib,"README.md")))
 
 for t in template_files:
     srcf, destf = t
-    print(f"{srcf} -> {destf}")
+    print(f"class: {srcf} -> {destf}")
     template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconstslist)
 
 # Make the examples directory
@@ -469,7 +486,6 @@ examples_dir = os.path.join(dest_lib, "examples")
 os.makedirs(examples_dir, exist_ok=True)
 
 # Copy all the examples
-example_files = []
 for path, subdirs, files in os.walk(os.path.normpath("examples")):
     for dir in subdirs:
         destdir = dir + "_EVE" + str_full_version
@@ -479,12 +495,27 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
         # Rename the destination file path
         destpath = path + "_EVE" + str_full_version
         destname = name
-        # Rename the sketch main file
-        if (os.path.basename(name) == os.path.split(path)[-1] + ".ino"):
-            destname = os.path.split(path)[-1] + "_EVE" + str_full_version + ".ino"
-        example_files.append((os.path.join(path, name), os.path.join(dest_lib, destpath, destname)))
+        if os.path.splitext(name)[1] == ".png" or os.path.splitext(name)[1] == ".jpg":
+            graphics_files.append((os.path.join(path, name), os.path.join(dest_lib, destpath, destname)))
+        else:
+            # Rename the sketch main file
+            if (os.path.basename(name) == os.path.split(path)[-1] + ".ino"):
+                destname = os.path.split(path)[-1] + "_EVE" + str_full_version + ".ino"
+            example_files.append((os.path.join(path, name), os.path.join(dest_lib, destpath, destname)))
 
 for t in example_files:
     srcf, destf = t
-    print(f"{srcf} -> {destf}")
+    print(f"examples: {srcf} -> {destf}")
     template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+
+graphics_files.append((os.path.join(src_api, "docs", "arduino.png"), os.path.join(dest_lib,"arduino.png")))
+graphics_files.append((os.path.join(src_api, "docs", "header1x10.png"), os.path.join(dest_lib,"header1x10.png")))
+graphics_files.append((os.path.join(src_api, "docs", "header2x8.png"), os.path.join(dest_lib,"header2x8.png")))
+
+for t in graphics_files:
+    srcf, destf = t
+    print(f"binary: {srcf} -> {destf}")
+    with open(srcf, "rb") as src:
+        with open(destf, "wb") as dest:
+            dest.write(src.read())
+

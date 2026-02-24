@@ -33,109 +33,120 @@ def add_files(src_dir, dest_dir, file_list):
 
 def copy_norm(src_file, dest_file):
     print(f"{src_file} -> {dest_file}")
+    cppfile = []
     with open(src_file, "r") as fsrc:
-        with open(dest_file, "w") as fdest:
-            while strsrc := fsrc.readline():
+        try:
+            while line := fsrc.readline():
+                cppadd = []
+                line = line.rstrip()
                 # Modify include statements to use local copy for sketch
-                strsrc = strsrc.replace("<EVE.h>", "\"EVE.h\"")
-                strsrc = strsrc.replace("<HAL.h>", "\"HAL.h\"")
-                strsrc = strsrc.replace("<MCU.h>", "\"MCU.h\"")
-                strsrc = strsrc.replace("<FT8xx.h>", "\"FT8xx.h\"")
-                strsrc = strsrc.replace("<EVE_config.h>", "\"EVE_config.h\"")
-                strsrc = strsrc.replace("<patch_base.h>", "\"patch_base.h\"")
+                line = line.replace("<EVE.h>", "\"EVE.h\"")
+                line = line.replace("<HAL.h>", "\"HAL.h\"")
+                line = line.replace("<MCU.h>", "\"MCU.h\"")
+                line = line.replace("<FT8xx.h>", "\"FT8xx.h\"")
+                line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
+                line = line.replace("<patch_base.h>", "\"patch_base.h\"")
                 # Global static consts moved into PROGMEM storage on Arduino
-                strsrc = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", strsrc)
+                line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
                 # Add PROGMEM storage linkage for eve_example.h
                 if dest_file.endswith("eve_example.h"):
-                    if strsrc == "#include <stdint.h>\n":
-                        fdest.writelines(
-                            (
-                                "#include <stdint.h>\n",
-                                "#include <string.h>\n",
-                                "\n",
-                                "#if defined(ESP8266) || defined(ESP32)\n",
-                                "#include <pgmspace.h>\n",
-                                "#else\n",
-                                "#include <avr/pgmspace.h>\n",
-                                "#endif\n",
-                                "\n",
-                            )
-                        )
-                        strsrc = ""
+                    if line == "#include <stdint.h>":
+                        cppadd = [
+                                "#include <string.h>",
+                                "",
+                                "#if defined(ESP8266) || defined(ESP32)",
+                                "#include <pgmspace.h>",
+                                "#else",
+                                "#include <avr/pgmspace.h>",
+                                "#endif",
+                                "",
+                        ]
                         print("eve_example.h updated for PROGMEM")
                 # Add PROGMEM storage read for eve_images.ino
-                if dest_file.endswith("eve_images.ino"):
-                    match = re.match(r"^(\s*)(\w*\[i\]) = \*(img\+\+);", strsrc)
+                elif dest_file.endswith("eve_images.ino"):
+                    match = re.match(r"^(\s*)(\w*\[i\]) = \*(img\+\+);", line)
                     if match:
-                        strsrc = f"{match.group(1)}{match.group(2)} = pgm_read_byte({match.group(3)});\n"
+                        line = None
+                        cppadd = [
+                            f"{match.group(1)}{match.group(2)} = pgm_read_byte({match.group(3)});",
+                        ]
                         print("eve_images.ino updated for accessing PROGMEM")
                 # Add PROGMEM storage read for eve_fonts.ino
-                if dest_file.endswith("eve_fonts.ino"):
+                elif dest_file.endswith("eve_fonts.ino"):
                     # EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
-                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToRAMG\((\w+),\s(\w+),\s(\w+)\);", strsrc)
-                    if match:
-                        fdest.writelines(
-                            (
-                                f"{match.group(1)}memcpy_P(&font0_header, {match.group(2)}, sizeof(font0_header));\n",
-                                "\n",
-                                f"{match.group(1)}/* Read the data from the program memory into RAM. */\n",
-                                f"{match.group(1)}uint8_t pgm[16];\n",
-                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;\n",
-                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {match.group(3)}; pgmoffset+=16)\n",
-                                f"{match.group(1)}{{\n",
-                                f"{match.group(1)}    // Maximum of pgm buffer\n",
-                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);\n",
-                                f"{match.group(1)}    if (pgmoffset + chunk > {match.group(3)})\n",
-                                f"{match.group(1)}    {{\n",
-                                f"{match.group(1)}        chunk = {match.group(3)} - pgmoffset;\n",
-                                f"{match.group(1)}    }}\n",
-                                f"{match.group(1)}    // Load the pgm buffer\n",
-                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);\n",
-                                f"{match.group(1)}    EVE_LIB_WriteDataToRAMG(pgm, chunk, {match.group(4)} + pgmoffset);\n",
-                                f"{match.group(1)}}}\n",
-                            )
-                        )
-                        strsrc = ""
-                        print("eve_fonts.ino updated for accessing PROGMEM")
+                    match1 = re.match(r"^(\s*)EVE_LIB_WriteDataToRAMG\((\w+),\s(\w+),\s(\w+)\);", line)
                     # const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
-                    match = re.match(r"^const EVE_GPU_FONT_HEADER \*(\w+)\s=\s\(const EVE_GPU_FONT_HEADER \*\)(\w+);", strsrc)
-                    if match:
-                        fdest.writelines(
-                            (
-                                f"EVE_GPU_FONT_HEADER font0_header;\n",
-                                f"const EVE_GPU_FONT_HEADER *{match.group(1)} = &font0_header;\n",
-                            )
-                        )
-                        strsrc = ""
+                    match2 = re.match(r"^const EVE_GPU_FONT_HEADER \*(\w+)\s=\s\(const EVE_GPU_FONT_HEADER \*\)(\w+);", line)
+                    if match1:
+                        line = None
+                        cppadd = [
+                                f"{match1.group(1)}memcpy_P(&font0_header, {match1.group(2)}, sizeof(font0_header));",
+                                f"{match1.group(1)}/* Read the data from the program memory into RAM. */",
+                                f"{match1.group(1)}uint8_t pgm[16];",
+                                f"{match1.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                f"{match1.group(1)}for (pgmoffset = 0; pgmoffset < {match1.group(3)}; pgmoffset+=16)",
+                                f"{match1.group(1)}{{",
+                                f"{match1.group(1)}    // Maximum of pgm buffer",
+                                f"{match1.group(1)}    uint32_t chunk = sizeof(pgm);",
+                                f"{match1.group(1)}    if (pgmoffset + chunk > {match1.group(3)})",
+                                f"{match1.group(1)}    {{",
+                                f"{match1.group(1)}        chunk = {match1.group(3)} - pgmoffset;",
+                                f"{match1.group(1)}    }}",
+                                f"{match1.group(1)}    // Load the pgm buffer",
+                                f"{match1.group(1)}    memcpy_P(pgm, &{match1.group(2)}[pgmoffset], chunk);",
+                                f"{match1.group(1)}    EVE_LIB_WriteDataToRAMG(pgm, chunk, {match1.group(4)} + pgmoffset);",
+                                f"{match1.group(1)}}}",
+                        ]
+                        print("eve_fonts.ino updated for accessing PROGMEM")
+                    if match2:
+                        line = None
+                        cppadd = [
+                                f"EVE_GPU_FONT_HEADER font0_header;",
+                                f"const EVE_GPU_FONT_HEADER *{match2.group(1)} = &font0_header;",
+                        ]
                         print("eve_fonts.ino updated for PROGMEM compatible globals")
                 # Add PROGMEM storage read for patch_base.ino
-                if dest_file.endswith("patch_base.ino"):
-                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", strsrc)
+                elif dest_file.endswith("patch_base.ino"):
+                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
                     if match:
                         len = int(match.group(3))
-                        fdest.writelines(
-                            (
-                                f"{match.group(1)}/* Read the data from the program memory into CMD. */\n",
-                                f"{match.group(1)}uint8_t pgm[16];\n",
-                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;\n",
-                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)\n",
-                                f"{match.group(1)}{{\n",
-                                f"{match.group(1)}    // Maximum of pgm buffer\n",
-                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);\n",
-                                f"{match.group(1)}    if (pgmoffset + chunk > {len})\n",
-                                f"{match.group(1)}    {{\n",
-                                f"{match.group(1)}        chunk = {len} - pgmoffset;\n",
-                                f"{match.group(1)}    }}\n",
-                                f"{match.group(1)}    // Load the pgm buffer\n",
-                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);\n",
-                                f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);\n",
-                                f"{match.group(1)}}}\n",
-                            )
-                        )
-                        strsrc = ""
+                        line = None
+                        cppadd = [
+                                f"{match.group(1)}/* Read the data from the program memory into CMD. */",
+                                f"{match.group(1)}uint8_t pgm[16];",
+                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
+                                f"{match.group(1)}{{",
+                                f"{match.group(1)}    // Maximum of pgm buffer",
+                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
+                                f"{match.group(1)}    if (pgmoffset + chunk > {len})",
+                                f"{match.group(1)}    {{",
+                                f"{match.group(1)}        chunk = {len} - pgmoffset;",
+                                f"{match.group(1)}    }}",
+                                f"{match.group(1)}    // Load the pgm buffer",
+                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
+                                f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                f"{match.group(1)}}}",
+                        ]
                         print("patch_base.ino updated for accessing PROGMEM")
 
-                fdest.write(strsrc) 
+                if line != None:
+                    cppfile.append(line)
+
+                for a in cppadd:
+                    cppfile.append(a)
+
+            with open(dest_file, "w") as file:
+                for line in cppfile:
+                    file.write(line + "\n")
+
+        except Exception as inst:
+            print("Error: default file handling -", inst)
+            # File is binary or could not be parsed
+            with open(src_file, "rb") as file:
+                bdata = file.read()
+            with open(dest_file, "wb") as file:
+                file.write(bdata)
 
 # Collate source files needed
 dist_source_files = []
