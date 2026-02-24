@@ -79,6 +79,9 @@ int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
 
+/* Entry point to the example code */
+void eve_example(void);
+
 #include "touch.h"
 
 #endif /* _EVE_EXAMPLE_H */

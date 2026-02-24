@@ -26,7 +26,7 @@ void setup() {
 
 void loop() {
   // Initialise the display
-  Serial.print("Starting demo...\n");
+  Serial.print("Starting EVE...\n");
   
   eve_example();
 }

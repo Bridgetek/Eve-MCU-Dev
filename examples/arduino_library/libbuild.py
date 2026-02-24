@@ -149,7 +149,6 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                         flag = -1
                     continue
                 if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
-                    print("found marker:", line)
                     if api < 2:
                         flag = -1
                     continue
