@@ -60,6 +60,7 @@ void EVE_CMD_ROMFONT(uint32_t font, uint32_t romfont)
 
     // Resume the list
     EVE_LIB_BeginCoProList();
+    EVE_BEGIN(EVE_BEGIN_BITMAP);
     EVE_BITMAP_HANDLE(font);
     EVE_BITMAP_SOURCE(fontsrc);
     EVE_BITMAP_LAYOUT(format, linestride, height);
@@ -97,7 +98,7 @@ uint32_t font_getromptr(uint8_t fontnumber)
     fontroot = EVE_LIB_MemRead32(EVE_ROMFONT_TABLEADDRESS);
     if (fontnumber <= font_getmax())
     {
-        fontptr = fontroot + ((fontnumber - 16) * 148);
+        fontptr = fontroot + ((fontnumber - 16) * sizeof(EVE_GPU_FONT_HEADER));
     }
     else
     {

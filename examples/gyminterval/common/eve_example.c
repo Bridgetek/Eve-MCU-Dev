@@ -1050,6 +1050,7 @@ void eve_example(void)
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
+    EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();

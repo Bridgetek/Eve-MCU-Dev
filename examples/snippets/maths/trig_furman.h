@@ -75,8 +75,8 @@
  * Input raduis and angle in furmans
  * Returns X or Y component of vector
  */
-#define CIRC_X(radius, fur) ((radius) * sin_furman(fur) / 0x8000)
-#define CIRC_Y(radius, fur) ((radius) * cos_furman(fur) / 0x8000)
+#define CIRC_X(radius, fur) (((radius) * (uint32_t)sin_furman(fur)) / 0x8000)
+#define CIRC_Y(radius, fur) (((radius) * (uint32_t)cos_furman(fur)) / 0x8000)
 
 /* Calculate sine of furman angle
  * Input angle in furman
