@@ -569,9 +569,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         if (rest == 0)
         {
             eve.COLOR(col_timer_active);
-            arc_simple(centre_x, centre_y, 
+            arc_simple(centre_x, centre_y,
                 r0_timer, r1_timer,
-                furmans_top, furmans_top + (0x10000 * timer) / timer_count
+                furmans_top + (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH)), furmans_top + ((0x10000 * timer) / timer_count) - (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH))
             );
         }
         else
@@ -579,9 +579,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             eve.COLOR(col_rest_active);
             if (rest < rest_max)
             {
-                arc_simple(centre_x, centre_y, 
+                arc_simple(centre_x, centre_y,
                     r0_timer, r1_timer,
-                    furmans_top + (0x10000 * rest) / rest_max, furmans_top
+                    furmans_top + ((0x10000 * rest) / rest_max) + (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH)), furmans_top - (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH))
                 );
             }
         }
