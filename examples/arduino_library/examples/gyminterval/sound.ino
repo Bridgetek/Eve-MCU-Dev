@@ -41,6 +41,12 @@
 
 #include <### EVE CLASS ###.h>
 
+/**
+ @brief EVE library handle.
+ @details This is the one instance of the EVE library. Available as a global.
+ */
+extern ### EVE CLASS ### eve;
+
 #include "sound.h"
 
 void enableSound(void)
@@ -50,25 +56,25 @@ void enableSound(void)
 	uint8_t regGpioDir;
  
 	// Read GPIOX_DIR register
-	regGpioDir = EVE_LIB_MemRead8(EVE_REG_GPIO_DIR);
+	regGpioDir = eve.LIB_MemRead8(eve.REG_GPIO_DIR);
 	// Set bit 1 of GPIO_DIR register  to output (GPIO1)
 	regGpioDir = regGpioDir | 0x02;
 	// Enable GPIO2 as an output
-	EVE_LIB_MemWrite8(EVE_REG_GPIO_DIR, regGpioDir);
+	eve.LIB_MemWrite8(eve.REG_GPIO_DIR, regGpioDir);
  
 	// Read REG_GPIOX
-	regGpio = EVE_LIB_MemRead8(EVE_REG_GPIO);
+	regGpio = eve.LIB_MemRead8(eve.REG_GPIO);
 	// Set bit 1 of GPIO register (GPIO1) high
 	regGpio = regGpio | 0x02;
 	// Enable the GPIO2 signal to the Audio Driver
-	EVE_LIB_MemWrite8(EVE_REG_GPIO, regGpio);
+	eve.LIB_MemWrite8(eve.REG_GPIO, regGpio);
  
 	// Turn synthesizer volume up
-	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
+	eve.LIB_MemWrite8(eve.REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite8(EVE_REG_SOUND, 0x60);
+	eve.LIB_MemWrite8(eve.REG_SOUND, 0x60);
 	// Play sound
-	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+	eve.LIB_MemWrite8(eve.REG_PLAY, 1);
 	/* ### END API ### */
 
 	/* ### BEGIN API == 2, 3, 4 ### */
@@ -76,34 +82,34 @@ void enableSound(void)
 	uint16_t regGpioxDir;
  
 	// Read GPIOX_DIR register
-	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
+	regGpioxDir = eve.LIB_MemRead16(eve.REG_GPIOX_DIR);
 	// Set bit 2 of  GPIO_DIR register  to output (GPIO2)
 	regGpioxDir = regGpioxDir | 0x0004;
 	// Enable GPIO2 as an output
-	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
+	eve.LIB_MemWrite16(eve.REG_GPIOX_DIR, regGpioxDir);
  
 	// Read REG_GPIOX
-	regGpiox = EVE_LIB_MemRead16(EVE_REG_GPIOX);
+	regGpiox = eve.LIB_MemRead16(eve.REG_GPIOX);
 	// Set bit 2 of GPIOX register (GPIO2) high
 	regGpiox = regGpiox | 0x0004;
 	// Enable the GPIO2 signal to the Audio Driver
-	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
+	eve.LIB_MemWrite16(eve.REG_GPIOX, regGpiox);
  
 	// Turn synthesizer volume up
-	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
+	eve.LIB_MemWrite8(eve.REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite8(EVE_REG_SOUND, 0x60);
+	eve.LIB_MemWrite8(eve.REG_SOUND, 0x60);
 	// Play sound
-	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+	eve.LIB_MemWrite8(eve.REG_PLAY, 1);
 	/* ### END API ### */
 	
 	/* ### BEGIN API >= 5 ### */
 	// Turn synthesizer volume up
-	EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, 255);
+	eve.LIB_MemWrite32(eve.REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite32(EVE_REG_SOUND, 0x60);
+	eve.LIB_MemWrite32(eve.REG_SOUND, 0x60);
 	// Play sound
-	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
+	eve.LIB_MemWrite32(eve.REG_PLAY, 1);
 	/* ### END API ### */
 }
 
@@ -111,16 +117,16 @@ void playSound(uint8_t sound, uint8_t note)
 {
 	/* ### BEGIN API < 5 ### */
 	// set synthesizer to chime c#3
-	EVE_LIB_MemWrite16(EVE_REG_SOUND, (note << 8) | sound);
+	eve.LIB_MemWrite16(eve.REG_SOUND, (note << 8) | sound);
 	// play sound
-	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+	eve.LIB_MemWrite8(eve.REG_PLAY, 1);
 	/* ### END API ### */
-	
+
 	/* ### BEGIN API >= 5 ### */
 	// set synthesizer to chime c#3
-	EVE_LIB_MemWrite32(EVE_REG_SOUND, (note << 8) | sound);
+	eve.LIB_MemWrite32(eve.REG_SOUND, (note << 8) | sound);
 	// play sound
-	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
+	eve.LIB_MemWrite32(eve.REG_PLAY, 1);
 	/* ### END API ### */
 } 
 

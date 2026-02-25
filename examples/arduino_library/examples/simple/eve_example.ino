@@ -45,7 +45,7 @@
  */
 ### EVE CLASS ### eve;
 
-extern const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr;
+extern const ### EVE CLASS ###::GPU_FONT_HEADER *font0_hdr;
 
 void eve_display(void)
 {
@@ -68,16 +68,16 @@ void eve_display(void)
     eve.BEGIN(eve.BEGIN_BITMAPS);
     /* ### BEGIN API >= 2 ### */
     // Set origin on canvas using EVE_VERTEX_TRANSLATE.
-    eve.VERTEX_TRANSLATE_X(((EVE_DISP_WIDTH / 2) - (eve_img_bridgetek_logo_width / 2)) * 16);
+    eve.VERTEX_TRANSLATE_X(((eve.DISP_WIDTH() / 2) - (eve_img_bridgetek_logo_width / 2)) * 16);
     eve.VERTEX2II(0, 0, BITMAP_BRIDGETEK_LOGO, 0);
     eve.VERTEX_TRANSLATE_X(0);
     /* ### END API ### */
     /* ### BEGIN API == 1 ### */
     // Place directly on canvas eve.VERTEX_TRANSLATE not available.
-    eve.VERTEX2II((EVE_DISP_WIDTH / 2) - (eve_img_bridgetek_logo_width / 2), 0, BITMAP_BRIDGETEK_LOGO, 0);
+    eve.VERTEX2II((eve.DISP_WIDTH() / 2) - (eve_img_bridgetek_logo_width / 2), 0, BITMAP_BRIDGETEK_LOGO, 0);
     /* ### END API ### */
 
-    eve.CMD_TEXT(EVE_DISP_WIDTH / 2, eve_img_bridgetek_logo_height,
+    eve.CMD_TEXT(eve.DISP_WIDTH() / 2, eve_img_bridgetek_logo_height,
                 28, eve.OPT_CENTERX, "Touch the counter");
 
     eve.TAG(100);
@@ -88,17 +88,17 @@ void eve_display(void)
     units = 1;
 
     /* ### BEGIN API >= 2 ### */
-    eve.VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 2) * 16);
+    eve.VERTEX_TRANSLATE_Y((eve.DISP_HEIGHT() / 2) * 16);
     for (i = 0; i < 5; i++) {
-      eve.VERTEX_TRANSLATE_X((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))) * 16);
+      eve.VERTEX_TRANSLATE_X((((eve.DISP_WIDTH() - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))) * 16);
       eve.VERTEX2II(0, 0, FONT_CUSTOM, ((counter / units) % 10) + 1);  //+1 as in the converted font the number '0' is in position 1 in the font table
       units *= 10;
     }
     /* ### END API ### */
     /* ### BEGIN API == 1 ### */
     for (i = 0; i < 5; i++) {
-      eve.VERTEX2II((((EVE_DISP_WIDTH - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))),
-                    (EVE_DISP_HEIGHT / 2), FONT_CUSTOM, ((counter / units) % 10) + 1);  //+1 as in the converted font the number '0' is in position 1 in the font table
+      eve.VERTEX2II((((eve.DISP_WIDTH() - (font0_hdr->FontWidthInPixels * 5)) / 2) - (font0_hdr->FontWidthInPixels) + (font0_hdr->FontWidthInPixels * (5 - i))),
+                    (eve.DISP_HEIGHT() / 2), FONT_CUSTOM, ((counter / units) % 10) + 1);  //+1 as in the converted font the number '0' is in position 1 in the font table
       units *= 10;
     }
     /* ### END API ### */

@@ -40,6 +40,12 @@
 
 #include <### EVE CLASS ###.h>
 
+/**
+ @brief EVE library handle.
+ @details This is the one instance of the EVE library. Available as a global.
+ */
+extern ### EVE CLASS ### eve;
+
 #include "arcs.h"
 
 // Set pixel precision based on EVE version
@@ -139,97 +145,99 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
     int16_t point_end_y = CIRC_Y(((r0 + r1) * PIX_PRECISION) / 2, a1);
 
     // Save current graphics context
-    EVE_SAVE_CONTEXT();
+    eve.SAVE_CONTEXT();
 
-    #if IS_EVE_API(2,3,4,5) // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
+    /* ### BEGIN API > 1 ### */
+    // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
     // Set desired vertex format for the example
-    EVE_VERTEX_FORMAT(3);
-    #endif
+    eve.VERTEX_FORMAT(3);
+    /* ### END API ### */
+
     // Stencils preclude using alpha
-    EVE_COLOR_A(255);
+    eve.COLOR_A(255);
 
-    EVE_COLOR_MASK(0, 0, 0, 1);
+    eve.COLOR_MASK(0, 0, 0, 1);
     // Scissor for the size of the arc we wish to draw
-    EVE_SCISSOR_SIZE((r1 * 2) + 1, (r1 * 2) + 1);
-    EVE_SCISSOR_XY((x - r1), (y - r1));
+    eve.SCISSOR_SIZE((r1 * 2) + 1, (r1 * 2) + 1);
+    eve.SCISSOR_XY((x - r1), (y - r1));
 
-    EVE_CLEAR_COLOR_A(0);
-    EVE_CLEAR_STENCIL(reverse);
-    EVE_CLEAR(1, 1, 0);
-    EVE_COLOR_MASK(0, 0, 0, 0);
-    EVE_STENCIL_MASK(1); 
-    EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
+    eve.CLEAR_COLOR_A(0);
+    eve.CLEAR_STENCIL(reverse);
+    eve.CLEAR(1, 1, 0);
+    eve.COLOR_MASK(0, 0, 0, 0);
+    eve.STENCIL_MASK(1); 
+    eve.STENCIL_OP(eve.STENCIL_INCR, eve.STENCIL_INCR);
 
     if (range != 0xffff)
     {
         // Stencil cut-out from the circle for the arc
-        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
-        EVE_VERTEX2F((x - arc_start_x) * PIX_PRECISION, (y + arc_start_y) * PIX_PRECISION);
-        EVE_VERTEX2F(x * PIX_PRECISION, y * PIX_PRECISION);
-        EVE_VERTEX2F((x - arc_end_x) * PIX_PRECISION, (y + arc_end_y) * PIX_PRECISION);
+        eve.BEGIN(eve.BEGIN_EDGE_STRIP_R);
+        eve.VERTEX2F((x - arc_start_x) * PIX_PRECISION, (y + arc_start_y) * PIX_PRECISION);
+        eve.VERTEX2F(x * PIX_PRECISION, y * PIX_PRECISION);
+        eve.VERTEX2F((x - arc_end_x) * PIX_PRECISION, (y + arc_end_y) * PIX_PRECISION);
         if (range > 0x4000)
         {
-            EVE_VERTEX2F((x - arc_int_x) * PIX_PRECISION, (y + arc_int_y) * PIX_PRECISION);
+            eve.VERTEX2F((x - arc_int_x) * PIX_PRECISION, (y + arc_int_y) * PIX_PRECISION);
         }
-        EVE_VERTEX2F((x - arc_start_x) * PIX_PRECISION, (y + arc_start_y) * PIX_PRECISION);
+        eve.VERTEX2F((x - arc_start_x) * PIX_PRECISION, (y + arc_start_y) * PIX_PRECISION);
     }
 
-    EVE_COLOR_MASK(0, 0, 0, 1);
-    EVE_STENCIL_MASK(0);
-    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 1);
+    eve.COLOR_MASK(0, 0, 0, 1);
+    eve.STENCIL_MASK(0);
+    eve.STENCIL_FUNC(eve.TEST_EQUAL, 1, 1);
 
-    EVE_BEGIN(EVE_BEGIN_POINTS);
+    eve.BEGIN(eve.BEGIN_POINTS);
     // Add outer circle to alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE(r1 * 16);
-    EVE_VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
+    eve.BLEND_FUNC(eve.BLEND_ONE, eve.BLEND_ONE_MINUS_SRC_ALPHA);
+    eve.POINT_SIZE(r1 * 16);
+    eve.VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
  
     // Remove inner circle from alpha buffer
-    EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    EVE_POINT_SIZE(r0 * 16);
-    EVE_VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
+    eve.BLEND_FUNC(eve.BLEND_ZERO, eve.BLEND_ONE_MINUS_SRC_ALPHA);
+    eve.POINT_SIZE(r0 * 16);
+    eve.VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
     
     // add points to the end of the arc (only if requried)
     if(range != 0xffff)
     {
-        EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 1, 1);
-        EVE_POINT_SIZE(((r1 - r0) * 16) / 2 );
-        EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+        eve.STENCIL_FUNC(eve.TEST_ALWAYS, 1, 1);
+        eve.POINT_SIZE(((r1 - r0) * 16) / 2 );
+        eve.BLEND_FUNC(eve.BLEND_ONE, eve.BLEND_ONE_MINUS_SRC_ALPHA);
         // Start point
-        EVE_VERTEX2F((x * PIX_PRECISION) - point_start_x, (y * PIX_PRECISION) + point_start_y);
+        eve.VERTEX2F((x * PIX_PRECISION) - point_start_x, (y * PIX_PRECISION) + point_start_y);
         // End point
-        EVE_VERTEX2F((x * PIX_PRECISION) - point_end_x, (y * PIX_PRECISION) + point_end_y);
+        eve.VERTEX2F((x * PIX_PRECISION) - point_end_x, (y * PIX_PRECISION) + point_end_y);
     }
 
     // Draw the indicator
     if (opt & OPT_INDICATOR)
     {
         // Remove outer of indicator from the alpha buffer
-        EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-        EVE_POINT_SIZE((((r1 - r0) / 2) + indicator_size) * 16);
+        eve.BLEND_FUNC(eve.BLEND_ZERO, eve.BLEND_ONE_MINUS_SRC_ALPHA);
+        eve.POINT_SIZE((((r1 - r0) / 2) + indicator_size) * 16);
     
         // Draw point based on current input value for the indicator
-        EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
+        eve.VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     
         // Add inner of the indicator to alpha buffer
-        EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-        EVE_POINT_SIZE(((r1 - r0) / 2) * 16); 
+        eve.BLEND_FUNC(eve.BLEND_ONE, eve.BLEND_ONE_MINUS_SRC_ALPHA);
+        eve.POINT_SIZE(((r1 - r0) / 2) * 16); 
     
         // Draw point based on current input value for the indicator
-        EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
+        eve.VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     }
 
     // Draw a circle which will fill the arc with the colour set in the graphics context before the funciton call
-    EVE_COLOR_MASK(1, 1, 1, 0);
-    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
-    EVE_POINT_SIZE(r1 * 16);
-    EVE_VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
+    eve.COLOR_MASK(1, 1, 1, 0);
+    eve.BLEND_FUNC(eve.BLEND_DST_ALPHA, eve.BLEND_ONE_MINUS_DST_ALPHA);
+    eve.POINT_SIZE(r1 * 16);
+    eve.VERTEX2F((x * PIX_PRECISION), (y * PIX_PRECISION));
  
     // End drawing
-    //not needed EVE_END();
+    //not needed eve.END();
 
     // Restore previous graphics context
-    EVE_RESTORE_CONTEXT();
+    eve.RESTORE_CONTEXT();
 }
 
 void arc_simple(int16_t x, int16_t y, 

@@ -45,8 +45,6 @@
  */
 ### EVE CLASS ### eve;
 
-extern const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr;
-
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
@@ -62,8 +60,8 @@ const uint32_t tick = 1000;
 
 const uint16_t furmans_top = 0x8000;
 
-#define ARC_CLOCK_WIDTH (EVE_DISP_HEIGHT / 32)
-#define ARC_CYCLE_WIDTH (EVE_DISP_HEIGHT / 32)
+#define ARC_CLOCK_WIDTH (eve.DISP_HEIGHT() / 32)
+#define ARC_CYCLE_WIDTH (eve.DISP_HEIGHT() / 32)
 
 #define ARC_GAP(A) ((A) * 8 / 10)
 
@@ -140,59 +138,59 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
         if ((y > 511) || (x > 511))
         {
             /* ### BEGIN API > 1 ### */
-            EVE_VERTEX_TRANSLATE_X(x * 16);
-            EVE_VERTEX_TRANSLATE_Y(y * 16);
+            eve.VERTEX_TRANSLATE_X(x * 16);
+            eve.VERTEX_TRANSLATE_Y(y * 16);
             /* ### END API ### */
-            EVE_VERTEX2II(0, 0, cache->handle, ch);
+            eve.VERTEX2II(0, 0, cache->handle, ch);
         }
         else
         {
-            EVE_VERTEX2II(x, y, cache->handle, ch);
+            eve.VERTEX2II(x, y, cache->handle, ch);
         }
     }
     else
     {
         // This is a RAM font.
         /* ### BEGIN API >= 5 ### */
-        EVE_BITMAP_SOURCE_H(cache->glyphs[(int)ch] >> 24);
+        eve.BITMAP_SOURCE_H(cache->glyphs[(int)ch] >> 24);
         /* ### END API ### */
-        EVE_BITMAP_SOURCE(cache->glyphs[(int)ch]);
+        eve.BITMAP_SOURCE(cache->glyphs[(int)ch]);
         if ((y > 511) || (x > 511))
         {
             /* ### BEGIN API > 1 ### */
-            EVE_VERTEX_TRANSLATE_X(x * 16);
-            EVE_VERTEX_TRANSLATE_Y(y * 16);
+            eve.VERTEX_TRANSLATE_X(x * 16);
+            eve.VERTEX_TRANSLATE_Y(y * 16);
             /* ### END API ### */
-            EVE_VERTEX2F(0, 0);
+            eve.VERTEX2F(0, 0);
         }
         else
         {
-            EVE_VERTEX2F(x * 16, y * 16);
+            eve.VERTEX2F(x * 16, y * 16);
         }
     }
 
     /* ### BEGIN API > 1 ### */
-    EVE_VERTEX_TRANSLATE_X(0);
-    EVE_VERTEX_TRANSLATE_Y(0);
+    eve.VERTEX_TRANSLATE_X(0);
+    eve.VERTEX_TRANSLATE_Y(0);
     /* ### END API ### */
 }
 
 static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
 {
-    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    eve.BEGIN(eve.BEGIN_BITMAPS);
     // Manipulate the font display.
-    EVE_CMD_LOADIDENTITY();
+    eve.CMD_LOADIDENTITY();
     // Select the handle for the font.
-    EVE_BITMAP_HANDLE(cache->handle);
+    eve.BITMAP_HANDLE(cache->handle);
     /* ### BEGIN API > 1 ### */
-    EVE_BITMAP_SIZE_H((((uint32_t)font_getwidth(cache) * zoom) / 0x10000) >> 9, 
+    eve.BITMAP_SIZE_H((((uint32_t)font_getwidth(cache) * zoom) / 0x10000) >> 9, 
         (((uint32_t)font_getheight(cache) * zoom) / 0x10000) >> 9);
     /* ### END API ### */
-    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, 
+    eve.BITMAP_SIZE(eve.FILTER_NEAREST, eve.WRAP_BORDER, eve.WRAP_BORDER, 
         ((uint32_t)font_getwidth(cache) * zoom) / 0x10000, 
         ((uint32_t)font_getheight(cache) * zoom) / 0x10000);
-    EVE_CMD_SCALE(zoom, zoom);
-    EVE_CMD_SETMATRIX();
+    eve.CMD_SCALE(zoom, zoom);
+    eve.CMD_SETMATRIX();
 }
 
 static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
@@ -228,24 +226,24 @@ static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const c
 void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int interval_rest_count, int timer_count)
 {
     // Radius of timerclock arc
-    const uint16_t r1_timer = (EVE_DISP_WIDTH / 4);
-    const uint16_t r0_timer = (EVE_DISP_WIDTH / 4) - ((ARC_CLOCK_WIDTH * 3) / 2);
+    const uint16_t r1_timer = (eve.DISP_WIDTH() / 4);
+    const uint16_t r0_timer = (eve.DISP_WIDTH() / 4) - ((ARC_CLOCK_WIDTH * 3) / 2);
 
     // Radius of interval counter arc
-    const uint16_t r1_interval = ARC_GAP(EVE_DISP_WIDTH / 4);
-    const uint16_t r0_interval = ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CLOCK_WIDTH);
+    const uint16_t r1_interval = ARC_GAP(eve.DISP_WIDTH() / 4);
+    const uint16_t r0_interval = ARC_GAP((eve.DISP_WIDTH() / 4) - ARC_CLOCK_WIDTH);
 
     // Radius of cycle counter arc
-    const uint16_t r1_cycle = ARC_GAP(ARC_GAP(EVE_DISP_WIDTH / 4));
-    const uint16_t r0_cycle = ARC_GAP(ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CYCLE_WIDTH));
+    const uint16_t r1_cycle = ARC_GAP(ARC_GAP(eve.DISP_WIDTH() / 4));
+    const uint16_t r0_cycle = ARC_GAP(ARC_GAP((eve.DISP_WIDTH() / 4) - ARC_CYCLE_WIDTH));
 
     // Full extents of clock image arcs
-    const uint16_t r_inner = (EVE_DISP_WIDTH / 6);
-    const uint16_t r_outer = (EVE_DISP_WIDTH / 4) + ARC_CLOCK_WIDTH;
+    const uint16_t r_inner = (eve.DISP_WIDTH() / 6);
+    const uint16_t r_outer = (eve.DISP_WIDTH() / 4) + ARC_CLOCK_WIDTH;
 
     // Centre point for clock arcs
-    const int16_t centre_x = EVE_DISP_WIDTH / 2;
-    const int16_t centre_y = EVE_DISP_HEIGHT / 2;
+    const int16_t centre_x = eve.DISP_WIDTH() / 2;
+    const int16_t centre_y = eve.DISP_HEIGHT() / 2;
 
     int i = 0;
     
@@ -437,62 +435,62 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         int16_t clock_x_zoom = centre_x - (stringwidth(&clockfont, clock_zoom, clock) / 2);
         int16_t clock_y_zoom = centre_y - (((font_getheight(&clockfont) * clock_zoom) / 0x10000) / 2);
             
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(0, 0, 0);
-        EVE_CLEAR(1,1,1);
+        eve.LIB_BeginCoProList();
+        eve.CMD_DLSTART();
+        eve.CLEAR_COLOR_RGB(0, 0, 0);
+        eve.CLEAR(1,1,1);
 
-        EVE_TAG_MASK(1);
-        EVE_BEGIN(EVE_BEGIN_RECTS);
+        eve.TAG_MASK(1);
+        eve.BEGIN(eve.BEGIN_RECTS);
         // Don't show on screen
-        EVE_COLOR_MASK(0, 0, 0, 0);
-        EVE_TAG(1);
+        eve.COLOR_MASK(0, 0, 0, 0);
+        eve.TAG(1);
         // Finish active area
         /* ### BEGIN API > 1 ### */
-        EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
-        EVE_VERTEX_TRANSLATE_Y(button_y_zoom * 16);
-        EVE_VERTEX2F(0, 0);
-        EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
-        EVE_VERTEX_TRANSLATE_Y((button_y_zoom + button_h_zoom) * 16);
-        EVE_VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X(button_x1_zoom * 16);
+        eve.VERTEX_TRANSLATE_Y(button_y_zoom * 16);
+        eve.VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
+        eve.VERTEX_TRANSLATE_Y((button_y_zoom + button_h_zoom) * 16);
+        eve.VERTEX2F(0, 0);
         /* ### END API ### */
         /* ### BEGIN API == 1 ### */
-        EVE_VERTEX2F(button_x1_zoom, button_y_zoom);
-        EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y_zoom + button_h_zoom);
+        eve.VERTEX2F(button_x1_zoom, button_y_zoom);
+        eve.VERTEX2F(button_x1_zoom + button_w_zoom, button_y_zoom + button_h_zoom);
         /* ### END API ### */
-        EVE_TAG(2);
+        eve.TAG(2);
         // Skip active area
         /* ### BEGIN API > 1 ### */
-        EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
-        EVE_VERTEX_TRANSLATE_Y(button_y1_zoom * 16);
-        EVE_VERTEX2F(0, 0);
-        EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
-        EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
-        EVE_VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X(button_x2_zoom * 16);
+        eve.VERTEX_TRANSLATE_Y(button_y1_zoom * 16);
+        eve.VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
+        eve.VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
+        eve.VERTEX2F(0, 0);
         /* ### END API ### */
         /* ### BEGIN API == 1 ### */
-        EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
-        EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
+        eve.VERTEX2F(button_x2_zoom, button_y1_zoom);
+        eve.VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
         /* ### END API ### */
-        EVE_TAG(3);
+        eve.TAG(3);
         // Pause active area
         /* ### BEGIN API > 1 ### */
-        EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
-        EVE_VERTEX_TRANSLATE_Y(button_y2_zoom * 16);
-        EVE_VERTEX2F(0, 0);
-        EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
-        EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
-        EVE_VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X(button_x2_zoom * 16);
+        eve.VERTEX_TRANSLATE_Y(button_y2_zoom * 16);
+        eve.VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
+        eve.VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
+        eve.VERTEX2F(0, 0);
         /* ### END API ### */
         /* ### BEGIN API == 1 ### */
-        EVE_VERTEX2F(button_x2_zoom, button_y2_zoom);
-        EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
+        eve.VERTEX2F(button_x2_zoom, button_y2_zoom);
+        eve.VERTEX2F(button_x2_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
         /* ### END API ### */
-        EVE_COLOR_MASK(1, 1, 1, 1);
-        EVE_TAG_MASK(0);
+        eve.COLOR_MASK(1, 1, 1, 1);
+        eve.TAG_MASK(0);
 
         // Draw countdown
-        EVE_COLOR(col_clock);
+        eve.COLOR(col_clock);
 
         // Flash remaining time if paused
         if (pause < 2)
@@ -501,17 +499,17 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             stringdraw(&clockfont, clock_zoom, clock_x_zoom, clock_y_zoom, clock);
         }
 
-        EVE_TAG_MASK(1);
+        eve.TAG_MASK(1);
         setupzoom(&clockfont, button_zoom);
-        EVE_TAG(1);
+        eve.TAG(1);
         stringdraw(&clockfont, button_zoom, 
             button_x1_zoom, 
             button_y_zoom, "FINISH");
-        EVE_TAG(2);
+        eve.TAG(2);
         stringdraw(&clockfont, button_zoom, 
             button_x2_zoom, 
             button_y1_zoom, "SKIP");
-        EVE_TAG(3);
+        eve.TAG(3);
         if (pause == 0)
         {
             stringdraw(&clockfont, button_zoom, 
@@ -524,7 +522,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                 button_x2_zoom, 
                 button_y2_zoom, "GO!");
         }
-        EVE_TAG_MASK(0);
+        eve.TAG_MASK(0);
 
         if (cycle_count > 1)
         {
@@ -533,11 +531,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             {
                 if (i < cycle)
                 {
-                    EVE_COLOR(col_cycle_active);
+                    eve.COLOR(col_cycle_active);
                 }
                 else
                 {
-                    EVE_COLOR(col_cycle_inactive);
+                    eve.COLOR(col_cycle_inactive);
                 }
                 arc_simple(centre_x, centre_y, 
                     r0_cycle, r1_cycle, 
@@ -554,11 +552,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             {
                 if (i < interval)
                 {
-                    EVE_COLOR(col_interval_active);
+                    eve.COLOR(col_interval_active);
                 }
                 else
                 {
-                    EVE_COLOR(col_interval_inactive);
+                    eve.COLOR(col_interval_inactive);
                 }
                 arc_simple(centre_x, centre_y, 
                     r0_interval, r1_interval, 
@@ -570,7 +568,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
         if (rest == 0)
         {
-            EVE_COLOR(col_timer_active);
+            eve.COLOR(col_timer_active);
             arc_simple(centre_x, centre_y, 
                 r0_timer, r1_timer,
                 furmans_top, furmans_top + (0x10000 * timer) / timer_count
@@ -578,7 +576,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         }
         else
         {
-            EVE_COLOR(col_rest_active);
+            eve.COLOR(col_rest_active);
             if (rest < rest_max)
             {
                 arc_simple(centre_x, centre_y, 
@@ -590,7 +588,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         
         if (msg_text)
         {
-            uint32_t msg_zoom = (0x10000 * EVE_DISP_WIDTH) / (stringwidth(&clockfont, 0x10000, msg_text)) / 2;
+            uint32_t msg_zoom = (0x10000 * eve.DISP_WIDTH()) / (stringwidth(&clockfont, 0x10000, msg_text)) / 2;
 
             if (msg_alpha == 0)
             {
@@ -598,13 +596,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                 msg_timer = 5;
             }
 
-            EVE_COLOR(col_clock);
-            EVE_COLOR_A(msg_alpha);
+            eve.COLOR(col_clock);
+            eve.COLOR_A(msg_alpha);
 
             setupzoom(&clockfont, msg_zoom);
             stringdraw(&clockfont, msg_zoom, 
                 centre_x - (stringwidth(&clockfont, msg_zoom, msg_text) / 2), 
-                (EVE_DISP_HEIGHT / 32), msg_text);
+                (eve.DISP_HEIGHT() / 32), msg_text);
 
             if (msg_timer == 0)
             {
@@ -620,10 +618,10 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             }
         }
 
-        EVE_DISPLAY();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
+        eve.DISPLAY();
+        eve.CMD_SWAP();
+        eve.LIB_EndCoProList();
+        eve.LIB_AwaitCoProEmpty();
 
         uint8_t key = 0;
         if (eve_read_tag(&key))
@@ -694,8 +692,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 
     // Make the setup screen fit on the screen. 
     // There need to be 14 rows of text or 30 characters width (whichever is smaller).
-    text_zoom = MIN((0x10000 * (EVE_DISP_WIDTH) / (font_getwidth(&clockfont) * 30)),
-        (0x10000 * (EVE_DISP_HEIGHT) / (font_getheight(&clockfont) * 14)));
+    text_zoom = MIN((0x10000 * (eve.DISP_WIDTH()) / (font_getwidth(&clockfont) * 30)),
+        (0x10000 * (eve.DISP_HEIGHT()) / (font_getheight(&clockfont) * 14)));
     num_zoom = text_zoom * 3;
     time_zoom = text_zoom * 2;
 
@@ -723,207 +721,207 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     {
         total_time = *cycle_count * (*cycle_rest_count + (*interval_count * (*interval_rest_count + *timer_count)));
 
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(0, 0, 0);
-        EVE_CLEAR(1,1,1);
+        eve.LIB_BeginCoProList();
+        eve.CMD_DLSTART();
+        eve.CLEAR_COLOR_RGB(0, 0, 0);
+        eve.CLEAR(1,1,1);
 
-        EVE_TAG_MASK(1);
-        EVE_BEGIN(EVE_BEGIN_RECTS);
+        eve.TAG_MASK(1);
+        eve.BEGIN(eve.BEGIN_RECTS);
         // Top row active rectangles
         for (i = 0; i < 3; i++)
         {
-            EVE_TAG(i + 1);
+            eve.TAG(i + 1);
             if (selected == i + 1)
             {
-                EVE_COLOR(col_selected);
+                eve.COLOR(col_selected);
             }
             else
             {
-                EVE_COLOR(col_idle);
+                eve.COLOR(col_idle);
             }
             /* ### BEGIN API > 1 ### */
-            EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16);
-            EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0) * 16);
-            EVE_VERTEX2F(0, 0);
-            EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
-            EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6) * 16);
-            EVE_VERTEX2F(0, 0);
+            eve.VERTEX_TRANSLATE_X((eve.DISP_WIDTH() * (1 + (2 * i)) / 8) * 16);
+            eve.VERTEX_TRANSLATE_Y((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0) * 16);
+            eve.VERTEX2F(0, 0);
+            eve.VERTEX_TRANSLATE_X((eve.DISP_WIDTH() * (3 + (2 * i)) / 8) * 16);
+            eve.VERTEX_TRANSLATE_Y((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6) * 16);
+            eve.VERTEX2F(0, 0);
             /* ### END API ### */
             /* ### BEGIN API == 1 ### */
-            EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
-                ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0)) * 16);
-            EVE_VERTEX2F((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16,
-                ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6)) * 16);
+            eve.VERTEX2F((eve.DISP_WIDTH() * (1 + (2 * i)) / 8) * 16,
+                ((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0)) * 16);
+            eve.VERTEX2F((eve.DISP_WIDTH() * (3 + (2 * i)) / 8) * 16,
+                ((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6)) * 16);
             /* ### END API ### */
         }        
         // Middle row active rectangles
         for (i = 0; i < 2; i++)
         {
-            EVE_TAG(i + 4);
+            eve.TAG(i + 4);
             if (selected == i + 4)
             {
-                EVE_COLOR(col_selected);
+                eve.COLOR(col_selected);
             }
             else
             {
-                EVE_COLOR(col_idle);
+                eve.COLOR(col_idle);
             }
             /* ### BEGIN API > 1 ### */
-            EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16);
-            EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7) * 16);
-            EVE_VERTEX2F(0, 0);
-            EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
-            EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13) * 16);
-            EVE_VERTEX2F(0, 0);
+            eve.VERTEX_TRANSLATE_X((eve.DISP_WIDTH() * (1 + (2 * i)) / 8) * 16);
+            eve.VERTEX_TRANSLATE_Y((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7) * 16);
+            eve.VERTEX2F(0, 0);
+            EVE_VERTEX_TRANSLATE_X((eve.DISP_WIDTH() * (3 + (2 * i)) / 8) * 16);
+            EVE_VERTEX_TRANSLATE_Y((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13) * 16);
+            eve.VERTEX2F(0, 0);
             /* ### END API ### */
             /* ### BEGIN API == 1 ### */
-            EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
-                ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7)) * 16);
-            EVE_VERTEX2F((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16,
-                ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13)) * 16);
+            eve.VERTEX2F((eve.DISP_WIDTH() * (1 + (2 * i)) / 8) * 16,
+                ((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7)) * 16);
+            eve.VERTEX2F((eve.DISP_WIDTH() * (3 + (2 * i)) / 8) * 16,
+                ((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13)) * 16);
             /* ### END API ### */
         }
 
         /* ### BEGIN API > 1 ### */
-        EVE_VERTEX_TRANSLATE_X(0);
-        EVE_VERTEX_TRANSLATE_Y(0);
+        eve.VERTEX_TRANSLATE_X(0);
+        eve.VERTEX_TRANSLATE_Y(0);
         /* ### END API ### */
-        EVE_TAG_MASK(0);
+        eve.TAG_MASK(0);
 
-        EVE_COLOR(col_text);
+        eve.COLOR(col_text);
         setupzoom(&clockfont, text_zoom);
 
         // Top row titles
         msg_text = "CYCLES";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
+            (eve.DISP_WIDTH() * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
 
         msg_text = "SETS";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
         msg_text = "PER CYCLE";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 1), msg_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 1), msg_text);
 
         msg_text = "SET";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
+            (eve.DISP_WIDTH() * 3 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0), msg_text);
         msg_text = "TIMER";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 1), msg_text);
+            (eve.DISP_WIDTH() * 3 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 1), msg_text);
 
         // Second row titles
         msg_text = "RECOVERY";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7), msg_text);
+            (eve.DISP_WIDTH() * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7), msg_text);
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7), msg_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7), msg_text);
 
         msg_text = "TIME";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 8), msg_text);
+            (eve.DISP_WIDTH() * 1 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 8), msg_text);
 
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 8), msg_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, text_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 8), msg_text);
 
         // Top row numbers
         setupzoom(&clockfont, num_zoom);
 
         uint2str(*cycle_count, num_text);
         stringdraw(&clockfont, num_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) - (stringwidth(&clockfont, num_zoom, num_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 2), num_text);
+            (eve.DISP_WIDTH() * 1 / 4) - (stringwidth(&clockfont, num_zoom, num_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 2), num_text);
 
         uint2str(*interval_count, num_text);
         stringdraw(&clockfont, num_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, num_zoom, num_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 2), num_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, num_zoom, num_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 2), num_text);
 
         // Second row times
         setupzoom(&clockfont, time_zoom);
 
         time2str(*cycle_rest_count, num_text);
         stringdraw(&clockfont, time_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), num_text);
+            (eve.DISP_WIDTH() * 1 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), num_text);
 
         time2str(*interval_rest_count, num_text);
         stringdraw(&clockfont, time_zoom, 
-            (EVE_DISP_WIDTH * 2 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), num_text);
+            (eve.DISP_WIDTH() * 2 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), num_text);
 
         // Top row time
         time2str(*timer_count, num_text);
         stringdraw(&clockfont, time_zoom, 
-            (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 3), num_text);
+            (eve.DISP_WIDTH() * 3 / 4) - (stringwidth(&clockfont, time_zoom, num_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 3), num_text);
 
         // Active areas to adjust values
         // tag and add a tracker to the arc gauge point
-        EVE_TAG_MASK(1); // enable tagging
-        EVE_TAG(100);
+        eve.TAG_MASK(1); // enable tagging
+        eve.TAG(100);
         arc_simple_gauge(
-            (EVE_DISP_WIDTH * 3 / 4), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), 
+            (eve.DISP_WIDTH() * 3 / 4), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), 
             ((((font_getheight(&clockfont) * text_zoom) / 0x10000) * 3) * 8) / 10,
             (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 3),
             0x8000, 0x8000,
             dial_track);
         // add tracker in the centre of the point
-        EVE_CMD_TRACK((EVE_DISP_WIDTH * 3 / 4), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10),
+        eve.CMD_TRACK((eve.DISP_WIDTH() * 3 / 4), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10),
             1, 1, 100); 
 
         setupzoom(&clockfont, text_zoom);
-        EVE_TAG_MASK(0); // disable tagging
+        eve.TAG_MASK(0); // disable tagging
         msg_text = "WORKOUT LENGTH:  ";
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), msg_text);
+            (eve.DISP_WIDTH() * 1 / 4), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), msg_text);
         time2str(total_time, num_text);
         stringdraw(&clockfont, text_zoom, 
-            (EVE_DISP_WIDTH * 1 / 4) + (stringwidth(&clockfont, text_zoom, msg_text)), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), num_text);
+            (eve.DISP_WIDTH() * 1 / 4) + (stringwidth(&clockfont, text_zoom, msg_text)), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 14), num_text);
 
 
-        EVE_TAG_MASK(1); // enable tagging
+        eve.TAG_MASK(1); // enable tagging
         msg_text = "GO";
-        EVE_COLOR(col_selected);
-        EVE_TAG(101);
+        eve.COLOR(col_selected);
+        eve.TAG(101);
         // Start active area
-        EVE_BEGIN(EVE_BEGIN_POINTS);
-        EVE_POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
+        eve.BEGIN(eve.BEGIN_POINTS);
+        eve.POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
         /* ### BEGIN API > 1 ### */
-        EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * 3 / 4) * 16);
-        EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
-        EVE_VERTEX2F(0, 0);
+        eve.VERTEX_TRANSLATE_X((eve.DISP_WIDTH() * 3 / 4) * 16);
+        eve.VERTEX_TRANSLATE_Y(((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
+        eve.VERTEX2F(0, 0);
         /* ### END API ### */
         /* ### BEGIN API == 1 ### */
-        EVE_VERTEX2F((EVE_DISP_WIDTH * 3 / 4) * 16,
-            (((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
+        eve.VERTEX2F((eve.DISP_WIDTH() * 3 / 4) * 16,
+            (((eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
         /* ### END API ### */
 
-        EVE_COLOR(col_text);
+        eve.COLOR(col_text);
         setupzoom(&clockfont, time_zoom);
         stringdraw(&clockfont, time_zoom, 
-            (EVE_DISP_WIDTH * 3 / 4) - (stringwidth(&clockfont, time_zoom, msg_text) / 2), 
-            (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 9), msg_text);
-        EVE_TAG_MASK(0); 
+            (eve.DISP_WIDTH() * 3 / 4) - (stringwidth(&clockfont, time_zoom, msg_text) / 2), 
+            (eve.DISP_HEIGHT() / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 9), msg_text);
+        eve.TAG_MASK(0); 
 
-        EVE_DISPLAY();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
+        eve.DISPLAY();
+        eve.CMD_SWAP();
+        eve.LIB_EndCoProList();
+        eve.LIB_AwaitCoProEmpty();
 
         uint8_t key = 0;
         if (eve_read_tag(&key))
@@ -949,10 +947,10 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 uint32_t trackVal;
                 // register has a differnt name for the FT80x series
                 /* ### BEGIN API > 1 ### */
-                trackVal = EVE_LIB_MemRead32(EVE_REG_TRACKER);
+                trackVal = eve.LIB_MemRead32(eve.REG_TRACKER);
                 /* ### END API ### */
                 /* ### BEGIN API == 1 ### */
-                trackVal = EVE_LIB_MemRead32(EVE_REG_TRACK);
+                trackVal = eve.LIB_MemRead32(eve.REG_TRACK);
                 /* ### END API ### */
                 trackVal >>= 16;
 
@@ -1054,15 +1052,21 @@ void eve_example(void)
     eve.Init();
 
     // Get a cache of the ROM font we want to use.
-    font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
+    font_getfontinforom(&clockfont, eve.ROMFONT_MAX);
 
     // Map the ROM font we are using onto a normal bitmap.
-    EVE_LIB_BeginCoProList();
-    EVE_CMD_DLSTART();
-    EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
-    EVE_CMD_SWAP();
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
+    eve.LIB_BeginCoProList();
+    eve.CMD_DLSTART();
+    /* ### BEGIN API == 1 ### */
+    EVE_CMD_ROMFONT(SCALED_FONT, eve.ROMFONT_MAX);
+    /* ### END API ### */
+    /* ### BEGIN API > 1 ### */
+    eve.CMD_ROMFONT(SCALED_FONT, eve.ROMFONT_MAX);
+    /* ### END API ### */
+    eve.DISPLAY();
+    eve.CMD_SWAP();
+    eve.LIB_EndCoProList();
+    eve.LIB_AwaitCoProEmpty();
 
     // Tell the program to use the mapped handle instead of the ROM font handle.
     clockfont.handle = SCALED_FONT;

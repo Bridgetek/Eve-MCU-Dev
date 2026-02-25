@@ -161,8 +161,8 @@ constexpr PROGMEM static const uint8_t font0[] __attribute__((aligned(4))) =
   };
 
 
-### EVE CLASS ###::EVE_GPU_FONT_HEADER font0_header;
-const ### EVE CLASS ###::EVE_GPU_FONT_HEADER *font0_hdr = &font0_header;
+### EVE CLASS ###::GPU_FONT_HEADER font0_header;
+const ### EVE CLASS ###::GPU_FONT_HEADER *font0_hdr = &font0_header;
 
 uint32_t eve_init_fonts(void) {
   const uint32_t font0_size = sizeof(font0);

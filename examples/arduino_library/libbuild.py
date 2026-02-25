@@ -189,7 +189,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                         line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
                     # Add PROGMEM storage read for patch_base.c
                     elif file_out.endswith("patch_base.c"):
-                        if line == "#include \"patch_base.h\"\n":
+                        if line == "#include \"patch_base.h\"":
                             cppadd = [
                                     "#include <string.h>",
                                     "",

@@ -153,7 +153,7 @@ int eve_calibrate(void)
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
         EVE_COLOR_RGB(255, 255, 255);
-        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2,
+        EVE_CMD_TEXT(eve.DISP_WIDTH()/2, eve.DISP_HEIGHT()/2,
                 28, EVE_OPT_CENTERX | EVE_OPT_CENTERY,"Please tap on the dots");
         EVE_CMD_CALIBRATE(0);
         EVE_LIB_EndCoProList();

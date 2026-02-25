@@ -41,6 +41,12 @@
 
 #include <### EVE CLASS ###.h>
 
+/**
+ @brief EVE library handle.
+ @details This is the one instance of the EVE library. Available as a global.
+ */
+extern ### EVE CLASS ### eve;
+
 #include "touch.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -72,12 +78,12 @@ int eve_key_detect(void)
     int key_detect = 0;
 
 /* ### BEGIN API < 5 ### */
-    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
+    if (!(eve.LIB_MemRead16(eve.REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
     }
 /* ### END API ### */
 /* ### BEGIN API >= 5 ### */
-    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
+    if (!(eve.LIB_MemRead32(eve.REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
     }
 /* ### END API ### */
@@ -94,15 +100,15 @@ int eve_read_tag(uint8_t *key)
     int key_detect = 0;
 
 /* ### BEGIN API < 5 ### */
-    Read_tag = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
-    if (!(EVE_LIB_MemRead16(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
+    Read_tag = eve.LIB_MemRead8(eve.REG_TOUCH_TAG);
+    if (!(eve.LIB_MemRead16(eve.REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
         *key = Read_tag;
     }
 /* ### END API ### */
 /* ### BEGIN API >= 5 ### */
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) {
+    Read_tag = eve.LIB_MemRead32(eve.REG_TOUCH_TAG);
+    if (!(eve.LIB_MemRead32(eve.REG_TOUCH_SCREEN_XY) & 0x8000)) {
         key_detect = 1;
         *key = Read_tag;
     }
@@ -148,45 +154,45 @@ int eve_calibrate(void)
         // NOTE: Not available on BT82x (EVE API 5)
         while (calib_key_pressed()) {};
 
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(0, 0, 0);
-        EVE_CLEAR(1,1,1);
-        EVE_COLOR_RGB(255, 255, 255);
-        EVE_CMD_TEXT(EVE_DISP_WIDTH/2, EVE_DISP_HEIGHT/2,
-                28, EVE_OPT_CENTERX | EVE_OPT_CENTERY,"Please tap on the dots");
-        EVE_CMD_CALIBRATE(0);
-        EVE_LIB_EndCoProList();
-        if (EVE_LIB_AwaitCoProEmpty() != 0)
+        eve.LIB_BeginCoProList();
+        eve.CMD_DLSTART();
+        eve.CLEAR_COLOR_RGB(0, 0, 0);
+        eve.CLEAR(1,1,1);
+        eve.COLOR_RGB(255, 255, 255);
+        eve.CMD_TEXT(eve.DISP_WIDTH()/2, eve.DISP_HEIGHT()/2,
+                28, eve.OPT_CENTERX | eve.OPT_CENTERY,"Please tap on the dots");
+        eve.CMD_CALIBRATE(0);
+        eve.LIB_EndCoProList();
+        if (eve.LIB_AwaitCoProEmpty() != 0)
         {
             return -1;
         }
 
         calib.key = VALID_KEY_TOUCHSCREEN;
-        calib.transform[0] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_A);
-        calib.transform[1] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_B);
-        calib.transform[2] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_C);
-        calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
-        calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
-        calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
+        calib.transform[0] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_A);
+        calib.transform[1] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_B);
+        calib.transform[2] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_C);
+        calib.transform[3] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_D);
+        calib.transform[4] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_E);
+        calib.transform[5] = eve.LIB_MemRead32(eve.REG_TOUCH_TRANSFORM_F);
         platform_calib_write(&calib);
     }
 
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_A, calib.transform[0]);
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_B, calib.transform[1]);
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_C, calib.transform[2]);
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_D, calib.transform[3]);
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_E, calib.transform[4]);
-    EVE_LIB_MemWrite32(EVE_REG_TOUCH_TRANSFORM_F, calib.transform[5]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_A, calib.transform[0]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_B, calib.transform[1]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_C, calib.transform[2]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_D, calib.transform[3]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_E, calib.transform[4]);
+    eve.LIB_MemWrite32(eve.REG_TOUCH_TRANSFORM_F, calib.transform[5]);
     
     // Reset the touch controller with the new transform (not strictly needed)
 /* ### BEGIN API < 5 ### */
-    EVE_LIB_MemWrite8(EVE_REG_CPURESET, 2);
-    EVE_LIB_MemWrite8(EVE_REG_CPURESET, 0);
+    eve.LIB_MemWrite8(eve.REG_CPURESET, 2);
+    eve.LIB_MemWrite8(eve.REG_CPURESET, 0);
 /* ### END API ### */
 /* ### BEGIN API >= 5 ### */
-    EVE_LIB_MemWrite32(EVE_REG_CPURESET, 2);
-    EVE_LIB_MemWrite32(EVE_REG_CPURESET, 0);
+    eve.LIB_MemWrite32(eve.REG_CPURESET, 2);
+    eve.LIB_MemWrite32(eve.REG_CPURESET, 0);
 /* ### END API ### */
 
     return 0;

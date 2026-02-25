@@ -70,6 +70,16 @@ void ### EVE CLASS ###::setup(uint32_t panel, uint32_t ramg)
 }
 /* ### END API ### */
 
+uint16_t ### EVE CLASS ###::DISP_WIDTH(void) 
+{ 
+    return EVE_DISP_WIDTH; 
+}
+
+uint16_t ### EVE CLASS ###::DISP_HEIGHT(void) 
+{ 
+    return EVE_DISP_HEIGHT; 
+}
+
 void ### EVE CLASS ###::setpanel(uint32_t panel)
 {
     if (panel == QVGA)
