@@ -211,8 +211,9 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
         EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     
         // Add inner of the indicator to alpha buffer
+        // divide by three so this point is a little smaller thhan the arc thickness
         EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-        EVE_POINT_SIZE(((r1 - r0) / 2) * 16); 
+        EVE_POINT_SIZE(((r1 - r0) / 3) * 16); 
     
         // Draw point based on current input value for the indicator
         EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
