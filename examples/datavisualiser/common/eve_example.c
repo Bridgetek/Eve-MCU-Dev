@@ -1127,12 +1127,12 @@ void generateStaticScreenComponents(){
     // clear colour, stencil, tag
     EVE_CLEAR(1, 1, 1);
 
-    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
+    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT() command
     // this command will cascade through the remaining commands in the display list (such as the VERTEX2F calls)
-    if(pix_precision == 8){
-        // set desired vertex format for the example
-        EVE_VERTEX_FORMAT(3);
-    }
+    #if IS_EVE_API(2,3,4,5)
+    // set desired vertex format for the example
+    EVE_VERTEX_FORMAT(3);
+    #endif
 
     // disable tagging, this prevents items being drawn with tag = 255 when we havent explicitly tagged them 
     EVE_TAG_MASK(0);
@@ -1224,7 +1224,7 @@ void renderScreenUpdate(){
     // add number readouts for the line plots
     //--------------------------------------------------------------------------
 
-    #if IS_EVE_API(2,3,4,5) // if we arnt using FT80x
+    #if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
     // call ROMFONT so we can use a larger font in handle font_large
     EVE_CMD_ROMFONT(font_large, font_xl);
     #endif
@@ -1239,7 +1239,7 @@ void renderScreenUpdate(){
     EVE_COLOR_RGB(((uint8_t)(colour3 >> 16)), ((uint8_t)(colour3 >> 8)), ((uint8_t)(colour3)));
     EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_large, EVE_OPT_CENTER, ((line_plot3_data[plot_data_size-1] * 100)/255));
 
-    #if IS_EVE_API(2,3,4,5) // if we arnt using FT80x
+    #if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
     // call ROMFONT so we can reset the font handle back to what we originally set
     EVE_CMD_ROMFONT(font_large, font_large);
     #endif
@@ -1298,9 +1298,8 @@ void renderScreenUpdate(){
 
     // display
     EVE_DISPLAY();
-    // per BRT_TN_005
-    EVE_DISPLAY();
-    // swap this display list into RAM_DL
+    EVE_DISPLAY(); // per BRT_TN_005
+    // swap this display list inro RAM_DL
     EVE_CMD_SWAP();
     // send display list to co-processor
     EVE_LIB_EndCoProList();
