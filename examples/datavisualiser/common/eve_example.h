@@ -181,7 +181,7 @@ extern "C" {
 #define backlight_dial_x ((EVE_DISP_WIDTH * 34)/40) // 85%
 #define backlight_dial_y ((EVE_DISP_HEIGHT * 14)/40) // 30%
 #define backlight_dial_radius (EVE_DISP_HEIGHT/7) // 14.2 %
-#define backlight_dial_thickness (EVE_DISP_HEIGHT/10) // 12.5 %
+#define backlight_dial_inner_radius (EVE_DISP_HEIGHT/10) // 10 %
 #define backlight_arc_start_deg 53
 #define backlight_arc_end_deg 308
 #define backlight_arc_total_deg (backlight_arc_end_deg - backlight_arc_start_deg)

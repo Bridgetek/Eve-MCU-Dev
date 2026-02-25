@@ -1032,9 +1032,9 @@ void LCDBacklightPage(){
 
     // set desried colour
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
-    // add arc simple gauge onto the screen to act as input control (from snippets/controls/)
+    // add arc simple gauge onto the screen to act as input control (from snippets/controls/arcs.c)
     // use the last valid angle, minus the start deg angle, normalised to an 16 bit number/total deg angles as the reading value of the arc
-    arc_simple_gauge(backlight_dial_x, backlight_dial_y, backlight_dial_thickness, backlight_dial_radius,  DEG2FURMAN(backlight_arc_start_deg), DEG2FURMAN(backlight_arc_end_deg), (((last_valid_angle - backlight_arc_start_deg) * 65535)/backlight_arc_total_deg));
+    arc_simple_gauge(backlight_dial_x, backlight_dial_y, backlight_dial_inner_radius, backlight_dial_radius,  DEG2FURMAN(backlight_arc_start_deg), DEG2FURMAN(backlight_arc_end_deg), (((last_valid_angle - backlight_arc_start_deg) * 65535)/backlight_arc_total_deg));
 
     // tag and add a tracker to the arc gauge point
     EVE_TAG_MASK(1); // enable tagging
@@ -1128,6 +1128,7 @@ void generateStaticScreenComponents(){
     EVE_CLEAR(1, 1, 1);
 
     // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
+    // this command will cascade through the remaining commands in the display list (such as the VERTEX2F calls)
     if(pix_precision == 8){
         // set desired vertex format for the example
         EVE_VERTEX_FORMAT(3);
@@ -1223,10 +1224,10 @@ void renderScreenUpdate(){
     // add number readouts for the line plots
     //--------------------------------------------------------------------------
 
-    #if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
+    #if IS_EVE_API(2,3,4,5) // if we arnt using FT80x
     // call ROMFONT so we can use a larger font in handle font_large
     EVE_CMD_ROMFONT(font_large, font_xl);
-#endif
+    #endif
 
     // number and colour 1
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
@@ -1238,10 +1239,10 @@ void renderScreenUpdate(){
     EVE_COLOR_RGB(((uint8_t)(colour3 >> 16)), ((uint8_t)(colour3 >> 8)), ((uint8_t)(colour3)));
     EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_large, EVE_OPT_CENTER, ((line_plot3_data[plot_data_size-1] * 100)/255));
 
-#if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
+    #if IS_EVE_API(2,3,4,5) // if we arnt using FT80x
     // call ROMFONT so we can reset the font handle back to what we originally set
     EVE_CMD_ROMFONT(font_large, font_large);
-#endif
+    #endif
 
     // reset colour
     EVE_COLOR_RGB(255, 255, 255); // white
@@ -1297,8 +1298,9 @@ void renderScreenUpdate(){
 
     // display
     EVE_DISPLAY();
-    EVE_DISPLAY(); // per BRT_TN_005
-    // swap this display list inro RAM_DL
+    // per BRT_TN_005
+    EVE_DISPLAY();
+    // swap this display list into RAM_DL
     EVE_CMD_SWAP();
     // send display list to co-processor
     EVE_LIB_EndCoProList();
