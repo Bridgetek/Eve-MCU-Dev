@@ -1,6 +1,4 @@
-# Typically run with "python libbuild.py --dist ../EVE-MCU-Dev --api 5"
-#
-# This requires a C preprocessor callable with the command line "cpp". 
+# Typically run with "python preprocess.py --dist ../EVE-MCU-Dev --api 5"
 #
 import subprocess
 import re
@@ -74,7 +72,7 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconstlist):
+def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, str_api_version, apidefs, apiproto, apiconstlist, apirefactor):
     cppfile = []
     flag = 0
     str_full_url = re.sub(r"_", '-', str_full_version)
@@ -106,9 +104,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
         apilib = "BT820"
         defres = "WUXGA" # 1920 x 1200
 
-    # Replace markers with values
+    # Preprocess and replace markers with values
     with open(file_in, "r") as file:
         try:
+            nest = []
             while line := file.readline():
                 cppadd = []
                 line = line.rstrip()
@@ -122,11 +121,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 line = re.sub(r"### EVE CLASS ###", cpplib, line)
                 line = re.sub(r"### EVE RES ###", defres, line)
                 line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
-                # Update name of library header file to prevent clashes
-                line = re.sub(r"#include \<EVE.h\>", f"#include <EVE{str_full_version}.h>", line)
-                # Global static consts moved into PROGMEM storage on Arduino
-                line = re.sub(r"^static const uint8_t ", "PROGMEM static const uint8_t ", line)
-                # Simulate preprocessor by excluding/replacing code
+                # Replace template areas
                 if re.findall(r"/\* ### BEGIN API ### \*/", line):
                     flag = 1
                     cppfile.extend(apidefs)
@@ -136,53 +131,105 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                 if re.findall(r"/\* ### BEGIN API CONST ### \*/", line):
                     flag = 3
                     cppfile.extend(apiconstlist)
-                if re.findall(r"/\* ### BEGIN API == 1 ### \*/", line):
-                    if api != 1:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API > 1 ### \*/", line):
-                    if api == 1:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API == 2 ### \*/", line):
-                    if api != 2:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API == 3, 4 ### \*/", line):
-                    if api != 3 and api != 4:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API == 2, 3, 4 ### \*/", line):
-                    if api != 2 and api != 3 and api != 4:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API >= 2 ### \*/", line):
-                    if api < 2:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API >= 3 ### \*/", line):
-                    if api < 3:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API < 4 ### \*/", line):
-                    if api >= 4:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API >= 4 ### \*/", line):
-                    if api < 4:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API < 5 ### \*/", line):
-                    if api >= 5:
-                        flag = -1
-                    continue
-                if re.findall(r"/\* ### BEGIN API >= 5 ### \*/", line):
-                    if api < 5:
-                        flag = -1
-                    continue
                 if re.findall(r"/\* ### END API ### \*/", line): 
                     flag = 0
                     continue
+                # Global static consts moved into PROGMEM storage on Arduino
+                line = re.sub(r"^static const uint8_t ", "PROGMEM static const uint8_t ", line)
+                # Change code to use C++ class instead of C library
+                if apirefactor:
+                    # Add in eve.setup before eve.Init
+                    line = re.sub(r"^(\s*)EVE_Init\s*\(\s*\)\s*;", r"\g<1>" f"// Setup the EVE display ({defres})\n" \
+                                                      r"\g<1>" "eve.setup(DISPLAY_RES);\n" \
+                                                      r"\g<1>" "// Setup the EVE library\n" \
+                                                      r"\g<1>" "eve.Init();\n" \
+                        , line)
+                    # General replace of EVE_ with eve. (except on preprocessor lines)
+                    if not line.strip().startswith("#"):
+                        line = re.sub(r"\bEVE_", "eve.", line)
+                    line = re.sub(r"\beve\.(GPU_\w+)\b", f"Bridgetek_EVE{str_full_version}::" r"\g<1>", line)
+                    line = re.sub(r"\beve\.(DISP_\w+)\b", r"eve.\g<1>()", line)
+                    extern = ""
+                    if not file_out.endswith("eve_example.ino"):
+                        extern = "extern "
+                    line = re.sub(r"#include \<EVE.h\>", f"#include <Bridgetek_EVE{str_full_version}.h>" \
+                                                          "\n\n/**\n" \
+                                                          " @brief EVE library handle.\n" \
+                                                          " @details This is the one instance of the EVE library. Available as a global.\n" \
+                                                          " */\n" \
+                                                          f"{extern}Bridgetek_EVE{str_full_version} eve;\n" \
+                                  , line)
+                    line = re.sub(r"#include \"[\w]+/([\w.]+)\"", "#include \"" r"\g<1>" "\"", line)
+                else:
+                    # Update name of library header file to prevent clashes
+                    line = re.sub(r"#include \<EVE.h\>", f"#include <EVE{str_full_version}.h>", line)
+
+
+                if flag == 0:
+                    # Simulate preprocessor by excluding/replacing code
+                    match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\((.+)\)", line)
+                    match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\((.+)\)", line)
+                    match_if = re.match(r"\s*#(if|elif|ifdef|ifndef)\s+", line)
+                    match_else = re.match(r"\s*#else\s*", line)
+                    match_endif = re.match(r"\s*#endif\s*", line)
+
+                    try:
+                        if match_ifsubapi:
+                            cov = []
+                            if match_ifsubapi.group(1) == "elif":
+                                (pos, _, cov) = nest.pop()
+                                cov.extend(pos)
+                            pos = []
+                            for lev in "".join(match_ifsubapi.group(2).split()).split(","):
+                                pos.append(-int(lev))
+                            nest.append((pos, True, cov))
+                            print(nest)
+                            flag = -1
+                        elif match_ifapi:
+                            cov = []
+                            if match_ifapi.group(1) == "elif":
+                                (pos, _, cov) = nest.pop()
+                                cov.extend(pos)
+                            pos = []
+                            for lev in "".join(match_ifapi.group(2).split()).split(","):
+                                pos.append(int(lev))
+                            nest.append((pos, True, cov))
+                            flag = -1
+                        elif match_else:
+                            (pos, _, cov) = nest.pop()
+                            if cov != None:
+                                if pos != None:
+                                    cov.extend(pos)
+                                line = None
+                                nest.append((cov, False, None))
+                            else:
+                                nest.append((cov, True, None))
+                        elif match_endif:
+                            (pos, _, cov) = nest.pop()
+                            if pos != None:
+                                line = None
+                        elif match_if:
+                            if match_if.group(1) == "elif":
+                                nest.pop()
+                            nest.append((None, True, None))
+
+                        depth = len(nest)
+                        if depth > 0:
+                            for n in nest:
+                                (cond,sense,_) = n
+                                if sense:
+                                    if cond:
+                                        if not api in cond and not (-subapi) in cond:
+                                            flag = -1
+                                else:
+                                    if cond:
+                                        if api in cond or (-subapi) in cond:
+                                            flag = -1
+
+                    except Exception as inst:
+                        print("Error: preprocessing - ", inst)
+                        exit(0)
+                   
                 if flag == 0: 
                     # Use variable EVE_RAM_G_SIZE for size of RAM_G
                     if file_out.endswith("BT82x.h"):
@@ -204,19 +251,19 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
                         else:
                             match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
                             if match:
-                                len = int(match.group(3))
+                                dlen = int(match.group(3))
                                 line = None
                                 cppadd = [
                                         f"{match.group(1)}/* Read the data from the program memory into CMD. */",
                                         f"{match.group(1)}uint8_t pgm[16];",
                                         f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
+                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {dlen}; pgmoffset += 16)",
                                         f"{match.group(1)}{{",
                                         f"{match.group(1)}    // Maximum of pgm buffer",
                                         f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
-                                        f"{match.group(1)}    if (pgmoffset + chunk > {len})",
+                                        f"{match.group(1)}    if (pgmoffset + chunk > {dlen})",
                                         f"{match.group(1)}    {{",
-                                        f"{match.group(1)}        chunk = {len} - pgmoffset;",
+                                        f"{match.group(1)}        chunk = {dlen} - pgmoffset;",
                                         f"{match.group(1)}    }}",
                                         f"{match.group(1)}    // Load the pgm buffer",
                                         f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
@@ -230,6 +277,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, s
 
                     for a in cppadd:
                         cppfile.append(a)
+
+                elif flag == -1:
+                    flag = 0
 
             with open(file_out, "w") as file:
                 for line in cppfile:
@@ -278,7 +328,7 @@ try:
     for d in dist_source_files:
         srcf, destf = d
         print(f"API: {srcf} -> {destf}")
-        template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+        template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "", False)
 except:
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
@@ -297,7 +347,7 @@ template_files.append(("test.ino.template", os.path.join(test_dir,"test.ino")))
 for t in template_files:
     srcf, destf = t
     print(f"template: {srcf} -> {destf}")
-    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "", False)
 
 # Command line for preprocessor
 cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
@@ -483,6 +533,8 @@ cppapiconstslist = sortconst(cppapiconstslist)
 template_files = []
 # Library graphics / binary files
 graphics_files = []
+# Example source files
+common_files = []
 # Example files
 example_files = []
 
@@ -494,7 +546,7 @@ template_files.append(("README.md.template", os.path.join(dest_lib,"README.md"))
 for t in template_files:
     srcf, destf = t
     print(f"class: {srcf} -> {destf}")
-    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconstslist)
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, cppapi, cppapiproto, cppapiconstslist, False)
 
 # Make the examples directory
 examples_dir = os.path.join(dest_lib, "examples")
@@ -508,11 +560,35 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
         os.makedirs(os.path.join(dest_lib, path, destdir), exist_ok=True)
         # Add a docs directory
         os.makedirs(os.path.join(dest_lib, path, destdir, "docs"), exist_ok=True)
-        # Copy any docs and assets from an identically named main example
+        # Copy any docs from an identically named main example
         docdir = os.path.normpath(os.path.join(src_api, "examples", dir, "docs"))
         docfiles = [f for f in os.listdir(docdir) if os.path.isfile(os.path.join(docdir, f))]
         for d in docfiles:
+            print(f"Adding example doc file {d}")
             graphics_files.append((os.path.join(docdir, d), os.path.join(dest_lib, path, destdir, "docs", d)))
+        # Copy any docs from an identically named main example
+        commondir = os.path.normpath(os.path.join(src_api, "examples", dir, "common"))
+        commonfiles = [f for f in os.listdir(commondir) if os.path.isfile(os.path.join(commondir, f))]
+        for d in commonfiles:
+            if os.path.splitext(d)[1] == ".c":
+                destname = os.path.splitext(d)[0] + ".ino"
+            else:
+                destname = d
+            print(f"Adding example common file {d} renamed to {destname}")
+            common_files.append((os.path.join(commondir, d), os.path.join(dest_lib, path, destdir, destname)))
+        snippetdir = os.path.normpath(os.path.join(src_api, "examples", "snippets"))
+        snippetlist = os.path.normpath(os.path.join(path, dir, "snippets.txt"))
+        if os.path.exists(snippetlist):
+            with open(snippetlist, "r") as file:
+                while d := file.readline():
+                    d = d.strip()
+                    if os.path.splitext(d)[1] == ".c":
+                        destname = os.path.splitext(d)[0] + ".ino"
+                    else:
+                        destname = d
+                    print(f"Adding snippet file {d} renamed to {destname}")
+                    common_files.append((os.path.join(snippetdir, d), os.path.join(dest_lib, path, destdir, os.path.basename(destname))))
+
     for name in files:
         # Rename the destination file path
         destpath = path + "_EVE" + str_full_version
@@ -528,7 +604,12 @@ for path, subdirs, files in os.walk(os.path.normpath("examples")):
 for t in example_files:
     srcf, destf = t
     print(f"examples: {srcf} -> {destf}")
-    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "")
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "", False)
+
+for t in common_files:
+    srcf, destf = t
+    print(f"common example files: {srcf} -> {destf}")
+    template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, str_api_version, "", "", "", True)
 
 graphics_files.append((os.path.join(src_api, "docs", "arduino.png"), os.path.join(dest_lib,"arduino.png")))
 graphics_files.append((os.path.join(src_api, "docs", "header1x10.png"), os.path.join(dest_lib,"header1x10.png")))

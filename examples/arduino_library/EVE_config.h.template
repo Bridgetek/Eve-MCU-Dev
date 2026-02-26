@@ -72,6 +72,9 @@
 #define IDM204043A WQVGA   // IDM2040-43A (FT8XX_TYPE is BT883)
 #define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
 
+// Default resolution
+#define DISPLAY_RES ### EVE RES ###
+
 // Definitions used for touch controllers
 #define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
 #define TOUCH_TYPE_FOCALTECH 1
@@ -87,7 +90,7 @@
 #undef QUADSPI_ENABLE
 #endif
 
-/* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
 // Setup RAM_G size for BT82X only
 // Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
 #define EVE_RAM_G_32_MBIT  0x100000UL
@@ -99,7 +102,7 @@
 #define EVE_RAM_G_2_GBIT   0x10000000UL
 #define EVE_RAM_G_4_GBIT   0x20000000UL
 #define EVE_RAM_G_8_GBIT   0x40000000UL
-/* ### END API ### */
+#endif
 
 // Setup default parameters for various displays.
 // These can be overridden for different display modules.
@@ -113,9 +116,12 @@ extern uint32_t EVE_DISP_HSYNC0, EVE_DISP_HSYNC1, EVE_DISP_VSYNC0, EVE_DISP_VSYN
 extern uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 extern uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 extern uint32_t EVE_TOUCH_ADDR;
-/* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
 extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 extern uint32_t EVE_RAM_G_SIZE;
-/* ### END API ### */
+#endif
+
+#define NO_PANEL 0x5a5a5a5a
+#define PANEL_TYPE NO_PANEL
 
 #endif /* _EVE_CONFIG_H_ */

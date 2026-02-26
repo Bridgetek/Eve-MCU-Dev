@@ -65,7 +65,7 @@ struct eve_font_cache {
 #if IS_EVE_API(1)
 // The FT800 does not have the CMD_ROMFONT feature. 
 // This routine will map a bitmap handle onto a ROM font.
-void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
+void font_romfont(uint32_t font, uint32_t romslot);
 #endif
 
 uint8_t font_getmax(void);

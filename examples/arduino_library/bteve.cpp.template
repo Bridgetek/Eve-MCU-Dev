@@ -48,10 +48,10 @@ uint32_t EVE_DISP_HSYNC0, EVE_DISP_HSYNC1, EVE_DISP_VSYNC0, EVE_DISP_VSYNC1;
 uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 uint32_t EVE_TOUCH_ADDR;
-/* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
 uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 uint32_t EVE_RAM_G_SIZE = ### EVE CLASS ###::RAM_G_1_GBIT;
-/* ### END API ### */
+#endif
 
 ### EVE CLASS ###::### EVE CLASS ###(void)
 {
@@ -62,13 +62,13 @@ void ### EVE CLASS ###::setup(uint32_t panel)
     setpanel(panel);
 }
 
-/* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
 void ### EVE CLASS ###::setup(uint32_t panel, uint32_t ramg)
 {
     setpanel(panel);
     EVE_RAM_G_SIZE = ramg;
 }
-/* ### END API ### */
+#endif
 
 uint16_t ### EVE CLASS ###::DISP_WIDTH(void) 
 { 
@@ -254,8 +254,8 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         Serial.print("ERROR: No panel selected!\n");
     }
 
-    /* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
     EVE_DISP_LVDSTXCLKDIV = 3;
     EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
-    /* ### END API ### */
+#endif
 }

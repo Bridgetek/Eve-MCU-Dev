@@ -181,29 +181,24 @@ This function takes a pointer to an array in program memory and writes to RAM_G.
 Once this has been written to RAM_G then the EVE device must be instructed how make a font use the data in RAM_G. 
 
 ```
-    eve.CMD_DLSTART();
-/* ### BEGIN API >= 5 ### */
-    eve.CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
-/* ### END API ### */
-/* ### BEGIN API == 2 ### */
-    eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
-/* ### END API ### */
-/* ### BEGIN API == 3 or 4 ### */
-    eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
-/* ### END API ### */
-/* ### BEGIN API == 1 ### */
-    eve.BEGIN(eve.BEGIN_BITMAPS);
-    eve.BITMAP_HANDLE(FONT_CUSTOM);
-        eve.BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
-    eve.BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
-                font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
-    eve.BITMAP_SIZE(eve.FILTER_NEAREST, eve.WRAP_BORDER, eve.WRAP_BORDER,
-                font0_hdr->FontWidthInPixels,
-                font0_hdr->FontHeightInPixels);
-    eve.CMD_SETFONT(FONT_CUSTOM, font0_offset);
-/* ### END API ### */
-    eve.DISPLAY();
-    eve.CMD_SWAP();
+  eve.CMD_DLSTART();
+#if IS_EVE_API(5)
+  eve.CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
+#elif IS_EVE_API(2,3,4)
+  eve.CMD_SETFONT2(FONT_CUSTOM, font0_offset, 0);
+#else
+  eve.BEGIN(eve.BEGIN_BITMAPS);
+  eve.BITMAP_HANDLE(FONT_CUSTOM);
+      eve.BITMAP_SOURCE((font0_hdr->PointerToFontGraphicsData)&(0x3FFFFF));
+  eve.BITMAP_LAYOUT(font0_hdr->FontBitmapFormat,
+            font0_hdr->FontLineStride, font0_hdr->FontHeightInPixels);
+  eve.BITMAP_SIZE(eve.FILTER_NEAREST, eve.WRAP_BORDER, eve.WRAP_BORDER,
+            font0_hdr->FontWidthInPixels,
+            font0_hdr->FontHeightInPixels);
+  eve.CMD_SETFONT(FONT_CUSTOM, font0_offset);
+#endif
+  eve.DISPLAY();
+  eve.CMD_SWAP();
 ```
 
 A font must be set-up on the device before the font can be used. A font is essentially a set of bitmaps, 
@@ -211,28 +206,25 @@ one for each character. The bitmap parameters are therefore needed to be setup i
 bitmaps are. The device needs the `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands 
 to properly render the font's characters. 
 
-/* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
 The `eve.CMD_SETFONT` command will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
-/* ### END API ### */
-/* ### BEGIN API == 2 ### */
+#elif IS_EVE_API(2)
 The `eve.CMD_SETFONT2` command will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
-/* ### END API ### */
-/* ### BEGIN API == 3 or 4 ### */
+#elif IS_EVE_API(3,4)
 The `eve.CMD_SETFONT2` command will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
-/* ### END API ### */
-/* ### BEGIN API >= 2 ### */
+#endif
+#if IS_EVE_API(2,3,4,5)
 The `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands are generated automatically by
 the co-processor using data from the font structure and are therefore not required.
-/* ### END API ### */
-/* ### BEGIN API == 1 ### */
+#else
 The required information for setting up the font must be taken from the font structure. In this
 example it uses a cast to the data structure cast as `font0_hdr`. 
 Finally, the `eve.CMD_SETFONT` command will initialise the font on the device and associate it with the 
 supplied handle.
-/* ### END API ### */
+#endif
 
 A `eve.CMD_SWAP()` command **must** be called to register the font handle on the device so that it can be used by 
 subsequent display lists.

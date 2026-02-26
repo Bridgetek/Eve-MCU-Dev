@@ -55,9 +55,9 @@
 
 #define EVE_RAM_G                      0x0ul
 #undef EVE_RAM_G_SIZE
-#if IS_EVE_API(2) && EVE_SUB_API == 2
+#if IS_EVE_SUB_API(2)
 #define EVE_RAM_G_SIZE                 (256*1024L)
-#elif IS_EVE_API(2) && EVE_SUB_API == 1
+#elif IS_EVE_SUB_API(1)
 #define EVE_RAM_G_SIZE                 (1024*1024L)
 #else
 #define EVE_RAM_G_SIZE                 (1024*1024L)

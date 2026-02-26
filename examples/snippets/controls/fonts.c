@@ -46,7 +46,7 @@
 #if IS_EVE_API(1)
 // The FT800 does not have the CMD_ROMFONT feature. 
 // This routine will map a bitmap handle onto a ROM font.
-void EVE_CMD_ROMFONT(uint32_t font, uint32_t romfont)
+void font_romfont(uint32_t font, uint32_t romfont)
 {
     // Temporarily finish the coprocessor list
     EVE_LIB_EndCoProList();
@@ -60,7 +60,7 @@ void EVE_CMD_ROMFONT(uint32_t font, uint32_t romfont)
 
     // Resume the list
     EVE_LIB_BeginCoProList();
-    EVE_BEGIN(EVE_BEGIN_BITMAP);
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(font);
     EVE_BITMAP_SOURCE(fontsrc);
     EVE_BITMAP_LAYOUT(format, linestride, height);
@@ -209,7 +209,7 @@ static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, u
         for (ch = 0; ch < 128; ch += 4)
         {
             // Read character width as a 32 bit word.
-            uint32_t width4 = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidth[ch]));
+            uint32_t width4 = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidth[0]) + (ch * sizeof(uint8_t)));
             for (w = 0; w < 4; w++)
             {
                 cache->widths[ch + w] = (width4 >> (w * 8)) & 0xff;

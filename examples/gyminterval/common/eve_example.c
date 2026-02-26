@@ -193,9 +193,9 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
     EVE_CMD_SETMATRIX();
 }
 
-static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, char *str)
+static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
 {
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -207,11 +207,11 @@ static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, i
     }
 }
 
-static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, char *str)
+static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const char *str)
 {
     uint16_t x = 0;
     int i = 0;
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -276,7 +276,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     int16_t button_h_zoom = (font_getheight(&clockfont) * button_zoom) / 0x10000;
 
     // Initial message... motivate
-    char *msg_text = "Start!";
+    const char *msg_text = "Start!";
     uint8_t msg_timer = 0;
     uint8_t msg_alpha = 0;
 
@@ -694,7 +694,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     num_zoom = text_zoom * 3;
     time_zoom = text_zoom * 2;
 
-    char *msg_text;
+    const char *msg_text;
     char num_text[16];
     uint8_t selected = 1;
 
@@ -1049,7 +1049,11 @@ void eve_example(void)
     // Map the ROM font we are using onto a normal bitmap.
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
+#if IS_EVE_API(1)
+    font_romfont(SCALED_FONT, EVE_ROMFONT_MAX);
+#else
     EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
+#endif
     EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();

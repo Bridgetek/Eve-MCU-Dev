@@ -113,9 +113,13 @@ void EVE_Init(void)
 
     // Write the PCLK or PCLK_FREQ register
     // If setting PCLK_FREQ then also set REG_PCLK to 1 to enable extsync mode
-    #if IS_EVE_API(4) && (defined SET_PCLK_FREQ)
+    #if IS_EVE_API(4) 
+    #if defined (SET_PCLK_FREQ)
     HAL_MemWrite16(EVE_REG_PCLK_FREQ,  (uint16_t)EVE_DISP_PCLK_FREQ);
     HAL_MemWrite8(EVE_REG_PCLK, 1);
+    #else
+    HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
+    #endif
     #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
