@@ -173,7 +173,7 @@ extern "C" {
 #define mode_end_readout_y ((EVE_DISP_HEIGHT * 13)/40) // 32.5%
 // for label
 #define mode_label_x ((EVE_DISP_WIDTH * 34)/40) // 85%
-#define mode_lable_y ((EVE_DISP_HEIGHT * 11)/40) // 27.5%
+#define mode_label_y ((EVE_DISP_HEIGHT * 11)/40) // 27.5%
 
 /**
  @brief Definitions of backlight menu arc guage size, position and angles.

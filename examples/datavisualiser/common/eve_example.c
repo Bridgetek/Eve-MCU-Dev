@@ -1093,9 +1093,9 @@ void modePage(){
     EVE_COLOR_RGB(255, 255, 255);
     // add label for current mode
     if(demoMode)
-        EVE_CMD_TEXT(mode_label_x, mode_lable_y, font_large, EVE_OPT_CENTER, "Demo");
+        EVE_CMD_TEXT(mode_label_x, mode_label_y, font_large, EVE_OPT_CENTER, "Demo");
     else
-        EVE_CMD_TEXT(mode_label_x, mode_lable_y, font_large, EVE_OPT_CENTER, "Sensor");
+        EVE_CMD_TEXT(mode_label_x, mode_label_y, font_large, EVE_OPT_CENTER, "Sensor");
 
     // add some custom buttons onto the screen
     circularButton(mode_button1_x, mode_button1_y, mode_button_size, colourBG, colour4, 0xFFFFFF, font_large, "<", mode_button_1_tag, mode_button_1_press);
@@ -1545,6 +1545,7 @@ void demoDataUpdates(){
 
     // increment count
     count ++;
+
 }
 
 /**
@@ -1590,7 +1591,6 @@ void eve_display(void)
             // call render screen funciton to update the screen
             renderScreenUpdate();
         } 
-          
     }
 }
 
