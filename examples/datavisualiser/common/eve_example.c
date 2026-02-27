@@ -316,16 +316,16 @@ void addBlendedGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, uint16
  @param centery y position for the center of the circle
  @param radius radius value we wish to use to draw the circle
  @param thickness thickness value for the circle
- @param user_value input value to the circle to determine current reading (range 0-360)
+ @param user_value input value to the circle to determine current reading (range 16 bit)
  */
-void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint16_t thickness, int16_t user_value)
+void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint16_t thickness, uint16_t user_value)
 {
-    // local variable for arc fill value
-    int16_t arc_value = user_value;
+    // local variable for arc fill in degrees
+    uint16_t arc_degrees = ((360 * (user_value)) / 0xffff);
 
-    // Ensure the input value is within limits (0 - 360)
-    arc_value = max(arc_value, 0);
-    arc_value = min(arc_value, 360);
+    // Ensure the arc_degrees is within limits (0 - 360)
+    arc_degrees = max(arc_degrees, 0);
+    arc_degrees = min(arc_degrees, 360);
 
     // change this value to alter how transparent the inactive section of the arc is
     uint8_t alpha_value = 50;
@@ -340,11 +340,10 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
  
     // Calculate the coordinates of the starting point, the gauge arc and the point at the tip of the arc
  
-    // for the arc gauge value itself
-    // we want to draw this in the middle of the arc so we take the width and divide it by 2, then negate this from the raidus
+    // for the arc gauge fill itself
     // multiply by 8 (or 16 for FT80x) so we can feed this number directly int the VERTEX2F command with our desired pixel precision
-    arc_fill_x = CIRC_X((radius * pix_precision + 8), DEG2FURMAN(arc_value));
-    arc_fill_y = CIRC_Y((radius * pix_precision + 8), DEG2FURMAN(arc_value));
+    arc_fill_x = CIRC_X((radius * pix_precision + 8), user_value);
+    arc_fill_y = CIRC_Y((radius * pix_precision + 8), user_value);
     
     //--------------------------------------------------------------------------------------------------------
     // Write to the alpha buffer and disable writing colours to the screen to make an invisible arc
@@ -363,7 +362,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     set in main display list in this example if required and carried through to this function
     */
  
-    // firstly we want ot paint the fill and outline shapes into the alpah buffer, and use a stencil
+    // firstly we want to paint the fill and outline shapes into the alpah buffer, and use a stencil
     // disable all colours bar the alpha channel
     EVE_COLOR_MASK(0, 0, 0, 1);
     EVE_CLEAR(1, 1, 0);
@@ -378,7 +377,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     //here we want to start incrementing the stencil buffer 
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
 
-    if (arc_value >= 360){
+    if (arc_degrees >= 360){
 
         EVE_BEGIN(EVE_BEGIN_POINTS);
         EVE_POINT_SIZE(radius * 16);
@@ -387,14 +386,14 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     }else{
         // These are drawn per quadrant as each edge strip will only work well on an angle up to 90 deg
         // 0 - 89 Deg
-        if ((arc_value > 0) && (arc_value < 90))
+        if ((arc_degrees > 0) && (arc_degrees < 90))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
             EVE_VERTEX2F(((centerx) * pix_precision), (centery) * pix_precision);
             EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x) , ((centery * pix_precision) + arc_fill_y));
         }
-        else if (arc_value > 0){
+        else if (arc_degrees > 0){
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
             EVE_VERTEX2F(((centerx) * pix_precision), (centery) * pix_precision);
@@ -402,14 +401,14 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
         }
 
         // 90 - 179 deg
-        if ((arc_value >= 90) && (arc_value < 180))
+        if ((arc_degrees >= 90) && (arc_degrees < 180))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_L);
             EVE_VERTEX2F(((centerx) * pix_precision), (centery) * pix_precision);
             EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x ), (centery * pix_precision) + arc_fill_y);
         }
-        else if (arc_value > 90)
+        else if (arc_degrees > 90)
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_L);
@@ -418,14 +417,14 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
         }
 
         // 180 - 269 deg
-        if ((arc_value >= 180) && (arc_value < 270))
+        if ((arc_degrees >= 180) && (arc_degrees < 270))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_A);
             EVE_VERTEX2F(((centerx - 1) * pix_precision), (centery) * pix_precision);
             EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x), (centery * pix_precision) + arc_fill_y);
         }
-        else if (arc_value > 180)
+        else if (arc_degrees > 180)
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_A);
@@ -434,7 +433,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
         }
 
         // 270 - 359 deg
-        if ((arc_value >= 270) && (arc_value < 360))
+        if ((arc_degrees >= 270) && (arc_degrees < 360))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
@@ -519,19 +518,21 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     addBlendedGradient(centerx, (centery - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
     
     // NOTE: this trick will not work with the unfilled section of the ARC, as the unfillsed sections alpha value will make alter the colour blends
-    // so this can only be used when we are filling the unfilled section of the arc with a non blended colour . To over come this we could utilise a
+    // so this can only be used when we are filling the unfilled section of the arc with a non blended colour. To over come this we could utilise a
     // bitmap here to 'fill' the alpha composited shape
+
+    // NOTE: we can also repeat the commands in the stenicl = 1 block above to simplify the fill technique with a singular colour
 
     // end drawing
     EVE_END();
 
     //--------------------------------------------------------------------------------------------------------
-    // Add 0 line on bottom of cricle
+    // Add 0 line on bottom of circle
     //--------------------------------------------------------------------------------------------------------
     
     // Revert to always drawing for the subsequent items
     EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255); 
-    // set the belnd function back to the default
+    // set the blend function back to the default
     EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA); 
 
     EVE_BEGIN(EVE_BEGIN_LINES);
@@ -543,6 +544,8 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
 
     //restore previous graphics context
     EVE_RESTORE_CONTEXT();
+
+    
 }
 
 /**
@@ -1267,9 +1270,9 @@ void renderScreenUpdate(){
 
     // add three circle gauges
     //--------------------------------------------------------------------------
-    circleGaugeShadow(circle_guage1_x, circle_guage1_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
-    circleGaugeShadow(circle_guage2_x, circle_guage2_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
-    circleGaugeShadow(circle_guage3_x, circle_guage3_y, circle_gauge_radius, circle_gauge_thickness, circle_value);
+    circleGaugeShadow(circle_guage1_x, circle_guage1_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535)/360)); // normalise number to 16 bit number
+    circleGaugeShadow(circle_guage2_x, circle_guage2_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535)/360)); // normalise number to 16 bit number
+    circleGaugeShadow(circle_guage3_x, circle_guage3_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535)/360)); // normalise number to 16 bit number
 
     // add readout numbers for gauges
     //--------------------------------------------------------------------------
