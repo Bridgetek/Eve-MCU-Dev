@@ -76,27 +76,6 @@ extern const uint32_t font0_size;
 //}
 
 /**
- @brief Maximum number of characters to cache form a font.
- */
-#define MAX_CHARACTERS 128
-
-/**
- @brief Structure to hold cache of font settings.
- @details This is used to store the font parameters to accelerate drawing
- the glyphs during the application.
- */
-struct eve_font_cache {
-    uint8_t handle;
-    uint8_t legacy;
-    uint8_t widths[MAX_CHARACTERS];
-    uint32_t glyphs[MAX_CHARACTERS];
-    uint16_t height;
-    uint16_t width;
-    uint8_t first;
-};
-
-
-/**
  @brief Functions called within the eve_example code. 
  */
 //{
@@ -109,6 +88,7 @@ uint32_t eve_init_fonts(uint8_t fontnumber);
 void eve_example(void);
 
 #include "touch.h"
+#include "controls/fonts.h"
 
 #ifdef __cplusplus
 } /* extern "C" */
