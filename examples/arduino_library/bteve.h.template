@@ -77,8 +77,7 @@ class ### EVE CLASS ###
 #endif
 
   public:
-  /* ### BEGIN API ### */
-  /* ### END API ### */
+  ### API HEADER ###
 
   public:
     uint16_t DISP_WIDTH(void);

@@ -57,6 +57,8 @@ uint32_t EVE_RAM_G_SIZE = ### EVE CLASS ###::RAM_G_1_GBIT;
 {
 }
 
+### API IMPLEMENTATION ###
+
 void ### EVE CLASS ###::setup(uint32_t panel)
 {
     setpanel(panel);
