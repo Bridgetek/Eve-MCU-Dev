@@ -41,7 +41,7 @@
 #include <stdbool.h>
 
 #include <EVE.h>
-//#include <MCU.h> // For DEBUG_PRINTF only
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 
@@ -77,6 +77,10 @@ uint8_t line_plot3_data [plot_data_size];
 uint8_t bar_value [bargauge_num_bars];
 uint8_t bar_dir [bargauge_num_bars];
 
+// varibles for changing the on-screen pie chart readout
+uint8_t pie_value = 95;
+uint8_t pie_dir = 0xFF; // used in demo mode
+
 // variables for changing the on-screen circle readouts
 uint16_t circle_value = 0;
 uint8_t circle_dir = 0xFF; // used in demo mode
@@ -85,10 +89,13 @@ uint8_t circle_dir = 0xFF; // used in demo mode
 uint64_t count = 0; 
 
 //--------------------------------------------------------------------------------------------------------
-// mode and backlight related variables
+// settings, mode, and backlight related variables
 //--------------------------------------------------------------------------------------------------------
 
-// mode for demo variable
+// variable for settings menu display
+bool settings = false;
+
+// variable for demo mode
 bool demoMode = true;
 
 // variable for backlight level (0-100)
@@ -99,10 +106,11 @@ int8_t backlight_value = 100;
 //--------------------------------------------------------------------------------------------------------
 
 // booleans for button press states
+bool settings_button_press = false;
+bool settings_menu_item_1_press = true;
+bool settings_menu_item_2_press = false;
 bool mode_button_1_press = false;
 bool mode_button_2_press = false;
-bool menu_item_1_press = true;
-bool menu_item_2_press = false;
 
 // variables for touch detection
 uint8_t TagVal = 0;
@@ -442,7 +450,6 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
         }
     } 
 
-
     // draw the outer radius here and blend destination alpha to source alpha, this is so the fill edge strips above only render across this point
     // and only effect shapes drawn within this point
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_SRC_ALPHA);
@@ -514,7 +521,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     // call the addGradient function to dynamically create a gradient for each side of the arc
     // position these accordingly to account for aliased edge of the arc (as we want to ensure we cover this)
     // we can add a vertical or horizontal gradient shapes via the function parameters, and mirror the direction of the gradient if required
-    addBlendedGradient((centerx - radius - 1), (centery - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true,true, true);
+    addBlendedGradient((centerx - radius - 1), (centery - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true, true, true);
     addBlendedGradient(centerx, (centery - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
     
     // NOTE: this trick will not work with the unfilled section of the ARC, as the unfillsed sections alpha value will make alter the colour blends
@@ -544,7 +551,6 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
 
     //restore previous graphics context
     EVE_RESTORE_CONTEXT();
-
     
 }
 
@@ -768,6 +774,199 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 }
 
 /**
+ @brief Function to draw a segment of a pie chart.
+ @details This function draws a section of a pie chart whose fill colour is based on a preceeding COLOR_RGB call, 
+ where the radius and start/end angles are input as variabbes to the funciton
+ @param pie_center_x x position for the center of the circle where the pie segment would reside
+ @param pie_center_y x position for the center of the circle where the pie segment would reside
+ @param radius radius value of the circle used to size the pie chart segment
+ @param start_angle degrees clockwise from the bottom of the circle where we want the pie segment to start (16 bit value)
+ @param end_angle degrees clockwise from the bottom of the circle where we want the pie segment to end (16 bit value)
+ */
+void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t radius, uint16_t start_angle, uint16_t end_angle)
+{
+    // Ensure the radius does not exceed max point size
+    radius = min(radius, 511);
+
+    // Draw in reverse if end_angle > start_angle
+    int8_t reverse = 0;
+    // Calculate pie segment range
+    uint16_t range = (end_angle - start_angle) & 0xffff;
+    if (range & 0x8000)
+    {
+        // Negative range end > start
+        uint16_t temp = end_angle;
+        end_angle = start_angle;
+        start_angle = temp;
+        reverse = 1;
+    }
+    else if (range < 0x10)
+    {
+        // Special case for end angle equal to start angle
+        range = 0xffff;
+        reverse = 1;
+    }
+
+    // Points for the starting angle 
+    int16_t pie_start_x = CIRC_X(radius * 2, start_angle);
+    int16_t pie_start_y = CIRC_Y(radius * 2, start_angle);
+ 
+    // Points for the finishing angle 
+    int16_t pie_end_x = CIRC_X(radius * 2, end_angle);
+    int16_t pie_end_y = CIRC_Y(radius * 2, end_angle);
+
+    // Points for the intermediate stretcher point (used if range is > 16384)
+    int16_t pie_int_x = CIRC_X(radius * 2, start_angle + 0x4000);
+    int16_t pie_int_y = CIRC_Y(radius * 2, start_angle + 0x4000);
+
+    // Save current graphics context
+    EVE_SAVE_CONTEXT();
+
+    // set desried pixel precision format
+    // EVE_VERTEX_FORMAT(3);
+    /*
+    set in main display list in this example if required and carried through to this function
+    */
+
+    // Stencils preclude using alpha
+    EVE_COLOR_A(255);
+    // disable colours, leave alpha enabled
+    EVE_COLOR_MASK(0, 0, 0, 1);
+    // Scissor for the size of the pie we wish to draw
+    EVE_SCISSOR_SIZE((radius * 2) + 1, (radius * 2) + 1);
+    EVE_SCISSOR_XY((pie_center_x - radius), (pie_center_y - radius));
+
+    // clear alpha to 0
+    EVE_CLEAR_COLOR_A(0);
+    // clear stencil
+    EVE_CLEAR_STENCIL(reverse);
+    // clear alpha and stencil values
+    EVE_CLEAR(1, 1, 0);
+    // diasable all colours and alpha
+    EVE_COLOR_MASK(0, 0, 0, 0);
+    // enable stencil
+    EVE_STENCIL_MASK(1); 
+    // incrememnt stencil
+    EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
+
+    if (range != 0xffff)
+    {
+        // Stencil cut-out from the circle for the pie segment
+        EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
+        // use calculated points to draw edge strip
+        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
+        EVE_VERTEX2F(pie_center_x * pix_precision, pie_center_y * pix_precision);
+        EVE_VERTEX2F((pie_center_x - pie_end_x) * pix_precision, (pie_center_y + pie_end_y) * pix_precision);
+        // if range is > 16384 we need to add this vertex
+        if (range > 0x4000)
+        {
+            EVE_VERTEX2F((pie_center_x - pie_int_x) * pix_precision, (pie_center_y + pie_int_y) * pix_precision);
+        }
+        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
+    }
+
+    // enable alpha, to be begin creating alpha compositied shape
+    EVE_COLOR_MASK(0, 0, 0, 1);
+    // disable stencil
+    EVE_STENCIL_MASK(0);
+    // draw the following items where the stencil = 1 (the area that the edge strip covers)
+    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 1);
+
+    // begin points
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // Add circle of our radius size into the alpha bbuffer
+    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    EVE_POINT_SIZE(radius * 16);
+    EVE_VERTEX2F((pie_center_x * pix_precision), (pie_center_y * pix_precision));
+
+    //if we arent a full circle
+    if (range != 0xffff){
+        // begin line strip
+        EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+        // remove this line strip from thhe alpha bbufffer (to give a aliased edge of the pie segment)
+        EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+        // set line width based off of input radius
+        if (radius > 64)
+            EVE_LINE_WIDTH(radius/3);
+        else if (radius <= 64 && radius > 48)
+            EVE_LINE_WIDTH(radius/2);
+        else if (radius <= 48 && radius > 32)
+            EVE_LINE_WIDTH((radius*2)/3);
+        else if (radius <= 32 && radius > 20)
+            EVE_LINE_WIDTH(radius);
+        else
+            EVE_LINE_WIDTH((radius*3)/2);
+        // add verticies along the edges of the pie segment
+        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
+        EVE_VERTEX2F(pie_center_x * pix_precision, pie_center_y * pix_precision);
+        EVE_VERTEX2F((pie_center_x - pie_end_x) * pix_precision, (pie_center_y + pie_end_y) * pix_precision);
+    }
+
+    // Draw a circle which will fill the arc with the input colour
+    // re-enabble colours
+    EVE_COLOR_MASK(1, 1, 1, 0);
+    // blend this shape into the alpha composited shape we created above
+    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
+    // draw point
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    EVE_POINT_SIZE(radius * 16);
+    // place at the center of the circle the pie segment sits inside
+    EVE_VERTEX2F((pie_center_x * pix_precision), (pie_center_y * pix_precision));
+ 
+    // Restore previous graphics context
+    EVE_RESTORE_CONTEXT();
+
+}
+
+/**
+ @brief Helper function add the uptime pie chart into the display list.
+ @details This function draws a pie chart with two segments and adds this into the display list, 
+ along with the pie chart label text.
+ @param uptime x position pie chart
+ */
+void pieChart(uint8_t uptime){
+
+    // Ensure the uptime is within limits (0 - 100)
+    uptime = max(uptime, 0);
+    uptime = min(uptime, 100);
+
+    // add label ontop sreen
+    EVE_CMD_TEXT(pie_chart_label_x, pie_chart_label_y, font_med, 0, "Uptime %");
+    EVE_CMD_NUMBER(pie_chart_readout_x, pie_chart_readout_y, font_med, EVE_OPT_RIGHTX, uptime);
+
+    // add background shape
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // colour set to BG colour
+    EVE_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
+    // set size to slight bigger than the pie chart radius
+    EVE_POINT_SIZE(((pie_chart_radius * 11)/10) * 16);;
+    // draw point
+    EVE_VERTEX2F((pie_chart_x * pix_precision), (pie_chart_y * pix_precision));
+    
+    // add pie chart segemnts onto the screen
+    if (uptime !=0 && uptime != 100){
+        // this is the uptime section of the chart
+        EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
+        // add pie chart segment onto the screen
+        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, 0x8000, (0x8000 + (uptime * 0xffff)/100));
+
+        // this is the downtime section of the chart
+        EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
+        // add pie chart segment onto the screen
+        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, (0x8000 + (uptime * 0xffff)/100), 0x8000);
+    } else{
+        // colour based on whether we are full uptime or downtime
+        if (uptime == 0)
+            EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
+        else
+            EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
+        // add pie chart segment onto the screen
+        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, 0, 0);
+    }
+
+}
+
+/**
  @brief Function to draw a simple circular button.
  @details This function draws a simple circular button, assigning it a TAG value based upon the input variable,
  and altering its rendered colour based upon its current 'pressed' state.
@@ -874,8 +1073,8 @@ void addBackgroundBoxes(uint8_t alpha, uint32_t colour){
     EVE_VERTEX2F((line_graph_box_start_x * pix_precision), (line_graph_box_start_y * pix_precision));
     EVE_VERTEX2F((line_graph_box_end_x * pix_precision), (line_graph_box_end_y * pix_precision));
     // top right
-    EVE_VERTEX2F((controls_box_start_x * pix_precision), (controls_box_start_y * pix_precision));
-    EVE_VERTEX2F((controls_box_end_x * pix_precision), (controls_box_end_y * pix_precision));
+    EVE_VERTEX2F((pie_chart_box_start_x * pix_precision), (pie_chart_box_start_y * pix_precision));
+    EVE_VERTEX2F((pie_chart_box_end_x * pix_precision), (pie_chart_box_end_y * pix_precision));
     // bottom left
     EVE_VERTEX2F((bar_gauge_box_start_x * pix_precision), (bar_gauge_box_start_y * pix_precision));
     EVE_VERTEX2F((bar_gauge_box_end_x * pix_precision), (bar_gauge_box_end_y * pix_precision));
@@ -891,7 +1090,7 @@ void addBackgroundBoxes(uint8_t alpha, uint32_t colour){
 }
 
 /**
- @brief Helper functoin add label boxes for the bar gauge widgets into the display list.
+ @brief Helper function add label boxes for the bar gauge widgets into the display list.
  @param colour input colour for the boxes
  */
 void addBarGuageLabelBoxes(uint32_t colour){
@@ -921,18 +1120,78 @@ void addBarGuageLabelBoxes(uint32_t colour){
     EVE_RESTORE_CONTEXT();
 
 }
+ 
+/**
+ @brief Helper function add the settings menu button onto the screen.
+ @details this funciton adds a invisible tagged edge strip onto the screen to act as the menu button, to 
+ indicate where the button is a line coloured the same as the bscreen background colour is drawn to disect
+ the pie chart background box, creating the illusion of a seperate triangular shape in the top right corner of this box.
+ @param colour input colour for the button
+ */
+void addSettingsButton(uint32_t colour){
+
+    // save context
+    EVE_SAVE_CONTEXT();
+
+    // enable tagging
+    EVE_TAG_MASK(1);
+    // set tag to settings menu tag
+    EVE_TAG(settings_button_tag);
+    // set alpha to 0 so this shape is invisible 
+    EVE_COLOR_A(0);
+    // begin drawing edge strip that will be used as the button shape
+    EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
+    // add button shape
+    EVE_VERTEX2F((settings_button_x1 * pix_precision), (settings_button_y1 * pix_precision));
+    EVE_VERTEX2F((settings_button_x2 * pix_precision), (settings_button_y2 * pix_precision)); 
+    // set alpha to full
+    EVE_COLOR_A(255);
+    // set colour for the line that will disect the background bbox
+    EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
+    // begin lines
+    EVE_BEGIN(EVE_BEGIN_LINES);
+    // set line width
+    EVE_LINE_WIDTH(settings_button_line_width * 16);
+    // add line that disects the pie chart background box to create our button shape
+    EVE_VERTEX2F((settings_button_x1 * pix_precision), (settings_button_y1 * pix_precision));
+    EVE_VERTEX2F((settings_button_x2 * pix_precision), (settings_button_y2 * pix_precision));
+
+    // add lines to create the classic menu icon
+    // colour these white
+    EVE_COLOR_RGB(255, 255, 255);
+    // set line width
+    EVE_LINE_WIDTH((settings_button_line_width/2) * 16);
+    // add lines
+    EVE_VERTEX2F((settings_button_lines_x * pix_precision), (settings_button_lines_y * pix_precision));
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght)* pix_precision), (settings_button_lines_y * pix_precision));
+    // second line
+    EVE_VERTEX2F((settings_button_lines_x * pix_precision), ((settings_button_lines_y + settings_button_lines_y_offset) * pix_precision));
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght)* pix_precision), ((settings_button_lines_y + settings_button_lines_y_offset) * pix_precision));
+    // third line
+    EVE_VERTEX2F((settings_button_lines_x * pix_precision), ((settings_button_lines_y + (settings_button_lines_y_offset * 2)) * pix_precision));
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght)* pix_precision), ((settings_button_lines_y + (settings_button_lines_y_offset * 2)) * pix_precision));
+
+    // end drawing 
+    EVE_END();
+    // disable tagging
+    EVE_TAG_MASK(0);
+
+    // restore context
+    EVE_RESTORE_CONTEXT();
+
+}
 
 /**
- @brief Helper function add the control menu into the display list.
+ @brief Helper function add the settings option menu into the display list.
  @details This function draws a simple two button menu bar, constructed using the LINES primitive,
  each button is tagged with a individual value
  @param input_x x position for the start of the menu bar line
- @param input_y x position for the start of the menu bar line
+ @param input_y y position for the start of the menu bar line
  @param lenght total length of the menu bar
  @param size total thickness of the menu bar
  @param colour input colour for the menu
  */
-void controlMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t size, uint32_t colour){
+void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t size, uint32_t colour){
 
     // ensure the size is at least 5
     size = max(size, 5);
@@ -976,10 +1235,10 @@ void controlMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t s
     
     // menu item 1
     // tag the following shape with item 1 tag
-    EVE_TAG(menu_item_1_tag);
+    EVE_TAG(settings_menu_item_1_tag);
  
     // if the item is pressed set alpha to full
-    if(menu_item_1_press == true)
+    if(settings_menu_item_1_press == true)
         EVE_COLOR_A(255);
     
     // draw shape
@@ -987,14 +1246,14 @@ void controlMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t s
     EVE_VERTEX2F(((input_x + label_length)  * pix_precision), (input_y * pix_precision));
 
     // re-set alpha to 0 (if it was pressed)
-    if(menu_item_1_press == true)
+    if(settings_menu_item_1_press == true)
         EVE_COLOR_A(0);
     
     // menu item 2
     // tag the following shape with item 2 tag
-    EVE_TAG(menu_item_2_tag);
+    EVE_TAG(settings_menu_item_2_tag);
     // if the item is pressed set alpha to full
-    if(menu_item_2_press == true)
+    if(settings_menu_item_2_press == true)
         EVE_COLOR_A(255);
 
     // draw shape
@@ -1002,7 +1261,7 @@ void controlMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t s
     EVE_VERTEX2F(((input_x + length)  * pix_precision), (input_y * pix_precision));
     
     // re-set alpha to 0 (if it was pressed)
-    if(menu_item_2_press == true)
+    if(settings_menu_item_2_press == true)
         EVE_COLOR_A(0);
 
     // disable tagging
@@ -1063,7 +1322,7 @@ void LCDBacklightPage(){
     EVE_CMD_NUMBER(backlight_dial_x, backlight_dial_y, font_med_2, EVE_OPT_CENTER, backlight_value);
 
     // add text label
-    EVE_CMD_TEXT(backlight_dial_x, (backlight_dial_y + ((backlight_dial_radius*3)/4)), font_small, EVE_OPT_CENTER, "Brightness");
+    EVE_CMD_TEXT(backlight_dial_x, ((backlight_dial_y + ((backlight_dial_radius*3)/4)) - 1), font_small, EVE_OPT_CENTER, "Brightness");
 
     // restore context
     EVE_RESTORE_CONTEXT();
@@ -1087,8 +1346,8 @@ void modePage(){
     // set line width
     EVE_LINE_WIDTH(5 * 16);
     // draw vertices
-    EVE_VERTEX2F((mode_start_readout_x * pix_precision), (mode_start_readout_y * pix_precision));
-    EVE_VERTEX2F((mode_end_readout_x * pix_precision), (mode_end_readout_y * pix_precision));
+    EVE_VERTEX2F((mode_readout_x1 * pix_precision), (mode_readout_y1 * pix_precision));
+    EVE_VERTEX2F((mode_readout_x2 * pix_precision), (mode_readout_y2 * pix_precision));
     // end  rectangles
     EVE_END();
 
@@ -1137,6 +1396,7 @@ void generateStaticScreenComponents(){
     EVE_VERTEX_FORMAT(3);
     #endif
 
+
     // disable tagging, this prevents items being drawn with tag = 255 when we havent explicitly tagged them 
     EVE_TAG_MASK(0);
 
@@ -1161,6 +1421,11 @@ void generateStaticScreenComponents(){
     // add graph lines and labels
     addGraphLinesAndLabels(line_graph_x, line_graph_y, line_graph_width, line_graph_height, line_graph_extra_x_lines , line_graph_extra_y_lines, line_graph_line_width, font_small, y_axis_labels, x_axis_labels);
 
+    // add settings menu button
+    //--------------------------------------------------------------------------------------------------------
+
+    addSettingsButton(colourBG);
+
     // add label boxes and text for bar gauges
     //--------------------------------------------------------------------------------------------------------
 
@@ -1168,8 +1433,8 @@ void generateStaticScreenComponents(){
     addBarGuageLabelBoxes(colourBG);
 
     // add text labels for bar gauges
-    EVE_CMD_TEXT(((bargauge1_x + bargauge2_x + bargauge_width)/2), (bargauge_label_y + (bargauge_label_height/2) - 1), font_small, EVE_OPT_CENTER, "Sp02");
-    EVE_CMD_TEXT(((bargauge3_x + bargauge4_x + bargauge_width)/2), (bargauge_label_y + (bargauge_label_height/2) - 1), font_small, EVE_OPT_CENTER, "C02");
+    EVE_CMD_TEXT(((bargauge1_x + bargauge2_x + bargauge_width)/2), (bargauge_label_y + (bargauge_label_height/2) - 1), font_small, EVE_OPT_CENTER, "SpO2");
+    EVE_CMD_TEXT(((bargauge3_x + bargauge4_x + bargauge_width)/2), (bargauge_label_y + (bargauge_label_height/2) - 1), font_small, EVE_OPT_CENTER, "CO2");
     EVE_CMD_TEXT(((bargauge5_x + bargauge6_x + bargauge_width)/2), (bargauge_label_y + (bargauge_label_height/2) - 1), font_small, EVE_OPT_CENTER, "Humid");
 
     // add label boxes and text for circle gauges
@@ -1283,20 +1548,36 @@ void renderScreenUpdate(){
     // Third guage
     EVE_CMD_NUMBER(circle_guage1_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100)/360)); // normalise number to 0-100
 
+
     //--------------------------------------------------------------------------------------------------------
-    // add control panel buttons onto the screen
+    // add pie chart onto the screen (if required)
     //--------------------------------------------------------------------------------------------------------
 
-    // we always want to draw the control menu
-    controlMenu(menu_x, menu_y, menu_length, menu_size, colour1);
+    // i.e when we are not rendering the settings menu
+    if (!settings){
+        // call pie chart helper function
+        pieChart(pie_value);
 
-    // decide which sub-menu we wish to render based on the menu item 1 press state
-    if(menu_item_1_press == true){
-        // if menu item 1 then drawn the mode sub-menu
-        modePage();
     }else{
-        // else draw the LCD backlight setting page
-        LCDBacklightPage();
+
+        //--------------------------------------------------------------------------------------------------------
+        // add settings menu buttons onto the screen (if required)
+        //--------------------------------------------------------------------------------------------------------
+
+        // add settings menu label
+        EVE_CMD_TEXT(settings_menu_label_x, settings_menu_label_y, font_med, 0, "Settings");
+
+        // we always want to draw the options menu
+        settingsOptionMenu(settings_menu_x, settings_menu_y, settings_menu_length, settings_menu_size, colour1);
+
+        // decide which sub-menu we wish to render based on the menu item 1 press state
+        if(settings_menu_item_1_press == true){
+            // if menu item 1 then drawn the mode sub-menu
+            modePage();
+        }else{
+            // else draw the LCD backlight setting page
+            LCDBacklightPage();
+        }
     }
 
     // display
@@ -1360,26 +1641,37 @@ void checkTouchStatus(void)
 
 	LastTagVal = TagVal;
 
-	//-------- perform logic for control menu buttons-------
-    // if the pen up tag equals menu_item_1 AND the current menu press is not menu_item_1
-	if ((Pen_Up_Tag == menu_item_1_tag) && menu_item_1_press == false){
-		// reset variables
-		Pen_Down_Tag = 0;
-		Pen_Up_Tag = 0;
+	//-------- perform logic for settings menu buttons-------
 
-		// flip boolean state for menu_item_1 and menu_item_2 press
-		menu_item_1_press = !menu_item_1_press;
-        menu_item_2_press = !menu_item_2_press;
+    // if the pen up tag equals the settings button tag
+	if (Pen_Up_Tag == settings_button_tag){
+		//reset variables
+		Pen_Down_Tag = 0;
+        Pen_Up_Tag = 0;
+
+		// flip boolean state the settings menu display varaible
+		settings = !settings;
    	}
-    // if the pen up tag equals menu_item_2 AND the current menu press is not menu_item_2
-	if ((Pen_Up_Tag == menu_item_2_tag) && menu_item_2_press == false){
+
+    // if the pen up tag equals settings_menu_item_1 AND the current menu press is not settings_menu_item_1
+	if ((Pen_Up_Tag == settings_menu_item_1_tag) && settings_menu_item_1_press == false){
 		// reset variables
 		Pen_Down_Tag = 0;
 		Pen_Up_Tag = 0;
 
-		// flip boolean state for menu_item_2 and menu_item_1 press
-		menu_item_2_press = !menu_item_2_press;
-        menu_item_1_press = !menu_item_1_press;
+		// flip boolean state for settings_menu_item_1 and settings_menu_item_2 press
+		settings_menu_item_1_press = !settings_menu_item_1_press;
+        settings_menu_item_2_press = !settings_menu_item_2_press;
+   	}
+    // if the pen up tag equals settings_menu_item_2 AND the current menu press is not settings_menu_item_2
+	if ((Pen_Up_Tag == settings_menu_item_2_tag) && settings_menu_item_2_press == false){
+		// reset variables
+		Pen_Down_Tag = 0;
+		Pen_Up_Tag = 0;
+
+		// flip boolean state for settings_menu_item_2 and settings_menu_item_1 press
+		settings_menu_item_2_press = !settings_menu_item_2_press;
+        settings_menu_item_1_press = !settings_menu_item_1_press;
    	}
 
     //-------- perform logic for mode menu buttons-------
@@ -1474,6 +1766,48 @@ void checkTouchStatus(void)
 void demoDataUpdates(){
 
     //--------------------------------------------------------------------------------------------------------
+    // logic to move the reading counter for circle gauges
+    //--------------------------------------------------------------------------------------------------------
+
+    if(circle_dir == 0)
+    {            
+        if(circle_value == 0)            
+            circle_dir = 0xFF;            
+        else            
+            circle_value -= 1;            
+    }
+    else
+    {
+        if(circle_value == 360)             
+            circle_dir = 0x00;            
+        else        
+            circle_value += 1;        
+    }
+
+    //--------------------------------------------------------------------------------------------------------
+    // logic to move the uptime reading foir the pie chart
+    //--------------------------------------------------------------------------------------------------------
+
+    // only do this if the settings menu isnt being rendered and the count % 75 == 0
+    if((!settings) && (count % 75 == 0)){
+
+        if(pie_dir == 0)
+        {            
+            if(pie_value == 93)            
+                pie_dir = 0xFF;            
+            else            
+                pie_value -= 1;            
+        }
+        else
+        {
+            if(pie_value == 96)             
+                pie_dir = 0x00;            
+            else        
+                pie_value += 1;        
+        }   
+    }
+
+    //--------------------------------------------------------------------------------------------------------
     // logic to move the readings for bar gauges
     //--------------------------------------------------------------------------------------------------------
 
@@ -1505,31 +1839,12 @@ void demoDataUpdates(){
     } 
 
     //--------------------------------------------------------------------------------------------------------
-    // logic to move the reading counter for circle gauges
-    //--------------------------------------------------------------------------------------------------------
-
-    if(circle_dir == 0)
-    {            
-        if(circle_value == 0)            
-            circle_dir = 0xFF;            
-        else            
-            circle_value -= 1;            
-    }
-    else
-    {
-        if(circle_value == 360)             
-            circle_dir = 0x00;            
-        else        
-            circle_value += 1;        
-    }
-
-    //--------------------------------------------------------------------------------------------------------
     // logic to move the line graph values around
     //--------------------------------------------------------------------------------------------------------
 
     // shift the values if count is % 50 == 0
     if (count % 50 == 0){
-        // declar some temps
+        // declare some temps
         uint8_t temp1 = (rand() % (220 + 1 - 180) + 180); // between 220 and 180
         uint8_t temp2 = (rand() % (250 + 1 - 70) + 70); // between 250 and 70
         uint8_t temp3 = (rand() % (140 + 1 - 90) + 90); // between 140 and 190
@@ -1543,12 +1858,12 @@ void demoDataUpdates(){
         line_plot1_data[plot_data_size -1] = temp1;
         line_plot2_data[plot_data_size -1] = temp2;
         line_plot3_data[plot_data_size -1] = temp3;
-
     }
 
     // increment count
     count ++;
 
+    //call in example
 }
 
 /**

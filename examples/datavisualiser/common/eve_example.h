@@ -63,10 +63,10 @@ extern "C" {
 #define bar_gauge_box_end_x ((EVE_DISP_WIDTH * 51)/160) // 31.875%
 #define bar_gauge_box_end_y ((EVE_DISP_HEIGHT * 39)/40) // 97.5%
 
-#define controls_box_start_x ((EVE_DISP_WIDTH * 29)/40) // 72.5%
-#define controls_box_start_y (EVE_DISP_HEIGHT/40) // 2.5%
-#define controls_box_end_x ((EVE_DISP_WIDTH * 39)/40) // 97.5%
-#define controls_box_end_y ((EVE_DISP_HEIGHT * 20)/40) // 50% 
+#define pie_chart_box_start_x ((EVE_DISP_WIDTH * 29)/40) // 72.5%
+#define pie_chart_box_start_y (EVE_DISP_HEIGHT/40) // 2.5%
+#define pie_chart_box_end_x ((EVE_DISP_WIDTH * 39)/40) // 97.5%
+#define pie_chart_box_end_y ((EVE_DISP_HEIGHT * 20)/40) // 50% 
 
 #define circle_gauge_box_start_x ((EVE_DISP_WIDTH * 55)/160) // 34.375%
 #define circle_gauge_box_start_y ((EVE_DISP_HEIGHT * 22)/40) // 55%
@@ -142,19 +142,57 @@ extern "C" {
 #define circle_gauge_thickness (EVE_DISP_WIDTH/64) // 1.5 %
 // circular gauge positioning 
 #define circle_guage1_x ((EVE_DISP_WIDTH * 37)/80) // 46.25 %
-#define circle_guage1_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75%
-#define circle_guage2_x ((EVE_DISP_WIDTH * 53)/80) // 66.25%
-#define circle_guage2_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75%
+#define circle_guage1_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75 %
+#define circle_guage2_x ((EVE_DISP_WIDTH * 53)/80) // 66.25 %
+#define circle_guage2_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75 %
 #define circle_guage3_x ((EVE_DISP_WIDTH * 69)/80) // 86.25 %
-#define circle_guage3_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75%
+#define circle_guage3_y ((EVE_DISP_HEIGHT * 59)/80) // 73.75 %
 
 /**
- @brief Definitions of control menu size and position.
+ @brief Definitions of pie chart size and position.
  */
-#define menu_x ((EVE_DISP_WIDTH * 31)/40) // 77.5%
-#define menu_y ((EVE_DISP_HEIGHT * 9)/80) // 11.25%
-#define menu_length ((EVE_DISP_WIDTH * 49)/320) // 15.3%
-#define menu_size (EVE_DISP_HEIGHT/20) // 5% 
+#define pie_chart_x ((EVE_DISP_WIDTH * 34)/40) // 85%
+#define pie_chart_y ((EVE_DISP_HEIGHT * 19)/80) // 23.75%
+#define pie_chart_radius ((EVE_DISP_HEIGHT * 3)/20) // 15%
+// for label
+#define pie_chart_label_x ((EVE_DISP_WIDTH * 3)/4) // 75% 
+#define pie_chart_label_y ((EVE_DISP_HEIGHT * 137)/320) // 42.8125%
+#define pie_chart_readout_x ((EVE_DISP_WIDTH * 38)/40) // 95% 
+#define pie_chart_readout_y ((EVE_DISP_HEIGHT * 137)/320) // 42.8125%
+
+/**
+ @brief Definitions of settings menu button size and position.
+ */
+#define settings_button_x1 ((EVE_DISP_WIDTH * 71)/80) // 88.75% 
+#define settings_button_y1 0 // 0%
+#define settings_button_x2 EVE_DISP_WIDTH // 100 %
+#define settings_button_y2 ((EVE_DISP_HEIGHT * 7) /40) // 17.5%
+// for the lines used to create the settings menu icon
+#define settings_button_lines_x ((EVE_DISP_WIDTH * 38) /40) // 95%
+#define settings_button_lines_y ((EVE_DISP_HEIGHT * 13) /320) // 4.06%
+#define settings_button_lines_lenght ((EVE_DISP_WIDTH * 1) /80) // 1.25%
+#define settings_button_lines_y_offset ((EVE_DISP_HEIGHT * 1) /80) // 1.25%
+
+// set this width based on screen size
+// for the line used to create the settinggs button
+#if (EVE_DISP_WIDTH < 1000)
+    #define settings_button_line_width 2
+#elif (EVE_DISP_WIDTH >=1000 && EVE_DISP_WIDTH <= 1500)
+    #define settings_button_line_width 3
+#elif (EVE_DISP_WIDTH > 1500)
+    #define settings_button_line_width 4
+#endif
+
+
+/**
+ @brief Definitions of settings control menu size and position.
+ */
+#define settings_menu_x ((EVE_DISP_WIDTH * 31)/40) // 77.5%
+#define settings_menu_y ((EVE_DISP_HEIGHT * 14)/80) // 
+#define settings_menu_length ((EVE_DISP_WIDTH * 49)/320) // 15.3%
+#define settings_menu_size (EVE_DISP_HEIGHT/20) // 5% 
+#define settings_menu_label_x ((EVE_DISP_WIDTH * 3)/4) // 75%
+#define settings_menu_label_y ((EVE_DISP_HEIGHT * 2)/40) // 5%
 
 /**
  @brief Definitions of mode menu buttons and readout, size and positions.
@@ -162,38 +200,39 @@ extern "C" {
 // sizing related 
 #define mode_button_size (EVE_DISP_HEIGHT/20) // 5%
 // positioning related 
-#define mode_button1_x ((EVE_DISP_WIDTH * 32)/40) // 
+#define mode_button1_x ((EVE_DISP_WIDTH * 32)/40) // 80%
 #define mode_button1_y ((EVE_DISP_HEIGHT * 17)/40) // 42.5%
-#define mode_button2_x ((EVE_DISP_WIDTH * 36)/40) // 
+#define mode_button2_x ((EVE_DISP_WIDTH * 36)/40) // 90%
 #define mode_button2_y ((EVE_DISP_HEIGHT * 17)/40) // 42.5%
 // for readout
-#define mode_start_readout_x ((EVE_DISP_WIDTH * 31)/40) // 92.5%
-#define mode_start_readout_y ((EVE_DISP_HEIGHT * 9)/40) // 22.5%
-#define mode_end_readout_x ((EVE_DISP_WIDTH * 37)/40) // 92.5%
-#define mode_end_readout_y ((EVE_DISP_HEIGHT * 13)/40) // 32.5%
+#define mode_readout_x1 ((EVE_DISP_WIDTH * 31)/40) // 92.5%
+#define mode_readout_y1 ((EVE_DISP_HEIGHT * 11)/40) // 27.5%
+#define mode_readout_x2 ((EVE_DISP_WIDTH * 37)/40) // 92.5%
+#define mode_readout_y2 ((EVE_DISP_HEIGHT * 13)/40) // 32.5%
 // for label
 #define mode_label_x ((EVE_DISP_WIDTH * 34)/40) // 85%
-#define mode_label_y ((EVE_DISP_HEIGHT * 11)/40) // 27.5%
+#define mode_label_y ((EVE_DISP_HEIGHT * 12)/40) // 30%
 
 /**
  @brief Definitions of backlight menu arc guage size, position and angles.
  */
 #define backlight_dial_x ((EVE_DISP_WIDTH * 34)/40) // 85%
-#define backlight_dial_y ((EVE_DISP_HEIGHT * 14)/40) // 30%
-#define backlight_dial_radius (EVE_DISP_HEIGHT/7) // 14.2 %
-#define backlight_dial_inner_radius (EVE_DISP_HEIGHT/10) // 10 %
-#define backlight_arc_start_deg 53
-#define backlight_arc_end_deg 308
+#define backlight_dial_y ((EVE_DISP_HEIGHT * 15)/40) // 30%
+#define backlight_dial_radius (EVE_DISP_HEIGHT/8) // 12.5%
+#define backlight_dial_inner_radius (EVE_DISP_HEIGHT/11) // 9%
+#define backlight_arc_start_deg 60
+#define backlight_arc_end_deg 300
 #define backlight_arc_total_deg (backlight_arc_end_deg - backlight_arc_start_deg)
 
 /**
  @brief Definitions of handles for on screen buttons.
  */
-#define menu_item_1_tag 10
-#define menu_item_2_tag 11
-#define mode_button_1_tag 12
-#define mode_button_2_tag 13
-#define backlight_dial_tag 14
+#define settings_button_tag 10
+#define settings_menu_item_1_tag 11
+#define settings_menu_item_2_tag 12
+#define mode_button_1_tag 13
+#define mode_button_2_tag 14
+#define backlight_dial_tag 15
 
 /**
  @brief Definitions of handles for inbuilt fonts to be used based on screen size.
@@ -211,12 +250,11 @@ extern "C" {
     #define font_large 30
     #define font_xl 32
 #elif (EVE_DISP_WIDTH > 1200)
-    #define font_small 22
+    #define font_small 23
     #define font_med 30
     #define font_med_2 30
     #define font_large 31
     #define font_xl 34
-
 #endif
 
 /* Functions called from eve_example code to platform specific code */
