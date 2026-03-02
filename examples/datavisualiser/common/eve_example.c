@@ -1785,7 +1785,7 @@ void demoDataUpdates(){
     }
 
     //--------------------------------------------------------------------------------------------------------
-    // logic to move the uptime reading foir the pie chart
+    // logic to move the pie chart reading
     //--------------------------------------------------------------------------------------------------------
 
     // only do this if the settings menu isnt being rendered and the count % 75 == 0
@@ -1862,8 +1862,6 @@ void demoDataUpdates(){
 
     // increment count
     count ++;
-
-    //call in example
 }
 
 /**
