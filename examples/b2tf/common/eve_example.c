@@ -44,18 +44,15 @@
 
 #include "eve_example.h"
 
-#if IS_EVE_API(1)
-#error This example requires EVE API 2 or above.
-#endif
-
-#if EVE_DISP_WIDTH < 480
-#error This example needs a screen width of 480 pixels or above.
-#endif
-
 void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
 {
-    EVE_VERTEX_FORMAT(2);
     EVE_BEGIN(EVE_BEGIN_RECTS);
+#if IS_EVE_API(1)
+    EVE_VERTEX2F(((x - (segsize/3)) * 16), (y - (segsize/3)) * 16);
+    EVE_VERTEX2F(((count * (segsize + (segsize/3))) + x) * 16, 
+                 ((2 * segsize + (segsize/3)) + y) * 16);
+#else
+    EVE_VERTEX_FORMAT(2);
     EVE_VERTEX_TRANSLATE_X((x - (segsize/3)) * 16);
     EVE_VERTEX_TRANSLATE_Y((y - (segsize/3)) * 16);
     EVE_VERTEX2F(0, 0);
@@ -63,6 +60,7 @@ void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
                  ((2 * segsize + (segsize/3)) + (segsize/3)) * 4);
     EVE_VERTEX_TRANSLATE_X(0);
     EVE_VERTEX_TRANSLATE_Y(0);
+#endif
 }
 
 void lednumber(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize, uint32_t value, uint32_t fg, uint32_t bg)
@@ -79,6 +77,10 @@ void lednumber(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize, uint32_
 void tapebox(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
     EVE_BEGIN(EVE_BEGIN_RECTS);
+#if IS_EVE_API(1)
+    EVE_VERTEX2F(x * 16, y * 16);
+    EVE_VERTEX2F((x + w) * 16, (y + h) * 16);
+#else
     EVE_VERTEX_TRANSLATE_X(x * 16);
     EVE_VERTEX_TRANSLATE_Y(y * 16);
     EVE_VERTEX2F(0, 0);
@@ -87,6 +89,7 @@ void tapebox(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
     EVE_VERTEX2F(0, 0);
     EVE_VERTEX_TRANSLATE_X(0);
     EVE_VERTEX_TRANSLATE_Y(0);
+#endif
 }
 
 void gradbox(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
@@ -103,17 +106,41 @@ void eve_display(void)
     struct tm present;
     struct tm lasttime;
 
-    //destination. = datetime.datetime(1985, 10, 26, 1, 21);
+    // Destination time of October 26st 1985 at 01:35
+    //destination. = datetime.datetime(1985, 10, 26, 1, 35);
     memset(&destination, 0, sizeof(destination));
     destination.tm_year = 1985 - 1900;
     destination.tm_mon = 10 - 1;
     destination.tm_mday = 26;
-    destination.tm_hour = 1 - 1;
-    destination.tm_min = 21 - 1;
+    destination.tm_hour = 1;
+    destination.tm_min = 21;
+    
     ptime = time(NULL);
-    gmtime_s(&present, &ptime);
-    gmtime_s(&lasttime, &ptime);
-
+    if (ptime == -1)
+    {
+        // If there is no real time clock then time() returns -1.
+        // Set departure time of October 21st 2015 at 16:29
+        //lasttime. = datetime.datetime(2015, 10, 21, 16, 29);
+        memset(&lasttime, 0, sizeof(struct tm));
+        lasttime.tm_year = 2015 - 1900;
+        lasttime.tm_mon = 10 - 1;
+        lasttime.tm_mday = 21;
+        lasttime.tm_hour = 16;
+        lasttime.tm_min = 29;
+        memcpy(&present, &lasttime, sizeof(struct tm));
+    }
+    else
+    {
+#if _WIN32
+        gmtime_s(&present, &ptime);
+        gmtime_s(&lasttime, &ptime);
+#else
+        struct tm *ptm;
+        ptm = gmtime(&ptime);
+        memcpy(&lasttime, ptm, sizeof(struct tm));
+        memcpy(&present, ptm, sizeof(struct tm));
+#endif
+    }
     while (1)
     {
         /*
@@ -143,7 +170,11 @@ void eve_display(void)
             font -= 1;
         if (segsize < 33) // < 800 pixels wide
             font -= 1;
-        uint16_t w = segsize * 10;
+        if (segsize < 26) // < 640 pixels wide
+            font -= 1;
+        if (segsize < 20) // < 480 pixels wide
+            font -= 1;
+        uint16_t w = eve_romfont_height(font) * 16;
         uint16_t dx = x;
         uint16_t dy = y;
 
@@ -285,7 +316,16 @@ void eve_display(void)
 #endif
         mktime(&present);
         ptime = time(NULL);
-        gmtime_s(&lasttime, &ptime);
+        if (ptime > 0)
+        {
+#if _WIN32
+            gmtime_s(&lasttime, &ptime);
+#else
+            struct tm *ptm;
+            ptm = gmtime(&ptime);
+            memcpy(&lasttime, ptm, sizeof(struct tm));
+#endif
+        }
     }
 }
 
