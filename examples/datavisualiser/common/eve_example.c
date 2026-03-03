@@ -41,7 +41,7 @@
 #include <stdbool.h>
 
 #include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+//#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 
@@ -144,7 +144,6 @@ uint32_t static_screen_location = 0;
     const uint8_t pix_precision = 16; // 1/16 th
 #endif
 
-
 // ######################################################################################################################################################################################################
 // #######################################################                     Code for gradient helper functions                     ###################################################################
 // ######################################################################################################################################################################################################
@@ -154,7 +153,7 @@ uint32_t static_screen_location = 0;
  @details This can be used after a shape has been created in the alpha buffer to colour the shape with using the 
  EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA); blend function, it works by using the inverse alpha values from a inbuilt 
  gradient bitmap and layering colour based on these alpha values of a rectangle shape drawn beneath the bitmap. Otherwise it can be used to 
- create a normal rectangular gradient.
+ create a normal rectangular gradient that can be faded using the COLOR_A command preceeding the call to the function.
  @param grad_x x value on screen for the gradient
  @param grad_y y value on screen for the gradient
  @param width width of the gradient
@@ -165,7 +164,7 @@ uint32_t static_screen_location = 0;
  @param mirror boolen to determine if the graident bitmap needs mirrored
  @param vert boolen to determine if we wish the gradient to run vertically or horizontally 
  */
-void addBlendedGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, uint16_t height, uint32_t colour1, uint32_t colour2, bool alpha_compositing, bool mirror, bool vert)
+void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, uint16_t height, uint32_t colour1, uint32_t colour2, bool alpha_compositing, bool mirror, bool vert)
 {
     // scissor to the size of the gradient we want to create
     // this is required as we are using the wrapx/wrapy = REPEAT in the BITMAP_SIZE call
@@ -297,7 +296,7 @@ void addBlendedGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, uint16
 
         // end rectangles
         EVE_END();
-    } else{
+    }else{
         // restore context
         EVE_RESTORE_CONTEXT();
     }
@@ -511,7 +510,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     // we can use a trick here to blend in a gradient to our fill for the arc
     // we can utilise a L8 bitmap which goes from full alpha (255) to 0, and lay this on top
     // of our main colour fill to add in a transtion from one colour to the main fill
-    // this gradient is generated in the addBlendedGradient() function
+    // this gradient is generated in the addRectangularGradient() function
 
     // we want to blend a differnt colour on each side of the arc, so we can use one gradient blend on each side
     // figure out how tall and wide we need the grad to actually be for our arc
@@ -521,8 +520,8 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     // call the addGradient function to dynamically create a gradient for each side of the arc
     // position these accordingly to account for aliased edge of the arc (as we want to ensure we cover this)
     // we can add a vertical or horizontal gradient shapes via the function parameters, and mirror the direction of the gradient if required
-    addBlendedGradient((centerx - radius - 1), (centery - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true, true, true);
-    addBlendedGradient(centerx, (centery - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
+    addRectangularGradient((centerx - radius - 1), (centery - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true, true, true);
+    addRectangularGradient(centerx, (centery - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
     
     // NOTE: this trick will not work with the unfilled section of the ARC, as the unfillsed sections alpha value will make alter the colour blends
     // so this can only be used when we are filling the unfilled section of the arc with a non blended colour. To over come this we could utilise a
@@ -764,7 +763,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     }else{
         //else add a gradient from colour bottom to colour top
-        addBlendedGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
+        addRectangularGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
     }
     // end drawing
     EVE_END();
@@ -930,6 +929,9 @@ void pieChart(uint8_t uptime){
     uptime = max(uptime, 0);
     uptime = min(uptime, 100);
 
+    // Save current graphics context
+    EVE_SAVE_CONTEXT();
+
     // add label ontop sreen
     EVE_CMD_TEXT(pie_chart_label_x, pie_chart_label_y, font_med, 0, "Uptime %");
     EVE_CMD_NUMBER(pie_chart_readout_x, pie_chart_readout_y, font_med, EVE_OPT_RIGHTX, uptime);
@@ -963,6 +965,9 @@ void pieChart(uint8_t uptime){
         // add pie chart segment onto the screen
         addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, 0, 0);
     }
+
+    // Restore previous graphics context
+    EVE_RESTORE_CONTEXT(); 
 
 }
 
@@ -1396,7 +1401,6 @@ void generateStaticScreenComponents(){
     EVE_VERTEX_FORMAT(3);
     #endif
 
-
     // disable tagging, this prevents items being drawn with tag = 255 when we havent explicitly tagged them 
     EVE_TAG_MASK(0);
 
@@ -1414,7 +1418,7 @@ void generateStaticScreenComponents(){
     // add gradient behind the graph
     // set alpha for gradient
     EVE_COLOR_A(50);
-    addBlendedGradient(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour4, colourBG, false, true, true);
+    addRectangularGradient(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour4, colourBG, false, true, true);
     // reset gradient
     EVE_COLOR_A(255);
 
@@ -1469,7 +1473,8 @@ void generateStaticScreenComponents(){
  @brief Function to issue a display list to EVE to update the screen contents.
  */
 void renderScreenUpdate(){
-
+    
+    uint32_t temp = EVE_LIB_MemRead32(EVE_REG_CMD_DL);
     //--------------------------------------------------------------------------------------------------------
     // Construct display list and send to EVE
     //--------------------------------------------------------------------------------------------------------
@@ -1920,7 +1925,6 @@ void eve_display(void)
  */
 void eve_example(void)
 {
-
     EVE_Init();             // Initialise the display
 
     eve_calibrate();        // Calibrate the display
