@@ -1474,7 +1474,6 @@ void generateStaticScreenComponents(){
  */
 void renderScreenUpdate(){
     
-    uint32_t temp = EVE_LIB_MemRead32(EVE_REG_CMD_DL);
     //--------------------------------------------------------------------------------------------------------
     // Construct display list and send to EVE
     //--------------------------------------------------------------------------------------------------------
