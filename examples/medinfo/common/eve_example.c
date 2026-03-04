@@ -55,7 +55,7 @@
 #error This project needs EVE API 3, 4 or 5 (BT81x, BT82x).
 #endif
 
-#if EVE_DISP_WIDTH < 1920 || EVE_DISP_HEIGHT < 1024
+#if !((DISPLAY_RES == WUXGA) || (DISPLAY_RES == FULLHD))
 #error This project requires a screen of at least 1920x1024 pixels.
 #endif
 
@@ -69,9 +69,6 @@ const uint32_t icons_small = 100;
 const uint32_t trace_gap = 290;
 // Width of the trace line
 const uint32_t trace_width = 50;
-// Top left of trace area
-const uint32_t trace_x = 100;
-const uint32_t trace_y = 20;
 // Grid line width
 const uint32_t grid_width = 16;
 // Sweep step - data points to scroll each time (must be < TRACE_STEP)
@@ -85,9 +82,6 @@ const uint32_t trace_x_scale = 0x14000;
 // Scale Y axis of traces by 0.75 0xc000 (256 points go to 192 pixels)
 const uint32_t trace_y_scale = 0x10000;
 
-// Top left of info area
-const uint32_t info_x = 1200;
-const uint32_t info_y = 20 + ((280 / 2)) - 80;//(((80 * 28) / 10)) / 2);
 // Number of pixels between info blocks
 const uint32_t info_gap = 290;
 // Number of pixels between 7 segment digits
@@ -99,9 +93,6 @@ const uint32_t info_seg_size = (160 / 2);
 
 // Number of pixels for extra area
 const uint32_t extra_max = 250;
-// Centre of extra area - align with centre of HRM seven segs
-const uint32_t extra_x = EVE_DISP_WIDTH - (450 / 2);
-const uint32_t extra_y = 20 + ((80 * 20) / 10);
 const uint32_t extra_col = 50;
 // Scale to use to "pulse" heart icon
 const uint32_t pulse_scale = 100;
@@ -116,14 +107,14 @@ const uint8_t resp_hysteresis = 16;
 uint8_t sweep_edge[trace_total][TRACE_STEP];
 
 // Updated touchscreen and status info data loaded into sweep_edge
-EVE_TRACE_PROPS infostatus;
+TRACE_PROPS infostatus;
 
 // Array to receive touchscreen and status info
 uint32_t receivedata[3];
 
-EVE_ASSET_PROPS patch_asset;
-EVE_ASSET_PROPS icon_assets_small[icons_total_small];
-EVE_ASSET_PROPS icon_assets_large[icons_total_large];
+ASSET_PROPS patch_asset;
+ASSET_PROPS icon_assets_small[icons_total_small];
+ASSET_PROPS icon_assets_large[icons_total_large];
 
 // Built-in fonts
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
@@ -249,6 +240,39 @@ void eve_write_pwm(uint32_t val)
     EVE_LIB_MemWrite32(EVE_REG_PWM_DUTY, val);
 }
 
+void eve_messagebox(uint32_t colour, uint32_t fgcolour, uint32_t bgcolour, int16_t font, uint16_t options, const char *message)
+{
+    EVE_COLOR(colour);
+#if MESSAGEBOX_METHOD == USE_DIALOG_EXTENSIONS
+    // Draw a seven segment number using the extension
+    EVE_CMD_FGCOLOR(fgcolour);
+    EVE_CMD_BGCOLOR(bgcolour);
+    EVE_CMD_MESSAGEBOX(font, options, message);
+#elif MESSAGEBOX_METHOD == USE_DIALOG_SNIPPETS
+    EVE_COLOR(colour);
+    EVE_CMD_FGCOLOR(fgcolour);
+    EVE_CMD_BGCOLOR(bgcolour);
+    messagebox(font, options, message);
+#else // MESSAGEBOX_METHOD == USE_OVERLAY
+#endif
+}
+
+void eve_tooltip(uint32_t colour, uint32_t fgcolour, uint32_t bgcolour, int16_t x, int16_t y, int16_t font, uint16_t options, const char *message)
+{
+#if MESSAGEBOX_METHOD == USE_DIALOG_EXTENSIONS
+    EVE_COLOR(colour);
+    EVE_CMD_FGCOLOR(fgcolour);
+    EVE_CMD_BGCOLOR(bgcolour);
+    EVE_CMD_TOOLTIP(x, y, font, options, message);
+#elif MESSAGEBOX_METHOD == USE_DIALOG_SNIPPETS
+    EVE_COLOR(colour);
+    EVE_CMD_FGCOLOR(fgcolour);
+    EVE_CMD_BGCOLOR(bgcolour);
+    tooltip(x, y, font, options, message);
+#else // MESSAGEBOX_METHOD == USE_OVERLAY
+#endif
+}
+
 void eve_draw_number(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
 {
 #if DIGITAL_READOUT_METHOD == USE_SEVENSEG_EXTENSIONS
@@ -310,6 +334,16 @@ int eve_loadpatch(void)
 
 void eve_display(void)
 {
+    // Top left of trace area
+    const uint32_t trace_x = 100;
+    const uint32_t trace_y = 20;
+    // Top left of info area
+    const uint32_t info_x = 1200;
+    const uint32_t info_y = 20 + ((280 / 2)) - 80;//(((80 * 28) / 10)) / 2);
+    // Centre of extra area - align with centre of HRM seven segs
+    const uint32_t extra_x = EVE_DISP_WIDTH - (450 / 2);
+    const uint32_t extra_y = 20 + ((80 * 20) / 10);
+
     // Counter for moving sweep position
     uint32_t sweep_counter = 0;
     
@@ -366,9 +400,9 @@ void eve_display(void)
     uint32_t frame_render_time = 0;
     
     // Pop-up dialog text
-    char *dialog = NULL;
+    const char *dialog = NULL;
     // Tooltips text
-    char *tooltip = NULL;
+    const char *tooltip = NULL;
     uint8_t tooltip_key = 0;
     uint16_t tooltip_x;
     uint16_t tooltip_y;
@@ -672,18 +706,12 @@ void eve_display(void)
 
         if (dialog)
         {
-            EVE_COLOR(white);
-            EVE_CMD_FGCOLOR(blue);
-            EVE_CMD_BGCOLOR(blue_dark);
             EVE_TAG(key_dialog);
-            EVE_CMD_MESSAGEBOX(font_dialog, EVE_OPT_FLAT | EVE_OPT_MSGBGALPHA, dialog);
+            eve_messagebox(white, blue, blue_dark, font_dialog, EVE_OPT_FLAT | EVE_OPT_MSGBGALPHA, dialog);
         }
         else if (tooltip)
         {
-            EVE_COLOR(white);
-            EVE_CMD_FGCOLOR(blue);
-            EVE_CMD_BGCOLOR(blue_dark);
-            EVE_CMD_TOOLTIP(tooltip_x, tooltip_y, font_dialog, EVE_OPT_MSGTOP | EVE_OPT_FLAT | EVE_OPT_MSGBGALPHA, tooltip);
+            eve_tooltip(white, blue, blue_dark, tooltip_x, tooltip_y, font_dialog, EVE_OPT_MSGTOP | EVE_OPT_FLAT | EVE_OPT_MSGBGALPHA, tooltip);
         }
             
         EVE_TAG_MASK(0);

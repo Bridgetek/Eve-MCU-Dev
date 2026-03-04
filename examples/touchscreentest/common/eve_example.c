@@ -46,14 +46,7 @@
 
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
-// Choose a suitable font for the display
-#if EVE_DISP_WIDTH <= 480
-const uint8_t font = 26;
-#elif EVE_DISP_WIDTH <= 800
-const uint8_t font = 28;
-#else
-const uint8_t font = 30;
-#endif
+uint8_t font;
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
@@ -135,6 +128,20 @@ void eve_display(void)
     uint32_t xyr = 0;
 
     char hexval[16];
+
+    // Choose a suitable font for the display
+    if (EVE_DISP_WIDTH <= 480)
+    {
+        font = 26;
+    }
+    else if (EVE_DISP_WIDTH <= 800)
+    {
+        font = 28;
+    }
+    else
+    {
+        font = 30;
+    }
 
     eve_readcalib();
     
