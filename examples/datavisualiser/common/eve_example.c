@@ -284,7 +284,7 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
     EVE_END();
 
     // are we using this gradient in a alpha composited shape?
-    // if we are we need to draw it after the gradient
+    // if we are we need to draw this after the gradient
     if(alpha_compositing){
         // draw a rectangle of the colour we want to blend the gradient into
         // NOTE: because the preceding BLEND_FUNC call is EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
@@ -902,7 +902,7 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
     }
 
     // Draw a circle which will fill the arc with the input colour
-    // re-enabble colours
+    // re-enable colours
     EVE_COLOR_MASK(1, 1, 1, 0);
     // blend this shape into the alpha composited shape we created above
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
@@ -911,7 +911,7 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
     EVE_POINT_SIZE(radius * 16);
     // place at the center of the circle the pie segment sits inside
     EVE_VERTEX2F((pie_center_x * pix_precision), (pie_center_y * pix_precision));
- 
+
     // Restore previous graphics context
     EVE_RESTORE_CONTEXT();
 
@@ -1482,6 +1482,7 @@ void renderScreenUpdate(){
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
 
+    
     // append static sections of display list that were previously generated and stored in RAM_G
     EVE_CMD_APPEND(static_screen_location, static_screen_size);
     
@@ -1702,7 +1703,7 @@ void checkTouchStatus(void)
 
 		// flip boolean state for mode button 1 press
 		mode_button_1_press = !mode_button_1_press;
-        // flip demo mode varibale
+        // flip demo mode variable
         demoMode = !demoMode;
    	}
 
@@ -1714,7 +1715,7 @@ void checkTouchStatus(void)
 
 		// flip boolean state for mode button 1 press
 		mode_button_2_press = !mode_button_2_press;
-        // flip demo mode varibale
+        // flip demo mode variable
         demoMode = !demoMode;
    	}
   

@@ -156,9 +156,9 @@ extern "C" {
 #define pie_chart_radius ((EVE_DISP_HEIGHT * 3)/20) // 15%
 // for label
 #define pie_chart_label_x ((EVE_DISP_WIDTH * 3)/4) // 75% 
-#define pie_chart_label_y ((EVE_DISP_HEIGHT * 137)/320) // 42.8125%
+#define pie_chart_label_y ((EVE_DISP_HEIGHT * 69)/160) // 43.125%
 #define pie_chart_readout_x ((EVE_DISP_WIDTH * 38)/40) // 95% 
-#define pie_chart_readout_y ((EVE_DISP_HEIGHT * 137)/320) // 42.8125%
+#define pie_chart_readout_y ((EVE_DISP_HEIGHT * 69)/160) // 43.125%
 
 /**
  @brief Definitions of settings menu button size and position.
@@ -169,7 +169,7 @@ extern "C" {
 #define settings_button_y2 ((EVE_DISP_HEIGHT * 7) /40) // 17.5%
 // for the lines used to create the settings menu icon
 #define settings_button_lines_x ((EVE_DISP_WIDTH * 38) /40) // 95%
-#define settings_button_lines_y ((EVE_DISP_HEIGHT * 13) /320) // 4.06%
+#define settings_button_lines_y ((EVE_DISP_HEIGHT * 27) /640) // 4.21%
 #define settings_button_lines_lenght ((EVE_DISP_WIDTH * 1) /80) // 1.25%
 #define settings_button_lines_y_offset ((EVE_DISP_HEIGHT * 1) /80) // 1.25%
 
@@ -183,12 +183,11 @@ extern "C" {
     #define settings_button_line_width 4
 #endif
 
-
 /**
  @brief Definitions of settings control menu size and position.
  */
 #define settings_menu_x ((EVE_DISP_WIDTH * 31)/40) // 77.5%
-#define settings_menu_y ((EVE_DISP_HEIGHT * 14)/80) // 
+#define settings_menu_y ((EVE_DISP_HEIGHT * 14)/80) // 17.5%
 #define settings_menu_length ((EVE_DISP_WIDTH * 49)/320) // 15.3%
 #define settings_menu_size (EVE_DISP_HEIGHT/20) // 5% 
 #define settings_menu_label_x ((EVE_DISP_WIDTH * 3)/4) // 75%
