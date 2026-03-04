@@ -102,11 +102,11 @@ void MCU_Init(void)
 
 #if defined QUADSPI_ENABLE
 
-#if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
+#if IS_EVE_API(2,3,4,5)
     /* Initialize IO2 and IO3 pad/pin for quad settings */
 #endif
 
-#endif// QUADSPI_ENABLE
+#endif // QUADSPI_ENABLE
 }
 
 void MCU_Deinit(void)
@@ -119,16 +119,7 @@ void MCU_Deinit(void)
 void MCU_Setup(void)
 {
 #if defined QUADSPI_ENABLE
-
-#if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-    // Turn on EVE quad-SPI for FT81x devices.
-    MCU_CSlow();
-    MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
-    MCU_SPIWrite8(2);
-    MCU_CShigh();
-#endif//(defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-
-#endif// QUADSPI_ENABLE
+#endif // QUADSPI_ENABLE
 
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.

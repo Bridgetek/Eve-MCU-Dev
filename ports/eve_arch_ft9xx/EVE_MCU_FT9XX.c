@@ -131,7 +131,7 @@ void MCU_Setup(void)
 {
 #if defined QUADSPI_ENABLE
 
-#if (defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
+#if IS_EVE_API(2,3,4)
     // Turn on EVE quad-SPI for FT81x devices.
     MCU_CSlow();
     MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
@@ -140,8 +140,17 @@ void MCU_Setup(void)
 
     // Turn on FT9xx quad-SPI.
     spi_option(SPIM, spi_option_bus_width, 4);
-#endif//(defined EVE2_ENABLE || defined EVE3_ENABLE || defined EVE4_ENABLE)
-#endif// QUADSPI_ENABLE
+#elif IS_EVE_API(5)
+    // Turn on EVE quad-SPI for FT81x devices.
+    MCU_CSlow();
+    MCU_SPIWrite32(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
+    MCU_SPIWrite32(2);
+    MCU_CShigh();
+
+    // Turn on FT9xx quad-SPI.
+    spi_option(SPIM, spi_option_bus_width, 4);
+#endif // IS_EVE_API(2,3,4,5)
+#endif // QUADSPI_ENABLE
 
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
