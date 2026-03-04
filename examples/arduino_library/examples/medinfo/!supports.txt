@@ -1,0 +1,2 @@
+# Not supported on EVE1 (FT80x), EVE2 (FT81x and BT88x)
+3, 4, 5

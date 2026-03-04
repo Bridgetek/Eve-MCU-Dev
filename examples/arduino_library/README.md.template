@@ -192,8 +192,7 @@ Therefore, taking `eve` as the name of the library class in a sketch, calling th
 The full API available to the Arduino IDE is as follows:
 
 ```
-/* ### BEGIN API PROTO ### */
-/* ### END API ### */
+### API PROTO ###
 ```
 
 ### Library Public Variables
@@ -249,8 +248,7 @@ Therefore, taking `eve` as the name of the library class in a sketch, calling th
 `eve.OPT_FILL` will call the function `EVE_OPT_FILL` in EVE-MCU-Dev.
 
 ```
-/* ### BEGIN API CONST ### */
-/* ### END API ### */
+### API CONST ###
 ```
 
 ## Examples
