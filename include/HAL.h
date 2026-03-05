@@ -307,4 +307,24 @@ uint16_t HAL_Read16(void);
 uint8_t HAL_Read8(void);
 #endif
 
+/**
+ @brief Sets the SPI bus width on EVE
+ @details Changes from single SPI (default) to Dual SPI to
+    Quad SPI.
+ @param mode - SPI mode:
+                0 – 1bit (Default Single mode)
+                1 – 2bits (Dual mode)
+                2 – 4bits (Quad mode)
+ */
+#if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
+void HAL_SetSPIMode(uint32_t mode);
+#endif
+
+/**
+ @brief Maximum transfer size of data transmit or receive
+ @details The maximum number of bytes in a transfer using the
+    HAL_Read or HAL_Write functions.
+ */
+#define HAL_MAX_CHUNK_SIZE 1024
+
 #endif /* HAL_HEADER_H */

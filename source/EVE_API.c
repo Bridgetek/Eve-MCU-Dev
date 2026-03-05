@@ -146,7 +146,6 @@ void EVE_Init(void)
 #endif
 
 #elif IS_EVE_API(5) 
-
     EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
     EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, (EVE_RAM_G_SIZE - 0x280000UL - ((uint32_t)EVE_DISP_WIDTH * (uint32_t)EVE_DISP_HEIGHT * 3UL)));
@@ -216,6 +215,7 @@ void EVE_Init(void)
 
     // Load base patch or project defined patch if overriden
     eve_loadpatch();
+
 #endif
 
     // --------------------- Clear screen ready to start -----------------------
@@ -348,7 +348,7 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 1024;
+    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
 
     // Pad data length to multiple of 4.
@@ -397,7 +397,7 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 1024;
+    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
 
     // While not all data is received
@@ -443,7 +443,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 128;
+    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
     uint32_t Freespace = 0;
 

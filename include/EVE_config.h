@@ -285,12 +285,15 @@
 #undef EVE_TOUCH_TYPE
 //@}
 
-/** @brief Explicitly disable QuadSPI
+/** @brief Enable or Disable QuadSPI
+ *  @details If the macro is set then the platform port may only enable QSPI
+ *           on the EVE device (using HAL_SetSPIMode) if QSPI is supported by
+ *           the platform. 
+ *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
+ *        supported on FT80x devices. For default set this to disabled.
  */
 //@{
-#ifdef QUADSPI_ENABLE
 #undef QUADSPI_ENABLE
-#endif
 //@}
 
 /** @brief RAM_G size options for BT82X only
