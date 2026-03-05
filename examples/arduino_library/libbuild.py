@@ -140,7 +140,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 # Change code to use C++ class instead of C library
                 if apirefactor:
                     # Add in eve.setup before eve.Init
-                    line = re.sub(r"^(\s*)EVE_Init\s*\(\s*\)\s*;", r"\g<1>" f"// Setup the EVE display ({defres})\n" \
+                    line = re.sub(r"^(\s*)EVE_Init\s*\(\s*\)\s*;", r"\g<1>// Setup the EVE display (" + defres + ")\n" \
                                                       r"\g<1>" "eve.setup(DISPLAY_RES);\n" \
                                                       r"\g<1>" "// Setup the EVE library\n" \
                                                       r"\g<1>" "eve.Init();\n" \
@@ -176,7 +176,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             if apiproto:
                                 foundproto = False
                                 for a in apiproto:
-                                    if re.search(f"\s{subtoken}\(", a):
+                                    if re.search(r"\s" + subtoken + r"\(", a):
                                         # If it is in the API list then replace it...
                                         foundproto = True
                                 if not foundproto:
@@ -195,29 +195,29 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             token = re.search(r"\bEVE_[\w]+\b", line)
                         line = subline + line
                     # Change references to the FONT header structures to class definitions
-                    line = re.sub(r"\beve\.(GPU_\w+)\b", f"Bridgetek_EVE{str_full_version}::" r"\g<1>", line)
+                    line = re.sub(r"\beve\.(GPU_\w+)\b", "Bridgetek_EVE" + str_full_version + r"::\g<1>", line)
                     # Change references to the ROMFONT array to point to class member
-                    line = re.sub(r"\beve\.(ROMFONT_\w+)\b", f"Bridgetek_EVE{str_full_version}::" r"\g<1>", line)
+                    line = re.sub(r"\beve\.(ROMFONT_\w+)\b", "Bridgetek_EVE" + str_full_version + r"::\g<1>", line)
                     # Rename refereces to EVE_DISP_WIDTH/HEIGHT to class member
                     line = re.sub(r"\bEVE_(DISP_\w+)\b", r"eve.\g<1>()", line)
                     # Add extern or definition of the EVE class
                     extern = ""
                     if not file_out.endswith("eve_example.ino"):
                         extern = "extern "
-                    line = re.sub(r"#include \<EVE.h\>", f"#include <Bridgetek_EVE{str_full_version}.h>" \
+                    line = re.sub(r"#include \<EVE.h\>", "#include <Bridgetek_EVE" + str_full_version + ".h>" \
                                                           "\n\n/**\n" \
                                                           " @brief EVE library handle.\n" \
                                                           " @details This is the one instance of the EVE library. Available as a global.\n" \
                                                           " */\n" \
-                                                          f"{extern}Bridgetek_EVE{str_full_version} eve;\n" \
+                                                          + extern + "Bridgetek_EVE" + str_full_version + " eve;\n" \
                                   , line)
                     # Remove snippet top level directory references 
-                    line = re.sub(r"#include \"[\w]+/([\w.]+)\"", "#include \"" r"\g<1>" "\"", line)
+                    line = re.sub(r"#include \"[\w]+/([\w.]+)\"", r"#include \"\g<1>\"", line)
                     # Change references to const array stored in class to pointer from unsized array
                     line = re.sub(r"([\w.]+)\[\] = (Bridgetek_EVE[0-9_]*::ROMFONT_)", r"*\g<1> = \g<2>", line)
                 else:
                     # Update name of library header file to prevent clashes
-                    line = re.sub(r"#include \<EVE.h\>", f"#include <EVE{str_full_version}.h>", line)
+                    line = re.sub(r"#include \<EVE.h\>", "#include <EVE" + str_full_version + ".h>", line)
 
                 if flag == 0:
                     # Simulate preprocessor by excluding/replacing code
