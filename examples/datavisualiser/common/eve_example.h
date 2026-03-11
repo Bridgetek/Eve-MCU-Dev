@@ -260,7 +260,7 @@ extern "C" {
 int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
-uint32_t platform_get_time(void);
+//uint32_t platform_get_time(void); // not currently used, but will be usefful for sensor implementations 
 
 /* Entry point to the example code */
 void eve_example(void);

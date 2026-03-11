@@ -41,7 +41,7 @@
 #include <stdbool.h>
 
 #include <EVE.h>
-//#include <MCU.h> // For DEBUG_PRINTF only
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 
@@ -773,16 +773,17 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 }
 
 /**
- @brief Function to draw a segment of a pie chart.
- @details This function draws a section of a pie chart whose fill colour is based on a preceeding COLOR_RGB call, 
- where the radius and start/end angles are input as variabbes to the funciton
- @param pie_center_x x position for the center of the circle where the pie segment would reside
- @param pie_center_y x position for the center of the circle where the pie segment would reside
- @param radius radius value of the circle used to size the pie chart segment
- @param start_angle degrees clockwise from the bottom of the circle where we want the pie segment to start (16 bit value)
- @param end_angle degrees clockwise from the bottom of the circle where we want the pie segment to end (16 bit value)
+ @brief Function to draw a segment of a pie or doughnut chart.
+ @details This function draws a section of a pie or doughnut chart whose fill colour is based on a preceeding COLOR_RGB call, 
+ where the radius and start/end angles are input as variabes to the function
+ @param chart_center_x x position for the center of the circle where the pie/doughnut segment would reside
+ @param chart_center_y y position for the center of the circle where the pie/doughnut segment would reside
+ @param radius radius value of the circle used to size the pie/doughnut chart segment
+ @param doughnut boolean to determine if we want ot create a doughtnut segment instead of a pie segment (inner doughnut radius set at 3/4th of the radius input variable)
+ @param start_angle degrees clockwise from the bottom of the circle where we want the pie/doughnut segment to start (16 bit value)
+ @param end_angle degrees clockwise from the bottom of the circle where we want the pie/doughnut segment to end (16 bit value)
  */
-void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t radius, uint16_t start_angle, uint16_t end_angle)
+void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
 {
     // Ensure the radius does not exceed max point size
     radius = min(radius, 511);
@@ -807,16 +808,16 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
     }
 
     // Points for the starting angle 
-    int16_t pie_start_x = CIRC_X(radius * 2, start_angle);
-    int16_t pie_start_y = CIRC_Y(radius * 2, start_angle);
+    int16_t chart_start_x = CIRC_X(radius * 2, start_angle);
+    int16_t chart_start_y = CIRC_Y(radius * 2, start_angle);
  
     // Points for the finishing angle 
-    int16_t pie_end_x = CIRC_X(radius * 2, end_angle);
-    int16_t pie_end_y = CIRC_Y(radius * 2, end_angle);
+    int16_t chart_end_x = CIRC_X(radius * 2, end_angle);
+    int16_t chart_end_y = CIRC_Y(radius * 2, end_angle);
 
     // Points for the intermediate stretcher point (used if range is > 16384)
-    int16_t pie_int_x = CIRC_X(radius * 2, start_angle + 0x4000);
-    int16_t pie_int_y = CIRC_Y(radius * 2, start_angle + 0x4000);
+    int16_t chart_int_x = CIRC_X(radius * 2, start_angle + 0x4000);
+    int16_t chart_int_y = CIRC_Y(radius * 2, start_angle + 0x4000);
 
     // Save current graphics context
     EVE_SAVE_CONTEXT();
@@ -833,7 +834,7 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
     EVE_COLOR_MASK(0, 0, 0, 1);
     // Scissor for the size of the pie we wish to draw
     EVE_SCISSOR_SIZE((radius * 2) + 1, (radius * 2) + 1);
-    EVE_SCISSOR_XY((pie_center_x - radius), (pie_center_y - radius));
+    EVE_SCISSOR_XY((chart_center_x - radius), (chart_center_y - radius));
 
     // clear alpha to 0
     EVE_CLEAR_COLOR_A(0);
@@ -853,15 +854,15 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
         // Stencil cut-out from the circle for the pie segment
         EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
         // use calculated points to draw edge strip
-        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
-        EVE_VERTEX2F(pie_center_x * pix_precision, pie_center_y * pix_precision);
-        EVE_VERTEX2F((pie_center_x - pie_end_x) * pix_precision, (pie_center_y + pie_end_y) * pix_precision);
+        EVE_VERTEX2F((chart_center_x - chart_start_x) * pix_precision, (chart_center_y + chart_start_y) * pix_precision);
+        EVE_VERTEX2F(chart_center_x * pix_precision, chart_center_y * pix_precision);
+        EVE_VERTEX2F((chart_center_x - chart_end_x) * pix_precision, (chart_center_y + chart_end_y) * pix_precision);
         // if range is > 16384 we need to add this vertex
         if (range > 0x4000)
         {
-            EVE_VERTEX2F((pie_center_x - pie_int_x) * pix_precision, (pie_center_y + pie_int_y) * pix_precision);
+            EVE_VERTEX2F((chart_center_x - chart_int_x) * pix_precision, (chart_center_y + chart_int_y) * pix_precision);
         }
-        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
+        EVE_VERTEX2F((chart_center_x - chart_start_x) * pix_precision, (chart_center_y + chart_start_y) * pix_precision);
     }
 
     // enable alpha, to be begin creating alpha compositied shape
@@ -873,16 +874,25 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
 
     // begin points
     EVE_BEGIN(EVE_BEGIN_POINTS);
-    // Add circle of our radius size into the alpha bbuffer
+    // Add circle of our radius size into the alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(radius * 16);
-    EVE_VERTEX2F((pie_center_x * pix_precision), (pie_center_y * pix_precision));
+    EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
+
+    if(doughnut){
+        // remove circle of 3/4 radius size from the alpha buffer
+        // this turns our pie chart into a doughnut chart
+        // we can also feed a varaible into this function if desried to set the inner radius here
+        EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+        EVE_POINT_SIZE(((radius *3)/4) * 16);
+        EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
+    }
 
     //if we arent a full circle
     if (range != 0xffff){
         // begin line strip
         EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
-        // remove this line strip from thhe alpha bbufffer (to give a aliased edge of the pie segment)
+        // remove this line strip from thhe alpha buffer (to give a aliased edge of the pie segment)
         EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
         // set line width based off of input radius
         if (radius > 64)
@@ -896,13 +906,13 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
         else
             EVE_LINE_WIDTH((radius*3)/2);
         // add verticies along the edges of the pie segment
-        EVE_VERTEX2F((pie_center_x - pie_start_x) * pix_precision, (pie_center_y + pie_start_y) * pix_precision);
-        EVE_VERTEX2F(pie_center_x * pix_precision, pie_center_y * pix_precision);
-        EVE_VERTEX2F((pie_center_x - pie_end_x) * pix_precision, (pie_center_y + pie_end_y) * pix_precision);
+        EVE_VERTEX2F((chart_center_x - chart_start_x) * pix_precision, (chart_center_y + chart_start_y) * pix_precision);
+        EVE_VERTEX2F(chart_center_x * pix_precision, chart_center_y * pix_precision);
+        EVE_VERTEX2F((chart_center_x - chart_end_x) * pix_precision, (chart_center_y + chart_end_y) * pix_precision);
     }
 
     // Draw a circle which will fill the arc with the input colour
-    // re-enable colours
+    // re-enable colours, but we dont need to re-enable alpha here currently
     EVE_COLOR_MASK(1, 1, 1, 0);
     // blend this shape into the alpha composited shape we created above
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
@@ -910,7 +920,7 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius * 16);
     // place at the center of the circle the pie segment sits inside
-    EVE_VERTEX2F((pie_center_x * pix_precision), (pie_center_y * pix_precision));
+    EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
 
     // Restore previous graphics context
     EVE_RESTORE_CONTEXT();
@@ -921,7 +931,7 @@ void addPieChartSegment(int16_t pie_center_x, int16_t pie_center_y, uint16_t rad
  @brief Helper function add the uptime pie chart into the display list.
  @details This function draws a pie chart with two segments and adds this into the display list, 
  along with the pie chart label text.
- @param uptime x position pie chart
+ @param uptime varible used to determine the draw size of the two pie chart segments
  */
 void pieChart(uint8_t uptime){
 
@@ -932,7 +942,7 @@ void pieChart(uint8_t uptime){
     // Save current graphics context
     EVE_SAVE_CONTEXT();
 
-    // add label ontop sreen
+    // add label on to the screen
     EVE_CMD_TEXT(pie_chart_label_x, pie_chart_label_y, font_med, 0, "Uptime %");
     EVE_CMD_NUMBER(pie_chart_readout_x, pie_chart_readout_y, font_med, EVE_OPT_RIGHTX, uptime);
 
@@ -941,7 +951,7 @@ void pieChart(uint8_t uptime){
     // colour set to BG colour
     EVE_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
     // set size to slight bigger than the pie chart radius
-    EVE_POINT_SIZE(((pie_chart_radius * 11)/10) * 16);;
+    EVE_POINT_SIZE(((pie_chart_radius * 11)/10) * 16);
     // draw point
     EVE_VERTEX2F((pie_chart_x * pix_precision), (pie_chart_y * pix_precision));
     
@@ -950,12 +960,12 @@ void pieChart(uint8_t uptime){
         // this is the uptime section of the chart
         EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
         // add pie chart segment onto the screen
-        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, 0x8000, (0x8000 + (uptime * 0xffff)/100));
+        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0x8000, (0x8000 + (uptime * 0xffff)/100));
 
         // this is the downtime section of the chart
         EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
         // add pie chart segment onto the screen
-        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, (0x8000 + (uptime * 0xffff)/100), 0x8000);
+        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, (0x8000 + (uptime * 0xffff)/100), 0x8000);
     } else{
         // colour based on whether we are full uptime or downtime
         if (uptime == 0)
@@ -963,7 +973,7 @@ void pieChart(uint8_t uptime){
         else
             EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
         // add pie chart segment onto the screen
-        addPieChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, 0, 0);
+        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0, 0);
     }
 
     // Restore previous graphics context
@@ -1867,6 +1877,7 @@ void demoDataUpdates(){
 
     // increment count
     count ++;
+
 }
 
 /**
