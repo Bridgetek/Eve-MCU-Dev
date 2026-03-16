@@ -47,7 +47,7 @@
 //###########################################################################
 
 // Clock lower boundary of trimming
-#define EVE_LOW_FREQ_BOUND             47040000L//98% of 48Mhz
+#define EVE_LOW_FREQ_BOUND             47040000L        //98% of 48Mhz
 
 // Memory Map
 

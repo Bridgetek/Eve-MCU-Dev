@@ -49,9 +49,9 @@
 #include "patch_base.h"
 #endif
 
-//##############################################################################
-// Library functions
-//##############################################################################
+/* EVE API */
+
+/* EVE API Library functions */
 
 void EVE_Init(void)
 {
@@ -59,7 +59,7 @@ void EVE_Init(void)
 
     HAL_EVE_Init();
 
-    // ------------------------- Display settings ------------------------------
+    // Setup Display Settings for Panel
 
     // LCD display parameters
 #if IS_EVE_API(1, 2, 3, 4)
@@ -127,7 +127,8 @@ void EVE_Init(void)
 
     HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
 
-    // ---------------------- Touch and Audio settings -------------------------
+    // Setup Touch and Audio settings 
+
     // Eliminate any false touches
     HAL_MemWrite16(EVE_REG_TOUCH_RZTHRESH, 1200);
 
@@ -218,7 +219,7 @@ void EVE_Init(void)
 
 #endif
 
-    // --------------------- Clear screen ready to start -----------------------
+    // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -230,7 +231,7 @@ void EVE_Init(void)
 
 #if IS_EVE_API(1)
 
-       // ---------------------- Reset all bitmap properties ------------------------
+    // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -238,7 +239,6 @@ void EVE_Init(void)
     for (i = 0; i < 16; i++)
     {
         EVE_BITMAP_HANDLE(i);
-        //EVE_CMD_SETBITMAP(0,0,0,0);
         EVE_BITMAP_LAYOUT(0, 0, 0);
         EVE_BITMAP_SIZE(0, 0, 0, 0, 0);
     }
@@ -249,7 +249,7 @@ void EVE_Init(void)
 
 #elif IS_EVE_API(2, 3, 4, 5)
 
-    // ---------------------- Reset all bitmap properties ------------------------
+    // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -266,7 +266,7 @@ void EVE_Init(void)
 #endif
 }
 
-// Begins co-pro list for display creation
+// Begin co-pro list for display creation
 void EVE_LIB_BeginCoProList(void)
 {
     // Wait for command FIFO to be empty and record current position in FIFO
@@ -284,7 +284,7 @@ void EVE_LIB_BeginCoProList(void)
 #endif
 }
 
-// Ends co-pro list for display creation
+// End co-pro list for display creation
 void EVE_LIB_EndCoProList(void)
 {
     // End SPI transaction
@@ -690,9 +690,7 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t *value)
 }
 #endif
 
-//##############################################################################
-// Display List commands for co-processor
-//##############################################################################
+// Display List Commands for the Co-processor
 
 void EVE_CMD(uint32_t c)
 {
@@ -1040,9 +1038,7 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 #endif
 
-//##############################################################################
-// Co-Processor Widgets
-//##############################################################################
+// Co-Processor Widget Commands
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
@@ -2287,5 +2283,4 @@ void EVE_CMD_RESULT(uint32_t a)
 
 #endif
 
-// ############################  All EVE  ##########################################
-
+/* EVE API END */

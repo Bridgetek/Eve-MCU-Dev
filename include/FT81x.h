@@ -471,7 +471,7 @@
 
 // Arrays containing the bitmap sizes of ROM fonts
 
-#if EVE_SUB_API == 1
+#if IS_EVE_SUB_API(1)
 
 #define EVE_ROMFONT_MAX 34
 
@@ -487,7 +487,7 @@
     EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4, \
     EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4,EVE_FORMAT_L4}
 
-#elif EVE_SUB_API == 2
+#elif IS_EVE_SUB_API(2)
 
 #define EVE_ROMFONT_MAX 31
 

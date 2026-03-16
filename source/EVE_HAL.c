@@ -220,7 +220,7 @@ void HAL_EVE_Deinit(void)
     MCU_Deinit();
 }
 
-// --------------------- Chip Select line ----------------------------------
+// Chip Select line
 void HAL_ChipSelect(int8_t enable)
 {
     if (enable)
@@ -229,7 +229,7 @@ void HAL_ChipSelect(int8_t enable)
         MCU_CShigh();
 }
 
-// -------------------------- Power Down line --------------------------------------
+// Power Down line
 void HAL_PowerDown(int8_t enable)
 {
     if (enable)
@@ -238,7 +238,7 @@ void HAL_PowerDown(int8_t enable)
         MCU_PDhigh();
 }
 
-// ------------------ Send FT81x register address for writing ------------------
+// Send register address for writing 
 void HAL_SetWriteAddress(uint32_t address)
 {
 #if IS_EVE_API(1, 2, 3, 4) // Different addressing on BT82x
@@ -251,7 +251,7 @@ void HAL_SetWriteAddress(uint32_t address)
 #endif
 }
 
-// ------------------ Send FT81x register address for reading ------------------
+// Send register address for reading
 void HAL_SetReadAddress(uint32_t address)
 {
 #if IS_EVE_API(1, 2, 3, 4) // Different addressing on BT82x
@@ -264,7 +264,7 @@ void HAL_SetReadAddress(uint32_t address)
 #endif
 }
 
-// ------------------------ Send a block of data --------------------------
+// Send a block of data
 void HAL_Write(const uint8_t *buffer, uint32_t length)
 {
     // Send multiple bytes of data after previously sending address. Ignore return
@@ -273,7 +273,7 @@ void HAL_Write(const uint8_t *buffer, uint32_t length)
     MCU_SPIWrite(buffer, length);
 }
 
-// ------------------------ Send a 32-bit data value --------------------------
+// Send a 32-bit data value
 void HAL_Write32(uint32_t val32)
 {    
     // Send four bytes of data after previously sending address. Ignore return
@@ -282,7 +282,7 @@ void HAL_Write32(uint32_t val32)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// ------------------------ Send a 16-bit data value --------------------------
+// Send a 16-bit data value
 void HAL_Write16(uint16_t val16)
 {
     // Send two bytes of data after previously sending address. Ignore return
@@ -292,7 +292,7 @@ void HAL_Write16(uint16_t val16)
 #endif
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// ------------------------ Send an 8-bit data value ---------------------------
+// Send an 8-bit data value
 void HAL_Write8(uint8_t val8)
 {
     // Send one byte of data after previously sending address. Ignore return
@@ -301,7 +301,7 @@ void HAL_Write8(uint8_t val8)
 }
 #endif
 
-// ------------------------ Read a block of data --------------------------
+// Read a block of data
 void HAL_Read(uint8_t *buffer, uint32_t length)
 {
     // Send multiple bytes of data after previously sending address. Ignore return
@@ -352,7 +352,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
 #endif
 }
 
-// ------------------------ Read a 32-bit data value --------------------------
+// Read a 32-bit data value
 uint32_t HAL_Read32(void)
 {    
     // Read 4 bytes from a register has been previously addressed. Send dummy
@@ -371,7 +371,7 @@ uint32_t HAL_Read32(void)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// ------------------------ Read a 16-bit data value ---------------------------
+// Read a 16-bit data value
 uint16_t HAL_Read16(void)
 {
     // Read 2 bytes from a register has been previously addressed. Send dummy
@@ -387,7 +387,7 @@ uint16_t HAL_Read16(void)
 #endif
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// ------------------------ Read an 8-bit data value ---------------------------
+// Read an 8-bit data value
 uint8_t HAL_Read8(void)
 {
     // Read 1 byte from a register has been previously addressed. Send dummy
@@ -401,13 +401,13 @@ uint8_t HAL_Read8(void)
 }
 #endif
 
-// ################# COMBINED ADDRESSING AND DATA FUNCTIONS ####################
+// COMBINED ADDRESSING AND DATA FUNCTIONS
 
 // This section has combined calls which carry out a full write or read cycle
 // including chip select, address, and data transfer.
 // This would often be used for register writes and reads. 
 
-// -------------- Write a 32-bit value to specified address --------------------
+// Write a 32-bit value to specified address
 void HAL_MemWrite32(uint32_t address, uint32_t val32)
 {
     // CS low begins the SPI transfer
@@ -421,7 +421,7 @@ void HAL_MemWrite32(uint32_t address, uint32_t val32)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// -------------- Write a 16-bit value to specified address --------------------
+// Write a 16-bit value to specified address
 void HAL_MemWrite16(uint32_t address, uint16_t val16)
 {
     // CS low begins the SPI transfer
@@ -436,7 +436,7 @@ void HAL_MemWrite16(uint32_t address, uint16_t val16)
 #endif
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// -------------- Write an 8-bit value to specified address --------------------
+// Write an 8-bit value to specified address
 void HAL_MemWrite8(uint32_t address, uint8_t val8)
 {
     // CS low begins the SPI transfer
@@ -450,7 +450,7 @@ void HAL_MemWrite8(uint32_t address, uint8_t val8)
 }
 #endif
 
-// -------------- Read a 32-bit value from specified address --------------------
+// Read a 32-bit value from specified address
 uint32_t HAL_MemRead32(uint32_t address)
 {
     uint32_t val32;
@@ -469,7 +469,7 @@ uint32_t HAL_MemRead32(uint32_t address)
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// -------------- Read a 16-bit value from specified address --------------------
+// Read a 16-bit value from specified address
 uint16_t HAL_MemRead16(uint32_t address)
 {
     uint16_t val16;
@@ -489,7 +489,7 @@ uint16_t HAL_MemRead16(uint32_t address)
 #endif
 
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
-// -------------- Read an 8-bit value from specified address --------------------
+// Read an 8-bit value from specified address
 uint8_t HAL_MemRead8(uint32_t address)
 {
     uint8_t val8;
@@ -508,8 +508,9 @@ uint8_t HAL_MemRead8(uint32_t address)
 }
 #endif
 
-// ############################# HOST COMMANDS #################################
-// -------------------------- Write a host command -----------------------------
+// HOST COMMANDS
+
+//  Write a host command
 #if IS_EVE_API(1, 2, 3, 4) // Different host commands on BT82x
 void HAL_HostCmdWrite(uint8_t cmd, uint8_t param)
 {
@@ -542,9 +543,10 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
     HAL_ChipSelect(0);
 }
 #endif
-// ######################## SUPPORTING FUNCTIONS ###############################
 
-// --------- Increment co-processor address offset counter --------------------
+// SUPPORTING FUNCTIONS
+
+// Increment co-processor address offset counter
 void HAL_IncCmdPointer(uint16_t commandSize)
 {
 #ifndef EVE_USE_CMDB_METHOD
@@ -553,7 +555,7 @@ void HAL_IncCmdPointer(uint16_t commandSize)
 #endif
 }
 
-// --------- Increment co-processor address offset counter --------------------
+// Increment co-processor address offset counter
 uint16_t HAL_GetCmdPointer(void)
 {
     // Return new offset
@@ -577,7 +579,7 @@ void HAL_WriteCmdPointer(void)
 }
 #endif
 
-// ------ Wait for co-processor read and write pointers to be equal ------------
+// Wait for co-processor read and write pointers to be equal
 uint8_t HAL_WaitCmdFifoEmpty(void)
 {
     uint32_t readCmdPointer;
@@ -623,7 +625,7 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
         return 0;
     }
 }
-// ------------ Check how much free space is available in CMD FIFO -------------
+// Check how much free space is available in CMD FIFO
 uint16_t HAL_CheckCmdFreeSpace(void)
 {
 #ifndef EVE_USE_CMDB_METHOD
