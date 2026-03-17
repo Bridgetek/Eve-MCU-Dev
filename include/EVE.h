@@ -298,8 +298,16 @@ void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
 void EVE_NOP(void);
 #endif
 
+#if IS_EVE_API(3, 4, 5)
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt);
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+#endif
+
 #if IS_EVE_API(5) // BT82x extensions
 void EVE_BITMAP_SOURCE_H(uint8_t addr);
+void EVE_BITMAP_ZORDER(uint8_t o);
+void EVE_PALLETE_SOURCE_H(uint8_t addr);
+void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest);
 #endif
 
 // Co-Processor Widgets.

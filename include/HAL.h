@@ -42,6 +42,8 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
+/* EVE HAL */
+
 /**
  @brief Initialise EVE HAL Layer.
  @details Power cycle and start the EVE display in a controlled manner.
@@ -319,6 +321,8 @@ uint8_t HAL_Read8(void);
 #if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
 void HAL_SetSPIMode(uint32_t mode);
 #endif
+
+/* EVE HAL END */
 
 /**
  @brief Maximum transfer size of data transmit or receive

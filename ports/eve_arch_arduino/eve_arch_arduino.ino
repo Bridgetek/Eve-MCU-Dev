@@ -40,8 +40,12 @@
 // Guard against being used for incorrect CPU type.
 #if defined(ARDUINO)
 
+/* EVE MCU HEADER */
+
 #include <Arduino.h>
 #include <SPI.h>
+
+/* EVE MCU HEADER END */
 
 /** @brief Library Includes
  * NOTE That all the file used in the example sketch must be in the same directory
@@ -58,16 +62,18 @@ extern "C" {
 }
 //@}
 
+/* EVE MCU */
+
 /** @brief Pin definitions
  */
 //@{
 /// Standard SPI pinouts 10(CS), 11(COPI), 12(CIPO), 13(SCK)
-#define PIN_SPICLOCK 13    // SCK
-#define PIN_DATAOUT 11     // MOSI (COPI)
-#define PIN_DATAIN 12      // MISO (CIPO)
-#define PIN_CHIPSELECT 10  // CS#
+#define PIN_SPICLOCK    13  // SCK
+#define PIN_DATAOUT     11  // MOSI (COPI)
+#define PIN_DATAIN      12  // MISO (CIPO)
+#define PIN_CHIPSELECT  10  // CS#
 /// Additional pin for power down on EVE
-#define PIN_POWERDOWN 9    // PD#
+#define PIN_POWERDOWN   9   // PD#
 //@}
 
 void MCU_Init(void) {
@@ -288,5 +294,7 @@ uint16_t MCU_le16toh(uint16_t h) {
 uint32_t MCU_le32toh(uint32_t h) {
   return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(ARDUINO) */

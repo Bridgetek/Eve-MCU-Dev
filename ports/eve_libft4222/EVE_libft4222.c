@@ -54,39 +54,18 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+/* EVE MCU HEADER */
+
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
 #include <endian.h>
 #include <unistd.h>
 #elif defined(_WIN32)
-// Windows endianness
-#include <winsock2.h>
-#if BYTE_ORDER == LITTLE_ENDIAN
-#define htobe16(x) htons(x)
-#define htole16(x) (uint16_t)(x)
-#define be16toh(x) ntohs(x)
-#define le16toh(x) (uint16_t)(x)
-#define htobe32(x) htonl(x)
-#define htole32(x) (uint32_t)(x)
-#define be32toh(x) ntohl(x)
-#define le32toh(x) (uint32_t)(x)
-#elif BYTE_ORDER == BIG_ENDIAN
-#define htobe16(x) (uint16_t)(x)
-#define htole16(x) __builtin_bswap16(x)
-#define be16toh(x) (uint16_t)(x)
-#define le16toh(x) __builtin_bswap16(x)
-#define htobe32(x) (uint32_t)(x)
-#define htole32(x) __builtin_bswap32(x)
-#define be32toh(x) (uint32_t)(x)
-#define le32toh(x) __builtin_bswap32(x)
-#endif // BYTE_ORDER
+// Windows endianness is little endian
 #else
 // Other endianness (check naming conventions)
 #include <sys/endian.h>
 #endif // _WIN32
-
-#include "ftd2xx.h"
-#include "libft4222.h"
 
 // From issue #25
 #if defined(BYTE_ORDER) && BYTE_ORDER == ORDER_LITTLE_ENDIAN
@@ -94,10 +73,6 @@
 #elif defined(BYTE_ORDER) && BYTE_ORDER == ORDER_BIG_ENDIAN
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
-
-#include <EVE.h>
-#include <HAL.h>
-#include <MCU.h>
 
 #if defined(QUADSPI_ENABLE)
 #if IS_EVE_API(1)
@@ -107,6 +82,17 @@
 #else
 #pragma message ("libFT4222 Single SPI enabled")
 #endif
+
+#include "ftd2xx.h"
+#include "libft4222.h"
+
+/* EVE MCU HEADER END */
+
+#include <EVE.h>
+#include <HAL.h>
+#include <MCU.h>
+
+/* EVE MCU */
 
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
@@ -139,7 +125,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     ftStatus = FT_SetTimeouts(ftHandleSPI, 5000, 5000);
     if (FT_OK != ftStatus)
     {
-        fprintf(stderr, "FT4222 Setup FT_SetTimeouts failed: %d\n", ftStatus);
+        DEBUG_ERROR("FT4222 Setup FT_SetTimeouts failed: %d\n", ftStatus);
         exit(ftStatus);
     }
 
@@ -147,7 +133,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     ftStatus = FT_SetLatencyTimer(ftHandleSPI, 2);
     if (FT_OK != ftStatus)
     {
-        fprintf(stderr, "FT4222 Setup FT_SetLatencyTimer failed: %d\n", ftStatus);
+        DEBUG_ERROR("FT4222 Setup FT_SetLatencyTimer failed: %d\n", ftStatus);
         exit(ftStatus);
     }
 
@@ -155,14 +141,14 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, div, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
     if (FT_OK != ftStatus)
     {
-        fprintf(stderr, "FT4222 Setup SPIMaster Init failed: %d\n", ftStatus);
+        DEBUG_ERROR("FT4222 Setup SPIMaster Init failed: %d\n", ftStatus);
         exit(ftStatus);
     }
 
     ftStatus = FT4222_SPIMaster_SetCS(ftHandleSPI, CS_ACTIVE_LOW);
     if (FT_OK != ftStatus)
     {
-        fprintf(stderr, "FT4222 Setup SPIMaster SetCS set failed: %d\n", ftStatus);
+        DEBUG_ERROR("FT4222 Setup SPIMaster SetCS set failed: %d\n", ftStatus);
         exit(ftStatus);
     }
 
@@ -171,7 +157,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
         ftStatus = FT4222_SPIMaster_SetLines(ftHandleSPI, mode);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Setup SPIMaster SetLines failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Setup SPIMaster SetLines failed: %d\n", ftStatus);
             exit(ftStatus);
         }
     }
@@ -201,7 +187,7 @@ void MCU_Init(void)
                                         &devInfo.ftHandle);
         if (ftStatus != FT_OK)
         {
-            printf("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %d\n", ftStatus, iDev);
+            DEBUG_PRINTF("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %d\n", ftStatus, iDev);
             continue;
         }
 
@@ -253,14 +239,14 @@ void MCU_Init(void)
         ftStatus = FT_OpenEx((PVOID)(uintptr_t)devNumSPI, FT_OPEN_BY_LOCATION, &ftHandleSPI);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init Open FT4222 SPI device failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init Open FT4222 SPI device failed: %d\n", ftStatus);
             exit(ftStatus);
         }
 
         ftStatus = FT_OpenEx((PVOID)(uintptr_t)devNumGPIO, FT_OPEN_BY_LOCATION, &ftHandleGPIO);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init Open FT4222 GPIO device failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init Open FT4222 GPIO device failed: %d\n", ftStatus);
             exit(ftStatus);
         }
 
@@ -273,21 +259,21 @@ void MCU_Init(void)
         ftStatus = FT4222_SetClock(ftHandleGPIO, SYS_CLK_80);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init SetClock failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init SetClock failed: %d\n", ftStatus);
             exit(ftStatus);
         }
 
         ftStatus = FT4222_SetSuspendOut(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init Disable Suspend Out function on GPIO2 failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init Disable Suspend Out function on GPIO2 failed: %d\n", ftStatus);
             exit(ftStatus);
         }
 
         ftStatus = FT4222_SetWakeUpInterrupt(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init Disable Wakeup/Interrupt feature on GPIO3 failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init Disable Wakeup/Interrupt feature on GPIO3 failed: %d\n", ftStatus);
             exit(ftStatus);
         }
 
@@ -295,20 +281,20 @@ void MCU_Init(void)
         ftStatus = FT4222_GPIO_Init(ftHandleGPIO, gpio_dir);
         if (FT_OK != ftStatus)
         {
-            fprintf(stderr, "FT4222 Init FT4222 as GPIO interface failed: %d\n", ftStatus);
+            DEBUG_ERROR("FT4222 Init FT4222 as GPIO interface failed: %d\n", ftStatus);
             exit(ftStatus);
         }
     }
     else
     {
-        fprintf(stderr, "No FT4222 channels found\n");
+        DEBUG_ERROR("No FT4222 channels found\n");
         exit(-1);
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        fprintf(stderr, "Setup malloc failed\n");
+        DEBUG_ERROR("Setup malloc failed\n");
         exit(-99);
     }
     MCU_bufferLen = 0;
@@ -366,7 +352,7 @@ static int MCU_transmit_buffer(int end)
         if (FT4222_OK != status)
         {
             // spi master read failed
-            fprintf(stderr, "FT4222 SPIMaster Write failed %d\n", status);
+            DEBUG_ERROR("FT4222 SPIMaster Write failed %d\n", status);
             exit(status);
         }
         else
@@ -476,7 +462,7 @@ void MCU_CShigh(void)
             if (FT4222_OK != status)
             {
                 // spi master read failed
-                fprintf(stderr, "FT4222 MCU_CShigh failed %d\n", status);
+                DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", status);
                 exit(status);
             }
         }
@@ -489,7 +475,7 @@ void MCU_PDlow(void)
     // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 0)))
     {
-        fprintf(stderr, "FT4222 MCU_PDlow change failed!\n");
+        DEBUG_ERROR("FT4222 MCU_PDlow change failed!\n");
         exit(-100);
     }
 }
@@ -500,7 +486,7 @@ void MCU_PDhigh(void)
     // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 1)))
     {
-        fprintf(stderr, "FT4222 MCU_PDhigh change failed!\n");
+        DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");
         exit(-100);
     }
 }
@@ -536,7 +522,7 @@ uint8_t MCU_SPIRead8(void)
     if (FT4222_OK != status)
     {
          // spi master read failed
-        fprintf(stderr, "FT4222 MCU_SPIRead8 failed %d\n", status);
+        DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", status);
         exit(status);
     }
  
@@ -557,7 +543,7 @@ uint16_t MCU_SPIRead16(void)
     if (FT4222_OK != status)
     {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead16 failed %d\n", status);
+        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", status);
         exit(status);
     }
 
@@ -578,7 +564,7 @@ uint32_t MCU_SPIRead24(void)
     if (FT4222_OK != status)
     {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead24 failed %d\n", status);
+        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", status);
         exit(status);
     }
 
@@ -599,7 +585,7 @@ uint32_t MCU_SPIRead32(void)
     if (FT4222_OK != status)
     {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead32 failed %d\n", status);
+        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", status);
         exit(status);
     }
 
@@ -619,7 +605,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     if (FT4222_OK != status)
     {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead failed %d\n", status);
+        DEBUG_ERROR("MCU_SPIRead failed %d\n", status);
         exit(status);
     }
 }
@@ -700,5 +686,7 @@ uint32_t MCU_le32toh(uint32_t h)
     return le32toh(h);
 #endif // _WIN32
 }
+
+/* EVE MCU END */
 
 #endif /* defined(USE_FT4222) */

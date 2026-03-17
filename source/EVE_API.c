@@ -307,14 +307,14 @@ int EVE_LIB_AwaitCoProEmpty(void)
 uint32_t EVE_LIB_GetResult(int offset)
 {
     uint32_t wp, rp;
+    uint32_t CmdBufPointer;
     do {
         rp = HAL_MemRead32(EVE_REG_CMD_READ); 
         wp = HAL_GetCmdPointer();//HAL_MemRead32(EVE_REG_CMD_WRITE); 
     }
     while (rp != wp);
-    uint32_t CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
-    uint32_t r = HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
-    return r;
+    CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
+    return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
 }
 
 #if IS_EVE_API(5)
@@ -324,10 +324,12 @@ void EVE_LIB_GetCoProException(char* desc)
     uint8_t j;
     uint8_t i;
     char c;
+    uint32_t w;
+
     for (j = 0; j < 128; j += 4)
     {
         // Read the text from the report register
-        uint32_t w = HAL_MemRead32(EVE_COPROC_REPORT + j);
+        w = HAL_MemRead32(EVE_COPROC_REPORT + j);
         // Immediately clear the report register
         HAL_MemWrite32(EVE_COPROC_REPORT + j, 0);
         // Add the 4 characters to the report string
@@ -348,7 +350,6 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
 
     // Pad data length to multiple of 4.
@@ -358,10 +359,10 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -397,17 +398,16 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
 
     // While not all data is received
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to receive
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -443,15 +443,14 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = HAL_MAX_CHUNK_SIZE;
     uint8_t IsLastChunk = 0;
     uint32_t Freespace = 0;
 
     HAL_ChipSelect(0);
 
     // This code works by sending the data in a series of one or more bursts.
-    // If the data is more than MaxChunkSize bytes, it is sent as a series of
-    // one or more bursts and then the remainder. MaxChunkSize is a size which
+    // If the data is more than HAL_MAX_CHUNK_SIZE bytes, it is sent as a series of
+    // one or more bursts and then the remainder. HAL_MAX_CHUNK_SIZE is a size which
     // is smaller than the command buffer on the EVE and small enough to gain
     // maximum buffering effect from the MCU SPI hardware.
 
@@ -462,10 +461,10 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -480,7 +479,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 
         // Wait until there is space
         Freespace = 0;
-        while (Freespace < MaxChunkSize)
+        while (Freespace < HAL_MAX_CHUNK_SIZE)
         {
             Freespace = HAL_CheckCmdFreeSpace();
         }
@@ -1005,6 +1004,22 @@ void EVE_VERTEX_TRANSLATE_Y(uint32_t y)
 void EVE_NOP(void)
 {
     HAL_Write32(EVE_ENC_NOP());
+    HAL_IncCmdPointer(4);
+}
+
+#endif
+
+#if IS_EVE_API(3, 4, 5)
+
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
+{
+    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
+    HAL_IncCmdPointer(4);
+}
+
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
     HAL_IncCmdPointer(4);
 }
 
@@ -1723,18 +1738,6 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
     HAL_Write32(ptr);
     HAL_Write32(num);
     HAL_IncCmdPointer(12);
-}
-
-void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
-{
-    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
-    HAL_IncCmdPointer(4);
-}
-
-void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-{
-    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
-    HAL_IncCmdPointer(4);
 }
 
 #endif

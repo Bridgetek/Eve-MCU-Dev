@@ -61,6 +61,8 @@
 static uint16_t writeCmdPointer = 0x0000;
 #endif
 
+/* EVE HAL */
+
 void HAL_EVE_Init(void)
 {
     MCU_Init();
@@ -665,5 +667,7 @@ void HAL_SetSPIMode(uint32_t mode)
 #endif 
 }
 #endif
+
+/* EVE HAL END */
 
 #endif // __linux__

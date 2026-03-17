@@ -172,6 +172,8 @@
 #endif
 //@}
 
+/* EVE MCU */
+
 /**
  @brief MCU specific initialisation
  @details Must contain any MCU-specific initialisation. This will typically be
@@ -341,5 +343,7 @@ uint32_t MCU_be32toh(uint32_t h);
 uint16_t MCU_le16toh(uint16_t h);
 uint32_t MCU_le32toh(uint32_t h);
 //@}
+
+/* EVE MCU END */
 
 #endif	/* MCU_HEADER_H */
