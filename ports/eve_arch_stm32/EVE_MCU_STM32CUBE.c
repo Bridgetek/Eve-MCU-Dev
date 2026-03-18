@@ -39,6 +39,9 @@
 
 #if defined(PLATFORM_STM32_CUBE)
 
+/* Compile if this is the STM32F0DISCOVERY or the STM32F0308-DISCO */
+#if defined(STM32F030x8) || defined(STM32F051x8)
+
 #pragma message "Compiling " __FILE__ " for ST STM32_CUBE"
 
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
@@ -321,5 +324,6 @@ uint32_t MCU_le32toh (uint32_t h)
     return le32toh(h);
 }
 
+#endif /* defined(STM32F030x8) || defined(STM32F051x8) */
 
 #endif /* defined (PLATFORM_STM32_CUBE) */
