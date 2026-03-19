@@ -329,8 +329,13 @@ static int MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
     FT_STATUS status = FT_OK;
     uint32_t transferred;
 
+    /* Read/write address must always be in the MCU_buffer at this point. */
     if (MCU_bufferLen)
     {
+        /* Send data in the write buffer (including the address).
+         * Followed by any further write data. 
+         * Finally, if there is data to read then read this. 
+         * There will be only read OR write operations to perform. */
         status = FT4222_SPIMaster_MultiReadWrite(ftHandleSPI, (uint8_t *)DataToRead, (uint8_t *)MCU_buffer, 0, MCU_bufferLen, len, &transferred);
 
         // Data is now sent.
@@ -414,8 +419,15 @@ static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
                 if (end == 0)
                 {
                     /* Refill buffer after address. */
+#if IS_EVE_API(1, 2, 3, 4) /* Different write addressing method on BT82x */
+                    /* 24 bit write address followed by data */
+                    i = 3;
+                    MCU_bufferLen = 3;
+#else
+                    /* 32 bit write address followed by data */
                     i = 4;
                     MCU_bufferLen = 4;
+#endif
                 }
             }
             else

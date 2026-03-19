@@ -651,18 +651,18 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 }
 
 #if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
-void HAL_SetSPIMode(uint32_t mode)
+void HAL_SetSPIMode(EVE_SPI_CHANNELS_T mode)
 {
 #if IS_EVE_API(2,3,4)
     // Turn on EVE quad-SPI for FT81x and BT81x devices.
     // Write EVE_REG_SPI_WIDTH and mask SPI_WIDTH.
-    HAL_MemWrite32(EVE_REG_SPI_WIDTH, mode & 3);
+    HAL_MemWrite32(EVE_REG_SPI_WIDTH, ((uint32_t)mode) & 3);
 #elif IS_EVE_API(5)
     // Turn on EVE quad-SPI for FT82x devices.
     // Read REG_SYS_CFG and mask SPI_WIDTH.
     uint32_t cfg;
     cfg = HAL_MemRead32(EVE_REG_SYS_CFG) & (~(0x3 << 8));
-    cfg = cfg | (mode << 8);
+    cfg = cfg | (((uint32_t)mode) << 8);
     HAL_MemWrite32(EVE_REG_SYS_CFG, cfg);
 #endif 
 }
