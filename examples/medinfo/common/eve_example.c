@@ -347,9 +347,6 @@ void eve_display(void)
     // Counter for moving sweep position
     uint32_t sweep_counter = 0;
     
-    // Width of the gap
-    uint32_t update_width = 50;
-
     // Pulse magnifier for animation
     uint8_t pulse = 0;
     uint8_t pulse_last = 1;
@@ -981,6 +978,7 @@ void eve_display(void)
         previous_ms = current_ms;
         if (frame_rate_flag)
         {
+            (void)frame_render_time;
             DEBUG_PRINTF("overrun: took %d ms\n", frame_render_time);
         }
 
@@ -994,6 +992,7 @@ void eve_display(void)
         }
 
         uint32_t dlsize =  receivedata[2];
+        (void)dlsize;
         DEBUG_PRINTF("DL: %08x frame %d ms\n", dlsize, frame_render_time);
     }
 }

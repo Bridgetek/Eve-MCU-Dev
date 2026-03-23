@@ -92,7 +92,7 @@ static void graph_draw_line(uint8_t num, uint32_t pos, uint32_t count, uint32_t 
     uint8_t y1, y2, y3;
     uint32_t x1, x2;
 
-    y1 = 0; y2 = trace_data[num][pos];
+    y1 = 0; y2 = trace_data[num][pos]; y3= 0;
     x1 = 0; x2 = 0;
 
     // Perform simple point elimination to a deviation of "filter"
