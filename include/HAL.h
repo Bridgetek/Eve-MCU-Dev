@@ -339,6 +339,6 @@ void HAL_SetSPIMode(EVE_SPI_CHANNELS_T mode);
  @details The maximum number of bytes in a transfer using the
     HAL_Read or HAL_Write functions.
  */
-#define HAL_MAX_CHUNK_SIZE 1024
+#define HAL_MAX_CHUNK_SIZE (1024 - sizeof(uint32_t))
 
 #endif /* HAL_HEADER_H */

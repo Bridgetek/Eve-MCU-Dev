@@ -185,14 +185,12 @@ void HAL_EVE_Init(void)
                 if (boot != 0x522e2e2e)
                 {
                     DEBUG_PRINTF("[Timeout waiting for BOOT_STATUS, stuck at 0x%08x, retrying...]\n", boot);
-                    continue;
                 }
-
-                if (HAL_MemRead32(EVE_REG_FREQUENCY) != 72000000)
+                else if (HAL_MemRead32(EVE_REG_FREQUENCY) != 72000000)
                 {
                     DEBUG_PRINTF("[frequency %d, retrying...]\n", HAL_MemRead32(EVE_REG_FREQUENCY));
-                    continue;
                 }
+                MCU_Delay_20ms();
                 break;
             }
         }
@@ -551,6 +549,7 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
 // Increment co-processor address offset counter
 void HAL_IncCmdPointer(uint16_t commandSize)
 {
+    (void)commandSize;
 #ifndef EVE_USE_CMDB_METHOD
     // Calculate new offset
     writeCmdPointer = (writeCmdPointer + commandSize) & (EVE_RAM_CMD_SIZE - 1);

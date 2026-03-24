@@ -105,7 +105,13 @@ static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTP
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
-#define MCU_BUFFER_SIZE (256 + 16)
+/* Transfers are "chunked" to the EVE by the HAL.
+ * This buffer is large enough to receive one chunk of
+ * data and transmit it in one go. If it cannot be
+ * sent in one go then the write address may not be
+ * valid on subsequent packets.
+ */
+#define MCU_BUFFER_SIZE (HAL_MAX_CHUNK_SIZE)
 static uint8_t *MCU_buffer;
 static uint16_t MCU_bufferLen;
 
@@ -329,10 +335,15 @@ static int MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
     FT_STATUS status = FT_OK;
     uint32_t transferred;
 
-    /* Read/write address must always be in the MCU_buffer at this point. */
+    /* Read or write transfer to the EVE device. */
+    /* For writes the address is in big-endian format in the first 4 bytes for
+     * EVE API 5 and the first 3 for previous generations.
+     * For reads the address is in big-endian format in the first 4 bytes for
+     * all generations.
+     */
     if (MCU_bufferLen)
     {
-        /* Send data in the write buffer (including the address).
+        /* Transfer data in the write buffer (including the address).
          * Followed by any further write data. 
          * Finally, if there is data to read then read this. 
          * There will be only read OR write operations to perform. */
@@ -418,7 +429,7 @@ static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
                  * ending this transfer. */
                 if (end == 0)
                 {
-                    /* Refill buffer after address. */
+                    /* Refill transmit buffer after address. */
 #if IS_EVE_API(1, 2, 3, 4) /* Different write addressing method on BT82x */
                     /* 24 bit write address followed by data */
                     i = 3;

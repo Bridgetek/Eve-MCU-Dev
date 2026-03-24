@@ -129,8 +129,15 @@
 /* Linux systems SPI busses are set to 1 MHz by default */
 #define MCU_SPI_TIMEOUT 8
 
-#elif defined (PLATFORM_STM32_CUBE) \
-    || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
+#elif defined (PLATFORM_STM32_CUBE)
+/* STM32 SPI bus is set to 60 MHz by default */
+#if defined(QUADSPI_ENABLE)
+#define MCU_SPI_TIMEOUT 56
+#else
+#define MCU_SPI_TIMEOUT 16
+#endif
+
+#elif  defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
     || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
     || defined(PLATFORM_MSPM0)
