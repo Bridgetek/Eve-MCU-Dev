@@ -53,6 +53,15 @@
 
 /* EVE API Library functions */
 
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
+/* Report the API (and SUB API) for this build. */
+#pragma message ("Compiling for EVE_API " STR(EVE_API))
+#if defined(EVE_SUB_API)
+#pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
+#endif
+
 void EVE_Init(void)
 {
     uint8_t i;
