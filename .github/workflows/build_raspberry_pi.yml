@@ -1,0 +1,36 @@
+name: Build Simple Example for Raspberry Pi
+
+on:
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - main
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/build_raspberry_pi.yml'
+      # Trigger script on push to raspberry_pi simple example
+      - examples/simple/raspberry_pi
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: install build packages
+      run: sudo apt-get update && sudo apt-get install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi g++ libstdc++-arm-none-eabi-newlib build-essential gcc-arm-linux-gnueabihf libgpiod-dev
+
+    # Test BT820 (EVE API 5)
+    - name: Configure CMake for Raspberry Pi on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake -B ${{github.workspace}}/examples/simple/raspberry_pi/build820WUXGA -S ${{github.workspace}}/examples/simple/raspberry_pi -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build for Raspberry Pi on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake --build ${{github.workspace}}/examples/simple/raspberry_pi/build820WUXGA
