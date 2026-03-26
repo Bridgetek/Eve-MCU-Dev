@@ -26,7 +26,7 @@ jobs:
 
     defaults:
       run:
-        shell: bash
+        shell: cmd
 
     steps:
     - name: "Setup"
@@ -35,12 +35,12 @@ jobs:
 
     - name: Get libFT4222 library
       run: |
-          $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
-          pacman -S --needed mingw-w64-ucrt-x86_64-gcc
+          set PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;%PATH%"
+          pacman -S --needed mingw-w64-ucrt-x86_64-gcc wget unzip
           wget https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip
           unzip LibFT4222-v1.4.8.zip
-          pushd ${{github.workspace}}/ports/eve_libft4222
-          ./install_libft4222.sh ${{github.workspace}}/import
+          pushd ${{github.workspace}}\ports\eve_libft4222
+          install_libft4222.bat ${{github.workspace}}\import
           popd
 
     # Test BT820 (EVE API 5)
