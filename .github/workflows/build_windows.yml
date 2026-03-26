@@ -11,7 +11,8 @@ on:
       # Trigger if this workflow file changes
       - '.github/workflows/build_windows.yml'
       # Trigger script on push to windows simple example
-      - [ examples/simple/libft4222, examples/simple/libmpsse ]
+      - examples/simple/libft4222
+      - examples/simple/libmpsse
   # Add "Run workflow" button
   workflow_dispatch:
 
