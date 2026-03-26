@@ -68,5 +68,7 @@ cp "$INSTALL_PATH/$INSTALL_PATH_FTD2XX/ftd2xx.lib" libftd2xx.lib
 # Copy the D2XX library header
 echo Copying "$INSTALL_PATH/ftd2xx/ftd2xx.h" to ftd2xx.h
 cp "$INSTALL_PATH/ftd2xx/ftd2xx.h" ftd2xx.h
-echo Copying "$INSTALL_PATH/ftd2xx/WinTypes.h" to WinTypes.h
-cp "$INSTALL_PATH/ftd2xx/WinTypes.h" WinTypes.h
+# NOTE: WinTypes.h is not distributed on Windows builds of the libFT4222 library.
+# It is needed for Linux builds of the library but they copy the file to /usr/local/include
+# echo Copying "$INSTALL_PATH/ftd2xx/WinTypes.h" to WinTypes.h
+# cp "$INSTALL_PATH/ftd2xx/WinTypes.h" WinTypes.h
