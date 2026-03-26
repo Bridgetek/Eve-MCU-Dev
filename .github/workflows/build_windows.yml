@@ -12,7 +12,6 @@ on:
       - '.github/workflows/build_windows.yml'
       # Trigger script on push to windows simple example
       - examples/simple/libft4222
-      - examples/simple/libmpsse
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -38,7 +37,7 @@ jobs:
       run: |
           echo ${{github.workspace}}
           set PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;%PATH%"
-          curl -output LibFT4222-v1.4.8.zip "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
+          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
           unzip LibFT4222-v1.4.8.zip
           pushd ${{github.workspace}}\ports\eve_libft4222
           install_libft4222.bat ${{github.workspace}}\import
