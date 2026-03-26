@@ -34,13 +34,10 @@ jobs:
 
     - name: Get libFT4222 library
       run: |
-          dir
           curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
           unzip LibFT4222-v1.4.8.zip
           pushd ${{github.workspace}}\ports\eve_libft4222
-          dir
           install_libft4222.bat ${{github.workspace}}\imports
-          dir
           popd
 
     # Test BT820 (EVE API 5)

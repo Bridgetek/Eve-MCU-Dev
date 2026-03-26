@@ -12,6 +12,8 @@ set INSTALL_PATH=%CD%\imports
 
 :continueinstall
 IF NOT EXIST "%INSTALL_PATH%" goto notfound
+IF NOT EXIST "%INSTALL_PATH%\LibFT4222" goto notfound
+IF NOT EXIST "%INSTALL_PATH%\ftd2xx" goto notfound
 
 :: Find the processor architecture from the environment variables
 IF /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" goto installAMD64
