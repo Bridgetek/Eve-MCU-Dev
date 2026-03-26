@@ -311,7 +311,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
     MCU_SPIRead(buffer, length);
 #else
     unsigned char bb[MCU_SPI_TIMEOUT];
-    uint16_t recvlen = 0;
+    uint32_t recvlen = 0;
     int i;
     // Read MCU_SPI_TIMEOUT bytes before the "0x01" that signifies data ready.
     MCU_SPIRead(bb, MCU_SPI_TIMEOUT);
@@ -337,7 +337,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
             }
             while (length > 0)
             {
-                uint16_t nn = length;
+                uint32_t nn = length;
                 if (nn > MCU_SPI_TRANSFER)
                 {
                     nn = MCU_SPI_TRANSFER;
@@ -561,8 +561,8 @@ uint16_t HAL_GetCmdPointer(void)
 {
     // Return new offset
 #ifdef EVE_USE_CMDB_METHOD
-    uint32_t writeCmdPointer;
-    writeCmdPointer = HAL_MemRead32(EVE_REG_CMD_WRITE);
+    uint16_t writeCmdPointer;
+    writeCmdPointer = HAL_MemRead32(EVE_REG_CMD_WRITE) & 0xffff;
 #endif
     return writeCmdPointer;
 }
@@ -642,8 +642,8 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 
     return Freespace;
 #else
-    uint32_t readCmdSpace;
-    readCmdSpace = HAL_MemRead32(EVE_REG_CMDB_SPACE);
+    uint16_t readCmdSpace;
+    readCmdSpace = HAL_MemRead32(EVE_REG_CMDB_SPACE) & 0xffff;
 
     return readCmdSpace;
 #endif

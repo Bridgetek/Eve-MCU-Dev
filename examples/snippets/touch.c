@@ -54,17 +54,6 @@
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
-static int calib_key_pressed(void)
-{
-    // Detect screen is being touched at startup
-    // NOTE: Not available on BT82x (EVE API 5)
-#if IS_EVE_API(1, 2, 3, 4)
-    return eve_key_detect();
-#else
-    return 0;
-#endif
-}
-
 /* FUNCTIONS ***********************************************************************/
 
 int eve_key_detect(void)
@@ -131,7 +120,7 @@ int eve_calibrate(void)
     calib.transform[3] = 0x00000000; // 0.0
     calib.transform[4] = 0xffff0000; // - 1.0
     calib.transform[5] = 0x04b00000; // + 1200.0
-#elif PANEL_TYPE == DP_1561_01A
+#elif 0 // PANEL_TYPE == DP_1561_01A
     // Predefined transform matrix for DP-1561-01A display panel
     // X-axis 1920 pixels. Raw 0 -> 16383 (0x4000)
     // Y-axis 1080 pixels. Raw 0 -> 9599 (0x2580)
@@ -150,8 +139,8 @@ int eve_calibrate(void)
     if (platform_calib_init() == 0)
     {
         // Do not read calibration information if screen is being touched at start
-        // NOTE: Not available on BT82x (EVE API 5)
-        if (!calib_key_pressed())
+        // NOTE: Not available on capacitive touch screens.
+        if (!eve_key_detect())
         {
             // Read calibration information from platform
             if (platform_calib_read(&calib) == 0)
@@ -169,8 +158,8 @@ int eve_calibrate(void)
     if (!valid)
     {
         // Wait for end of touch.
-        // NOTE: Not available on BT82x (EVE API 5)
-        while (calib_key_pressed()) {};
+        // NOTE: Not available on capacitive touch screens.
+        while (eve_key_detect()) {};
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();

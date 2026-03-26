@@ -170,7 +170,7 @@
 #else
 #define DEBUG_ERROR(...)
 #endif
-#if DEBUG_LEVEL > 0 || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #elif DEBUG_LEVEL > 0 || defined(PLATFORM_ESP32)
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
