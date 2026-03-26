@@ -1,0 +1,53 @@
+name: Build Simple Example for MinGW on Windows (libft4222)
+
+on:
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - main
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/build_windows.yml'
+      # Trigger script on push to windows simple example
+      - [ examples/simple/libft4222, examples/simple/libmpsse ]
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: "Setup"
+        run: |
+          gcc --version
+
+      - name: Get libFT4222 library
+        run: |
+          $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
+          pacman -S --needed mingw-w64-ucrt-x86_64-gcc
+          wget https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip
+          unzip LibFT4222-v1.4.8.zip
+          pushd ${{github.workspace}}/ports/eve_libft4222
+          ./install_libft4222.sh ${{github.workspace}}/import
+          popd
+
+    # Test BT820 (EVE API 5)
+    - name: Configure CMake for libFT4222 Windows on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake -B build820WUXGA -S . -G "MinGW Makefiles" -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/examples/simple/libft4222
+
+    - name: Build for libFT4222 Windows on BT820 with WUXGA panel (DP_1012_01A)
+      run: cmake --build build820WUXGA
+      working-directory: ${{github.workspace}}/examples/simple/libft4222
+
