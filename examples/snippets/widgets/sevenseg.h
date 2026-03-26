@@ -40,4 +40,9 @@
 #define EVE_OPT_DECIMAL 16
 #define EVE_OPT_TIMECOLON 32
 #define EVE_OPT_NUMBER 15
+// Define EVE_OPT_FILL for FT80x, FT81x.
+// The timecolon or decimal point will be illuminated if set in the digit parameter
+#ifndef EVE_OPT_FILL
+#define EVE_OPT_FILL 0x2000ul
+#endif
 void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);

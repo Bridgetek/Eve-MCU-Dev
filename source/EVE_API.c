@@ -49,9 +49,18 @@
 #include "patch_base.h"
 #endif
 
-//##############################################################################
-// Library functions
-//##############################################################################
+/* EVE API */
+
+/* EVE API Library functions */
+
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
+/* Report the API (and SUB API) for this build. */
+#pragma message ("Compiling for EVE_API " STR(EVE_API))
+#if defined(EVE_SUB_API)
+#pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
+#endif
 
 void EVE_Init(void)
 {
@@ -59,7 +68,7 @@ void EVE_Init(void)
 
     HAL_EVE_Init();
 
-    // ------------------------- Display settings ------------------------------
+    // Setup Display Settings for Panel
 
     // LCD display parameters
 #if IS_EVE_API(1, 2, 3, 4)
@@ -113,9 +122,13 @@ void EVE_Init(void)
 
     // Write the PCLK or PCLK_FREQ register
     // If setting PCLK_FREQ then also set REG_PCLK to 1 to enable extsync mode
-    #if IS_EVE_API(4) && (defined SET_PCLK_FREQ)
+    #if IS_EVE_API(4) 
+    #if defined (SET_PCLK_FREQ)
     HAL_MemWrite16(EVE_REG_PCLK_FREQ,  (uint16_t)EVE_DISP_PCLK_FREQ);
     HAL_MemWrite8(EVE_REG_PCLK, 1);
+    #else
+    HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
+    #endif
     #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
@@ -123,7 +136,8 @@ void EVE_Init(void)
 
     HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
 
-    // ---------------------- Touch and Audio settings -------------------------
+    // Setup Touch and Audio settings 
+
     // Eliminate any false touches
     HAL_MemWrite16(EVE_REG_TOUCH_RZTHRESH, 1200);
 
@@ -142,7 +156,6 @@ void EVE_Init(void)
 #endif
 
 #elif IS_EVE_API(5) 
-
     EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
     EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, (EVE_RAM_G_SIZE - 0x280000UL - ((uint32_t)EVE_DISP_WIDTH * (uint32_t)EVE_DISP_HEIGHT * 3UL)));
@@ -212,9 +225,10 @@ void EVE_Init(void)
 
     // Load base patch or project defined patch if overriden
     eve_loadpatch();
+
 #endif
 
-    // --------------------- Clear screen ready to start -----------------------
+    // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -226,7 +240,7 @@ void EVE_Init(void)
 
 #if IS_EVE_API(1)
 
-       // ---------------------- Reset all bitmap properties ------------------------
+    // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -234,7 +248,6 @@ void EVE_Init(void)
     for (i = 0; i < 16; i++)
     {
         EVE_BITMAP_HANDLE(i);
-        //EVE_CMD_SETBITMAP(0,0,0,0);
         EVE_BITMAP_LAYOUT(0, 0, 0);
         EVE_BITMAP_SIZE(0, 0, 0, 0, 0);
     }
@@ -245,7 +258,7 @@ void EVE_Init(void)
 
 #elif IS_EVE_API(2, 3, 4, 5)
 
-    // ---------------------- Reset all bitmap properties ------------------------
+    // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -262,7 +275,7 @@ void EVE_Init(void)
 #endif
 }
 
-// Begins co-pro list for display creation
+// Begin co-pro list for display creation
 void EVE_LIB_BeginCoProList(void)
 {
     // Wait for command FIFO to be empty and record current position in FIFO
@@ -280,7 +293,7 @@ void EVE_LIB_BeginCoProList(void)
 #endif
 }
 
-// Ends co-pro list for display creation
+// End co-pro list for display creation
 void EVE_LIB_EndCoProList(void)
 {
     // End SPI transaction
@@ -303,14 +316,14 @@ int EVE_LIB_AwaitCoProEmpty(void)
 uint32_t EVE_LIB_GetResult(int offset)
 {
     uint32_t wp, rp;
+    uint32_t CmdBufPointer;
     do {
         rp = HAL_MemRead32(EVE_REG_CMD_READ); 
         wp = HAL_GetCmdPointer();//HAL_MemRead32(EVE_REG_CMD_WRITE); 
     }
     while (rp != wp);
-    uint32_t CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
-    uint32_t r = HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
-    return r;
+    CmdBufPointer = (rp - (offset * sizeof(uint32_t))) & (EVE_RAM_CMD_SIZE - 1);
+    return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
 }
 
 #if IS_EVE_API(5)
@@ -320,10 +333,12 @@ void EVE_LIB_GetCoProException(char* desc)
     uint8_t j;
     uint8_t i;
     char c;
+    uint32_t w;
+
     for (j = 0; j < 128; j += 4)
     {
         // Read the text from the report register
-        uint32_t w = HAL_MemRead32(EVE_COPROC_REPORT + j);
+        w = HAL_MemRead32(EVE_COPROC_REPORT + j);
         // Immediately clear the report register
         HAL_MemWrite32(EVE_COPROC_REPORT + j, 0);
         // Add the 4 characters to the report string
@@ -344,7 +359,6 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 1024;
     uint8_t IsLastChunk = 0;
 
     // Pad data length to multiple of 4.
@@ -354,10 +368,10 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -393,17 +407,16 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 1024;
     uint8_t IsLastChunk = 0;
 
     // While not all data is received
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to receive
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -439,15 +452,14 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 {
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
-    const uint32_t MaxChunkSize = 128;
     uint8_t IsLastChunk = 0;
     uint32_t Freespace = 0;
 
     HAL_ChipSelect(0);
 
     // This code works by sending the data in a series of one or more bursts.
-    // If the data is more than MaxChunkSize bytes, it is sent as a series of
-    // one or more bursts and then the remainder. MaxChunkSize is a size which
+    // If the data is more than HAL_MAX_CHUNK_SIZE bytes, it is sent as a series of
+    // one or more bursts and then the remainder. HAL_MAX_CHUNK_SIZE is a size which
     // is smaller than the command buffer on the EVE and small enough to gain
     // maximum buffering effect from the MCU SPI hardware.
 
@@ -458,10 +470,10 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send
-        if ((DataSize - CurrentIndex) > MaxChunkSize)
+        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = MaxChunkSize;
+            ChunkSize = HAL_MAX_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -476,7 +488,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
 
         // Wait until there is space
         Freespace = 0;
-        while (Freespace < MaxChunkSize)
+        while (Freespace < HAL_MAX_CHUNK_SIZE)
         {
             Freespace = HAL_CheckCmdFreeSpace();
         }
@@ -686,9 +698,7 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t *value)
 }
 #endif
 
-//##############################################################################
-// Display List commands for co-processor
-//##############################################################################
+// Display List Commands for the Co-processor
 
 void EVE_CMD(uint32_t c)
 {
@@ -1008,6 +1018,22 @@ void EVE_NOP(void)
 
 #endif
 
+#if IS_EVE_API(3, 4, 5)
+
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
+{
+    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
+    HAL_IncCmdPointer(4);
+}
+
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
+    HAL_IncCmdPointer(4);
+}
+
+#endif
+
 #if IS_EVE_API(5) // BT82x extensions
 
 void EVE_BITMAP_SOURCE_H(uint8_t addr)
@@ -1036,9 +1062,7 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 #endif
 
-//##############################################################################
-// Co-Processor Widgets
-//##############################################################################
+// Co-Processor Widget Commands
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
@@ -1725,18 +1749,6 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
     HAL_IncCmdPointer(12);
 }
 
-void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
-{
-    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
-    HAL_IncCmdPointer(4);
-}
-
-void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-{
-    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
-    HAL_IncCmdPointer(4);
-}
-
 #endif
 
 #if IS_EVE_API(4)
@@ -2283,5 +2295,4 @@ void EVE_CMD_RESULT(uint32_t a)
 
 #endif
 
-// ############################  All EVE  ##########################################
-
+/* EVE API END */

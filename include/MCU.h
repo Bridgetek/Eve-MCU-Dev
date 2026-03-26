@@ -129,8 +129,15 @@
 /* Linux systems SPI busses are set to 1 MHz by default */
 #define MCU_SPI_TIMEOUT 8
 
-#elif defined (PLATFORM_STM32_CUBE) \
-    || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
+#elif defined (PLATFORM_STM32_CUBE)
+/* STM32 SPI bus is set to 60 MHz by default */
+#if defined(QUADSPI_ENABLE)
+#define MCU_SPI_TIMEOUT 56
+#else
+#define MCU_SPI_TIMEOUT 16
+#endif
+
+#elif  defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
     || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
     || defined(PLATFORM_MSPM0)
@@ -171,6 +178,8 @@
 #define DEBUG_PRINTF(...)
 #endif
 //@}
+
+/* EVE MCU */
 
 /**
  @brief MCU specific initialisation
@@ -341,5 +350,7 @@ uint32_t MCU_be32toh(uint32_t h);
 uint16_t MCU_le16toh(uint16_t h);
 uint32_t MCU_le32toh(uint32_t h);
 //@}
+
+/* EVE MCU END */
 
 #endif	/* MCU_HEADER_H */

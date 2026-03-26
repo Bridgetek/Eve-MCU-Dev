@@ -53,9 +53,36 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef _WIN32 // Windows is always little-endian (for now)
+
+#if defined(__linux__) || defined(__CYGWIN__)
+// Linux endianness (not BSD variants)
 #include <endian.h>
 #include <unistd.h>
+#elif defined(_WIN32)
+// Windows endianness
+#include <winsock2.h>
+#if BYTE_ORDER == LITTLE_ENDIAN
+#define htobe16(x) htons(x)
+#define htole16(x) (uint16_t)(x)
+#define be16toh(x) ntohs(x)
+#define le16toh(x) (uint16_t)(x)
+#define htobe32(x) htonl(x)
+#define htole32(x) (uint32_t)(x)
+#define be32toh(x) ntohl(x)
+#define le32toh(x) (uint32_t)(x)
+#elif BYTE_ORDER == BIG_ENDIAN
+#define htobe16(x) (uint16_t)(x)
+#define htole16(x) __builtin_bswap16(x)
+#define be16toh(x) (uint16_t)(x)
+#define le16toh(x) __builtin_bswap16(x)
+#define htobe32(x) (uint32_t)(x)
+#define htole32(x) __builtin_bswap32(x)
+#define be32toh(x) (uint32_t)(x)
+#define le32toh(x) __builtin_bswap32(x)
+#endif // BYTE_ORDER
+#else
+// Other endianness (check naming conventions)
+#include <sys/endian.h>
 #endif // _WIN32
 
 #include "ftd2xx.h"
@@ -404,74 +431,42 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 
 uint16_t MCU_htobe16(uint16_t h)
 {
-#ifdef _WIN32
-    return _byteswap_ushort(h);
-#else // _WIN32
     return htobe16(h);
-#endif // _WIN32
-    }
+}
 
 uint32_t MCU_htobe32(uint32_t h)
 {
-#ifdef _WIN32
-    return _byteswap_ulong(h);
-#else // _WIN32
     return htobe32(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_htole16(uint16_t h)
 {
-#ifdef _WIN32
-    return (h);
-#else // _WIN32
     return htole16(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_htole32(uint32_t h)
 {
-#ifdef _WIN32
-    return (h);
-#else // _WIN32
     return htole32(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_be16toh(uint16_t h)
 {
-#ifdef _WIN32
-    return _byteswap_ushort(h);
-#else // _WIN32
     return be16toh(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_be32toh(uint32_t h)
 {
-#ifdef _WIN32
-    return _byteswap_ulong(h);
-#else // _WIN32
     return be32toh(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_le16toh(uint16_t h)
 {
-#ifdef _WIN32
-    return (h);
-#else // _WIN32
     return le16toh(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_le32toh(uint32_t h)
 {
-#ifdef _WIN32
-    return (h);
-#else // _WIN32
     return le32toh(h);
-#endif // _WIN32
 }
 
 #endif /* defined(USE_MPSSE) */

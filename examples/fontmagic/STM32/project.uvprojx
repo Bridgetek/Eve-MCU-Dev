@@ -390,6 +390,11 @@
               <FilePath>..\..\snippets\touch.c</FilePath>
             </File>
             <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\snippets\controls\fonts.c</FilePath>
+            </File>
+            <File>
               <FileName>eve_example.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\common\eve_example.c</FilePath>

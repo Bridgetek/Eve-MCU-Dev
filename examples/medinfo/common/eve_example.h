@@ -81,6 +81,14 @@ void eve_example(const char *assets);
 #include <stdio.h>
 #endif
 
+#if defined(ARDUINO)
+#if defined(ARDUINO_ARCH_AVR)
+#if ASSETS == USE_C_ARRAYS
+#error Arduinos based on AVR are not supported (program memory access restricted)
+#endif
+#endif
+#endif
+
 // ---- Method for rendering graphs ----
 
 // Use the plotgraph extension to draw traces - available only on BT82x
@@ -89,12 +97,14 @@ void eve_example(const char *assets);
 #define USE_GRAPH_VERTEXES 2
 
 #ifndef GRAPHING_METHOD
-#define GRAPHING_METHOD USE_GRAPH_EXTENSIONS
+#define GRAPHING_METHOD USE_GRAPH_VERTEXES
 #endif
 
 // Validate graphing method
-#if (!IS_EVE_API(5) && (GRAPHING_METHOD == USE_GRAPH_EXTENSIONS))
+#if IS_EVE_API(1,2,3,4) 
+#if (GRAPHING_METHOD == USE_GRAPH_EXTENSIONS)
 #error Extensions are only supported on BT82x.
+#endif
 #endif
 
 // ---- Method for drawing digital readouts ----
@@ -111,8 +121,30 @@ void eve_example(const char *assets);
 #endif
 
 // Validate graphing method
-#if (!IS_EVE_API(5) && (DIGITAL_READOUT_METHOD == USE_SEVENSEG_EXTENSIONS))
+#if IS_EVE_API(1,2,3,4)
+#if (DIGITAL_READOUT_METHOD == USE_SEVENSEG_EXTENSIONS)
 #error Extensions are only supported on BT82x.
+#endif
+#endif
+
+// ---- Method for drawing dialogs ----
+
+// Use the dialog extension to draw digital readouts - available only on BT82x
+#define USE_DIALOG_EXTENSIONS 1
+// Use the dialog snippet to draw digital readouts
+#define USE_DIALOG_SNIPPETS 2
+// Use a simple overlay to draw dialogs
+#define USE_DIALOG_OVERLAY 4
+
+#ifndef MESSAGEBOX_METHOD
+#define MESSAGEBOX_METHOD USE_DIALOG_SNIPPETS
+#endif
+
+// Validate dialog method
+#if IS_EVE_API(1,2,3,4)
+#if (MESSAGEBOX_METHOD == USE_DIALOG_EXTENSIONS)
+#error Extensions are only supported on BT82x.
+#endif
 #endif
 
 // ---- End of options
@@ -129,7 +161,7 @@ void eve_example(const char *assets);
 #define POINTS_FILTER 10
 
 // Asset storage information
-typedef struct EVE_ASSET_PROPS_s
+typedef struct ASSET_PROPS_s
 {
     uint8_t Handle;
     uint8_t Cell;
@@ -148,17 +180,17 @@ typedef struct EVE_ASSET_PROPS_s
     uint16_t Width;
     uint16_t Height;
     uint16_t CellHeight;
-} EVE_ASSET_PROPS;
+} ASSET_PROPS;
  
 // Trace storage
-typedef struct EVE_TRACE_PROPS_s
+typedef struct TRACE_PROPS_s
 {
     uint32_t RAM_G_Start;
     uint32_t RAM_G_EndAddr;
     const uint8_t *Source; 
     uint32_t SourceSize;
     uint32_t SourceCounter;
-} EVE_TRACE_PROPS;
+} TRACE_PROPS;
  
 // Trace buffer setup
 enum {
@@ -168,8 +200,8 @@ enum {
     trace_total
 };
 
-extern EVE_ASSET_PROPS patch_asset;
-extern EVE_TRACE_PROPS trace[trace_total];
+extern ASSET_PROPS patch_asset;
+extern TRACE_PROPS trace[trace_total];
 
 // Parts of icons_asset
 enum { 
@@ -195,9 +227,9 @@ enum {
 };
 
 // 100x100 size icons
-extern EVE_ASSET_PROPS icon_assets_small[icons_total_small];
+extern ASSET_PROPS icon_assets_small[icons_total_small];
 // 200x200 size icons
-extern EVE_ASSET_PROPS icon_assets_large[icons_total_large];
+extern ASSET_PROPS icon_assets_large[icons_total_large];
 
 // Incoming data simulation arrays
 extern const uint32_t hrm_size;
@@ -209,7 +241,7 @@ extern const uint8_t sats [];
 
 /* Asset loading function depends on the storage method in ASSETS macro */
 void eve_asset_properties(const char *assets);
-void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage);
+void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage);
 int eve_loadpatch_impl(void);
 
 /* Graphing functions depend on the GRAPHING_METHOD macro */
@@ -223,6 +255,7 @@ void eve_flash_full_speed(void);
 
 #include "touch.h"
 #include "widgets/sevenseg.h"
+#include "widgets/dialogs.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

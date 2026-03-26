@@ -46,14 +46,7 @@
 
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
-// Choose a suitable font for the display
-#if EVE_DISP_WIDTH <= 480
-const uint8_t font = 26;
-#elif EVE_DISP_WIDTH <= 800
-const uint8_t font = 28;
-#else
-const uint8_t font = 30;
-#endif
+uint8_t font;
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
@@ -136,6 +129,20 @@ void eve_display(void)
 
     char hexval[16];
 
+    // Choose a suitable font for the display
+    if (EVE_DISP_WIDTH <= 480)
+    {
+        font = 26;
+    }
+    else if (EVE_DISP_WIDTH <= 800)
+    {
+        font = 28;
+    }
+    else
+    {
+        font = 30;
+    }
+
     eve_readcalib();
     
     do {
@@ -163,12 +170,13 @@ void eve_display(void)
 
         EVE_TAG_MASK(1);
         EVE_TAG(button_recalibrate);
-        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 11), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Recalibrate");
+        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 5), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Recalibrate");
         EVE_TAG(button_restore);
-        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) + (widths[font] * 1), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Restore");
-        ypos += (heights[font] * 3);
+        ypos += (heights[font] * 4);
+        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 5), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Restore");
         EVE_TAG_MASK(0);
 
+        ypos = (EVE_DISP_HEIGHT / 2) - ((heights[font] * 9) / 2);
         EVE_CMD_TEXT(10, ypos, font, 0, "X,Y:");
         EVE_CMD_TEXT(10, ypos + heights[font], font, 0, "Raw X,Y:");
 
@@ -188,12 +196,19 @@ void eve_display(void)
 
             // Draw cross-hairs for the touch position.
             EVE_BEGIN(EVE_BEGIN_LINES);
-            EVE_VERTEX_FORMAT(0);
             EVE_COLOR_RGB(255,255,255);
+#if IS_EVE_API(2, 3, 4, 5)
+            EVE_VERTEX_FORMAT(0);
             EVE_VERTEX2F(0, y);
             EVE_VERTEX2F(EVE_DISP_WIDTH,y);
             EVE_VERTEX2F(x, 0);
             EVE_VERTEX2F(x, EVE_DISP_HEIGHT);
+#else
+            EVE_VERTEX2F(0, y * 16);
+            EVE_VERTEX2F(EVE_DISP_WIDTH  * 16, y * 16);
+            EVE_VERTEX2F(x * 16, 0);
+            EVE_VERTEX2F(x * 16, EVE_DISP_HEIGHT * 16);
+#endif
         }
 
         ypos += (heights[font] * 3);

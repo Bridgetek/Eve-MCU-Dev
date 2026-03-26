@@ -131,8 +131,6 @@ int main(void)
 
 void setup(void)
 {
-    int ch = 0;
-
 #if DEBUG_LEVEL > 0
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_usb_init();

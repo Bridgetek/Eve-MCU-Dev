@@ -63,7 +63,7 @@ add_library(eve_library # EVE library name
         # Source code for EVE library
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL_Linux.c
-        ${API_DIRECTORY}ports/eve_arch_beaglebone/EVE_Linux_BBB.c
+        ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_Linux_RPi.c
         ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
@@ -82,6 +82,7 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_images.c
         ${EXAMPLE_SNIPPETS}/touch.c
 )
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -94,10 +95,10 @@ target_include_directories(eve_example PUBLIC
 # Example code dependencies
 target_link_libraries(eve_example
         eve_library # Example code depends on EVE library
+        gpiod
 )
 
 # Project dependencies
 target_link_libraries(${PROJECT_NAME} 
         eve_example # Project depends on example code library
-        gpiod
 )

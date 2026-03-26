@@ -51,31 +51,6 @@
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
 
-uint16_t getheight(struct eve_font_cache *cache)
-{
-    return cache->height;
-}
-
-uint16_t getwidth(struct eve_font_cache *cache)
-{
-    return cache->width;
-}
-
-// Get the maximum number of fonts supported by a platform.
-uint8_t getfontmax(void)
-{
-    uint8_t fontcount;
-
-#if IS_EVE_API(5)
-    // BT82x
-    fontcount = 64;
-#else
-    // FT8xx, FT81x, BT81x
-    fontcount = 34;
-#endif
-
-    return fontcount;
-}
 
 // Check a ROM font is supported by a platform.
 int isromfont(uint8_t fontnumber)
@@ -90,151 +65,6 @@ int isromfont(uint8_t fontnumber)
         return 1;
 #endif
     return 0;
-}
-
-// Obtain the address of a ROM font. Platform specific.
-// If the  ROM font will return a pointer of zero.
-uint32_t getromfontptr(uint8_t fontnumber)
-{
-    uint32_t fontroot, fontptr;
-
-#if IS_EVE_API(5)
-    // BT82x
-    fontroot = 0x08000000 - 0x100;
-#else
-    // FT8xx, FT81x, BT81x
-    fontroot = EVE_LIB_MemRead32(EVE_ROMFONT_TABLEADDRESS);
-#endif
-
-    if (fontnumber < getfontmax())
-    {
-        fontptr = EVE_LIB_MemRead32(fontroot + (fontnumber * 4));
-    }
-    else
-    {
-        fontptr = 0;
-    }
-
-    return fontptr;
-}
-    
-void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character)
-{
-    uint32_t page;
-    uint32_t gptr;
-    uint32_t wptr;
-    uint32_t cdptr;
-    int ch, w;
-    uint32_t N;
-    int32_t start_of_graphics;
-
-    cache->legacy = 0;
-    cache->handle = fontnumber;
-    cache->first = first_character;
-    
-    memset(&cache->widths[0], 0, sizeof(cache->widths));
-    memset(&cache->glyphs[0], 0, sizeof(cache->glyphs));
-
-    // Read the first word of the font metric block.
-    // This determines the format of the font and how it is handled.
-    uint32_t format = EVE_LIB_MemRead32(fontptr);
-    if (format == 0x0100AAFF)
-    {
-        // Extended format 1 font cache.
-        // Get the font bitmap sizes.
-        cache->width = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontWidthInPixels));
-        cache->height = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontHeightInPixels));
-        uint32_t stride = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontLayoutWidth));
-        // Get the total number (and fixed maximum) of characters in the font.
-        N = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, FontNumberCharacters));
-        if (N > MAX_CHARACTERS)
-        {
-            N = MAX_CHARACTERS;
-        }
-        // Load character widths and glyph pointers.
-        start_of_graphics = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT_FONT_HEADER, PointerToFontGraphicsData));
-        for (page = 0; page < N / 128; page++)
-        {
-            gptr = EVE_LIB_MemRead32(fontptr + sizeof(EVE_GPU_EXT_FONT_HEADER) + (page * 4));
-            wptr = EVE_LIB_MemRead32(fontptr + sizeof(EVE_GPU_EXT_FONT_HEADER) + (4 * ((N / 128))) + (page * 4));
-            for (ch = 0; ch < 128; ch += 4)
-            {
-                // Read character width as a 32 bit word.
-                uint32_t width4 = EVE_LIB_MemRead32(wptr + (ch & 127));
-                for (w = 0; w < 4; w++)
-                {
-                    cache->widths[ch + w] = (width4 >> (w * 8)) & 0xff;
-                    // Construct glyph pointer.
-                    cache->glyphs[ch + w] = start_of_graphics + gptr + ((ch + w) * cache->height * stride);
-                }
-            }
-        }
-    }
-    else if (format == 0x0200AAFF)
-    {
-        // Extended format 2 font cache.
-        cache->legacy = 0;
-        // Get the font pixel sizes.
-        cache->height = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontHeightInPixels));
-        cache->width= EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontWidthInPixels));
-        // Get the total number (and fixed maximum) of characters in the font.
-        N = EVE_LIB_MemRead32((uint32_t)offsetof(EVE_GPU_EXT2_FONT_HEADER, FontNumberCharacters));
-        if (N > MAX_CHARACTERS)
-        {
-            N = MAX_CHARACTERS;
-        }
-        // Load character widths and glyph pointers.
-        // This only takes the unkerned character width.
-        for (page = 0; page < N / 128; page++)
-        {
-            gptr = EVE_LIB_MemRead32(fontptr + sizeof(EVE_GPU_EXT2_FONT_HEADER) + (page * 4));
-            for (ch = 0; ch < 128; ch++)
-            {
-                cdptr = EVE_LIB_MemRead32(gptr + ((ch & 127) * 4));
-                cache->glyphs[ch] = EVE_LIB_MemRead32(cdptr);
-                cache->widths[ch] = EVE_LIB_MemRead32(cdptr + 4) & 0xff;
-            }
-        }
-    }
-    else
-    {
-        // Legacy font.
-        cache->legacy = 1;
-        // Get the font pixel sizes.
-        uint16_t stride = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontLineStride));
-        cache->width = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidthInPixels));
-        cache->height = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontHeightInPixels));
-        // Get offset to glyphs.
-        start_of_graphics = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, PointerToFontGraphicsData));
-        // Load character widths and glyph pointers.
-        int ch, w;
-        for (ch = 0; ch < 128; ch += 4)
-        {
-            // Read character width as a 32 bit word.
-            uint32_t width4 = EVE_LIB_MemRead32(fontptr + (uint32_t)offsetof(EVE_GPU_FONT_HEADER, FontWidth[ch]));
-            for (w = 0; w < 4; w++)
-            {
-                cache->widths[ch + w] = (width4 >> (w * 8)) & 0xff;
-                // Construct glyph pointer.
-                cache->glyphs[ch + w] = start_of_graphics + ((ch + w - first_character) * cache->height * stride);
-            }
-        }
-    }
-}
-
-void getcustomfontinfo(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character)
-{
-    getfontinfocache(cache, fontnumber, fontptr, first_character);
-}
-
-void getromfontinfo(struct eve_font_cache *cache, uint8_t fontnumber)
-{
-    uint32_t fontptr = getromfontptr(fontnumber);
-
-    if (fontptr)
-    {
-        getfontinfocache(cache, fontnumber, fontptr, 32);
-    }
 }
 
 void cmd_textdraw(int x, int y, struct eve_font_cache *cache, char ch)
@@ -400,8 +230,8 @@ void eve_example(void)
 
     // Start example code.
     printf("Starting demo...\n");
-    getromfontinfo(&romfontcache, FONT_ROM);
-    getcustomfontinfo(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
+    font_getfontinforom(&romfontcache, FONT_ROM);
+    font_getfontinfocustom(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
 
     do
     {
@@ -429,26 +259,26 @@ void eve_example(void)
             x = 600;
             // Draw test text using a ROM font.
             EVE_CMD_TEXT(x, y, FONT_ROM, 0, "ROM font text");
-            y += ((getheight(&romfontcache) * 3)/2);
+            y += ((font_getheight(&romfontcache) * 3)/2);
             cmd_textzoom(x, y, &romfontcache, ZOOM_OUT_3_4, "ROM zoomed out text!");
             y = 100;
-            x = x - getheight(&romfontcache);
+            x = x - font_getheight(&romfontcache);
             cmd_textrotate(x, y, &romfontcache, "ROM rotated text!");
-            x = x - getheight(&romfontcache);
+            x = x - font_getheight(&romfontcache);
             cmd_textrotate(x, y, &romfontcache, "More ROM rotated text!");
 
             // Draw test text using the custom font.
             y = 100;
             x = 100;
             EVE_CMD_TEXT(x, y, FONT_CUSTOM, 0, "Custom font text");
-            y += ((getheight(&customfontcache) * 3)/2);
+            y += ((font_getheight(&customfontcache) * 3)/2);
             cmd_textzoom(x, y, &customfontcache, ZOOM_IN_2, "Custom zoomed in text!");
-            y += (2 * getheight(&customfontcache));
+            y += (2 * font_getheight(&customfontcache));
             cmd_textzoom(x, y, &customfontcache, ZOOM_IN_4, "More Custom zoomed in text!");
             y = 100;
-            x = x - getheight(&customfontcache);
+            x = x - font_getheight(&customfontcache);
             cmd_textrotate(x, y, &customfontcache, "Custom rotated text!");
-            x = x - getheight(&customfontcache);
+            x = x - font_getheight(&customfontcache);
             cmd_textrotate(x, y, &customfontcache, "More Custom rotated text!");
 
             action++;
@@ -458,17 +288,17 @@ void eve_example(void)
             y = 100;
             // Draw test text of all ASCII characters.
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "!\"#$%&'()*+,-./0123456789:;<=>?");
-            y += getheight(&customfontcache);
+            y += font_getheight(&customfontcache);
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_");
-            y += getheight(&customfontcache);
+            y += font_getheight(&customfontcache);
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "`abcdefghijklmnopqrstuvwxyz{|}");
-            y +=getheight(&customfontcache);
+            y +=font_getheight(&customfontcache);
             EVE_CMD_TEXT(100, y, FONT_ROM, 0, "!\"#$%&'()*+,-./0123456789:;<=>?");
-            y += getheight(&romfontcache);
+            y += font_getheight(&romfontcache);
             EVE_CMD_TEXT(100, y, FONT_ROM, 0, "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_");
-            y += getheight(&romfontcache);
+            y += font_getheight(&romfontcache);
             EVE_CMD_TEXT(100, y, FONT_ROM, 0, "`abcdefghijklmnopqrstuvwxyz{|}");
-            y += getheight(&romfontcache);
+            y += font_getheight(&romfontcache);
 
             action++;
         }
@@ -478,19 +308,19 @@ void eve_example(void)
             // Draw test text of ASCII characters.
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f" \
                         "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f");
-            y += getheight(&customfontcache);
+            y += font_getheight(&customfontcache);
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f" \
                         "\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f");
-            y += getheight(&customfontcache);
+            y += font_getheight(&customfontcache);
             EVE_CMD_TEXT(100, y, FONT_CUSTOM, 0, "\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f" \
                         "\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e");
-            y += getheight(&customfontcache);
+            y += font_getheight(&customfontcache);
             cmd_textzoom(100, y, &customfontcache, ZOOM_IN_2, "\x20\x21\x22\x23\x24\x25\x26\x27\x28\x29\x2a\x2b\x2c\x2d\x2e\x2f" \
                         "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3a\x3b\x3c\x3d\x3e\x3f");
-            y += (2 * getheight(&customfontcache));
+            y += (2 * font_getheight(&customfontcache));
             cmd_textzoom(100, y, &customfontcache, ZOOM_IN_2, "\x40\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f" \
                         "\x50\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f");
-            y += (2 * getheight(&customfontcache));
+            y += (2 * font_getheight(&customfontcache));
             cmd_textzoom(100, y, &customfontcache, ZOOM_IN_4, "\x60\x61\x62\x63\x64\x65\x66\x67\x68\x69\x6a\x6b\x6c\x6d\x6e\x6f" \
                         "\x70\x71\x72\x73\x74\x75\x76\x77\x78\x79\x7a\x7b\x7c\x7d\x7e");
 

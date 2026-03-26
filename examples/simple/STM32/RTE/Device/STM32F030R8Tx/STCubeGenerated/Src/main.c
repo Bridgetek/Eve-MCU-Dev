@@ -279,6 +279,7 @@ static void MX_GPIO_Init(void)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @details This function is used by the platform to report errors. It must be included in all projects for this platform.
   * @retval None
   */
 void Error_Handler(void)

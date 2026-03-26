@@ -185,6 +185,8 @@
 #define _IS_EVE_API(N, ...)  _IS_EVE_API_N(N, __VA_ARGS__)
 #define IS_EVE_API(...)      _IS_EVE_API(NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__)
 
+#define IS_EVE_SUB_API(a)      (a == EVE_SUB_API)
+
 /** EVE API definitions. */
 
 #if IS_EVE_API(1)

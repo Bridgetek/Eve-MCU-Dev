@@ -40,8 +40,12 @@
 // Guard against being used for incorrect CPU type.
 #if defined(ARDUINO)
 
+/* EVE MCU HEADER */
+
 #include <Arduino.h>
 #include <SPI.h>
+
+/* EVE MCU HEADER END */
 
 /** @brief Library Includes
  * NOTE That all the file used in the example sketch must be in the same directory
@@ -58,16 +62,18 @@ extern "C" {
 }
 //@}
 
+/* EVE MCU */
+
 /** @brief Pin definitions
  */
 //@{
 /// Standard SPI pinouts 10(CS), 11(COPI), 12(CIPO), 13(SCK)
-#define PIN_SPICLOCK 13    // SCK
-#define PIN_DATAOUT 11     // MOSI (COPI)
-#define PIN_DATAIN 12      // MISO (CIPO)
-#define PIN_CHIPSELECT 10  // CS#
+#define PIN_SPICLOCK    13  // SCK
+#define PIN_DATAOUT     11  // MOSI (COPI)
+#define PIN_DATAIN      12  // MISO (CIPO)
+#define PIN_CHIPSELECT  10  // CS#
 /// Additional pin for power down on EVE
-#define PIN_POWERDOWN 9    // PD#
+#define PIN_POWERDOWN   9   // PD#
 //@}
 
 void MCU_Init(void) {
@@ -136,8 +142,12 @@ char MCU_SPIReadWrite8(uint8_t val) {
 
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) {
   uint16_t DataRead = 0;
-  DataRead = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
-  DataRead |= MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) << 8;
+  uint16_t temp;
+
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+  DataRead |= (temp << 0);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+  DataRead |= (temp << 8);
 
   return DataRead;
 }
@@ -146,11 +156,11 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
 
-  temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
   DataRead |= (temp << 8);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
   DataRead |= (temp << 16);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
   DataRead |= (temp << 24);
 
   return DataRead;
@@ -160,13 +170,13 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
 
-  temp = MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
   DataRead |= (temp << 0);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
   DataRead |= (temp << 8);
-  temp = MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
   DataRead |= (temp << 16);
-  temp |= MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
   DataRead |= (temp << 24);
 
   return DataRead;
@@ -284,5 +294,7 @@ uint16_t MCU_le16toh(uint16_t h) {
 uint32_t MCU_le32toh(uint32_t h) {
   return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(ARDUINO) */

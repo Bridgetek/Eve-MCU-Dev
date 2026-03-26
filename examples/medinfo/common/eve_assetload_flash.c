@@ -236,7 +236,7 @@ int eve_loadpatch_impl(void)
 
 #endif
 
-void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
 {
 
 #if ASSETS == USE_FLASH

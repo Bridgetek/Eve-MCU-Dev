@@ -1,0 +1,6 @@
+# Exclude Files in Arduino for medinfo projects
+eve_assetload_file.c
+eve_assetload_flash.c
+eve_graph_extension.c
+patch_medinfo.c
+patch_medinfo.h

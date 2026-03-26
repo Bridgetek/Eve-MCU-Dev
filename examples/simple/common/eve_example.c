@@ -45,7 +45,6 @@
 #include "eve_example.h"
 #include "touch.h"
 
-extern const uint8_t font0[];
 extern const EVE_GPU_FONT_HEADER *font0_hdr;
 
 void eve_display(void)

@@ -110,7 +110,7 @@ int eve_loadpatch_impl(void)
 
 #endif
 
-void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
 {
     const uint8_t *ptr = asset->Array_Ptr;
     uint32_t total = 0;

@@ -47,7 +47,7 @@
 //###########################################################################
 
 // Clock lower boundary of trimming
-#define EVE_LOW_FREQ_BOUND             47040000L//98% of 48Mhz
+#define EVE_LOW_FREQ_BOUND             47040000L        //98% of 48Mhz
 
 // Memory Map
 
@@ -209,36 +209,36 @@
 // Encoded Command Macros
 
 #define EVE_ENC_ALPHA_FUNC(func,ref)        ((0x9ul << 24)|(((func) & 0x7ul) << 8)|(((ref) & 0xfful) << 0))
-#define EVE_ENC_BEGIN(prim)                 ((0x1ful << 24)|(((prim) & 0xFul) << 0))
+#define EVE_ENC_BEGIN(prim)                 ((0x1ful << 24)|(((prim) & 0xful) << 0))
 #define EVE_ENC_BITMAP_HANDLE(handle)       ((0x5ul << 24)|(((handle) & 0x1ful) << 0))
 #define EVE_ENC_BITMAP_LAYOUT(format,linestride,height) ((0x7ul << 24)|(((format) & 0x1ful) << 19)|(((linestride) & 0x3fful) << 9)|(((height) & 0x1fful) << 0))
 #define EVE_ENC_BITMAP_SIZE(filter,wrapx,wrapy,width,height) ((0x8ul << 24)|(((filter) & 0x1ul) << 20)|(((wrapx) & 0x1ul) << 19)|(((wrapy) & 0x1ul) << 18)|(((width) & 0x1fful) << 9)|(((height) & 0x1fful) << 0))
-#define EVE_ENC_BITMAP_SOURCE(addr)         ((0x1ul << 24) | ((addr)&EVE_ENC_BITMAP_ADDR_MASK))
-#define EVE_ENC_BITMAP_TRANSFORM_A(a)       ((0x15ul << 24)|((((uint32_t)(a)) & 0x1FFFFul) << 0))
-#define EVE_ENC_BITMAP_TRANSFORM_B(b)       ((0x16ul << 24)|((((uint32_t)(b)) & 0x1FFFFul) << 0))
-#define EVE_ENC_BITMAP_TRANSFORM_C(c)       ((0x17ul << 24)|((((uint32_t)(c)) & 0xFFFFFFul) << 0))
-#define EVE_ENC_BITMAP_TRANSFORM_D(d)       ((0x18ul << 24)|((((uint32_t)(d)) & 0x1FFFFul) << 0))
-#define EVE_ENC_BITMAP_TRANSFORM_E(e)       ((0x19ul << 24)|((((uint32_t)(e)) & 0x1FFFFul) << 0))
-#define EVE_ENC_BITMAP_TRANSFORM_F(f)       ((0x1aul << 24)|((((uint32_t)(f)) & 0xFFFFFFul) << 0))
+#define EVE_ENC_BITMAP_SOURCE(addr)         ((0x1ul << 24) | ((addr) & EVE_ENC_BITMAP_ADDR_MASK))
+#define EVE_ENC_BITMAP_TRANSFORM_A(a)       ((0x15ul << 24)|((((uint32_t)(a)) & 0x1fffful) << 0))
+#define EVE_ENC_BITMAP_TRANSFORM_B(b)       ((0x16ul << 24)|((((uint32_t)(b)) & 0x1fffful) << 0))
+#define EVE_ENC_BITMAP_TRANSFORM_C(c)       ((0x17ul << 24)|((((uint32_t)(c)) & 0xfffffful) << 0))
+#define EVE_ENC_BITMAP_TRANSFORM_D(d)       ((0x18ul << 24)|((((uint32_t)(d)) & 0x1fffful) << 0))
+#define EVE_ENC_BITMAP_TRANSFORM_E(e)       ((0x19ul << 24)|((((uint32_t)(e)) & 0x1fffful) << 0))
+#define EVE_ENC_BITMAP_TRANSFORM_F(f)       ((0x1aul << 24)|((((uint32_t)(f)) & 0xfffffful) << 0))
 #define EVE_ENC_BLEND_FUNC(src,dst)         ((0xbul << 24)|(((src) & 0x7ul) << 3)|(((dst) & 0x7ul) << 0))
-#define EVE_ENC_CALL(dest)                  ((0x1dul << 24)|(((dest) & 0xFFFFul) << 0))
+#define EVE_ENC_CALL(dest)                  ((0x1dul << 24)|(((dest) & 0xfffful) << 0))
 #define EVE_ENC_CELL(cell)                  ((0x6ul << 24)|(((cell) & 0x7ful) << 0))
+#define EVE_ENC_CLEAR(c,s,t)                ((0x26ul << 24)|((((uint32_t)(c)) & 0x1ul) << 2)|((((uint32_t)(s)) & 0x1ul) << 1)|((((uint32_t)(t)) & 0x1ul) << 0))
+#define EVE_ENC_CLEAR_COLOR(c)              ((0x2ul << 24)|(((uint32_t)(c)) & 0x00fffffful))
 #define EVE_ENC_CLEAR_COLOR_A(alpha)        ((0xful << 24)|(((alpha) & 0xfful) << 0))
 #define EVE_ENC_CLEAR_COLOR_RGB(red,green,blue) ((0x2ul << 24)|(((red) & 0xfful) << 16)|(((green) & 0xfful) << 8)|(((blue) & 0xfful) << 0))
-#define EVE_ENC_CLEAR_COLOR(c)              ((0x2ul << 24)|(((uint32_t)(c)) & 0x00fffffful))
 #define EVE_ENC_CLEAR_STENCIL(s)            ((0x11ul << 24)|((((uint32_t)(s)) & 0xfful) << 0))
 #define EVE_ENC_CLEAR_TAG(s)                ((0x12ul << 24)|((((uint32_t)(s)) & 0xfful) << 0))
-#define EVE_ENC_CLEAR(c,s,t)                ((0x26ul << 24)|((((uint32_t)(c)) & 0x1ul) << 2)|((((uint32_t)(s)) & 0x1ul) << 1)|((((uint32_t)(t)) & 0x1ul) << 0))
+#define EVE_ENC_COLOR(c)                    ((0x4ul << 24)|(((uint32_t)(c)) & 0x00fffffful))
 #define EVE_ENC_COLOR_A(alpha)              ((0x10ul << 24)|(((alpha) & 0xfful) << 0))
 #define EVE_ENC_COLOR_MASK(r,g,b,a)         ((0x20ul << 24)|((((uint32_t)(r)) & 0x1ul) << 3)|((((uint32_t)(g)) & 0x1ul) << 2)|((((uint32_t)(b)) & 0x1ul) << 1)|((((uint32_t)(a)) & 0x1ul) << 0))
 #define EVE_ENC_COLOR_RGB(red,green,blue)   ((0x4ul << 24)|(((red) & 0xfful) << 16)|(((green) & 0xfful) << 8)|(((blue) & 0xfful) << 0))
-#define EVE_ENC_COLOR(c)                    ((0x4ul << 24)|(((uint32_t)(c)) & 0x00fffffful))
 #define EVE_ENC_DISPLAY()                   ((0x0ul << 24))
 #define EVE_ENC_END()                       ((0x21ul << 24))
-#define EVE_ENC_JUMP(dest)                  ((0x1eul << 24)|(((dest) & 0xFFFFul) << 0))
-#define EVE_ENC_LINE_WIDTH(width)           ((0xeul << 24)|(((width) & 0xFFFul) << 0))
+#define EVE_ENC_JUMP(dest)                  ((0x1eul << 24)|(((dest) & 0xfffful) << 0))
+#define EVE_ENC_LINE_WIDTH(width)           ((0xeul << 24)|(((width) & 0xffful) << 0))
 #define EVE_ENC_MACRO(m)                    ((0x25ul << 24)|((((uint32_t)(m)) & 0x1ul) << 0))
-#define EVE_ENC_POINT_SIZE(size)            ((0xdul << 24)|(((size) & 0x1FFFul) << 0))
+#define EVE_ENC_POINT_SIZE(size)            ((0xdul << 24)|(((size) & 0x1ffful) << 0))
 #define EVE_ENC_RESTORE_CONTEXT()           ((0x23ul << 24))
 #define EVE_ENC_RETURN()                    ((0x24ul << 24))
 #define EVE_ENC_SAVE_CONTEXT()              ((0x22ul << 24))
@@ -247,10 +247,10 @@
 #define EVE_ENC_STENCIL_FUNC(func,ref,mask) ((0xaul << 24)|(((func) & 0x7ul) << 16)|(((ref) & 0xfful) << 8)|(((mask) & 0xfful) << 0))
 #define EVE_ENC_STENCIL_MASK(mask)          ((0x13ul << 24)|(((mask) & 0xfful) << 0))
 #define EVE_ENC_STENCIL_OP(sfail,spass)     ((0xcul << 24)|(((sfail) & 0x7ul) << 3)|(((spass) & 0x7ul) << 0))
-#define EVE_ENC_TAG_MASK(mask)              ((0x14ul << 24)|(((mask) & 0x1ul) << 0))
 #define EVE_ENC_TAG(s)                      ((0x3ul << 24)|((((uint32_t)(s)) & 0xfful) << 0))
+#define EVE_ENC_TAG_MASK(mask)              ((0x14ul << 24)|(((mask) & 0x1ul) << 0))
 #define EVE_ENC_VERTEX2F(x,y)               ((0x1ul << 30)|((((uint32_t)(x)) & 0x7ffful) << 15)|((((uint32_t)(y)) & 0x7ffful) << 0))
-#define EVE_ENC_VERTEX2II(x,y,handle,cell)  ((0x2ul << 30)|((((uint32_t)(x)) & 0x1fful) << 21)|((((uint32_t)(y)) & 0x1fful) << 12)|(((handle) & 0x1ful) << 7)|(((cell) & 0x7ful) << 0))
+#define EVE_ENC_VERTEX2II(x,y,handle,cell)  ((0x2ul << 30)|((((uint32_t)(x)) & 0x1fful) << 21)|((((uint32_t)(y)) & 0x1fful) << 12)|((((uint32_t)(handle)) & 0x1ful) << 7)|((((uint32_t)(cell)) & 0x7ful) << 0))
 
 // Co-processor Commands
 

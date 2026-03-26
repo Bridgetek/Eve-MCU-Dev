@@ -42,6 +42,8 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
+/* EVE HAL */
+
 /**
  @brief Initialise EVE HAL Layer.
  @details Power cycle and start the EVE display in a controlled manner.
@@ -306,5 +308,37 @@ uint16_t HAL_Read16(void);
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 uint8_t HAL_Read8(void);
 #endif
+
+/**
+ @brief Valid SPI bus widths on EVE
+ */
+typedef enum EVE_SPI_CHANNELS_T
+{
+	EVE_SPI_SINGLE_CHANNEL = 0x00,
+	EVE_SPI_DUAL_CHANNEL = 0x01,
+	EVE_SPI_QUAD_CHANNEL = 0x02,
+} EVE_SPI_CHANNELS_T;
+
+/**
+ @brief Sets the SPI bus width on EVE
+ @details Changes from single SPI (default) to Dual SPI to
+    Quad SPI.
+ @param mode - SPI mode:
+                0 – 1bit (Default Single mode)
+                1 – 2bits (Dual mode)
+                2 – 4bits (Quad mode)
+ */
+#if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
+void HAL_SetSPIMode(EVE_SPI_CHANNELS_T mode);
+#endif
+
+/* EVE HAL END */
+
+/**
+ @brief Maximum transfer size of data transmit or receive
+ @details The maximum number of bytes in a transfer using the
+    HAL_Read or HAL_Write functions.
+ */
+#define HAL_MAX_CHUNK_SIZE (1024 - sizeof(uint32_t))
 
 #endif /* HAL_HEADER_H */

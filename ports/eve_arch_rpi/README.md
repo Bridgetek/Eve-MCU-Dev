@@ -4,10 +4,10 @@
 
 There are two separate ports for Raspberry Pi products:
 
-| Port | PLATFORM macro | Port File |
-| --- | --- | --- |
-| [RP2040](#hardware-rp2040) | `PLATFORM_RP2040` | [EVE_MCU_RP2040.c](EVE_MCU_RP2040.c) |
-| [Raspberry Pi](#hardware-raspberry-pi) | `PLATFORM_RASPBERRYPI` | [EVE_Linux_RPi.c](EVE_Linux_RPi.c) |
+| Port | PLATFORM macro | 
+| --- | --- | 
+| [RP2040](#hardware-rp2040) | `PLATFORM_RP2040` | 
+| [Raspberry Pi](#hardware-raspberry-pi) | `PLATFORM_RASPBERRYPI` | 
 
 ## Hardware RP2040
 
@@ -28,6 +28,12 @@ Ensure that the power supply from the Raspberry Pi pico module is capable of als
 A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
 
 ![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
+
+## Files
+
+| File | Function |
+| --- | --- |
+|[EVE_MCU_RP2040.c](EVE_MCU_RP2040.c) | Common file for Raspberry Pi RP2040, higher level read/writes, endian conversions, SPI peripheral setup and control, CS and PD pin control. |
 
 ### IDM2040-7A Module
 
@@ -78,3 +84,35 @@ Ensure that the power supply from the Raspberry Pi SBC is capable of also poweri
 A Raspberry Pi can be connected to an EVE board as in the following picture.
 
 ![Raspberry Pi Wiring Picture](../../docs/rpi400.png)
+
+## Files
+
+| File | Function |
+| --- | --- |
+| [EVE_Linux_RPi.c](EVE_Linux_RPi.c) | Common file for Raspberry Pi Linux, higher level read/writes, endian conversions, SPI peripheral setup and control, CS and PD pin control. |
+
+### Raspberry Pi SPI Setup
+
+The SPI interface needs to be enabled in the "Raspberry Pi Configuration" settings. 
+
+Open the start menu and select "Preferences" then "Raspberry Pi Configuration". 
+
+![Raspberry Pi Configuration](../../docs/raspberry_pi_configuration.png)
+
+Then select the "Interfaces" tab. The "SPI" interface can be enabled with the switch.
+
+![Raspberry Pi Configuration Interfaces](../../docs/raspberry_pi_interfaces.png)
+
+It is possible to enable the SPI using the `raspi-config` command line program.
+
+![Raspberry Pi Configuration raspi-config](../../docs/raspi-config.png)
+
+Select "3" to configure the interfaces then enable the SPI interface in the next page.
+
+### Raspberry Pi Link Library Setup
+
+The `libgpiod` library will need to be installed on the Raspberry Pi to access the GPIO pins.
+
+```
+sudo apt install libgpiod-dev
+```

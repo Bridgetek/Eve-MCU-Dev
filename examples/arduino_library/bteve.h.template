@@ -72,34 +72,24 @@ class ### EVE CLASS ###
     ### EVE CLASS ###(void);
 
   void setup(uint32_t panel);
-  /* ### BEGIN API >= 5 ### */
+#if IS_EVE_API(5)
   void setup(uint32_t panel, uint32_t ramg);
-  /* ### END API ### */
+#endif
 
   public:
-  /* ### BEGIN API ### */
-  /* ### END API ### */
+  ### API HEADER ###
 
+  public:
+    uint16_t DISP_WIDTH(void);
+    uint16_t DISP_HEIGHT(void);
+    
   public:
     /* Font table structure */
     /* On EVE4 onwards this is called the Legacy Font Structure. */
-    typedef struct
-    {
-        /* Width of each character font from 0 to 127 */
-        uint8_t    FontWidth[128];
-        /* Bitmap format of font - this is the same as the EVE_FORMAT_x, where x is L1, L2, L4 etc. */
-        uint32_t    FontBitmapFormat;
-        /* Font line stride in bytes */
-        uint32_t    FontLineStride;
-        /* Font width in pixels */
-        uint32_t    FontWidthInPixels;
-        /* Font height in pixels */
-        uint32_t    FontHeightInPixels;
-        /* Pointer to font graphics raw data */
-        uint32_t    PointerToFontGraphicsData;
-    } EVE_GPU_FONT_HEADER;
+    typedef ::EVE_GPU_FONT_HEADER GPU_FONT_HEADER;
 
-    /* ### BEGIN API >= 3 ### */
+#if IS_EVE_API(4, 5)
+
     /* On EVE4 onwards this is called the Extended Font Structure. */
     typedef struct
     {
@@ -123,10 +113,12 @@ class ### EVE CLASS ###
         uint32_t    PointerToFontGraphicsData;
         /* Number of characters */
         uint32_t    FontNumberCharacters;
-    } EVE_GPU_EXT_FONT_HEADER;
-    /* ### END API ### */
+    } GPU_EXT_FONT_HEADER;
 
-    /* ### BEGIN API >= 5 ### */
+#endif
+
+#if IS_EVE_API(5)
+
     /* On EVE5 onwards this is called the Extended 2 Font Structure. */
     typedef struct
     {
@@ -154,7 +146,7 @@ class ### EVE CLASS ###
         uint32_t    FontNumberCharacters;
         /* Font midline and baseline in pixels */
         uint32_t    FontMidlineBaselineInPixels;
-    } EVE_GPU_EXT2_FONT_HEADER;
+    } GPU_EXT2_FONT_HEADER;
 
     typedef struct
     {
@@ -162,9 +154,10 @@ class ### EVE CLASS ###
         uint32_t    PointerToFontGraphicsData;
         /* Width of font character */
         uint32_t    Width;
-    } EVE_GPU_EXT2_CHAR_DESCRIPTOR;
-    /* ### END API ### */
-  
+    } GPU_EXT2_CHAR_DESCRIPTOR;
+
+#endif
+
   private:
     void setpanel(uint32_t panel);
 };

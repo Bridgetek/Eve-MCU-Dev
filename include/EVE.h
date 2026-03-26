@@ -40,17 +40,15 @@
 #ifndef EVE_HEADER_H
 #define EVE_HEADER_H
 
-// for Uint8/16/32 and Int8/16/32 data types.
 #include <stdint.h>
-// Include the configuration for this instance.
 
+/* 
+ * Include the EVE configuration to select the EVE API.
+ */
 #include <EVE_config.h>
 #include <FT8xx.h>
 
-#if IS_EVE_API(5)
-// Base patch for BT82x
-#include <patch_base.h>
-#endif
+/* EVE API */
 
 /**
  @brief Initialise EVE API.
@@ -300,8 +298,16 @@ void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
 void EVE_NOP(void);
 #endif
 
+#if IS_EVE_API(3, 4, 5)
+void EVE_BITMAP_EXT_FORMAT(uint16_t fmt);
+void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+#endif
+
 #if IS_EVE_API(5) // BT82x extensions
 void EVE_BITMAP_SOURCE_H(uint8_t addr);
+void EVE_BITMAP_ZORDER(uint8_t o);
+void EVE_PALLETE_SOURCE_H(uint8_t addr);
+void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest);
 #endif
 
 // Co-Processor Widgets.
@@ -469,6 +475,13 @@ void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t re
 void EVE_CMD_WAITCHANGE(uint32_t a);
 void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask);
 void EVE_CMD_RESULT(uint32_t a);
+#endif
+
+/* EVE API END */
+
+#if IS_EVE_API(5)
+// Base patch for BT82x
+#include <patch_base.h>
 #endif
 
 #endif    /* EVE_HEADER_H */

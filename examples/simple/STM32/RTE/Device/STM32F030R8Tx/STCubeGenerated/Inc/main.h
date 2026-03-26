@@ -52,6 +52,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
+/* This function is used by the platform to report errors. It must be included in all projects for this platform. */
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */

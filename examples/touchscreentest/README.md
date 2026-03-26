@@ -16,8 +16,8 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-|Generic using libFT4222 CMake | [libmpsse](libmpsse/README.md) | 
-|Generic using libFT4222 Visual Studio | [libmpsse](libmpsse/README.md) | 
+|Generic using libFT4222 CMake | [libmpsse](libft4222/README.md) | 
+|Generic using libFT4222 Visual Studio | [libmpsse](libft4222/README.md) | 
 |Raspberry Pi Pico | [pico](pico/README.md) | 
 
 - (1) Hardware testing ongoing.

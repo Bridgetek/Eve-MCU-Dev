@@ -46,9 +46,9 @@
 const uint32_t font0_offset = 1000; // Taken from commmand line
 
 #ifdef __GNUC__
-const uint8_t font0[]  __attribute__((aligned(4))) =
+static const uint8_t font0[]  __attribute__((aligned(4))) =
 #else // __GNUC__
-const uint8_t font0[] =
+static const uint8_t font0[] =
 #endif // __GNUC__
 /*10 characters have been converted */
 

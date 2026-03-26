@@ -14,6 +14,7 @@ Graphics assets are stored in 4 different ways:
 1  In the EVE device Flash. Images are stored as PNG images. The Flash must be preprogrammed before using the example.
 2  From an image of the Flash on the host PC file system. This method is not suitable for embedded applications where there is no file system.
 3  From discreet C files on the host PC file system. This method is not suitable for embedded applications where there is no file system.
+
 ## Screenshot
 
 The following is an screenshot of the medinfo example.

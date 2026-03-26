@@ -56,7 +56,7 @@
 #define SCALED_FONT 14
 
 // Speed of simulation... milliseconds per tick
-const uint32_t tick = 100;
+const uint32_t tick = 1000;
 
 const uint16_t furmans_top = 0x8000;
 
@@ -64,26 +64,6 @@ const uint16_t furmans_top = 0x8000;
 #define ARC_CYCLE_WIDTH (EVE_DISP_HEIGHT / 32)
 
 #define ARC_GAP(A) ((A) * 8 / 10)
-
-// Radius of timerclock arc
-const uint16_t r1_timer = (EVE_DISP_WIDTH / 4);
-const uint16_t r0_timer = (EVE_DISP_WIDTH / 4) - ((ARC_CLOCK_WIDTH * 3) / 2);
-
-// Radius of interval counter arc
-const uint16_t r1_interval = ARC_GAP(EVE_DISP_WIDTH / 4);
-const uint16_t r0_interval = ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CLOCK_WIDTH);
-
-// Radius of cycle counter arc
-const uint16_t r1_cycle = ARC_GAP(ARC_GAP(EVE_DISP_WIDTH / 4));
-const uint16_t r0_cycle = ARC_GAP(ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CYCLE_WIDTH));
-
-// Full extents of clock image arcs
-const uint16_t r_inner = (EVE_DISP_WIDTH / 6);
-const uint16_t r_outer = (EVE_DISP_WIDTH / 4) + ARC_CLOCK_WIDTH;
-
-// Centre point for clock arcs
-const int16_t centre_x = EVE_DISP_WIDTH / 2;
-const int16_t centre_y = EVE_DISP_HEIGHT / 2;
 
 // Colours in hexadecimal RGB
 const uint32_t col_timer_active = 0x6666ff;
@@ -213,9 +193,9 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
     EVE_CMD_SETMATRIX();
 }
 
-static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, char *str)
+static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
 {
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -227,11 +207,11 @@ static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, i
     }
 }
 
-static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, char *str)
+static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const char *str)
 {
     uint16_t x = 0;
     int i = 0;
-    char *ch = str;
+    const char *ch = str;
 
     while (*ch)
     {
@@ -245,6 +225,26 @@ static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, char *s
 
 void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int interval_rest_count, int timer_count)
 {
+    // Radius of timerclock arc
+    const uint16_t r1_timer = (EVE_DISP_WIDTH / 4);
+    const uint16_t r0_timer = (EVE_DISP_WIDTH / 4) - ((ARC_CLOCK_WIDTH * 3) / 2);
+
+    // Radius of interval counter arc
+    const uint16_t r1_interval = ARC_GAP(EVE_DISP_WIDTH / 4);
+    const uint16_t r0_interval = ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CLOCK_WIDTH);
+
+    // Radius of cycle counter arc
+    const uint16_t r1_cycle = ARC_GAP(ARC_GAP(EVE_DISP_WIDTH / 4));
+    const uint16_t r0_cycle = ARC_GAP(ARC_GAP((EVE_DISP_WIDTH / 4) - ARC_CYCLE_WIDTH));
+
+    // Full extents of clock image arcs
+    const uint16_t r_inner = (EVE_DISP_WIDTH / 6);
+    const uint16_t r_outer = (EVE_DISP_WIDTH / 4) + ARC_CLOCK_WIDTH;
+
+    // Centre point for clock arcs
+    const int16_t centre_x = EVE_DISP_WIDTH / 2;
+    const int16_t centre_y = EVE_DISP_HEIGHT / 2;
+
     int i = 0;
     
     int cycle = cycle_count;
@@ -276,7 +276,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     int16_t button_h_zoom = (font_getheight(&clockfont) * button_zoom) / 0x10000;
 
     // Initial message... motivate
-    char *msg_text = "Start!";
+    const char *msg_text = "Start!";
+    uint8_t msg_timer = 0;
     uint8_t msg_alpha = 0;
 
     while ((cycle > 0) || (rest > 0))
@@ -285,7 +286,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
         if (curr_time >= prev_time + tick)
         {
-            prev_time = curr_time;
+            // Ensure that timing is accurate
+            prev_time = prev_time + tick;
 
             // Flash on/off display when paused
             if (pause == 1)
@@ -378,6 +380,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                 }
         
                 skip = 0;
+            }
+
+            if (msg_timer > 0)
+            {
+                msg_timer--;
             }
         }
 
@@ -561,7 +568,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             EVE_COLOR(col_timer_active);
             arc_simple(centre_x, centre_y, 
                 r0_timer, r1_timer,
-                furmans_top, furmans_top + (0x10000 * timer) / timer_count
+                furmans_top + (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH)), furmans_top + ((0x10000 * timer) / timer_count) - (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH))
             );
         }
         else
@@ -571,7 +578,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             {
                 arc_simple(centre_x, centre_y, 
                     r0_timer, r1_timer,
-                    furmans_top + (0x10000 * rest) / rest_max, furmans_top
+                    furmans_top + ((0x10000 * rest) / rest_max) + (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH)), furmans_top - (0x10000 / (r1_cycle * 8 / ARC_CYCLE_WIDTH))
                 );
             }
         }
@@ -583,6 +590,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             if (msg_alpha == 0)
             {
                 msg_alpha = 255;
+                msg_timer = 5;
             }
 
             EVE_COLOR(col_clock);
@@ -592,18 +600,18 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             stringdraw(&clockfont, msg_zoom, 
                 centre_x - (stringwidth(&clockfont, msg_zoom, msg_text) / 2), 
                 (EVE_DISP_HEIGHT / 32), msg_text);
-            if (msg_alpha >= 250)
+
+            if (msg_timer == 0)
             {
-                msg_alpha -= 1;
-            }
-            else if (msg_alpha > 64)
-            {
-                msg_alpha -= 16;
-            }
-            else
-            {
-                msg_text = 0;
-                msg_alpha = 0;
+                if (msg_alpha > 16)
+                {
+                    msg_alpha -= 16;
+                }
+                else
+                {
+                    msg_text = NULL;
+                    msg_alpha = 0;
+                }
             }
         }
 
@@ -686,7 +694,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
     num_zoom = text_zoom * 3;
     time_zoom = text_zoom * 2;
 
-    char *msg_text = NULL;
+    const char *msg_text;
     char num_text[16];
     uint8_t selected = 1;
 
@@ -1041,7 +1049,12 @@ void eve_example(void)
     // Map the ROM font we are using onto a normal bitmap.
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
+#if IS_EVE_API(1)
+    font_romfont(SCALED_FONT, EVE_ROMFONT_MAX);
+#else
     EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
+#endif
+    EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();

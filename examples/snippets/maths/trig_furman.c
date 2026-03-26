@@ -52,14 +52,14 @@
 int16_t sin_furman(uint16_t furman16)
 {
     double angle = furman16 * M_PI / 0x8000;
-    int16_t ret = (int16_t)(sin(angle) * 0x7fff);
+    int16_t ret = (int16_t)(sin(angle) * INT16_MAX);
     return ret;
 }
 
 int16_t cos_furman(uint16_t furman16)
 {
     double angle = furman16 * M_PI / 0x8000;
-    int16_t ret = (int16_t)(cos(angle) * 0x7fff);
+    int16_t ret = (int16_t)(cos(angle) * INT16_MAX);
     return ret;
 }
 
@@ -70,7 +70,7 @@ int16_t cos_furman(uint16_t furman16)
  * the first quadrant of the circle. Results for the other 3 quadrants
  * are mirror or negaives of these values.
  */
-uint16_t sinint[257] = { 
+const uint16_t sinint[257] = { 
     0, 402, 804, 1206, 1608, 2010, 2412, 2813, 3215, 3617, 4018, 4419, 4821, 
     5221, 5622, 6023, 6423, 6823, 7223, 7622, 8022, 8421, 8819, 9218, 9615, 
     10013, 10410, 10807, 11203, 11599, 11995, 12390, 12785, 13179, 13573, 

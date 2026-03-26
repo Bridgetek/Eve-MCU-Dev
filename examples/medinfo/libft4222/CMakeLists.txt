@@ -141,6 +141,7 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_graph_vertexes.c
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
+        ${EXAMPLE_SNIPPETS}/widgets/dialogs.c
         ${EXAMPLE_COMMON}/patch_medinfo.c
 )
 

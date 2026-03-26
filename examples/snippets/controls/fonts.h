@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+#ifndef EVE_FONTS_H
+#define EVE_FONTS_H
+
  /**
  @brief Maximum number of characters to cache form a font.
  */
@@ -62,7 +65,7 @@ struct eve_font_cache {
 #if IS_EVE_API(1)
 // The FT800 does not have the CMD_ROMFONT feature. 
 // This routine will map a bitmap handle onto a ROM font.
-void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
+void font_romfont(uint32_t font, uint32_t romslot);
 #endif
 
 uint8_t font_getmax(void);
@@ -72,3 +75,5 @@ void font_getfontinfocustom(struct eve_font_cache *cache, uint8_t fontnumber, ui
 uint16_t font_getheight(struct eve_font_cache *cache);
 uint16_t font_getwidth(struct eve_font_cache *cache);
 uint16_t font_getcharwidth(struct eve_font_cache *cache, uint8_t ch);
+
+#endif // EVE_FONTS_H
