@@ -28,12 +28,12 @@ jobs:
         shell: bash
 
     steps:
-      - name: "Setup"
-        run: |
+    - name: "Setup"
+      run: |
           gcc --version
 
-      - name: Get libFT4222 library
-        run: |
+    - name: Get libFT4222 library
+      run: |
           $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
           pacman -S --needed mingw-w64-ucrt-x86_64-gcc
           wget https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip
