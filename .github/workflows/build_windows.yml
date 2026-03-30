@@ -49,7 +49,8 @@ jobs:
           unzip libmpsse-windows-1.0.8.zip
           pushd ${{github.workspace}}\ports\eve_libmpsse
           install_libmpsse.bat ${{github.workspace}}\release
-          sed -i -e 's|LoadLibrary(L|LoadLibrary(|' .\ftdi_infra.c
+          sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
+          findstr "LoadLibrary(" ftdi_infra.c
           popd
 
     # Test BT820 (EVE API 5)
