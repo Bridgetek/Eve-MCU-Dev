@@ -30,6 +30,17 @@ jobs:
 
     - name: Get libFT4222 library
       run: |
+          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
+          tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
+          cd linux-x86_64/
+          sudo cp libftd2xx.* /usr/local/lib
+          sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
+          sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
+          sudo cp ftd2xx.h /usr/local/include
+          sudo cp WinTypes.h /usr/local/include
+
+    - name: Get libFT4222 library
+      run: |
           curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
           unzip libft4222-linux-1.4.4.232.zip
           tar -xvf libft4222-linux-1.4.4.232.tgz
