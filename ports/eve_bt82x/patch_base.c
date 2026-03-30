@@ -13,7 +13,7 @@
 
 /* EVE PATCH */
 
-void EVE_CMD_REGION()
+void EVE_CMD_REGION(void)
 {
 	HAL_Write32(0xffffff8f);
 	HAL_IncCmdPointer(4);
@@ -34,7 +34,7 @@ void EVE_CMD_TOUCHOFFSET(int16_t p1, int16_t p2)
 	HAL_IncCmdPointer(8);
 }
 
-void EVE_CMD_ENDTOUCHOFFSET()
+void EVE_CMD_ENDTOUCHOFFSET(void)
 {
 	HAL_Write32(0xffffffaf);
 	HAL_IncCmdPointer(4);

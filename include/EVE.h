@@ -390,9 +390,9 @@ void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t
 void EVE_CMD_INT_SWLOADIMAGE(uint32_t ptr, uint32_t options);
 void EVE_CMD_GETPOINT(int16_t x, int16_t y, uint32_t sx, uint32_t sy);
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options);
-void EVE_CMD_CLEARCACHE();
+void EVE_CMD_CLEARCACHE(void);
 void EVE_CMD_INTRAMSHARED(uint32_t ptr);
-void EVE_CMD_VIDEOSTARTF();
+void EVE_CMD_VIDEOSTARTF(void);
 #endif
 
 #if IS_EVE_API(3, 4, 5)
@@ -416,21 +416,21 @@ void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
 
 #if IS_EVE_API(4, 5)
 void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
-void EVE_CMD_TESTCARD();
+void EVE_CMD_TESTCARD(void);
 void EVE_CMD_WAIT(uint32_t us);
 void EVE_CMD_NEWLIST(uint32_t a);
-void EVE_CMD_ENDLIST();
+void EVE_CMD_ENDLIST(void);
 void EVE_CMD_CALLLIST(uint32_t a);
-void EVE_CMD_RETURN();
+void EVE_CMD_RETURN(void);
 #endif
 
 #if IS_EVE_API(3, 4, 5)
-void EVE_CMD_NOP();
+void EVE_CMD_NOP(void);
 void EVE_CMD_FILLWIDTH(uint32_t s); 
 void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s);
-void EVE_CMD_RESETFONTS();
+void EVE_CMD_RESETFONTS(void);
 void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1); //TODO
-void EVE_CMD_FLASHERASE();
+void EVE_CMD_FLASHERASE(void);
 void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *data);
 void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num);
 void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num);
@@ -440,9 +440,9 @@ void EVE_CMD_FLASHSOURCE(uint32_t ptr);
 void EVE_CMD_FLASHSPITX(uint32_t num);
 void EVE_CMD_FLASHFAST(uint32_t result);
 void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num);
-void EVE_CMD_FLASHATTACH();
-void EVE_CMD_FLASHDETATCH();
-void EVE_CMD_FLASHSPIDESEL();
+void EVE_CMD_FLASHATTACH(void);
+void EVE_CMD_FLASHDETATCH(void);
+void EVE_CMD_FLASHSPIDESEL(void);
 #endif
 
 #if IS_EVE_API(4, 5)

@@ -510,7 +510,8 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
         HAL_ChipSelect(0);
 
         // Calculate where end of data lies
-        HAL_IncCmdPointer(ChunkSize);
+        // Note ChunkSize limited to HAL_MAX_CHUNK_SIZE
+        HAL_IncCmdPointer((uint16_t)ChunkSize);
 #ifndef EVE_USE_CMDB_METHOD
         HAL_WriteCmdPointer();
 #endif
@@ -1831,7 +1832,7 @@ void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
     HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_TESTCARD()
+void EVE_CMD_TESTCARD(void)
 {
     //CMD_TESTCARD(0xFFFF FF61)
     HAL_Write32(EVE_ENC_CMD_TESTCARD);
@@ -1854,7 +1855,7 @@ void EVE_CMD_NEWLIST(uint32_t a)
     HAL_IncCmdPointer(8);
 }
 
-void EVE_CMD_ENDLIST()
+void EVE_CMD_ENDLIST(void)
 {
     //CMD_ENDLIST(0xFFFF FF69)
     HAL_Write32(EVE_ENC_CMD_ENDLIST);
@@ -1869,7 +1870,7 @@ void EVE_CMD_CALLLIST(uint32_t a)
     HAL_IncCmdPointer(8);
 }
 
-void EVE_CMD_RETURN()
+void EVE_CMD_RETURN(void)
 {
     //CMD_RETURN(0xFFFF FF66)
     HAL_Write32(EVE_ENC_CMD_RETURN);
@@ -1880,7 +1881,7 @@ void EVE_CMD_RETURN()
 
 #if IS_EVE_API(3, 4, 5)
 
-void EVE_CMD_NOP()
+void EVE_CMD_NOP(void)
 {
   HAL_Write32(EVE_ENC_CMD_NOP);
   HAL_IncCmdPointer(4);
@@ -1903,7 +1904,7 @@ void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s)
   HAL_IncCmdPointer(20);
 }
 
-void EVE_CMD_RESETFONTS()
+void EVE_CMD_RESETFONTS(void)
 {
   HAL_Write32(EVE_ENC_CMD_RESETFONTS);
   HAL_IncCmdPointer(4);
@@ -1919,7 +1920,7 @@ void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16
     HAL_IncCmdPointer(20);
 }
 
-void EVE_CMD_FLASHERASE()
+void EVE_CMD_FLASHERASE(void)
 {
   HAL_Write32(EVE_ENC_CMD_FLASHERASE);
   HAL_IncCmdPointer(4);
@@ -1946,7 +1947,7 @@ void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *fdata)
       send_data32 |= (uint32_t)(*fdata++) << 24;
       HAL_Write32(send_data32);
   }
-  HAL_IncCmdPointer(4*(3+totalnum));
+  HAL_IncCmdPointer((4*(3+totalnum))&0xffff);
 }
 
 void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num)
@@ -2014,6 +2015,7 @@ void EVE_CMD_FLASHFAST(uint32_t result)
   HAL_Write32(result);
   HAL_IncCmdPointer(8);
 }
+
 void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num)
 {
   HAL_Write32(EVE_ENC_CMD_FLASHSPIRX);
@@ -2022,19 +2024,19 @@ void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num)
   HAL_IncCmdPointer(12);
 }
 
-void EVE_CMD_FLASHATTACH()
+void EVE_CMD_FLASHATTACH(void)
 {
   HAL_Write32(EVE_ENC_CMD_FLASHATTACH);
   HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_FLASHDETATCH()
+void EVE_CMD_FLASHDETATCH(void)
 {
   HAL_Write32(EVE_ENC_CMD_FLASHDETACH);
   HAL_IncCmdPointer(4);
 }
 
-void EVE_CMD_FLASHSPIDESEL()
+void EVE_CMD_FLASHSPIDESEL(void)
 {
   HAL_Write32(EVE_ENC_CMD_FLASHSPIDESEL);
   HAL_IncCmdPointer(4);

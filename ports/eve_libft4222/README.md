@@ -92,6 +92,8 @@ The example application will load and use the `LibFT4222-64.dll` or `LibFT4222.d
 
 Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
 
+A **bash** script file `install_libft4222.sh` is also included in this folder. It has the same functionality as `install_libft4222.bat` but can run in a bash shell to help with setting up the environment.
+
 ## Linux
 
 Important Information about Linux builds.
