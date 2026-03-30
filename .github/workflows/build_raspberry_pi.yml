@@ -11,7 +11,9 @@ on:
       # Trigger if this workflow file changes
       - '.github/workflows/build_raspberry_pi.yml'
       # Trigger script on push to raspberry_pi simple example
-      - examples/simple/raspberry_pi
+      - 'examples/simple/common'
+      - 'examples/simple/raspberry_pi'
+      - 'examples/simple/pico'
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -25,8 +27,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+
     - name: install build packages
-      run: sudo apt-get update && sudo apt-get install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi g++ libstdc++-arm-none-eabi-newlib build-essential gcc-arm-linux-gnueabihf libgpiod-dev
+      run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi g++ libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf libgpiod-dev
 
     - name: Get SDK and add PICO_SDK_PATH
       run: git clone https://github.com/raspberrypi/pico-sdk.git && echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
