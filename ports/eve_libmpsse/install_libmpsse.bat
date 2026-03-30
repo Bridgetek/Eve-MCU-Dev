@@ -61,6 +61,7 @@ copy /y "%INSTALL_PATH%\include\libmpsse_spi.h"
 echo Copying "%INSTALL_PATH%\source\ftdi_common.h" to ftdi_common.h
 copy /y "%INSTALL_PATH%\source\ftdi_common.h"
 echo Copying "%INSTALL_PATH%\source\ftdi_infra.c" to ftdi_infra.c
+:: TODO: Remove the "L" macro from LoadLibrary(L"ftd2xx.dll");
 copy /y "%INSTALL_PATH%\source\ftdi_infra.c"
 echo Copying "%INSTALL_PATH%\source\ftdi_infra.h" to ftdi_infra.h
 copy /y "%INSTALL_PATH%\source\ftdi_infra.h"
@@ -80,6 +81,9 @@ echo Copying "%INSTALL_PATH%\libftd2xx\ftd2xx.h" to ftd2xx.h
 copy /y "%INSTALL_PATH%\libftd2xx\ftd2xx.h" ftd2xx.h
 echo Copying "%INSTALL_PATH%\libftd2xx\WinTypes.h" to WinTypes.h
 copy /y "%INSTALL_PATH%\libftd2xx\WinTypes.h" WinTypes.h
+
+echo IMPORTANT:
+echo Remove the "L" macro from LoadLibrary(L"ftd2xx.dll");in "ftdi_infra.c" line 246
 
 goto commonexit
 
