@@ -48,8 +48,10 @@ jobs:
           curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
           unzip libmpsse-windows-1.0.8.zip
           pushd ${{github.workspace}}\ports\eve_libmpsse
-          install_libmpsse.bat ${{github.workspace}}\release
+          call install_libmpsse.bat ${{github.workspace}}\release
+          echo Removing the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
           sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
+          echo "Checking..."
           findstr "LoadLibrary(" ftdi_infra.c
           popd
 

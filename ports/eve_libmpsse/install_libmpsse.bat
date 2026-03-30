@@ -83,7 +83,7 @@ echo Copying "%INSTALL_PATH%\libftd2xx\WinTypes.h" to WinTypes.h
 copy /y "%INSTALL_PATH%\libftd2xx\WinTypes.h" WinTypes.h
 
 echo IMPORTANT:
-echo Remove the "L" macro from LoadLibrary(L"ftd2xx.dll");in "ftdi_infra.c" line 246
+echo Remove the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
 
 goto commonexit
 
