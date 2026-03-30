@@ -38,7 +38,7 @@ jobs:
     - name: Get libMPSSE-SPI library
       run: |
           curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-          tar xfvz libftd2xx-x86_64-1.4.27.tgz
+          tar xfvz libmpsse-x86_64-1.0.8.tgz
           cd release
           chmod +x install_libmpsse.sh
           ./install_libmpsse.sh
