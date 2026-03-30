@@ -11,10 +11,10 @@ on:
       # Trigger if this workflow file changes
       - '.github/workflows/api_test.yml'
       # Trigger script on push to test directory
-      - test
+      - 'test'
       # Trigger script on push to API
-      - include
-      - source
+      - 'include'
+      - 'source'
   # Add "Run workflow" button
   workflow_dispatch:
 

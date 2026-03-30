@@ -193,7 +193,7 @@ void MCU_Init(void)
                                         &devInfo.ftHandle);
         if (ftStatus != FT_OK)
         {
-            DEBUG_PRINTF("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %lu\n", (int)ftStatus, iDev);
+            DEBUG_PRINTF("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %u\n", (int)ftStatus, (uint32_t)iDev);
             continue;
         }
 
@@ -203,7 +203,7 @@ void MCU_Init(void)
             continue;
         }
 
-        printf("FT4222 device %lu: ", iDev);
+        printf("FT4222 device %u: ", (uint32_t)iDev);
 
         if( ! strcmp( devInfo.Description, "FT4222 A"))
         {
@@ -211,7 +211,7 @@ void MCU_Init(void)
             {
                 devNumSPI = devInfo.LocId;
                 printf("selected for SPI\n");
-                printf("\t\tVID/PID: 0x%04lx/0x%04lx\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
+                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);
             }
@@ -228,7 +228,7 @@ void MCU_Init(void)
             {
                 devNumGPIO = devInfo.LocId;
                 printf("selected for GPIO\n");
-                printf("\t\tVID/PID: 0x%04lx/0x%04lx\n", devInfo.ID >> 16, devInfo.ID & 0xffff);
+                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
                 printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
                 printf("\t\tDescription: %s\n", devInfo.Description);
             }
@@ -332,7 +332,7 @@ void MCU_Setup(void)
 
 static int MCU_multi_transfer(uint8_t *DataToRead, uint16_t len)
 {
-    FT_STATUS status = FT_OK;
+    FT_STATUS ftStatus = FT_OK;
     uint32_t transferred;
 
     /* Read or write transfer to the EVE device. */
@@ -347,29 +347,29 @@ static int MCU_multi_transfer(uint8_t *DataToRead, uint16_t len)
          * Followed by any further write data. 
          * Finally, if there is data to read then read this. 
          * There will be only read OR write operations to perform. */
-        status = FT4222_SPIMaster_MultiReadWrite(ftHandleSPI, (uint8_t *)DataToRead, (uint8_t *)MCU_buffer, 0, MCU_bufferLen, len, &transferred);
+        ftStatus = FT4222_SPIMaster_MultiReadWrite(ftHandleSPI, (uint8_t *)DataToRead, (uint8_t *)MCU_buffer, 0, MCU_bufferLen, len, &transferred);
 
         // Data is now sent.
         MCU_bufferLen = 0;
     }
 
-    return status;
+    return ftStatus;
 }
 
 static int MCU_transmit_buffer(int end)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
     uint16_t transferred;
     int toWrite = MCU_bufferLen;
 
     if (toWrite)
     {
-        status = FT4222_SPIMaster_SingleWrite(ftHandleSPI, (uint8_t *)MCU_buffer, MCU_bufferLen, &transferred, end);
-        if (FT4222_OK != status)
+        ftStatus = FT4222_SPIMaster_SingleWrite(ftHandleSPI, (uint8_t *)MCU_buffer, MCU_bufferLen, &transferred, end);
+        if (FT4222_OK != ftStatus)
         {
             // spi master read failed
-            DEBUG_ERROR("FT4222 SPIMaster Write failed %d\n", (int)status);
-            exit(status);
+            DEBUG_ERROR("FT4222 SPIMaster Write failed %d\n", (int)ftStatus);
+            exit(ftStatus);
         }
         else
         {
@@ -383,7 +383,7 @@ static int MCU_transmit_buffer(int end)
 
 static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
 {
-    FT_STATUS status = FT_OK;
+    FT_STATUS ftStatus = FT_OK;
 
     if (ftIsQuad)
     {
@@ -394,10 +394,10 @@ static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
         uint16_t transferred;
 
         MCU_transmit_buffer(0);
-        status = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, len, &transferred, end);
+        ftStatus = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, len, &transferred, end);
     }
 
-    return status;
+    return ftStatus;
 }
 
 static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
@@ -475,16 +475,16 @@ void MCU_CShigh(void)
         {
             // Pull CS high with a dummy read to address zero.
             // This is only required after an unaddressed read.
-            FT_STATUS status;
+            FT_STATUS ftStatus;
 
             MCU_bufferLen = 4;
             memset(MCU_buffer, 0, 4);
-            status = MCU_transmit_buffer(1);
-            if (FT4222_OK != status)
+            ftStatus = MCU_transmit_buffer(1);
+            if (FT4222_OK != ftStatus)
             {
                 // spi master read failed
-                DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)status);
-                exit(status);
+                DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)ftStatus);
+                exit(ftStatus);
             }
         }
     }
@@ -536,15 +536,15 @@ void MCU_Delay_500ms(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
     uint8_t DataRead = 0;
 
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 1, 0);
-    if (FT4222_OK != status)
+    ftStatus = MCU_receive_buffer((uint8_t *)&DataRead, 1, 0);
+    if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", (int)status);
-        exit(status);
+        DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", (int)ftStatus);
+        exit(ftStatus);
     }
  
     return DataRead;
@@ -557,15 +557,15 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
 
 uint16_t MCU_SPIRead16(void)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
     uint16_t DataRead;
 
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 2, 0);
-    if (FT4222_OK != status)
+    ftStatus = MCU_receive_buffer((uint8_t *)&DataRead, 2, 0);
+    if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)status);
-        exit(status);
+        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
+        exit(ftStatus);
     }
 
     return DataRead;
@@ -578,15 +578,15 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
 
 uint32_t MCU_SPIRead24(void)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
     uint32_t DataRead;
 
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 3, 0);
-    if (FT4222_OK != status)
+    ftStatus = MCU_receive_buffer((uint8_t *)&DataRead, 3, 0);
+    if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", (int)status);
-        exit(status);
+        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", (int)ftStatus);
+        exit(ftStatus);
     }
 
     return DataRead;
@@ -599,15 +599,15 @@ void MCU_SPIWrite24(uint32_t DataToWrite)
 
 uint32_t MCU_SPIRead32(void)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
     uint32_t DataRead = 0;
 
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 4, 0);
-    if (FT4222_OK != status)
+    ftStatus = MCU_receive_buffer((uint8_t *)&DataRead, 4, 0);
+    if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)status);
-        exit(status);
+        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
+        exit(ftStatus);
     }
 
     return DataRead;
@@ -620,15 +620,15 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
-    FT_STATUS status;
+    FT_STATUS ftStatus;
 
     // Note maximum transfer is 65535 bytes on libFT4222
-    status = MCU_receive_buffer((uint8_t *)DataToRead, length & 0xffff, 0);
-    if (FT4222_OK != status)
+    ftStatus = MCU_receive_buffer((uint8_t *)DataToRead, length & 0xffff, 0);
+    if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)status);
-        exit(status);
+        DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
+        exit(ftStatus);
     }
 }
 
