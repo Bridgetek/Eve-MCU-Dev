@@ -32,24 +32,26 @@ jobs:
         port: [libft4222, libmpsse, STM32CUBE_CMake_MiniSTM32H7xx]
         eve: [ 
           {build: build-1-QVGA , DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {build: build-2-0413-11A , DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          {build: build-3-WVGA , DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
-          {build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{build: build-2-0413-11A , DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          #{build: build-3-WVGA , DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          #{build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
         ]
       
     steps:
     
     - uses: actions/checkout@v6
 
-    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       id: ftdicache-restore
-      uses: actions/cache/restore@v5
+      uses: actions/cache@v4
       with:
         path: |
-         '~/lib'
-        key: ftdicachelib1
-    
+         '~/lib/'
+        key: ${{ runner.os }}-ftdi-${{ hashFiles('~/lib/*') }}
+        restore-keys: |
+          ${{ runner.os }}-ftdi-
+
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache-restore.outputs.cache-hit != 'true'
       run: |
@@ -60,26 +62,27 @@ jobs:
         unzip libft4222-linux-1.4.4.232.zip
         rm libft4222-linux-1.4.4.232.zip
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-        ls -l
+        cd ..
+        ls -la ~/lib/
 
-    - name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      id: ftdicache-save
-      if: always() && steps.ftdicache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v5
-      with:
-        path: |
-         '~/lib'
-        key: ftdicachelib1
+    #- name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+    #  id: ftdicache-save
+    #  if: always() && steps.ftdicache-restore.outputs.cache-hit != 'true'
+    #  uses: actions/cache/save@v5
+    #  with:
+    #    path: |
+    #     '~/lib'
+    #    key: ftdicachelib1
           
     - name: Setup gcc-arm-none-eabi environment
-      #if {{ matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx' }}
+      if: ${{ matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx' }}
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       
       #run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
 
     - name: Setup libFTD2XX library
-      #if matrix.port == 'libmpsse' || matrix.port == 'libft4222'
       run: |
+          # test if libFTD2XX required
           if ${{ matrix.port == 'libmpsse' || matrix.port == 'libft4222' }}; then
           cd lib
           tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
@@ -93,8 +96,8 @@ jobs:
           fi
 
     - name: Setup libMPSSE-SPI library
-      #if matrix.port == 'libmpsse'
       run: |
+          # test if libMPSSE-SPI required
           if ${{ matrix.port == 'libmpsse' }}; then
           cd lib
           tar xfvz libmpsse-x86_64-1.0.8.tgz
@@ -105,8 +108,8 @@ jobs:
           fi
 
     - name: Setup libFT4222 library
-      if: matrix.port == 'libft4222'
       run: |
+          # test if libFT4222 required
           if ${{ matrix.port == 'libft4222' }}; then
           cd lib
           tar -xvf libft4222-linux-1.4.4.232.tgz
