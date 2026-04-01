@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 1
       matrix:
         port: [libft4222, libmpsse, STM32CUBE_CMake_MiniSTM32H7xx]
         eve: [ 
@@ -41,17 +42,18 @@ jobs:
     
     - uses: actions/checkout@v6
 
-    - uses: actions/cache@v4
+    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      id: ftdicache-restore
+      uses: actions/cache/restore@v5
       with:
-        id: ftdicache
         path: |
          'libftd2xx-linux-x86_64-1.4.34.tgz'
          'libft4222-linux-1.4.4.232.tgz'
          'libmpsse-x86_64-1.0.8.tgz'
         key: ftdicachelib1
-
+    
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      if: steps.ftdicache.outputs.cache-hit != 'true'
+      if: steps.ftdicache-restore.outputs.cache-hit != 'true'
       run: |
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
@@ -59,15 +61,15 @@ jobs:
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
 
     - name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      if: steps.ftdicache.outputs.cache-hit != 'true'
-      uses: actions/cache@v4
+      id: ftdicache-save
+      if: always() && steps.ftdicache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
       with:
         path: |
          'libftd2xx-linux-x86_64-1.4.34.tgz'
          'libft4222-linux-1.4.4.232.tgz'
          'libmpsse-x86_64-1.0.8.tgz'
         key: ftdicachelib1
-          
           
     - name: Prepare build environment
       run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
