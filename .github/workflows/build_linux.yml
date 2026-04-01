@@ -24,40 +24,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v6
-
-    - name: install build packages
-      run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
-
-    - name: Get libFT4222 library
-      run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
-          tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
-          cd linux-x86_64/
-          sudo cp libftd2xx.* /usr/local/lib
-          sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
-          sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
-          sudo cp ftd2xx.h /usr/local/include
-          sudo cp WinTypes.h /usr/local/include
-
-    - name: Get libFT4222 library
-      run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
-          unzip libft4222-linux-1.4.4.232.zip
-          tar -xvf libft4222-linux-1.4.4.232.tgz
-          sudo ./install4222.sh
-
-    - name: Get libMPSSE-SPI library
-      run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-          tar xfvz libmpsse-x86_64-1.0.8.tgz
-          cd release
-          chmod +x install_libmpsse.sh
-          ./install_libmpsse.sh
-      
     strategy:
       matrix:
         port: [libft4222, libmpsse, STM32CUBE_CMake_MiniSTM32H7xx]
@@ -70,6 +37,52 @@ jobs:
         ]
       
     steps:
+    - uses: actions/checkout@v6
+
+    - uses: actions/cache@v4
+      with:
+        id: ftdicache
+        path: |
+         'libftd2xx-linux-x86_64-1.4.34.tgz'
+         'libft4222-linux-1.4.4.232.tgz'
+         'libmpsse-x86_64-1.0.8.tgz'
+        key: ftdicachelib1
+
+    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      if: steps.ftdicache.outputs.cache-hit != 'true'
+      run: |
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
+        unzip libft4222-linux-1.4.4.232.zip
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
+
+    - name: Prepare build environment
+      run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
+
+    - name: Setup libFTD2XX library
+      run: |
+          tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
+          cd linux-x86_64/
+          sudo cp libftd2xx.* /usr/local/lib
+          sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
+          sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
+          sudo cp ftd2xx.h /usr/local/include
+          sudo cp WinTypes.h /usr/local/include
+          cd ..
+
+    - name: Setup libMPSSE-SPI library
+      run: |
+          tar xfvz libmpsse-x86_64-1.0.8.tgz
+          cd release
+          chmod +x install_libmpsse.sh
+          ./install_libmpsse.sh
+          cd ..
+
+    - name: Setup libFT4222 library
+      run: |
+          tar -xvf libft4222-linux-1.4.4.232.tgz
+          sudo ./install4222.sh
+
     # Test using matrix
     - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
       run: cmake -B ${{ matrix.eve.build }} -S . -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
