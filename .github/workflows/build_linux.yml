@@ -55,15 +55,15 @@ jobs:
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache-restore.outputs.cache-hit != 'true'
       run: |
-        mkdir lib
-        cd lib
+        mkdir ~/lib/
+        cd ~/lib/
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
         unzip libft4222-linux-1.4.4.232.zip
         rm libft4222-linux-1.4.4.232.zip
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
         cd ..
-        ls -la ~/lib/
+        ls -l ~/lib/
 
     #- name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
     #  id: ftdicache-save
@@ -84,7 +84,7 @@ jobs:
       run: |
           # test if libFTD2XX required
           if ${{ matrix.port == 'libmpsse' || matrix.port == 'libft4222' }}; then
-          cd lib
+          cd ~/lib/
           tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
           cd linux-x86_64/
           sudo cp libftd2xx.* /usr/local/lib
@@ -99,7 +99,7 @@ jobs:
       run: |
           # test if libMPSSE-SPI required
           if ${{ matrix.port == 'libmpsse' }}; then
-          cd lib
+          cd ~/lib/
           tar xfvz libmpsse-x86_64-1.0.8.tgz
           cd release
           chmod +x install_libmpsse.sh
@@ -111,7 +111,7 @@ jobs:
       run: |
           # test if libFT4222 required
           if ${{ matrix.port == 'libft4222' }}; then
-          cd lib
+          cd ~/lib/
           tar -xvf libft4222-linux-1.4.4.232.tgz
           sudo ./install4222.sh
           fi
