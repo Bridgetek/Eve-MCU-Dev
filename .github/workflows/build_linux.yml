@@ -37,6 +37,8 @@ jobs:
         ]
       
     steps:
+    - runs-on: ubuntu-latest
+    
     - uses: actions/checkout@v6
 
     - uses: actions/cache@v4
