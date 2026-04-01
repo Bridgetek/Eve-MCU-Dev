@@ -47,7 +47,7 @@ jobs:
       uses: actions/cache/restore@v5
       with:
         path: |
-         './lib'
+         '~/lib'
         key: ftdicachelib1
     
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
@@ -68,19 +68,19 @@ jobs:
       uses: actions/cache/save@v5
       with:
         path: |
-         './lib'
+         '~/lib'
         key: ftdicachelib1
           
     - name: Setup gcc-arm-none-eabi environment
-      if: matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx'
+      #if {{ matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx' }}
       uses: carlosperate/arm-none-eabi-gcc-action@v1
-    - run: arm-none-eabi-gcc --version
       
       #run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
 
     - name: Setup libFTD2XX library
-      if: matrix.port == 'libmpsse' || matrix.port == 'libft4222'
+      #if matrix.port == 'libmpsse' || matrix.port == 'libft4222'
       run: |
+          if ${{ matrix.port == 'libmpsse' || matrix.port == 'libft4222' }}; then
           cd lib
           tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
           cd linux-x86_64/
@@ -90,23 +90,28 @@ jobs:
           sudo cp ftd2xx.h /usr/local/include
           sudo cp WinTypes.h /usr/local/include
           cd ..
+          fi
 
     - name: Setup libMPSSE-SPI library
-      if: matrix.port == 'libmpsse'
+      #if matrix.port == 'libmpsse'
       run: |
+          if ${{ matrix.port == 'libmpsse' }}; then
           cd lib
           tar xfvz libmpsse-x86_64-1.0.8.tgz
           cd release
           chmod +x install_libmpsse.sh
           ./install_libmpsse.sh
           cd ..
+          fi
 
     - name: Setup libFT4222 library
       if: matrix.port == 'libft4222'
       run: |
+          if ${{ matrix.port == 'libft4222' }}; then
           cd lib
           tar -xvf libft4222-linux-1.4.4.232.tgz
           sudo ./install4222.sh
+          fi
 
     # Test using matrix
     - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
