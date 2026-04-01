@@ -33,7 +33,7 @@ jobs:
           {build: build-1-QVGA , DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
           {build: build-2-0413-11A , DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
           {build: build-3-WVGA , DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE=IDM20407A }, 
+          {build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
           {build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
         ]
       
@@ -58,6 +58,17 @@ jobs:
         unzip libft4222-linux-1.4.4.232.zip
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
 
+    - name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      if: steps.ftdicache.outputs.cache-hit != 'true'
+      uses: actions/cache@v4
+      with:
+        path: |
+         'libftd2xx-linux-x86_64-1.4.34.tgz'
+         'libft4222-linux-1.4.4.232.tgz'
+         'libmpsse-x86_64-1.0.8.tgz'
+        key: ftdicachelib1
+          
+          
     - name: Prepare build environment
       run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
 
