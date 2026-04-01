@@ -47,18 +47,20 @@ jobs:
       uses: actions/cache/restore@v5
       with:
         path: |
-         'libftd2xx-linux-x86_64-1.4.34.tgz'
-         'libft4222-linux-1.4.4.232.tgz'
-         'libmpsse-x86_64-1.0.8.tgz'
+         './lib'
         key: ftdicachelib1
     
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache-restore.outputs.cache-hit != 'true'
       run: |
+        mkdir lib
+        cd lib
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
         unzip libft4222-linux-1.4.4.232.zip
+        rm libft4222-linux-1.4.4.232.zip
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
+        ls -l
 
     - name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       id: ftdicache-save
@@ -66,16 +68,20 @@ jobs:
       uses: actions/cache/save@v5
       with:
         path: |
-         'libftd2xx-linux-x86_64-1.4.34.tgz'
-         'libft4222-linux-1.4.4.232.tgz'
-         'libmpsse-x86_64-1.0.8.tgz'
+         './lib'
         key: ftdicachelib1
           
-    - name: Prepare build environment
-      run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
+    - name: Setup gcc-arm-none-eabi environment
+      if: matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx'
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+    - run: arm-none-eabi-gcc --version
+      
+      #run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
 
     - name: Setup libFTD2XX library
+      if: matrix.port == 'libmpsse' || matrix.port == 'libft4222'
       run: |
+          cd lib
           tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
           cd linux-x86_64/
           sudo cp libftd2xx.* /usr/local/lib
@@ -86,7 +92,9 @@ jobs:
           cd ..
 
     - name: Setup libMPSSE-SPI library
+      if: matrix.port == 'libmpsse'
       run: |
+          cd lib
           tar xfvz libmpsse-x86_64-1.0.8.tgz
           cd release
           chmod +x install_libmpsse.sh
@@ -94,7 +102,9 @@ jobs:
           cd ..
 
     - name: Setup libFT4222 library
+      if: matrix.port == 'libft4222'
       run: |
+          cd lib
           tar -xvf libft4222-linux-1.4.4.232.tgz
           sudo ./install4222.sh
 
