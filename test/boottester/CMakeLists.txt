@@ -22,22 +22,33 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
 # Setup command line options for build - feeds into EVE_config.h
+# A module type implies both a panel and eve type
+# - panel type, display resolution and eve device type are ignored
+# A panel configures a display resolution
+# - display resolution is ignored
 option(MODULE_TYPE "EVE Module Name" )
+option(FT8XX_TYPE "EVE Device Type Name" )
+option(PANEL_TYPE "EVE Panel Type" )
+option(DISPLAY_RES "Panel Display Resolution" )
+
+# Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
-ENDIF(MODULE_TYPE)
-option(FT8XX_TYPE "EVE Device Type Name" )
+ELSE(MODULE_TYPE)
+# Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
 ENDIF(FT8XX_TYPE)
-option(PANEL_TYPE "EVE Panel Type" )
+# Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
-ENDIF(PANEL_TYPE)
-option(DISPLAY_RES "Panel Display Resolution" )
+ELSE(PANEL_TYPE)
+# Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
 ENDIF(DISPLAY_RES)
+ENDIF(PANEL_TYPE)
+ENDIF(MODULE_TYPE)
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}

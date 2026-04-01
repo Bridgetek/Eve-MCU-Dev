@@ -14,6 +14,7 @@ on:
       - 'examples/simple/common'
       - 'examples/simple/libft4222'
       - 'examples/simple/libmpsse'
+      - 'examples/simple/STM32CUBE_CMake_MiniSTM32H7xx'
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -22,11 +23,14 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v6
+
+    - name: install build packages
+      run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib gcc-arm-linux-gnueabihf
 
     - name: Get libFT4222 library
       run: |
@@ -54,48 +58,27 @@ jobs:
           chmod +x install_libmpsse.sh
           ./install_libmpsse.sh
       
-    # Test BT820 (EVE API 5)
-    - name: Configure CMake for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+  build:
+    needs: prepare
+
+    strategy:
+      matrix:
+        port: [libft4222, libmpsse, STM32CUBE_CMake_MiniSTM32H7xx]
+        eve: [ 
+          {build: build-1-QVGA , DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {build: build-2-0413-11A , DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          {build: build-3-WVGA , DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE=IDM20407A }, 
+          {build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        ]
+      
+    steps:
+    # Test using matrix
+    - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
+      run: cmake -B ${{ matrix.eve.build }} -S . -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       working-directory: ${{github.workspace}}/examples/simple/libft4222
 
-    - name: Build for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
+    - name: Build for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
+      run: cmake --build ${{ matrix.eve.build }} 
       working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test BT816 (EVE API 3)
-    - name: Configure CMake for libFT4222 Linux on IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake -B buildIDM20407A -S . -DMODULE_TYPE=IDM20407A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Build for libFT4222 Linux on IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake --build buildIDM20407A
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test FT813 (EVE API 2 SUB API 1)
-    - name: Configure CMake for libFT4222 Linux on FT813 with DP_0501_01A panel (WVGA)
-      run: cmake -B build813WVGA -S . -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Build for libFT4222 Linux on IDM20407A module on FT813 with DP_0501_01A panel (WVGA)
-      run: cmake --build build813WVGA
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test FT800 (EVE API 1)
-    - name: Configure CMake for libFT4222 Linux on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
-      run: cmake -B build800C43A -S . -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Build for libFT4222 Linux on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
-      run: cmake --build build800C43A
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test BT820 (EVE API 5)
-    - name: Configure CMake for libMPSSE-SPI Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
-
-    - name: Build for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
 

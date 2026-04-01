@@ -5,11 +5,16 @@ cmake_minimum_required(VERSION 3.22)
 #  cube-cmake --build build
 
 # Command line in Ubuntu 24.04:
-#  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=cmake/gcc-arm-none-eabi.cmake -B build -S . -G Ninja
+#  cmake -DCMAKE_BUILD_TYPE=Debug -B build -S . -G Ninja
 #  cmake --build build
 
 # Set the project name (may be overridden)
 set(CMAKE_PROJECT_NAME STM32CUBE_CMake_MiniSTM32H7xx)
+
+# Set the project configuration file (may be overridden)
+if(NOT CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
+endif()
 
 # Set the location of the EVE-MCU-Dev tree
 set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
@@ -48,22 +53,33 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 enable_language(C ASM)
 
 # Setup command line options for build - feeds into EVE_config.h
+# A module type implies both a panel and eve type
+# - panel type, display resolution and eve device type are ignored
+# A panel configures a display resolution
+# - display resolution is ignored
 option(MODULE_TYPE "EVE Module Name" )
+option(FT8XX_TYPE "EVE Device Type Name" )
+option(PANEL_TYPE "EVE Panel Type" )
+option(DISPLAY_RES "Panel Display Resolution" )
+
+# Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
-ENDIF(MODULE_TYPE)
-option(FT8XX_TYPE "EVE Device Type Name" )
+ELSE(MODULE_TYPE)
+# Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
 ENDIF(FT8XX_TYPE)
-option(PANEL_TYPE "EVE Panel Type" )
+# Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
-ENDIF(PANEL_TYPE)
-option(DISPLAY_RES "Panel Display Resolution" )
+ELSE(PANEL_TYPE)
+# Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
 ENDIF(DISPLAY_RES)
+ENDIF(PANEL_TYPE)
+ENDIF(MODULE_TYPE)
 
 # Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
