@@ -24,6 +24,7 @@ env:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -37,7 +38,6 @@ jobs:
         ]
       
     steps:
-    - runs-on: ubuntu-latest
     
     - uses: actions/checkout@v6
 
