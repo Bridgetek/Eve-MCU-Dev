@@ -114,6 +114,107 @@
  * ========================================================================= */
 
 /* =========================================================================
+ * MEMORY MAP
+ * Base addresses and sizes of the main on-chip memory regions.
+ * ========================================================================= */
+
+/** @brief General-purpose RAM base address (always 0 on all devices). */
+#define EVE_RAM_G               0x0ul
+
+/** @brief General-purpose RAM size.
+ *  EVE1 (FT800/801): 256 KB.
+ *  EVE2 (FT810/811): 256 KB; FT812/813/BT88x: 1 MB.
+ *  EVE3/4 (BT815–818): 1 MB.
+ *  EVE5 (BT820): configured externally — define EVE_RAM_G_CONFIG_SIZE before
+ *                including this file (default: 32 MB for BT820). */
+#if IS_EVE_API(1)
+    #define EVE_RAM_G_SIZE      (256*1024L)
+#elif IS_EVE_API(2)
+    #undef EVE_RAM_G_SIZE
+    #if IS_EVE_SUB_API(2)
+        #define EVE_RAM_G_SIZE  (256*1024L)   /* FT810, FT811 */
+    #else
+        #define EVE_RAM_G_SIZE  (1024*1024L)  /* FT812, FT813, BT882/883 */
+    #endif
+#elif IS_EVE_API(3,4)
+    #define EVE_RAM_G_SIZE      (1024*1024L)
+#else
+    /* EVE5: RAM_G size equals the LPDDR capacity; must be set externally. */
+    #ifndef EVE_RAM_G_CONFIG_SIZE
+    #define EVE_RAM_G_CONFIG_SIZE  (32*1024*1024L)
+    #endif
+    #define EVE_RAM_G_SIZE      EVE_RAM_G_CONFIG_SIZE
+#endif
+
+/** @brief Co-processor command ring-buffer base address. */
+#define EVE_RAM_CMD             EVE_API_SELECT(0x108000ul,  0x308000ul,  0x308000ul,  0x308000ul,  0x7f000000ul)
+
+/** @brief Co-processor command ring-buffer size.
+ *  4 KB on EVE1-4; 16 KB on EVE5. */
+#define EVE_RAM_CMD_SIZE        EVE_API_SELECT((4*1024L),  (4*1024L),  (4*1024L),  (4*1024L),  (16*1024L))
+
+/** @brief Display list RAM base address. */
+#define EVE_RAM_DL              EVE_API_SELECT(0x100000ul,  0x300000ul,  0x300000ul,  0x300000ul,  0x7f008000ul)
+
+/** @brief Display list RAM size.
+ *  8 KB on EVE1-4; 16 KB on EVE5. */
+#define EVE_RAM_DL_SIZE         EVE_API_SELECT((8*1024L),  (8*1024L),  (8*1024L),  (8*1024L),  (16*1024L))
+
+/** @brief Register block base address (same as EVE_REG_ID on EVE1-4). */
+#define EVE_RAM_REG             EVE_API_SELECT(0x102400ul,  0x302000ul,  0x302000ul,  0x302000ul,  0x7f006000ul)
+
+/** @brief ROM sub-routine base address.
+ *  Not present on EVE1. */
+#if IS_EVE_API(2,3,4,5)
+#define EVE_RAM_ROMSUB          EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,  0x30a000ul,  0x30a000ul,  0x30a000ul,  0x7f027800ul)
+#endif
+
+/** @brief Pointer to the ROM font metrics table. */
+#define EVE_ROMFONT_TABLEADDRESS \
+    EVE_API_SELECT(0x0ffffcul,  0x2ffffcul,  0x2ffffcul,  0x2ffffcul,  0x07ffff00ul)
+
+/** @brief Palette RAM (EVE1 only — included in RAM_G on EVE2+). */
+#if IS_EVE_API(1)
+#define EVE_RAM_PAL             0x102000ul
+#endif
+
+/** @brief ROM chip ID area (EVE1 only). */
+#if IS_EVE_API(1)
+#define EVE_ROM_CHIPID          0x0c0000ul
+#endif
+
+/** @brief Top of usable general RAM (EVE3 and later). */
+#if IS_EVE_API(3,4,5)
+#define EVE_RAM_TOP             EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,  EVE_REG_NOT_AVAILABLE,  0x304000ul,  0x304000ul,  0x00304000ul)
+#endif
+
+/** @brief Co-processor error/report buffer (EVE3+).
+ *  Called EVE_RAM_ERR_REPORT on EVE3/4; EVE_RAM_REPORT on EVE5. */
+#if IS_EVE_API(3,4)
+#define EVE_RAM_ERR_REPORT      0x309800ul
+#endif
+#if IS_EVE_API(5)
+#define EVE_RAM_REPORT          0x00309800ul
+#define EVE_COPROC_REPORT       0x7f004800ul
+#endif
+
+/** @brief Built-in self-test RAM area (EVE3+). */
+#if IS_EVE_API(3,4,5)
+#define EVE_RAM_BIST            EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,  EVE_REG_NOT_AVAILABLE,  0x380000ul,  0x380000ul,  0x7f8001c0ul)
+#endif
+
+/* =========================================================================
+ * CO-PROCESSOR WRITE METHOD
+ * EVE1 writes directly to the co-processor ring buffer.
+ * EVE2+ can write via REG_CMDB_WRITE (the "CMDB" bulk-write method).
+ * ========================================================================= */
+#if IS_EVE_API(1)
+    #undef  EVE_USE_CMDB_METHOD
+#else
+    #define EVE_USE_CMDB_METHOD
+#endif
+
+/* =========================================================================
  * CHIP ID REGISTER
  * ========================================================================= */
 

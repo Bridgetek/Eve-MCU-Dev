@@ -57,13 +57,21 @@
                                             : (a5))
 #endif
 
+/* Sentinel for a register / constant absent on a given generation.
+ * Value 0 is safe for register addresses (never a valid EVE address).
+ * For CMD opcodes, guard usage sites with IS_EVE_API rather than relying
+ * on this value. */
+#ifndef EVE_REG_NOT_AVAILABLE
+#define EVE_REG_NOT_AVAILABLE  0ul
+#endif
+
 /* =========================================================================
  * BITMAP ADDRESS MASK
  * Different address widths per generation.
- *   EVE1 (FT800/801): 20-bit  (0xFFFFF)
- *   EVE2 (FT810+):    22-bit  (0x3FFFFF)
- *   EVE3/4 (BT815+):  23-bit  (0x7FFFFF)
- *   EVE5 (BT820):     24-bit low word; upper bits via BITMAP_SOURCE_H
+ *   EVE1   (FT800/801): 20-bit  (0xFFFFF)
+ *   EVE2   (FT810+)   : 22-bit  (0x3FFFFF)
+ *   EVE3/4 (BT815+)   : 23-bit  (0x7FFFFF)
+ *   EVE5   (BT820)    : 24-bit low word; upper bits via BITMAP_SOURCE_H
  * ========================================================================= */
 #define EVE_ENC_BITMAP_ADDR_MASK \
     EVE_API_SELECT(0xFFFFFul, 0x3FFFFFul, 0x7FFFFFul, 0x7FFFFFul, 0xFFFFFFul)

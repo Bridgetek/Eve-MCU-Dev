@@ -1,3 +1,4 @@
+#!/bin/bash
 # See the README.md file in this directory for instructions
 
 if [[ $1 != "" ]]; then
