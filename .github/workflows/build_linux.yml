@@ -69,13 +69,13 @@ jobs:
           {build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
         ]
       
-      steps:
-      # Test using matrix
-      - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
-        run: cmake -B ${{ matrix.eve.build }} -S . -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        working-directory: ${{github.workspace}}/examples/simple/libft4222
+    steps:
+    # Test using matrix
+    - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
+      run: cmake -B ${{ matrix.eve.build }} -S . -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/examples/simple/libft4222
 
-      - name: Build for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
-        run: cmake --build ${{ matrix.eve.build }} 
-        working-directory: ${{github.workspace}}/examples/simple/libft4222
+    - name: Build for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
+      run: cmake --build ${{ matrix.eve.build }} 
+      working-directory: ${{github.workspace}}/examples/simple/libft4222
 
