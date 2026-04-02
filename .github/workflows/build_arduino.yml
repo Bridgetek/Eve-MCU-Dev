@@ -68,9 +68,6 @@ jobs:
           sketch-paths: |
             - examples/simple/arduino/simple_arduino
           cli-compile-flags: |
-            -  --build-property build.extra_flags==-DMODULE_TYPE==${{ matrix.eve.MODULE_TYPE }}
-            -  --build-property build.extra_flags==-DPANEL_TYPE==${{ matrix.eve.PANEL_TYPE }}
-            -  --build-property build.extra_flags==-DFT8XX_TYPE==${{ matrix.eve.FT8XX_TYPE }}
-            -  --build-property build.extra_flags==-DDISPLAY_RES==${{ matrix.eve.DISPLAY_RES }}
-            -  --build-property build.extra_flags==-DCMAKE_BUILD_TYPE==${{env.BUILD_TYPE}}
+            - --build-property
+            - compiler.cpp.extra_flags=-DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
