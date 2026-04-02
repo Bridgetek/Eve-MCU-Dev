@@ -64,7 +64,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: |
-          $HOME/lib/
+          ${{ runner.Workspace }}/lib/
         key: ${{ runner.os }}-ftdilibs-windows-1
         restore-keys: |
           ${{ runner.os }}-ftdilibs-windows
@@ -73,9 +73,9 @@ jobs:
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
-        mkdir -p $HOME\lib
+        mkdir -p ${{ runner.Workspace }}\lib
         pwd
-        cd $HOME\lib
+        cd ${{ runner.Workspace }}\lib
         pwd
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
         unzip LibFT4222-v1.4.8.zip
@@ -83,23 +83,21 @@ jobs:
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
         unzip libmpsse-windows-1.0.8.zip
         del libmpsse-windows-1.0.8.zip
-        dir /s
         cd ..
 
     - name: Get libFT4222 library
       if: ${{ matrix.example.library == 'libft4222' }}
       run: |
           pushd ${{github.workspace}}\ports\eve_libft4222
-          echo $HOME
-          dir $HOME\lib\imports
-          install_libft4222.bat $HOME\lib\imports
+          dir ${{ runner.Workspace }}\lib\imports
+          install_libft4222.bat ${{ runner.Workspace }}\lib\imports
           popd
 
     - name: Get libMPSSE library
       if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
           pushd ${{github.workspace}}\ports\eve_libmpsse
-          call install_libmpsse.bat $HOME\lib\release
+          call install_libmpsse.bat ${{ runner.Workspace }}\lib\release
           echo Removing the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
           sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
           echo "Checking..."
