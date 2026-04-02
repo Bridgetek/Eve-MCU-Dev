@@ -10,11 +10,12 @@ on:
     paths:
       # Trigger if this workflow file changes
       - '.github/workflows/build_linux.yml'
-      # Trigger script on push to raspberry_pi simple example
-      - 'examples/simple/common'
-      - 'examples/simple/libft4222'
-      - 'examples/simple/libmpsse'
-      - 'examples/simple/STM32CUBE_CMake_MiniSTM32H7xx'
+      # Trigger script on push to simple example
+      - 'examples/simple/**'
+      # Trigger on API change
+      - 'include/**'
+      - 'source/**'
+      - 'ports/**'
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -29,19 +30,29 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        port: [libft4222, libmpsse, STM32CUBE_CMake_MiniSTM32H7xx]
-        eve: [ 
-          {build: build-1-QVGA , DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          #{build: build-2-0413-11A , DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          #{build: build-3-WVGA , DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          #{build: build-4-IDM20407A , DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
-          #{build: build-5-WUXGA , DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        example: [
+          {dir: raspberry_pi,   compiler: arm,  library: rpi},
+          {dir: pico,           compiler: arm,  library: pico},
+          {dir: libft4222,      compiler: none, library: libft4222},
+          {dir: libmpsse,       compiler: none, library: libmpsse },
+          {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
-      
+        eve: [ 
+          #{DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+
     steps:
     
     - uses: actions/checkout@v6
 
+    # Form a cache of tar files from FTDI to save downloading them each time
     - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       id: ftdicache
       uses: actions/cache@v4
@@ -52,6 +63,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-ftdilibs
 
+    # If the cache hit for the FTDI tar files fails then download them
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
@@ -65,63 +77,75 @@ jobs:
         cd ..
         ls -l ~/lib/
 
-    #- name: Cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-    #  id: ftdicache-save
-    #  if: always() && steps.ftdicache-restore.outputs.cache-hit != 'true'
-    #  uses: actions/cache/save@v5
-    #  with:
-    #    path: |
-    #     '~/lib'
-    #    key: ftdicachelib1
-          
+    # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
     - name: Setup gcc-arm-none-eabi environment
-      if: ${{ matrix.port == 'STM32CUBE_CMake_MiniSTM32H7xx' }}
+      if: ${{ matrix.example.library == 'stm32' || matrix.example.library == 'pico' || matrix.example.library == 'raspberry_pi' }}
       uses: carlosperate/arm-none-eabi-gcc-action@v1
-      
-      #run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
+      # Equivalent to the following line but uses caches for speed:
+      # run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
 
     - name: Setup libFTD2XX library
+      if: ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}
       run: |
           # test if libFTD2XX required
-          if ${{ matrix.port == 'libmpsse' || matrix.port == 'libft4222' }}; then
-          cd ~/lib/
-          tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
-          cd linux-x86_64/
-          sudo cp libftd2xx.* /usr/local/lib
-          sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
-          sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
-          sudo cp ftd2xx.h /usr/local/include
-          sudo cp WinTypes.h /usr/local/include
-          cd ..
+          if ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}; then
+            cd ~/lib/
+            tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
+            cd linux-x86_64/
+            sudo cp libftd2xx.* /usr/local/lib
+            sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
+            sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
+            sudo cp ftd2xx.h /usr/local/include
+            sudo cp WinTypes.h /usr/local/include
+            cd ..
           fi
 
     - name: Setup libMPSSE-SPI library
+      if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
           # test if libMPSSE-SPI required
-          if ${{ matrix.port == 'libmpsse' }}; then
-          cd ~/lib/
-          tar xfvz libmpsse-x86_64-1.0.8.tgz
-          cd release
-          chmod +x install_libmpsse.sh
-          ./install_libmpsse.sh
-          cd ..
+          if ${{ matrix.example.library == 'libmpsse' }}; then
+            cd ~/lib/
+            tar xfvz libmpsse-x86_64-1.0.8.tgz
+            cd release
+            chmod +x install_libmpsse.sh
+            ./install_libmpsse.sh
+            cd ..
           fi
 
     - name: Setup libFT4222 library
+      if: ${{ matrix.example.library == 'libft4222' }}
       run: |
           # test if libFT4222 required
-          if ${{ matrix.port == 'libft4222' }}; then
-          cd ~/lib/
-          tar -xvf libft4222-linux-1.4.4.232.tgz
-          sudo ./install4222.sh
+          if ${{ matrix.example.library == 'libft4222' }}; then
+            cd ~/lib/
+            tar -xvf libft4222-linux-1.4.4.232.tgz
+            sudo ./install4222.sh
           fi
 
+    - name: Setup Linux GPIO library
+      if: ${{ matrix.example.library == 'rpi' }}
+      run: |
+          # test if Raspberry Pi libraries required
+          if ${{ matrix.example.library == 'rpi' }}; then
+            sudo apt-get update && sudo apt-get install libgpiod-dev
+          fi
+  
+    - name: Get SDK and add PICO_SDK_PATH
+      if: ${{ matrix.example.library == 'pico' }}
+      run: |
+          # test if pico SDK required
+          if ${{ matrix.example.library == 'pico' }}; then
+            git clone https://github.com/raspberrypi/pico-sdk.git && echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
+            ls && cd pico-sdk && git submodule update --init && cd ..
+          fi
+     
     # Test using matrix
-    - name: Configure CMake for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
-      run: cmake -B ${{ matrix.eve.build }} -S . -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+    - name: Configure CMake
+      run: cmake -B build -S . -G Ninja -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
-    - name: Build for libFT4222 Linux ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }} ${{ matrix.eve.FT8XX_TYPE }} ${{env.BUILD_TYPE}}
-      run: cmake --build ${{ matrix.eve.build }} 
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+    - name: Build
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
