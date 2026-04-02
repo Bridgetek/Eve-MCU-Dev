@@ -74,19 +74,24 @@ jobs:
       if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
         mkdir -p $HOME\lib
+        pwd
         cd $HOME\lib
+        pwd
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
         unzip LibFT4222-v1.4.8.zip
         del LibFT4222-v1.4.8.zip
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
         unzip libmpsse-windows-1.0.8.zip
         del libmpsse-windows-1.0.8.zip
+        dir /s
         cd ..
 
     - name: Get libFT4222 library
       if: ${{ matrix.example.library == 'libft4222' }}
       run: |
           pushd ${{github.workspace}}\ports\eve_libft4222
+          echo $HOME
+          dir $HOME\lib\imports
           install_libft4222.bat $HOME\lib\imports
           popd
 
