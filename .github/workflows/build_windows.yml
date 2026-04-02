@@ -73,8 +73,8 @@ jobs:
     - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
       if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
-        mkdir -p $HOME/lib/
-        cd $HOME/lib/
+        mkdir -p $HOME\lib
+        cd $HOME\lib
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
         unzip LibFT4222-v1.4.8.zip
         del LibFT4222-v1.4.8.zip
