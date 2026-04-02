@@ -67,6 +67,16 @@ void Error_Handler(void);
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin GPIO_PIN_14
 #define SWCLK_GPIO_Port GPIOA
+#define EVE_SCK_Pin GPIO_PIN_3
+#define EVE_SCK_GPIO_Port GPIOB
+#define EVE_MISO_Pin GPIO_PIN_4
+#define EVE_MISO_GPIO_Port GPIOB
+#define EVE_MOSI_Pin GPIO_PIN_5
+#define EVE_MOSI_GPIO_Port GPIOB
+#define EVE_CS__Pin GPIO_PIN_6
+#define EVE_CS__GPIO_Port GPIOB
+#define EVE_PD__Pin GPIO_PIN_7
+#define EVE_PD__GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
