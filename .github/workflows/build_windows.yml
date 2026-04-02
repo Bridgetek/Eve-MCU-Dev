@@ -82,7 +82,6 @@ jobs:
         unzip libmpsse-windows-1.0.8.zip
         del libmpsse-windows-1.0.8.zip
         cd ..
-        ls -l $HOME/lib/
 
     - name: Get libFT4222 library
       if: ${{ matrix.example.library == 'libft4222' }}
