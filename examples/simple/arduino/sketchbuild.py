@@ -83,7 +83,7 @@ def copy_norm(src_file, dest_file):
                                 f"{match1.group(1)}memcpy_P(&font0_header, {match1.group(2)}, sizeof(font0_header));",
                                 f"{match1.group(1)}/* Read the data from the program memory into RAM. */",
                                 f"{match1.group(1)}uint8_t pgm[16];",
-                                f"{match1.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                f"{match1.group(1)}uint32_t pgmoffset;",
                                 f"{match1.group(1)}for (pgmoffset = 0; pgmoffset < {match1.group(3)}; pgmoffset+=16)",
                                 f"{match1.group(1)}{{",
                                 f"{match1.group(1)}    // Maximum of pgm buffer",

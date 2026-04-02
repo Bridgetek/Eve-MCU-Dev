@@ -46,7 +46,7 @@ jobs:
         ]
     
     # Set the name of the job to include the important information
-    name: build Arduino - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+    name: build Arduino ${{ matrix.example.platform }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
 
     steps:
     - uses: actions/checkout@v6
@@ -61,8 +61,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fqbn: ${{ matrix.example.fqbn }}
           verbose: true
-          # libraries: |
-          #  ${{ matrix.libraries }}
+          libraries: |
+            []
           platforms: |
             - name: ${{ matrix.example.platform }}
           sketch-paths: |

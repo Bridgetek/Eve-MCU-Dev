@@ -78,7 +78,6 @@ extern "C" {
 //@}
 
 void MCU_Init(void) {
-  uint8_t clr;
 
   SPI.begin();
 
