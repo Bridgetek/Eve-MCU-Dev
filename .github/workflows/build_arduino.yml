@@ -33,7 +33,8 @@ jobs:
       max-parallel: 1
       matrix:
         example: [
-          {fqbn: arduino:avr:uno, platform: arduino:samd},
+          {fqbn: arduino:avr:uno, platform: arduino:avr},
+          {fqbn: arduino:samd:adafruit_circuitplayground_m0, platform: arduino:samd},
           {fqbn: esp32:esp32:esp32, platform: esp32:esp32},
         ]
         eve: [ 
