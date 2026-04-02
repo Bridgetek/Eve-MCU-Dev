@@ -87,14 +87,14 @@ jobs:
       if: ${{ matrix.example.library == 'libft4222' }}
       run: |
           pushd ${{github.workspace}}\ports\eve_libft4222
-          install_libft4222.bat $HOME\imports
+          install_libft4222.bat $HOME\lib\imports
           popd
 
     - name: Get libMPSSE library
       if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
           pushd ${{github.workspace}}\ports\eve_libmpsse
-          call install_libmpsse.bat $HOME\release
+          call install_libmpsse.bat $HOME\lib\release
           echo Removing the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
           sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
           echo "Checking..."
