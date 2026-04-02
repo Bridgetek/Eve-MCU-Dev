@@ -36,13 +36,12 @@ jobs:
           {dir: libft4222,      compiler: none, library: libft4222},
           {dir: libmpsse,       compiler: none, library: libmpsse },
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
-          {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
         eve: [ 
-          #{DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          #{DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          {DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
           {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
         ]
     
@@ -50,7 +49,6 @@ jobs:
     name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
 
     steps:
-    
     - uses: actions/checkout@v6
 
     # Form a cache of tar files from FTDI to save downloading them each time

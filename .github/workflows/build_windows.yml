@@ -37,11 +37,11 @@ jobs:
           {dir: libmpsse,       compiler: none, library: libmpsse },
         ]
         eve: [ 
-          #{DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
           {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          #{DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
-          #{DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
         ]
     
     # Set the name of the job to include the important information
@@ -52,7 +52,6 @@ jobs:
         shell: cmd
 
     steps:
-
     - uses: actions/checkout@v6
 
     - name: Setup path for MinGW
@@ -74,9 +73,7 @@ jobs:
       if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
         mkdir -p ${{ runner.Workspace }}\lib
-        pwd
         cd ${{ runner.Workspace }}\lib
-        pwd
         curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
         unzip LibFT4222-v1.4.8.zip
         del LibFT4222-v1.4.8.zip
