@@ -58,6 +58,7 @@
 //@{
 extern "C" {
 #include <EVE.h>
+#include <HAL.h>
 #include <MCU.h>
 }
 //@}
