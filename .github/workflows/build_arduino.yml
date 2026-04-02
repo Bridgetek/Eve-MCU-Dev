@@ -1,0 +1,70 @@
+name: Build Simple Example for Arduino
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - 'main'
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/api_test.yml'
+      # Trigger script on push to test directory
+      - 'test'
+      # Trigger script on push to API
+      - 'include/**'
+      - 'source/**'
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        example: [
+          {fqbn: arduino:avr:uno, platform: arduino:samd},
+          {fqbn: esp32:esp32:esp32, platform: esp32:esp32},
+        ]
+        eve: [ 
+          #{DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          #{DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: build Arduino - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Build sketch source
+      run: python sketchbuild.py
+      working-directory: ${{github.workspace}}/examples/simple/arduino
+
+    - name: 
+      uses: arduino/compile-sketches@v1
+      with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fqbn: ${{ matrix.example.fqbn }}
+          # libraries: |
+          #  ${{ matrix.libraries }}
+          platforms: |
+            - name: ${{ matrix.example.platform }}
+          sketch-paths: |
+            - examples/simple/arduino/simple_arduino
+          cli-compile-flags: |
+            - --warnings="none" -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
