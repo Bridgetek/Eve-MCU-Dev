@@ -79,7 +79,7 @@ jobs:
 
     # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
     - name: Setup gcc-arm-none-eabi environment
-      if: ${{ matrix.example.library == 'stm32' || matrix.example.library == 'pico' || matrix.example.library == 'raspberry_pi' }}
+      if: ${{ matrix.example.compiler == 'arm' }}
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       # Equivalent to the following line but uses caches for speed:
       # run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
@@ -87,8 +87,6 @@ jobs:
     - name: Setup libFTD2XX library
       if: ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}
       run: |
-          # test if libFTD2XX required
-          if ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}; then
             cd ~/lib/
             tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
             cd linux-x86_64/
@@ -98,47 +96,35 @@ jobs:
             sudo cp ftd2xx.h /usr/local/include
             sudo cp WinTypes.h /usr/local/include
             cd ..
-          fi
 
     - name: Setup libMPSSE-SPI library
       if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
-          # test if libMPSSE-SPI required
-          if ${{ matrix.example.library == 'libmpsse' }}; then
             cd ~/lib/
             tar xfvz libmpsse-x86_64-1.0.8.tgz
             cd release
             chmod +x install_libmpsse.sh
             ./install_libmpsse.sh
             cd ..
-          fi
 
     - name: Setup libFT4222 library
       if: ${{ matrix.example.library == 'libft4222' }}
       run: |
-          # test if libFT4222 required
-          if ${{ matrix.example.library == 'libft4222' }}; then
             cd ~/lib/
             tar -xvf libft4222-linux-1.4.4.232.tgz
             sudo ./install4222.sh
-          fi
 
     - name: Setup Linux GPIO library
       if: ${{ matrix.example.library == 'rpi' }}
       run: |
-          # test if Raspberry Pi libraries required
-          if ${{ matrix.example.library == 'rpi' }}; then
             sudo apt-get update && sudo apt-get install libgpiod-dev
-          fi
   
     - name: Get SDK and add PICO_SDK_PATH
       if: ${{ matrix.example.library == 'pico' }}
       run: |
-          # test if pico SDK required
-          if ${{ matrix.example.library == 'pico' }}; then
             git clone https://github.com/raspberrypi/pico-sdk.git && echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
-            ls && cd pico-sdk && git submodule update --init && cd ..
-          fi
+      # Do not need btstack, lwip, mbedtls, tinyusb or cyw43 - just the SDK
+      # ls && cd pico-sdk && git submodule update --init && cd ..
      
     # Test using matrix
     - name: Configure CMake
