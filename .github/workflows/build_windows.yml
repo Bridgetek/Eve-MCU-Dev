@@ -14,6 +14,10 @@ on:
       - 'examples/simple/common'
       - 'examples/simple/libft4222'
       - 'examples/simple/libmpsse'
+      # Trigger on API change
+      - 'include/**'
+      - 'source/**'
+      - 'ports/**'
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -25,49 +29,84 @@ jobs:
   build:
     runs-on: windows-latest
 
+    strategy:
+      max-parallel: 1
+      matrix:
+        example: [
+          {dir: libft4222,      compiler: none, library: libft4222},
+          {dir: libmpsse,       compiler: none, library: libmpsse },
+        ]
+        eve: [ 
+          #{DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          #{DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          #{DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+
     defaults:
       run:
         shell: cmd
 
     steps:
+
     - uses: actions/checkout@v6
 
-    - name: Checkout and setup path for MinGW
+    - name: Setup path for MinGW
       run: set PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;%PATH%"
 
-    - name: Get libFT4222 library
+    # Form a cache of tar files from FTDI to save downloading them each time
+    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      id: ftdicache
+      uses: actions/cache@v5
+      with:
+        path: |
+          $HOME/lib/
+        key: ${{ runner.os }}-ftdilibs-windows-1
+        restore-keys: |
+          ${{ runner.os }}-ftdilibs-windows
+
+    # If the cache hit for the FTDI tar files fails then download them
+    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
-          unzip LibFT4222-v1.4.8.zip
+        mkdir -p $HOME/lib/
+        cd $HOME/lib/
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
+        unzip LibFT4222-v1.4.8.zip
+        del LibFT4222-v1.4.8.zip
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
+        unzip libmpsse-windows-1.0.8.zip
+        del libmpsse-windows-1.0.8.zip
+        cd ..
+        ls -l $HOME/lib/
+
+    - name: Get libFT4222 library
+      if: ${{ matrix.example.library == 'libft4222' }}
+      run: |
           pushd ${{github.workspace}}\ports\eve_libft4222
-          install_libft4222.bat ${{github.workspace}}\imports
+          install_libft4222.bat $HOME\imports
           popd
 
     - name: Get libMPSSE library
+      if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
-          unzip libmpsse-windows-1.0.8.zip
           pushd ${{github.workspace}}\ports\eve_libmpsse
-          call install_libmpsse.bat ${{github.workspace}}\release
+          call install_libmpsse.bat $HOME\release
           echo Removing the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
           sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
           echo "Checking..."
           findstr "LoadLibrary(" ftdi_infra.c
           popd
 
-    # Test BT820 (EVE API 5)
-    - name: Configure CMake for libFT4222 Windows on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -G "MinGW Makefiles" -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+    # Test using matrix
+    - name: Configure CMake
+      run: cmake -B build -S . -G "MinGW Makefiles" -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
-    - name: Build for libFT4222 Windows on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Configure CMake for libMPSSE Windows on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -G "MinGW Makefiles" -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
-
-    - name: Build for libMPSSE Windows on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
+    - name: Build
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
