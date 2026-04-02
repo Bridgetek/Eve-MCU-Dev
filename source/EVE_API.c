@@ -283,7 +283,7 @@ void EVE_LIB_BeginCoProList(void)
     // Begins SPI transaction
     HAL_ChipSelect(1);
 
-#if IS_EVE_API(1)
+#ifndef EVE_USE_CMDB_METHOD
     // Send address for writing as the next free location in the co-pro buffer
     HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
 #else
