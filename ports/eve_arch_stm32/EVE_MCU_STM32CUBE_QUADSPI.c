@@ -45,8 +45,13 @@
 #include <main.h>
 
 /* QUADSPI Enabled in STM32CubeMX for the STM32 */
-#if !defined(HAL_SPI_MODULE_ENABLED) && defined(HAL_QSPI_MODULE_ENABLED)
-#pragma message ("STM32Cube Quad Channel SPI controller enabled")
+/* Platform macro MUST include the handle of the interface. */
+#if PLATFORM_STM32_CUBE == 4
+
+/* Display message to indicate quad channel SPI selected */
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+#pragma message ("STM32Cube Quad Channel SPI controller enabled on channel " STR(PLATFORM_STM32_CUBE_CHANNEL))
 
 /* EVE MCU HEADER END */
 
@@ -79,6 +84,7 @@
 #endif
 
 /* SPI handler declaration */
+/* There is only one QUADSPI channel available. */
 extern QSPI_HandleTypeDef hqspi;
 
 /* Transfers are "chunked" to the EVE by the HAL.

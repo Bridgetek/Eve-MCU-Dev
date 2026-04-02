@@ -10,10 +10,12 @@ on:
     paths:
       # Trigger if this workflow file changes
       - '.github/workflows/build_linux.yml'
-      # Trigger script on push to raspberry_pi simple example
-      - 'examples/simple/common'
-      - 'examples/simple/libft4222'
-      - 'examples/simple/libmpsse'
+      # Trigger script on push to simple example
+      - 'examples/simple/**'
+      # Trigger on API change
+      - 'include/**'
+      - 'source/**'
+      - 'ports/**'
   # Add "Run workflow" button
   workflow_dispatch:
 
@@ -25,77 +27,112 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      max-parallel: 1
+      matrix:
+        example: [
+          {dir: raspberry_pi,   compiler: arm,  library: rpi},
+          {dir: pico,           compiler: arm,  library: pico},
+          {dir: libft4222,      compiler: none, library: libft4222},
+          {dir: libmpsse,       compiler: none, library: libmpsse },
+          {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
+        ]
+        eve: [ 
+          {DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
+          {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+
     steps:
     - uses: actions/checkout@v6
 
-    - name: Get libFT4222 library
+    # Form a cache of tar files from FTDI to save downloading them each time
+    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      id: ftdicache
+      uses: actions/cache@v5
+      with:
+        path: |
+          ~/lib/
+        key: ${{ runner.os }}-ftdilibs-ubuntu-1
+        restore-keys: |
+          ${{ runner.os }}-ftdilibs-ubuntu
+
+    # If the cache hit for the FTDI tar files fails then download them
+    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
+      if: steps.ftdicache.outputs.cache-hit != 'true'
       run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
-          tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
-          cd linux-x86_64/
-          sudo cp libftd2xx.* /usr/local/lib
-          sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
-          sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
-          sudo cp ftd2xx.h /usr/local/include
-          sudo cp WinTypes.h /usr/local/include
+        mkdir ~/lib/
+        cd ~/lib/
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
+        unzip libft4222-linux-1.4.4.232.zip
+        rm libft4222-linux-1.4.4.232.zip
+        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
+        tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
+        tar xfvz libmpsse-x86_64-1.0.8.tgz
+        tar xfvz libft4222-linux-1.4.4.232.tgz
+        rm libftd2xx-linux-x86_64-1.4.34.tgz
+        rm libmpsse-x86_64-1.0.8.tgz
+        rm libft4222-linux-1.4.4.232.tgz
+        cd ..
 
-    - name: Get libFT4222 library
+    # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
+    - name: Setup gcc-arm-none-eabi environment
+      if: ${{ matrix.example.compiler == 'arm' }}
+      uses: carlosperate/arm-none-eabi-gcc-action@v1
+      # Equivalent to the following line but uses caches for speed:
+      # run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
+
+    - name: Setup libFTD2XX library
+      if: ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}
       run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
-          unzip libft4222-linux-1.4.4.232.zip
-          tar -xvf libft4222-linux-1.4.4.232.tgz
-          sudo ./install4222.sh
+        cd ~/lib/
+        cd linux-x86_64/
+        sudo cp libftd2xx.* /usr/local/lib
+        sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
+        sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
+        sudo cp ftd2xx.h /usr/local/include
+        sudo cp WinTypes.h /usr/local/include
+        cd ..
 
-    - name: Get libMPSSE-SPI library
+    - name: Setup libMPSSE-SPI library
+      if: ${{ matrix.example.library == 'libmpsse' }}
       run: |
-          curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-          tar xfvz libmpsse-x86_64-1.0.8.tgz
-          cd release
-          chmod +x install_libmpsse.sh
-          ./install_libmpsse.sh
-      
-    # Test BT820 (EVE API 5)
-    - name: Configure CMake for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+        cd ~/lib/
+        cd release
+        chmod +x install_libmpsse.sh
+        ./install_libmpsse.sh
+        cd ..
 
-    - name: Build for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+    - name: Setup libFT4222 library
+      if: ${{ matrix.example.library == 'libft4222' }}
+      run: |
+        cd ~/lib/
+        sudo ./install4222.sh
 
-    # Test BT816 (EVE API 3)
-    - name: Configure CMake for libFT4222 Linux on IDM20407A module (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake -B buildIDM20407A -S . -DMODULE_TYPE=IDM20407A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
+    - name: Setup Linux GPIO library
+      if: ${{ matrix.example.library == 'rpi' }}
+      run: |
+        sudo apt-get update && sudo apt-get install libgpiod-dev
+  
+    - name: Get SDK and add PICO_SDK_PATH
+      if: ${{ matrix.example.library == 'pico' }}
+      run: |
+        git clone https://github.com/raspberrypi/pico-sdk.git && echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
+      # Do not need btstack, lwip, mbedtls, tinyusb or cyw43 - just the SDK
+      # ls && cd pico-sdk && git submodule update --init && cd ..
+     
+    # Test using matrix
+    - name: Configure CMake
+      run: cmake -B build -S . -G Ninja -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
-    - name: Build for libFT4222 Linux on IDM20407A module on (BT816 with WVGA resolution DP_0701_11A panel)
-      run: cmake --build buildIDM20407A
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test FT813 (EVE API 2 SUB API 1)
-    - name: Configure CMake for libFT4222 Linux on FT813 with DP_0501_01A panel (WVGA)
-      run: cmake -B build813WVGA -S . -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Build for libFT4222 Linux on IDM20407A module on FT813 with DP_0501_01A panel (WVGA)
-      run: cmake --build build813WVGA
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test FT800 (EVE API 1)
-    - name: Configure CMake for libFT4222 Linux on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
-      run: cmake -B build800C43A -S . -DFT8XX_TYPE=FT813 -DPANEL_TYPE=DP_0501_01A -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    - name: Build for libFT4222 Linux on VM800C43A (FT800 with WQVGA resolution DP-0431-11A panel)
-      run: cmake --build build800C43A
-      working-directory: ${{github.workspace}}/examples/simple/libft4222
-
-    # Test BT820 (EVE API 5)
-    - name: Configure CMake for libMPSSE-SPI Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake -B build820WUXGA -S . -DDISPLAY_RES=WUXGA -DFT8XX_TYPE=BT820 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
-
-    - name: Build for libFT4222 Linux on BT820 with WUXGA panel (DP_1012_01A)
-      run: cmake --build build820WUXGA
-      working-directory: ${{github.workspace}}/examples/simple/libmpsse
+    - name: Build
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 

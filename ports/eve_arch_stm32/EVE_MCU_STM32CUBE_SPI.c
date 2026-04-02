@@ -45,8 +45,18 @@
 #include <main.h>
 
 /* SPI1 Enabled in STM32CubeMX for the STM32 */
-#if defined(HAL_SPI_MODULE_ENABLED) && !defined(HAL_QSPI_MODULE_ENABLED)
-#pragma message ("STM32Cube Single Channel SPI1 controller enabled")
+/* Platform macro is set to 1 for single channel or 0 for no interface specified. */
+#if PLATFORM_STM32_CUBE == 1 || PLATFORM_STM32_CUBE == 0
+/* Set the default channel to 1 */
+#if PLATFORM_STM32_CUBE_CHANNEL == 0
+#undef PLATFORM_STM32_CUBE_CHANNEL
+#define PLATFORM_STM32_CUBE_CHANNEL 1
+#endif
+
+/* Display message to indicate single channel SPI selected */
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+#pragma message ("STM32Cube Single Channel SPI1 controller enabled on channel " STR(PLATFORM_STM32_CUBE_CHANNEL))
 
 /* EVE MCU HEADER END */
 
@@ -57,8 +67,26 @@
 
 /* EVE MCU */
 
-/* SPI handler declaration */
+/* SPI handler declaration for correct channel */
+#if PLATFORM_STM32_CUBE_CHANNEL == 1
 extern SPI_HandleTypeDef hspi1;
+#define SPI_HANDLE hspi1
+#elif PLATFORM_STM32_CUBE_CHANNEL == 2
+extern SPI_HandleTypeDef hspi2;
+#define SPI_HANDLE hspi2
+#elif PLATFORM_STM32_CUBE_CHANNEL == 3
+extern SPI_HandleTypeDef hspi3;
+#define SPI_HANDLE hspi3
+#elif PLATFORM_STM32_CUBE_CHANNEL == 4
+extern SPI_HandleTypeDef hspi4;
+#define SPI_HANDLE hspi4
+#elif PLATFORM_STM32_CUBE_CHANNEL == 5
+extern SPI_HandleTypeDef hspi5;
+#define SPI_HANDLE hspi5
+#elif PLATFORM_STM32_CUBE_CHANNEL == 6
+extern SPI_HandleTypeDef hspi6;
+#define SPI_HANDLE hspi6
+#endif
 
 void MCU_Init(void)
 {
@@ -67,8 +95,8 @@ void MCU_Init(void)
      * Use the "safe" prescaler to get a safe clock for SPI
      * during initialisation.
      */
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-    if (HAL_SPI_Init(&hspi1) != HAL_OK)
+    SPI_HANDLE.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    if (HAL_SPI_Init(&SPI_HANDLE) != HAL_OK)
     {
         Error_Handler();
     }
@@ -76,7 +104,7 @@ void MCU_Init(void)
 
 void MCU_Deinit(void)
 {
-    HAL_SPI_DeInit(&hspi1);
+    HAL_SPI_DeInit(&SPI_HANDLE);
 }
 
 void MCU_Setup(void)
@@ -87,8 +115,8 @@ void MCU_Setup(void)
      * in STM32CubeMX.
      * This can be a maximum of 60 MHz for BT820, or 30 MHz
      * on FT81x, BT88x, BT81x. */
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-    if (HAL_SPI_Init(&hspi1) != HAL_OK)
+    SPI_HANDLE.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+    if (HAL_SPI_Init(&SPI_HANDLE) != HAL_OK)
     {
         Error_Handler();
     }
@@ -122,11 +150,11 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
     TxBuffer = DataToWrite;
 
 #if 1
-    HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&SPI_HANDLE, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 1, HAL_MAX_DELAY);
 #else
     // Note that this call to the STM32 HAL returns a status value which can be checked 
     // as shown below in order to make the application more robust
-    switch(HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, HAL_MAX_DELAY))
+    switch(HAL_SPI_TransmitReceive(&SPI_HANDLE, (uint8_t*)TxBuffer, (uint8_t *)DataRead, 1, HAL_MAX_DELAY))
     {
     case HAL_OK:
       /* Communication is completed */
@@ -153,7 +181,7 @@ uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
     uint16_t DataRead;
     uint16_t TxBuffer = DataToWrite;
 
-    HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&SPI_HANDLE, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 2, HAL_MAX_DELAY);
 
     return MCU_le16toh(DataRead);
 }
@@ -163,7 +191,7 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     uint32_t DataRead;
     uint32_t TxBuffer = DataToWrite;
     
-    HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&SPI_HANDLE, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 3, HAL_MAX_DELAY);
 
     return MCU_le32toh(DataRead);
 }
@@ -173,7 +201,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
     uint32_t DataRead;
     uint32_t TxBuffer = DataToWrite;
 
-    HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&SPI_HANDLE, (uint8_t*)&TxBuffer, (uint8_t *)&DataRead, 4, HAL_MAX_DELAY);
 
     return MCU_le32toh(DataRead);
 }
