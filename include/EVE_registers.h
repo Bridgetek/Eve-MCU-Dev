@@ -233,6 +233,26 @@
 /** @brief Pixel clock polarity (0 = rising edge, 1 = falling edge) */
 #define EVE_REG_PCLK_POL       EVE_API_SELECT(0x102468ul,  0x30206cul,  0x30206cul,  0x30206cul,  0x7f0060b8ul)
 
+/** @brief Pixel clock frequency synthesizer setting (EVE4 only) */
+#if IS_EVE_API(4)
+#define EVE_REG_PCLK_FREQ      0x302614ul
+#endif
+
+/** @brief Enable pixel clock 2x output (EVE4 only) */
+#if IS_EVE_API(4)
+#define EVE_REG_PCLK_2X        0x302618ul
+#endif
+
+/** @brief Maximum adaptive horizontal cycle (EVE4 only) */
+#if IS_EVE_API(4)
+#define EVE_REG_AH_HCYCLE_MAX  0x302610ul
+#endif
+
+/** @brief Underrun detection status (EVE4 only) */
+#if IS_EVE_API(4)
+#define EVE_REG_UNDERRUN       0x30260Cul
+#endif
+
 /** @brief Horizontal total cycle count */
 #define EVE_REG_HCYCLE         EVE_API_SELECT(0x102428ul,  0x30202cul,  0x30202cul,  0x30202cul,  0x7f00608cul)
 
