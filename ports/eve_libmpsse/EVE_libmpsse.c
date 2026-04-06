@@ -139,11 +139,7 @@ int MCU_Init(void)
     DWORD channels;
     FT_STATUS ftStatus;
 
-    if (Init_libMPSSE() != FT_OK)
-    {
-        fprintf(stderr, "Failed to initialize libMPSSE\n");
-        return -1;
-    }
+    Init_libMPSSE();
 
     ftStatus = SPI_GetNumChannels(&channels);
     for (channel = 0; channel < channels; channel++)
