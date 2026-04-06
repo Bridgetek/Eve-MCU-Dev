@@ -61,11 +61,14 @@
 #pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
 #endif
 
-void EVE_Init(void)
+int EVE_Init(void)
 {
     uint8_t i;
 
-    HAL_EVE_Init();
+    if (HAL_EVE_Init() < 0)
+    {
+        return -1;
+    }
 
     // Setup Display Settings for Panel
 
@@ -272,6 +275,8 @@ void EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 #endif
+
+    return 0;
 }
 
 // Begin co-pro list for display creation
