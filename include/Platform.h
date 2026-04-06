@@ -61,22 +61,25 @@
  @brief Platform specific initialisation
  @details Must contain any platform-specific initialisation. This will typically be
     setting up the SPI bus, GPIOs and operating environment requirements.
+ @returns 0 if successful, -1 if failed.
  */
-void Platform_Init(void);
+int Platform_Init(void);
 
 /**
  @brief Platform specific de-initialisation
  @details Must contain any platform-specific de-initialisation. This will typically be
     closing the SPI bus, GPIOs and operating environment requirements.
+ @returns 0 if successful, -1 if failed.
  */
-void Platform_Deinit(void);
+int Platform_Deinit(void);
 
 /**
  @brief Platform specific setup
  @details Called after the EVE has been power cycled and started. Contains
     any platform-specific configuration options for the EVE.
+ @returns 0 if successful, -1 if failed.
  */
-void Platform_Setup(void);
+int Platform_Setup(void);
 
 /**
  @brief Platform specific SPI transfer

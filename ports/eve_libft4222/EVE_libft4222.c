@@ -169,7 +169,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     }
 }
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     FT_STATUS ftStatus;
 
@@ -246,14 +246,14 @@ void MCU_Init(void)
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init Open FT4222 SPI device failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
 
         ftStatus = FT_OpenEx((PVOID)(uintptr_t)devNumGPIO, FT_OPEN_BY_LOCATION, &ftHandleGPIO);
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init Open FT4222 GPIO device failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
 
         // Set SPI clock speed to 1.25 MHz
@@ -266,21 +266,21 @@ void MCU_Init(void)
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init SetClock failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
 
         ftStatus = FT4222_SetSuspendOut(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init Disable Suspend Out function on GPIO2 failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
 
         ftStatus = FT4222_SetWakeUpInterrupt(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init Disable Wakeup/Interrupt feature on GPIO3 failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
 
         /* Interface 2 is GPIO */
@@ -288,33 +288,42 @@ void MCU_Init(void)
         if (FT_OK != ftStatus)
         {
             DEBUG_ERROR("FT4222 Init FT4222 as GPIO interface failed: %d\n", (int)ftStatus);
-            exit(ftStatus);
+            return -1;
         }
     }
     else
     {
         DEBUG_ERROR("No FT4222 channels found\n");
-        exit(-1);
+        return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
         DEBUG_ERROR("Setup malloc failed\n");
-        exit(-99);
+        return -1;
     }
     MCU_bufferLen = 0;
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     FT_Close(ftHandleSPI);
     FT_Close(ftHandleGPIO);
-    
+
     ftHandleSPI = ftHandleGPIO = NULL;
+    if (MCU_buffer)
+    {
+        free(MCU_buffer);
+        MCU_buffer = NULL;
+    }
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     // Increase SPI speed to 20 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
@@ -326,6 +335,7 @@ void MCU_Setup(void)
 #else // QUADSPI_ENABLE
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
 #endif // QUADSPI_ENABLE
+    return 0;
 }
 
 // ------------------------- Output buffering ----------------------------------

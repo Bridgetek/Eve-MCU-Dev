@@ -57,7 +57,7 @@
 
 
 // ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+int MCU_Init(void)
 {
     // Write 0xC520 to the unlock register
     WDOG_UNLOCK = 0xC520;
@@ -162,15 +162,19 @@ void MCU_Init(void)
     // 2		RESERVED	= 0			Reserved
     // 1		RESERVED	= 0			Reserved
     // 0		HALT		= 1			Halt
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     // Shut down the SPI Master
     SPI1_MCR |= SPI_MCR_HALT_MASK;
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 //#ifdef FT81X_ENABLE
 // Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
@@ -186,6 +190,8 @@ void MCU_Setup(void)
 
 // Turn off SPI buffering. Timing of chip select is critical.
 //	spi_option(SPIM, spi_option_fifo, 0);
+
+    return 0;
 }
 
 

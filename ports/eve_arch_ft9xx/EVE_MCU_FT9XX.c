@@ -83,7 +83,7 @@
 // should be modified to suit the registers of the selected MCU.
 
 // ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+int MCU_Init(void)
 {
     // Initialize SPIM HW
     sys_enable(sys_device_spi_master);
@@ -118,16 +118,20 @@ void MCU_Init(void)
     // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Divide by 8 is 25 MHz
     spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     // Shut down the SPI Master
     spi_uninit(SPIM);
     sys_disable(sys_device_spi_master);
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 #if defined QUADSPI_ENABLE
 
@@ -154,6 +158,8 @@ void MCU_Setup(void)
 
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
+
+    return 0;
 }
 
 // ########################### GPIO CONTROL ####################################

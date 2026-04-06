@@ -132,14 +132,18 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     openChannel = channel;
 }
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     FT_DEVICE_LIST_INFO_NODE devList;
     DWORD channel;
     DWORD channels;
     FT_STATUS ftStatus;
 
-    Init_libMPSSE();
+    if (Init_libMPSSE() != FT_OK)
+    {
+        fprintf(stderr, "Failed to initialize libMPSSE\n");
+        return -1;
+    }
 
     ftStatus = SPI_GetNumChannels(&channels);
     for (channel = 0; channel < channels; channel++)
@@ -178,34 +182,45 @@ void MCU_Init(void)
     else
     {
         fprintf(stderr, "No SPI channels found\n");
-        exit (-1);
+        return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
         fprintf(stderr, "Setup malloc failed\n");
-        exit(-99);
+        return -1;
     }
     MCU_bufferLen = 0;
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     SPI_CloseChannel(ftHandle);
     Cleanup_libMPSSE();
-    
+
     ftHandle = NULL;
     openChannel = -1;
+    if (MCU_buffer)
+    {
+        free(MCU_buffer);
+        MCU_buffer = NULL;
+    }
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     SPI_CloseChannel(ftHandle);
 
     // Increase SPI speed to 15 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     cmd_open_channel(openChannel, 15000000);
+
+    return 0;
 }
 
 // ------------------------- Output buffering ----------------------------------

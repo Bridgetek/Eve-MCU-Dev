@@ -83,7 +83,7 @@ const char *GPIO_cs_dir = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/direction";
 const char *GPIO_pd_val = "/sys/class/gpio/gpio" str(PIN_NUM_PD) "/value";
 const char *GPIO_cs_val = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/value";
 
-void Platform_Init(void)
+int Platform_Init(void)
 {
     FILE *hGPIO = NULL;
 
@@ -94,7 +94,8 @@ void Platform_Init(void)
         printf("overlay should be loaded in the file /boot/uEnv.txt\n");
         printf("Add the following line to enable the SPIDEV0 then reboot:\n");
         printf("cape_enable=bone_capemgr.enable_partno=BB-SPIDEV0\n");
-        exit(-1);
+
+        return -1;
     }
 
     // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
@@ -164,18 +165,23 @@ void Platform_Init(void)
     if (hGPIO == NULL)
     {
         printf("failed to export GPIO %d. Make sure you run this with \"sudo\"\n", PIN_NUM_PD);
-        exit(-1);
+        return -1;
     }
+
+    return 0;
 }
 
-void Platform_Deinit(void)
+int Platform_Deinit(void)
 {
     close(spiHandle);
-    spiHandle = NULL;
+    spiHandle = 0;
+    return 0;
 }
 
-void Platform_Setup(void)
+int Platform_Setup(void)
 {
+    // Do nothing here
+    return 0;
 }
 
 int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)

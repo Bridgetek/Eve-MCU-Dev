@@ -68,7 +68,7 @@ extern uint16_t config_pin_cs;
 /* SPI handler declaration */
 extern SPI_HandleTypeDef hspi1;
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     /* Set the SPI speed to a safe minimum. It must be
      * under 11 MHz but 1 MHz is very safe.
@@ -81,22 +81,30 @@ void MCU_Init(void)
     {
         /* Initialization Error */
         Error_Handler();
+        return -1;
     }
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     HAL_SPI_DeInit(&hspi1);
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     if (HAL_SPI_Init(&hspi1) != HAL_OK)
     {
         /* Initialization Error */
         Error_Handler();
+        return -1;
     }
+
+    return 0;
 }
 
 inline void MCU_CSlow(void)

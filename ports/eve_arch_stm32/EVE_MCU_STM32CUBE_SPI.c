@@ -88,7 +88,7 @@ extern SPI_HandleTypeDef hspi6;
 #define SPI_HANDLE hspi6
 #endif
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     /* Set the SPI speed to a safe minimum. It must be
      * under 11 MHz but 1 MHz is very safe.
@@ -99,15 +99,20 @@ void MCU_Init(void)
     if (HAL_SPI_Init(&SPI_HANDLE) != HAL_OK)
     {
         Error_Handler();
+        return -1;
     }
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     HAL_SPI_DeInit(&SPI_HANDLE);
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     /* Increase SPI speed after initialisation is complete.
      * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
@@ -119,7 +124,10 @@ void MCU_Setup(void)
     if (HAL_SPI_Init(&SPI_HANDLE) != HAL_OK)
     {
         Error_Handler();
+        return -1;
     }
+
+    return 0;
 }
 
 /* EVE_CS__GPIO_Port and EVE_CS__Pin are defined by STM32CubMX.

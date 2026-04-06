@@ -112,7 +112,7 @@ void mcu_setup_spi(int speed)
 }
 
 // ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+int MCU_Init(void)
 {
     gpio_config_t io_conf;
 
@@ -136,22 +136,28 @@ void MCU_Init(void)
 
     // Turn on the blue LED on the board to indication successful board initialisation
     gpio_set_level(PIN_NUM_BLUE_LED, 1);
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     // Shut down the SPI Master
     spi_bus_remove_device(spi);
     spi_bus_free(HSPI_HOST);
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     MCU_Deinit();
     MCU_Delay_20ms();
     mcu_setup_spi(25000000);
+
+    return 0;
 }
 
 // ########################### GPIO CONTROL ####################################
