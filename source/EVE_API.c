@@ -279,6 +279,16 @@ int EVE_Init(void)
     return 0;
 }
 
+int EVE_Deinit(void)
+{
+    if (HAL_EVE_Deinit() < 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 // Begin co-pro list for display creation
 void EVE_LIB_BeginCoProList(void)
 {
