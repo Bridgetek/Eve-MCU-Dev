@@ -59,22 +59,26 @@
 #define CPU_FREQ        CPUCLK_FREQ                // for use in delay function
 
 /* configure MCU, SPI and PD pins */
-void MCU_Init(void)
+int MCU_Init(void)
 {
     /* set pins to be used for CS# and PD# */
     DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN | GPIO_GRP_0_PD_PIN);
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 /* function to configure QSPI*/
 //#ifdef FT81X_ENABLE
 
 //#endif // FT81X_ENABLE
+    return 0;
 }
 
 /* State machine to keep track of the current SPI Controller mode */

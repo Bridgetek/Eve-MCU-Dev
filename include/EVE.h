@@ -54,8 +54,16 @@
  @brief Initialise EVE API.
  @details Initialise the EVE API layer, HAL layer and MCU-specific hardware
       layer.
+ @return 0 for success or -1 for failure (device not found or unsupported).
  */
-void EVE_Init(void);
+int EVE_Init(void);
+
+/**
+ * @brief De-Initialise EVE API.
+ * @details This will call the HAL layer and MCU-specific de-initialisation routines.
+ * @return 0 for success or -1 for failure.
+ */
+int EVE_Deinit(void);
 
 /**
  @brief EVE API: Begin co-processor list

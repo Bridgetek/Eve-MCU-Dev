@@ -193,7 +193,7 @@ uint32_t get_response()
 }
 // ------------------ Platform specific initialisation  ------------------------
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     printf("EVE device: %s\n", 
 #if (FT8XX_TYPE == FT800)
@@ -317,15 +317,18 @@ void MCU_Init(void)
     );
 
     state = state_end;
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     state = state_end;
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
+    return 0;
 }
 
 // --------------------- Chip Select line low ----------------------------------

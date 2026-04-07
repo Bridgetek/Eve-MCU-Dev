@@ -185,22 +185,25 @@
  @brief MCU specific initialisation
  @details Must contain any MCU-specific initialisation. This will typically be
     setting up the SPI bus, GPIOs and operating environment requirements.
+ @returns 0 if successful, -1 if failed.
  */
-void MCU_Init(void);
+int MCU_Init(void);
 
 /**
  @brief MCU specific de-initialisation
  @details Must contain any MCU-specific de-initialisation. This will typically be
     closing the SPI bus, GPIOs and operating environment requirements.
+ @returns 0 if successful, -1 if failed.
  */
-void MCU_Deinit(void);
+int MCU_Deinit(void);
 
 /**
  @brief MCU specific setup
  @details Called after the EVE has been power cycled and started. Contains
     any MCU-specific configuration options for the EVE.
+ @returns 0 if successful, -1 if failed.
  */
-void MCU_Setup(void);
+int MCU_Setup(void);
 
 /**
  @brief MCU specific chip select enable

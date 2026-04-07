@@ -94,7 +94,7 @@ void initSPI()
 }
 
 /* configure MCU, SPI and PD pins */
-void MCU_Init(void){
+int MCU_Init(void){
 
     WDTCTL = WDTPW | WDTHOLD;               // stop watch dog timer
 
@@ -103,18 +103,21 @@ void MCU_Init(void){
 
     __enable_interrupt();                   // enable interrupts
 
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 /* function to configure QSPI*/
 //#ifdef FT81X_ENABLE
 
 //#endif // FT81X_ENABLE
+    return 0;
 }
 
 

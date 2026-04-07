@@ -61,11 +61,14 @@
 #pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
 #endif
 
-void EVE_Init(void)
+int EVE_Init(void)
 {
     uint8_t i;
 
-    HAL_EVE_Init();
+    if (HAL_EVE_Init() < 0)
+    {
+        return -1;
+    }
 
     // Setup Display Settings for Panel
 
@@ -272,6 +275,18 @@ void EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 #endif
+
+    return 0;
+}
+
+int EVE_Deinit(void)
+{
+    if (HAL_EVE_Deinit() < 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 // Begin co-pro list for display creation
@@ -283,7 +298,7 @@ void EVE_LIB_BeginCoProList(void)
     // Begins SPI transaction
     HAL_ChipSelect(1);
 
-#if IS_EVE_API(1)
+#ifndef EVE_USE_CMDB_METHOD
     // Send address for writing as the next free location in the co-pro buffer
     HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
 #else

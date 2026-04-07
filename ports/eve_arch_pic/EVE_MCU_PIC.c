@@ -78,7 +78,7 @@
 // should be modified to suit the registers of the selected MCU.
 
 // ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+int MCU_Init(void)
 {
     ANSELA = 0x00;
     ANSELB = 0x00;
@@ -117,14 +117,18 @@ void MCU_Init(void)
     SSP1STATbits.BF  = 0;
 
     SSP1CON1bits.SSPEN  = 1;                                                    // Enable SPI1 after configuration
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 //#ifdef FT81X_ENABLE
 // Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
@@ -140,6 +144,8 @@ void MCU_Setup(void)
 
 // Turn off SPI buffering. Timing of chip select is critical.
 //	spi_option(SPIM, spi_option_fifo, 0);
+
+    return 0;
 }
 
 

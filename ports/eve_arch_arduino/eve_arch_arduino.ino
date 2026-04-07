@@ -58,6 +58,7 @@
 //@{
 extern "C" {
 #include <EVE.h>
+#include <HAL.h>
 #include <MCU.h>
 }
 //@}
@@ -76,8 +77,7 @@ extern "C" {
 #define PIN_POWERDOWN   9   // PD#
 //@}
 
-void MCU_Init(void) {
-  uint8_t clr;
+int MCU_Init(void) {
 
   SPI.begin();
 
@@ -91,19 +91,23 @@ void MCU_Init(void) {
   // 1 MHz allows all EVE devices to initialise correctly
   // After initialisation the SPI speed can be increased in the MCU_Setup()
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+
+  return 0;
 }
 
-void MCU_Deinit(void) {
+int MCU_Deinit(void) {
   SPI.endTransaction();
   SPI.end();
+  return 0;
 }
 
-void MCU_Setup(void) {
+int MCU_Setup(void) {
   SPI.endTransaction();
-  
+
   // Increase SPI speed to 8 MHz after initialisation is complete
   // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+  return 0;
 }
 
 // Simple endian alignment for tested Arduino devices

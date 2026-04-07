@@ -104,14 +104,15 @@ static void Error_Handler(void);
 
 int ftIsQuad = 0;
 
-void MCU_Init(void)
+int MCU_Init(void)
 {
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
         DEBUG_ERROR("QSPI Setup malloc failed\n");
-		return;
+        return -1;
     }
+
     MCU_bufferLen = 0;
 
     /* Set the QUADSPI speed to a safe minimum. It must be
@@ -123,18 +124,25 @@ void MCU_Init(void)
     if (HAL_QSPI_Init(&hqspi) != HAL_OK)
     {
       Error_Handler();
-      return;
+      return -1;
     }
 
-    return;
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     HAL_QSPI_DeInit(&hqspi);
+    if (MCU_buffer)
+    {
+        free(MCU_buffer);
+        MCU_buffer = NULL;
+    }
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
     /* Increase SPI speed after initialisation is complete.
      * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
@@ -150,6 +158,8 @@ void MCU_Setup(void)
     ftIsQuad = 1;
 #else // QUADSPI_ENABLE
 #endif // QUADSPI_ENABLE
+
+    return 0;
 }
 
 /* Send data in the write buffer and read in bytes from the QSPI. */
