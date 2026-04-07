@@ -74,9 +74,12 @@
 // Used to navigate command ring buffer
 static uint16_t writeCmdPointer = 0x0000;
 
-void HAL_EVE_Init(void)
+int HAL_EVE_Init(void)
 {
-    Platform_Init();
+    if (Platform_Init() < 0)
+    {
+        return -1;
+    }
 
     // Set Chip Select OFF
     HAL_ChipSelect(0);
@@ -217,12 +220,22 @@ void HAL_EVE_Init(void)
 #endif
 
     // This function will not return unless an EVE device is present.
-    Platform_Setup();
+    if (Platform_Setup() < 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
-void HAL_EVE_Deinit(void)
+int HAL_EVE_Deinit(void)
 {
-    Platform_Deinit();
+    if (Platform_Deinit() < 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 // --------------------- Chip Select line ----------------------------------

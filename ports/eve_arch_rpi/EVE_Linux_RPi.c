@@ -87,7 +87,7 @@ struct gpiod_line *gpio_pd_line = NULL;
 unsigned int GPIO_cs_line_num = PIN_NUM_CS;  // GPIO pin number
 struct gpiod_line *gpio_cs_line = NULL;
 
-void Platform_Init(void)
+int Platform_Init(void)
 {
     spiHandle = open(SPI_device, O_RDWR);
     if (spiHandle == -1)
@@ -95,7 +95,8 @@ void Platform_Init(void)
         printf("Please make sure /dev/spidev1.0 is enabled. The raspi-config\n");
         printf("configuration tool can enable \"SPI\" under the section\n");
         printf("\"Interfacing Options\". \n");
-        exit(-1);
+
+        return -1;
     }
 
     // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
@@ -157,16 +158,21 @@ void Platform_Init(void)
         gpiod_chip_close(gpio_chip);
         exit(-1);
     }
+
+    return 0;
 }
 
-void Platform_Deinit(void)
+int Platform_Deinit(void)
 {
     close(spiHandle);
     gpiod_chip_close(gpio_chip);
+
+    return 0;
 }
 
-void Platform_Setup(void)
+int Platform_Setup(void)
 {
+    return 0;
 }
 
 int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)

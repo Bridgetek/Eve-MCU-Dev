@@ -71,7 +71,7 @@ spi_inst_t *spi_port = spi0;
 // should be modified to suit the registers of the selected MCU.
 
 // ------------------- MCU specific initialisation  ----------------------------
-void MCU_Init(void)
+int MCU_Init(void)
 {
     // Initialise CS (SPI Chip Select) pin high
     gpio_init(cs_pin);
@@ -107,16 +107,20 @@ void MCU_Init(void)
 #endif
 
 #endif // QUADSPI_ENABLE
+
+    return 0;
 }
 
-void MCU_Deinit(void)
+int MCU_Deinit(void)
 {
     spi_deinit(spi_port);
     gpio_deinit(cs_pin);
     gpio_deinit(pd_pin);
+
+    return 0;
 }
 
-void MCU_Setup(void)
+int MCU_Setup(void)
 {
 #if defined QUADSPI_ENABLE
 #endif // QUADSPI_ENABLE
@@ -124,6 +128,8 @@ void MCU_Setup(void)
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     spi_init(spi_port, 25 * 1000 * 1000);
+
+    return 0;
 }
 
 // ########################### GPIO CONTROL ####################################

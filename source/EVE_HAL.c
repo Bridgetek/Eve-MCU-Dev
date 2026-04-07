@@ -63,9 +63,12 @@ static uint16_t writeCmdPointer = 0x0000;
 
 /* EVE HAL */
 
-void HAL_EVE_Init(void)
+int HAL_EVE_Init(void)
 {
-    MCU_Init();
+    if (MCU_Init() != 0)
+    {
+        return -1;
+    }
 
     // Set Chip Select OFF
 #if IS_EVE_API(1, 2, 3, 4)
@@ -210,14 +213,23 @@ void HAL_EVE_Init(void)
 
     // Perform any additional MCU functions. This is when the SPI interface
     // could be switched to QuadSPI.
-    MCU_Setup();
+    if (MCU_Setup() != 0)
+    {
+        return -1;
+    }
 
     // This function will not return unless an EVE device is present.
+    return 0;
 }
 
-void HAL_EVE_Deinit(void)
+int HAL_EVE_Deinit(void)
 {
-    MCU_Deinit();
+    if (MCU_Deinit() != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 // Chip Select line

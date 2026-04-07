@@ -49,14 +49,16 @@
  @details Power cycle and start the EVE display in a controlled manner.
      This will call the MCU-specific initialisation routine and check for
      the presence of a supported FT8xx device on the SPI bus.
+ @return 0 for success or -1 for failure (device not found or unsupported).
  */
-void HAL_EVE_Init(void);
+int HAL_EVE_Init(void);
 
 /**
  @brief De-Initialise EVE HAL Layer.
  @details This will call the MCU-specific de-initialisation routines.
+ @return 0 for success or -1 for failure.
  */
-void HAL_EVE_Deinit(void);
+int HAL_EVE_Deinit(void);
 
 /**
  @brief Chip Select Control
@@ -72,7 +74,7 @@ void HAL_ChipSelect(int8_t enable);
  @brief Power Down Control
  @details Abstract the low-level MCU power down control line to
      control the EVE display. A call to this function to enable
-     power down will result in a logig low on the PD line.
+     power down will result in a logic low on the PD line.
  @param enable - Non-zero to enable power down
      Zero to disable (normal operating state of EVE).
  */
