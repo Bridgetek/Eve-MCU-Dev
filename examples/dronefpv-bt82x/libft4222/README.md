@@ -26,6 +26,12 @@ The executable file is `build\Debug\dronefpv-bt82x_libft4222.exe`. This can be r
 
 Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 
+Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
+
+```
+cmake --fresh  -G "MinGW Makefiles" -B build -DFT8XX_TYPE=FT810 -DDISPLAY_RES=WVGA -S .
+```
+
 ## Visual Studio Code
 
 To use this example with Microsoft Visual Studio Code follow the instructions in this web page.

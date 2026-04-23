@@ -27,10 +27,16 @@ The build depends on the `PICO_SDK_PATH` environment variable. This __must__ be 
 To configure the build environment using CMake:
 
 ```
-cmake --fresh -B build -S . -G "Unix Makefiles"
+cmake --fresh  -G "Unix Makefiles" -B build -S .
 ```
 
 This will configure the compilation to take place in the `build` directory. It must be directed to use `Unix Makefiles` as a generator, if other compilation environments are configured then these may be used in preference to the pico toolchain.
+
+Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
+
+```
+cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQVGA -S .
+```
 
 ### Compiling the Gym Interval Raspberry Pi pico Example Manually
 
