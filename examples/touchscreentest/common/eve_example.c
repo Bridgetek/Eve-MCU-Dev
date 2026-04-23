@@ -47,6 +47,7 @@
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
 uint8_t font;
+const uint8_t button_clear = 102;
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
@@ -134,6 +135,10 @@ void eve_display(void)
     {
         font = 26;
     }
+    else if (EVE_DISP_WIDTH <= 600)
+    {
+        font = 27;
+    }
     else if (EVE_DISP_WIDTH <= 800)
     {
         font = 28;
@@ -152,7 +157,7 @@ void eve_display(void)
         EVE_CLEAR(1,1,1);
         EVE_COLOR_RGB(255, 255, 255);
 
-        // Draw the Bridgetek logo at the top of the screen
+        // Draw the Bridgetek logo at the top of the screen.
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
 #if IS_EVE_API(2, 3, 4, 5)
         // Set origin on canvas using EVE_VERTEX_TRANSLATE.
@@ -163,20 +168,55 @@ void eve_display(void)
         // Place directly on canvas EVE_VERTEX_TRANSLATE not available.
         EVE_VERTEX2II((EVE_DISP_WIDTH/2)-(eve_img_bridgetek_logo_width/2), 10, BITMAP_BRIDGETEK_LOGO, 0);
 #endif
-        ypos = 10 + (eve_img_bridgetek_logo_height * 3) / 2;
+        ypos = (eve_img_bridgetek_logo_height * 5) / 4;
 
+        // Write heading.
         EVE_CMD_TEXT(EVE_DISP_WIDTH/2, ypos, font, EVE_OPT_CENTERX, "Touchscreen Calibration Test");
-        ypos += (heights[font] * 2);
+        ypos += ((heights[font] * 3) / 2);
 
+        // Add buttons for actions.
         EVE_TAG_MASK(1);
         EVE_TAG(button_recalibrate);
-        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 5), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Recalibrate");
+        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 15), ypos, widths[font] * 9, heights[font] * 2, font, 0, "Recalibrate");
         EVE_TAG(button_restore);
-        ypos += (heights[font] * 4);
-        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 5), ypos, widths[font] * 10, heights[font] * 3, font, 0, "Restore");
+        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) - (widths[font] * 5), ypos, widths[font] * 9, heights[font] * 2, font, 0, "Restore");
+        EVE_TAG(button_clear);
+        EVE_CMD_BUTTON((EVE_DISP_WIDTH / 2) + (widths[font] * 5), ypos, widths[font] * 9, heights[font] * 2, font, 0, "Clear");
         EVE_TAG_MASK(0);
+        ypos += ((heights[font] * 5) / 2);
+        int16_t sketchy = ypos;
 
-        ypos = (EVE_DISP_HEIGHT / 2) - ((heights[font] * 9) / 2);
+        // Draw a border for the sketch area.
+        EVE_SAVE_CONTEXT();
+        EVE_BEGIN(EVE_BEGIN_RECTS);
+        EVE_COLOR_RGB(255, 255, 255);
+#if IS_EVE_API(2, 3, 4, 5)
+            EVE_VERTEX_FORMAT(0);
+            EVE_VERTEX2F(widths[font] * 12, sketchy);
+            EVE_VERTEX2F(EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+#else
+            EVE_VERTEX2F(widths[font] * 12 * 16, sketchy * 16);
+            EVE_VERTEX2F(EVE_DISP_WIDTH * 16, EVE_DISP_HEIGHT * 16);
+#endif
+        EVE_COLOR_RGB(32, 32, 32);
+#if IS_EVE_API(2, 3, 4, 5)
+            EVE_VERTEX2F(widths[font] * 12 + 2, sketchy + 2);
+            EVE_VERTEX2F(EVE_DISP_WIDTH - 2, EVE_DISP_HEIGHT - 2);
+#else
+            EVE_VERTEX2F((widths[font] * 12 + 2) * 16, (sketchy + 2) * 16);
+            EVE_VERTEX2F((EVE_DISP_WIDTH - 2) * 16, (EVE_DISP_HEIGHT - 2) * 16);
+#endif
+        
+        // Draw sketch bitmap.
+        EVE_BEGIN(EVE_BEGIN_BITMAPS);
+        EVE_COLOR_RGB(0, 200, 255);
+        EVE_BITMAP_HANDLE(BITMAP_SKETCH);
+        EVE_SCISSOR_XY(widths[font] * 12 + 2, sketchy + 2);
+        EVE_SCISSOR_SIZE(EVE_DISP_WIDTH - widths[font] * 10 - 4, EVE_DISP_HEIGHT - sketchy - 4);
+        EVE_VERTEX2F(0, 0);
+        EVE_RESTORE_CONTEXT();
+
+        // Write labels for screen and raw XY coordinates.
         EVE_CMD_TEXT(10, ypos, font, 0, "X,Y:");
         EVE_CMD_TEXT(10, ypos + heights[font], font, 0, "Raw X,Y:");
 
@@ -210,9 +250,9 @@ void eve_display(void)
             EVE_VERTEX2F(x * 16, EVE_DISP_HEIGHT * 16);
 #endif
         }
+        ypos += (heights[font] * 2);
 
-        ypos += (heights[font] * 3);
-
+        // Write out the transform matrix.
         for (i = 0; i < 6; i++)
         {
             hexval[0] = i + 'A';
@@ -223,7 +263,7 @@ void eve_display(void)
             EVE_CMD_TEXT(widths[font] * 2 , ypos, font, 0, hexval);
             ypos += heights[font];
         }
-        
+
         EVE_DISPLAY();
         EVE_CMD_SWAP();
         EVE_LIB_EndCoProList();
@@ -252,6 +292,13 @@ void eve_display(void)
             eve_readcalib();
             tag = 0;
         }
+        else if (key == button_clear)
+        {
+            // Clear sketch...
+            DEBUG_PRINTF("Clearing sketch bitmap.\n");
+            eve_clear_sketch();
+            tag = 0;
+        }
 
         key = tag;
     } while (1);
@@ -262,7 +309,7 @@ void eve_example(void)
     // Initialise the display
     EVE_Init();
 
-    // Load images
+    // Load images (and obtain the start of the sketch bitmap)
     DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
 
