@@ -4,9 +4,9 @@
 
 ## Touch Screen Test Example
 
-The `touchscreentest` example demonstrates detection of a touch event on a display, displays the raw x,y touch location and the transformed x,y touch location used for tag generation.
+The `touchscreentest` example demonstrates detection of a touch event on a display, displays the raw x,y touch location and the transformed x,y touch location used for tag generation. It will also show a sketch area for testing the output of the touch events.
 
-A printout of the touchscreen calibration matrix is also shown for reference. There are two buttons "Recalibrate" and "Restore". The recalibrate button will perform a 3 point auto-calibration and update the touchscreen calibration matrix; the restore button will reload the original calibration matrix.
+A printout of the touchscreen calibration matrix is also shown for reference. There are three buttons "Recalibrate", "Restore", and "Clear". The recalibrate button will perform a 3 point auto-calibration and update the touchscreen calibration matrix; the restore button will reload the original calibration matrix; the clear button will clear the contents of sketch area.
 
 When a touch on the screen is detected then a pair of crosshairs are drawn showing the transformed x,y touch location clearly.
 
@@ -152,6 +152,31 @@ Other EVE devices have `EVE_BITMAP_LAYOUT_H` and `EVE_BITMAP_SIZE_H` to cope wit
 
 A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the bitmap handle on the device so that it can be used by subsequent display lists.
+
+The sketch area is a bitmap equal in size to the entire screen drawn in L8 format (one byte per pixel). 
+If this memory allocation is too large for the available RAM_G on a device then the format can be changed to L1 to compress the amount of memory used for the image.
+The memory area for the bitmap is cleared to zero initially. 
+The sketch is started when the `EVE_CMD_SKETCH` command is received.
+
+```
+    EVE_CMD_DLSTART();
+    EVE_CMD_MEMSET(sketch_addr, 0, EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
+    EVE_CMD_SKETCH(0, 0, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, sketch_addr, EVE_FORMAT_L8);
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BITMAP_HANDLE(BITMAP_SKETCH);
+    EVE_BITMAP_SOURCE(sketch_addr & 0x3FFFFF);
+    EVE_BITMAP_LAYOUT(EVE_FORMAT_L8, EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
+            EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+    EVE_END();
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+```
+
+The bitmap with handle `BITMAP_SKETCH` is drawn in the main look of the example and is updated by the EVE device whenever a touch event is detected.
+The sketch can be cleared at any point by setting the area for the bitmap to all zeros with a `EVE_CMD_MEMSET` command.
+
+Again a call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
 
 ## Files and Folders
 
