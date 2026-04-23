@@ -1,6 +1,9 @@
 name: Build Simple Example for MinGW on Windows (libFT4222 and libMPSSE)
 
 on:
+  pull_request:
+    branches:
+      - 'main'
   push:
     branches:
       # Trigger script on push to 'development' branch

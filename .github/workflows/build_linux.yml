@@ -1,6 +1,9 @@
 name: Build Simple Example for Linux 
 
 on:
+  pull_request:
+    branches:
+      - 'main'
   push:
     branches:
       # Trigger script on push to 'development' branch
