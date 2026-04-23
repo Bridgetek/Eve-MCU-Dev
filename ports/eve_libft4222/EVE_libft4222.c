@@ -120,7 +120,7 @@ static uint16_t MCU_bufferLen;
 static FT_HANDLE ftHandleSPI;
 static FT_HANDLE ftHandleGPIO;
 
-// QuadSPI enabled
+/* Default QuadSPI off. */
 static int ftIsQuad = FALSE;
 
 static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
@@ -329,11 +329,18 @@ int MCU_Setup(void)
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Clock is 80 MHz / 4 = 20 MHz
 #if defined QUADSPI_ENABLE
+#if IS_EVE_API(2,3,4,5)
+    /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
     mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
     ftIsQuad = TRUE;
+#else // IS_EVE_API(2,3,4,5)
+    mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+    ftIsQuad = FALSE;
+#endif
 #else // QUADSPI_ENABLE
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+    ftIsQuad = FALSE;
 #endif // QUADSPI_ENABLE
     return 0;
 }

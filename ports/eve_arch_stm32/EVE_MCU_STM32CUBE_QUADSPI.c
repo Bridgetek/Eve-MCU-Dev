@@ -102,7 +102,8 @@ static uint16_t MCU_bufferLen;
 static void Error_Handler(void);
 #endif
 
-int ftIsQuad = 0;
+/* Default QuadSPI off. */
+static int ftIsQuad = 0;
 
 int MCU_Init(void)
 {
@@ -153,10 +154,13 @@ int MCU_Setup(void)
     MX_QUADSPI_Init();
 
 #if defined QUADSPI_ENABLE
+#if IS_EVE_API(2,3,4,5)
     /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
     ftIsQuad = 1;
-#else // QUADSPI_ENABLE
+#else // IS_EVE_API(2,3,4,5)
+    ftIsQuad = 0;
+#endif
 #endif // QUADSPI_ENABLE
 
     return 0;
