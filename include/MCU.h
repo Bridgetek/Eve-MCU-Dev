@@ -84,7 +84,7 @@
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
-#elif defined (USE_MPSSE) || defined (USE_FT4222)
+#elif defined (USE_MPSSE) || defined (USE_FT4222) || defined(USE_EMULATOR)
 #define MCU_SPI_TRANSFER 0x100
 #elif defined(USE_LINUX_SPI_DEV)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
@@ -147,7 +147,11 @@
 #elif defined(ARDUINO)
 /* Arduino SPI bus is set to 1 MHz by default */
    #define MCU_SPI_TIMEOUT 8
+
+#elif defined(USE_EMULATOR)
+#define MCU_SPI_TIMEOUT 8
 #endif
+
 #endif
 
 /**

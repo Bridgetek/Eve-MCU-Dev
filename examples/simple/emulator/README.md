@@ -1,6 +1,6 @@
-# EVE-MCU-Dev Simple Example for libft4222
+# EVE-MCU-Dev Simple Example for the EVE Emulator
 
-Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
+Please follow instructions to install the EVE Emulator in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for the EVE Emulator](../../../ports/eve_emulator/README.md). This must be done before compilation.
 
 ## Command Line Compilation
 
@@ -22,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\simple_libft4222.exe` or `build\simple_libft4222.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\simple_emulator.exe` or  `build\simple_emulator.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
@@ -44,8 +44,6 @@ It is possible to use the command line instructions above in a terminal windows 
 
 The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
 
-When the example application is launched in Visual Studio it will add the location of the `LibFT4222-64.dll` or `LibFT4222.dll` file to the PATH environment variable of the running process.
-
 ## Linux
 
-The cmake command line examples for Windows will compile the required files for the example application under Linux. The LibFT4222 library for Linux will be taken from the `/usr/local/lib` directory and the include files from `/usr/local/include`.
+Linux builds are not supported as the emulator is not distributed for Linux.

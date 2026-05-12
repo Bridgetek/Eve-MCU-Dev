@@ -116,6 +116,10 @@ int HAL_EVE_Init(void)
     // Ensure CPUreset register reads 0 and so FT8xx is ready
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
+#if defined(USE_EMULATOR)
+        // Emulator reset bits on FT80x
+        HAL_MemWrite8(EVE_REG_CPURESET, 0);
+#endif
     }
 #endif
 
