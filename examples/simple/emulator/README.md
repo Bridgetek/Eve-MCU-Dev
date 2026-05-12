@@ -2,6 +2,8 @@
 
 Please follow instructions to install the EVE Emulator in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for the EVE Emulator](../../../ports/eve_emulator/README.md). This must be done before compilation.
 
+This example is not compatible with the EVE API 5 (BT820) as this device is not supported in the EVE Emulator.
+
 ## Command Line Compilation
 
 To configure the project with the default C compiler:

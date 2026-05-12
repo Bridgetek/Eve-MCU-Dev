@@ -27,6 +27,7 @@ This example supports the following platforms:
 |Generic using libMPSSE Visual Studio | [libft4222](libft4222/README.md) | 
 |Generic using libFT4222 CMake | [libmpsse](libmpsse/README.md) | 
 |Generic using libFT4222 Visual Studio | [libmpsse](libmpsse/README.md) | 
+|Generic using EVE Emulator | [emulator](emulator/README.md) | 
 
 - (1) Hardware testing ongoing.
 - (2) Build environment incomplete.
