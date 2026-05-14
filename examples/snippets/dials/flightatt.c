@@ -43,8 +43,17 @@
 
 #include "maths/trig_furman.h"
 
+static inline void draw_vertex(int16_t x, int16_t y)
+{
+#if IS_EVE_API(1)
+    EVE_VERTEX2F(x * 16, y * 16);
+#else
+    EVE_VERTEX2F(x, y);
+#endif
+}
+
 /*
- * x,y - top left of seven segment graphic in pixels
+ * x,y - top left of widget in pixels
  * radius - radius of widget
  * pitch - pitch in furmans
  * climb - climb in degrees
@@ -86,7 +95,9 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     int16_t pw;
     int i;
 
+#if !IS_EVE_API(1)
     EVE_VERTEX_FORMAT(0);
+#endif
 
     // Draw bezel
     EVE_SAVE_CONTEXT();
@@ -96,13 +107,13 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);	// Set the stencil to increment
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_outer * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 1
     EVE_POINT_SIZE(radius_b1 * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 2
     EVE_POINT_SIZE(radius_b2 * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 3
     EVE_POINT_SIZE(radius_inner * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 4
     EVE_END();
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP); // Stop the stencil INCR
     // Gradient (light at top) for outer of bezel
@@ -111,7 +122,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     // Flat colour for centre of bezel
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 2, 255);
     EVE_POINT_SIZE(radius_outer * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     // Gradient (dark at top) for inner of bezel
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 3, 255);
     EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_bright, x - radius_outer, y - radius_outer, bezel_col_dark);
@@ -125,9 +136,9 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     // Draw ground and sky stencil
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_inner * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_POINT_SIZE(radius_roll * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(radius_inner * 16 / 2);
@@ -140,7 +151,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     {
         dx1 = dx + CIRC_X(radius_inner, -roll + DEG2FURMAN(deg));
         dy1 = dy + CIRC_Y(radius_inner, -roll + DEG2FURMAN(deg));
-        EVE_VERTEX2F(dx1, dy1);
+        draw_vertex(dx1, dy1);
     }
     EVE_COLOR(roll_col_sky);
     dx = x - CIRC_X((radius_inner/2) + (ai_ref_bold/16), -roll);
@@ -149,7 +160,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     {
         dx1 = dx + CIRC_X(radius_inner, -roll + DEG2FURMAN(deg));
         dy1 = dy + CIRC_Y(radius_inner, -roll + DEG2FURMAN(deg));
-        EVE_VERTEX2F(dx1, dy1);
+        draw_vertex(dx1, dy1);
     }
     // Draw reference lines:
     EVE_COLOR(ai_reference);
@@ -163,8 +174,8 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         if (deg == 0) continue;
         dx = x + CIRC_X(radius_inner, DEG2FURMAN(deg) + roll);
         dy = y - CIRC_Y(radius_inner, DEG2FURMAN(deg) + roll);
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(x, y);
+        draw_vertex(dx, dy);
+        draw_vertex(x, y);
     }
     // narrow at 10 and 20 degrees
     EVE_LINE_WIDTH(ai_ref_narrow);
@@ -173,8 +184,8 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         if (deg == 0) continue;
         dx = x + CIRC_X(radius_bank, DEG2FURMAN(deg) + roll);
         dy = y - CIRC_Y(radius_bank, DEG2FURMAN(deg) + roll);
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(x, y);
+        draw_vertex(dx, dy);
+        draw_vertex(x, y);
     }
     // dot at 45 degrees
     EVE_BEGIN(EVE_BEGIN_POINTS);
@@ -183,7 +194,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     {
         dx = x + CIRC_X(radius_bank, DEG2FURMAN(deg) + roll);
         dy = y - CIRC_Y(radius_bank, DEG2FURMAN(deg) + roll);
-        EVE_VERTEX2F(dx, dy);
+        draw_vertex(dx, dy);
     }
     EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255);
     EVE_RESTORE_CONTEXT();
@@ -196,7 +207,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     // Draw ground and sky stencil
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_roll * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 1, 255);
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_LINE_WIDTH(radius_roll * 16 / 4);
@@ -213,7 +224,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         {
             dx1 = dx + CIRC_X(radius_roll, -pitch + DEG2FURMAN(deg));
             dy1 = dy + CIRC_Y(radius_roll, -pitch + DEG2FURMAN(deg));
-            EVE_VERTEX2F(dx1, dy1);
+            draw_vertex(dx1, dy1);
         }
     }
     EVE_COLOR(pitch_col_sky);
@@ -226,7 +237,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         {
             dx1 = dx + CIRC_X(radius_roll, -pitch + DEG2FURMAN(deg));
             dy1 = dy + CIRC_Y(radius_roll, -pitch + DEG2FURMAN(deg));
-            EVE_VERTEX2F(dx1, dy1);
+            draw_vertex(dx1, dy1);
         }
     }
 
@@ -244,7 +255,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         {
             dx1 = dx + CIRC_X(radius_roll * i / 50, -pitch + DEG2FURMAN(deg));
             dy1 = dy + CIRC_Y(radius_roll * i / 50, -pitch + DEG2FURMAN(deg));
-            EVE_VERTEX2F(dx1, dy1);
+            draw_vertex(dx1, dy1);
         }
     }
     // Minor reference lines
@@ -258,7 +269,7 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
         {
             dx1 = dx + CIRC_X(radius_roll / 10, -pitch + DEG2FURMAN(deg));
             dy1 = dy + CIRC_Y(radius_roll / 10, -pitch + DEG2FURMAN(deg));
-            EVE_VERTEX2F(dx1, dy1);
+            draw_vertex(dx1, dy1);
         }
     }
     EVE_RESTORE_CONTEXT();
@@ -270,14 +281,14 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     EVE_COLOR(ai_reference);
     dx = x + CIRC_X(radius_roll - (ai_ref_bold/8), roll);
     dy = y - CIRC_Y(radius_roll - (ai_ref_bold/8), roll);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx2 = x + CIRC_X(radius_inner - (ai_ref_bold/16), roll + DEG2FURMAN(5));
     dy2 = y - CIRC_Y(radius_inner - (ai_ref_bold/16), roll + DEG2FURMAN(5));
-    EVE_VERTEX2F(dx2, dy2);
+    draw_vertex(dx2, dy2);
     dx1 = x + CIRC_X(radius_inner - (ai_ref_bold/16), roll - DEG2FURMAN(5));
     dy1 = y - CIRC_Y(radius_inner - (ai_ref_bold/16), roll - DEG2FURMAN(5));
-    EVE_VERTEX2F(dx1, dy1);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx1, dy1);
+    draw_vertex(dx, dy);
     EVE_END();
     EVE_RESTORE_CONTEXT();
 
@@ -289,43 +300,43 @@ void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t cli
     EVE_COLOR(ovl_reference);
     dx = x;
     dy = y - radius_roll;
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx2 = x - (radius_roll * 2 / 10);
     dy2 = y - (radius_roll * 8 / 10);
-    EVE_VERTEX2F(dx2, dy2);
+    draw_vertex(dx2, dy2);
     dx1 = x + (radius_roll * 2 / 10);
     dy1 = y - (radius_roll * 8 / 10);
-    EVE_VERTEX2F(dx1, dy1);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx1, dy1);
+    draw_vertex(dx, dy);
     EVE_END();
     // Centre target for reference
     EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
     EVE_LINE_WIDTH(ovl_bold);
     dx = x - ((radius_roll * 3) / 4);
     dy = y;
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx = x - (radius_roll / 4);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx = x - (radius_roll / 5);
     dy = y + (radius_roll / 10);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     EVE_END();
     EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
     dx = x + (radius_roll / 5);
     dy = y + (radius_roll / 10);
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx = x + (radius_roll / 4);
     dy = y;
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     dx = x + ((radius_roll * 3) / 4);
     dy = y;
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     EVE_END();
     // dot at 45 degrees
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(ovl_bold);
     dx = x;
     dy = y;
-    EVE_VERTEX2F(dx, dy);
+    draw_vertex(dx, dy);
     EVE_RESTORE_CONTEXT();
 }

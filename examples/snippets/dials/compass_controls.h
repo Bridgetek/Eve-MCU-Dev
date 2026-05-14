@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ @file compasscontrols.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -37,43 +37,5 @@
  * ============================================================================
  */
 
-#ifndef _EVE_EXAMPLE_H
-#define _EVE_EXAMPLE_H
-
-#include <stdint.h>
-
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-/**
- @brief Definitions of handles for custom fonts and bitmaps.
- */
-//@{
-#define FONT_CUSTOM 8
-#define BITMAP_BRIDGETEK_LOGO 7
-//@}
-
-/* Globals available within the eve_example code */
-extern uint32_t eve_img_bridgetek_logo_width;
-extern uint32_t eve_img_bridgetek_logo_height;
-
-/* Functions called within the eve_example code */
-uint8_t eve_romfont_width(uint8_t font);
-uint8_t eve_romfont_height(uint8_t font);
-
-/* Entry point to the example code */
-void eve_example(void);
-
-#include "touch.h"
-#include "maths/trig_furman.h"
-#include "dials/flightcontrols.h"
-#include "dials/compass_controls.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
-
-#endif /* _EVE_EXAMPLE_H */
+void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t heading);
+void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, int16_t heading);

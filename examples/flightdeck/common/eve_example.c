@@ -45,18 +45,10 @@
 
 #include "eve_example.h"
 
-#if IS_EVE_API(1, 2, 3, 4)
-#error This example requires EVE API 5 or above.
-#endif
-
-#if EVE_DISP_WIDTH < 480
-#error This example needs a screen width of 480 pixels or above.
-#endif
-
 void eve_display(void)
 {
     // Size of the indicators on the dashboard
-    uint16_t dial_radius = min(EVE_DISP_HEIGHT, EVE_DISP_WIDTH) / 3;
+    uint16_t dial_radius = min(EVE_DISP_HEIGHT, EVE_DISP_WIDTH) / 4;
 
     // Variables detemining how the animation of the widget appears
     int anim_pitch_num = 300;
@@ -74,6 +66,8 @@ void eve_display(void)
     int max_alt = 9500;
     // Animation counter
     int anim = 0;
+    // Compass heading
+    int heading = 0;
 
     // Variables to have attitude indicator readings
     int16_t pitch = 0;
@@ -84,9 +78,11 @@ void eve_display(void)
     // Variables for size and position
     // Centre the widgets
     uint16_t xatt = (EVE_DISP_WIDTH / 4);
-    uint16_t yatt = (EVE_DISP_HEIGHT / 2);
+    uint16_t yatt = (EVE_DISP_HEIGHT / 3);
     uint16_t xalt = (EVE_DISP_WIDTH * 3 / 4);
-    uint16_t yalt = (EVE_DISP_HEIGHT / 2);
+    uint16_t yalt = (EVE_DISP_HEIGHT / 3);
+    uint16_t xcompass = (EVE_DISP_WIDTH / 2);
+    uint16_t ycompass = (EVE_DISP_HEIGHT * 2 / 3);
 
     while (1)
     {
@@ -95,10 +91,21 @@ void eve_display(void)
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
 
+#if IS_EVE_API(5)
+        // Central gradient background for EVE 5
         EVE_CMD_CGRADIENT(EVE_CGRADIENT_CORNER_ZERO, 0, 0, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, 0x000020, 0x000080);
+#else
+        // Standard gradient background for EVE 1,2,3,4
+        EVE_CMD_GRADIENT(0, 0, 0x000020, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, 0x000080);
+#endif
 
         attwidget(xatt, yatt, dial_radius, pitch, climb, roll);
         altwidget(xalt, yalt, dial_radius, alt);
+#if 1 // Binnacle style compass (top down view)
+        compass_binnacle(xcompass, ycompass, dial_radius, heading);
+#else // Bulkhead style compass (side on view)
+        compass_bulkhead(xcompass, ycompass, dial_radius, heading);
+#endif
 
         EVE_DISPLAY();
         EVE_CMD_SWAP();
@@ -110,6 +117,7 @@ void eve_display(void)
         roll = max_roll * sin_furman(((anim * anim_roll_num) / anim_roll_denom) & 0xffff) / 0x8000;
         alt = (max_alt / 2) + (max_alt / 2) * sin_furman(((0x10000 * anim * anim_alt_num) / anim_alt_denom)) / 0x8000;
         anim+=1;
+        heading++;
     }
 }
 
