@@ -6,11 +6,11 @@
 
 The `flightdeck.py` example demonstrates drawing multiple scissored areas, handling overlapped drawing, and gradients for skeuomorphism. 
 
-It uses the `flightcontrols` snippet to draw the indicators.
+It uses the `flightcontrols` and `compass_controls` snippets to draw the indicators.
 
-The example is intended to show an aircraft attitude and altitude instruments. The attitude instrument has bank/roll and pitch displays. The physical control for this would be a gyroscopic device with rotating gimbals for pitch and roll. The altitude instrument has a graduations at 200ft and reads up to 10000ft. A real altitude gauge typically uses barometeric pressure.
+The example is intended to show an aircraft attitude, altitude instruments, and compass. The attitude instrument has bank/roll and pitch displays. The physical control for this would be a gyroscopic device with rotating gimbals for pitch and roll. The altitude instrument has a graduations at 200ft and reads up to 10000ft. A real altitude gauge typically uses barometeric pressure. The example shows a binnacle compass although a bulkhead compass may be shown instead.
 
-The attitude drawing comprises four parts: the bezel which uses gradients to shade the outer and inner edges of the bezel; the bank/roll area which is the outer circle of the drawing; the pitch area which is the inner part; a reference overlay which is fixed in position. The stencilling is used to make sure that graphical elements of each part do not spill over into the other parts. The altitude drawing uses the same bezel method and internal graduation lines clipped with a stencil. The reading needle is outlined in a single pixel of black for clarity.
+The attitude drawing comprises four parts: the bezel which uses gradients to shade the outer and inner edges of the bezel; the bank/roll area which is the outer circle of the drawing; the pitch area which is the inner part; a reference overlay which is fixed in position. The stencilling is used to make sure that graphical elements of each part do not spill over into the other parts. The altitude drawing uses the same bezel method and internal graduation lines clipped with a stencil. The reading needle is outlined in a single pixel of black for clarity. The compass drawing shows the same bezel with drawn indicators and North arrow rotating with an overlayed marker.
 
 A helper application called `trig_furman` is used to perform trigonometry using furman angles. This has an implementation to allow for use with platforms without floating point or maths implementations.
 
@@ -19,12 +19,13 @@ This example supports the following platforms:
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 |Generic using libMPSSE | libft4222 | Yes |
+|Generic using EVE Emulator | emulator | Yes |
 
 Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| No | No | No | No | Yes |
+| Yes | Yes | Yes | Yes | Yes |
 
 The following is an screenshot of the simple example.
 
@@ -80,4 +81,7 @@ The example contains a common directory with several files which comprises all t
 | [snippets/dials/flightcontrols.h](../snippets/dials/flightcontrols.h) | Header file for flight control widgets |
 | [snippets/dials/flightatt.c](../snippets/dials/flightatt.h) | Implementation file for flight control attitude widgets |
 | [snippets/dials/flightalt.c](../snippets/dials/flightalt.h) | Implementation file for flight control altitude widgets |
+| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
+| [snippets/dials/compass_binnacle.c](../snippets/dials/compass_binnacle.c) | Implementation file for binnacle compass widget |
+| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
 | [docs](docs) | Documentation support files |
