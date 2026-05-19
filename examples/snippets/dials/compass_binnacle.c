@@ -42,6 +42,7 @@
 #include <EVE.h>
 
 #include "maths/trig_furman.h"
+#include "compass_controls.h"
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -57,29 +58,10 @@ static inline void draw_vertex(int16_t x, int16_t y)
  * radius - radius of widget
  * heading - compass heading in degrees
 */
-void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
+void compass_binnacle(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t degrees)
 {
     int heading = DEG2FURMAN(degrees);
-    // Dimensions of the widget are detemined by the radius
-    int16_t radius_outer = radius;
-    int16_t radius_b1 = (radius_outer * 39) / 40;
-    int16_t radius_b2 = (radius_outer * 37) / 40;
-    int16_t radius_inner = (radius_outer * 36) / 40;
-    // Inner of degree graduations
-    int16_t radius_heading_inner = (radius_outer * 30) / 40;
-    // Centre of degree graduations
-    int16_t radius_heading_centre = (radius_inner + radius_heading_inner) / 2;
-    // Degree graduation line widths
-    int16_t reference_bold = radius_outer * 2 / 10;
-    int16_t reference_narrow = radius_outer * 1 / 10;
-    // Radius of N pointer arrow
-    int16_t radius_pointer_arrow = (radius_heading_inner * 35) / 40;
-    // Radius of N pointer arrow head
-    int16_t radius_pointer_head = (radius_heading_inner * 25) / 40;
-    // Width of N and S pointer arrow
-    int16_t radius_pointer_width = (radius_heading_inner * 8) / 40;
-    int16_t radius_text_height = (radius_heading_inner * 5) / 40;
-    
+
     // Bezel colours
     uint32_t bezel_col = 0x505050;
     uint32_t bezel_col_bright = 0xaaaaaa;
@@ -94,39 +76,71 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
     int16_t dx1, dy1, dx2, dy2;
     int deg;
 
-    // Draw bezel
-    EVE_SAVE_CONTEXT();
-#if !IS_EVE_API(1)
-    EVE_VERTEX_FORMAT(0);
-#endif
-    EVE_CLEAR(0,1,0);
-    EVE_COLOR(bezel_col);
-    // Draw the circles to make the bezel in three levels in the stencil buffer
-    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INCR);	// Set the stencil to increment
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    EVE_POINT_SIZE(radius_outer * 16);
-    draw_vertex(x, y); // stencil 1
-    EVE_POINT_SIZE(radius_b1 * 16);
-    draw_vertex(x, y); // stencil 2
-    EVE_POINT_SIZE(radius_b2 * 16);
-    draw_vertex(x, y); // stencil 3
-    EVE_POINT_SIZE(radius_inner * 16);
-    draw_vertex(x, y); // stencil 4
-    EVE_END();
-    
-    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP); // Stop the stencil INCR
-    // Gradient (light at top) for outer of bezel
-    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
-    EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_dark, x - radius_outer, y - radius_outer, bezel_col_bright);
-    // Flat colour for centre of bezel
-    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 2, 255);
-    EVE_POINT_SIZE(radius_outer * 16);
-    draw_vertex(x, y);
-    // Gradient (dark at top) for inner of bezel
-    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 3, 255);
-    EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_bright, x - radius_outer, y - radius_outer, bezel_col_dark);
-    EVE_RESTORE_CONTEXT();
+    if (options & OPT_COMPASS_BEZEL)
+    {
+        // Bezel border size
+        int16_t border = (radius * 1) / 40;
+        // Dimensions of the widget are detemined by the radius
+        int16_t radius_outer = radius;
+        int16_t radius_b1 = (radius_outer - (border));
+        int16_t radius_b2 = (radius_outer - (2 * border));
+        int16_t radius_inner = (radius_outer - (3 * border));
 
+        // Draw bezel
+        EVE_SAVE_CONTEXT();
+#if !IS_EVE_API(1)
+        EVE_VERTEX_FORMAT(0);
+#endif
+        EVE_CLEAR_STENCIL(0);
+        EVE_CLEAR(0,1,0);
+        EVE_COLOR_MASK(0,0,0,0);
+        EVE_COLOR(bezel_col);
+        // Draw the circles to make the bezel in three levels in the stencil buffer
+        EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INCR);	// Set the stencil to increment
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        EVE_POINT_SIZE(radius_outer * 16);
+        draw_vertex(x, y); // stencil 1
+        EVE_POINT_SIZE(radius_b1 * 16);
+        draw_vertex(x, y); // stencil 2
+        EVE_POINT_SIZE(radius_b2 * 16);
+        draw_vertex(x, y); // stencil 3
+        EVE_POINT_SIZE(radius_inner * 16);
+        draw_vertex(x, y); // stencil 4
+        EVE_COLOR_MASK(1,1,1,1);
+        EVE_END();
+        
+        EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP); // Stop the stencil INCR
+        // Gradient (light at top) for outer of bezel
+        EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
+        EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_dark, x - radius_outer, y - radius_outer, bezel_col_bright);
+        // Flat colour for centre of bezel
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 2, 255);
+        EVE_POINT_SIZE(radius_outer * 16);
+        draw_vertex(x, y);
+        // Gradient (dark at top) for inner of bezel
+        EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 3, 255);
+        EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_bright, x - radius_outer, y - radius_outer, bezel_col_dark);
+        EVE_RESTORE_CONTEXT();
+
+        radius = radius_inner;
+    }
+
+    // Inner of degree graduations
+    int16_t radius_heading_inner = (radius * 30) / 40;
+    // Centre of degree graduations
+    int16_t radius_heading_centre = (radius + radius_heading_inner) / 2;
+    // Degree graduation line widths
+    int16_t reference_bold = radius * 2 / 10;
+    int16_t reference_narrow = radius * 1 / 10;
+    // Radius of N pointer arrow
+    int16_t radius_pointer_arrow = (radius_heading_inner * 35) / 40;
+    // Radius of N pointer arrow head
+    int16_t radius_pointer_head = (radius_heading_inner * 25) / 40;
+    // Width of N and S pointer arrow
+    int16_t radius_pointer_width = (radius_heading_inner * 8) / 40;
+    int16_t radius_text_height = (radius_heading_inner * 5) / 40;
+    
     // Compass Degree Markings
     EVE_SAVE_CONTEXT();
 #if !IS_EVE_API(1)
@@ -135,12 +149,11 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
     EVE_CLEAR_STENCIL(0);
     EVE_CLEAR(0,1,0);
     EVE_COLOR_MASK(0,0,0,0);
-    EVE_COLOR(bezel_col);
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INCR);
-    
+
     // Stencils for degree markings
     EVE_BEGIN(EVE_BEGIN_POINTS);
-    EVE_POINT_SIZE(radius_inner * 16);
+    EVE_POINT_SIZE(radius * 16);
     draw_vertex(x, y); // stencil 1
     EVE_POINT_SIZE(radius_heading_centre * 16);
     draw_vertex(x, y); // stencil 2
@@ -149,14 +162,19 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
 
     EVE_COLOR_MASK(1,1,1,1);
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
-    // Gradient (dark at bottom) for heading gradients
-    EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 1, 255);
-    EVE_CMD_GRADIENT(x - radius_inner, y + radius_inner, bezel_col_dark, x - radius_inner, y - radius_inner, bezel_col_bright);
-    // Flat fill for centre
-    EVE_COLOR(bezel_col);
-    EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 2, 255);
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    draw_vertex(x, y); 
+
+    if (!(options & OPT_COMPASS_TRANSPARENT))
+    {
+        // Gradient (dark at bottom) for heading gradients
+        EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 1, 255);
+        EVE_CMD_GRADIENT(x - radius, y + radius, bezel_col_dark, x - radius, y - radius, bezel_col_bright);
+        // Flat fill for centre
+        EVE_COLOR(bezel_col);
+        EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 2, 255);
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        EVE_POINT_SIZE(radius * 16);
+        draw_vertex(x, y); 
+    }
 
     // Draw gradient lines
     EVE_BEGIN(EVE_BEGIN_LINES);
@@ -168,8 +186,8 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
     for (deg = 5; deg < 360; deg += 5)
     {
         if ((deg % 30) == 0) continue;
-        dx = x + CIRC_X(radius_inner, DEG2FURMAN(deg) + heading);
-        dy = y - CIRC_Y(radius_inner, DEG2FURMAN(deg) + heading);
+        dx = x + CIRC_X(radius, DEG2FURMAN(deg) + heading);
+        dy = y - CIRC_Y(radius, DEG2FURMAN(deg) + heading);
         draw_vertex(dx, dy);
         draw_vertex(x, y);
     }
@@ -179,8 +197,8 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
     EVE_LINE_WIDTH(reference_bold);
     for (deg = 0; deg < 360; deg += 30)
     {
-        dx = x + CIRC_X(radius_inner, DEG2FURMAN(deg) + heading);
-        dy = y - CIRC_Y(radius_inner, DEG2FURMAN(deg) + heading);
+        dx = x + CIRC_X(radius, DEG2FURMAN(deg) + heading);
+        dy = y - CIRC_Y(radius, DEG2FURMAN(deg) + heading);
         draw_vertex(dx, dy);
         draw_vertex(x, y);
     }
@@ -381,9 +399,8 @@ void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t degrees)
     EVE_LINE_WIDTH(reference_bold);
     EVE_COLOR(ovl_reference_col);
     draw_vertex(x, y - radius_pointer_head);
-    draw_vertex(x, y - radius_inner);
+    draw_vertex(x, y - radius);
     
     EVE_END();
     EVE_RESTORE_CONTEXT();
-
 }

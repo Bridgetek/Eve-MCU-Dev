@@ -64,7 +64,7 @@ static inline void draw_vertex(int16_t x, int16_t y)
  * radius - radius of widget
  * alt - altitude reading
 */
-void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
+void altwidget(int16_t x, int16_t y, uint16_t radius, int alt)
 {
     // Like a real altitude instrument it will never go beyond the limits
     alt = max(alt, 0);
@@ -95,7 +95,6 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     int degthou, deghund;
     int deg;
     uint16_t dx1, dy1, dx2, dy2;
-    int n;
     uint16_t dxt1, dyt1, dxt2, dyt2, dxt3, dyt3, dxh, dyh;
 
 #if !IS_EVE_API(1)
@@ -179,30 +178,30 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
 
     // Indicators choose a font which is about 1/5th of the radius
     static uint8_t fontheights[] = EVE_ROMFONT_HEIGHTS;
-    int8_t font = sizeof(fontheights) / sizeof(fontheights[0]);
+    int8_t n;
+    // Default font - use the smallest defined ROM font
+    int8_t font = 20;
     for (n = sizeof(fontheights) / sizeof(fontheights[0]) - 1; n >= 0; n--)
     {
         if (fontheights[n] > 0)
         {
             if (fontheights[n] < (radius_inner / 5))
             {
+                font = n;
                 break;
             }
         }
-        font -= 1;
     }
-    if (font)
+
+    for (deg = 0; deg < 10; deg++)
     {
-        font = min(font, sizeof(fontheights) / sizeof(fontheights[0]) - 1);
-        for (deg = 0; deg < 10; deg++)
-        {
-            dx = x + CIRC_X(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
-            dy = y - CIRC_Y(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
-            EVE_CMD_NUMBER(dx, dy, font, EVE_OPT_CENTER, deg);
-        }
-        EVE_CMD_TEXT(x, y - (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "Altitude");
-        EVE_CMD_TEXT(x, y + (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "10000ft");
+        dx = x + CIRC_X(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
+        dy = y - CIRC_Y(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
+        EVE_CMD_NUMBER(dx, dy, font, EVE_OPT_CENTER, deg);
     }
+    EVE_CMD_TEXT(x, y - (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "Altitude");
+    EVE_CMD_TEXT(x, y + (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "10000ft");
+
     // Altitude needle
     EVE_SAVE_CONTEXT();
     EVE_CLEAR(0,1,0);

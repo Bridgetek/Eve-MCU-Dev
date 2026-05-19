@@ -37,5 +37,19 @@
  * ============================================================================
  */
 
-void compass_binnacle(int32_t x, int32_t y, uint16_t radius, int16_t heading);
-void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, int16_t heading);
+#ifndef _COMPASS_CONTROLS_H
+#define _COMPASS_CONTROLS_H
+
+// Draw the bezel on the compass widgets
+#define OPT_COMPASS_BEZEL               1
+// Draw the background of the compass widgets
+#define OPT_COMPASS_TRANSPARENT         2
+// Draw a rectangular bulkhead compass widget
+#define OPT_COMPASS_BULKHEAD_RECT       4
+// Use a built-in font for directions on the bulkhead compass widgets
+#define OPT_COMPASS_BULKHEAD_USE_FONT   8
+
+void compass_binnacle(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
+void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
+
+#endif /* _COMPASS_CONTROLS_H */

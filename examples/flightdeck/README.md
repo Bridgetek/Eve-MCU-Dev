@@ -6,7 +6,7 @@
 
 The `flightdeck.py` example demonstrates drawing multiple scissored areas, handling overlapped drawing, and gradients for skeuomorphism. 
 
-It uses the `flightcontrols` and `compass_controls` snippets to draw the indicators.
+It uses the `flight_controls` and `compass_controls` snippets to draw the indicators.
 
 The example is intended to show an aircraft attitude, altitude instruments, and compass. The attitude instrument has bank/roll and pitch displays. The physical control for this would be a gyroscopic device with rotating gimbals for pitch and roll. The altitude instrument has a graduations at 200ft and reads up to 10000ft. A real altitude gauge typically uses barometeric pressure. The example shows a binnacle compass although a bulkhead compass may be shown instead.
 
@@ -78,7 +78,7 @@ The example contains a common directory with several files which comprises all t
 | --- | --- |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [snippets/dials/flightcontrols.h](../snippets/dials/flightcontrols.h) | Header file for flight control widgets |
+| [snippets/dials/flight_controls.h](../snippets/dials/flight_controls.h) | Header file for flight control widgets |
 | [snippets/dials/flightatt.c](../snippets/dials/flightatt.h) | Implementation file for flight control attitude widgets |
 | [snippets/dials/flightalt.c](../snippets/dials/flightalt.h) | Implementation file for flight control altitude widgets |
 | [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |

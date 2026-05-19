@@ -101,11 +101,7 @@ void eve_display(void)
 
         attwidget(xatt, yatt, dial_radius, pitch, climb, roll);
         altwidget(xalt, yalt, dial_radius, alt);
-#if 1 // Binnacle style compass (top down view)
-        compass_binnacle(xcompass, ycompass, dial_radius, heading);
-#else // Bulkhead style compass (side on view)
-        compass_bulkhead(xcompass, ycompass, dial_radius, heading);
-#endif
+        compass_binnacle(xcompass, ycompass, dial_radius, OPT_COMPASS_BEZEL, heading);
 
         EVE_DISPLAY();
         EVE_CMD_SWAP();

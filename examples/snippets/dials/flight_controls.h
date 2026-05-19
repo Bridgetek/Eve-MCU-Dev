@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ @file flight_controls.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -37,42 +37,10 @@
  * ============================================================================
  */
 
-#ifndef _EVE_EXAMPLE_H
-#define _EVE_EXAMPLE_H
+#ifndef _FLIGHT_CONTROLS_H
+#define _FLIGHT_CONTROLS_H
 
-#include <stdint.h>
+void altwidget(int16_t x, int16_t y, uint16_t radius, int alt);
+void attwidget(int16_t x, int16_t y, uint16_t radius, int pitch, int climb, int roll);
 
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-/**
- @brief Definitions of handles for custom fonts and bitmaps.
- */
-//@{
-#define FONT_CUSTOM 8
-#define BITMAP_BRIDGETEK_LOGO 7
-//@}
-
-/* Globals available within the eve_example code */
-extern uint32_t eve_img_bridgetek_logo_width;
-extern uint32_t eve_img_bridgetek_logo_height;
-
-/* Functions called within the eve_example code */
-uint8_t eve_romfont_width(uint8_t font);
-uint8_t eve_romfont_height(uint8_t font);
-
-/* Entry point to the example code */
-void eve_example(void);
-
-#include "touch.h"
-#include "dials/flight_controls.h"
-#include "maths/trig_furman.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
-
-#endif /* _EVE_EXAMPLE_H */
+#endif /* _FLIGHT_CONTROLS_H */

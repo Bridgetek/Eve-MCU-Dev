@@ -69,7 +69,7 @@ void eve_example(void);
 
 #include "touch.h"
 #include "maths/trig_furman.h"
-#include "dials/flightcontrols.h"
+#include "dials/flight_controls.h"
 #include "dials/compass_controls.h"
 
 #ifdef __cplusplus

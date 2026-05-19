@@ -59,7 +59,7 @@ static inline void draw_vertex(int16_t x, int16_t y)
  * climb - climb in degrees
  * roll - roll in degrees
 */
-void attwidget(int32_t x, int32_t y, uint16_t radius, int16_t pitch, int16_t climb, int16_t roll)
+void attwidget(int16_t x, int16_t y, uint16_t radius, int16_t pitch, int16_t climb, int16_t roll)
 {
     // Dimensions of the widget are detemined by the radius
     int16_t radius_outer = radius;

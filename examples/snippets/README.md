@@ -14,6 +14,8 @@ The `snippets` directory contains code that is used in the examples for the EVE-
   - [Seven Segment LED Widget](#seven-segment-led-widget)
 - [Dials](#dials)
   - [Flight Control Widgets](#flight-control-widgets)
+  - [Compass Widgets](#compass-widgets)
+  - [Submarine Control Widgets](#submarine-control-widgets)
 - [Maths](#maths)
   - [Trigonometry using Furmans](#trigonometry-using-furmans)
 
@@ -170,7 +172,9 @@ This directory contains skeuomorphic dials.
 
 | Snippet | Description |
 | --- | --- |
-| [flightcontrols](#flight-control-widgets) | Flight control widgets code |
+| [flight_controls](#flight-control-widgets) | Flight control widgets code |
+| [compass_controls](#compass-widgets) | Compass widgets code |
+| [sub_controls](#submarine-control-widgets) | Submarine control widgets code |
 
 ### Flight Control Widgets
 
@@ -188,7 +192,7 @@ The altitude is specified in the call. It is clamped to 0 to 10000 feet as a rea
 
 _Header File:_
 
-   `#include "snippets/dials/flightcontrols.h"`
+   `#include "snippets/dials/flight_controls.h"`
 
 _Source File:_
 
@@ -200,16 +204,16 @@ _Calling format:_
 
 _Parameters:_
 
--   uint32_t **x**, uint32_t **y**: Location of centre of the indicator (in pixels).
+-   int16_t **x**, int16_t **y**: Location of centre of the indicator (in pixels).
 -   int16_t **radius**: Radius of the widget dial (in pixels).
 -   int **alt**: Altitude to render.
 
 _Example:_
 
 ```
-#include "snippets/widgets/sevenseg.h"
+#include "snippets/dials/flight_controls.h"
 
-altwidget(eve, 300, 300, 200, 4382);
+altwidget(300, 300, 200, 4382);
 ```
 
 #### Flight Control Attitude Indicator
@@ -222,7 +226,7 @@ The pitch, roll and climb are specified in the call and are in furmans. The rang
 
 _Header File:_
 
-   `#include "snippets/dials/flightcontrols.h"`
+   `#include "snippets/dials/flight_controls.h"`
 
 _Source File:_
 
@@ -234,7 +238,7 @@ _Calling format:_
 
 _Parameters:_
 
--   uint32_t **x**, uint32_t **y**: Location of centre of the indicator (in pixels).
+-   int16_t **x**, int16_t **y**: Location of centre of the indicator (in pixels).
 -   int16_t **radius**: Radius of the widget dial (in pixels).
 -   int **pitch**: Pitch angle in furmans.
 -   int **climb**: Climb angle in furmans.
@@ -243,7 +247,140 @@ _Parameters:_
 _Example:_
 
 ```
-altwidget(eve, 300, 300, 200, 0x1000, 0xe000, 0xd000);
+#include "snippets/dials/flight_controls.h"
+
+attwidget(300, 300, 200, 0x1000, 0xe000, 0xd000);
+```
+
+### Compass Widgets
+
+These widgets will simulate an compass.
+
+These widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furmans) utility to be compiled with the application.
+
+#### Binnacle Compass
+
+This is a simulation of a binnacle mounted compass. It portrays a top-down view of a roating compass.
+
+![Binnacle Compass](docs/compass_binnacle.png)
+
+_Header File:_
+
+   `#include "snippets/dials/compass_controls.h"`
+
+_Source File:_
+
+   `snippets/dials/compass_binnacle.c`
+
+_Calling format:_
+
+   `compass_binnacle(x, y, radius, options, heading)`
+
+_Parameters:_
+
+-   int16_t **x**, int16_t **y**: Location of the centre of the indicator (in pixels).
+-   uint16_t **radius**: Radius of the indicator (in pixels).
+-   uint16_t **options**: Rendering options for the indicator.
+-   int **heading**: Compass bearing to point to North.
+
+_Options:_
+
+- `OPT_COMPASS_BEZEL` Draw the bezel on the compass widgets.
+- `OPT_COMPASS_TRANSPARENT` Draw the compass widgets transparently.
+
+_Example:_
+
+```
+#include "snippets/dials/compass_controls.h"
+
+compass_binnacle(300, 300, 250, OPT_COMPASS_BEZEL, 127);
+```
+
+#### Bulkhead Compass
+
+This is a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
+
+![Bulkhead Compass](docs/compass_bulkhead.png)
+
+_Header File:_
+
+   `#include "snippets/dials/compass_controls.h"`
+
+_Source File:_
+
+   `snippets/dials/compass_bulkhead.c`
+
+_Calling format:_
+
+   `compass_bulkhead(x, y, radius, options, heading)`
+
+_Parameters:_
+
+-   int16_t **x**, int16_t **y**: Location of the centre of the indicator (in pixels).
+-   uint16_t **radius**: Radius of the indicator (in pixels).
+-   uint16_t **options**: Rendering options for the indicator.
+-   int **heading**: Compass bearing to point to North.
+
+_Options:_
+
+- `OPT_COMPASS_BEZEL` Draw the bezel on the compass widgets.
+- `OPT_COMPASS_TRANSPARENT` Draw the compass widgets transparently.
+- `OPT_COMPASS_BULKHEAD_RECT` Draw a rectangular bulkhead compass widget.
+- `OPT_COMPASS_BULKHEAD_USE_FONT` Use a built-in font for directions on the bulkhead compass widget rather than using lines.
+
+_Example:_
+
+```
+#include "snippets/dials/compass_controls.h"
+
+compass_bulkhead(300, 300, 250, OPT_COMPASS_BULKHEAD_RECT | OPT_COMPASS_TRANSPARENT, 127);
+```
+
+### Submarine Control Widgets
+
+These widgets will simulate an submarine depth indicator.
+
+These widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furmans) utility to be compiled with the application.
+
+#### Sumarine Depth Indicator
+
+This is a simulation of a depth indicator. It reads from zero showing an indicator pointing at a scaled depth.
+
+The depth and the viewing window is specified in the call. A scaling factor is used for both the depth and the viewing window.
+
+![Depth Indicator](docs/sub_depth.png)
+
+_Header File:_
+
+   `#include "snippets/dials/sub_controls.h"`
+
+_Source File:_
+
+   `snippets/dials/sub_depth.c`
+
+_Calling format:_
+
+   `sub_depth(x, y, width, height, options, depth, visible)`
+
+_Parameters:_
+
+-   int16_t **x**, int16_t **y**: Location of the top left of the indicator (in pixels).
+-   uint16_t **width**, uint16_t **height**: Width and height of the indicator (in pixels).
+-   uint16_t **options**: Rendering options for the indicator.
+-   int **depth**: Depth to render. Scaled by SUB_UNITS_SCALE.
+-   int **visible**: Depth range visible in the indicator. Scaled by SUB_UNITS_SCALE.
+
+_Options:_
+
+- `OPT_SUB_BEZEL` Draw the bezel on the submarine widgets.
+- `OPT_SUB_TRANSPARENT` Draw the submarine widgets transparently.
+
+_Example:_
+
+```
+#include "snippets/dials/sub_controls.h"
+
+sub_depth(300, 300, 150, 400, OPT_SUB_BEZEL, 382 * SUB_UNITS_SCALE, 50 * SUB_UNITS_SCALE);
 ```
 
 ## Maths

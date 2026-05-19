@@ -1,5 +1,5 @@
 /**
- @file flightcontrols.h
+ @file compasscontrols.h
  */
 /*
  * ============================================================================
@@ -37,5 +37,17 @@
  * ============================================================================
  */
 
-void altwidget(int32_t x, int32_t y, uint16_t radius, int alt);
-void attwidget(int32_t x, int32_t y, uint16_t radius, int pitch, int climb, int roll);
+#ifndef _SUB_CONTROLS_H
+#define _SUB_CONTROLS_H
+
+// Draw the bezel on the submarine widgets
+#define OPT_SUB_BEZEL               1
+// Draw the background of the submarine widgets
+#define OPT_SUB_TRANSPARENT         2
+
+// Number of divisions per unit in the depth and visible fields.
+#define SUB_UNITS_SCALE             16
+
+void sub_depth(int32_t x, int32_t y, uint16_t width, uint16_t height, uint16_t options, int16_t depth, int16_t visible);
+
+#endif /* _SUB_CONTROLS_H */
