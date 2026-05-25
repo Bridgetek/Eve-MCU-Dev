@@ -109,6 +109,7 @@ Additionally, the `ftd2xx.dll` library is required. This is installed automatica
 Due to limitations in the libMPSSE distribution, a small modification is required:
 
 Line 246 of "ftdi_infra.c":
+
 	#elif defined(_WIN32)
 		// Load ftd2xx.dll on Windows
 		hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
@@ -118,6 +119,7 @@ Line 246 of "ftdi_infra.c":
 	#else
 
 Remove the "L" before the DLL name:
+
 	#elif defined(_WIN32)
 		// Load ftd2xx.dll on Windows
 		hdll_d2xx = LoadLibrary("ftd2xx.dll");
