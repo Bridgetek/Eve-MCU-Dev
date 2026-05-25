@@ -49,7 +49,7 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **libMPSSE** library for Windows for each example. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+To compile this you will have to download the **libMPSSE** library for Windows once and install it in this directory. The recommended version is v1.0.2 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/
 
