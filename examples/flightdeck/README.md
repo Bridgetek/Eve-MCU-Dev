@@ -4,7 +4,7 @@
 
 ## Flightdeck Example
 
-The `flightdeck.py` example demonstrates drawing multiple scissored areas, handling overlapped drawing, and gradients for skeuomorphism. 
+The `flightdeck` example demonstrates drawing multiple scissored areas, handling overlapped drawing, and gradients for skeuomorphism. 
 
 It uses the `flight_controls` and `compass_controls` snippets to draw the indicators.
 
@@ -79,8 +79,8 @@ The example contains a common directory with several files which comprises all t
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/dials/flight_controls.h](../snippets/dials/flight_controls.h) | Header file for flight control widgets |
-| [snippets/dials/flightatt.c](../snippets/dials/flightatt.h) | Implementation file for flight control attitude widgets |
-| [snippets/dials/flightalt.c](../snippets/dials/flightalt.h) | Implementation file for flight control altitude widgets |
+| [snippets/dials/flightatt.c](../snippets/dials/flightatt.c) | Implementation file for flight control attitude widgets |
+| [snippets/dials/flightalt.c](../snippets/dials/flightalt.c) | Implementation file for flight control altitude widgets |
 | [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
 | [snippets/dials/compass_binnacle.c](../snippets/dials/compass_binnacle.c) | Implementation file for binnacle compass widget |
 | [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |

@@ -147,6 +147,8 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_SNIPPETS}/dials/flightalt.c
         ${EXAMPLE_SNIPPETS}/dials/flightatt.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_binnacle.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_bulkhead.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
