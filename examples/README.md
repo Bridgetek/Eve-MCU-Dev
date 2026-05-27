@@ -15,7 +15,7 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\ESP32` MCU specific files for the ESP32.
 - `\examples\<demo>\ft900` MCU specific files for the Bridgetek FT9xx.
 - `\examples\<demo>\libft4222` MCU specific files for FT4222H interface.
-- `\examples\<demo>\libft4222` MCU specific files for MPSSE interface.
+- `\examples\<demo>\libmpsse` MCU specific files for MPSSE interface.
 - `\examples\<demo>\MSP430` MCU specific files for the Ti MSP430.
 - `\examples\<demo>\MSPM0` MCU specific files for the Ti MSPM0.
 - `\examples\<demo>\NXP_K64` MCU specific files for the NXP K64.

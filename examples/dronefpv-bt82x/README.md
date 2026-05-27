@@ -10,12 +10,18 @@ Video is taken from the LVDS RX channel and rendered into RAM_G as a bitmap. The
 
 A 1920 x 1200 or 1080 screen is recommended. An LVDS video input of 1920 x 1080 is expected.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Generic using libMPSSE | libmpsse | Yes |
-|Generic using libFT4222 | libft4222 | Yes |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
 
 Supported EVE APIs in this example:
 
@@ -26,6 +32,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the simple example.
 
 ![BT82x Video](docs/dronefpv.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 

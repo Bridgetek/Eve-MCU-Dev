@@ -14,12 +14,18 @@ The attitude drawing comprises four parts: the bezel which uses gradients to sha
 
 A helper application called `trig_furman` is used to perform trigonometry using furman angles. This has an implementation to allow for use with platforms without floating point or maths implementations.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Generic using libMPSSE | libft4222 | Yes |
-|Generic using EVE Emulator | emulator | Yes |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
 
 Supported EVE APIs in this example:
 
@@ -30,6 +36,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the simple example.
 
 ![Flightdeck Example](docs/flightdeck.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 

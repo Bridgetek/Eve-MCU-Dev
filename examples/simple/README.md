@@ -8,6 +8,8 @@ The `simple` example demonstrates detection of a touch event on a display item, 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | 
@@ -32,6 +34,10 @@ This example supports the following platforms:
 - (1) Hardware testing ongoing.
 - (2) Build environment incomplete.
  
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
+
 Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
@@ -41,6 +47,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the simple example.
 
 ![Simple Example](docs/simple.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 

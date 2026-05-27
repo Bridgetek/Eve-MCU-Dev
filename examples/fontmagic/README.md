@@ -14,15 +14,19 @@ In the standard mode, the text is written at an angle using the `cmd_textrotate`
 
 To make the scaling and rotation possible the program needs to know the widths of each character in the font. Therefore there is code that will read the font descriptors and calculate the widths of each character. This is stored in a python tuple called the font cache. This is initialised with the `getromfontinfo` function for ROM fonts and `getcustomfontinfo` for custom fonts.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|ST STM32 (Keil) | STM32 | Yes (1) |
-|ST STM32Cube | STM32CUBE | Yes (1) |
-|Generic using libFT4222 | libft4222 | Yes |
+| [ST STM32 (Keil) ](STM32/README.md) | [STM32](STM32/) | Yes |
+| [ST STM32Cube ](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
 
-(1) - EVE API 5 support in progress
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
 
 Supported EVE APIs in this example:
 
@@ -41,6 +45,8 @@ The demo mode (standard, ascii or symbol) is set as the first parameter in the c
 Some fonts have their start address set in the EAB utility, this is used to load fonts into a specific location in RAM_G. This can be passed to the example code using the `-d` parameter. The default value is a start address of 0 (zero).
 
 Legacy fonts typically start at character 0 or character 32, use the `-l` parameter to set this. The default value is 32. This is only used for legacy fonts.
+
+## Platform Files and Folders
 
 ### `main.c`
 

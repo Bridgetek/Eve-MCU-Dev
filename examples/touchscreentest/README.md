@@ -14,15 +14,19 @@ Multiple touch is not supported as this function depends on the same touchscreen
 
 This example supports the following platforms:
 
-| Port Name | Port Directory | 
-| --- | --- | 
-|Generic using libFT4222 CMake | [libmpsse](libft4222/README.md) | 
-|Generic using libFT4222 Visual Studio | [libmpsse](libft4222/README.md) | 
-|Raspberry Pi Pico | [pico](pico/README.md) | 
+## Platform Support
 
-- (1) Hardware testing ongoing.
-- (2) Build environment incomplete.
- 
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
+
 Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
@@ -32,6 +36,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the touchscreentest example.
 
 ![Touch Screen Test Example](docs/touchscreentest.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 
