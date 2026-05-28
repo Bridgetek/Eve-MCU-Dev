@@ -1,14 +1,16 @@
-# EVE-MCU-Dev BT82x Video Example
+# EVE-MCU-Dev Flightdeck BT82x Video Example
 
 [Back](../README.md)
 
 ## BT82x Video Example
 
-The `dronefpv-bt82x` example demonstrates LVDS video. **This demo only works on the BT82x devices.**
+The `flightdeck-bt82x` example demonstrates LVDS video. **This demo only works on the BT82x devices and works best with an LVDS video source.**
 
-Video is taken from the LVDS RX channel and rendered into RAM_G as a bitmap. The rendered bitmap is used on the screen a background on the display. An altimeter and attitude indicator are drawn from the snippets library ontop of the video background. See the [flightdeck](../flightdeck/README.md) example for information on the altimeter and attitude indicator.
+Video is taken from the LVDS RX channel and rendered into RAM_G as a bitmap. The rendered bitmap is used on the screen a background on the display. An altimeter and attitude indicator are drawn from the snippets library on top of the video background. If there is no LVDS input then a fixed image is used.
 
-A 1920 x 1200 or 1080 screen is recommended. An LVDS video input of 1920 x 1080 is expected.
+See the [flightdeck](../flightdeck/README.md) example for information on the altimeter and attitude indicator.
+
+A WUXGA (1920x1200) or FullHD (1920x1080) screen is recommended. A FullHD LVDS video input of 1920x1080 is expected.
 
 ## Platform Support
 
@@ -16,8 +18,8 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
@@ -31,13 +33,13 @@ Supported EVE APIs in this example:
 
 The following is an screenshot of the simple example.
 
-![BT82x Video](docs/dronefpv.png)
+![Flightdeck Controls Example](docs/flightdeck-bt82x.png)
 
 ## Platform Files and Folders
 
 ### `main.c`
 
-The application starts up in the file `main.c` which provides initial MCU configuration and then calls `dronefpv.c` where the remainder of the application will be carried out. 
+The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
 The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
 - **platform_calib_init** initialise a platform's non-volatile storage system.
@@ -80,6 +82,10 @@ The example contains a common directory with several files which comprises all t
 
 | File/Folder | Description |
 | --- | --- |
-| [common/dronefpv.c](common/dronefpv.c) | Example source code file |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/dials/sub_controls.h](../snippets/dials/sub_controls.h) | Header file for submarine control widgets |
+| [snippets/dials/sub_depth.c](../snippets/dials/sub_depth.c) | Implementation file for submarine depth widget |
+| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
+| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
 | [docs](docs) | Documentation support files |

@@ -56,6 +56,7 @@ ENDIF(MODULE_TYPE)
 
 # Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
+set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
 # Point to where to find the platform source file
@@ -140,14 +141,16 @@ endif()
 
 # Source for example code
 add_library(eve_example # Example code library name
+        # Patch file to override patch_base.c
+        ${EXAMPLE_COMMON}/patch_lvds.c
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_ASSETS}/lake_wanaka.c
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/dials/flightalt.c
         ${EXAMPLE_SNIPPETS}/dials/flightatt.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_binnacle.c
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
-        # Patch file to override patch_base.c
-        ${EXAMPLE_COMMON}/patch_dronefpv.c
 )
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC

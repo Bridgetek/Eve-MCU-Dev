@@ -22,7 +22,7 @@
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConsoleApplication2</RootNamespace>
-    <ProjectName>dronefpv</ProjectName>
+    <ProjectName>aircraftfpv</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -161,20 +161,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c" />
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c" />
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.c" />
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c" />
+    <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c" />
     <ClCompile Include="..\..\..\snippets\dials\flightalt.c" />
     <ClCompile Include="..\..\..\snippets\dials\flightatt.c" />
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
+    <ClCompile Include="..\..\assets\lake_wanaka.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
-    <ClCompile Include="..\..\common\patch_dronefpv.c" />
+    <ClCompile Include="..\..\common\patch_aircraftfpv.c" />
     <ClCompile Include="..\main.c" />
-    <ClCompile Include="..\release\source\ftdi_infra.c" />
-    <ClCompile Include="..\release\source\ftdi_mid.c" />
-    <ClCompile Include="..\release\source\ftdi_spi.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\BT81x.h" />
@@ -182,10 +185,19 @@
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_common.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_i2c.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\WinTypes.h" />
+    <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dial\flightcontrols.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
+    <ClInclude Include="..\..\common\patch_aircraftfpv.h" />
     <ClInclude Include="release\libftd2xx\ftd2xx.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
@@ -194,7 +206,6 @@
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
-    <ClInclude Include="..\..\common\patch_dronefpv.h" />
     <ClInclude Include="..\release\include\libmpsse_i2c.h" />
     <ClInclude Include="..\release\include\libmpsse_spi.h" />
   </ItemGroup>

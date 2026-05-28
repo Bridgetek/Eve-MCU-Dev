@@ -31,8 +31,14 @@
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\patch_dronefpv.c">
+    <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\patch_aircraftfpv.c">
       <Filter>Example\Patch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\lake_wanaka.c">
+      <Filter>Example</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,11 +102,14 @@
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\patch_dronefpv.h">
-      <Filter>Example\Patch</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\flightcontrols.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\patch_aircraftfpv.h">
+      <Filter>Example\Patch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

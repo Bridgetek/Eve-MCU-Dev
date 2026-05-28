@@ -1,6 +1,6 @@
 /* Generated file by extension.py */
 
-#include "patch_dronefpv.h"
+#include "patch_lvds.h"
 #include <EVE.h>
 #include <HAL.h>
 
