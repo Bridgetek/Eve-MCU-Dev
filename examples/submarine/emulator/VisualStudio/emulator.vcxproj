@@ -103,7 +103,9 @@
       <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;..\..\..\..\ports\eve_emulator\mx25lemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy /y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(OutDir)
@@ -126,7 +128,9 @@ copy /y ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(OutDir)
       <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;..\..\..\..\ports\eve_emulator\mx25lemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy /y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(OutDir)
@@ -155,7 +159,9 @@ copy /y ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(OutDir)
       <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +185,9 @@ copy /y ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(OutDir)
       <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
