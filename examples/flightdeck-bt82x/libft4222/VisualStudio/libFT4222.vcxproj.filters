@@ -34,11 +34,11 @@
     <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\patch_aircraftfpv.c">
-      <Filter>Example\Patch</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\assets\lake_wanaka.c">
       <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\patch_lvds.c">
+      <Filter>Example\Patch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -108,7 +108,7 @@
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\patch_aircraftfpv.h">
+    <ClInclude Include="..\..\common\patch_lvds.h">
       <Filter>Example\Patch</Filter>
     </ClInclude>
   </ItemGroup>
