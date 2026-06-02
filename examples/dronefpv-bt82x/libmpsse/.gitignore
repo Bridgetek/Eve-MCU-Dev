@@ -1,9 +1,0 @@
-# libMPSSE distribution directory
-.vs
-.vscode
-release/
-build/
-VisualStudio/*
-!VisualStudio/libMPSSE.sln
-!VisualStudio/libMPSSE.vcxproj
-!VisualStudio/libMPSSE.vcxproj.filters

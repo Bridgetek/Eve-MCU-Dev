@@ -45,3 +45,9 @@ cmake --build build
 ```
 
 The UF2 file for programming onto the board is `medinfo_pico.uf2` in the `build` directory.
+
+## Running the Example
+
+If the `ASSETS` macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The flash image file is `flash-820-default.bin` in the `assets` directory. If `USE_C_ARRAYS` then no additional action is needed. The `USE_FILES` or `USE_FLASHIMAGE` options are not possible on the pico platform as there is no file system built into the example.
+
+Note: the default setting for `ASSETS` on pico is `USE_C_ARRAYS` which is set in the `CMakeLists.txt` file. 

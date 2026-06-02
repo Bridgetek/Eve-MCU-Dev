@@ -1,0 +1,147 @@
+# Set minimum required version of CMake
+cmake_minimum_required(VERSION 3.12)
+
+# Set the location of the EVE-MCU-Dev tree
+set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
+
+# Set name of project (as current working directory)
+get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
+get_filename_component(ProjectName ${PARENT_DIR} NAME)
+get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
+string(REPLACE " " "_" ProjectId ${ProjectId})
+project(${ProjectName}_${ProjectId} C CXX)
+
+message(API_DIRECTORY="${API_DIRECTORY}")
+message(ProjectId="${PROJECT_SOURCE_DIR}")
+message(PROJECT_NAME="${PROJECT_NAME}")
+message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
+message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
+
+# Set C/C++ Standards
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+
+# Setup command line options for build - feeds into EVE_config.h
+# A module type implies both a panel and eve type
+# - panel type, display resolution and eve device type are ignored
+# A panel configures a display resolution
+# - display resolution is ignored
+option(MODULE_TYPE "EVE Module Name" )
+option(FT8XX_TYPE "EVE Device Type Name" )
+option(PANEL_TYPE "EVE Panel Type" )
+option(DISPLAY_RES "Panel Display Resolution" )
+
+# Set a module type
+IF(MODULE_TYPE)
+    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+    message(MODULE_TYPE="${MODULE_TYPE}")
+ELSE(MODULE_TYPE)
+# Set the eve device type
+IF(FT8XX_TYPE)
+    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+    message(FT8XX_TYPE="${FT8XX_TYPE}")
+ENDIF(FT8XX_TYPE)
+# Set the panel type
+IF(PANEL_TYPE)
+    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+    message(PANEL_TYPE="${PANEL_TYPE}")
+ELSE(PANEL_TYPE)
+# Set the display resolution
+IF(DISPLAY_RES)
+    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+    message(DISPLAY_RES="${DISPLAY_RES}")
+ENDIF(DISPLAY_RES)
+ENDIF(PANEL_TYPE)
+ENDIF(MODULE_TYPE)
+
+# Add environment for example code
+set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
+set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
+
+# Point to where to find the platform source file
+add_executable(${PROJECT_NAME}
+        main.c
+)
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${API_DIRECTORY}/include
+        ${EXAMPLE_COMMON}
+)
+# Tell EVE library to use the EVE Emulator as base class
+add_compile_definitions(USE_EMULATOR=0)
+
+# Source code for EVE library (targetted at the EVE Emulator)
+add_library(eve_library # EVE library name
+        # Source code for EVE library
+        ${API_DIRECTORY}/source/EVE_API.c
+        ${API_DIRECTORY}/source/EVE_HAL.c
+        ${API_DIRECTORY}/ports/eve_emulator/EVE_emulator.c
+        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+)
+# Header files used for EVE library
+target_include_directories(eve_library PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${API_DIRECTORY}/include
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${API_DIRECTORY}/ports/eve_emulator # EVE Emulator Library headers
+)
+
+# EVE library dependencies
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    message(FATAL_ERROR "emulator not supported on Linux")
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.h")
+        message(FATAL_ERROR "The Windows emulator installation has not been completed. Follow the instructions in \"\\ports\\eve_emulator\\README.md\"")
+    endif()
+
+    target_link_libraries(eve_library
+            # Main emulator library to load the DLL at runtime
+            ${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.lib
+            # Flash emulatory library to load the Flash DLL at runtime
+            ${API_DIRECTORY}/ports/eve_emulator/mx25lemu.lib
+    )
+
+    # Copy the DLL to beside the executable for Windows 
+    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    endif()
+    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/mx25lemu.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/mx25lemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND_EXPAND_LISTS
+    )
+    endif()
+endif()
+
+# Source for example code
+add_library(eve_example # Example code library name
+        # Source files for example code library
+        ${EXAMPLE_COMMON}/eve_example.c
+        ${EXAMPLE_COMMON}/eve_fonts.c
+        ${EXAMPLE_COMMON}/eve_images.c
+        ${EXAMPLE_SNIPPETS}/touch.c
+)
+# Header files used for example code library
+target_include_directories(eve_example PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${API_DIRECTORY}/include # Headers for EVE library
+        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${EXAMPLE_COMMON}/ # Headers for example code
+        ${EXAMPLE_SNIPPETS}/ # Headers for snippets 
+
+)
+
+# Example code dependencies
+target_link_libraries(eve_example
+        eve_library # Example code depends on EVE library
+)
+
+# Project dependencies
+target_link_libraries(${PROJECT_NAME} 
+        eve_example # Project depends on example code library
+)

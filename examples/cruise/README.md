@@ -12,11 +12,24 @@ The display comprises two parts: the left side is a circular display which is th
 
 On screens of width/height 480 pixels only the circular control is shown. On wider screens the control buttons will be shown.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Bridgetek FT9xx | [ft900](ft900/README.md) | Yes | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | Yes | 
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
+
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
 |Raspberry Pi Pico | pico | Yes |
 |Generic using libFT4222 | libft4222 | Yes |
 
@@ -29,6 +42,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the simple example.
 
 ![Cruise Example](docs/cruise.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 

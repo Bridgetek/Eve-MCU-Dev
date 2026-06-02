@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\assets\c_array_assets\volume_up.c">
       <Filter>Example\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\dialogs.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -133,14 +136,17 @@
     <ClInclude Include="..\..\common\patch_medinfo.h">
       <Filter>Example\Patch</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\dialogs.h">
+      <Filter>Example</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

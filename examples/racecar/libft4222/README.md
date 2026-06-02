@@ -49,3 +49,21 @@ When the example application is launched in Visual Studio it will add the locati
 ## Linux
 
 The cmake command line examples for Windows will compile the required files for the example application under Linux. The LibFT4222 library for Linux will be taken from the `/usr/local/lib` directory and the include files from `/usr/local/include`.
+
+## Running the Example
+
+When the `ASSETS` macro is set to `USE_FILES` or `USE_FLASHIMAGE` then the path to the `assets` directory and the `source` or `eve3`/`eve4`/`eve5` subdirectory is required as the first parameter to the program executable. If the macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. If `USE_C_ARRAYS` then no additional action is needed.
+
+Note: the default setting for `ASSETS` on libft4222 is `USE_FILES` which is set in the `CMakeLists.txt` file. 
+
+For example:
+
+To use the `USE_FILES` method:
+```
+> .\build\Debug\racecar_libft4222.exe ..\assets\source\
+```
+
+To use the `USE_FLASHIMAGE` method on BT817 (EVE3):
+```
+> .\build\Debug\racecar_libft4222.exe ..\assets\eve3\
+```

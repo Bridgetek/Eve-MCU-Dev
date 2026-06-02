@@ -15,7 +15,7 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\ESP32` MCU specific files for the ESP32.
 - `\examples\<demo>\ft900` MCU specific files for the Bridgetek FT9xx.
 - `\examples\<demo>\libft4222` MCU specific files for FT4222H interface.
-- `\examples\<demo>\libft4222` MCU specific files for MPSSE interface.
+- `\examples\<demo>\libmpsse` MCU specific files for MPSSE interface.
 - `\examples\<demo>\MSP430` MCU specific files for the Ti MSP430.
 - `\examples\<demo>\MSPM0` MCU specific files for the Ti MSPM0.
 - `\examples\<demo>\NXP_K64` MCU specific files for the NXP K64.
@@ -54,9 +54,15 @@ The following example code is available:
 | [simple](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
 | [b2tf](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
 | [cruise](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
-| [dronefpv-bt82x](dronefpv-bt82x/README.md) | Advanced BT82X demo seven segment demo code rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
+| [datavisualiser](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
 | [flightdeck](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
+| [flightdeck-bt82x](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
 | [fontmagic](fontmagic/README.md) | Simple example code demonstrating scaling and rotating letters from a font file. |
+| [gyminterval](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
+| [medinfo](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
+| [racecar](racecar/README.md) | A simulated dashboard for a racing car. |
+| [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
+| [touchscreentest](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
 
 ## Widgets and Utilities
 
@@ -68,4 +74,3 @@ In addition to runable demo code there are libraries of widgets and utilities th
 
 Many of the examples load code or modules from this directory. 
 
-TODO: this directory will be split into widgets and utilities.

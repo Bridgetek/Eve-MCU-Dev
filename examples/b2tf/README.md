@@ -8,11 +8,18 @@ The `b2tf` example demonstrates drawing multiple seven segment displays on the s
 
 The example is intended to show a three clocks, one in the past, one at the present and another which counts backward from the present clock time to the past clock time.
 
+## Platform Support
+
 This example supports the following platforms:
 
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-|Generic using libFT4222 | libft4222 | Yes |
+| Port Name | Port Directory | 
+| --- | --- | 
+| [Generic using libFT4222 CMake](libmpsse/README.md) | [libmpsse](libmpsse/) | 
+| [Generic using libFT4222 Visual Studio](libmpsse/README.md) | [libmpsse/README.md](libmpsse/) | 
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
 
 Supported EVE APIs in this example:
 
@@ -29,6 +36,8 @@ The following is an screenshot of the simple example on BT82x.
 ![B2tf Example](docs/b2tf.png)
 
 NOTE this example will work only on operating systems and compilers that provide a real time clock functionality includeing the `time.h` header file, `gmtime_s` and `mktime` functions.
+
+## Platform Files and Folders
 
 ### `main.c`
 

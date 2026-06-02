@@ -49,11 +49,11 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **libMPSSE** library for Windows once and install it in this directory. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+To compile this you will have to download the **libMPSSE** library for Windows. The recommended version is v1.0.2 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/
 
-Download the latest version of the libMPSSE library distribution. The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
+The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
 
 The library is installed *once* into the `ports\eve_libmpsse` directory. When building the example code the library files (H, C and LIB files) are loaded from this location.
 
@@ -102,6 +102,11 @@ Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
+
+IMPORTANT:
+Change line 246 on ftdi_infra.c:
+ from 'hdll_d2xx = LoadLibrary(L"ftd2xx.dll");' to 'hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));'
+Not doing this will result in "LoadLibrary failed: 126"
 ```
 
 Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
@@ -109,24 +114,26 @@ Additionally, the `ftd2xx.dll` library is required. This is installed automatica
 Due to limitations in the libMPSSE distribution, a small modification is required:
 
 Line 246 of "ftdi_infra.c":
+```
+#elif defined(_WIN32)
+	// Load ftd2xx.dll on Windows
+	hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
+	if (!hdll_d2xx) {
+		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+	}
+#else
+```
 
-	#elif defined(_WIN32)
-		// Load ftd2xx.dll on Windows
-		hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
-		if (!hdll_d2xx) {
-			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-		}
-	#else
-
-Remove the "L" before the DLL name:
-
-	#elif defined(_WIN32)
-		// Load ftd2xx.dll on Windows
-		hdll_d2xx = LoadLibrary("ftd2xx.dll");
-		if (!hdll_d2xx) {
-			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-		}
-	#else
+Change the "L" before the DLL name to the Microsoft `TEXT` macro which will automatically use the `L` macro when Unicode is enabled and omit it when Unicode is not active.
+```
+#elif defined(_WIN32)
+	// Load ftd2xx.dll on Windows
+	hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));
+	if (!hdll_d2xx) {
+		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+	}
+#else
+```
 
 ### Command Line Compilation
 

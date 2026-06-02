@@ -21,9 +21,10 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 | ST STM32Cube | `PLATFORM_STM32CUBE` | [eve_arch_stm32](eve_arch_stm32/README.md) | STM32F0DISCOVERY and MiniSTM32H7xx | Pass |
 | Generic using libMPSSE | `USE_MPSSE` (3) | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
 | Generic using libFT4222 | `USE_FT4222` (3) | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
+| Generic using EVE Emulator | `USE_EMULATOR` | [eve_emulator](eve_emulator/README.md) | N/A | Pass (excluding EVE5) |
 
 - (1) Key for Test Status
-  - Pass: Has been compiled with the latest toolchains and run on hardware across of EVE generations.
+  - Pass: Has been compiled with the latest toolchains and run on hardware across EVE generations.
   - Under Test: Compiles with the latest toolchain but hardware testing is ongoing.
 - (2) The Arduino port uses the build-in `ARDUINO` macro from the Arduino IDE and toolchain.
 - (3) The macro must be set to a value rather than just be defined. This is the index of the FT4222H or MPSSE device to use when the USB is scanned.
