@@ -27,6 +27,7 @@ This example supports the following platforms:
 | --- | --- | --- |
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
