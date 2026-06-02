@@ -8,29 +8,36 @@ The `simple` example demonstrates detection of a touch event on a display item, 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
+## Platform Support
+
 This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-|Bridgetek FT9xx | [ft900](ft900/README.md) | 
-|Beaglebone Black | [BeagleBone](BeagleBone/README.md) (1) | 
-|Expressif ESP32 | [ESP32](ESP32/README.md) | 
-|TI MSP430 | [MSP430](MSP430/README.md) (1) |
-|TI MSPM0 | [MSPM0](MSPM0/README.md) (1) | 
-|Microchip PIC18F | [PIC18F](PIC18F/README.md) (2) | 
-|NXP K64 | [NXP_K64](NXP_K64/README.md) (2) | 
-|ST STM32 (Keil) | [STM32](STM32/README.md) | 
-|ST STM32Cube | [STM32CUBE](STM32CUBE/README.md) | 
-|Raspberry Pi | [raspberry_pi](raspberry_pi/README.md) | 
-|Raspberry Pi Pico | [pico](pico/README.md) | 
-|Generic using libMPSSE CMake | [libft4222](libft4222/README.md) | 
-|Generic using libMPSSE Visual Studio | [libft4222](libft4222/README.md) | 
-|Generic using libFT4222 CMake | [libmpsse](libmpsse/README.md) | 
-|Generic using libFT4222 Visual Studio | [libmpsse](libmpsse/README.md) | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
+| [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) (1) | 
+| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
+| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) (1) |
+| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) (1) | 
+| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) (2) | 
+| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) (2) | 
+| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
+| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
+| [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [Generic using libMPSSE CMake](libft4222/README.md) | [libft4222](libft4222/) | 
+| [Generic using libMPSSE Visual Studio](libft4222/README.md) | [libft4222](libft4222/) | 
+| [Generic using libFT4222 CMake](libmpsse/README.md) | [libmpsse](libmpsse/) | 
+| [Generic using libFT4222 Visual Studio](libmpsse/README.md) | [libmpsse](libmpsse/) | 
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
 
 - (1) Hardware testing ongoing.
 - (2) Build environment incomplete.
  
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## EVE API Support
+
 Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
@@ -40,6 +47,8 @@ Supported EVE APIs in this example:
 The following is an screenshot of the simple example.
 
 ![Simple Example](docs/simple.png)
+
+## Platform Files and Folders
 
 ### `main.c`
 

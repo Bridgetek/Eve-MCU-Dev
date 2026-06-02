@@ -72,6 +72,9 @@ include_directories(
 # Choose the FT4222 device (0 for first, 1 for second etc)
 add_compile_definitions(USE_FT4222=0)
 
+# BY DEFAULT: On libft4222 use the files in the "assets" directory
+add_compile_definitions(ASSETS=USE_FILES)
+
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=1)
 

@@ -22,9 +22,9 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\simple_libft4222.exe`. This can be run from the command line. 
+The executable file is `build\Debug\simple_libft4222.exe` or `build\simple_libft4222.exe`. This can be run from the command line. 
 
-Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
+Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
