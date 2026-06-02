@@ -49,7 +49,7 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **libMPSSE** library for Windows for each example. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+To compile this you will have to download the **libMPSSE** library for Windows once and install it in this directory. The recommended version is v1.0.2 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/
 
@@ -108,15 +108,25 @@ Additionally, the `ftd2xx.dll` library is required. This is installed automatica
 
 Due to limitations in the libMPSSE distribution, a small modification is required:
 
-Line 239 of "ftdi_infra.c":
-    #else // _WIN32
-	    hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
-    #endif // _WIN32
+Line 246 of "ftdi_infra.c":
+
+	#elif defined(_WIN32)
+		// Load ftd2xx.dll on Windows
+		hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
+		if (!hdll_d2xx) {
+			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+		}
+	#else
 
 Remove the "L" before the DLL name:
-    #else // _WIN32
-	    hdll_d2xx = LoadLibrary("ftd2xx.dll");
-    #endif // _WIN32
+
+	#elif defined(_WIN32)
+		// Load ftd2xx.dll on Windows
+		hdll_d2xx = LoadLibrary("ftd2xx.dll");
+		if (!hdll_d2xx) {
+			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+		}
+	#else
 
 ### Command Line Compilation
 
