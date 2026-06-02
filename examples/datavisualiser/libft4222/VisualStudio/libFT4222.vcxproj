@@ -70,13 +70,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\include;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,22 +95,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_EMULATOR=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;..\..\..\..\ports\eve_emulator\mx25lemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -119,22 +113,16 @@ copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Con
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_EMULATOR=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;..\..\..\..\ports\eve_emulator\mx25lemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,9 +145,7 @@ copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Con
       <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -183,18 +169,16 @@ copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Con
       <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
-    <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
+    <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
-    <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
+    <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main.c" />
@@ -205,11 +189,13 @@ copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Con
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />

@@ -72,19 +72,19 @@ To run the BAT file change directory to the `ports\eve_libft4222` directory. The
 
 ```
 > cd ports\eve_libft4222
-> install_libft4222.bat ..\..\..\LibFT4222-v1.4.7\imports
-Installing AMD64 libraries from "..\..\..\LibFT4222-v1.4.7\imports"
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\dll\amd64\LibFT4222-64.dll" to LibFT4222-64.dll
+> install_libft4222.bat ..\..\..\LibFT4222-v1.4.8\imports
+Installing AMD64 libraries from "..\..\..\LibFT4222-v1.4.8\imports"
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.dll" to LibFT4222-64.dll
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\dll\amd64\LibFT4222-64.lib" to libft4222.lib
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.lib" to libft4222.lib
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\inc\LibFT4222.h" to libft4222.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\inc\LibFT4222.h" to libft4222.h
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libftd2xx.lib
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libftd2xx.lib
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\WinTypes.h" to WinTypes.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
 ```
 
