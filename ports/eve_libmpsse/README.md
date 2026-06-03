@@ -74,33 +74,33 @@ To run the BAT file change directory to the `ports\eve_libmpsse` directory. The 
 
 ```
 > cd ports\eve_libmpsse
-> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.8\release
-Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.8\release"
-Copying "..\..\..\libmpsse-windows-1.0.8\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
+> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.9\release
+Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.9\release"
+Copying "..\..\..\libmpsse-windows-1.0.9\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_spi.h" to libmpsse_spi.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_spi.h" to libmpsse_spi.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_common.h" to ftdi_common.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_common.h" to ftdi_common.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.c" to ftdi_infra.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.c" to ftdi_infra.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.h" to ftdi_infra.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.h" to ftdi_infra.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_spi.c" to ftdi_spi.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_spi.c" to ftdi_spi.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_i2c.c" to ftdi_i2c.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_i2c.c" to ftdi_i2c.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.c" to ftdi_mid.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.c" to ftdi_mid.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.h" to ftdi_mid.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.h" to ftdi_mid.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\memcpy.c" to memcpy.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\memcpy.c" to memcpy.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\ftd2xx.h" to ftd2xx.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\WinTypes.h" to WinTypes.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
 
 IMPORTANT:
@@ -173,7 +173,7 @@ When the example application is launched in Visual Studio it will add the locati
 
 Important Information about Linux builds.
 
-To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.8 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.9 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/libmpsse-spi-examples/
 
