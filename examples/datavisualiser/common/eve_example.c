@@ -89,7 +89,7 @@ uint8_t circle_dir = 0xFF; // used in demo mode
 uint64_t count = 0; 
 
 //--------------------------------------------------------------------------------------------------------
-// settings, mode, and backlight related variables
+// settings, mode,and  backlight related variables
 //--------------------------------------------------------------------------------------------------------
 
 // variable for settings menu display
@@ -1334,7 +1334,7 @@ void LCDBacklightPage(){
     EVE_COLOR_RGB(255, 255, 255);
 
     // add number to indicate current value to screen
-    EVE_CMD_NUMBER(backlight_dial_x, backlight_dial_y, font_med_2, EVE_OPT_CENTER, backlight_value);
+    EVE_CMD_NUMBER(backlight_dial_x, backlight_dial_y, font_med, EVE_OPT_CENTER, backlight_value);
 
     // add text label
     EVE_CMD_TEXT(backlight_dial_x, ((backlight_dial_y + ((backlight_dial_radius*3)/4)) - 1), font_small, EVE_OPT_CENTER, "Brightness");
@@ -1507,25 +1507,21 @@ void renderScreenUpdate(){
     // add number readouts for the line plots
     //--------------------------------------------------------------------------
 
-    #if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-    // call ROMFONT so we can use a larger font in handle font_large
-    EVE_CMD_ROMFONT(font_large, font_xl);
+    // if font_line_readout is defined as 0 (instead of being set to the font_xl value in eve_examnple.h)
+    #if (font_line_readout == 0)
+        // call CMD_ROMFONT to load the font data for rom font font_xl handle into font_line_readout handle
+        EVE_CMD_ROMFONT(font_line_readout, font_xl); 
     #endif
 
     // number and colour 1
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
-    EVE_CMD_NUMBER(line_graph_num1_x, line_graph_num1_y, font_large, EVE_OPT_CENTER, ((line_plot1_data[plot_data_size-1] * 100)/255));
+    EVE_CMD_NUMBER(line_graph_num1_x, line_graph_num1_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot1_data[plot_data_size-1] * 100)/255));
     // number and colour 2
     EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
-    EVE_CMD_NUMBER(line_graph_num2_x, line_graph_num2_y, font_large, EVE_OPT_CENTER, ((line_plot2_data[plot_data_size-1] * 100)/255));
+    EVE_CMD_NUMBER(line_graph_num2_x, line_graph_num2_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot2_data[plot_data_size-1] * 100)/255));
     // number and colour 3
     EVE_COLOR_RGB(((uint8_t)(colour3 >> 16)), ((uint8_t)(colour3 >> 8)), ((uint8_t)(colour3)));
-    EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_large, EVE_OPT_CENTER, ((line_plot3_data[plot_data_size-1] * 100)/255));
-
-    #if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-    // call ROMFONT so we can reset the font handle back to what we originally set
-    EVE_CMD_ROMFONT(font_large, font_large);
-    #endif
+    EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot3_data[plot_data_size-1] * 100)/255));
 
     // reset colour
     EVE_COLOR_RGB(255, 255, 255); // white
@@ -1556,13 +1552,19 @@ void renderScreenUpdate(){
 
     // add readout numbers for gauges
     //--------------------------------------------------------------------------
+
+    #if (IS_EVE_API(5)) // if we are BT82x
+        // we want to use a monospaced font for the last usages of font_large handle here as they are centred within a circle
+        // call CMD_ROMFONT to load the font data for monspace font 25 (largest monospaced font available) into a the handle for font_large
+        EVE_CMD_ROMFONT(font_large, 25); 
+    #endif
+
     // first gauge
     EVE_CMD_NUMBER(circle_guage3_x, circle_guage3_y, font_large, EVE_OPT_CENTER, ((circle_value * 100)/360)); // normalise number to 0-100
     // second guage
     EVE_CMD_NUMBER(circle_guage2_x, circle_guage2_y, font_large, EVE_OPT_CENTER, ((circle_value * 100)/360)); // normalise number to 0-100
     // Third guage
     EVE_CMD_NUMBER(circle_guage1_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100)/360)); // normalise number to 0-100
-
 
     //--------------------------------------------------------------------------------------------------------
     // add pie chart onto the screen (if required)
@@ -1598,7 +1600,7 @@ void renderScreenUpdate(){
     // display
     EVE_DISPLAY();
     EVE_DISPLAY(); // per BRT_TN_005
-    // swap this display list inro RAM_DL
+    // swap this display list into RAM_DL
     EVE_CMD_SWAP();
     // send display list to co-processor
     EVE_LIB_EndCoProList();

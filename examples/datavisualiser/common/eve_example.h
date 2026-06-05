@@ -80,11 +80,11 @@ extern "C" {
 #define line_graph_label_x ((EVE_DISP_WIDTH * 2)/40) // 5%
 #define line_graph_label_y ((EVE_DISP_HEIGHT * 2)/40) // 5%
 // for readout
-#define line_graph_num1_x ((EVE_DISP_WIDTH * 51)/80) // 63.75%
+#define line_graph_num1_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
 #define line_graph_num1_y ((EVE_DISP_HEIGHT * 5)/40) // 12.5%
-#define line_graph_num2_x ((EVE_DISP_WIDTH * 51)/80) // 63.75%
+#define line_graph_num2_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
 #define line_graph_num2_y ((EVE_DISP_HEIGHT * 21)/80) // 26.25%
-#define line_graph_num3_x ((EVE_DISP_WIDTH * 51)/80) // 63.75%
+#define line_graph_num3_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
 #define line_graph_num3_y ((EVE_DISP_HEIGHT * 16)/40) // 40%
 // for graph positioning and size
 #define line_graph_x ((EVE_DISP_WIDTH * 3)/40) // 7.5%
@@ -138,7 +138,11 @@ extern "C" {
  @brief Definitions of circular gauge size and positions.
  */
 // circular guage sizing related 
-#define circle_gauge_radius (EVE_DISP_HEIGHT/7) // 14.2 %
+#if (EVE_DISP_WIDTH < 350) // if we have a particualry small screen
+    #define circle_gauge_radius (EVE_DISP_HEIGHT/8) // 12.5 %
+#else
+    #define circle_gauge_radius (EVE_DISP_HEIGHT/7) // 14.2 %
+#endif
 #define circle_gauge_thickness (EVE_DISP_WIDTH/64) // 1.5 %
 // circular gauge positioning 
 #define circle_guage1_x ((EVE_DISP_WIDTH * 37)/80) // 46.25 %
@@ -234,26 +238,60 @@ extern "C" {
 #define backlight_dial_tag 15
 
 /**
- @brief Definitions of handles for inbuilt fonts to be used based on screen size.
+ @brief Definitions of handles for inbuilt rom font handles to be used based on screen size.
  */
-#if (EVE_DISP_WIDTH < 500)
+
+#if (EVE_DISP_WIDTH < 350)
+    #define font_small 20
+    #define font_med 20
+    #define font_large 22
+    #define font_xl 23
+#elif (EVE_DISP_WIDTH >= 350 && EVE_DISP_WIDTH <= 500)
     #define font_small 20
     #define font_med 26
-    #define font_med_2 26
-    #define font_large 29
-    #define font_xl 30
-#elif (EVE_DISP_WIDTH >= 500 && EVE_DISP_WIDTH <= 1200)
+    #define font_large 27
+    #define font_xl 28
+#elif (EVE_DISP_WIDTH >= 500 && EVE_DISP_WIDTH <= 1000)
     #define font_small 20
     #define font_med 27
-    #define font_med_2 28
     #define font_large 30
-    #define font_xl 32
+    #define font_xl 31
+#elif (EVE_DISP_WIDTH > 1000 && EVE_DISP_WIDTH <= 1200)
+    #define font_small 22
+    #define font_med 29
+    #define font_large 31
+    // for screens above this size we want to use rom font handle 32 or 34, but this does not exist EVE API = 1
+    #if IS_EVE_API(1) 
+        #define font_xl 31
+    #else
+        #define font_xl 32
+    #endif
 #elif (EVE_DISP_WIDTH > 1200)
     #define font_small 23
     #define font_med 30
-    #define font_med_2 30
     #define font_large 31
-    #define font_xl 34
+    // for screens above this size we want to use rom font handle 33 or 34, but this does not exist EVE API = 1
+    #if IS_EVE_API(1)
+        #define font_xl 31
+    #else 
+        #if((EVE_DISP_WIDTH > 1200 && EVE_DISP_WIDTH <= 1400))
+            #define font_xl 33
+        #else
+            #define font_xl 34
+        #endif
+    #endif
+#endif
+
+/**
+ @brief Definition of font handle to bbe used for the line plot readout.
+ */
+// if font_xl is defined as a font handle that isnt already pre-configured or available
+#if ((font_xl > 31) && !IS_EVE_API(1,5)) 
+    // set the handdle to 0, so we can used a CMD_ROMFONT call to associate this handle with the font_xl rom font handle
+    #define font_line_readout 0
+#else
+    // else just set this handle define to be euqal to the font_xl value
+    #define font_line_readout font_xl 
 #endif
 
 /* Functions called from eve_example code to platform specific code */
