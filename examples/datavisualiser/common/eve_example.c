@@ -45,8 +45,12 @@
 
 #include "eve_example.h"
 
+#ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 // Define gloabal varibles for use in example
 
@@ -308,7 +312,6 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
 #else
     EVE_SCISSOR_SIZE(2048,2048);
 #endif
-
 }
 
 // ######################################################################################################################################################################################################
@@ -381,7 +384,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     // Draw the edge strips (or circle) which will fill in the arc
     //--------------------------------------------------------------------------------------------------------
 
-    //here we want to start incrementing the stencil buffer 
+    // here we want to start incrementing the stencil buffer 
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
 
     if (arc_degrees >= 360){
@@ -548,7 +551,7 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     EVE_VERTEX2F((centerx * pix_precision), ((centery + radius - thickness) * pix_precision));
     EVE_VERTEX2F((centerx * pix_precision), ((centery + radius) * pix_precision));
 
-    //restore previous graphics context
+    // restore previous graphics context
     EVE_RESTORE_CONTEXT();
     
 }
@@ -622,10 +625,8 @@ void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, 
         EVE_CMD_NUMBER((input_x - (text_offset/2)), (input_y + (i * (y_line_spacing/pix_precision))) ,font_handle ,EVE_OPT_RIGHTX | EVE_OPT_CENTERY, y_axis_labels[i]);
     }
 
-
     // restore context
     EVE_RESTORE_CONTEXT();
-
 }
 
 /**
@@ -718,7 +719,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     // save graphics context
     EVE_SAVE_CONTEXT();
 
-     // set scissor to size of widget and starting position
+    // set scissor to size of widget and starting position
     EVE_SCISSOR_SIZE(width, height);
     EVE_SCISSOR_XY(input_x, input_y);
 
@@ -738,7 +739,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     EVE_COLOR_A(255);
 
     // stencil section to fill
-    // clear the stencil buffer so no previous values in the effect this operation 
+    // clear the stencil buffer so no previous values in the buffer effect this operation 
     EVE_CLEAR(0, 1, 0);
     // disable colours and alpha
     EVE_COLOR_MASK(0, 0, 0, 0);
@@ -762,7 +763,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
         EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     }else{
-        //else add a gradient from colour bottom to colour top
+        // else add a gradient from colour bottom to colour top
         addRectangularGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
     }
     // end drawing
@@ -1161,7 +1162,7 @@ void addSettingsButton(uint32_t colour){
     EVE_VERTEX2F((settings_button_x2 * pix_precision), (settings_button_y2 * pix_precision)); 
     // set alpha to full
     EVE_COLOR_A(255);
-    // set colour for the line that will disect the background bbox
+    // set colour for the line that will disect the background box
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
     // begin lines
     EVE_BEGIN(EVE_BEGIN_LINES);
@@ -1199,7 +1200,7 @@ void addSettingsButton(uint32_t colour){
 /**
  @brief Helper function add the settings option menu into the display list.
  @details This function draws a simple two button menu bar, constructed using the LINES primitive,
- each button is tagged with a individual value
+ each button is tagged with a individual TAG value
  @param input_x x position for the start of the menu bar line
  @param input_y y position for the start of the menu bar line
  @param lenght total length of the menu bar
@@ -1353,7 +1354,7 @@ void modePage(){
     // save context
     EVE_SAVE_CONTEXT();
 
-    // draw  rectangle  for readout
+    // draw rectangle  for readout
     EVE_BEGIN(EVE_BEGIN_RECTS);
     
     // set rectangle colour
@@ -1363,7 +1364,7 @@ void modePage(){
     // draw vertices
     EVE_VERTEX2F((mode_readout_x1 * pix_precision), (mode_readout_y1 * pix_precision));
     EVE_VERTEX2F((mode_readout_x2 * pix_precision), (mode_readout_y2 * pix_precision));
-    // end  rectangles
+    // end rectangles
     EVE_END();
 
     // set colour to white:
@@ -1396,15 +1397,16 @@ void generateStaticScreenComponents(){
     // Construct display list to copy into RAM_DL
     //--------------------------------------------------------------------------------------------------------
 
-    // start the display list
+    // start a co-processor list
     EVE_LIB_BeginCoProList();
+	// start the display list
     EVE_CMD_DLSTART();
     // clear colour RGB to set the screen to the desired BG colour
     EVE_CLEAR_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
     // clear colour, stencil, tag
     EVE_CLEAR(1, 1, 1);
 
-    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT() command
+    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT(3) command
     // this command will cascade through the remaining commands in the display list (such as the VERTEX2F calls)
     #if IS_EVE_API(2,3,4,5)
     // set desired vertex format for the example
@@ -1475,6 +1477,7 @@ void generateStaticScreenComponents(){
     EVE_LIB_BeginCoProList();
     // memcpy from RAM_DL to RAM_G
     EVE_CMD_MEMCPY(static_screen_location, EVE_RAM_DL, static_screen_size); // dest, src, num
+	// send list to the co-processor
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 }
@@ -1488,12 +1491,12 @@ void renderScreenUpdate(){
     // Construct display list and send to EVE
     //--------------------------------------------------------------------------------------------------------
 
-    // start the display list
+	// start a co-processor list
     EVE_LIB_BeginCoProList();
+	// start the display list
     EVE_CMD_DLSTART();
 
-    
-    // append static sections of display list that were previously generated and stored in RAM_G
+    // append static sections of display list that were previously generated and stored in RAM_G to the current display list
     EVE_CMD_APPEND(static_screen_location, static_screen_size);
     
     //--------------------------------------------------------------------------------------------------------
@@ -1592,7 +1595,7 @@ void renderScreenUpdate(){
             // if menu item 1 then drawn the mode sub-menu
             modePage();
         }else{
-            // else draw the LCD backlight setting page
+            // else draw the LCD backlight settings page
             LCDBacklightPage();
         }
     }
@@ -1662,7 +1665,7 @@ void checkTouchStatus(void)
 
     // if the pen up tag equals the settings button tag
 	if (Pen_Up_Tag == settings_button_tag){
-		//reset variables
+		// reset variables
 		Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
@@ -1709,7 +1712,7 @@ void checkTouchStatus(void)
 
     // if the pen up tag equals mode button 1 tag
 	if (Pen_Up_Tag == mode_button_1_tag){
-		//reset variables
+		// reset variables
 		Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
@@ -1746,7 +1749,7 @@ void checkTouchStatus(void)
                 TrackValue = EVE_LIB_MemRead32(EVE_REG_TRACK);
         #endif
 
-        // determine the current angel in degress from the TrackValue
+        // determine the current angel in degrees from the TrackValue
         angle = (((360 * (((TrackValue >> 16)) & 0xffff)) / 0x10000));
 
         // pefrom some simple rollover checking below
@@ -1765,7 +1768,7 @@ void checkTouchStatus(void)
         }
 
         // update the backlight level variable
-        // nomralise this to a rang of 0-100 based on the angles used
+        // nomralise this to a range of 0-100 based on the angles used
         backlight_value = (((last_valid_angle - backlight_arc_start_deg) * 100)/backlight_arc_total_deg);
 
         // write the backlight strength register based upon the current angle
@@ -1919,7 +1922,7 @@ void eve_display(void)
             // call render screen funciton to update the screen
             renderScreenUpdate();
         }else{
-            // else we want to read some data from our attached sensors
+            // else we want to read some data from our 'attached sensors'
             // TODO: add code to read sensor values 
 
             // call render screen funciton to update the screen
