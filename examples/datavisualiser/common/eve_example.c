@@ -1403,6 +1403,8 @@ void generateStaticScreenComponents(){
     EVE_CMD_DLSTART();
     // clear colour RGB to set the screen to the desired BG colour
     EVE_CLEAR_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
+	// clear the tag value to a value we arent using in the touch routines (i.e. non-zero)
+    EVE_CLEAR_TAG(100);
     // clear colour, stencil, tag
     EVE_CLEAR(1, 1, 1);
 
