@@ -13,6 +13,9 @@
 			"path": "../../../source"
 		},
 		{
+			"path": "../../snippets"
+		},
+		{
 			"path": "../../../ports/eve_arch_rpi"
 		},
 		{

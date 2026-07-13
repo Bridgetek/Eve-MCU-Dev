@@ -176,6 +176,7 @@
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
+    <ClCompile Include="..\..\..\snippets\controls\sound.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
+    <ClInclude Include="..\..\..\snippets\controls\sound.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />

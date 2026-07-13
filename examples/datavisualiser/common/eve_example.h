@@ -47,6 +47,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include "touch.h"
+#include "controls/sound.h"
 #include "maths/trig_furman.h"
 #include "controls/arcs.h"
 
@@ -230,12 +231,13 @@ extern "C" {
 /**
  @brief Definitions of handles for on screen buttons.
  */
-#define settings_button_tag 10
-#define settings_menu_item_1_tag 11
-#define settings_menu_item_2_tag 12
-#define mode_button_1_tag 13
-#define mode_button_2_tag 14
-#define backlight_dial_tag 15
+#define pie_chart_tag 10
+#define settings_button_tag 11
+#define settings_menu_item_1_tag 12
+#define settings_menu_item_2_tag 13
+#define mode_button_1_tag 14
+#define mode_button_2_tag 15
+#define backlight_dial_tag 16
 
 /**
  @brief Definitions of handles for inbuilt rom font handles to be used based on screen size.
