@@ -81,11 +81,11 @@ extern "C" {
 #define line_graph_label_x ((EVE_DISP_WIDTH * 2)/40) // 5%
 #define line_graph_label_y ((EVE_DISP_HEIGHT * 2)/40) // 5%
 // for readout
-#define line_graph_num1_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
+#define line_graph_num1_x ((EVE_DISP_WIDTH * 205)/320) // 64.06%
 #define line_graph_num1_y ((EVE_DISP_HEIGHT * 5)/40) // 12.5%
-#define line_graph_num2_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
+#define line_graph_num2_x ((EVE_DISP_WIDTH * 205)/320) // 64.06%
 #define line_graph_num2_y ((EVE_DISP_HEIGHT * 21)/80) // 26.25%
-#define line_graph_num3_x ((EVE_DISP_WIDTH * 197)/320) // 61.56%
+#define line_graph_num3_x ((EVE_DISP_WIDTH * 205)/320) // 64.06%
 #define line_graph_num3_y ((EVE_DISP_HEIGHT * 16)/40) // 40%
 // for graph positioning and size
 #define line_graph_x ((EVE_DISP_WIDTH * 3)/40) // 7.5%

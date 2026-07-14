@@ -45,8 +45,12 @@
 
 #include "eve_example.h"
 
+#ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 // Define global varibles for use in example
 
