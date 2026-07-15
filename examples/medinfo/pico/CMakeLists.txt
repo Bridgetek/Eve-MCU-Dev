@@ -113,6 +113,9 @@ include_directories(
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
+# Enable debug logging output to stdio
+add_compile_definitions(DEBUG_LEVEL=0)
+
 # The pico port can only use the EVE Flash or C arrays for storage of assets
 # Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_C_ARRAYS)
@@ -120,8 +123,6 @@ add_compile_definitions(ASSETS=USE_C_ARRAYS)
 # Trig tables are used instead of maths functions
 add_compile_definitions(USE_TRIG_TABLE)
 
-# Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=0)
 # Milliseconds to wait for stdio connection
 # (will also have stdio_usb_connected() call in main to wait for connection)
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)

@@ -1987,8 +1987,10 @@ void eve_display(void)
 // ######################################################################################################################################################################################################
 
 /**
- @brief Function to start the EVE application, called from main.c. This function will call separate functions to initialize EVE, and calibrate
- touch for the screen. Finally it will call eve_display() to run the main display loop and update the screen.
+ @brief Function to start the EVE application, called from main.c. 
+ This function will call separate functions to initialize EVE, calibrate
+ touch for the screen, and enable sound. 
+ Finally it will call eve_display() to run the main display loop and update the screen.
  */
 void eve_example(void)
 {

@@ -109,9 +109,13 @@ include_directories(
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
-add_compile_definitions(USE_TRIG_TABLE) #use look up table instead of maths funcitons for trig
+
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+
+# Use look up table instead of maths funcitons for trig
+add_compile_definitions(USE_TRIG_TABLE)
+
 # Milliseconds to wait for stdio connection
 # (will also have stdio_usb_connected() call in main to wait for connection)
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)

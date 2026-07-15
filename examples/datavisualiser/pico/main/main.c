@@ -131,7 +131,6 @@ uint32_t platform_get_time(void)
 void setup(void)
 {
     int ch = 0;
-
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
 
@@ -142,6 +141,9 @@ void setup(void)
     gpio_put(LED_PIN, 1);
     
 #if DEBUG_LEVEL > 0
+    // Wait for stdio (UART/USB) connection if enabled
+    while (!stdio_usb_connected()) { sleep_ms(100);  }
+
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");

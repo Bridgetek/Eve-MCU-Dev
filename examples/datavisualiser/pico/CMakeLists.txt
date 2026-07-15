@@ -116,8 +116,10 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
+
 # Enable debug logging output to stdio
-#add_compile_definitions(DEBUG_LEVEL=1)
+add_compile_definitions(DEBUG_LEVEL=0)
+
 # Use look up table instead of maths functions for trig
 add_compile_definitions(USE_TRIG_TABLE) 
 
