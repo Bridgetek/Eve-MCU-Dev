@@ -635,8 +635,6 @@ void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t
 #endif
 
 #if IS_EVE_API(3, 4)
-void EVE_CMD_INT_SWLOADIMAGE(uint32_t ptr, uint32_t options);
-void EVE_CMD_GETPOINT(int16_t x, int16_t y, uint32_t sx, uint32_t sy);
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options);
 void EVE_CMD_CLEARCACHE(void);
 void EVE_CMD_INTRAMSHARED(uint32_t ptr);
