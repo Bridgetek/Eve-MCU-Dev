@@ -34,17 +34,16 @@
  * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
- *
+
  @brief Cross-generation EVE register address map.
  @details Provides a single unified set of EVE_REG_* macros that resolve to
      the correct hardware address for the selected generation at compile time.
-     The generation is controlled by FT8XX_TYPE (via EVE_config.h / FT8xx.h),
-     which sets EVE_API to 1–5.
+     The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+     and converted to the EVE generation in EVE.h. The generation is set in
+     EVE_API to 1–5 and EVE_SUB_API if required.
 
      Usage:
-         #include <EVE_config.h>   // sets FT8XX_TYPE
-         #include <FT8xx.h>        // sets EVE_API, includes this file
-         // or include directly after FT8xx.h is included.
+         #include <EVE.h>          // sets EVE_API, includes this file
 
      Macro convention:
          EVE_API_SELECT(a1, a2, a3, a4, a5)
@@ -62,29 +61,16 @@
      throughout this file. They are kept as separate columns so that if a
      future BT81x variant diverges the table stays correct.
  */
-/*
- * ============================================================================
- * (C) Copyright,  Bridgetek Pte. Ltd.
- * ============================================================================
- *
- * This source code ("the Software") is provided by Bridgetek Pte Ltd
- * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf
- * You must read the Licence Terms before downloading or using the Software.
- * By installing or using the Software you agree to the Licence Terms. If you
- * do not agree to the Licence Terms then do not download or use the Software.
- * ============================================================================
- */
 
 #ifndef _EVE_REGISTERS_H_
 #define _EVE_REGISTERS_H_
 
 /* -------------------------------------------------------------------------
- * Prerequisite: FT8xx.h must already be included so that EVE_API is defined
- * and the EVE_API_SELECT / IS_EVE_API macros are available.
+ * Prerequisite: This file must be included by EVE.h so that EVE_API is 
+ * defined and the IS_EVE_API and EVE_API_SELECT macros are available.
  * ------------------------------------------------------------------------- */
-#ifndef EVE_API
-#error "EVE_registers.h requires FT8xx.h to be included first (defines EVE_API)."
+#if !(defined(EVE_API) && defined(IS_EVE_API) && defined(EVE_API_SELECT))
+#error "EVE_commands.h requires to be included by EVE.h (defines EVE_API)."
 #endif
 
 /* =========================================================================
@@ -92,19 +78,6 @@
  * ========================================================================= */
 #ifndef EVE_REG_NOT_AVAILABLE
 #define EVE_REG_NOT_AVAILABLE  0ul
-#endif
-
-/* =========================================================================
- * EVE_API_SELECT — selects one of five address constants based on EVE_API.
- * The result is a (uint32_t) compile-time constant expression.
- * It CANNOT be used in #if directives; use IS_EVE_API() for that.
- * ========================================================================= */
-#ifndef EVE_API_SELECT
-#define EVE_API_SELECT(a1, a2, a3, a4, a5)             \
-    ((EVE_API == 1) ? (a1) : (EVE_API == 2) ? (a2)     \
-                           : (EVE_API == 3) ? (a3)     \
-                           : (EVE_API == 4) ? (a4)     \
-                                            : (a5))
 #endif
 
 /* =========================================================================

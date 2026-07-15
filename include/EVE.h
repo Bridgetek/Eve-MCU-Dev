@@ -179,6 +179,7 @@
  * which then becomes one of the numbers after __VA_ARGS__ in NUM_ARGS.
  * The first arguments in _NUM_ARGS are dummies.
  */
+#ifndef IS_EVE_API
 #define _NUM_ARGS(X,X5,X4,X3,X2,X1,N,...) N
 #define NUM_ARGS(...) _NUM_ARGS(0, ## __VA_ARGS__ ,5,4,3,2,1,0)
 
@@ -193,6 +194,18 @@
 #define IS_EVE_API(...)      _IS_EVE_API(NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__)
 
 #define IS_EVE_SUB_API(a)      (a == EVE_SUB_API)
+#endif
+
+/** Macros to select a value from a set depending on the EVE_API.
+ * The values must be constants and cannot be further preprocessor directives.
+ */
+#ifndef EVE_API_SELECT
+#define EVE_API_SELECT(a1, a2, a3, a4, a5)             \
+    ((EVE_API == 1) ? (a1) : (EVE_API == 2) ? (a2)     \
+                           : (EVE_API == 3) ? (a3)     \
+                           : (EVE_API == 4) ? (a4)     \
+                                            : (a5))
+#endif
 
 /** EVE API definitions. */
 

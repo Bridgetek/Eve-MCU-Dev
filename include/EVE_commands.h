@@ -34,35 +34,53 @@
  * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
+ 
+ @brief Cross-generation EVE command definitions.
+ @details Provides a single unified set of EVE_ display list commands and
+     EVE_CMD_ co-processor commands that correct command codes for the selected 
+     generation at compile time.
+     The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+     and converted to the EVE generation in EVE.h. The generation is set in
+     EVE_API to 1–5 and EVE_SUB_API if required.
+
+     Usage:
+         #include <EVE.h>          // sets EVE_API, includes this file
+
+     Macro convention:
+         EVE_API_SELECT(a1, a2, a3, a4, a5)
+             a1 = EVE1 address (FT800/FT801)
+             a2 = EVE2 address (FT810–FT813, BT880–BT883)
+             a3 = EVE3 address (BT815/BT816)
+             a4 = EVE4 address (BT817/BT818)
+             a5 = EVE5 address (BT820)
+
+         EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
+         Using an absent register at runtime is a logic error — guard call sites
+         with IS_EVE_API() to make absence visible at compile time.
+
+     NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
+     throughout this file. They are kept as separate columns so that if a
+     future BT81x variant diverges the table stays correct.
  */
 
 #ifndef _EVE_COMMANDS_H_
 #define _EVE_COMMANDS_H_
 
-
-#ifndef EVE_API
-#error "EVE_commands.h requires FT8xx.h to be included first (defines EVE_API)."
+/* -------------------------------------------------------------------------
+ * Prerequisite: This file must be included by EVE.h so that EVE_API is 
+ * defined and the IS_EVE_API and EVE_API_SELECT macros are available.
+ * ------------------------------------------------------------------------- */
+#if !(defined(EVE_API) && defined(IS_EVE_API) && defined(EVE_API_SELECT))
+#error "EVE_commands.h requires to be included by EVE.h (defines EVE_API)."
 #endif
 
 /* =========================================================================
- * EVE_API_SELECT — selects one of five address constants based on EVE_API.
- * The result is a (uint32_t) compile-time constant expression.
- * It CANNOT be used in #if directives; use IS_EVE_API() for that.
- * ========================================================================= */
-#ifndef EVE_API_SELECT
-#define EVE_API_SELECT(a1, a2, a3, a4, a5)             \
-    ((EVE_API == 1) ? (a1) : (EVE_API == 2) ? (a2)     \
-                           : (EVE_API == 3) ? (a3)     \
-                           : (EVE_API == 4) ? (a4)     \
-                                            : (a5))
-#endif
-
 /* Sentinel for a register / constant absent on a given generation.
- * Value 0 is safe for register addresses (never a valid EVE address).
  * For CMD opcodes, guard usage sites with IS_EVE_API rather than relying
- * on this value. */
-#ifndef EVE_REG_NOT_AVAILABLE
-#define EVE_REG_NOT_AVAILABLE  0ul
+ * on this value. 0ul is a DISPLAY() command.
+ * ========================================================================= */
+#ifndef EVE_CMD_NOT_AVAILABLE
+#define EVE_CMD_NOT_AVAILABLE  0ul
 #endif
 
 /* =========================================================================
@@ -283,16 +301,16 @@
 
 /* Commands added in EVE2; same opcode in EVE2/3/4; different in EVE5 */
 #if IS_EVE_API(2,3,4,5)
-#define EVE_ENC_CMD_SETROTATE   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff36ul,0xffffff36ul,0xffffff36ul,0xffffff31ul)
-#define EVE_ENC_CMD_SETBASE     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff38ul,0xffffff38ul,0xffffff38ul,0xffffff33ul)
-#define EVE_ENC_CMD_MEDIAFIFO   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff39ul,0xffffff39ul,0xffffff39ul,0xffffff34ul)
-#define EVE_ENC_CMD_PLAYVIDEO   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff3aul,0xffffff3aul,0xffffff3aul,0xffffff35ul)
-#define EVE_ENC_CMD_SETSCRATCH  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff3cul,0xffffff3cul,0xffffff3cul,0xffffff37ul)
-#define EVE_ENC_CMD_ROMFONT     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff3ful,0xffffff3ful,0xffffff3ful,0xffffff39ul)
-#define EVE_ENC_CMD_VIDEOSTART  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff40ul,0xffffff40ul,0xffffff40ul,0xffffff3aul)
-#define EVE_ENC_CMD_VIDEOFRAME  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff41ul,0xffffff41ul,0xffffff41ul,0xffffff3bul)
-#define EVE_ENC_CMD_SYNC        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff42ul,0xffffff42ul,0xffffff42ul,0xffffff3cul)
-#define EVE_ENC_CMD_SETBITMAP   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,0xffffff43ul,0xffffff43ul,0xffffff43ul,0xffffff3dul)
+#define EVE_ENC_CMD_SETROTATE   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff36ul,0xffffff36ul,0xffffff36ul,0xffffff31ul)
+#define EVE_ENC_CMD_SETBASE     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff38ul,0xffffff38ul,0xffffff38ul,0xffffff33ul)
+#define EVE_ENC_CMD_MEDIAFIFO   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff39ul,0xffffff39ul,0xffffff39ul,0xffffff34ul)
+#define EVE_ENC_CMD_PLAYVIDEO   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff3aul,0xffffff3aul,0xffffff3aul,0xffffff35ul)
+#define EVE_ENC_CMD_SETSCRATCH  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff3cul,0xffffff3cul,0xffffff3cul,0xffffff37ul)
+#define EVE_ENC_CMD_ROMFONT     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff3ful,0xffffff3ful,0xffffff3ful,0xffffff39ul)
+#define EVE_ENC_CMD_VIDEOSTART  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff40ul,0xffffff40ul,0xffffff40ul,0xffffff3aul)
+#define EVE_ENC_CMD_VIDEOFRAME  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff41ul,0xffffff41ul,0xffffff41ul,0xffffff3bul)
+#define EVE_ENC_CMD_SYNC        EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff42ul,0xffffff42ul,0xffffff42ul,0xffffff3cul)
+#define EVE_ENC_CMD_SETBITMAP   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff43ul,0xffffff43ul,0xffffff43ul,0xffffff3dul)
 #endif
 
 /* Commands added in EVE2, present only in EVE2/3/4 (absent in EVE5) */
@@ -303,30 +321,30 @@
 
 /* Commands added in EVE3; present in EVE3/4 and EVE5 with different opcode */
 #if IS_EVE_API(3,4,5)
-#define EVE_ENC_CMD_FLASHERASE    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff44ul,0xffffff44ul,0xffffff3eul)
-#define EVE_ENC_CMD_FLASHWRITE    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff45ul,0xffffff45ul,0xffffff3ful)
-#define EVE_ENC_CMD_FLASHREAD     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff46ul,0xffffff46ul,0xffffff40ul)
-#define EVE_ENC_CMD_FLASHUPDATE   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff47ul,0xffffff47ul,0xffffff41ul)
-#define EVE_ENC_CMD_FLASHDETACH   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff48ul,0xffffff48ul,0xffffff42ul)
-#define EVE_ENC_CMD_FLASHATTACH   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff49ul,0xffffff49ul,0xffffff43ul)
-#define EVE_ENC_CMD_FLASHFAST     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff4aul,0xffffff4aul,0xffffff44ul)
-#define EVE_ENC_CMD_FLASHSPIDESEL EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff4bul,0xffffff4bul,0xffffff45ul)
-#define EVE_ENC_CMD_FLASHSPITX    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff4cul,0xffffff4cul,0xffffff46ul)
-#define EVE_ENC_CMD_FLASHSPIRX    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff4dul,0xffffff4dul,0xffffff47ul)
-#define EVE_ENC_CMD_FLASHSOURCE   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff4eul,0xffffff4eul,0xffffff48ul)
-#define EVE_ENC_CMD_FLASHPROGRAM  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff70ul,0xffffff70ul,0xffffff64ul)
-#define EVE_ENC_CMD_ROTATEAROUND  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff51ul,0xffffff51ul,0xffffff4bul)
-#define EVE_ENC_CMD_RESETFONTS    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff52ul,0xffffff52ul,0xffffff4cul)
-#define EVE_ENC_CMD_ANIMSTART     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff53ul,0xffffff53ul,0xffffff5ful)
-#define EVE_ENC_CMD_ANIMSTOP      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff54ul,0xffffff54ul,0xffffff4dul)
-#define EVE_ENC_CMD_ANIMXY        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff55ul,0xffffff55ul,0xffffff4eul)
-#define EVE_ENC_CMD_ANIMDRAW      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff56ul,0xffffff56ul,0xffffff4ful)
-#define EVE_ENC_CMD_GRADIENTA     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff57ul,0xffffff57ul,0xffffff50ul)
-#define EVE_ENC_CMD_FILLWIDTH     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff58ul,0xffffff58ul,0xffffff51ul)
-#define EVE_ENC_CMD_APPENDF       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff59ul,0xffffff59ul,0xffffff52ul)
-#define EVE_ENC_CMD_ANIMFRAME     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff5aul,0xffffff5aul,0xffffff5eul)
+#define EVE_ENC_CMD_FLASHERASE    EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff44ul,0xffffff44ul,0xffffff3eul)
+#define EVE_ENC_CMD_FLASHWRITE    EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff45ul,0xffffff45ul,0xffffff3ful)
+#define EVE_ENC_CMD_FLASHREAD     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff46ul,0xffffff46ul,0xffffff40ul)
+#define EVE_ENC_CMD_FLASHUPDATE   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff47ul,0xffffff47ul,0xffffff41ul)
+#define EVE_ENC_CMD_FLASHDETACH   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff48ul,0xffffff48ul,0xffffff42ul)
+#define EVE_ENC_CMD_FLASHATTACH   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff49ul,0xffffff49ul,0xffffff43ul)
+#define EVE_ENC_CMD_FLASHFAST     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff4aul,0xffffff4aul,0xffffff44ul)
+#define EVE_ENC_CMD_FLASHSPIDESEL EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff4bul,0xffffff4bul,0xffffff45ul)
+#define EVE_ENC_CMD_FLASHSPITX    EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff4cul,0xffffff4cul,0xffffff46ul)
+#define EVE_ENC_CMD_FLASHSPIRX    EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff4dul,0xffffff4dul,0xffffff47ul)
+#define EVE_ENC_CMD_FLASHSOURCE   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff4eul,0xffffff4eul,0xffffff48ul)
+#define EVE_ENC_CMD_FLASHPROGRAM  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff70ul,0xffffff70ul,0xffffff64ul)
+#define EVE_ENC_CMD_ROTATEAROUND  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff51ul,0xffffff51ul,0xffffff4bul)
+#define EVE_ENC_CMD_RESETFONTS    EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff52ul,0xffffff52ul,0xffffff4cul)
+#define EVE_ENC_CMD_ANIMSTART     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff53ul,0xffffff53ul,0xffffff5ful)
+#define EVE_ENC_CMD_ANIMSTOP      EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff54ul,0xffffff54ul,0xffffff4dul)
+#define EVE_ENC_CMD_ANIMXY        EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff55ul,0xffffff55ul,0xffffff4eul)
+#define EVE_ENC_CMD_ANIMDRAW      EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff56ul,0xffffff56ul,0xffffff4ful)
+#define EVE_ENC_CMD_GRADIENTA     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff57ul,0xffffff57ul,0xffffff50ul)
+#define EVE_ENC_CMD_FILLWIDTH     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff58ul,0xffffff58ul,0xffffff51ul)
+#define EVE_ENC_CMD_APPENDF       EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff59ul,0xffffff59ul,0xffffff52ul)
+#define EVE_ENC_CMD_ANIMFRAME     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff5aul,0xffffff5aul,0xffffff5eul)
 /** Co-processor NOP. */
-#define EVE_ENC_CMD_NOP           EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff5bul,0xffffff5bul,0xffffff53ul)
+#define EVE_ENC_CMD_NOP           EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff5bul,0xffffff5bul,0xffffff53ul)
 #endif /* IS_EVE_API(3,4,5) */
 
 /* EVE3/4 only (absent in EVE5) */
@@ -338,15 +356,15 @@
 
 /* Commands added in EVE4; present in EVE4 and EVE5 with different opcodes */
 #if IS_EVE_API(4,5)
-#define EVE_ENC_CMD_CALIBRATESUB  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff60ul,0xffffff56ul)
-#define EVE_ENC_CMD_TESTCARD      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff61ul,0xffffff57ul)
-#define EVE_ENC_CMD_GETIMAGE      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff64ul,0xffffff58ul)
-#define EVE_ENC_CMD_WAIT          EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff65ul,0xffffff59ul)
-#define EVE_ENC_CMD_RETURN        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff66ul,0xffffff5aul)
-#define EVE_ENC_CMD_CALLLIST      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff67ul,0xffffff5bul)
-#define EVE_ENC_CMD_NEWLIST       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff68ul,0xffffff5cul)
-#define EVE_ENC_CMD_ENDLIST       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff69ul,0xffffff5dul)
-#define EVE_ENC_CMD_RUNANIM       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,EVE_REG_NOT_AVAILABLE,0xffffff6ful,0xffffff60ul)
+#define EVE_ENC_CMD_CALIBRATESUB  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff60ul,0xffffff56ul)
+#define EVE_ENC_CMD_TESTCARD      EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff61ul,0xffffff57ul)
+#define EVE_ENC_CMD_GETIMAGE      EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff64ul,0xffffff58ul)
+#define EVE_ENC_CMD_WAIT          EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff65ul,0xffffff59ul)
+#define EVE_ENC_CMD_RETURN        EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff66ul,0xffffff5aul)
+#define EVE_ENC_CMD_CALLLIST      EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff67ul,0xffffff5bul)
+#define EVE_ENC_CMD_NEWLIST       EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff68ul,0xffffff5cul)
+#define EVE_ENC_CMD_ENDLIST       EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff69ul,0xffffff5dul)
+#define EVE_ENC_CMD_RUNANIM       EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,EVE_CMD_NOT_AVAILABLE,0xffffff6ful,0xffffff60ul)
 #endif
 
 /* EVE4 only */
