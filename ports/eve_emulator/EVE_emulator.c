@@ -1,47 +1,47 @@
 /**
  @file EVE_emulator.c
  */
-/*
- * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
- * ============================================================================
- *
- * This source code ("the Software") is provided by Bridgetek Pte Ltd
- * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
- * You must read the Licence Terms before downloading or using the Software.
- * By installing or using the Software you agree to the Licence Terms. If you
- * do not agree to the Licence Terms then do not download or use the Software.
- *
- * Without prejudice to the Licence Terms, here is a summary of some of the key
- * terms of the Licence Terms (and in the event of any conflict between this
- * summary and the Licence Terms then the text of the Licence Terms will
- * prevail).
- *
- * The Software is provided "as is".
- * There are no warranties (or similar) in relation to the quality of the
- * Software. You use it at your own risk.
- * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of Bridgetek liability for certain types of loss
- * such as: special loss or damage; incidental loss or damage; indirect or
- * consequential loss or damage; loss of income; loss of business; loss of
- * profits; loss of revenue; loss of contracts; business interruption; loss of
- * the use of money or anticipated savings; loss of information; loss of
- * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
- * corruption of data.
- * There is a monetary cap on Bridgetek's liability.
- * The Software may have subsequently been amended by another user and then
- * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, Bridgetek
- * has no liability in relation to those amendments.
- * ============================================================================
- */
+ /*
+  * ============================================================================
+  * (C) Copyright Bridgetek Pte Ltd
+  * ============================================================================
+  *
+  * This source code ("the Software") is provided by Bridgetek Pte Ltd
+  * ("Bridgetek") subject to the licence terms set out
+  * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+  * You must read the Licence Terms before downloading or using the Software.
+  * By installing or using the Software you agree to the Licence Terms. If you
+  * do not agree to the Licence Terms then do not download or use the Software.
+  *
+  * Without prejudice to the Licence Terms, here is a summary of some of the key
+  * terms of the Licence Terms (and in the event of any conflict between this
+  * summary and the Licence Terms then the text of the Licence Terms will
+  * prevail).
+  *
+  * The Software is provided "as is".
+  * There are no warranties (or similar) in relation to the quality of the
+  * Software. You use it at your own risk.
+  * The Software should not be used in, or for, any medical device, system or
+  * appliance. There are exclusions of Bridgetek liability for certain types of loss
+  * such as: special loss or damage; incidental loss or damage; indirect or
+  * consequential loss or damage; loss of income; loss of business; loss of
+  * profits; loss of revenue; loss of contracts; business interruption; loss of
+  * the use of money or anticipated savings; loss of information; loss of
+  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+  * corruption of data.
+  * There is a monetary cap on Bridgetek's liability.
+  * The Software may have subsequently been amended by another user and then
+  * distributed by that other user ("Adapted Software").  If so that user may
+  * have additional licence terms that apply to those amendments. However, Bridgetek
+  * has no liability in relation to those amendments.
+  * ============================================================================
+  */
 
-// Guard against being used for incorrect platform or architecture.
-// USE_EMULATOR macro enables this file to open the emulator library.
-// In gcc compilers this is in the Makefile. -DUSE_EMULATOR=0
-// In VisualStudio this is in Project Properties -> Configuration Properties -> 
-//     C/C++ -> Preprocessor -> Preprocessor Definitions.
+  // Guard against being used for incorrect platform or architecture.
+  // USE_EMULATOR macro enables this file to open the emulator library.
+  // In gcc compilers this is in the Makefile. -DUSE_EMULATOR=0
+  // In VisualStudio this is in Project Properties -> Configuration Properties -> 
+  //     C/C++ -> Preprocessor -> Preprocessor Definitions.
 #if defined(USE_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
@@ -89,10 +89,47 @@
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-void *Emulator;
-void *EmulatorFlash;
-BT8XXEMU_EmulatorParameters *EmulatorParameters;
-BT8XXEMU_FlashParameters *EmulatorFlashParameters; 
+void* Emulator;
+void* EmulatorFlash;
+BT8XXEMU_EmulatorParameters* EmulatorParameters;
+BT8XXEMU_FlashParameters* EmulatorFlashParameters;
+
+static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
+{
+#ifdef _WIN32
+    eve_tchar_t resolvedPath[260];
+    eve_tchar_t* lastSeparator;
+    DWORD pathLength;
+
+    if (!filePath || !filePath[0])
+        return -1;
+
+    // Preserve absolute paths supplied by the application.
+    if (filePath[0] == L'\\' || filePath[0] == L'/' || filePath[1] == L':')
+        return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), filePath) == 0 ? 0 : -1;
+
+    // Relative firmware paths are resolved beside the running executable.
+    pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
+    if (!pathLength || pathLength >= _countof(resolvedPath))
+        return -1;
+
+    lastSeparator = wcsrchr(resolvedPath, L'\\');
+    if (!lastSeparator)
+        return -1;
+    lastSeparator[1] = L'\0';
+
+    if (wcscat_s(resolvedPath, _countof(resolvedPath), filePath) != 0)
+        return -1;
+
+    return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), resolvedPath) == 0 ? 0 : -1;
+#else
+    if (!filePath || !filePath[0])
+        return -1;
+    strncpy(parameters->DataFilePath, filePath, sizeof(parameters->DataFilePath) - 1);
+    parameters->DataFilePath[sizeof(parameters->DataFilePath) - 1] = '\0';
+    return 0;
+#endif
+}
 
 // ------------------ Platform specific initialisation  ------------------------
 
@@ -133,22 +170,37 @@ int MCU_Init(void)
 #endif
 
     // Make defaults
-    EmulatorParameters = (BT8XXEMU_EmulatorParameters *)malloc(sizeof(BT8XXEMU_EmulatorParameters));
+    EmulatorParameters = (BT8XXEMU_EmulatorParameters*)malloc(sizeof(BT8XXEMU_EmulatorParameters));
     if (!EmulatorParameters)
         return -1;
-    EmulatorFlashParameters = (BT8XXEMU_FlashParameters *)malloc(sizeof(BT8XXEMU_FlashParameters));
+    EmulatorFlashParameters = (BT8XXEMU_FlashParameters*)malloc(sizeof(BT8XXEMU_FlashParameters));
     if (!EmulatorFlashParameters)
         return -1;
 
     BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
     EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
-    
+
+    BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
+    EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
+
+// flash is only supoprted in EVE API level = 3,4,5
+#if IS_EVE_API(3,4,5)
     BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
 #if defined(EVE_EMULATOR_FLASH_FILE)
-    strcpy(EmulatorFlashParameters->DataFilePath, EVE_EMULATOR_FLASH_FILE);
+    if (MCU_SetFlashDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
+    {
+        DEBUG_PRINTF("Unable to resolve emulator Flash file path.\n");
+        return -1;
+    } 
+#if defined(EVE_EMULATOR_FLASH_FILE_SIZE)
+    EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
+#else
+    EmulatorFlashParameters->SizeBytes = (8 * 1024 * 1024);
+#endif
 #endif
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
-
+    EmulatorParameters->Flash = EmulatorFlash;
+#endif
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
 
     return 0;
@@ -252,124 +304,124 @@ void MCU_Delay_500ms(void)
 // --------------------- SPI Send and Receive ----------------------------------
 
 // Exchange a single byte on the SPI bus
-char MCU_SPIReadWrite8(uint8_t val) 
+char MCU_SPIReadWrite8(uint8_t val)
 {
-    uint8_t valrx = BT8XXEMU_transfer(Emulator, val); 
+    uint8_t valrx = BT8XXEMU_transfer(Emulator, val);
     return valrx;
 }
 
-uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) 
+uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
-  uint16_t DataRead = 0;
-  uint16_t temp;
+    uint16_t DataRead = 0;
+    uint16_t temp;
 
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
-  DataRead |= (temp << 0);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
-  DataRead |= (temp << 8);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+    DataRead |= (temp << 0);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+    DataRead |= (temp << 8);
 
-  return DataRead;
+    return DataRead;
 }
 
-uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite) 
+uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
 {
-  uint32_t DataRead = 0;
-  uint32_t temp;
+    uint32_t DataRead = 0;
+    uint32_t temp;
 
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
-  DataRead |= (temp << 8);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
-  DataRead |= (temp << 16);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
-  DataRead |= (temp << 24);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+    DataRead |= (temp << 8);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+    DataRead |= (temp << 16);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
+    DataRead |= (temp << 24);
 
-  return DataRead;
+    return DataRead;
 }
 
-uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) 
+uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 {
-  uint32_t DataRead = 0;
-  uint32_t temp;
+    uint32_t DataRead = 0;
+    uint32_t temp;
 
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
-  DataRead |= (temp << 0);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
-  DataRead |= (temp << 8);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
-  DataRead |= (temp << 16);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
-  DataRead |= (temp << 24);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+    DataRead |= (temp << 0);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+    DataRead |= (temp << 8);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
+    DataRead |= (temp << 16);
+    temp = (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
+    DataRead |= (temp << 24);
 
-  return DataRead;
+    return DataRead;
 }
 
 uint8_t MCU_SPIRead8(void) {
-  uint8_t DataRead = 0;
+    uint8_t DataRead = 0;
 
-  DataRead = MCU_SPIReadWrite8(0);
+    DataRead = MCU_SPIReadWrite8(0);
 
-  return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite) {
-  MCU_SPIReadWrite8(DataToWrite);
+    MCU_SPIReadWrite8(DataToWrite);
 }
 
 uint16_t MCU_SPIRead16(void) {
-  uint16_t DataRead = 0;
+    uint16_t DataRead = 0;
 
-  DataRead = MCU_SPIReadWrite16(0);
+    DataRead = MCU_SPIReadWrite16(0);
 
-  return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite16(uint16_t DataToWrite) {
-  MCU_SPIReadWrite16(DataToWrite);
+    MCU_SPIReadWrite16(DataToWrite);
 }
 
 uint32_t MCU_SPIRead24(void) {
-  uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-  DataRead = MCU_SPIReadWrite24(0);
+    DataRead = MCU_SPIReadWrite24(0);
 
-  return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite) {
-  MCU_SPIReadWrite24(DataToWrite);
+    MCU_SPIReadWrite24(DataToWrite);
 }
 
 uint32_t MCU_SPIRead32(void) {
-  uint32_t DataRead = 0;
+    uint32_t DataRead = 0;
 
-  DataRead = MCU_SPIReadWrite32(0);
+    DataRead = MCU_SPIReadWrite32(0);
 
-  return DataRead;
+    return DataRead;
 }
 
 void MCU_SPIWrite32(uint32_t DataToWrite) {
-  MCU_SPIReadWrite32(DataToWrite);
+    MCU_SPIReadWrite32(DataToWrite);
 }
 
-void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length) {
-  //TODO: replace with SPI.transfer(DataToWrite, length);
-  // Note that DataToWrite is overwritten.
-  uint16_t DataPointer = 0;
+void MCU_SPIWrite(const uint8_t* DataToWrite, uint32_t length) {
+    //TODO: replace with SPI.transfer(DataToWrite, length);
+    // Note that DataToWrite is overwritten.
+    uint16_t DataPointer = 0;
 
-  while (DataPointer < length) {
-    MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
-    DataPointer++;
-  }
+    while (DataPointer < length) {
+        MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
+        DataPointer++;
+    }
 }
 
-void MCU_SPIRead(uint8_t *DataToRead, uint32_t length) {
-  //TODO: replace with SPI.transfer(DataToRead, length);
-  uint16_t DataPointer = 0;
+void MCU_SPIRead(uint8_t* DataToRead, uint32_t length) {
+    //TODO: replace with SPI.transfer(DataToRead, length);
+    uint16_t DataPointer = 0;
 
-  while (DataPointer < length) {
-    DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
-    DataPointer++;
-  }
+    while (DataPointer < length) {
+        DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
+        DataPointer++;
+    }
 }
 
 uint16_t MCU_htobe16(uint16_t h)
@@ -379,7 +431,7 @@ uint16_t MCU_htobe16(uint16_t h)
 #else // _WIN32
     return htobe16(h);
 #endif // _WIN32
-    }
+}
 
 uint32_t MCU_htobe32(uint32_t h)
 {

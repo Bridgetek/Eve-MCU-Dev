@@ -75,7 +75,7 @@ add_compile_definitions(USE_MPSSE=0)
 add_compile_definitions(FTDIMPSSE_STATIC)
 add_compile_definitions(FT_VER_MAJOR=1)
 add_compile_definitions(FT_VER_MINOR=0)
-add_compile_definitions(FT_VER_BUILD=8)
+add_compile_definitions(FT_VER_BUILD=9)
 
 # Source code for EVE library (targetted at MPSSE)
 add_library(eve_library # EVE library name

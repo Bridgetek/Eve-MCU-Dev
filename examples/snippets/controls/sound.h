@@ -1,4 +1,4 @@
-/**
+ /**
  @file sound.h
  */
 /*
@@ -190,6 +190,9 @@
 #define NOTE_C8 108 // C8 4186.0
 
 void enableSound(void);
+int checkRegPlay();
+void playSound(uint8_t sound, uint8_t note);
+void playMute(void);
 void playClick(void);
 void playChimes(uint8_t note);
 void playBell(uint8_t note);

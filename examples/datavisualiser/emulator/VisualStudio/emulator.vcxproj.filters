@@ -28,6 +28,9 @@
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
       <Filter>Example</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\controls\sound.c">
+      <Filter>Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -83,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\controls\sound.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
