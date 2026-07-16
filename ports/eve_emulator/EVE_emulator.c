@@ -166,7 +166,7 @@ int MCU_Init(void)
 #elif (FT8XX_TYPE == BT818)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT818
 #elif (FT8XX_TYPE == BT820)
-#define EVE_SUPPORT_CHIPID 0x820 // BT8XXEMU_EmulatorBT820
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
 #endif
 
     // Make defaults
