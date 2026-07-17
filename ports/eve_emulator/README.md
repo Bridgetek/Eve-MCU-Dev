@@ -16,7 +16,7 @@ Download or clone the EVE_Emulator repository to a new directory.
 
 ### Install the EVE_Emulator EVE Emulator in EVE-MCU-Dev library
 
-The EVE_Emulator repository directory will have a subfolders called `include`, `bin`, and `lib` . The repository contains librarie files for `x64` (64-bit Windows) architectures.
+The EVE_Emulator repository directory will have a subfolders called `include`, `bin`, and `lib` . The repository contains library files for `x64` (64-bit Windows) architectures.
 
 The subfolders include:
 - A DLL file for `bt8xxemu`.

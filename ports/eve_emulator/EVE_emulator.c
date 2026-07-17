@@ -180,9 +180,6 @@ int MCU_Init(void)
     BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
     EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
 
-    BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
-    EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
-
 // flash is only supoprted in EVE API level = 3,4,5
 #if IS_EVE_API(3,4,5)
     BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
@@ -201,6 +198,8 @@ int MCU_Init(void)
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
     EmulatorParameters->Flash = EmulatorFlash;
 #endif
+
+    // run the emulator
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
 
     return 0;
