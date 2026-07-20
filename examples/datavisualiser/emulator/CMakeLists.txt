@@ -127,7 +127,7 @@ add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_SNIPPETS}/touch.c
-	${EXAMPLE_SNIPPETS}/sound.c
+	${EXAMPLE_SNIPPETS}/controls/sound.c
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_SNIPPETS}/controls/arcs.c
 )

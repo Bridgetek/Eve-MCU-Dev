@@ -200,7 +200,7 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   - DP_0501_01A 5 inch WVGA (Capacitive)
   - DP_0351_11A 5 inch WVGA (Resistive)
   - DP_0502_11A 5 inch WQVGA (Resistive)
-  - DP_0701_11A 7 inch WVGA (Capacitive)
+  - DP_0701_01A 7 inch WVGA (Capacitive)
   - DP_1012_01A 10 inch WUXGA (Capacitive)
   - DP_1561_01A 15 inch FullHD (Capacitive)
   - IDM204043A 4.3 inch WQVGA (Capacitive)

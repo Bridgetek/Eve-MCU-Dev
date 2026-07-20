@@ -1414,13 +1414,15 @@ void generateStaticScreenComponents() {
     EVE_CMD_DLSTART();
     // clear colour RGB to set the screen to the desired BG colour
     EVE_CLEAR_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
+    // clearing touch tag to 100
+    EVE_CLEAR_TAG(100);
     // clear colour, stencil, tag
     EVE_CLEAR(1, 1, 1);
 
     // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT() command
     // this command will cascade through the remaining commands in the display list (such as the VERTEX2F calls)
 #if IS_EVE_API(2,3,4,5)
-// set desired vertex format for the example
+    // Set desired vertex format for the example
     EVE_VERTEX_FORMAT(3);
 #endif
 
@@ -1996,7 +1998,7 @@ void eve_example(void)
 {
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();             
+    EVE_Init();
 
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");

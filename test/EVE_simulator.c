@@ -279,7 +279,7 @@ int MCU_Init(void)
         "DP-0351-11A WVGA (Resistive)"
 #elif PANEL_TYPE == DP_0502_11A
         "DP-0502-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0701_11A
+#elif PANEL_TYPE == DP_0701_01A
         "DP-0701-11A WVGA (Capacitive)"
 #elif PANEL_TYPE == DP_1012_01A
         "DP-1012-01A WUXGA (Capacitive)"
@@ -289,6 +289,8 @@ int MCU_Init(void)
         "IDM204043A (Capacitive)"
 #elif PANEL_TYPE == DP_IDM21R
         "IDM204021R (Capacitive)"
+#else
+        "Other"
 #endif // PANEL_TYPE
     );
 #endif // PANEL_TYPE != NO_PANEL
