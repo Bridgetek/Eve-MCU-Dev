@@ -48,7 +48,7 @@ The settings required in `EVE_config.h` are:
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.7 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.8 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/ft4222h-software-examples/
 
@@ -58,7 +58,7 @@ The library is installed *once* into the `ports\eve_libft4222` directory. When b
 
 ### Install the LibFT4222 Middleware Library in EVE-MCU-Dev library
 
-The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
+The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.8 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
 
 Each architecture has:
 - A DLL file for LibFT4222

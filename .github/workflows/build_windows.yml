@@ -1,3 +1,4 @@
+# This test is disabled as FTDI have implemented a cloudflare filter for these files.
 name: Build Simple Example for MinGW on Windows (libFT4222 and libMPSSE)
 
 on:
