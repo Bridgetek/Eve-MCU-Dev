@@ -198,8 +198,6 @@ int MCU_Init(void)
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
     EmulatorParameters->Flash = EmulatorFlash;
 #endif
-
-    // run the emulator
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
 
     return 0;
@@ -257,6 +255,9 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
+    //NOTE: called in EVE_API.c after MCU_Init(), which reults in the emulator instance being imemditaly killed.
+
+    /*
     if (!Emulator)
     {
         BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
@@ -265,11 +266,16 @@ void MCU_PDlow(void)
     BT8XXEMU_stop(Emulator);
     BT8XXEMU_destroy(Emulator);
     Emulator = NULL;
+    */
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
+
+    //NOTE: called in EVE_API.c after MCU_PDlow(), which reults in the emulator instance being restarted.
+
+    /*
     if (Emulator)
     {
         BT8XXEMU_stop(Emulator);
@@ -278,6 +284,7 @@ void MCU_PDhigh(void)
     }
 
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
+    */
 }
 
 // ------------------------- Delay functions -----------------------------------
