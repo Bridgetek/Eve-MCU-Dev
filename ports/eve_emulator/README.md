@@ -72,7 +72,7 @@ The `EVE_EMULATOR_FLASH_FILE` macro can be used in the project to define the nam
 
 - EVE_EMULATOR_FLASH_FILE=TEXT("**flash-image-name.bin**")
 
-And can be defined in either the visual Studio project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, or the `CMakeLists.txt` file.
+And can be defined in either the Visual Studio project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, or the `CMakeLists.txt` file.
 
 
 In Visual Studio project settings:
@@ -95,7 +95,7 @@ A similar macro `EVE_EMULATOR_FLASH_FILE_SIZE` can be used to define the size of
 
 ### Specifying SD Card Images
 
-- TODO: add support for SD card function calls into EVE_Emulator.c
+- **TODO:** add support for SD card function calls into EVE_Emulator.c
 
 ## Linux
 
