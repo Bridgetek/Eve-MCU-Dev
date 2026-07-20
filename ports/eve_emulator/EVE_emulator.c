@@ -89,8 +89,8 @@
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-void* Emulator;
-void* EmulatorFlash;
+extern void* Emulator;
+extern void* EmulatorFlash;
 BT8XXEMU_EmulatorParameters* EmulatorParameters;
 BT8XXEMU_FlashParameters* EmulatorFlashParameters;
 
@@ -137,6 +137,7 @@ int MCU_Init(void)
 {
     printf(BT8XXEMU_version());
 
+// Set emulator type from EVE_conig.h EVE type setting
 #if (FT8XX_TYPE == FT800)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT800
 #elif (FT8XX_TYPE == FT801)
@@ -180,24 +181,26 @@ int MCU_Init(void)
     BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
     EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
 
-// flash is only supoprted in EVE API level = 3,4,5
+    // flash is only supoprted in EVE API level = 3,4,5
 #if IS_EVE_API(3,4,5)
     BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
-#if defined(EVE_EMULATOR_FLASH_FILE)
-    if (MCU_SetFlashDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
-    {
-        DEBUG_PRINTF("Unable to resolve emulator Flash file path.\n");
-        return -1;
-    } 
-#if defined(EVE_EMULATOR_FLASH_FILE_SIZE)
-    EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
-#else
-    EmulatorFlashParameters->SizeBytes = (8 * 1024 * 1024);
+    #if defined(EVE_EMULATOR_FLASH_FILE)
+        if (MCU_SetFlashDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
+        {
+            printf("Unable to resolve emulator Flash file path.\n");
+            return -1;
+        }
+    #if defined(EVE_EMULATOR_FLASH_FILE_SIZE)
+        EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
+    #else
+        EmulatorFlashParameters->SizeBytes = (8 * 1024 * 1024);
+    #endif
+    #endif
+        EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
+        EmulatorParameters->Flash = EmulatorFlash;
 #endif
-#endif
-    EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
-    EmulatorParameters->Flash = EmulatorFlash;
-#endif
+
+    // run the emulator instance
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
 
     return 0;
