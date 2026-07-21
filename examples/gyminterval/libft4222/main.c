@@ -214,7 +214,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev for Windows FT4222 Library\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Gym Interval Example for Windows FT4222 Library\r\n");
     printf ("\n");
 
 }

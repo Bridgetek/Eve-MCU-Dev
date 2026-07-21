@@ -175,7 +175,7 @@ void setup(void)
 	/* Print out a welcome message... */
 	tfp_printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
 	tfp_printf ("---------------------------------------------------------------- \r\n");
-	tfp_printf ("Welcome to BRT_AN_025 Example for FT9xx\r\n");
+	tfp_printf ("Welcome to the EVE-MCU-Dev Example for FT9xx\r\n");
 #endif
 }
 

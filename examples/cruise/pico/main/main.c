@@ -140,12 +140,13 @@ void setup(void)
     
 #if DEBUG_LEVEL > 0
     // Wait for stdio (UART/USB) connection if enabled
+    // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
     while (!stdio_usb_connected()) { sleep_ms(100);  }
 
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to Cruise Control Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Cruise Control Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
 	printf ("Pin configuration for example:\n");
 	printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

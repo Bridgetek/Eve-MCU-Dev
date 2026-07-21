@@ -134,6 +134,7 @@ void setup(void)
     
 #if DEBUG_LEVEL > 0
     // Wait for stdio (UART/USB) connection if enabled
+    // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
     while (!stdio_usb_connected()) { sleep_ms(100);  }
 
     /* Print out a welcome message... */

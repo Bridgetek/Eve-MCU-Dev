@@ -128,6 +128,6 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev DataVisualiser Example for the EVE Emulator\r\n");
+    printf ("Welcome to EVE-MCU-Dev Data Visualiser Example for the EVE Emulator\r\n");
     printf ("\n");
 }

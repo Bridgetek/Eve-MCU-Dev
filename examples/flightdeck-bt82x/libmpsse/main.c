@@ -128,7 +128,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to BRT_AN_025 Example for Windows MPSSE Library\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Flightdeck-BT82x for Windows MPSSE Library\r\n");
     printf ("\n");
 	printf ("Cable colours are as used for FTDI MPSSE cables. MPSSE Bus \n");
     printf ("numbers refer to the MPSSE interface signals.\n");
