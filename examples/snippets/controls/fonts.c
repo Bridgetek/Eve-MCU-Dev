@@ -111,12 +111,6 @@ uint32_t font_getromptr(uint8_t fontnumber)
 
 static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character)
 {
-    uint32_t page;
-    uint32_t gptr;
-    uint32_t wptr;
-    uint32_t cdptr;
-    int ch, w;
-    uint32_t N;
     int32_t start_of_graphics;
 
     cache->legacy = 0;
@@ -126,6 +120,12 @@ static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, u
     // Read the first word of the font metric block.
     // This determines the format of the font and how it is handled.
 #if IS_EVE_API(4,5)
+    uint32_t page;
+    uint32_t gptr;
+    uint32_t wptr;
+    int ch, w;
+    uint32_t N;
+
     uint32_t format = EVE_LIB_MemRead32(fontptr);
     if (format == 0x0100AAFF)
     {
@@ -165,6 +165,7 @@ static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, u
 #if IS_EVE_API(5)
     if (format == 0x0200AAFF)
     {
+        uint32_t cdptr;
         // Extended format 2 font cache.
         cache->legacy = 0;
         // Get the font pixel sizes.
