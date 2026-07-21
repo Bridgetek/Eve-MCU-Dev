@@ -27,7 +27,7 @@ The display panel settings can be chosen at runtime from a set configured into t
 
 ## Setting Up the Arduino Library
 
-The python script `libbuild.py` is run with the the following options:
+The python script `libbuild.py` is run with the following options:
 
 ```
 > libbuild.py --help

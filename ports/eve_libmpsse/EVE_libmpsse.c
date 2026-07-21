@@ -112,7 +112,7 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     channelConf.LatencyTimer = 10;
     channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW;
 
-    // Open the the channel specified by the USE_MPSSE macro.
+    // Open the channel specified by the USE_MPSSE macro.
     // This must be defined to get this far.
     channel = USE_MPSSE;
 

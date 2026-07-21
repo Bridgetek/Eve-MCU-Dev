@@ -29,7 +29,7 @@ This library is intended to provide a **C** library for embedded designs.
   - [Creating screens and executing commands](#creating-screens-and-executing-commands)
     - [Writing DL Instructions and Co-Processor Commands](#writing-dl-instructions-and-co-processor-commands)
     - [Beginning and Ending Co-Processor Lists](#beginning-and-ending-co-processor-lists)
-    - [Simple Co-Pocessor List](#simple-co-pocessor-list)
+    - [Simple Co-Processor List](#simple-co-processor-list)
     - [Executing a Single Co-Processor Command](#executing-a-single-co-processor-command)
     - [Co-Processor Lists of more than 4K Size](#co-processor-helpers)
     - [Limitations in RAM_DL and RAM_CMD#### Writing RAM_G and RAM_CMD](#limitations-in-ram_dl-and-ram_cmd)
@@ -44,9 +44,9 @@ In addition to the example library framework, the code also includes a simple de
 
 ### History
 
-This document and code library are refered to from the following page on the Bridgetek Website [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). 
+This document and code library are reffered to from the following page on the Bridgetek Website [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). 
 
-This library was previously described by Application Note [BRT_AN_025 EVE Portable MCU Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf). **This document and the code within this library superceeds BRT_AN_025**.
+This library was previously described by Application Note [BRT_AN_025 EVE Portable MCU Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf). **This document and the code within this library supersedes BRT_AN_025**.
 
 The BRT_AN_025 application note built upon the framework described in earlier application notes in the EVE for MCUs series including BRT_AN_008 and explained how it could be ported to other MCU platforms in addition to the original PIC MCU. It focused on aspects of making the library easy to use and demonstrating how it can be run on different MCUs.
 
@@ -108,7 +108,7 @@ The library is structured as follows. There are common sections with have source
 #### Common Library Files
 
 - **`\source\EVE_API.c`** The programming interface to the library.
-- `\source\EVE_HAL.c` The abstraction layer between the programming interface and the MCU specfic layer.
+- `\source\EVE_HAL.c` The abstraction layer between the programming interface and the MCU specific layer.
 - `\source\EVE_HAL_Linux.c` The abstraction layer between the programming interface and the Linux SPI character device.
 - `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - **`\include\EVE.h`** Header file to include to access all required programming interface entry points and definitions.
@@ -123,7 +123,7 @@ EVE API specific header files.
 
 - `\include\FT80x.h` Header file for API 1
 - `\include\FT81x.h` Header file for API 2 SUB APIs 1 and 2
-- `\include\BT81x.h` Header file for API 4 and 5
+- `\include\BT81x.h` Header file for API 3 and 4
 - `\include\BT82x.h` Header file for API 5
 
 The file `EVE_HAL.c` is intended for MCU platforms, the file `EVE_HAL_Linux.c` is for _Linux-like_ platforms such as BeagleBone and RPi platforms. Code which uses the MPSSE and FT4222H interfaces will use the simpler `EVE_HAL.c` code.
@@ -198,7 +198,7 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   - DP_0351_11A 3.5 inch QVGA (Resistive)
   - DP_0431_11A 4.3 inch WQVGA (Resistive)
   - DP_0501_01A 5 inch WVGA (Capacitive)
-  - DP_0351_11A 5 inch WVGA (Resistive)
+  - DP_0501_11A 5 inch WVGA (Resistive)
   - DP_0502_11A 5 inch WQVGA (Resistive)
   - DP_0701_01A 7 inch WVGA (Capacitive)
   - DP_1012_01A 10 inch WUXGA (Capacitive)
@@ -428,7 +428,7 @@ And followed by:
 A call to `EVE_LIB_AwaitCoProEmpty()` is implied in the call to `EVE_LIB_BeginCoProList()`. Therefore it is not necessary to wait at the end of the co-processor
 list for the completion of the commands allowing program to perform other tasks not related to programming the EVE device.
 
-#### Simple Co-Pocessor List
+#### Simple Co-Processor List
 
 The following is a simple list to write text on the screen in white letters:
 

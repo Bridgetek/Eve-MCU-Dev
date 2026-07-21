@@ -8,7 +8,7 @@ The examples are structured in a way that allows multiple platforms to be includ
 
 The structure of each example called `<demo>` would be:
 
-- `\examples\<demo>\README.md` **Required** Information on the the example.
+- `\examples\<demo>\README.md` **Required** Information on the example.
 - `\examples\<demo>\common` **Required** Common files for the example.
 - `\examples\<demo>\docs` Common documentation files for the `README.md` file.
 - `\examples\<demo>\assets` Common assets which may be used in the example.

@@ -39,7 +39,7 @@ cmake --fresh -B build -S . -DFT8XX_TYPE=BT881
 
 To run this file simple call the executable from the command line.
 ```
-./build/simple_raspberry_pi
+./build/boottester
 ```
 
 #### Sample Output
