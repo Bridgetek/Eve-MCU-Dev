@@ -45,11 +45,11 @@
 
 #include "eve_example.h"
 
-#ifndef min
-#define min(a, b) (((a) < (b)) ? (a) : (b))
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
+#ifndef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
 // Define global varibles for use in example
@@ -341,8 +341,8 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
     uint16_t arc_degrees = ((360 * (user_value)) / 0xffff);
 
     // Ensure the arc_degrees is within limits (0 - 360)
-    arc_degrees = max(arc_degrees, 0);
-    arc_degrees = min(arc_degrees, 360);
+    arc_degrees = MAX(arc_degrees, 0);
+    arc_degrees = MIN(arc_degrees, 360);
 
     // change this value to alter how transparent the inactive section of the arc is
     uint8_t alpha_value = 50;
@@ -589,7 +589,7 @@ void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, 
     // for label text offset
     int16_t text_offset = (width / 40);
     // ensure its at least 2
-    text_offset = max(text_offset, 2);
+    text_offset = MAX(text_offset, 2);
 
     // save context
     EVE_SAVE_CONTEXT();
@@ -675,8 +675,8 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
         // set value variable to current data point
         value = data[i];
         // ensure value is within uint8_t limits
-        value = min(value, 255);
-        value = max(value, 0);
+        value = MIN(value, 255);
+        value = MAX(value, 0);
         // normalise value so it is within the chart y range
         value = (((value)*height) / 255);
         // add vertex into the line
@@ -692,8 +692,8 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
         // set value variable to current data point
         value = data[i];
         // ensure value is within uint8_t limits
-        value = min(value, 255);
-        value = max(value, 0);
+        value = MIN(value, 255);
+        value = MAX(value, 0);
         // normalise value so it is within the chart y range
         value = (((value)*height) / 255);
         EVE_VERTEX2F(((input_x * pix_precision) + (i * point_spacing)), ((input_y + height - value) * pix_precision));
@@ -719,8 +719,8 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
 void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint32_t colour_bottom, uint32_t colour_top, uint8_t value) {
 
     // ensure value is in range
-    value = max(value, 0);
-    value = min(value, 255);
+    value = MAX(value, 0);
+    value = MIN(value, 255);
 
     // normalise value to widget size, also multiple by current pixel precision so we can add this value straight into 
     // the vertex 2F call
@@ -798,7 +798,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
 {
     // Ensure the radius does not exceed max point size
-    radius = min(radius, 511);
+    radius = MIN(radius, 511);
 
     // Draw in reverse if end_angle > start_angle
     int8_t reverse = 0;
@@ -948,8 +948,8 @@ void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y
 void pieChart(uint8_t uptime) {
 
     // Ensure the uptime is within limits (0 - 100)
-    uptime = max(uptime, 0);
-    uptime = min(uptime, 100);
+    uptime = MAX(uptime, 0);
+    uptime = MIN(uptime, 100);
 
     // Save current graphics context
     EVE_SAVE_CONTEXT();
@@ -1222,7 +1222,7 @@ void addSettingsButton(uint32_t colour) {
 void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t size, uint32_t colour) {
 
     // ensure the size is at least 5
-    size = max(size, 5);
+    size = MAX(size, 5);
 
     // declare local varaibles
     uint16_t label_length = (length / 3); // 33.333% 
@@ -1897,16 +1897,16 @@ void demoDataUpdates() {
         if (bar_dir[i] == 0x00) {
             // account for when loop var is at 0
             if (i < 1)
-                bar_value[i] = min((bar_value[i] + 1), 255); // plus 1 if this the case, also ensure were not out of range
+                bar_value[i] = MIN((bar_value[i] + 1), 255); // plus 1 if this the case, also ensure were not out of range
             else
-                bar_value[i] = min((bar_value[i] + (i + 1)), 255); // plus i + 1 if i > 0, also ensure were not out of range
+                bar_value[i] = MIN((bar_value[i] + (i + 1)), 255); // plus i + 1 if i > 0, also ensure were not out of range
         }
         else {
             // accouunt for when loop var is at 0
             if (i < 1)
-                bar_value[i] = max((bar_value[i] - 1), 0); // minus 1 if this the case, also ensure were not out of range
+                bar_value[i] = MAX((bar_value[i] - 1), 0); // minus 1 if this the case, also ensure were not out of range
             else
-                bar_value[i] = max((bar_value[i] - (i + 1)), 0); // minus i + 1 if i > 0, also ensure were not out of range
+                bar_value[i] = MAX((bar_value[i] - (i + 1)), 0); // minus i + 1 if i > 0, also ensure were not out of range
         }
     }
 
