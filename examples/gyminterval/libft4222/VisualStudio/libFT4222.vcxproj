@@ -100,10 +100,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\i386\LibFT4222.lib;..\imports\ftd2xx\dll\i386\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\i386\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,10 +118,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\imports\LibFT4222\dll\amd64\LibFT4222-64.lib;..\imports\ftd2xx\dll\amd64\ftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\imports\LibFT4222\dll\amd64\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
+      <Command>copy ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll $(SolutionDir)$(Platform)\$(Configuration)\LibFT4222-64.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

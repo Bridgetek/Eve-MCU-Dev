@@ -16,20 +16,20 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\arcs.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\sound.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,20 +81,17 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\arcs.h">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\sound.h">
-      <Filter>Header Files</Filter>
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +124,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{fb21cf9b-f086-4f29-8cfd-5cc558d731c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

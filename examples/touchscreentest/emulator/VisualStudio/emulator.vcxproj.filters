@@ -13,9 +13,6 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
@@ -24,6 +21,9 @@
     </ClCompile>
     <ClCompile Include="..\..\common\eve_images.c">
       <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,14 +66,14 @@
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +106,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_emulator">
       <UniqueIdentifier>{ea351574-e383-46ad-aee8-075e6870142a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{7bca49a6-30f3-470c-b430-62e2dc57abeb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

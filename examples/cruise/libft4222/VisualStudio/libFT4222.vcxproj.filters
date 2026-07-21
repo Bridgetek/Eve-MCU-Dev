@@ -19,14 +19,14 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,11 +78,11 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +115,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{f8506440-b05f-4fe9-b4ca-4fc713e961c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

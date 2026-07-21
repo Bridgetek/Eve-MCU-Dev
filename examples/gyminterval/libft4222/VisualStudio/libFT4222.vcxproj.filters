@@ -13,9 +13,6 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
@@ -23,16 +20,19 @@
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\arcs.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\fonts.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\sound.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,20 +81,20 @@
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\sound.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\snippets\controls\arcs.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\fonts.h">
-      <Filter>Header Files</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\arcs.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\snippets\controls\sound.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Header Files</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +127,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{d244cddb-b50f-4af5-aec8-98a83db783e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

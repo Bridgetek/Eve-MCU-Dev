@@ -10,22 +10,10 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
@@ -35,7 +23,19 @@
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,9 +82,6 @@
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
@@ -97,14 +94,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\flight_controls.h">
-      <Filter>Example</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +138,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{3d447ea8-f90d-4e00-99c7-8f61b1a67f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{0d04b0d6-d5ca-4a2e-9e2b-d6896daf97cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

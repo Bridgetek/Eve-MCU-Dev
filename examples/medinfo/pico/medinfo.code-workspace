@@ -4,22 +4,25 @@
 			"path": "."
 		},
 		{
+			"path": "../common"
+		},
+		{
+			"path": "../assets"
+		},
+		{
 			"path": "../../../include"
 		},
 		{
 			"path": "../../../source"
 		},
 		{
+			"path": "../../snippets"
+		},
+		{
 			"path": "../../../ports/eve_arch_rpi"
 		},
 		{
 			"path": "../../../ports/eve_bt82x"
-		},
-		{
-			"path": "../assets"
-		},
-		{
-			"path": "../common"
 		}
 	],
 	"settings": {

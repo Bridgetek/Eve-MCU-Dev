@@ -13,28 +13,7 @@
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\assets\lake_wanaka.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c">
@@ -51,6 +30,27 @@
     </ClCompile>
     <ClCompile Include="..\..\common\patch_lvds.c">
       <Filter>Example\Patch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\lake_wanaka.c">
+      <Filter>Example\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\Snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,29 +96,14 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Example</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Example</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
-      <Filter>Example</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\dial\flightcontrols.h">
-      <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
@@ -143,6 +128,21 @@
     </ClInclude>
     <ClInclude Include="..\..\common\patch_lvds.h">
       <Filter>Example\Patch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\dials\flight_controls.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
+      <Filter>Example\Snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +178,12 @@
     </Filter>
     <Filter Include="Example\Patch">
       <UniqueIdentifier>{a63017b6-7065-4c8f-b08f-59908deb994c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Assets">
+      <UniqueIdentifier>{3ff7fbd5-b404-4dd2-99fa-455b9ba282a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Snippets">
+      <UniqueIdentifier>{b17defbc-9069-4114-96ea-d05a1dbc602d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
