@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Data Visualiser Example for the EVE Emulator
+# EVE-MCU-Dev Touchscreen Test Example for the EVE Emulator
 
 Please follow instructions to install the EVE Emulator in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for the EVE Emulator](../../../ports/eve_emulator/README.md). This must be done before compilation.
 
@@ -22,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is normally `build\Debug\datavisualiser_emulator.exe` or  `build\datavisualiser_emulator.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\touchscreentest_emulator.exe` or  `build\touchscreentest_emulator.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 

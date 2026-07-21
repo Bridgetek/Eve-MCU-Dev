@@ -1,8 +1,6 @@
-# EVE-MCU-Dev Simple Example for the EVE Emulator
+# EVE-MCU-Dev Submarine Example for the EVE Emulator
 
 Please follow instructions to install the EVE Emulator in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for the EVE Emulator](../../../ports/eve_emulator/README.md). This must be done before compilation.
-
-This example is not compatible with the EVE API 5 (BT820) as this device is not supported in the EVE Emulator.
 
 ## Command Line Compilation
 
@@ -24,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is normally `build\Debug\simple_emulator.exe` or  `build\simple_emulator.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\submarine_emulator.exe` or  `build\submarine_emulator.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 

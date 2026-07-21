@@ -14,8 +14,8 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-| [Generic using libFT4222 CMake](libmpsse/README.md) | [libmpsse](libmpsse/) | 
-| [Generic using libFT4222 Visual Studio](libmpsse/README.md) | [libmpsse/README.md](libmpsse/) | 
+| [Generic using libFT4222 CMake](libft4222/README.md#command-line-compilation) | [libft4222](libft4222/) | 
+| [Generic using libFT4222 Visual Studio](libft4222/README.md#visual-studio) | [libft4222](libft4222/) | 
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 

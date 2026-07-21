@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>simple</RootNamespace>
+    <ProjectName>touchscreentest</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>USE_EMULATOR=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+
+copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configuration)\zlib.dll
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <PreprocessorDefinitions>USE_EMULATOR=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
+
+copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
+
+copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configuration)\zlib.dll
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
+    <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
+    <ClCompile Include="..\..\common\eve_example.c" />
+    <ClCompile Include="..\..\..\snippets\touch.c" />
+    <ClCompile Include="..\..\common\eve_images.c" />
+    <ClCompile Include="..\..\..\..\source\EVE_API.c" />
+    <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
+    <ClCompile Include="..\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\BT81x.h" />
+    <ClInclude Include="..\..\..\..\include\BT82x.h" />
+    <ClInclude Include="..\..\..\..\include\FT80x.h" />
+    <ClInclude Include="..\..\..\..\include\FT81x.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
+    <ClInclude Include="..\..\..\snippets\touch.h" />
+    <ClInclude Include="..\..\common\eve_example.h" />
+    <ClInclude Include="..\..\..\..\include\EVE.h" />
+    <ClInclude Include="..\..\..\..\include\EVE_config.h" />
+    <ClInclude Include="..\..\..\..\include\FT8xx.h" />
+    <ClInclude Include="..\..\..\..\include\HAL.h" />
+    <ClInclude Include="..\..\..\..\include\MCU.h" />
+    <ClInclude Include="..\..\..\..\include\Platform.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

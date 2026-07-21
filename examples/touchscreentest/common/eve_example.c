@@ -131,7 +131,11 @@ void eve_display(void)
     char hexval[16];
 
     // Choose a suitable font for the display
-    if (EVE_DISP_WIDTH <= 480)
+    if (EVE_DISP_WIDTH <= 320)
+    {
+        font = 20;
+    }
+    else if (EVE_DISP_WIDTH <= 480)
     {
         font = 26;
     }

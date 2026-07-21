@@ -386,22 +386,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     MCU_append_buffer((uint8_t *)&DataToWrite, 2, 0);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    HAL_StatusTypeDef status;
-    uint32_t DataRead;
-
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 3, 0);
-    if (HAL_OK != status)
-    {
-         // QUADSPI master read failed
-        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", status);
-        DataRead = 0;
-    }
-
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     MCU_append_buffer((uint8_t *)&DataToWrite, 3, 0);

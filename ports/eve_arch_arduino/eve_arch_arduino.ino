@@ -156,20 +156,6 @@ uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) {
   return DataRead;
 }
 
-uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite) {
-  uint32_t DataRead = 0;
-  uint32_t temp;
-
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
-  DataRead |= (temp << 8);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
-  DataRead |= (temp << 16);
-  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
-  DataRead |= (temp << 24);
-
-  return DataRead;
-}
-
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) {
   uint32_t DataRead = 0;
   uint32_t temp;
@@ -220,16 +206,10 @@ void MCU_SPIWrite16(uint16_t DataToWrite) {
   MCU_SPIReadWrite16(DataToWrite);
 }
 
-uint32_t MCU_SPIRead24(void) {
-  uint32_t DataRead = 0;
-
-  DataRead = MCU_SPIReadWrite24(0);
-
-  return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite) {
-  MCU_SPIReadWrite24(DataToWrite);
+  MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
 }
 
 uint32_t MCU_SPIRead32(void) {

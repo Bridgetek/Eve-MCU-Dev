@@ -89,8 +89,8 @@
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-extern void* Emulator;
-extern void* EmulatorFlash;
+void* Emulator;
+void* EmulatorFlash;
 BT8XXEMU_EmulatorParameters* EmulatorParameters;
 BT8XXEMU_FlashParameters* EmulatorFlashParameters;
 
@@ -396,14 +396,6 @@ uint16_t MCU_SPIRead16(void) {
 
 void MCU_SPIWrite16(uint16_t DataToWrite) {
     MCU_SPIReadWrite16(DataToWrite);
-}
-
-uint32_t MCU_SPIRead24(void) {
-    uint32_t DataRead = 0;
-
-    DataRead = MCU_SPIReadWrite24(0);
-
-    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite) {

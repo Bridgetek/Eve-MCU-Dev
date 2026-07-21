@@ -366,24 +366,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     MCU_append_buffer((const uint8_t *)&DataToWrite, 2);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    FT_STATUS ftStatus;
-    uint32_t DataRead = 0;
-    DWORD transferred;
-
-    MCU_transmit_buffer();
-    ftStatus = SPI_Read(ftHandle, (UCHAR *)&DataRead, 3, &transferred, 0);
-     if (FT_OK != ftStatus)
-     {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead24 failed %d\n", (int)ftStatus);
-        exit(ftStatus);
-    }
-
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     MCU_append_buffer((const uint8_t *)&DataToWrite, 3);

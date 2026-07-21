@@ -265,22 +265,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     spi_device_transmit(spi, &trans);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-    static spi_transaction_t trans;
-
-    trans.length = 24;
-    trans.rxlength = 0;
-    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
-
-    *(uint32_t *)trans.tx_data = 0;
-    spi_device_transmit(spi, &trans);
-    DataRead = *((uint32_t *)trans.rx_data);
-
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     static spi_transaction_t trans;

@@ -294,12 +294,12 @@ uint16_t MCU_SPIRead16(void);
 void MCU_SPIWrite16(uint16_t DataToWrite);
 
 /**
- @brief MCU specific SPI 24 bit read
+ @brief MCU specific SPI 24 bit read *** DEPRECATED ***
  @details Performs an SPI dummy write and returns the data received in
-    response.
+    response. There is no use case for a 24 bit read on EVE.
  @returns Data received from EVE.
  */
-uint32_t MCU_SPIRead24(void);
+/* uint32_t MCU_SPIRead24(void); */
 
 /**
  @brief MCU specific SPI 24 bit write

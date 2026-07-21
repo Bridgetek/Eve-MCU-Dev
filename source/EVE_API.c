@@ -1332,13 +1332,6 @@ void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
     HAL_IncCmdPointer(16);
 }
 
-void CMD_I2SSTARTUP(uint32_t freq)
-{
-    HAL_Write32(EVE_ENC_CMD_I2SSTARTUP);
-    HAL_Write32(freq);
-    HAL_IncCmdPointer(8);
-}
-
 #endif
 
 void EVE_CMD_LOGO(void)
@@ -2318,6 +2311,13 @@ void EVE_CMD_RESULT(uint32_t a)
 {
     HAL_Write32(EVE_ENC_CMD_RESULT);
     HAL_Write32(a);
+    HAL_IncCmdPointer(8);
+}
+
+void EVE_CMD_I2SSTARTUP(uint32_t freq)
+{
+    HAL_Write32(EVE_ENC_CMD_I2SSTARTUP);
+    HAL_Write32(freq);
     HAL_IncCmdPointer(8);
 }
 

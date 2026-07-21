@@ -504,29 +504,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     }
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-
-    DataRead = (uint32_t)get_response() & 0x00ffffff;
-
-    if (state == state_read)
-    {
-        printf("%s %06x ", get_register(), DataRead);
-    }
-    else if (state == state_read_cont)
-    {
-        printf("%06x ", DataRead);
-    }
-    else
-    {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
-        exit(-1);
-    }
-    
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     if (state == state_address)

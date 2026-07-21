@@ -230,7 +230,7 @@ static void animate_fish(void)
                 // Random direction of swimming
                 fishes[anim].dir = (rand() - (RAND_MAX / 2));
                 // Random speed of swimming
-                fishes[anim].speed = (rand() & 7);
+                fishes[anim].speed = 1 + (rand() & 7);
                 // Random fish type
                 fishes[anim].type = (rand() % FISH_MAX);
                 // Fish starts at the left or right
@@ -260,7 +260,6 @@ static void animate_fish(void)
         if (fishes[anim].dir != 0)
         {
             int8_t handle = fish_info_g[fishes[anim].type].handle;
-
             EVE_BEGIN(EVE_BEGIN_BITMAPS);
             EVE_BITMAP_HANDLE(handle);
             // Animate across the screen
