@@ -54,11 +54,43 @@ jobs:
     - uses: actions/checkout@v6
 
     # Test using matrix
-    - name: Configure CMake
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT820 -DDISPLAY_RES=FULLHD -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    - name: Configure CMake EVE5
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT820 -DDISPLAY_RES=WUXGA -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Build
+    - name: Build EVE5
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Configure CMake EVE4
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT818 -DDISPLAY_RES=WXGA -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Build EVE4
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Configure CMake EVE3
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT815 -DDISPLAY_RES=WVGA -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Build EVE3
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Configure CMake EVE2
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT812 -DDISPLAY_RES=WQVGA -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Build EVE2
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Configure CMake EVE1
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT800 -DDISPLAY_RES=QVGA -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Build EVE1
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
