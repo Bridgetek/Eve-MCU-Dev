@@ -89,7 +89,7 @@ add_compile_definitions(USE_EMULATOR=0)
 add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("flash-image-name.bin"))
 ```
 
-The flash image file must be available locally (in the same directory as the example executable). The `CMakeLists.txt` file can be utilised to copy the .bin file to the same output directory as the executable, or the file can be copied manually to this location.
+The flash image file must be available locally (in the same directory as the example executable). The `CMakeLists.txt` file can be utilised to copy the .bin file to the same output directory as the executable, the .bin file can also be copied via a post build command in Visual Studio, or manually copied to this location.
 
 A similar macro `EVE_EMULATOR_FLASH_FILE_SIZE` can be used to define the size of the attached flash, by default the flash size is **8MiB**.
 
