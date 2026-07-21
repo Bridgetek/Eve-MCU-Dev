@@ -2,14 +2,14 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Set the location of the EVE-MCU-Dev tree
-set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
+set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../")
 
 # Set name of project (as current working directory)
 get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
 get_filename_component(ProjectName ${PARENT_DIR} NAME)
 get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
-project(${ProjectName}_${ProjectId} C CXX)
+project(${ProjectId} C CXX)
 
 message(API_DIRECTORY="${API_DIRECTORY}")
 message(ProjectId="${PROJECT_SOURCE_DIR}")
@@ -20,6 +20,24 @@ message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 # Set C/C++ Standards
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+
+# Directory for source code for a dummy build
+option(EXAMPLE "Example directory")
+# Set a dummy source code directory
+IF(EXAMPLE)
+    ADD_DEFINITIONS(-DEXAMPLE=${EXAMPLE})
+    message(EXAMPLE="${EXAMPLE}")
+ENDIF(EXAMPLE)
+
+# Directory for assetss source code for a dummy build
+option(ASSETS "Example assets flag")
+# Set a dummy source code directory
+IF(ASSETS)
+    ADD_DEFINITIONS(-DASSETS=${ASSETS})
+    message(ASSETS="${ASSETS}")
+    # Set the assets flag
+    add_compile_definitions(ASSETS=${ASSETS})
+ENDIF(ASSETS)
 
 # Setup command line options for build - feeds into EVE_config.h
 # A module type implies both a panel and eve type
@@ -55,8 +73,7 @@ ENDIF(PANEL_TYPE)
 ENDIF(MODULE_TYPE)
 
 # Add environment for example code
-set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
-set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
+set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../examples/snippets")
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
@@ -65,17 +82,20 @@ add_executable(${PROJECT_NAME}
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${EXAMPLE_COMMON}
 )
-# Tell EVE library to use the EVE Emulator as base class
-add_compile_definitions(USE_EMULATOR=0)
+# Tell EVE library to use SOFTWARE_SIMULATOR as base class
+add_compile_definitions(SOFTWARE_SIMULATOR)
 
-# Source code for EVE library (targetted at the EVE Emulator)
+add_compile_definitions(DEBUG_LEVEL=1)
+add_compile_definitions(MCU_SPI_TIMEOUT=8)
+add_compile_definitions(MCU_SPI_TRANSFER=0x100)
+
+# Source code for EVE library (targetted at FT4222)
 add_library(eve_library # EVE library name
         # Source code for EVE library
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
-        ${API_DIRECTORY}/ports/eve_emulator/EVE_emulator.c
+        ${API_DIRECTORY}/test/EVE_simulator.c
         ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
@@ -83,60 +103,30 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        ${API_DIRECTORY}/ports/eve_emulator # EVE Emulator Library headers
+        ${API_DIRECTORY}/ports/eve_tester # Tester Library headers
 )
-
-# EVE library dependencies
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    message(FATAL_ERROR "emulator not supported on Linux")
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    if(NOT EXISTS "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.h")
-        message(FATAL_ERROR "The Windows emulator installation has not been completed. Follow the instructions in \"\\ports\\eve_emulator\\README.md\"")
-    endif()
-
-    target_link_libraries(eve_library
-            # Main emulator library to load the DLL at runtime
-            ${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.lib
-    )
-
-    # Copy the DLL to beside the executable for Windows 
-    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.dll")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/bt8xxemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                COMMAND_EXPAND_LISTS
-    )
-    endif()
-    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/mx25lemu.dll")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/mx25lemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                COMMAND_EXPAND_LISTS
-    )
-    endif()
-    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/zlib.dll")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/zlib.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                COMMAND_EXPAND_LISTS
-    )
-    endif()
-endif()
 
 # Source for example code
+file(GLOB           eve_common_sources  CONFIGURE_DEPENDS ../../examples/${EXAMPLE}/common/*.c)
+file(GLOB_RECURSE   eve_assets_sources  CONFIGURE_DEPENDS ../../examples/${EXAMPLE}/assets/*.c)
+file(GLOB_RECURSE   eve_snippet_sources CONFIGURE_DEPENDS ${EXAMPLE_SNIPPETS}/*.c)
+
 add_library(eve_example # Example code library name
         # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_SNIPPETS}/touch.c
-        ${EXAMPLE_SNIPPETS}/controls/sound.c
-        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
-        ${EXAMPLE_SNIPPETS}/controls/arcs.c
+        ${eve_common_sources}
+        # Source code for assets
+        ${eve_assets_sources}
+        # All snippets
+        ${eve_snippet_sources}
 )
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        ${EXAMPLE_COMMON}/ # Headers for example code
+        ../../examples/${EXAMPLE}/common
+        ../../examples/${EXAMPLE}/assets
         ${EXAMPLE_SNIPPETS}/ # Headers for snippets 
 
 )

@@ -1,0 +1,67 @@
+name: Test Examples
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - 'main'
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/example_test.yml'
+      # Trigger script on push to test directory
+      - 'test'
+      # Trigger script on push to API
+      - 'include/**'
+      - 'source/**'
+      - 'examples/**'
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        eve: [ 
+          {EXAMPLE: simple, ASSETS: 0 }, 
+          {EXAMPLE: b2tf, ASSETS: 0 }, 
+          {EXAMPLE: cruise, ASSETS: 0 }, 
+          {EXAMPLE: datavisualiser, ASSETS: 0 }, 
+          {EXAMPLE: flightdeck, ASSETS: 0 }, 
+          {EXAMPLE: fontmagic, ASSETS: 0 }, 
+          {EXAMPLE: gyminterval, ASSETS: 0 }, 
+          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS }, 
+          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS }, 
+          {EXAMPLE: submarine, ASSETS: 0 }, 
+          {EXAMPLE: touchscreentest, ASSETS: 0 }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: test example - ${{ matrix.eve.EXAMPLE }}
+
+    steps:
+    - uses: actions/checkout@v6
+
+    # Test using matrix
+    - name: Configure CMake
+      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT820 -DDISPLAY_RES=FULLHD -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    - name: Build
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/exampletester
+
+    # Do not run the executable as it may not support the operations - we are testing compilation only
+    #- name: Run test 
+    #  run: ${{github.workspace}}/test/exampletester/build/exampletester
