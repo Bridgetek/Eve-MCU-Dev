@@ -143,7 +143,7 @@ it is not necessary to wait at the end of the co-processor
 list for the completion of the commands allowing program to perform other tasks not related to 
 programming the EVE device.
 
-#### Simple Co-Pocessor List
+#### Simple Co-Processor List
 
 The following is a simple list to write text on the screen in white letters:
 
