@@ -173,7 +173,7 @@ int main(void)
   /* Print out a welcome message... */
   uart_puts(UART0,
             "--------------------------------------------------------------------- \r\n"
-            "Welcome to the EVE-MCU-Dev Cruise Example or the FT9xx \r\n"
+            "Welcome to the EVE-MCU-Dev Cruise Example for the FT9xx\r\n"
             "--------------------------------------------------------------------- \r\n");
 
   /* Start example code */
