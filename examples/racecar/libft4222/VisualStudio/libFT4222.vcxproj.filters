@@ -19,12 +19,6 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_assetload_array.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -82,6 +76,12 @@
     <ClCompile Include="..\..\common\patch_textscale.c">
       <Filter>Example\Patch</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -129,14 +129,14 @@
     <ClInclude Include="..\..\common\patch_textscale.h">
       <Filter>Example\Patch</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\common\eve_example.h">
+      <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
+      <Filter>Example\Snippets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\eve_example.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
+      <Filter>Example\Snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +175,9 @@
     </Filter>
     <Filter Include="Example\Patch">
       <UniqueIdentifier>{30cee9e6-0021-4a8a-8fad-b3ebf85167fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Snippets">
+      <UniqueIdentifier>{2739f2c2-d1d5-4de7-b0ed-203ef69af169}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -123,11 +123,8 @@ int main(void)
 void setup(void)
 {
     int ch = 0;
-
-#if DEBUG_LEVEL > 0
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
-#endif
 
     // Turn on the pico LED to show activity
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -136,6 +133,10 @@ void setup(void)
     gpio_put(LED_PIN, 1);
     
 #if DEBUG_LEVEL > 0
+    // Wait for stdio (UART/USB) connection if enabled
+    // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
+    while (!stdio_usb_connected()) { sleep_ms(100);  }
+
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");

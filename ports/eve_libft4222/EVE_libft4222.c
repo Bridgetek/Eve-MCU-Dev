@@ -120,7 +120,7 @@ static uint16_t MCU_bufferLen;
 static FT_HANDLE ftHandleSPI;
 static FT_HANDLE ftHandleGPIO;
 
-// QuadSPI enabled
+/* Default QuadSPI off. */
 static int ftIsQuad = FALSE;
 
 static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
@@ -329,11 +329,18 @@ int MCU_Setup(void)
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Clock is 80 MHz / 4 = 20 MHz
 #if defined QUADSPI_ENABLE
+#if IS_EVE_API(2,3,4,5)
+    /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
     mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
     ftIsQuad = TRUE;
+#else // IS_EVE_API(2,3,4,5)
+    mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+    ftIsQuad = FALSE;
+#endif
 #else // QUADSPI_ENABLE
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+    ftIsQuad = FALSE;
 #endif // QUADSPI_ENABLE
     return 0;
 }
@@ -584,22 +591,6 @@ uint16_t MCU_SPIRead16(void)
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     MCU_append_buffer((uint8_t *)&DataToWrite, 2, 0);
-}
-
-uint32_t MCU_SPIRead24(void)
-{
-    FT_STATUS ftStatus;
-    uint32_t DataRead;
-
-    ftStatus = MCU_receive_buffer((uint8_t *)&DataRead, 3, 0);
-    if (FT4222_OK != ftStatus)
-    {
-         // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", (int)ftStatus);
-        exit(ftStatus);
-    }
-
-    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)

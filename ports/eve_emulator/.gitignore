@@ -1,0 +1,6 @@
+bt8xxemu.dll
+bt8xxemu.lib
+mx25lemu.dll
+mx25lemu.lib
+bt8xxemu_inttypes.h
+bt8xxemu.h

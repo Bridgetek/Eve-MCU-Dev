@@ -4,18 +4,6 @@
 			"path": "."
 		},
 		{
-			"path": "../../../include"
-		},
-		{
-			"path": "../../../source"
-		},
-		{
-			"path": "../../../ports/eve_arch_rpi"
-		},
-		{
-			"path": "../../../ports/eve_bt82x"
-		},
-		{
 			"path": "../assets"
 		},
 		{
@@ -23,7 +11,23 @@
 		},
 		{
 			"path": "../docs"
+		},
+		{
+			"path": "../../../include"
+		},
+		{
+			"path": "../../../source"
+		},		
+		{
+			"path": "../../snippets"
+		},
+		{
+			"path": "../../../ports/eve_arch_rpi"
+		},
+		{
+			"path": "../../../ports/eve_bt82x"
 		}
+
 	],
 	"settings": {
 		"cmake.options.statusBarVisibility": "hidden",

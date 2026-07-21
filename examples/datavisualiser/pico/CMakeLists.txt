@@ -74,18 +74,22 @@ option(DISPLAY_RES "Panel Display Resolution" )
 # Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+    message(MODULE_TYPE="${MODULE_TYPE}")
 ELSE(MODULE_TYPE)
 # Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+    message(FT8XX_TYPE="${FT8XX_TYPE}")
 ENDIF(FT8XX_TYPE)
 # Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+    message(PANEL_TYPE="${PANEL_TYPE}")
 ELSE(PANEL_TYPE)
 # Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+    message(DISPLAY_RES="${DISPLAY_RES}")
 ENDIF(DISPLAY_RES)
 ENDIF(PANEL_TYPE)
 ENDIF(MODULE_TYPE)
@@ -112,8 +116,10 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
+
 # Enable debug logging output to stdio
-#add_compile_definitions(DEBUG_LEVEL=0)
+add_compile_definitions(DEBUG_LEVEL=0)
+
 # Use look up table instead of maths functions for trig
 add_compile_definitions(USE_TRIG_TABLE) 
 
@@ -138,6 +144,7 @@ add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_SNIPPETS}/touch.c
+	${EXAMPLE_SNIPPETS}/controls/sound.c
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_SNIPPETS}/controls/arcs.c
 )

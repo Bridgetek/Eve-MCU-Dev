@@ -72,18 +72,22 @@ option(DISPLAY_RES "Panel Display Resolution" )
 # Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+    message(MODULE_TYPE="${MODULE_TYPE}")
 ELSE(MODULE_TYPE)
 # Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+    message(FT8XX_TYPE="${FT8XX_TYPE}")
 ENDIF(FT8XX_TYPE)
 # Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+    message(PANEL_TYPE="${PANEL_TYPE}")
 ELSE(PANEL_TYPE)
 # Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+    message(DISPLAY_RES="${DISPLAY_RES}")
 ENDIF(DISPLAY_RES)
 ENDIF(PANEL_TYPE)
 ENDIF(MODULE_TYPE)
@@ -109,6 +113,9 @@ include_directories(
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
+# Enable debug logging output to stdio
+add_compile_definitions(DEBUG_LEVEL=0)
+
 # The pico port can only use the EVE Flash or C arrays for storage of assets
 # Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_C_ARRAYS)
@@ -116,8 +123,6 @@ add_compile_definitions(ASSETS=USE_C_ARRAYS)
 # Trig tables are used instead of maths functions
 add_compile_definitions(USE_TRIG_TABLE)
 
-# Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=0)
 # Milliseconds to wait for stdio connection
 # (will also have stdio_usb_connected() call in main to wait for connection)
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
@@ -152,6 +157,7 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_graph_vertexes.c
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
+        ${EXAMPLE_SNIPPETS}/widgets/dialogs.c
         ${EXAMPLE_COMMON}/patch_medinfo.c
 )
 

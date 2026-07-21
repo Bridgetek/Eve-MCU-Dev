@@ -49,11 +49,11 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **libMPSSE** library for Windows once and install it in this directory. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+To compile this you will have to download the **libMPSSE** library for Windows. The recommended version is v1.0.2 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/
 
-Download the latest version of the libMPSSE library distribution. The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
+The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
 
 The library is installed *once* into the `ports\eve_libmpsse` directory. When building the example code the library files (H, C and LIB files) are loaded from this location.
 
@@ -74,34 +74,39 @@ To run the BAT file change directory to the `ports\eve_libmpsse` directory. The 
 
 ```
 > cd ports\eve_libmpsse
-> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.8\release
-Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.8\release"
-Copying "..\..\..\libmpsse-windows-1.0.8\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
+> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.9\release
+Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.9\release"
+Copying "..\..\..\libmpsse-windows-1.0.9\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\include\libmpsse_spi.h" to libmpsse_spi.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_spi.h" to libmpsse_spi.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_common.h" to ftdi_common.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_common.h" to ftdi_common.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.c" to ftdi_infra.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.c" to ftdi_infra.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_infra.h" to ftdi_infra.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.h" to ftdi_infra.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_spi.c" to ftdi_spi.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_spi.c" to ftdi_spi.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_i2c.c" to ftdi_i2c.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_i2c.c" to ftdi_i2c.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.c" to ftdi_mid.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.c" to ftdi_mid.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\ftdi_mid.h" to ftdi_mid.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.h" to ftdi_mid.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\source\memcpy.c" to memcpy.c
+Copying "..\..\..\libmpsse-windows-1.0.9\release\source\memcpy.c" to memcpy.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\ftd2xx.h" to ftd2xx.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.8\release\libftd2xx\WinTypes.h" to WinTypes.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
+
+IMPORTANT:
+Change line 246 on ftdi_infra.c:
+ from 'hdll_d2xx = LoadLibrary(L"ftd2xx.dll");' to 'hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));'
+Not doing this will result in "LoadLibrary failed: 126"
 ```
 
 Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
@@ -109,24 +114,26 @@ Additionally, the `ftd2xx.dll` library is required. This is installed automatica
 Due to limitations in the libMPSSE distribution, a small modification is required:
 
 Line 246 of "ftdi_infra.c":
+```
+#elif defined(_WIN32)
+	// Load ftd2xx.dll on Windows
+	hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
+	if (!hdll_d2xx) {
+		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+	}
+#else
+```
 
-	#elif defined(_WIN32)
-		// Load ftd2xx.dll on Windows
-		hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
-		if (!hdll_d2xx) {
-			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-		}
-	#else
-
-Remove the "L" before the DLL name:
-
-	#elif defined(_WIN32)
-		// Load ftd2xx.dll on Windows
-		hdll_d2xx = LoadLibrary("ftd2xx.dll");
-		if (!hdll_d2xx) {
-			fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-		}
-	#else
+Change the "L" before the DLL name to the Microsoft `TEXT` macro which will automatically use the `L` macro when Unicode is enabled and omit it when Unicode is not active.
+```
+#elif defined(_WIN32)
+	// Load ftd2xx.dll on Windows
+	hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));
+	if (!hdll_d2xx) {
+		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
+	}
+#else
+```
 
 ### Command Line Compilation
 
@@ -166,7 +173,7 @@ When the example application is launched in Visual Studio it will add the locati
 
 Important Information about Linux builds.
 
-To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.8 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.9 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/libmpsse-spi-examples/
 

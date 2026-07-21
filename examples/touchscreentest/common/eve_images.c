@@ -47,6 +47,10 @@
 uint32_t eve_img_bridgetek_logo_width;
 uint32_t eve_img_bridgetek_logo_height;
 
+uint32_t image_addr;
+uint32_t sketch_addr;
+uint32_t end_addr;
+
 #ifdef __GNUC__
 static const uint8_t img_bridgetek_logo[] __attribute__((aligned(4))) =
 #else // __GNUC__
@@ -291,10 +295,11 @@ uint32_t eve_load_images(uint32_t start_addr)
     uint32_t eve_addr;
     unsigned int i;
 
+    image_addr = start_addr;
     flag = 0;
 
     EVE_LIB_BeginCoProList();
-    EVE_CMD_LOADIMAGE(start_addr, 0);
+    EVE_CMD_LOADIMAGE(image_addr, 0);
 
     // Send raw JPEG encoded image data to co-processor. It will be decoded
     // as the data is received.
@@ -334,6 +339,9 @@ uint32_t eve_load_images(uint32_t start_addr)
     eve_img_bridgetek_logo_width = (uint16_t)img_width;
     eve_img_bridgetek_logo_height = (uint16_t)img_height;
 
+    sketch_addr = image_addr + ((img_width * 2) * img_height);
+    sketch_addr = (sketch_addr + 3) & (~3);
+
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
 
@@ -353,12 +361,34 @@ uint32_t eve_load_images(uint32_t start_addr)
 #endif
     EVE_END();
 
+    EVE_CMD_MEMSET(sketch_addr, 0, EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
+    EVE_CMD_SKETCH(0, 0, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, sketch_addr, EVE_FORMAT_L8);
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BITMAP_HANDLE(BITMAP_SKETCH);
+    EVE_BITMAP_SOURCE(sketch_addr & 0x3FFFFF);
+    EVE_BITMAP_LAYOUT(EVE_FORMAT_L8, EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+#if IS_EVE_API(2, 3, 4, 5)
+    EVE_BITMAP_LAYOUT_H(EVE_DISP_WIDTH >> 10, EVE_DISP_HEIGHT >> 9);
+#endif
+    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER,
+            EVE_DISP_WIDTH, EVE_DISP_HEIGHT);
+#if IS_EVE_API(2, 3, 4, 5)
+    EVE_BITMAP_SIZE_H(EVE_DISP_WIDTH >> 9, EVE_DISP_HEIGHT >> 9);
+#endif
+    EVE_END();
     EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    start_addr += ((img_width * 2) * img_height);
-    start_addr = (start_addr + 3) & (~3);
-    return start_addr;
+    end_addr = sketch_addr + (EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
+    return end_addr;
+}
+
+void eve_clear_sketch(void)
+{
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_MEMSET(sketch_addr, 0, EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
 }

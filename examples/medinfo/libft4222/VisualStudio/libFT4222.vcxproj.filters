@@ -13,9 +13,6 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
@@ -35,9 +32,6 @@
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_tracedata.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\patch_medinfo.c">
@@ -88,6 +82,15 @@
     <ClCompile Include="..\..\assets\c_array_assets\volume_up.c">
       <Filter>Example\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\dialogs.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -133,14 +136,17 @@
     <ClInclude Include="..\..\common\patch_medinfo.h">
       <Filter>Example\Patch</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\dialogs.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\Snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +185,9 @@
     </Filter>
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{38e13919-88dc-436b-aed2-eb1d434bc8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Snippets">
+      <UniqueIdentifier>{ca151776-e058-4b8c-9a33-064d6dd0707f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

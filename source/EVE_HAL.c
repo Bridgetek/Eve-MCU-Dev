@@ -116,6 +116,10 @@ int HAL_EVE_Init(void)
     // Ensure CPUreset register reads 0 and so FT8xx is ready
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
+#if defined(USE_EMULATOR)
+        // Emulator reset bits on FT80x
+        HAL_MemWrite8(EVE_REG_CPURESET, 0);
+#endif
     }
 #endif
 
@@ -661,10 +665,12 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 #endif
 }
 
-#if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
 void HAL_SetSPIMode(uint32_t mode)
 {
-#if IS_EVE_API(2,3,4)
+#if IS_EVE_API(1)
+    // QuadSPI is not supported on FT80x.
+    (void)mode;
+#elif IS_EVE_API(2,3,4)
     // Turn on EVE quad-SPI for FT81x and BT81x devices.
     // Write EVE_REG_SPI_WIDTH and mask SPI_WIDTH.
     HAL_MemWrite32(EVE_REG_SPI_WIDTH, ((uint32_t)mode) & 3);
@@ -677,7 +683,6 @@ void HAL_SetSPIMode(uint32_t mode)
     HAL_MemWrite32(EVE_REG_SYS_CFG, cfg);
 #endif 
 }
-#endif
 
 /* EVE HAL END */
 

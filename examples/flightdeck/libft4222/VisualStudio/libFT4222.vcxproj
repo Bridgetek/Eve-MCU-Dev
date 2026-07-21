@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ConsoleApplication2</RootNamespace>
+    <RootNamespace>flightdeck</RootNamespace>
     <ProjectName>flightdeck</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -95,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_FT4222=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +113,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_FT4222=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +135,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_FT4222=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,7 +159,7 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_FT4222=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=5;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_FT4222=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
+    <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c" />
     <ClCompile Include="..\..\..\snippets\dials\flightalt.c" />
     <ClCompile Include="..\..\..\snippets\dials\flightatt.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
@@ -190,7 +191,8 @@
     <ClInclude Include="..\..\..\..\include\FT80x.h" />
     <ClInclude Include="..\..\..\..\include\FT81x.h" />
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
-    <ClInclude Include="..\..\..\snippets\dials\flightcontrols.h" />
+    <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
+    <ClInclude Include="..\..\..\snippets\dials\flight_controls.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />

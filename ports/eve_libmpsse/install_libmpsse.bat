@@ -61,7 +61,6 @@ copy /y "%INSTALL_PATH%\include\libmpsse_spi.h"
 echo Copying "%INSTALL_PATH%\source\ftdi_common.h" to ftdi_common.h
 copy /y "%INSTALL_PATH%\source\ftdi_common.h"
 echo Copying "%INSTALL_PATH%\source\ftdi_infra.c" to ftdi_infra.c
-:: TODO: Remove the "L" macro from LoadLibrary(L"ftd2xx.dll");
 copy /y "%INSTALL_PATH%\source\ftdi_infra.c"
 echo Copying "%INSTALL_PATH%\source\ftdi_infra.h" to ftdi_infra.h
 copy /y "%INSTALL_PATH%\source\ftdi_infra.h"
@@ -83,7 +82,9 @@ echo Copying "%INSTALL_PATH%\libftd2xx\WinTypes.h" to WinTypes.h
 copy /y "%INSTALL_PATH%\libftd2xx\WinTypes.h" WinTypes.h
 
 echo IMPORTANT:
-echo Remove the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
+echo Change line 246 on ftdi_infra.c:
+echo  from 'hdll_d2xx = LoadLibrary(L"ftd2xx.dll");' to 'hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));'
+echo Not doing this will result in "LoadLibrary failed: 126"
 
 goto commonexit
 

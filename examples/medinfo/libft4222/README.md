@@ -26,6 +26,12 @@ The executable file is `build\Debug\medinfo_libft4222.exe`. This can be run from
 
 Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 
+Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
+
+```
+cmake --fresh  -G "MinGW Makefiles" -B build -DFT8XX_TYPE=FT810 -DDISPLAY_RES=WVGA -S .
+```
+
 ## Visual Studio Code
 
 To use this example with Microsoft Visual Studio Code follow the instructions in this web page.
@@ -43,3 +49,21 @@ When the example application is launched in Visual Studio it will add the locati
 ## Linux
 
 The cmake command line examples for Windows will compile the required files for the example application under Linux. The LibFT4222 library for Linux will be taken from the `/usr/local/lib` directory and the include files from `/usr/local/include`.
+
+## Running the Example
+
+When the `ASSETS` macro is set to `USE_FILES` or `USE_FLASHIMAGE` then the path to the `assets` directory and the `source` directory is required as the first parameter to the program executable. If the macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The flash image file is `flash-820-default.bin` in the `assets` directory. If `USE_C_ARRAYS` then no additional action is needed.
+
+Note: the default setting for `ASSETS` on libft4222 is `USE_FILES` which is set in the `CMakeLists.txt` file. 
+
+For example:
+
+To use the `USE_FILES` method:
+```
+> .\build\Debug\medinfo_libft4222.exe ..\assets\source\
+```
+
+To use the `USE_FLASHIMAGE` method on BT817 (EVE3):
+```
+> .\build\Debug\medinfo_libft4222.exe ..\assets\eve3\
+```

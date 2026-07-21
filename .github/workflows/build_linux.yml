@@ -1,6 +1,10 @@
+# This test is disabled as FTDI have implemented a cloudflare filter for these files.
 name: Build Simple Example for Linux 
 
 on:
+  pull_request:
+    branches:
+      - 'main'
   push:
     branches:
       # Trigger script on push to 'development' branch

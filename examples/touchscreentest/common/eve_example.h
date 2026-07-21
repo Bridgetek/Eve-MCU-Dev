@@ -52,6 +52,7 @@ extern "C" {
 //@{
 #define FONT_CUSTOM 8
 #define BITMAP_BRIDGETEK_LOGO 7
+#define BITMAP_SKETCH 6
 //@}
 
 /* Globals available within the eve_example code */
@@ -60,6 +61,7 @@ extern uint32_t eve_img_bridgetek_logo_height;
 
 /* Functions called within the eve_example code */
 uint32_t eve_load_images(uint32_t);
+void eve_clear_sketch(void);
 
 /* Entry point to the example code */
 void eve_example(void);

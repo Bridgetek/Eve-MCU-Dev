@@ -25,8 +25,11 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-|Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libft4222 | Yes |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
 ## EVE API Support
 
@@ -63,6 +66,7 @@ The example contains a common directory with several files which comprises all t
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Arc style control widget routines |
+| [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
 | [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines
 | [docs](docs) | Documentation support files |
 
@@ -73,16 +77,32 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(void)
 {
-    EVE_Init();             // Initialise the display
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    EVE_Init();
 
-    eve_calibrate();        // Calibrate the display
+    // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while (1);
+    }
 
+    // Enable audio amplifier
+    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    enableSound();
+
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
+Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
+
+The `enableSound()` funciton is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development boards. After which the sound synthesizer is set to play the MUTE sound.
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 

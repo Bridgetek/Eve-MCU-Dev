@@ -16,14 +16,14 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\eve\ports\eve_libft4222</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,20 +60,23 @@
     <ClInclude Include="..\..\..\..\include\FT81x.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\imports\ftd2xx\ftd2xx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\imports\LibFT4222\inc\LibFT4222.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\touch.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +109,9 @@
     </Filter>
     <Filter Include="Library\eve\ports\eve_bt82x">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\snippets">
+      <UniqueIdentifier>{2e3fcd0e-c16f-4454-a393-69d63dde330d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

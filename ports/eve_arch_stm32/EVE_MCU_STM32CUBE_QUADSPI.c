@@ -102,7 +102,8 @@ static uint16_t MCU_bufferLen;
 static void Error_Handler(void);
 #endif
 
-int ftIsQuad = 0;
+/* Default QuadSPI off. */
+static int ftIsQuad = 0;
 
 int MCU_Init(void)
 {
@@ -153,10 +154,13 @@ int MCU_Setup(void)
     MX_QUADSPI_Init();
 
 #if defined QUADSPI_ENABLE
+#if IS_EVE_API(2,3,4,5)
     /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
     ftIsQuad = 1;
-#else // QUADSPI_ENABLE
+#else // IS_EVE_API(2,3,4,5)
+    ftIsQuad = 0;
+#endif
 #endif // QUADSPI_ENABLE
 
     return 0;
@@ -380,22 +384,6 @@ uint16_t MCU_SPIRead16(void)
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     MCU_append_buffer((uint8_t *)&DataToWrite, 2, 0);
-}
-
-uint32_t MCU_SPIRead24(void)
-{
-    HAL_StatusTypeDef status;
-    uint32_t DataRead;
-
-    status = MCU_receive_buffer((uint8_t *)&DataRead, 3, 0);
-    if (HAL_OK != status)
-    {
-         // QUADSPI master read failed
-        DEBUG_ERROR("MCU_SPIRead24 failed %d\n", status);
-        DataRead = 0;
-    }
-
-    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)

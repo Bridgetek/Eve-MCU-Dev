@@ -80,8 +80,14 @@ EVE_ASSET_PROPS Car_Overhead_44x80_asset;
 EVE_ASSET_PROPS Battery_Cells_40x1440_asset;
 EVE_ASSET_PROPS eurostile_150_L8;
 
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
+
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #define SCALE(a, sc) (((a) * (sc)) / 0x10000)
 
 void scaledText(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t font, uint16_t options, const char* string, ...);
@@ -642,7 +648,7 @@ void trackMap(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t angle, 
 
     //total width 110, height 110
     //----------------------------------------
-    uint16_t size = max(image->Width, image->CellHeight);
+    uint16_t size = MAX(image->Width, image->CellHeight);
 
     //save graphics context
     EVE_SAVE_CONTEXT();
@@ -1997,7 +2003,7 @@ void eve_display(void)
     // the scale is dependent on the mapped screen dimensions
     const uint32_t scale_x = (EVE_DISP_WIDTH * 0x10000) / 800;
     const uint32_t scale_y = (EVE_DISP_HEIGHT * 0x10000) / 480;
-    uint32_t scale = min(scale_x, scale_y);
+    uint32_t scale = MIN(scale_x, scale_y);
 
     // fonts used
     uint8_t label_font_small = 20;

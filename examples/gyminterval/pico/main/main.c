@@ -130,28 +130,24 @@ int main(void)
 void setup(void)
 {
     int ch = 0;
-
-#if DEBUG_LEVEL > 0
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
-#endif
 
     // Turn on the pico LED to show activity
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1);
-
+    
 #if DEBUG_LEVEL > 0
-#if 0 // Wait for USB serial connection...
-    while (!stdio_usb_connected())
-    {
-    }
-#endif
+    // Wait for stdio (UART/USB) connection if enabled
+    // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
+    while (!stdio_usb_connected()) { sleep_ms(100);  }
+
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Gym Interval Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
     printf ("Pin configuration for example:\n");
     printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

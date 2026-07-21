@@ -128,7 +128,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to BRT_AN_025 Example for Windows FT4222 Library\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Flightdeck for Windows FT4222 Library\r\n");
     printf ("\n");
 
 }

@@ -242,15 +242,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     MCU_SPIReadWrite16(DataToWrite);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-
-    DataRead = MCU_SPIReadWrite24(0);
-
-    return MCU_le32toh(DataRead);
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     MCU_SPIReadWrite24(DataToWrite);

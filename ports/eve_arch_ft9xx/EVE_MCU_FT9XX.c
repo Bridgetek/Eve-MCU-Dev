@@ -225,15 +225,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     spi_writen(SPIM, (uint8_t *)&DataToWrite, 2);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-
-    spi_readn(SPIM, (uint8_t *)&DataRead, 3);
-
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     spi_writen(SPIM, (uint8_t *)&DataToWrite, 3);

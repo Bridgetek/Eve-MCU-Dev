@@ -34,18 +34,22 @@ option(DISPLAY_RES "Panel Display Resolution" )
 # Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+    message(MODULE_TYPE="${MODULE_TYPE}")
 ELSE(MODULE_TYPE)
 # Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+    message(FT8XX_TYPE="${FT8XX_TYPE}")
 ENDIF(FT8XX_TYPE)
 # Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+    message(PANEL_TYPE="${PANEL_TYPE}")
 ELSE(PANEL_TYPE)
 # Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+    message(DISPLAY_RES="${DISPLAY_RES}")
 ENDIF(DISPLAY_RES)
 ENDIF(PANEL_TYPE)
 ENDIF(MODULE_TYPE)
@@ -67,6 +71,9 @@ include_directories(
 # Tell EVE library to use libFT4222 as base class
 # Choose the FT4222 device (0 for first, 1 for second etc)
 add_compile_definitions(USE_FT4222=0)
+
+# BY DEFAULT: On libft4222 use the files in the "assets" directory
+add_compile_definitions(ASSETS=USE_FILES)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=1)

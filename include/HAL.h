@@ -330,9 +330,7 @@ typedef enum EVE_SPI_CHANNELS_T
                 1 – 2bits (Dual mode)
                 2 – 4bits (Quad mode)
  */
-#if IS_EVE_API(2, 3, 4, 5) // Not supported on FT80x
 void HAL_SetSPIMode(uint32_t mode);
-#endif
 
 /* EVE HAL END */
 

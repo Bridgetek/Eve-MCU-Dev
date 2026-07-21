@@ -66,7 +66,7 @@ void enableSound(void)
 	// Turn synthesizer volume up
 	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite8(EVE_REG_SOUND, 0x60);
+	EVE_LIB_MemWrite8(EVE_REG_SOUND, SOUND_MUTE);
 	// Play sound
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 
@@ -91,29 +91,59 @@ void enableSound(void)
 	// Turn synthesizer volume up
 	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite8(EVE_REG_SOUND, 0x60);
+	EVE_LIB_MemWrite8(EVE_REG_SOUND, SOUND_MUTE);
 	// Play sound
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 #else
     // Turn synthesizer volume up
 	EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
-	EVE_LIB_MemWrite32(EVE_REG_SOUND, 0x60);
+	EVE_LIB_MemWrite32(EVE_REG_SOUND, SOUND_MUTE);
 	// Play sound
 	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
 #endif
 }
 
+int checkRegPlay(void)
+{
+#if IS_EVE_API(1,2,3,4)
+	uint8_t play; 
+	// play sound
+	play = EVE_LIB_MemRead8(EVE_REG_PLAY);
+#else
+	uint32_t play;
+	// play sound
+	play = EVE_LIB_MemRead32(EVE_REG_PLAY);
+#endif
+
+return play;
+} 
+
 void playSound(uint8_t sound, uint8_t note)
 {
 #if IS_EVE_API(1,2,3,4)
-	// set synthesizer to chime c#3
+	// set synthesizer to note
 	EVE_LIB_MemWrite16(EVE_REG_SOUND, (note << 8) | sound);
 	// play sound
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 #else
-	// set synthesizer to chime c#3
+	// set synthesizer to note
 	EVE_LIB_MemWrite32(EVE_REG_SOUND, (note << 8) | sound);
+	// play sound
+	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
+#endif
+} 
+
+void playMute(void)
+{
+#if IS_EVE_API(1,2,3,4)
+	// set synthesizer to note
+	EVE_LIB_MemWrite16(EVE_REG_SOUND, SOUND_MUTE);
+	// play sound
+	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+#else
+	// set synthesizer to note
+	EVE_LIB_MemWrite32(EVE_REG_SOUND, SOUND_MUTE);
 	// play sound
 	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
 #endif

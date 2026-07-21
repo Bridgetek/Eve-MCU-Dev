@@ -279,7 +279,7 @@ int MCU_Init(void)
         "DP-0351-11A WVGA (Resistive)"
 #elif PANEL_TYPE == DP_0502_11A
         "DP-0502-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0701_11A
+#elif PANEL_TYPE == DP_0701_01A
         "DP-0701-11A WVGA (Capacitive)"
 #elif PANEL_TYPE == DP_1012_01A
         "DP-1012-01A WUXGA (Capacitive)"
@@ -289,6 +289,8 @@ int MCU_Init(void)
         "IDM204043A (Capacitive)"
 #elif PANEL_TYPE == DP_IDM21R
         "IDM204021R (Capacitive)"
+#else
+        "Other"
 #endif // PANEL_TYPE
     );
 #endif // PANEL_TYPE != NO_PANEL
@@ -500,29 +502,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
         printf("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
-}
-
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-
-    DataRead = (uint32_t)get_response() & 0x00ffffff;
-
-    if (state == state_read)
-    {
-        printf("%s %06x ", get_register(), DataRead);
-    }
-    else if (state == state_read_cont)
-    {
-        printf("%06x ", DataRead);
-    }
-    else
-    {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
-        exit(-1);
-    }
-    
-    return DataRead;
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)

@@ -50,12 +50,21 @@
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 #endif
 
+static inline void draw_vertex(int16_t x, int16_t y)
+{
+#if IS_EVE_API(1)
+    EVE_VERTEX2F(x * 16, y * 16);
+#else
+    EVE_VERTEX2F(x, y);
+#endif
+}
+
 /*
- * x,y - top left of seven segment graphic in pixels
+ * x,y - top left of widget in pixels
  * radius - radius of widget
  * alt - altitude reading
 */
-void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
+void altwidget(int16_t x, int16_t y, uint16_t radius, int alt)
 {
     // Like a real altitude instrument it will never go beyond the limits
     alt = max(alt, 0);
@@ -86,10 +95,11 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     int degthou, deghund;
     int deg;
     uint16_t dx1, dy1, dx2, dy2;
-    int n;
     uint16_t dxt1, dyt1, dxt2, dyt2, dxt3, dyt3, dxh, dyh;
 
+#if !IS_EVE_API(1)
     EVE_VERTEX_FORMAT(0);
+#endif
 
     // Draw bezel
     EVE_SAVE_CONTEXT();
@@ -99,13 +109,13 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);	// Set the stencil to increment
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_outer * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 1
     EVE_POINT_SIZE(radius_b1 * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 2
     EVE_POINT_SIZE(radius_b2 * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 3
     EVE_POINT_SIZE(radius_inner * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y); // stencil 4
     EVE_END();
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP); // Stop the stencil INCR
     // Gradient (light at top) for outer of bezel
@@ -114,7 +124,7 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     // Flat colour for centre of bezel
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 2, 255);
     EVE_POINT_SIZE(radius_outer * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     // Gradient (dark at top) for inner of bezel
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 3, 255);
     EVE_CMD_GRADIENT(x - radius_outer, y + radius_outer, bezel_col_bright, x - radius_outer, y - radius_outer, bezel_col_dark);
@@ -129,11 +139,11 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     // Draw ground and sky stencil
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_inner * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_POINT_SIZE(radius_minor * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_POINT_SIZE(radius_major * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_BEGIN(EVE_BEGIN_LINES);
     // bold at 1000ft intervals
     EVE_STENCIL_FUNC(EVE_TEST_NOTEQUAL, 0, 255);
@@ -145,8 +155,8 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
         dy1 = y - CIRC_Y(radius_inner, DEG2FURMAN(deg * 36));
         dx2 = x + CIRC_X(radius_major, DEG2FURMAN(deg * 36));
         dy2 = y - CIRC_Y(radius_major, DEG2FURMAN(deg * 36));
-        EVE_VERTEX2F(dx1, dy1);
-        EVE_VERTEX2F(dx2, dy2);
+        draw_vertex(dx1, dy1);
+        draw_vertex(dx2, dy2);
     }
     // narrow at 10 and 20 degrees
     EVE_LINE_WIDTH(alt_ref_narrow);
@@ -156,42 +166,42 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
         dy1 = y - CIRC_Y(radius_inner, DEG2FURMAN(deg * 36 / 10));
         dx2 = x + CIRC_X(radius_minor, DEG2FURMAN(deg * 36 / 10));
         dy2 = y - CIRC_Y(radius_minor, DEG2FURMAN(deg * 36 / 10));
-        EVE_VERTEX2F(dx1, dy1);
-        EVE_VERTEX2F(dx2, dy2);
+        draw_vertex(dx1, dy1);
+        draw_vertex(dx2, dy2);
     }
     EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255);
     EVE_COLOR(alt_covering);
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius_major * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_RESTORE_CONTEXT();
 
     // Indicators choose a font which is about 1/5th of the radius
-    uint8_t fontheights[] = EVE_ROMFONT_HEIGHTS;
-    int8_t font = sizeof(fontheights) / sizeof(fontheights[0]);
+    static uint8_t fontheights[] = EVE_ROMFONT_HEIGHTS;
+    int8_t n;
+    // Default font - use the smallest defined ROM font
+    int8_t font = 20;
     for (n = sizeof(fontheights) / sizeof(fontheights[0]) - 1; n >= 0; n--)
     {
         if (fontheights[n] > 0)
         {
             if (fontheights[n] < (radius_inner / 5))
             {
+                font = n;
                 break;
             }
         }
-        font -= 1;
     }
-    if (font)
+
+    for (deg = 0; deg < 10; deg++)
     {
-        font = min(font, sizeof(fontheights) / sizeof(fontheights[0]) - 1);
-        for (deg = 0; deg < 10; deg++)
-        {
-            dx = x + CIRC_X(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
-            dy = y - CIRC_Y(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
-            EVE_CMD_NUMBER(dx, dy, font, EVE_OPT_CENTER, deg);
-        }
-        EVE_CMD_TEXT(x, y - (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "Altitude");
-        EVE_CMD_TEXT(x, y + (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "10000ft");
+        dx = x + CIRC_X(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
+        dy = y - CIRC_Y(radius_inner * 7 / 10, DEG2FURMAN(deg * 36));
+        EVE_CMD_NUMBER(dx, dy, font, EVE_OPT_CENTER, deg);
     }
+    EVE_CMD_TEXT(x, y - (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "Altitude");
+    EVE_CMD_TEXT(x, y + (radius_inner * 3 / 10), font, EVE_OPT_CENTER, "10000ft");
+
     // Altitude needle
     EVE_SAVE_CONTEXT();
     EVE_CLEAR(0,1,0);
@@ -213,20 +223,20 @@ void altwidget(int32_t x, int32_t y, uint16_t radius, int alt)
     {
         EVE_COLOR(n==0?alt_background:alt_reference);
         EVE_LINE_WIDTH(alt_needle/2 + (n==0?32:0));
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(dxt3, dyt3);
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(dxh, dyh);
+        draw_vertex(dx, dy);
+        draw_vertex(dxt3, dyt3);
+        draw_vertex(dx, dy);
+        draw_vertex(dxh, dyh);
         EVE_LINE_WIDTH(alt_needle*2/3 + (n==0?32:0));
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(dxt2, dyt2);
+        draw_vertex(dx, dy);
+        draw_vertex(dxt2, dyt2);
         EVE_LINE_WIDTH(alt_needle + (n==0?32:0));
-        EVE_VERTEX2F(dx, dy);
-        EVE_VERTEX2F(dxt1, dyt1);
+        draw_vertex(dx, dy);
+        draw_vertex(dxt1, dyt1);
     }
     EVE_COLOR(alt_background);
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE((radius_inner / 5) * 16);
-    EVE_VERTEX2F(x, y);
+    draw_vertex(x, y);
     EVE_RESTORE_CONTEXT();
 }

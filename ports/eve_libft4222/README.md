@@ -48,7 +48,7 @@ The settings required in `EVE_config.h` are:
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.7 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.8 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/ft4222h-software-examples/
 
@@ -58,7 +58,7 @@ The library is installed *once* into the `ports\eve_libft4222` directory. When b
 
 ### Install the LibFT4222 Middleware Library in EVE-MCU-Dev library
 
-The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
+The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.8 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
 
 Each architecture has:
 - A DLL file for LibFT4222
@@ -72,19 +72,19 @@ To run the BAT file change directory to the `ports\eve_libft4222` directory. The
 
 ```
 > cd ports\eve_libft4222
-> install_libft4222.bat ..\..\..\LibFT4222-v1.4.7\imports
-Installing AMD64 libraries from "..\..\..\LibFT4222-v1.4.7\imports"
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\dll\amd64\LibFT4222-64.dll" to LibFT4222-64.dll
+> install_libft4222.bat ..\..\..\LibFT4222-v1.4.8\imports
+Installing AMD64 libraries from "..\..\..\LibFT4222-v1.4.8\imports"
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.dll" to LibFT4222-64.dll
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\dll\amd64\LibFT4222-64.lib" to libft4222.lib
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.lib" to libft4222.lib
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\LibFT4222\inc\LibFT4222.h" to libft4222.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\inc\LibFT4222.h" to libft4222.h
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libftd2xx.lib
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libftd2xx.lib
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.7\imports\ftd2xx\WinTypes.h" to WinTypes.h
+Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
 ```
 

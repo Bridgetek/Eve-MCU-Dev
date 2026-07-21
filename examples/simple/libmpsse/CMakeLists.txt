@@ -34,18 +34,22 @@ option(DISPLAY_RES "Panel Display Resolution" )
 # Set a module type
 IF(MODULE_TYPE)
     ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
+    message(MODULE_TYPE="${MODULE_TYPE}")
 ELSE(MODULE_TYPE)
 # Set the eve device type
 IF(FT8XX_TYPE)
     ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
+    message(FT8XX_TYPE="${FT8XX_TYPE}")
 ENDIF(FT8XX_TYPE)
 # Set the panel type
 IF(PANEL_TYPE)
     ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
+    message(PANEL_TYPE="${PANEL_TYPE}")
 ELSE(PANEL_TYPE)
 # Set the display resolution
 IF(DISPLAY_RES)
     ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
+    message(DISPLAY_RES="${DISPLAY_RES}")
 ENDIF(DISPLAY_RES)
 ENDIF(PANEL_TYPE)
 ENDIF(MODULE_TYPE)
@@ -70,7 +74,7 @@ add_compile_definitions(USE_MPSSE=0)
 add_compile_definitions(FTDIMPSSE_STATIC)
 add_compile_definitions(FT_VER_MAJOR=1)
 add_compile_definitions(FT_VER_MINOR=0)
-add_compile_definitions(FT_VER_BUILD=5)
+add_compile_definitions(FT_VER_BUILD=9)
 
 # Source code for EVE library (targetted at MPSSE)
 add_library(eve_library # EVE library name

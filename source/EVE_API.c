@@ -1304,6 +1304,7 @@ void EVE_CMD_INFLATE(uint32_t ptr)
     HAL_Write32(ptr);
     HAL_IncCmdPointer(8);
 }
+
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);
@@ -1311,7 +1312,9 @@ void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
     HAL_Write32(ptr);
     HAL_IncCmdPointer(12);
 }
+
 #elif IS_EVE_API(5) // FT81x API change
+
 void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options)
 {
   HAL_Write32(EVE_ENC_CMD_INFLATE);
@@ -1319,6 +1322,7 @@ void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options)
   HAL_Write32(options);
   HAL_IncCmdPointer(12);
 }
+
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
     HAL_Write32(EVE_ENC_CMD_SETFONT);
@@ -1327,6 +1331,7 @@ void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
     HAL_Write32(firstchar);
     HAL_IncCmdPointer(16);
 }
+
 #endif
 
 void EVE_CMD_LOGO(void)
@@ -2306,6 +2311,13 @@ void EVE_CMD_RESULT(uint32_t a)
 {
     HAL_Write32(EVE_ENC_CMD_RESULT);
     HAL_Write32(a);
+    HAL_IncCmdPointer(8);
+}
+
+void EVE_CMD_I2SSTARTUP(uint32_t freq)
+{
+    HAL_Write32(EVE_ENC_CMD_I2SSTARTUP);
+    HAL_Write32(freq);
     HAL_IncCmdPointer(8);
 }
 

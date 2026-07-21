@@ -196,17 +196,6 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 2);
 }
 
-uint32_t MCU_SPIRead24(void)
-{
-    uint32_t DataRead = 0;
-
-    // Note: This platform is LITTLE_ENDIAN. 
-    // Buffer receives of integers will be little endian.
-    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 3);
-
-    return DataRead;
-}
-
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     // Note: This platform is LITTLE_ENDIAN. 

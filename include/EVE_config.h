@@ -93,7 +93,7 @@
 #define DP_0501_01A 050101 // DP-0501-01A WVGA (Capacitive)
 #define DP_0501_11A 050111 // DP-0501-11A WVGA (Resistive)
 #define DP_0502_11A 0502   // DP-0502-11A WQVGA (Resistive)
-#define DP_0701_11A 0701   // DP-0701-11A WVGA (Capacitive)
+#define DP_0701_01A 0701   // DP-0701-11A WVGA (Capacitive)
 #define DP_1012_01A 1012   // DP-1012-01A WUXGA (Capacitive)
 #define DP_1561_01A 1561   // DP-1561-01A FullHD (Capacitive)
 #define DP_IDM43A   43     // IDM204043A (Capacitive)
@@ -182,7 +182,7 @@
 #elif MODULE_TYPE == IDM20407A  
 // IDM2040-7A
 #define FT8XX_TYPE BT817
-#define PANEL_TYPE DP_0701_11A
+#define PANEL_TYPE DP_0701_01A
 #else
 
 #error MODULE_TYPE must be configured.
@@ -247,7 +247,7 @@
 // DP-0502-11A WQVGA (Resistive)
 #define DISPLAY_RES WQVGA   
 
-#elif PANEL_TYPE == DP_0701_11A
+#elif PANEL_TYPE == DP_0701_01A
 // DP-0701-11A WVGA (Capacitive)
 #define DISPLAY_RES WVGA
 
