@@ -45,10 +45,17 @@
 
 #include "eve_example.h"
 
+#ifndef MAX
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#endif
+#ifndef MIN
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#endif
+
 void eve_display(void)
 {
     // Size of the indicators on the dashboard
-    uint16_t dial_radius = min(EVE_DISP_HEIGHT, EVE_DISP_WIDTH) / 4;
+    uint16_t dial_radius = MIN(EVE_DISP_HEIGHT, EVE_DISP_WIDTH) / 4;
 
     // Variables detemining how the animation of the widget appears
     int anim_pitch_num = 300;
