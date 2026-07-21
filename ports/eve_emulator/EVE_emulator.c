@@ -253,10 +253,8 @@ void MCU_CSlow(void)
         // exit application with code 0
         exit(0);
     }
-    else {
-        // else perform CS# low toggle
-        BT8XXEMU_chipSelect(Emulator, 1);
-    }
+ 
+    BT8XXEMU_chipSelect(Emulator, 1);
 }
 
 // --------------------- Chip Select line high ---------------------------------
