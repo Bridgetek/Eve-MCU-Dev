@@ -90,6 +90,9 @@ add_compile_definitions(DEBUG_LEVEL=1)
 add_compile_definitions(MCU_SPI_TIMEOUT=8)
 add_compile_definitions(MCU_SPI_TRANSFER=0x100)
 
+# Use look up table instead of maths functions for trig
+add_compile_definitions(USE_TRIG_TABLE) 
+
 # Source code for EVE library (targetted at FT4222)
 add_library(eve_library # EVE library name
         # Source code for EVE library
