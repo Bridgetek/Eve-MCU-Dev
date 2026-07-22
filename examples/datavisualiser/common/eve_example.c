@@ -1781,11 +1781,7 @@ void checkTouchStatus(void)
         Pen_Up_Tag = 0;
 
         // register has a differnt name for the FT80x series
-#if IS_EVE_API(2,3,4,5)
         TrackValue = EVE_LIB_MemRead32(EVE_REG_TRACKER);
-#else
-        TrackValue = EVE_LIB_MemRead32(EVE_REG_TRACK);
-#endif
 
         // determine the current angel in degress from the TrackValue
         angle = (((360 * (((TrackValue >> 16)) & 0xffff)) / 0x10000));
