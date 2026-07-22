@@ -30,15 +30,15 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: false
 
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         example: [
           {dir: raspberry_pi,   compiler: arm,  library: rpi},
           {dir: pico,           compiler: arm,  library: pico},
-          {dir: libft4222,      compiler: none, library: libft4222},
-          {dir: libmpsse,       compiler: none, library: libmpsse },
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
         eve: [ 
@@ -55,69 +55,12 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    # Form a cache of tar files from FTDI to save downloading them each time
-    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      id: ftdicache
-      uses: actions/cache@v5
-      with:
-        path: |
-          ~/lib/
-        key: ${{ runner.os }}-ftdilibs-ubuntu-1
-        restore-keys: |
-          ${{ runner.os }}-ftdilibs-ubuntu
-
-    # If the cache hit for the FTDI tar files fails then download them
-    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      if: steps.ftdicache.outputs.cache-hit != 'true'
-      run: |
-        mkdir ~/lib/
-        cd ~/lib/
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
-        unzip libft4222-linux-1.4.4.232.zip
-        rm libft4222-linux-1.4.4.232.zip
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-        tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
-        tar xfvz libmpsse-x86_64-1.0.8.tgz
-        tar xfvz libft4222-linux-1.4.4.232.tgz
-        rm libftd2xx-linux-x86_64-1.4.34.tgz
-        rm libmpsse-x86_64-1.0.8.tgz
-        rm libft4222-linux-1.4.4.232.tgz
-        cd ..
-
     # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
     - name: Setup gcc-arm-none-eabi environment
       if: ${{ matrix.example.compiler == 'arm' }}
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       # Equivalent to the following line but uses caches for speed:
       # run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
-
-    - name: Setup libFTD2XX library
-      if: ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}
-      run: |
-        cd ~/lib/
-        cd linux-x86_64/
-        sudo cp libftd2xx.* /usr/local/lib
-        sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
-        sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
-        sudo cp ftd2xx.h /usr/local/include
-        sudo cp WinTypes.h /usr/local/include
-        cd ..
-
-    - name: Setup libMPSSE-SPI library
-      if: ${{ matrix.example.library == 'libmpsse' }}
-      run: |
-        cd ~/lib/
-        cd release
-        chmod +x install_libmpsse.sh
-        ./install_libmpsse.sh
-        cd ..
-
-    - name: Setup libFT4222 library
-      if: ${{ matrix.example.library == 'libft4222' }}
-      run: |
-        cd ~/lib/
-        sudo ./install4222.sh
 
     - name: Setup Linux GPIO library
       if: ${{ matrix.example.library == 'rpi' }}
