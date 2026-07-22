@@ -21,9 +21,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.2.0)
-set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0-a4)
+set(sdkVersion 2.3.0)
+set(toolchainVersion 15_2_Rel1)
+set(picotoolVersion 2.3.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -113,14 +113,12 @@ add_compile_definitions(PLATFORM_RP2040)
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
 
-# Use look up table instead of maths funcitons for trig
-add_compile_definitions(USE_TRIG_TABLE)
-
 # Milliseconds to wait for stdio connection
 # (will also have stdio_usb_connected() call in main to wait for connection)
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
 
-# Modify the below lines to enable/disable output over USB
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
@@ -145,9 +143,6 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_images.c
         ${EXAMPLE_SNIPPETS}/touch.c
 )
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(eve_example 0)
-pico_enable_stdio_usb(eve_example 1)
 
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
