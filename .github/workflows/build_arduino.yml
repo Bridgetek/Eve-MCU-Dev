@@ -12,7 +12,7 @@ on:
       - 'main'
     paths:
       # Trigger if this workflow file changes
-      - '.github/workflows/api_test.yml'
+      - '.github/workflows/build_arduino.yml'
       # Trigger script on push to simple arduino example
       - 'examples/simple/arduino/**'
       # Trigger script on push to API
