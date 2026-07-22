@@ -2000,6 +2000,10 @@ void eve_example(void)
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
+    // Enable audio amplifier
+    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    enableSound();
+
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
@@ -2007,10 +2011,6 @@ void eve_example(void)
         DEBUG_PRINTF("Exception...\n");
         while (1);
     }
-
-    // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
-    enableSound();
 
     // Start example code
     DEBUG_PRINTF("Starting demo:\n");
