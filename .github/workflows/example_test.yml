@@ -34,17 +34,17 @@ jobs:
       max-parallel: 1
       matrix:
         eve: [ 
-          {EXAMPLE: simple, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: b2tf, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: cruise, ASSETS: 0, EVE1: "false", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: flightdeck, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: "false", EVE234: "false", EVE5: "true" }, 
-          {EXAMPLE: gyminterval, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: submarine, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
-          {EXAMPLE: touchscreentest, ASSETS: 0, EVE1: "true", EVE234: "true", EVE5: "true" }, 
+          {EXAMPLE: simple, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: b2tf, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: cruise, ASSETS: 0, EVE1: false, EVE234: true, EVE5: true }, 
+          {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: flightdeck, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE234: false, EVE5: true }, 
+          {EXAMPLE: gyminterval, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: submarine, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
+          {EXAMPLE: touchscreentest, ASSETS: 0, EVE1: true, EVE234: true, EVE5: true }, 
         ]
     
     # Set the name of the job to include the important information
