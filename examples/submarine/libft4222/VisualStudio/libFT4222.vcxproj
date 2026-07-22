@@ -176,8 +176,6 @@
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\..\snippets\dials\compass_bulkhead.c" />
-    <ClCompile Include="..\..\..\snippets\dials\flightalt.c" />
-    <ClCompile Include="..\..\..\snippets\dials\flightatt.c" />
     <ClCompile Include="..\..\..\snippets\dials\sub_depth.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\assets\clownfish_102x54_ARGB1555.c" />
@@ -202,8 +200,6 @@
     <ClInclude Include="..\..\..\snippets\dials\sub_controls.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
-    <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
     <ClInclude Include="..\..\..\..\include\FT8xx.h" />
@@ -212,7 +208,6 @@
     <ClInclude Include="..\..\..\..\include\Platform.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

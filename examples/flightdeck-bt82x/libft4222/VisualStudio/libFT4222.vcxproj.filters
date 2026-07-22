@@ -42,40 +42,10 @@
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\MCU.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\HAL.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT8xx.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\EVE_config.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\EVE.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT81x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT82x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT80x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT81x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
@@ -107,6 +77,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\MCU.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_config.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_commands.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_registers.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\HAL.h">
+      <Filter>Library\eve\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

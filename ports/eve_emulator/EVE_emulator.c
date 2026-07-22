@@ -135,7 +135,11 @@ static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const 
 
 int MCU_Init(void)
 {
+    // print Emulator Version
+    printf("\n");
     printf(BT8XXEMU_version());
+    printf("\n\n");
+
 
 // Set emulator type from EVE_conig.h EVE type setting
 #if (FT8XX_TYPE == FT800)

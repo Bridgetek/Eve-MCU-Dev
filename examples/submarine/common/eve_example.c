@@ -43,6 +43,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <EVE.h>
+#include <MCU.h> // for DEBUG_PRINTF()
 
 #include "eve_example.h"
 
@@ -472,13 +473,14 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
     // Calibrate the display
-    printf("Calibrating display...\n");
+    DEBUG_PRINTF("Calibrating display...\n");
     eve_calibrate();
 
     // Start example code
-    printf("Starting demo:\n");
+    DEBUG_PRINTF("Starting demo:\n");
     eve_display();
 }

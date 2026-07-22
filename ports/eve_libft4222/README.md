@@ -84,8 +84,6 @@ Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libft
         1 file(s) copied.
 Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
         1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\WinTypes.h" to WinTypes.h
-        1 file(s) copied.
 ```
 
 The example application will load and use the `LibFT4222-64.dll` or `LibFT4222.dll` file at runtime. This file must be available either locally (in the same directory as the example executable) or on the system path (recommended "C:\Windows\System32"). The `CMakeLists.txt` file in each example will copy the DLL to the same output directory as the executable.
