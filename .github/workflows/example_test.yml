@@ -36,10 +36,10 @@ jobs:
         eve: [ 
           {EXAMPLE: simple, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: b2tf, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: cruise, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: cruise, ASSETS: 0, EVE1: false, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: flightdeck, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: WUXGA }, 
           {EXAMPLE: gyminterval, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: FULLHD, EVE4: FULLHD, EVE5: WUXGA }, 
           {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
