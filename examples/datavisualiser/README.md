@@ -81,6 +81,10 @@ void eve_example(void)
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
+    // Enable audio amplifier
+    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    enableSound();
+
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
@@ -89,10 +93,6 @@ void eve_example(void)
         while (1);
     }
 
-    // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
-    enableSound();
-
     // Start example code
     DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
@@ -100,9 +100,9 @@ void eve_example(void)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
+The `enableSound()` funciton is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development modules. After which the sound synthesizer is set to play the MUTE sound.
 
-The `enableSound()` funciton is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development boards. After which the sound synthesizer is set to play the MUTE sound.
+Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
