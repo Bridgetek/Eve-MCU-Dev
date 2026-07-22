@@ -940,11 +940,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             {
                 uint32_t trackVal;
                 // register has a differnt name for the FT80x series
-#if IS_EVE_API(2,3,4,5)
                 trackVal = EVE_LIB_MemRead32(EVE_REG_TRACKER);
-#else
-                trackVal = EVE_LIB_MemRead32(EVE_REG_TRACK);
-#endif
                 trackVal >>= 16;
 
                 int isTime = 0;
