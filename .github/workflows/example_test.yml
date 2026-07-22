@@ -55,52 +55,52 @@ jobs:
 
     # Test using matrix
     - name: Configure CMake EVE5
-      if: ${{ matrix.eve.EVE5 != false }}
+      if: ${{ matrix.eve.EVE5 }}
       run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT820 -DDISPLAY_RES=${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE5
-      if: ${{ matrix.eve.EVE5 != false }}
+      if: ${{ matrix.eve.EVE5 }}
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE4
-      if: ${{ matrix.eve.EVE4 != false }}
+      if: ${{ matrix.eve.EVE4 }}
       run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT818 -DDISPLAY_RES=${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE4
-      if: ${{ matrix.eve.EVE4 != false }}
+      if: ${{ matrix.eve.EVE4 }}
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE3
-      if: ${{ matrix.eve.EVE3 != false }}
+      if: ${{ matrix.eve.EVE3 }}
       run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT815 -DDISPLAY_RES=${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE3
-      if: ${{ matrix.eve.EVE3 != false }}
+      if: ${{ matrix.eve.EVE3 }}
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE2
-      if: ${{ matrix.eve.EVE2 != false }}
+      if: ${{ matrix.eve.EVE2 }}
       run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT812 -DDISPLAY_RES=${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE2
-      if: ${{ matrix.eve.EVE2 != false }}
+      if: ${{ matrix.eve.EVE2 }}
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE1
-      if: ${{ matrix.eve.EVE1 != false }}
+      if: ${{ matrix.eve.EVE1 }}
       run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT800 -DDISPLAY_RES=${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE1
-      if: ${{ matrix.eve.EVE1 != false }}
+      if: ${{ matrix.eve.EVE1 }}
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
