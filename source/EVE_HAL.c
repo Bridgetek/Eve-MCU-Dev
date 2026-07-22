@@ -47,7 +47,7 @@
 // with a console running turn on DEBUG_LEVEL unless it is has specifically
 // been set to zero in the environment.
 #ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222)
+#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(USE_EMULATOR)
 #define DEBUG_LEVEL 1
 #endif
 #endif
