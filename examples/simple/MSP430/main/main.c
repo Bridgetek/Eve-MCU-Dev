@@ -63,16 +63,10 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 void main(void) 
 {
+
+    /* Start example code */
     eve_example();
-    
-    while(1)
-    {
-    }
+
+    // function never returns
+    for (;;) ;
 }
-
-
-
-
-
-
-

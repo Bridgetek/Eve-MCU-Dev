@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?ccsproject version="1.0"?>
 <projectOptions>
-	<ccsVersion value="9.0.0"/>
-	<deviceVariant value="MSP430G2553"/>
+	<ccsVariant value="50:Theia-based"/>
+	<ccsVersion value="70.2.0"/>
 	<deviceFamily value="MSP430"/>
-	<deviceEndianness value="little"/>
-	<codegenToolVersion value="18.12.1.LTS"/>
-	<isElfFormat value="true"/>
-	<connection value="common/targetdb/connections/TIMSP430-USB.xml"/>
-	<linkerCommandFile value="lnk_msp430g2553.cmd"/>
-	<rts value="libc.a"/>
+	<executableActions value=""/>
 	<createSlaveProjects value=""/>
-	<templateProperties value="id=com.ti.common.project.core.emptyProjectTemplate"/>
-	<filesToOpen value=""/>
-	<isTargetManual value="false"/>
+	<templateProperties value="id=BlinkLED_MSP-EXP430G2ET.projectspec.MSP430"/>
+	<connection value="common/targetdb/connections/TIMSP430-USB.xml"/>
 	<activeTargetConfiguration value="targetConfigs/MSP430G2553.ccxml"/>
+	<origin value="C:\ti\msp430ware_3_80_14_01\examples\boards\MSP-EXP430G2ET\MSP-EXP430G2ET_Software_Examples\Firmware\Source\BlinkLED_MSP-EXP430G2ET\CCS\BlinkLED_MSP-EXP430G2ET.projectspec"/>
+	<filesToOpen value="main.c"/>
 </projectOptions>
