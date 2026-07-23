@@ -1,40 +1,5 @@
 /**
- * @file EVE_commands.h
- * @brief Common definitions for EVE command options.
- * ============================================================================
- * (C) Copyright,  Bridgetek Pte. Ltd.
- * ============================================================================
- *
- * This source code ("the Software") is provided by Bridgetek Pte Ltd
- * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
- * You must read the Licence Terms before downloading or using the Software.
- * By installing or using the Software you agree to the Licence Terms. If you
- * do not agree to the Licence Terms then do not download or use the Software.
- *
- * Without prejudice to the Licence Terms, here is a summary of some of the key
- * terms of the Licence Terms (and in the event of any conflict between this
- * summary and the Licence Terms then the text of the Licence Terms will
- * prevail).
- *
- * The Software is provided "as is".
- * There are no warranties (or similar) in relation to the quality of the
- * Software. You use it at your own risk.
- * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of Bridgetek liability for certain types of loss
- * such as: special loss or damage; incidental loss or damage; indirect or
- * consequential loss or damage; loss of income; loss of business; loss of
- * profits; loss of revenue; loss of contracts; business interruption; loss of
- * the use of money or anticipated savings; loss of information; loss of
- * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
- * corruption of data.
- * There is a monetary cap on Bridgetek's liability.
- * The Software may have subsequently been amended by another user and then
- * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, Bridgetek
- * has no liability in relation to those amendments.
- * ============================================================================
- 
+ @file EVE_commands.h 
  @brief Cross-generation EVE command definitions.
  @details Provides a single unified set of EVE_ display list commands and
      EVE_CMD_ co-processor commands that correct command codes for the selected 
@@ -61,6 +26,41 @@
      NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
      throughout this file. They are kept as separate columns so that if a
      future BT81x variant diverges the table stays correct.
+    */
+ /*
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
  */
 
 #ifndef _EVE_COMMANDS_H_
@@ -75,7 +75,7 @@
 #endif
 
 /* =========================================================================
-/* Sentinel for a register / constant absent on a given generation.
+ * Sentinel for a register / constant absent on a given generation.
  * For CMD opcodes, guard usage sites with IS_EVE_API rather than relying
  * on this value. 0ul is a DISPLAY() command.
  * ========================================================================= */
