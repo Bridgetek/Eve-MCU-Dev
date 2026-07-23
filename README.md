@@ -110,21 +110,15 @@ The library is structured as follows. There are common sections with have source
 - **`\source\EVE_API.c`** The programming interface to the library.
 - `\source\EVE_HAL.c` The abstraction layer between the programming interface and the MCU specific layer.
 - `\source\EVE_HAL_Linux.c` The abstraction layer between the programming interface and the Linux SPI character device.
-- `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - **`\include\EVE.h`** Header file to include to access all required programming interface entry points and definitions.
-- `\include\Platform.h` Linux header file for access to the MCU layer from the abstraction layer.
+- `\include\EVE_commands.h` Header file which provides cross-generation EVE command and option definitions.
 - **`\include\EVE_Config.h`** Overridable configuration file for target application.
+- `\include\EVE_registers.h` Header file which provides cross-generation EVE register address map.
+- `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - `\include\MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
-- `\include\FT8xx.h` Header file which selects the EVE API specific header file below.
-
+- `\include\Platform.h` Linux header file for access to the MCU layer from the abstraction layer.
+  
 **Bold** files are the files with the recommended access points for a program into the library.
-
-EVE API specific header files.
-
-- `\include\FT80x.h` Header file for API 1
-- `\include\FT81x.h` Header file for API 2 SUB APIs 1 and 2
-- `\include\BT81x.h` Header file for API 3 and 4
-- `\include\BT82x.h` Header file for API 5
 
 The file `EVE_HAL.c` is intended for MCU platforms, the file `EVE_HAL_Linux.c` is for _Linux-like_ platforms such as BeagleBone and RPi platforms. Code which uses the MPSSE and FT4222H interfaces will use the simpler `EVE_HAL.c` code.
 
