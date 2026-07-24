@@ -10,8 +10,13 @@ The `snippets` directory contains code that is used in the examples for the EVE-
   - [Calibration Utility](#calibration-utility)
   - [Touch Detection Utility](#touch-detection-utility)
   - [Tag Reading Utility](#tag-reading-utility)
+- [Controls](#Controls)
+  - [Arcs](#arcs)
+  - [Fonts](#fonts)
+  - [Sound](#sound)
 - [Widgets](#widgets)
   - [Seven Segment LED Widget](#seven-segment-led-widget)
+  - [Dialogs Widget](#dialogs-widget)
 - [Dials](#dials)
   - [Flight Control Widgets](#flight-control-widgets)
   - [Compass Widgets](#compass-widgets)
@@ -120,6 +125,20 @@ _Example:_
       // Screen is pressed, action the tag stored in tag_val
    }
 ```
+## Controls
+
+| Snippet | Description |
+| --- | --- |
+| [arcs](#Arcs) | Arcs control code |
+| [fonts](#Fonts) | Fonts helper code |
+| [sounds](#Sounds) | Sound Synthesiser contol helper code |
+
+### Arcs
+-   **TODO:** document functionality 
+### Fonts
+-   **TODO:** document functionality 
+### Sounds 
+-   **TODo:** document functionality 
 
 ## Widgets
 
@@ -127,7 +146,53 @@ There is source code for widgets in the directory:
 
 | Snippet | Description |
 | --- | --- |
-| [sevenseg](#Seven-Segment-LED-Widget) | Seven segement LED code |
+| [dialogs](#Dialogs-Widget) | Dialogs (Message Box & Tooltip) code |
+| [sevenseg](#Seven-Segment-LED-Widget) | Seven Segement LED code |
+
+### Dialogs Widget
+
+This file provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the seleccted options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by defualt, take an input font handle, and message string. Opptions are aviable to render the widgets flat, and their colour can be set by preceeding CMD_FGCOLOUR call, while the text colour can be set simmilary with a COLOR_RGB call.
+
+_Header File:_
+
+   `#include "snippets/widgets/dialogs.h"`
+
+_Source File:_
+
+   `snippets/widgets/dialogs.c`
+
+_Calling format:_
+
+   `messagebox(font, options, message);`
+
+   `tooltip(x, y, font, options, message)`
+
+_Parameters - messagebox():_
+
+-   uint16_t **font**: Font to be used for the text in the messagebox.
+-   uint8_t **options**: Options for rendering position and style. 
+-   uint32_t **message**: Text string to display in the messagebox.
+
+_Parameters - tooltip():_
+
+-   uint32_t **x**, uint32_t **y**: Location of top left of the tooltip widget (in pixels).
+-   uint16_t **font**: Font to be used for the text in the tooltip.
+-   uint8_t **options**: Options for rendering position and style. 
+-   uint32_t **message**: Text string to display in the tooltip.
+
+_Examples:_
+
+```
+#include "snippets/widgets/dialogs.h"
+
+messagebox(27, 0, "message");
+```
+
+```
+#include "snippets/widgets/dialogs.h"
+
+tooltip(100, 100, 27, 0, "message")
+```
 
 ### Seven Segment LED Widget
 

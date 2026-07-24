@@ -69,6 +69,7 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use libMPSSE as base class
+# Choose the MPSSE device (0 for first, 1 for second etc)
 add_compile_definitions(USE_MPSSE=0)
 
 # Add in flags for MPSSE header file.
