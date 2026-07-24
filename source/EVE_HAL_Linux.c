@@ -128,7 +128,7 @@ int HAL_EVE_Init(void)
     info_printf("done\n");
 
     info_printf("Resetting...");
-    // Ensure CPUreset register reads 0 and so FT8xx/BT81x is ready
+    // Ensure CPUreset register reads 0 and so FT8xx/BT81x is ready 
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
         Platform_Delay_20ms();
