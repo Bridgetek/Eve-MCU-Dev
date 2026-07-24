@@ -4,6 +4,12 @@
 			"path": "."
 		},
 		{
+			"path": "../../../include"
+		},
+		{
+			"path": "../../../source"
+		},
+		{
 			"path": "../assets"
 		},
 		{
@@ -11,12 +17,6 @@
 		},
 		{
 			"path": "../docs"
-		},
-		{
-			"path": "../../../include"
-		},
-		{
-			"path": "../../../source"
 		},		
 		{
 			"path": "../../snippets"

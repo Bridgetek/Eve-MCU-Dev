@@ -30,7 +30,7 @@ else()
     message(FATAL_ERROR "Make sure that the FT9XX is installed correctly. Can't find the 'toolchain_ft9xx.cmake' file")
 endif()
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # Set the project name to the current directory if it is not defined in the command line.
 if (NOT DEFINED ${PROJECT})
