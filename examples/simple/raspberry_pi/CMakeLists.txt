@@ -73,7 +73,7 @@ add_compile_definitions(PLATFORM_RASPBERRYPI)
 # Select the Linux /dev/spidev0 as a character device for transfers
 add_compile_definitions(USE_LINUX_SPI_DEV)
 
-# Source code for EVE library (targetted at Raspberry Pi)
+# Source code for EVE library (targtted at Raspberry Pi)
 add_library(eve_library # EVE library name
         # Source code for EVE library
         ${API_DIRECTORY}/source/EVE_API.c
