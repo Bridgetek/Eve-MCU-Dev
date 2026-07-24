@@ -68,7 +68,7 @@ include_directories(
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
 )
-# Tell EVE library to use libFT4222 as base class
+# Tell EVE library to use libMPSSE as base class
 add_compile_definitions(USE_MPSSE=0)
 
 # Add in flags for MPSSE header file.
