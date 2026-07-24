@@ -43,8 +43,9 @@ def copy_norm(src_file, dest_file):
                 line = line.replace("<EVE.h>", "\"EVE.h\"")
                 line = line.replace("<HAL.h>", "\"HAL.h\"")
                 line = line.replace("<MCU.h>", "\"MCU.h\"")
-                line = line.replace("<FT8xx.h>", "\"FT8xx.h\"")
+                line = line.replace("<EVE_commands.h>", "\"EVE_commands.h\"")
                 line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
+                line = line.replace("<EVE_registers.h>", "\"EVE_registers.h\"")
                 line = line.replace("<patch_base.h>", "\"patch_base.h\"")
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
@@ -162,8 +163,8 @@ src_patch = os.path.normpath("../../../ports/eve_bt82x")
 # Collate files needed for sketch
 dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
-dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "FT8xx.h", "EVE_config.h",
-    "FT80x.h", "FT81x.h", "BT81x.h", "BT81x.h", "BT82x.h"]))
+dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_config.h",
+    "EVE_commands.h", "EVE_registers.h"]))
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
 dist_source_files.extend(add_files(src_patch, sketch, ["patch_base.c", "patch_base.h"]))
