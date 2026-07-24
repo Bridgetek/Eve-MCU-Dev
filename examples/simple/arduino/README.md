@@ -71,8 +71,9 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <EVE.h>` --> `#include "EVE.h"`
 - `#include <HAL.h>` --> `#include "HAL.h"`
 - `#include <MCU.h>` --> `#include "MCU.h"`
-- `#include <FT8xx.h>` --> `#include "FT8xx.h"`
+- `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
 - `#include <patch_base.h>` --> `#include "patch_base.h"`
 
 ## Sketch Directory
