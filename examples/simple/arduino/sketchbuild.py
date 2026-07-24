@@ -155,7 +155,7 @@ dist_source_files = []
 # Source directories for source files to be copied to sketch
 src_example = os.path.normpath("../common")
 src_snippets = os.path.normpath("../../snippets")
-src_api_source = os.path.normpath("../../../source")
+src_api_source = os.path.normpath("../../../source") 
 src_api_include = os.path.normpath("../../../include")
 src_port = os.path.normpath("../../../ports/eve_arch_arduino")
 src_patch = os.path.normpath("../../../ports/eve_bt82x")
