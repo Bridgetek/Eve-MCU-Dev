@@ -216,7 +216,7 @@ This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly
 
 The 2x8 header can be connected as in the following picture.
 
-![Wiring for 2x8 Header](docs/header2x8.png)
+![Wiring for 2x8 Header](/docs/header2x8.png)
 
 ### Header 1x10 Pins
 
@@ -237,7 +237,7 @@ This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly
 
 The 1x10 header can be connected as in the following picture.
 
-![Wiring for 1x10 Header](docs/header1x10.png)
+![Wiring for 1x10 Header](/docs/header1x10.png)
 
 ### Arduino Connection 
 
