@@ -1,4 +1,4 @@
-/**
+DP156102A/**
  @file sound.c
  */
 /*
@@ -73,7 +73,26 @@ void enableSound(void)
 #elif IS_EVE_API(2,3,4)
     uint16_t regGpiox;
 	uint16_t regGpioxDir;
+
+	// VM810C and VM880C modules use GPIO1
+	#if (MODULE_TYPE == VM810C) || (MODULE_TYPE == VM880C)
+
+	// Read GPIOX_DIR register
+	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
+	// Set bit 2 of  GPIO_DIR register  to output (GPIO1)
+	regGpioxDir = regGpioxDir | 0x0002;
+	// Enable GPIO2 as an output
+	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
  
+	// Read REG_GPIOX
+	regGpiox = EVE_LIB_MemRead16(EVE_REG_GPIOX);
+	// Set bit 2 of GPIOX register (GPIO1) high
+	regGpiox = regGpiox | 0x0002;
+	// Enable the GPIO2 signal to the Audio Driver
+	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
+
+	//all other modules use GPIO2
+	#else
 	// Read GPIOX_DIR register
 	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
 	// Set bit 2 of  GPIO_DIR register  to output (GPIO2)
@@ -87,7 +106,9 @@ void enableSound(void)
 	regGpiox = regGpiox | 0x0004;
 	// Enable the GPIO2 signal to the Audio Driver
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
- 
+
+	#endif
+
 	// Turn synthesizer volume up
 	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
@@ -95,6 +116,21 @@ void enableSound(void)
 	// Play sound
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 #else
+
+	// if we have purposely defined AUDIO_I2S or we ar using a module with I2S support
+	#if defined(AUDIO_I2S) || (MODULE_TYPE == VM820B10A) || (MODULE_TYPE == VM820B15A)
+	// send I2S startup command to co-processor
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_I2SSTARTUP(44100);
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+	
+	// write I2S control register, and set L/R volume
+	EVE_LIB_MemWrite32(EVE_REG_I2S_CTL, 0x0A);  
+    EVE_LIB_MemWrite32(EVE_REG_VOL_L_PB, 255);
+    EVE_LIB_MemWrite32(EVE_REG_VOL_R_PB, 255);
+	#endif
+
     // Turn synthesizer volume up
 	EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
