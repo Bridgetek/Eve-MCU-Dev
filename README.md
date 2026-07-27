@@ -217,7 +217,7 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   - ME812A     - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812)
   - ME813A     - ME813A-WH50C with 5 inch display (FT813)
   - VM816C     - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0502-11A)
-  - VM880C     - VM880C with 4.3 inch display (BT880 with DP-0431-11A)
+  - VM880C     - VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
   - IDM204021R - IDM2040-21R (FT800)
   - IDM204043A - IDM2040-43A (BT883 with DP-0431-11A)
   - IDM20407A  - IDM2040-7A (BT817 with DP-0701-01A)
