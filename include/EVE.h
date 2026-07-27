@@ -64,9 +64,8 @@
 #define BT818 818
 #define BT820 820
 
-/* For capacitive versions */
-#define CTOUCH_MODE_COMPATIBILITY 1
-#define CTOUCH_MODE_EXTENDED 0
+/* Touchscreen technology versions */
+/* Note: CTOUCH_MODE_COMPATIBILITY and CTOUCH_MODE_EXTENDED definitions are deprecated */
 
 #ifndef EVE_API
 #undef EVE_SUB_API
@@ -216,17 +215,17 @@
     #error No EVE API selected.
 #endif
 
-// Legacy Metric Block for Fonts
-
-#define FT_GPU_NUMCHAR_PERFONT         (128)
-#define FT_GPU_FONT_TABLE_SIZE         (148)
+/* Legacy Metric Block for Fonts */
+/* Note: FT_GPU_* definitions are deprecated */
+#define EVE_GPU_NUMCHAR_PERFONT    128  // Deprecated FT_GPU_NUMCHAR_PERFONT
+#define EVE_GPU_FONT_TABLE_SIZE    148  // Deprecated FT_GPU_FONT_TABLE_SIZE
 
 /* Font table structure */
 /* On EVE4 onwards this is called the Legacy Font Structure. */
 typedef struct
 {
     /* Width of each character font from 0 to 127 */
-    uint8_t    FontWidth[FT_GPU_NUMCHAR_PERFONT];
+    uint8_t    FontWidth[EVE_GPU_NUMCHAR_PERFONT];
     /* Bitmap format of font - this is the same as the EVE_FORMAT_x, where x is L1, L2, L4 etc. */
     uint32_t    FontBitmapFormat;
     /* Font line stride in bytes */

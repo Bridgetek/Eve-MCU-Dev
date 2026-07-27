@@ -37,30 +37,30 @@
  
  @brief Cross-generation EVE command definitions.
  @details Provides a single unified set of EVE_ display list commands and
-     EVE_CMD_ co-processor commands that correct command codes for the selected 
-     generation at compile time.
-     The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
-     and converted to the EVE generation in EVE.h. The generation is set in
-     EVE_API to 1–5 and EVE_SUB_API if required.
-
-     Usage:
-         #include <EVE.h>          // sets EVE_API, includes this file
-
-     Macro convention:
-         EVE_API_SELECT(a1, a2, a3, a4, a5)
-             a1 = EVE1 address (FT800/FT801)
-             a2 = EVE2 address (FT810–FT813, BT880–BT883)
-             a3 = EVE3 address (BT815/BT816)
-             a4 = EVE4 address (BT817/BT818)
-             a5 = EVE5 address (BT820)
-
-         EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
-         Using an absent register at runtime is a logic error — guard call sites
-         with IS_EVE_API() to make absence visible at compile time.
-
-     NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
-     throughout this file. They are kept as separate columns so that if a
-     future BT81x variant diverges the table stays correct.
+ *  EVE_CMD_ co-processor commands that correct command codes for the selected 
+ *  generation at compile time.
+ *  The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+ *  and converted to the EVE generation in EVE.h. The generation is set in
+ *  EVE_API to 1–5 and EVE_SUB_API if required.
+ *  
+ *  Usage:
+ *      #include <EVE.h>          // sets EVE_API, includes this file
+ *  
+ *  Macro convention:
+ *      EVE_API_SELECT(a1, a2, a3, a4, a5)
+ *          a1 = EVE1 address (FT800/FT801)
+ *          a2 = EVE2 address (FT810–FT813, BT880–BT883)
+ *          a3 = EVE3 address (BT815/BT816)
+ *          a4 = EVE4 address (BT817/BT818)
+ *          a5 = EVE5 address (BT820)
+ *  
+ *      EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
+ *      Using an absent register at runtime is a logic error — guard call sites
+ *      with IS_EVE_API() to make absence visible at compile time.
+ *  
+ *  NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
+ *  throughout this file. They are kept as separate columns so that if a
+ *  future BT81x variant diverges the table stays correct.
  */
 
 #ifndef _EVE_COMMANDS_H_
