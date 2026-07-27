@@ -1,4 +1,4 @@
-DP156102A/**
+/**
  @file sound.c
  */
 /*
@@ -49,14 +49,14 @@ void enableSound(void)
     uint8_t regGpio;
 	uint8_t regGpioDir;
  
-	// Read GPIOX_DIR register
+	// Read GPIO_DIR register
 	regGpioDir = EVE_LIB_MemRead8(EVE_REG_GPIO_DIR);
 	// Set bit 1 of GPIO_DIR register  to output (GPIO1)
 	regGpioDir = regGpioDir | 0x02;
 	// Enable GPIO2 as an output
 	EVE_LIB_MemWrite8(EVE_REG_GPIO_DIR, regGpioDir);
  
-	// Read REG_GPIOX
+	// Read REG_GPIO
 	regGpio = EVE_LIB_MemRead8(EVE_REG_GPIO);
 	// Set bit 1 of GPIO register (GPIO1) high
 	regGpio = regGpio | 0x02;
@@ -79,23 +79,23 @@ void enableSound(void)
 
 	// Read GPIOX_DIR register
 	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
-	// Set bit 2 of  GPIO_DIR register  to output (GPIO1)
+	// Set bit 1 of GPIO_DIR register to output (GPIO1)
 	regGpioxDir = regGpioxDir | 0x0002;
 	// Enable GPIO2 as an output
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
  
 	// Read REG_GPIOX
 	regGpiox = EVE_LIB_MemRead16(EVE_REG_GPIOX);
-	// Set bit 2 of GPIOX register (GPIO1) high
+	// Set bit 1 of GPIOX register (GPIO1) high
 	regGpiox = regGpiox | 0x0002;
 	// Enable the GPIO2 signal to the Audio Driver
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
 
-	//all other modules use GPIO2
+	// all other modules use GPIO2
 	#else
 	// Read GPIOX_DIR register
 	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
-	// Set bit 2 of  GPIO_DIR register  to output (GPIO2)
+	// Set bit 2 of GPIO_DIR register to output (GPIO2)
 	regGpioxDir = regGpioxDir | 0x0004;
 	// Enable GPIO2 as an output
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
