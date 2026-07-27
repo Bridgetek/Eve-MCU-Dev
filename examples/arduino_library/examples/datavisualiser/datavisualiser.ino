@@ -1,5 +1,5 @@
 /**
-    @file eve_example.h
+ @file medinfo_EVE### EVE API VER ###.ino
  */
 /*
  * ============================================================================
@@ -37,31 +37,41 @@
  * ============================================================================
  */
 
-#ifndef _EVE_EXAMPLE_H
-#define _EVE_EXAMPLE_H
+#include "eve_example.h"
 
-#include <stdint.h>
+/**
+ * @brief Functions used to store calibration data in file.
+   @details Currently not used.
+ */
+//@{
+int8_t platform_calib_init(void) {
+  return -1;
+}
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+int8_t platform_calib_write(struct touchscreen_calibration *calib) {
+  (void)calib;
+  return 0;
+}
 
-#include "touch.h"
-#include "controls/sound.h"
-#include "maths/trig_furman.h"
-#include "controls/arcs.h"
+int8_t platform_calib_read(struct touchscreen_calibration *calib) {
+  (void)calib;
+  return -1;
+}
+//@}
 
-/* Functions called from eve_example code to platform specific code */
-int8_t platform_calib_init(void);
-int8_t platform_calib_write(struct touchscreen_calibration *calib);
-int8_t platform_calib_read(struct touchscreen_calibration *calib);
-//uint32_t platform_get_time(void); // not currently used, but will be usefful for sensor implementations 
+uint32_t platform_get_time(void)
+{
+    return millis();
+}
 
-/* Entry point to the example code */
-void eve_example(void);
+void setup() {
+  Serial.begin(9600);
+}
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
-
-#endif /* _EVE_EXAMPLE_H */
+void loop() {
+  // Initialise the display
+  Serial.print("Starting EVE...\n");
+  
+  // Pass the path to asset files if available
+  eve_example();
+}

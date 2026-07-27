@@ -54,6 +54,18 @@
 
 // Define global varibles for use in example
 
+// for the sizing of labels and data arrays
+#define x_axis_labels_size 7 // set to (line_graph_extra_x_lines  + 1)
+#define y_axis_labels_size 5 // set to line_graph_extra_y_lines 
+#define plot_data_size 7 // set to (line_graph_extra_x_lines  + 1)
+
+// total bars
+#define bargauge_num_bars 6
+
+// arc angles
+#define backlight_arc_start_deg  60
+#define backlight_arc_end_deg 300
+
 //--------------------------------------------------------------------------------------------------------
 // colour related variables
 //--------------------------------------------------------------------------------------------------------
@@ -139,6 +151,182 @@ uint16_t last_valid_angle = backlight_arc_end_deg;
 // define global variables for static screen content size and RAM_G location
 uint32_t static_screen_size = 0;
 uint32_t static_screen_location = 0;
+
+/**
+ @brief Definitions background box positioning and sizes.
+ */
+int16_t line_graph_box_start_x;
+int16_t line_graph_box_start_y;
+int16_t line_graph_box_end_x;
+int16_t line_graph_box_end_y;
+
+int16_t bar_gauge_box_start_x;
+int16_t bar_gauge_box_start_y;
+int16_t bar_gauge_box_end_x;
+int16_t bar_gauge_box_end_y;
+
+int16_t pie_chart_box_start_x;
+int16_t pie_chart_box_start_y;
+int16_t pie_chart_box_end_x;
+int16_t pie_chart_box_end_y;
+
+int16_t circle_gauge_box_start_x;
+int16_t circle_gauge_box_start_y;
+int16_t circle_gauge_box_end_x;
+int16_t circle_gauge_box_end_y;
+
+/**
+ @brief Definitions of line graph sizing and positioning.
+ */
+// for labels
+int16_t line_graph_label_x;
+int16_t line_graph_label_y;
+// for readout
+int16_t line_graph_num1_x;
+int16_t line_graph_num1_y;
+int16_t line_graph_num2_x;
+int16_t line_graph_num2_y;
+int16_t line_graph_num3_x;
+int16_t line_graph_num3_y;
+// for graph positioning and size
+int16_t line_graph_x;
+int16_t line_graph_y;
+int16_t line_graph_height;
+int16_t line_graph_width;
+int16_t line_graph_extra_x_lines;
+int16_t line_graph_extra_y_lines;
+
+//set this width based on screen size
+int16_t line_graph_line_width;
+
+/**
+ @brief Definitions of bar gauge size and positions.
+ */
+// bar guage sizing related 
+int16_t bargauge_width;
+int16_t bargauge_height;
+//bargauge positioning 
+int16_t bargauge1_x;
+int16_t bargauge1_y;
+int16_t bargauge2_x;
+int16_t bargauge2_y;
+int16_t bargauge3_x;
+int16_t bargauge3_y;
+int16_t bargauge4_x;
+int16_t bargauge4_y;
+int16_t bargauge5_x;
+int16_t bargauge5_y;
+int16_t bargauge6_x;
+int16_t bargauge6_y;
+// for labels
+int16_t bargauge_label_y;
+int16_t bargauge_label_height;
+
+/**
+ @brief Definitions of circular gauge size and positions.
+ */
+// circular guage sizing related 
+int16_t circle_gauge_radius;
+int16_t circle_gauge_thickness;
+// circular gauge positioning 
+int16_t circle_guage1_x;
+int16_t circle_guage1_y;
+int16_t circle_guage2_x;
+int16_t circle_guage2_y;
+int16_t circle_guage3_x;
+int16_t circle_guage3_y;
+
+/**
+ @brief Definitions of pie chart size and position.
+ */
+int16_t pie_chart_x;
+int16_t pie_chart_y;
+int16_t pie_chart_radius;
+// for label
+int16_t pie_chart_label_x;
+int16_t pie_chart_label_y;
+int16_t pie_chart_readout_x;
+int16_t pie_chart_readout_y;
+
+/**
+ @brief Definitions of settings menu button size and position.
+ */
+int16_t settings_button_x1;
+int16_t settings_button_y1;
+int16_t settings_button_x2;
+int16_t settings_button_y2;
+// for the lines used to create the settings menu icon
+int16_t settings_button_lines_x;
+int16_t settings_button_lines_y;
+int16_t settings_button_lines_lenght;
+int16_t settings_button_lines_y_offset;
+
+// set this width based on screen size
+// for the line used to create the settinggs button
+int16_t settings_button_line_width;
+
+/**
+ @brief Definitions of settings control menu size and position.
+ */
+int16_t settings_menu_x;
+int16_t settings_menu_y;
+int16_t settings_menu_length;
+int16_t settings_menu_size;
+int16_t settings_menu_label_x;
+int16_t settings_menu_label_y;
+
+/**
+ @brief Definitions of mode menu buttons and readout, size and positions.
+ */
+// sizing related 
+int16_t mode_button_size;
+// positioning related 
+int16_t mode_button1_x;
+int16_t mode_button1_y;
+int16_t mode_button2_x;
+int16_t mode_button2_y;
+// for readout
+int16_t mode_readout_x1;
+int16_t mode_readout_y1;
+int16_t mode_readout_x2;
+int16_t mode_readout_y2;
+// for label
+int16_t mode_label_x;
+int16_t mode_label_y;
+
+/**
+ @brief Definitions of backlight menu arc guage size, position and angles.
+ */
+int16_t backlight_dial_x;
+int16_t backlight_dial_y;
+int16_t backlight_dial_radius;
+int16_t backlight_dial_inner_radius;
+int16_t backlight_arc_total_deg;
+
+/**
+ @brief Definitions of handles for on screen buttons.
+ */
+const uint16_t pie_chart_tag = 10;
+const uint16_t settings_button_tag = 11;
+const uint16_t settings_menu_item_1_tag = 12;
+const uint16_t settings_menu_item_2_tag = 13;
+const uint16_t mode_button_1_tag = 14;
+const uint16_t mode_button_2_tag = 15;
+const uint16_t backlight_dial_tag = 16;
+
+/**
+ @brief Definitions of handles for inbuilt rom font handles to be used based on screen size.
+ */
+
+int16_t font_small;
+int16_t font_med;
+int16_t font_large;
+int16_t font_xl;
+
+/**
+ @brief Definition of font handle to bbe used for the line plot readout.
+ */
+int16_t font_line_readout;
 
 //--------------------------------------------------------------------------------------------------------
 // pixel precision variable
@@ -1940,6 +2128,230 @@ void demoDataUpdates() {
  */
 void eve_display(void)
 {
+    /**
+     @brief Definitions background box positioning and sizes.
+    */
+    line_graph_box_start_x = (EVE_DISP_WIDTH/40); // 2.5%
+    line_graph_box_start_y = (EVE_DISP_HEIGHT/40); // 2.5%
+    line_graph_box_end_x = ((EVE_DISP_WIDTH * 28)/40); // 70%
+    line_graph_box_end_y = ((EVE_DISP_HEIGHT * 20)/40); // 50%
+
+    bar_gauge_box_start_x = (EVE_DISP_WIDTH/40); // 2.5%
+    bar_gauge_box_start_y = ((EVE_DISP_HEIGHT * 22)/40); // 55%
+    bar_gauge_box_end_x = ((EVE_DISP_WIDTH * 51)/160); // 31.875%
+    bar_gauge_box_end_y = ((EVE_DISP_HEIGHT * 39)/40); // 97.5%
+
+    pie_chart_box_start_x = ((EVE_DISP_WIDTH * 29)/40); // 72.5%
+    pie_chart_box_start_y = (EVE_DISP_HEIGHT/40); // 2.5%
+    pie_chart_box_end_x = ((EVE_DISP_WIDTH * 39)/40); // 97.5%
+    pie_chart_box_end_y = ((EVE_DISP_HEIGHT * 20)/40); // 50% 
+
+    circle_gauge_box_start_x = ((EVE_DISP_WIDTH * 55)/160); // 34.375%
+    circle_gauge_box_start_y = ((EVE_DISP_HEIGHT * 22)/40); // 55%
+    circle_gauge_box_end_x = ((EVE_DISP_WIDTH * 39)/40); // 97.5%
+    circle_gauge_box_end_y = ((EVE_DISP_HEIGHT * 39)/40); // 97.5%
+
+    /**
+     @brief Definitions of line graph sizing and positioning.
+    */
+    // for labels
+    line_graph_label_x = ((EVE_DISP_WIDTH * 2)/40); // 5%
+    line_graph_label_y = ((EVE_DISP_HEIGHT * 2)/40); // 5%
+    // for readout
+    line_graph_num1_x = ((EVE_DISP_WIDTH * 205)/320); // 64.06%
+    line_graph_num1_y = ((EVE_DISP_HEIGHT * 5)/40); // 12.5%
+    line_graph_num2_x = ((EVE_DISP_WIDTH * 205)/320); // 64.06%
+    line_graph_num2_y = ((EVE_DISP_HEIGHT * 21)/80); // 26.25%
+    line_graph_num3_x = ((EVE_DISP_WIDTH * 205)/320); // 64.06%
+    line_graph_num3_y = ((EVE_DISP_HEIGHT * 16)/40); // 40%
+    // for graph positioning and size
+    line_graph_x = ((EVE_DISP_WIDTH * 3)/40); // 7.5%
+    line_graph_y = ((EVE_DISP_HEIGHT * 5)/40); // 12.5%
+    line_graph_height = ((EVE_DISP_HEIGHT * 25)/80); // 31.25%
+    line_graph_width = ((EVE_DISP_WIDTH * 20)/40); // 50%
+    line_graph_extra_x_lines = 6;
+    line_graph_extra_y_lines = 5;
+
+    //set this width based on screen size
+    #if (EVE_DISP_WIDTH < 1000)
+        line_graph_line_width = 1;
+    #elif (EVE_DISP_WIDTH >=1000 && EVE_DISP_WIDTH <= 1500)
+        line_graph_line_width = 2;
+    #elif (EVE_DISP_WIDTH > 1500)
+        line_graph_line_width = 3;
+    #endif
+
+
+    /**
+     @brief Definitions of bar gauge size and positions.
+    */
+    // bar guage sizing related 
+    bargauge_width = (EVE_DISP_WIDTH/32); // 3.1%
+    bargauge_height = ((EVE_DISP_HEIGHT*21)/80); // 26.25%
+    //bargauge positioning 
+    bargauge1_x = ((EVE_DISP_WIDTH * 2)/40); // 5%
+    bargauge1_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    bargauge2_x = ((EVE_DISP_WIDTH * 7)/80); // 8.75%
+    bargauge2_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    bargauge3_x = ((EVE_DISP_WIDTH * 11)/80); // 13.75%
+    bargauge3_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    bargauge4_x = ((EVE_DISP_WIDTH * 7)/40); // 17.5%
+    bargauge4_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    bargauge5_x = ((EVE_DISP_WIDTH * 18)/80); // 22.5%
+    bargauge5_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    bargauge6_x = ((EVE_DISP_WIDTH * 21)/80); // 26.25%
+    bargauge6_y = ((EVE_DISP_HEIGHT * 24)/40); // 60%
+    // for labels
+    bargauge_label_y = ((EVE_DISP_HEIGHT * 36)/40); // 90%
+    bargauge_label_height = ((EVE_DISP_HEIGHT * 3)/80); // 3.75% 
+
+    /**
+     @brief Definitions of circular gauge size and positions.
+    */
+    // circular guage sizing related 
+    #if (EVE_DISP_WIDTH < 350) // if we have a particualry small screen
+        circle_gauge_radius = (EVE_DISP_HEIGHT/8); // 12.5 %
+    #else
+        circle_gauge_radius = (EVE_DISP_HEIGHT/7); // 14.2 %
+    #endif
+    circle_gauge_thickness = (EVE_DISP_WIDTH/64); // 1.5 %
+    // circular gauge positioning 
+    circle_guage1_x = ((EVE_DISP_WIDTH * 37)/80); // 46.25 %
+    circle_guage1_y = ((EVE_DISP_HEIGHT * 59)/80); // 73.75 %
+    circle_guage2_x = ((EVE_DISP_WIDTH * 53)/80); // 66.25 %
+    circle_guage2_y = ((EVE_DISP_HEIGHT * 59)/80); // 73.75 %
+    circle_guage3_x = ((EVE_DISP_WIDTH * 69)/80); // 86.25 %
+    circle_guage3_y = ((EVE_DISP_HEIGHT * 59)/80); // 73.75 %
+
+    /**
+     @brief Definitions of pie chart size and position.
+    */
+    pie_chart_x = ((EVE_DISP_WIDTH * 34)/40); // 85%
+    pie_chart_y = ((EVE_DISP_HEIGHT * 19)/80); // 23.75%
+    pie_chart_radius = ((EVE_DISP_HEIGHT * 3)/20); // 15%
+    // for label
+    pie_chart_label_x = ((EVE_DISP_WIDTH * 3)/4); // 75% 
+    pie_chart_label_y = ((EVE_DISP_HEIGHT * 69)/160); // 43.125%
+    pie_chart_readout_x = ((EVE_DISP_WIDTH * 38)/40); // 95% 
+    pie_chart_readout_y = ((EVE_DISP_HEIGHT * 69)/160); // 43.125%
+
+    /**
+     @brief Definitions of settings menu button size and position.
+    */
+    settings_button_x1 = ((EVE_DISP_WIDTH * 71)/80); // 88.75% 
+    settings_button_y1 = 0; // 0%
+    settings_button_x2 = EVE_DISP_WIDTH; // 100 %
+    settings_button_y2 = ((EVE_DISP_HEIGHT * 7) /40); // 17.5%
+    // for the lines used to create the settings menu icon
+    settings_button_lines_x = ((EVE_DISP_WIDTH * 38) /40); // 95%
+    settings_button_lines_y = ((EVE_DISP_HEIGHT * 27) /640); // 4.21%
+    settings_button_lines_lenght = ((EVE_DISP_WIDTH * 1) /80); // 1.25%
+    settings_button_lines_y_offset = ((EVE_DISP_HEIGHT * 1) /80); // 1.25%
+
+    // set this width based on screen size
+    // for the line used to create the settinggs button
+    #if (EVE_DISP_WIDTH < 1000)
+        settings_button_line_width = 2;
+    #elif (EVE_DISP_WIDTH >=1000 && EVE_DISP_WIDTH <= 1500)
+        settings_button_line_width = 3;
+    #elif (EVE_DISP_WIDTH > 1500)
+        settings_button_line_width = 4;
+    #endif
+
+    /**
+     @brief Definitions of settings control menu size and position.
+    */
+    settings_menu_x = ((EVE_DISP_WIDTH * 31)/40); // 77.5%
+    settings_menu_y = ((EVE_DISP_HEIGHT * 14)/80); // 17.5%
+    settings_menu_length = ((EVE_DISP_WIDTH * 49)/320); // 15.3%
+    settings_menu_size = (EVE_DISP_HEIGHT/20); // 5% 
+    settings_menu_label_x = ((EVE_DISP_WIDTH * 3)/4); // 75%
+    settings_menu_label_y = ((EVE_DISP_HEIGHT * 2)/40); // 5%
+
+    /**
+     @brief Definitions of mode menu buttons and readout, size and positions.
+    */
+    // sizing related 
+    mode_button_size = (EVE_DISP_HEIGHT/20); // 5%
+    // positioning related 
+    mode_button1_x = ((EVE_DISP_WIDTH * 32)/40); // 80%
+    mode_button1_y = ((EVE_DISP_HEIGHT * 17)/40); // 42.5%
+    mode_button2_x = ((EVE_DISP_WIDTH * 36)/40); // 90%
+    mode_button2_y = ((EVE_DISP_HEIGHT * 17)/40); // 42.5%
+    // for readout
+    mode_readout_x1 = ((EVE_DISP_WIDTH * 31)/40); // 92.5%
+    mode_readout_y1 = ((EVE_DISP_HEIGHT * 11)/40); // 27.5%
+    mode_readout_x2 = ((EVE_DISP_WIDTH * 37)/40); // 92.5%
+    mode_readout_y2 = ((EVE_DISP_HEIGHT * 13)/40); // 32.5%
+    // for label
+    mode_label_x = ((EVE_DISP_WIDTH * 34)/40); // 85%
+    mode_label_y = ((EVE_DISP_HEIGHT * 12)/40); // 30%
+
+    /**
+     @brief Definitions of backlight menu arc guage size, position and angles.
+    */
+    backlight_dial_x = ((EVE_DISP_WIDTH * 34)/40); // 85%
+    backlight_dial_y = ((EVE_DISP_HEIGHT * 15)/40); // 30%
+    backlight_dial_radius = (EVE_DISP_HEIGHT/8); // 12.5%
+    backlight_dial_inner_radius = (EVE_DISP_HEIGHT/11); // 9%
+    backlight_arc_total_deg = (backlight_arc_end_deg - backlight_arc_start_deg);
+
+    /**
+     @brief Definitions of handles for inbuilt rom font handles to be used based on screen size.
+    */
+
+    #if (EVE_DISP_WIDTH < 350)
+        font_small = 20;
+        font_med = 20;
+        font_large = 22;
+        font_xl = 23;
+    #elif (EVE_DISP_WIDTH >= 350 && EVE_DISP_WIDTH <= 500)
+        font_small = 20;
+        font_med = 26;
+        font_large = 27;
+        font_xl = 28;
+    #elif (EVE_DISP_WIDTH >= 500 && EVE_DISP_WIDTH <= 1000)
+        font_small = 20;
+        font_med = 27;
+        font_large = 30;
+        font_xl = 31;
+    #elif (EVE_DISP_WIDTH > 1000 && EVE_DISP_WIDTH <= 1200)
+        font_small = 22;
+        font_med = 29;
+        font_large = 31;
+        // for screens above this size we want to use rom font handle 32 or 34, but this does not exist EVE API = 1
+        #if IS_EVE_API(1) 
+            font_xl = 31;
+        #else
+            font_xl = 32;
+        #endif
+    #elif (EVE_DISP_WIDTH > 1200)
+        font_small = 23;
+        font_med = 30;
+        font_large = 31;
+        // for screens above this size we want to use rom font handle 33 or 34, but this does not exist EVE API = 1
+        #if IS_EVE_API(1)
+            font_xl = 31;
+        #else 
+            #if ((EVE_DISP_WIDTH > 1200 && EVE_DISP_WIDTH <= 1400))
+                font_xl = 33;
+            #else
+                font_xl = 34;
+            #endif
+        #endif
+    #endif
+
+    /**
+     @brief Definition of font handle to bbe used for the line plot readout.
+    */
+    // if font_xl is defined as a font handle that isnt already pre-configured or available
+    #if ((font_xl > 31) && !IS_EVE_API(1,5)) 
+        // set the handdle to 0, so we can used a CMD_ROMFONT call to associate this handle with the font_xl rom font handle
+        font_line_readout = 0;
+    #else
+        // else just set this handle define to be euqal to the font_xl value
+        font_line_readout = font_xl ;
+    #endif
 
     // set the axis labels we want to use for the line graph
     setAxisLabels();

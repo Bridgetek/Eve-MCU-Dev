@@ -1,0 +1,8 @@
+touch.h
+touch.c
+controls/sound.h
+controls/sound.c
+maths/trig_furman.h
+maths/trig_furman.c
+controls/arcs.h
+controls/arcs.c
