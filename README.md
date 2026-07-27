@@ -182,37 +182,47 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   - WVGA      - 800x480   e.g. ME813A-WH50C with 5 inch display
   - WSVGA     - 1024x600  e.g. ME817EV with 7 inch display
   - WXGA      - 1280x800  e.g. ME817EV with 10.1 inch display
+  - WXGA_NG   - 1280x800  e.g. VM820B10A with 10.1 inch display
   - FULLHD    - 1920x1080 e.g. BT820 with 15 inch high definition display
   - WUXGA     - 1920x1200 e.g. BT820 with 10 inch high definition display
+  - DP101101A - same as WXGA  e.g. DP-1011-01A
+  - DP101102A - same as WXGA_NG  e.g. DP-1011-02A
   - DP101201A - same as WUXGA  e.g. DP-1012-01A
   - DP156101A - same as FULLHD e.g. DP-1561-01A
+  - DP156102A - same as FULLHD e.g. DP-1561-02A
 
 - `PANEL_TYPE` The Bridgetek panel type of the display panel.
   The following panels are defined:
-  - DP_0351_11A 3.5 inch QVGA (Resistive)
-  - DP_0431_11A 4.3 inch WQVGA (Resistive)
-  - DP_0501_01A 5 inch WVGA (Capacitive)
-  - DP_0501_11A 5 inch WVGA (Resistive)
-  - DP_0502_11A 5 inch WQVGA (Resistive)
-  - DP_0701_01A 7 inch WVGA (Capacitive)
-  - DP_1012_01A 10 inch WUXGA (Capacitive)
-  - DP_1561_01A 15 inch FullHD (Capacitive)
-  - IDM204043A 4.3 inch WQVGA (Capacitive)
-  - IDM204021R 2.1 inch WQVGAR (Capacitive)
+  - DP_0351_11A - 3.5 inch QVGA (Resistive)
+  - DP_0431_11A - 4.3 inch WQVGA (Resistive)
+  - DP_0501_01A - 5 inch WVGA (Capacitive)
+  - DP_0501_11A - 5 inch WVGA (Resistive)
+  - DP_0502_11A - 5 inch WQVGA (Resistive)
+  - DP_0701_01A - 7 inch WVGA (Capacitive)
+  - DP_1011_01A - 10.1 inch WXGA (Capacitive)
+  - DP_1011_02A - 10.1 inch WXGA (Capacitive)
+  - DP_1012_01A - 10.1 inch WUXGA (Capacitive)
+  - DP_1561_01A - 15.6 inch FullHD (Capacitive)
+  - DP_1561_02A - 15.6 inch FullHD (Capacitive)
+  - IDM204043A - 4.3 inch WQVGA (Capacitive)
+  - IDM204021R - 2.1 inch WQVGAR (Capacitive)
 
 - `MODULE_TYPE` The Bridgetek module type for EVE device and display panel
   The following options are defined:
   - VM800B     - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
   - VM800C35A  - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
   - VM800C43A  - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
-  - VM800C50A  - VM800C50A-D with 4.3 inch display (FT800 with DP-0502-11A)
+  - VM800C50A  - VM800C50A-D with 5 inch display (FT800 with DP-0502-11A)
   - VM810C     - VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
   - ME812A     - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812)
   - ME813A     - ME813A-WH50C with 5 inch display (FT813)
   - VM816C     - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0502-11A)
+  - VM880C     - VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
   - IDM204021R - IDM2040-21R (FT800)
   - IDM204043A - IDM2040-43A (BT883 with DP-0431-11A)
   - IDM20407A  - IDM2040-7A (BT817 with DP-0701-01A)
+  - VM820B10A  - VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+  - VM820B15A  - VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
 
 #### Device Selection
 
