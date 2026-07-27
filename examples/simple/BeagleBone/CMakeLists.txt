@@ -67,18 +67,18 @@ include_directories(
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
 )
-# Tell EVE library to use libFT4222 as base class
+# Tell EVE library to use BeagleBone as base class
 # Select the BeagleBone platform
 add_compile_definitions(PLATFORM_BEAGLEBONE)
 # Select the Linux /dev/spidev0 as a character device for transfers
 add_compile_definitions(USE_LINUX_SPI_DEV)
 
-# Source code for EVE library (targetted at FT4222)
+# Source code for EVE library (targetted at BeagleBone)
 add_library(eve_library # EVE library name
         # Source code for EVE library
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL_Linux.c
-        ${API_DIRECTORY}ports/eve_arch_beaglebone/EVE_Linux_BBB.c
+        ${API_DIRECTORY}/ports/eve_arch_beaglebone/EVE_Linux_BBB.c
         ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
@@ -86,7 +86,6 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 
 # Source for example code

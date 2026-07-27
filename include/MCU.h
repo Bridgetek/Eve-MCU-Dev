@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -165,7 +165,7 @@
  DEBUG_LEVEL 1 for error reports and information.
  */
 //@{
-#if defined(DEBUG_LEVEL) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#if defined(DEBUG_LEVEL) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR)
 #include <stdio.h>
 #define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 #elif defined(DEBUG_LEVEL) || defined(PLATFORM_ESP32)
@@ -174,7 +174,7 @@
 #else
 #define DEBUG_ERROR(...)
 #endif
-#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222)
+#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR)
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #elif DEBUG_LEVEL > 0 || defined(PLATFORM_ESP32)
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)

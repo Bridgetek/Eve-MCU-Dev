@@ -26,13 +26,9 @@ Sketch name is simple_arduino
 ..\..\..\include\EVE.h -> simple_arduino\EVE.h
 ..\..\..\include\HAL.h -> simple_arduino\HAL.h
 ..\..\..\include\MCU.h -> simple_arduino\MCU.h
-..\..\..\include\FT8xx.h -> simple_arduino\FT8xx.h
 ..\..\..\include\EVE_config.h -> simple_arduino\EVE_config.h
-..\..\..\include\FT80x.h -> simple_arduino\FT80x.h
-..\..\..\include\FT81x.h -> simple_arduino\FT81x.h
-..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
-..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
-..\..\..\include\BT82x.h -> simple_arduino\BT82x.h
+..\..\..\include\EVE_commands.h -> simple_arduino\EVE_commands.h
+..\..\..\include\EVE_registers.h -> simple_arduino\EVE_registers.h
 ..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
 ..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
@@ -49,12 +45,9 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - EVE.h
   - MCU.h
   - HAL.h
+  - EVE_commands.h
   - EVE_config.h
-  - FT8xx.h
-  - BT81x.h
-  - BT82x.h
-  - FT80x.h
-  - FT81x.h
+  - EVE_registers.h
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
@@ -78,8 +71,9 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <EVE.h>` --> `#include "EVE.h"`
 - `#include <HAL.h>` --> `#include "HAL.h"`
 - `#include <MCU.h>` --> `#include "MCU.h"`
-- `#include <FT8xx.h>` --> `#include "FT8xx.h"`
+- `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
 - `#include <patch_base.h>` --> `#include "patch_base.h"`
 
 ## Sketch Directory
@@ -91,13 +85,10 @@ The directory will look similar to this:
 
 EVE.h    
 MCU.h      
-HAL.h      
-EVE_config.h  
-FT8xx.h  
-BT81x.h  
-BT82x.h  
-FT80x.h  
-FT81x.h  
+HAL.h    
+EVE_commands.h   
+EVE_config.h 
+EVE_registers.h   
 EVE_API.ino   
 EVE_HAL.ino   
 patch_base.ino      

@@ -311,6 +311,7 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
     // Load images (and obtain the start of the sketch bitmap)

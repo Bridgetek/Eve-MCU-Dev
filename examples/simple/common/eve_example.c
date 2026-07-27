@@ -127,6 +127,7 @@ void eve_example(void)
     uint32_t font_end;
 
     // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
     // Calibrate the display

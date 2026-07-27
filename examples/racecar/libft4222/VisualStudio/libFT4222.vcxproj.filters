@@ -93,27 +93,6 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT8xx.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\EVE_config.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\EVE.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT81x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT82x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT80x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT81x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClInclude>
@@ -121,9 +100,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\patch_textscale.h">
@@ -137,6 +113,18 @@
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example\Snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_config.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_commands.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_registers.h">
+      <Filter>Library\eve\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

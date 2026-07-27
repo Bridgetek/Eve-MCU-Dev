@@ -4,18 +4,32 @@
 
 ## Compiling the Simple Beaglebone Black Example
 
-The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be esily installed by the following command.
+The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be easily installed by the following command.
 
 ```
 sudo apt-get install build-essential
 ```
+
+### Using Make (Makefile):
+Then to compile:
+```
+make
+```
+### Using CMake (CmakeLists.txt):
+
+Cmake can easily installed by the following command.
+
+```
+sudo apt-get install cmake
+```
+
 To configure the project with the default C compiler:
 ```
-    cmake -B build -S .
+cmake -B build -S .
 ```
 Then to compile:
 ```
-    cmake --build build
+cmake --build build
 ```
 Default builds are compiled with debugging enabled. 
 

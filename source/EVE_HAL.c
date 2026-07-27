@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -47,7 +47,7 @@
 // with a console running turn on DEBUG_LEVEL unless it is has specifically
 // been set to zero in the environment.
 #ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222)
+#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(USE_EMULATOR)
 #define DEBUG_LEVEL 1
 #endif
 #endif

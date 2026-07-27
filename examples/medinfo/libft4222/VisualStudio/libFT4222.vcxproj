@@ -205,10 +205,11 @@
     <ClCompile Include="..\main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\BT81x.h" />
-    <ClInclude Include="..\..\..\..\include\BT82x.h" />
-    <ClInclude Include="..\..\..\..\include\FT80x.h" />
-    <ClInclude Include="..\..\..\..\include\FT81x.h" />
+    <ClInclude Include="..\..\..\..\include\EVE.h" />
+    <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
+    <ClInclude Include="..\..\..\..\include\EVE_config.h" />
+    <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
+    <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\snippets\widgets\dialogs.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
@@ -216,10 +217,6 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
-    <ClInclude Include="..\..\..\..\include\EVE.h" />
-    <ClInclude Include="..\..\..\..\include\EVE_config.h" />
-    <ClInclude Include="..\..\..\..\include\FT8xx.h" />
-    <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
     <ClInclude Include="..\..\common\patch_medinfo.h" />

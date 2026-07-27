@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT8xx.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_config.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -53,18 +50,6 @@
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT81x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\BT82x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT80x.h">
-      <Filter>Library\eve\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\FT81x.h">
-      <Filter>Library\eve\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
@@ -89,6 +74,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\arcs.h">
       <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_commands.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_registers.h">
+      <Filter>Library\eve\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

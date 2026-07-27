@@ -24,6 +24,7 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\STM32` MCU specific files for the STM32 using Keil.
 - `\examples\<demo>\STM32CUBE` MCU specific files for the STM32 using STM32CUBE.
 - `\examples\<demo>\pico` MCU specific files for the Raspberry Pi pico.
+- `\examples\<demo>\emulator` MCU specific files for the EVE_Emulator.
 
 ### Common Folder
 

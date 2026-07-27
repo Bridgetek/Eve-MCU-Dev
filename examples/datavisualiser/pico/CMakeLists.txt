@@ -21,9 +21,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.2.0)
-set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0-a4)
+set(sdkVersion 2.3.0)
+set(toolchainVersion 15_2_Rel1)
+set(picotoolVersion 2.3.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -102,7 +102,7 @@ set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 add_executable(${PROJECT_NAME}
         main/main.c
 )
-pico_set_program_name(${PROJECT_NAME} "dataVisualiser")
+pico_set_program_name(${PROJECT_NAME} "datavisualiser")
 pico_set_program_version(${PROJECT_NAME} "0.1")
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -110,15 +110,19 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+
+# Milliseconds to wait for stdio connection
+# (will also have stdio_usb_connected() call in main to wait for connection)
+add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
+
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Use look up table instead of maths functions for trig
 add_compile_definitions(USE_TRIG_TABLE) 

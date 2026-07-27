@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The port for the EVE Emulator comprises a Windows host PC with the EVE Emulator library. The emulator simulates an EVE device on the Windows display. 
+The port for the EVE Emulator comprises a Windows host PC with the EVE Emulator library. The emulator simulates an EVE device on the Windows display, and supports `x64` (64-bit) architectures only. 
 
 ## Windows
 
@@ -16,7 +16,7 @@ Download or clone the EVE_Emulator repository to a new directory.
 
 ### Install the EVE_Emulator EVE Emulator in EVE-MCU-Dev library
 
-The EVE_Emulator repository directory will have a subfolders called `include`, `bin`, and `lib` . The repository contains library files for `x64` (64-bit Windows) architectures.
+The EVE_Emulator repository directory will have a subfolders called `include`, `bin`, and `lib`. The repository contains library files for `x64` (64-bit Windows) architectures only.
 
 The subfolders include:
 - A DLL file for `bt8xxemu`.

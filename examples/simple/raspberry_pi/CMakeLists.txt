@@ -67,13 +67,13 @@ include_directories(
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
 )
-# Tell EVE library to use libFT4222 as base class
+# Tell EVE library to use Raspberry Pi as base class
 # Select the Raspberry Pi platform
 add_compile_definitions(PLATFORM_RASPBERRYPI)
 # Select the Linux /dev/spidev0 as a character device for transfers
 add_compile_definitions(USE_LINUX_SPI_DEV)
 
-# Source code for EVE library (targetted at FT4222)
+# Source code for EVE library (targtted at Raspberry Pi)
 add_library(eve_library # EVE library name
         # Source code for EVE library
         ${API_DIRECTORY}/source/EVE_API.c
@@ -86,7 +86,6 @@ target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
-        ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 
 # Source for example code

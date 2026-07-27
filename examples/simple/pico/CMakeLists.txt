@@ -21,9 +21,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.2.0)
-set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0-a4)
+set(sdkVersion 2.3.0)
+set(toolchainVersion 15_2_Rel1)
+set(picotoolVersion 2.3.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -110,15 +110,19 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-
 # Tell EVE library to use RP2040 as base class
 add_compile_definitions(PLATFORM_RP2040)
 
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=0)
+
+# Milliseconds to wait for stdio connection
+# (will also have stdio_usb_connected() call in main to wait for connection)
+add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
+
+# Modify the below lines to enable/disable output over UART/USB
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at RP2040)
 add_library(eve_library # EVE library name

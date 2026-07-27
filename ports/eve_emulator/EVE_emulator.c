@@ -8,7 +8,7 @@
   *
   * This source code ("the Software") is provided by Bridgetek Pte Ltd
   * ("Bridgetek") subject to the licence terms set out
-  * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+  * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
   * You must read the Licence Terms before downloading or using the Software.
   * By installing or using the Software you agree to the Licence Terms. If you
   * do not agree to the Licence Terms then do not download or use the Software.
@@ -135,7 +135,11 @@ static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const 
 
 int MCU_Init(void)
 {
+    // print Emulator Version
+    printf("\n");
     printf(BT8XXEMU_version());
+    printf("\n\n");
+
 
 // Set emulator type from EVE_conig.h EVE type setting
 #if (FT8XX_TYPE == FT800)

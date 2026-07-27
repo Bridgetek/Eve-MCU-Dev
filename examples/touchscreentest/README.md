@@ -57,22 +57,44 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(void)
 {
-    uint32_t font_end;
     // Initialise the display
     EVE_Init();
-    // Load images
-    eve_load_images(font_end);
-    // Calibrate the display
-    eve_calibrate();
-    // Start example code
-    eve_display();
- }
+
+    // Load images (and obtain the start of the sketch bitmap)
+    DEBUG_PRINTF("Loading images...\n");
+    eve_load_images(0);
+
+    // Reset calibration data to force re-calibration on first call
+    calib.key = 0;
+    calib.transform[0] = 0;
+    calib.transform[1] = 0;
+    calib.transform[2] = 0;
+    calib.transform[3] = 0;
+    calib.transform[4] = 0;
+    calib.transform[5] = 0;
+    platform_calib_write(&calib);
+
+    while (1)
+    {
+        // Calibrate the display
+        DEBUG_PRINTF("Calibrating display...\n");
+        if (eve_calibrate() != 0)
+        {
+            DEBUG_PRINTF("Exception...\n");
+            while(1);
+        }
+
+        // Start example code
+        DEBUG_PRINTF("Starting demo:\n");
+        eve_display();
+    }
+} 
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
 Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
-Once calibration is complete, the font for the counter and the image for the logo are both loaded  (see `eve_fonts.c` and `eve_images.c` below).
+Once calibration is complete, the image for the logo is loaded (see `eve_images.c` below).
 Finally, the main program sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
 ### `touch.c`
@@ -156,7 +178,7 @@ Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device
 Some EVE devices have a larger address space and also have an `EVE_BITMAP_SOURCE_H` command for the higher address bits.
 Other EVE devices have `EVE_BITMAP_LAYOUT_H` and `EVE_BITMAP_SIZE_H` to cope with larger supported bitmap sizes.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the bitmap handle on the device so that it can be used by subsequent display lists.
 
 The sketch area is a bitmap equal in size to the entire screen drawn in L8 format (one byte per pixel). 
@@ -182,7 +204,7 @@ The sketch is started when the `EVE_CMD_SKETCH` command is received.
 The bitmap with handle `BITMAP_SKETCH` is drawn in the main look of the example and is updated by the EVE device whenever a touch event is detected.
 The sketch can be cleared at any point by setting the area for the bitmap to all zeros with a `EVE_CMD_MEMSET` command.
 
-Again a call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
+Again a call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
 
 ## Files and Folders
 

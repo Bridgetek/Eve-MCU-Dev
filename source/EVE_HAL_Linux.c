@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -120,7 +120,7 @@ int HAL_EVE_Init(void)
     info_printf("done\n");
 
     // Read REG_ID register (0x302000) until reads 0x7C
-    info_printf("Connecting to FT81X EVE display...");
+    info_printf("Connecting to EVE display...");
     while (HAL_MemRead8(EVE_REG_ID) != 0x7C)
     {
         Platform_Delay_20ms();
@@ -128,7 +128,7 @@ int HAL_EVE_Init(void)
     info_printf("done\n");
 
     info_printf("Resetting...");
-    // Ensure CPUreset register reads 0 and so FT8xx is ready
+    // Ensure CPUreset register reads 0 and so FT8xx/BT81x is ready 
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
         Platform_Delay_20ms();
