@@ -53,14 +53,17 @@
  *    VM800B     - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
  *    VM800C35A  - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
  *    VM800C43A  - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
- *    VM800C50A  - VM800C50A-D with 4.3 inch display (FT800 with DP-0502-11A)
+ *    VM800C50A  - VM800C50A-D with 5 inch display (FT800 with DP-0502-11A)
  *    VM810C     - VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
  *    ME812A     - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812)
  *    ME813A     - ME813A-WH50C with 5 inch display (FT813)
  *    VM816C     - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0502-11A)
+ *    VM880C     - VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
  *    IDM204021R - IDM2040-21R (FT800)
  *    IDM204043A - IDM2040-43A (BT883 with DP-0431-11A)
  *    IDM20407A  - IDM2040-7A (BT817 with DP-0701-01A)
+ *    VM820B10A  - VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+ *    VM820B15A  - VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
  * Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
  */
 //@{
@@ -72,9 +75,12 @@
 #define ME812A     812     // ME812A-WH50R, ME812AU-WH50R 
 #define ME813A     813     // ME813A-WH50C 
 #define VM816C     816     // VM816C50A-D, VM816CU50A-D 
+#define VM880C     880     // VM880C 
 #define IDM204021R 204021  // IDM2040-21R 
 #define IDM204043A 204043  // IDM2040-43A 
 #define IDM20407A  20407   // IDM2040-7A 
+#define VM820B10A  82010   // VM820B10A 
+#define VM820B15A  82015   // VM820B15A 
 #define NO_MODULE  0       // Select PANEL_TYPE and FT8XX_TYPE manually
 //@}
 
@@ -82,7 +88,7 @@
  * Undefine or set to "NO_MODULE" if not used.
  */
 #ifndef MODULE_TYPE
-#define MODULE_TYPE NO_MODULE
+#define MODULE_TYPE VM820B15A
 #endif
 
 /** @brief Select Bridgetek Panel Types
@@ -94,8 +100,11 @@
 #define DP_0501_11A 050111 // DP-0501-11A WVGA (Resistive)
 #define DP_0502_11A 0502   // DP-0502-11A WQVGA (Resistive)
 #define DP_0701_01A 0701   // DP-0701-11A WVGA (Capacitive)
+#define DP_1011_01A 10111  // DP-1011-01A WXGA (Capacitive)
+#define DP_1011_02A 10112  // DP-1011-02A WXGA (Capacitive)
 #define DP_1012_01A 1012   // DP-1012-01A WUXGA (Capacitive)
-#define DP_1561_01A 1561   // DP-1561-01A FullHD (Capacitive)
+#define DP_1561_01A 156101 // DP-1561-01A FullHD (Capacitive)
+#define DP_1561_02A 156102 // DP-1561-02A FullHD (Capacitive)
 #define DP_IDM43A   43     // IDM204043A (Capacitive)
 #define DP_IDM21R   21     // IDM204021R (Capacitive)
 #define NO_PANEL    0      // Not defined
@@ -145,7 +154,7 @@
 #define PANEL_TYPE DP_0431_11A
 
 #elif MODULE_TYPE == VM800C50A  
-// VM800C50A-D with 4.3 inch display
+// VM800C50A-D with 5 inch display
 #define FT8XX_TYPE FT800
 #define PANEL_TYPE DP_0502_11A
 
@@ -169,6 +178,11 @@
 #define FT8XX_TYPE BT816
 #define PANEL_TYPE DP_0501_11A
 
+#elif MODULE_TYPE == VM880C     
+// VM880C with 4.3 inch display
+#define FT8XX_TYPE BT880
+#define PANEL_TYPE DP_0431_11A
+
 #elif MODULE_TYPE == IDM204021R 
 // IDM2040-21R
 #define FT8XX_TYPE FT800
@@ -183,6 +197,17 @@
 // IDM2040-7A
 #define FT8XX_TYPE BT817
 #define PANEL_TYPE DP_0701_01A
+
+#elif MODULE_TYPE == VM820B10A  
+// VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1011_02A
+
+#elif MODULE_TYPE == VM820B15A  
+// VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1561_02A
+
 #else
 
 #error MODULE_TYPE must be configured.
@@ -197,10 +222,14 @@
  *     WVGA      - 800x480   e.g. ME813A-WH50C with 5 inch display
  *     WSVGA     - 1024x600  e.g. ME817EV with 7 inch display
  *     WXGA      - 1280x800  e.g. ME817EV with 10.1 inch display
+ *     WXGA_NG   - 1280x800  e.g. VM820B10A with 10.1 inch display
  *     FULLHD    - 1920x1080 e.g. BT820 with 15 inch high definition display
  *     WUXGA     - 1920x1200 e.g. BT820 with 10 inch high definition display
+ *     DP101101A - same as WXGA  e.g. DP-1011-01A
+ *     DP101102A - same as WXGA_NG  e.g. DP-1011-02A
  *     DP101201A - same as WUXGA  e.g. DP-1012-01A
  *     DP156101A - same as FULLHD e.g. DP-1561-01A
+ *     DP156102A - same as FULLHD e.g. DP-1561-02A
  */
 //@{
 #define QVGA    320        // 320x240   e.g. VM800B with 3.5 inch display
@@ -208,11 +237,15 @@
 #define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
 #define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
 #define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
-#define WXGA    1280       // 1280x800  e.g. ME817EV with 10.1 inch display
+#define WXGA    12801      // 1280x800  e.g. ME817EV with 10.1 inch display
+#define WXGA_NG 12802      // 1280x800  e.g. VM820B10A with 10.1 inch display
 #define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
 #define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
+#define DP101101A  WXGA    // DP-1011-01A
+#define DP101102A  WXGA_NG // DP-1011-02A
 #define DP101201A  WUXGA   // DP-1012-01A
 #define DP156101A  FULLHD  // DP-1561-01A
+#define DP156102A  FULLHD  // DP-1561-02A
 //@}
 
 /** @brief Match display resolution to panel type
@@ -223,7 +256,7 @@
  */
 //@{
 #ifndef DISPLAY_RES
-#define DISPLAY_RES WUXGA
+#define DISPLAY_RES FULLHD
 #endif
 //@}
 
@@ -251,12 +284,24 @@
 // DP-0701-11A WVGA (Capacitive)
 #define DISPLAY_RES WVGA
 
+#elif PANEL_TYPE == DP_1011_01A
+// DP-1011-01A WXGA (Capacitive)
+#define DISPLAY_RES WXGA
+
+#elif PANEL_TYPE == DP_1011_02A
+// DP-1011-02A WXGA (Capacitive)
+#define DISPLAY_RES WXGA_NG
+
 #elif PANEL_TYPE == DP_1012_01A
 // DP-1012-01A WUXGA (Capacitive)
 #define DISPLAY_RES WUXGA
 
 #elif PANEL_TYPE == DP_1561_01A
 // DP-1561-01A FullHD (Capacitive)
+#define DISPLAY_RES FULLHD
+
+#elif PANEL_TYPE == DP_1561_02A
+// DP-1561-02A FullHD (Capacitive)
 #define DISPLAY_RES FULLHD
 
 #elif PANEL_TYPE == DP_IDM43A
@@ -422,6 +467,30 @@
 #define EVE_DISP_VOFFSET 14 // Start of active screen
 #define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
 #define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 0
+// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+#define SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WXGA_NG
+
+#define EVE_DISP_WIDTH 1280 // Active width of LCD display
+#define EVE_DISP_HEIGHT 800 // Active height of LCD display
+#define EVE_DISP_HCYCLE 1440 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 158 // Start of active line
+#define EVE_DISP_HSYNC0 72 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 70 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 838 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 36 // Start of active screen
+#define EVE_DISP_VSYNC0 12 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 14 // End of vertical sync pulse
 #define EVE_DISP_PCLK 1 // Pixel Clock
 #define EVE_DISP_SWIZZLE 0 // Define RGB output pins
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
