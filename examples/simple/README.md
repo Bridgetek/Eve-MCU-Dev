@@ -15,6 +15,7 @@ This example supports the following platforms:
 | Port Name | Port Directory | 
 | --- | --- | 
 | [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
+| [Arduino IDE](arduino/README.md) | [ft900](arduino/) | 
 | [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) (1) | 
 | [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
 | [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) (1) |

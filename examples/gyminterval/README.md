@@ -34,6 +34,7 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
+| [Arduino IDE](arduino/README.md) | [ft900](arduino/) | Yes |
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
 
