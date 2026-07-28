@@ -131,7 +131,7 @@ _Example:_
 | --- | --- |
 | [arcs](#Arcs) | Arcs control code |
 | [fonts](#Fonts) | Fonts helper code |
-| [sounds](#Sounds) | Sound Synthesiser contol helper code |
+| [sounds](#Sounds) | Sound Synthesiser helper code |
 
 ### Arcs
 -   **TODO:** document functionality 
