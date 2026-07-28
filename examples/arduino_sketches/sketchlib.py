@@ -48,8 +48,10 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 "",
                                 "#if defined(ESP8266) || defined(ESP32)",
                                 "#include <pgmspace.h>",
-                                "#else",
+                                "#elif defined(__AVR__)",
                                 "#include <avr/pgmspace.h>",
+                                "#else",
+                                "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
                                 "#endif",
                                 "",
                         ]

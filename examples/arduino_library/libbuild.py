@@ -344,6 +344,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                     "#include <pgmspace.h>",
                                     "#else",
                                     "#include <avr/pgmspace.h>",
+                                    "#else",
+                                    "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
                                     "#endif",
                                     "",
                             ]
