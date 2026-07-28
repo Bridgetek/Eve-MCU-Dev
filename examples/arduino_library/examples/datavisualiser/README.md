@@ -18,6 +18,7 @@ The `datavisualiser.ino` code must provide any functions that rely on a platform
 - **platform_calib_init** initialise a platform's non-volatile storage system.
 - **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+- **platform_get_time** get elapsed milliseconds since program start.
 
 The `setup` function in the sketch is as follows:
 
@@ -41,40 +42,40 @@ void loop() {
 The control program for the example is in `eve_example.ino`. The sets up the EVE Library `eve` and loads fonts and images.
 
 ```
-void eve_example(void) {
-  uint32_t font_end;
+void eve_example(void)
+{
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    // Setup the EVE display (WUXGA)
+    eve.setup(FULLHD);
+    // Setup the EVE library
+    eve.Init();
 
-  // Setup the EVE library (### EVE RES ###)
-  eve.setup(### EVE RES ###);
-  // Initialise the display
-  eve.Init();
+    // Enable audio amplifier
+    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    enableSound();
 
-  // Calibrate the display
-  Serial.print("Calibrating display...\n");
-  if (eve_calibrate() != 0) {
-    Serial.print("Exception...\n");
-    while (1)
-      ;
-  }
+    // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while (1);
+    }
 
-  // Load fonts and images
-  Serial.print("Loading font...\n");
-  font_end = eve_init_fonts();
-  Serial.print("Loading images...\n");
-  eve_load_images(font_end);
-
-  Serial.print("Starting demo...\n");
-  eve_display();
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
 ```
 
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `eve_calibrate.c` below).
+The `enableSound()` funciton is then called from the `sound.ino` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development modules. After which the sound synthesizer is set to play the MUTE sound.
 
-Once calibration is complete, the font for the counter and the image for the logo are both loaded  (see `eve_fonts.ino` and `eve_images.ino below).
+Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.ino` below).
 
-Finally, the main program sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
+Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
 ### `touch.ino`
 
@@ -93,3 +94,9 @@ The example contains a common directory with several files which comprises all t
 | [eve_example.h](eve_example.h) | Header file for examaple |
 | [touch.ino](touch.ino) | Calibrations routines |
 | [touch.h](touch.h) | Calibrations routines header file |
+| [sound.ino](sound.ino) | Sound routines |
+| [sound.h](sound.h) | Sound routines header file |
+| [arcs.ino](arcs.ino) | Arc drawing routines |
+| [arcs.h](arcs.h) | Arc drawing routines header file |
+| [trig_furman.ino](trig_furman.ino) | Trigonometry routines |
+| [trig_furman.h](trig_furman.h) | Trigonometry routines header file |

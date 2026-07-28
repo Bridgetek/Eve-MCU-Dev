@@ -52,7 +52,7 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_init** initialise a platform's non-volatile storage system.
 - **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
-
+- **platform_get_time** get the system time in milliseconds.
 
 The example program in the common code is then called.
 

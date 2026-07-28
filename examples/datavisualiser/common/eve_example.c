@@ -71,7 +71,7 @@ const uint32_t colour4 = 0xE1341E; // orange
 // screen data related variables
 //--------------------------------------------------------------------------------------------------------
 
-// for the sizing of labels and data arrays
+// defines for the sizing of data arrays and labels
 // for line plot
 #define plot_data_size 7 // set to desired number of data points
 #define x_axis_labels_size 7 // set to plot_data_size 
@@ -121,13 +121,13 @@ int8_t backlight_value = 100;
 //--------------------------------------------------------------------------------------------------------
 
 // Definitions of values for on screen button tags
-const uint16_t pie_chart_tag = 10;
-const uint16_t settings_button_tag = 11;
-const uint16_t settings_menu_item_1_tag = 12;
-const uint16_t settings_menu_item_2_tag = 13;
-const uint16_t mode_button_1_tag = 14;
-const uint16_t mode_button_2_tag = 15;
-const uint16_t backlight_dial_tag = 16;
+const uint8_t pie_chart_tag = 10;
+const uint8_t settings_button_tag = 11;
+const uint8_t settings_menu_item_1_tag = 12;
+const uint8_t settings_menu_item_2_tag = 13;
+const uint8_t mode_button_1_tag = 14;
+const uint8_t mode_button_2_tag = 15;
+const uint8_t backlight_dial_tag = 16;
 
 // booleans for button press states
 bool settings_button_press = false;
@@ -164,18 +164,9 @@ uint16_t last_valid_angle = backlight_arc_end_deg;
 int16_t backlight_arc_total_deg = (backlight_arc_end_deg - backlight_arc_start_deg);
 
 //--------------------------------------------------------------------------------------------------------
-// static screen content variables
+// background box positioning and sizes variables
 //--------------------------------------------------------------------------------------------------------
 
-uint32_t static_screen_size = 0;
-uint32_t static_screen_location = 0;
-
-//--------------------------------------------------------------------------------------------------------
-// on screen item positioning and sizing variables
-//--------------------------------------------------------------------------------------------------------
-
-// background box positioning and sizes
-//--------------------------------------------------------------------------------------------------------
 // for line graph
 int16_t line_graph_box_start_x;
 int16_t line_graph_box_start_y;
@@ -200,8 +191,10 @@ int16_t circle_gauge_box_start_y;
 int16_t circle_gauge_box_end_x;
 int16_t circle_gauge_box_end_y;
 
-// line graph sizing and positioning
 //--------------------------------------------------------------------------------------------------------
+// line graph variables
+//--------------------------------------------------------------------------------------------------------
+
 // for labels
 int16_t line_graph_label_x;
 int16_t line_graph_label_y;
@@ -218,13 +211,15 @@ int16_t line_graph_y;
 int16_t line_graph_height;
 int16_t line_graph_width;
 // for shadow lines on graph
-int16_t line_graph_extra_x_lines = (x_axis_labels_size - 1);
-int16_t line_graph_extra_y_lines = y_axis_labels_size;
+uint8_t line_graph_extra_x_lines = (x_axis_labels_size - 1);
+uint8_t line_graph_extra_y_lines = y_axis_labels_size;
 // for line graph line width
-int16_t line_graph_line_width; // set this width based on screen size
+uint8_t line_graph_line_width; // set this width based on screen size
 
-// bar gauge size and positions
 //--------------------------------------------------------------------------------------------------------
+// bar guage variables
+//--------------------------------------------------------------------------------------------------------
+
 // bargauges positioning 
 int16_t bargauge1_x;
 int16_t bargauge1_y;
@@ -245,8 +240,10 @@ int16_t bargauge_height;
 int16_t bargauge_label_y;
 int16_t bargauge_label_height;
 
-// circular gauge size and positions.
 //--------------------------------------------------------------------------------------------------------
+// circular guage variables
+//--------------------------------------------------------------------------------------------------------
+
 // circular guage sizing related 
 int16_t circle_gauge_radius;
 int16_t circle_gauge_thickness;
@@ -258,8 +255,10 @@ int16_t circle_guage2_y;
 int16_t circle_guage3_x;
 int16_t circle_guage3_y;
 
-// pie chart size and position
 //--------------------------------------------------------------------------------------------------------
+// pie chart variables
+//--------------------------------------------------------------------------------------------------------
+
 // pie chart positioning
 int16_t pie_chart_x;
 int16_t pie_chart_y;
@@ -271,8 +270,10 @@ int16_t pie_chart_label_y;
 int16_t pie_chart_readout_x;
 int16_t pie_chart_readout_y;
 
-// settings menu button size and position
 //--------------------------------------------------------------------------------------------------------
+// settings menu variables
+//--------------------------------------------------------------------------------------------------------
+
 // settings buttons positioning
 int16_t settings_button_x1;
 int16_t settings_button_y1;
@@ -331,13 +332,20 @@ int16_t backlight_dial_inner_radius;
 //--------------------------------------------------------------------------------------------------------
 
 // variables for inbuilt rom font handles to be used which are set based on screen size.
-int16_t font_small;
-int16_t font_med;
-int16_t font_large;
-int16_t font_xl;
+uint8_t font_small;
+uint8_t font_med;
+uint8_t font_large;
+uint8_t font_xl;
 
 // variable for font handle to be used for the line plot readout.
-int16_t font_line_readout;
+uint8_t font_line_readout;
+
+//--------------------------------------------------------------------------------------------------------
+// static screen content variables
+//--------------------------------------------------------------------------------------------------------
+
+uint32_t static_screen_size = 0;
+uint32_t static_screen_location = 0;
 
 //--------------------------------------------------------------------------------------------------------
 // pixel precision variable
@@ -780,6 +788,10 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
  */
 void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint8_t num_x_lines, uint8_t num_y_lines, uint8_t line_width, uint8_t font_handle, uint8_t* y_axis_labels, char** x_axis_labels) {
 
+    // ensure num_X_lines and num_y_lines are non-zero
+    num_x_lines = MAX(num_x_lines, 1);
+    num_y_lines = MAX(num_y_lines, 1);
+    
     // declare local variables
     // multiply these by 8 initially so we can feed these values straight into the VERTEX2F call
     uint16_t x_line_spacing = ((width * pix_precision) / num_x_lines);
@@ -1705,7 +1717,6 @@ void renderScreenUpdate() {
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
 
-
     // append static sections of display list that were previously generated and stored in RAM_G
     EVE_CMD_APPEND(static_screen_location, static_screen_size);
 
@@ -1713,32 +1724,29 @@ void renderScreenUpdate() {
     // add three line plots on top of the graph lines from the static section of the display
     //--------------------------------------------------------------------------------------------------------
 
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour1, line_graph_line_width, plot_data_size, line_plot1_data);
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour2, line_graph_line_width, plot_data_size, line_plot2_data);
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour3, line_graph_line_width, plot_data_size, line_plot3_data);
+    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour1, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot1_data);
+    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour2, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot2_data);
+    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour3, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot3_data);
 
     // add number readouts for the line plots
     //--------------------------------------------------------------------------
 
-#if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-// call ROMFONT so we can use a larger font in handle font_large
-    EVE_CMD_ROMFONT(font_large, font_xl);
+    // on EVE_API = 3,4,5 font_xl can be defined as a font handle that isnt already pre-configured or available
+#if !IS_EVE_API(1, 5)
+    // call CMD_ROMFONT to load the font data for rom font font_xl handle into font_line_readout handle
+    if (font_line_readout == 0) // if font_line_readout is set to 0 (instead of the font_xl value)
+        EVE_CMD_ROMFONT(font_line_readout, font_xl);
 #endif
 
     // number and colour 1
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
-    EVE_CMD_NUMBER(line_graph_num1_x, line_graph_num1_y, font_large, EVE_OPT_CENTER, ((line_plot1_data[plot_data_size - 1] * 100) / 255));
+    EVE_CMD_NUMBER(line_graph_num1_x, line_graph_num1_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot1_data[plot_data_size - 1] * 100) / 255));
     // number and colour 2
     EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
-    EVE_CMD_NUMBER(line_graph_num2_x, line_graph_num2_y, font_large, EVE_OPT_CENTER, ((line_plot2_data[plot_data_size - 1] * 100) / 255));
+    EVE_CMD_NUMBER(line_graph_num2_x, line_graph_num2_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot2_data[plot_data_size - 1] * 100) / 255));
     // number and colour 3
     EVE_COLOR_RGB(((uint8_t)(colour3 >> 16)), ((uint8_t)(colour3 >> 8)), ((uint8_t)(colour3)));
-    EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_large, EVE_OPT_CENTER, ((line_plot3_data[plot_data_size - 1] * 100) / 255));
-
-#if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-    // call ROMFONT so we can reset the font handle back to what we originally set
-    EVE_CMD_ROMFONT(font_large, font_large);
-#endif
+    EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot3_data[plot_data_size - 1] * 100) / 255));
 
     // reset colour
     EVE_COLOR_RGB(255, 255, 255); // white
@@ -1769,13 +1777,19 @@ void renderScreenUpdate() {
 
     // add readout numbers for gauges
     //--------------------------------------------------------------------------
+
+#if (IS_EVE_API(5)) // if we are BT82x
+    // we want to use a monospaced font for the last usages of font_large handle here as they are centred within a circle
+    // call CMD_ROMFONT to load the font data for monspace font 25 (largest monospaced font available) into a the handle for font_large
+    EVE_CMD_ROMFONT(font_large, 25);
+#endif
+
     // first gauge
     EVE_CMD_NUMBER(circle_guage3_x, circle_guage3_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
     // second guage
     EVE_CMD_NUMBER(circle_guage2_x, circle_guage2_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
-    // Third guage
+    // third guage
     EVE_CMD_NUMBER(circle_guage1_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
-
 
     //--------------------------------------------------------------------------------------------------------
     // add pie chart onto the screen (if required)
@@ -1813,7 +1827,7 @@ void renderScreenUpdate() {
     // display
     EVE_DISPLAY();
     EVE_DISPLAY(); // per BRT_TN_005
-    // swap this display list inro RAM_DL
+    // swap this display list into RAM_DL
     EVE_CMD_SWAP();
     // send display list to co-processor
     EVE_LIB_EndCoProList();
@@ -1826,10 +1840,19 @@ void renderScreenUpdate() {
 // ######################################################################################################################################################################################################
 
 /**
- @brief Helper function to initially populate the data arrays for the line graph labels.
+ @brief Helper function to set on screen item sizing, positiong, and font handle variables.
+ @detials Thhis fucntion will use te screen width and height to initialise the global variables for the application,
+ such as positioning & sizing variables for on screen items, and in-built ROM font handles to be used. It also sets
+ the axis labels to be used on the line plot axes.
  */
-void setAxisLabels(void) {
+void initialiseGlobals(void) {
 
+    // local variables for use in logic
+    uint32_t screen_width = EVE_DISP_WIDTH;
+    uint32_t screen_height = EVE_DISP_HEIGHT;
+
+    // set line graph axis labels
+    //--------------------------------------------------------------------------------------------------------
     // populate y axis labels arrays
     y_axis_labels[0] = 100;
     y_axis_labels[1] = 80;
@@ -1845,16 +1868,6 @@ void setAxisLabels(void) {
     x_axis_labels[4] = "0:10";
     x_axis_labels[5] = "0:05";
     x_axis_labels[6] = "0:00";
-}
-
-/**
- @brief Helper function to set on screen item sizing, positiong, and font handle variables.
- */
-void setExampleSizing(void) {
-
-    // local variables for use in logic
-    uint32_t screen_width = EVE_DISP_WIDTH;
-    uint32_t screen_height = EVE_DISP_HEIGHT;
 
     // set background box positioning and sizes
     //--------------------------------------------------------------------------------------------------------
@@ -1884,11 +1897,11 @@ void setExampleSizing(void) {
     line_graph_label_x = ((screen_width * 2)/40); // 5%
     line_graph_label_y = ((screen_height * 2)/40); // 5%
     // for readout
-    line_graph_num1_x = ((screen_width * 205)/320); // 64.06%
+    line_graph_num1_x = ((screen_width * 197)/320); // 61.56%
     line_graph_num1_y = ((screen_height * 5)/40); // 12.5%
-    line_graph_num2_x = ((screen_width * 205)/320); // 64.06%
+    line_graph_num2_x = ((screen_width * 197)/320); // 61.56%
     line_graph_num2_y = ((screen_height * 21)/80); // 26.25%
-    line_graph_num3_x = ((screen_width * 205)/320); // 64.06%
+    line_graph_num3_x = ((screen_width * 197)/320); // 61.56%
     line_graph_num3_y = ((screen_height * 16)/40); // 40%
     // for graph positioning and size
     line_graph_x = ((screen_width * 3)/40); // 7.5%
@@ -1896,21 +1909,20 @@ void setExampleSizing(void) {
     line_graph_height = ((screen_height * 25)/80); // 31.25%
     line_graph_width = ((screen_width * 20)/40); // 50%
 
-    //set this width based on screen size
-    #if (screen_width < 1000)
+    //set line graph line width based on screen size
+    if (screen_width < 1000)
         line_graph_line_width = 1;
-    #elif (screen_width >=1000 && screen_width <= 1500)
+    else if (screen_width >=1000 && screen_width <= 1500)
         line_graph_line_width = 2;
-    #elif (screen_width > 1500)
+    else if (screen_width > 1500)
         line_graph_line_width = 3;
-    #endif
 
     // set bar gauge size and positions
     //--------------------------------------------------------------------------------------------------------
     // sizing related 
     bargauge_width = (screen_width/32); // 3.1%
     bargauge_height = ((screen_height*21)/80); // 26.25%
-    //bargauge positioning 
+    // bargauge positioning 
     bargauge1_x = ((screen_width * 2)/40); // 5%
     bargauge1_y = ((screen_height * 24)/40); // 60%
     bargauge2_x = ((screen_width * 7)/80); // 8.75%
@@ -1930,11 +1942,11 @@ void setExampleSizing(void) {
     // set circular gauge size and positions
     //--------------------------------------------------------------------------------------------------------
     // sizing related 
-    #if (screen_width < 350) // if we have a particualry small screen
+    if (screen_width < 350) // if we have a particualry small screen
         circle_gauge_radius = (screen_height/8); // 12.5 %
-    #else
+    else
         circle_gauge_radius = (screen_height/7); // 14.2 %
-    #endif
+    
     circle_gauge_thickness = (screen_width/64); // 1.5 %
     // positioning 
     circle_guage1_x = ((screen_width * 37)/80); // 46.25 %
@@ -1957,6 +1969,8 @@ void setExampleSizing(void) {
     pie_chart_readout_x = ((screen_width * 38)/40); // 95% 
     pie_chart_readout_y = ((screen_height * 69)/160); // 43.125%
 
+    // set settings menut size and position
+    //--------------------------------------------------------------------------------------------------------
     // set settings menu button size and position.
     settings_button_x1 = ((screen_width * 71)/80); // 88.75% 
     settings_button_y1 = 0; // 0%
@@ -1970,13 +1984,12 @@ void setExampleSizing(void) {
 
     // for the line used to create the settings button
     // set this width based on screen size
-    #if (screen_width < 1000)
+    if (screen_width < 1000)
         settings_button_line_width = 2;
-    #elif (screen_width >=1000 && screen_width <= 1500)
+    else if (screen_width >=1000 && screen_width <= 1500)
         settings_button_line_width = 3;
-    #elif (screen_width > 1500)
+    else if (screen_width > 1500)
         settings_button_line_width = 4;
-    #endif
 
     // sets ettings control menu size and position.
     //--------------------------------------------------------------------------------------------------------
@@ -1989,7 +2002,6 @@ void setExampleSizing(void) {
     // for label
     settings_menu_label_x = ((screen_width * 3)/4); // 75%
     settings_menu_label_y = ((screen_height * 2)/40); // 5%
-
     
     // set mode menu buttons and readout, size and positions.
     //--------------------------------------------------------------------------------------------------------
@@ -2009,66 +2021,70 @@ void setExampleSizing(void) {
     mode_label_x = ((screen_width * 34)/40); // 85%
     mode_label_y = ((screen_height * 12)/40); // 30%
 
-    // set backlight menu arc guage size, position and angles
+    // set LCD backlight arc guage size and position
     //--------------------------------------------------------------------------------------------------------
+    // positioning
     backlight_dial_x = ((screen_width * 34)/40); // 85%
     backlight_dial_y = ((screen_height * 15)/40); // 30%
+    // sizing
     backlight_dial_radius = (screen_height/8); // 12.5%
     backlight_dial_inner_radius = (screen_height/11); // 9%
 
     // set handles for inbuilt rom font handles to be used based on screen size
     //--------------------------------------------------------------------------------------------------------
-    #if (screen_width < 350)
+    if (screen_width < 350) {
         font_small = 20;
         font_med = 20;
         font_large = 22;
         font_xl = 23;
-    #elif (screen_width >= 350 && screen_width <= 500)
+    }
+    else if (screen_width >= 350 && screen_width <= 500) {
         font_small = 20;
         font_med = 26;
         font_large = 27;
         font_xl = 28;
-    #elif (screen_width >= 500 && screen_width <= 1000)
+    }
+    else if (screen_width >= 500 && screen_width <= 1000) {
         font_small = 20;
         font_med = 27;
         font_large = 30;
         font_xl = 31;
-    #elif (screen_width > 1000 && screen_width <= 1200)
+    }
+    else if (screen_width > 1000 && screen_width <= 1200) {
         font_small = 22;
         font_med = 29;
         font_large = 31;
-        // for screens above this size we want to use rom font handle 32 or 34, but this does not exist EVE API = 1
-        #if IS_EVE_API(1) 
+        // for screens above this size we want to use rom font handle 32 or 34, but this does not exist in EVE API = 1
+        if (IS_EVE_API(1))
             font_xl = 31;
-        #else
+        else
             font_xl = 32;
-        #endif
-    #elif (screen_width > 1200)
+    }
+    else if (screen_width > 1200) {
         font_small = 23;
         font_med = 30;
         font_large = 31;
-        // for screens above this size we want to use rom font handle 33 or 34, but this does not exist EVE API = 1
-        #if IS_EVE_API(1)
+        // for screens above this size we want to use rom font handle 33 or 34, but this does not exist in EVE API = 1
+        if (IS_EVE_API(1))
             font_xl = 31;
-        #else 
-            #if ((screen_width > 1200 && screen_width <= 1400))
+        else {
+            if ((screen_width > 1200 && screen_width <= 1400))
                 font_xl = 33;
-            #else
+            else
                 font_xl = 34;
-            #endif
-        #endif
-    #endif
-
+        }
+    }
     // set font handle to be used for the line plot readout.
     //--------------------------------------------------------------------------------------------------------
     // if font_xl is defined as a font handle that isnt already pre-configured or available
-    #if ((font_xl > 31) && !IS_EVE_API(1,5)) 
-        // set the handdle to 0, so we can used a CMD_ROMFONT call to associate this handle with the font_xl rom font handle
+    if ((font_xl > 31) && !IS_EVE_API(1, 5)) {
+        // set the handle to 0, so we can used a CMD_ROMFONT call to associate this handle with the font_xl rom font handle
         font_line_readout = 0;
-    #else
-        // else just set this handle define to be euqal to the font_xl value
+    }
+    else {
+        // else just set this handle define to be equal to the font_xl value
         font_line_readout = font_xl;
-    #endif
+    }
 }
 
 /**
@@ -2087,7 +2103,7 @@ void checkTouchStatus(void)
     #endif
 
     //-------- Check for pen up and pen down tags -------
-    if ((LastTagVal == 0) && (TagVal != 0))	// if there was previously no touch but now there is
+    if ((LastTagVal == 0) && (TagVal != 0)) // if there was previously no touch but now there is
         Pen_Down_Tag = TagVal;
     if ((LastTagVal != 0) && (TagVal == 0)) // if there was previously touch but now there isnt
         Pen_Up_Tag = LastTagVal;
@@ -2360,12 +2376,10 @@ void demoDataUpdates() {
  */
 void eve_display(void)
 {
-
-    // set the axis labels we want to use for the line graph
-    setAxisLabels();
-
-    // set definitions for screen sizing, positiong variables, and font handles
-    setExampleSizing();
+  
+    // initalise global values for screen sizing & positiong variables, font handles, etc
+    // also set the axis labels we want to use for the line graph
+    initialiseGlobals();
 
     // generate display list entries for static sections of the screen
     generateStaticScreenComponents();
