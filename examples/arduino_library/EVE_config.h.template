@@ -55,7 +55,8 @@
 #define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
 #define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
 #define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
-#define WXGA    1280       // 1280x800  e.g. ME817EV with 10.1 inch display
+#define WXGA    12801      // 1280x800  e.g. ME817EV with 10.1 inch display
+#define WXGA_NG 12802      // 1280x800  e.g. VM820B10A with 10.1 inch display
 #define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
 #define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
 
@@ -68,9 +69,12 @@
 #define ME812A     WVGA    // ME812A-WH50R, ME812AU-WH50R with 5 inch display
 #define ME813A     WVGA    // ME813A-WH50C with 5 inch display
 #define VM816C     WVGA    // VM816C50A-D, VM816CU50A-D with 5 inch display
+#define VM880C     WQVGA   // VM880C with 4.3 inch display
 #define IDM204021R WQVGAR  // IDM2040-21R (FT8XX_TYPE is FT800)
 #define IDM204043A WQVGA   // IDM2040-43A (FT8XX_TYPE is BT883)
 #define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
+#define VM820B10A  WXGA_NG // VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+#define VM820B15A  FULLHD  // VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
 
 // Default resolution
 #define DISPLAY_RES ### EVE RES ###
