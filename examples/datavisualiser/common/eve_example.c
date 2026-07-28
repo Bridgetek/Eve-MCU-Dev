@@ -1840,8 +1840,8 @@ void renderScreenUpdate() {
 // ######################################################################################################################################################################################################
 
 /**
- @brief Helper function to set on screen item sizing, positiong, and font handle variables.
- @detials Thhis fucntion will use te screen width and height to initialise the global variables for the application,
+ @brief Helper function to set on screen content sizing & positiong, and font handle variables.
+ @detials This fucntion will use the screen width and height to initialise the global variables for the application,
  such as positioning & sizing variables for on screen items, and in-built ROM font handles to be used. It also sets
  the axis labels to be used on the line plot axes.
  */
@@ -1903,7 +1903,7 @@ void initialiseGlobals(void) {
     line_graph_num2_y = ((screen_height * 21)/80); // 26.25%
     line_graph_num3_x = ((screen_width * 197)/320); // 61.56%
     line_graph_num3_y = ((screen_height * 16)/40); // 40%
-    // for graph positioning and size
+    // for positioning and size
     line_graph_x = ((screen_width * 3)/40); // 7.5%
     line_graph_y = ((screen_height * 5)/40); // 12.5%
     line_graph_height = ((screen_height * 25)/80); // 31.25%
@@ -1922,7 +1922,7 @@ void initialiseGlobals(void) {
     // sizing related 
     bargauge_width = (screen_width/32); // 3.1%
     bargauge_height = ((screen_height*21)/80); // 26.25%
-    // bargauge positioning 
+    // positioning 
     bargauge1_x = ((screen_width * 2)/40); // 5%
     bargauge1_y = ((screen_height * 24)/40); // 60%
     bargauge2_x = ((screen_width * 7)/80); // 8.75%
@@ -2377,7 +2377,7 @@ void demoDataUpdates() {
 void eve_display(void)
 {
   
-    // initalise global values for screen sizing & positiong variables, font handles, etc
+    // initalise global values for contents sizing & positiong variables, font handles, etc based upon screen size
     // also set the axis labels we want to use for the line graph
     initialiseGlobals();
 
