@@ -28,11 +28,13 @@ src_api_include = os.path.normpath("../../../include")
 src_port = os.path.normpath("../../../ports/eve_arch_arduino")
 src_patch = os.path.normpath("../../../ports/eve_bt82x")
 
-src_flatten_dirs = []
+src_flatten_dirs = ["maths", "controls"]
 
 # Collate files needed for sketch
-dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
+dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
+dist_source_files.extend(add_files(os.path.join(src_snippets, "maths"), sketch, ["trig_furman.c", "trig_furman.h"]))
+dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketch, ["arcs.c", "arcs.h", "fonts.c", "fonts.h", "sound.c", "sound.h"]))
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_registers.h", "EVE_commands.h", "EVE_config.h"]))
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))

@@ -1,8 +1,8 @@
-# EVE-MCU-Dev Simple Arduino Example
+# EVE-MCU-Dev GymInterval Arduino Example
 
 [Back](../README.md)
 
-The sketch needs to be additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`simple_arduino`](simple_arduino/).
+The sketch needs to be additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`gyminterval_arduino`](gyminterval_arduino/).
 
 ## Sketch Directory
 
@@ -16,30 +16,36 @@ The script will report the names of the files copied. There are no parameters fo
 
 ```
 > python .\sketchbuild.py
-Sketch name is simple_arduino
-..\common\eve_example.c -> simple_arduino\eve_example.ino
-..\common\eve_example.h -> simple_arduino\eve_example.h
-..\common\eve_fonts.c -> simple_arduino\eve_fonts.ino
-..\common\eve_images.c -> simple_arduino\eve_images.ino
-..\..\snippets\touch.c -> simple_arduino\touch.ino
-..\..\snippets\touch.h -> simple_arduino\touch.h
-..\..\..\include\EVE.h -> simple_arduino\EVE.h
-..\..\..\include\HAL.h -> simple_arduino\HAL.h
-..\..\..\include\MCU.h -> simple_arduino\MCU.h
-..\..\..\include\EVE_config.h -> simple_arduino\EVE_config.h
-..\..\..\include\EVE_commands.h -> simple_arduino\EVE_commands.h
-..\..\..\include\EVE_registers.h -> simple_arduino\EVE_registers.h
-..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
-..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
-..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
-..\..\..\ports\eve_arch_arduino\README.md -> simple_arduino\README.md
-..\..\..\ports\eve_bt82x\patch_base.c -> simple_arduino\patch_base.ino
-..\..\..\ports\eve_bt82x\patch_base.h -> simple_arduino\patch_base.h
+Sketch name is gyminterval_arduino
+..\common\eve_example.c -> gyminterval_arduino\eve_example.ino
+..\common\eve_example.h -> gyminterval_arduino\eve_example.h
+..\..\snippets\touch.c -> gyminterval_arduino\touch.ino
+..\..\snippets\touch.h -> gyminterval_arduino\touch.h
+..\..\snippets\maths\trig_furman.c -> gyminterval_arduino\trig_furman.ino
+..\..\snippets\maths\trig_furman.h -> gyminterval_arduino\trig_furman.h
+..\..\snippets\controls\arcs.c -> gyminterval_arduino\arcs.ino
+..\..\snippets\controls\arcs.h -> gyminterval_arduino\arcs.h
+..\..\snippets\controls\fonts.c -> gyminterval_arduino\fonts.ino
+..\..\snippets\controls\fonts.h -> gyminterval_arduino\fonts.h
+..\..\snippets\controls\sound.c -> gyminterval_arduino\sound.ino
+..\..\snippets\controls\sound.h -> gyminterval_arduino\sound.h
+..\..\..\include\EVE.h -> gyminterval_arduino\EVE.h
+..\..\..\include\HAL.h -> gyminterval_arduino\HAL.h
+..\..\..\include\MCU.h -> gyminterval_arduino\MCU.h
+..\..\..\include\EVE_config.h -> gyminterval_arduino\EVE_config.h
+..\..\..\include\EVE_commands.h -> gyminterval_arduino\EVE_commands.h
+..\..\..\include\EVE_registers.h -> gyminterval_arduino\EVE_registers.h
+..\..\..\source\EVE_API.c -> gyminterval_arduino\EVE_API.ino
+..\..\..\source\EVE_HAL.c -> gyminterval_arduino\EVE_HAL.ino
+..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> gyminterval_arduino\eve_arch_arduino.ino
+..\..\..\ports\eve_arch_arduino\README.md -> gyminterval_arduino\README.md
+..\..\..\ports\eve_bt82x\patch_base.c -> gyminterval_arduino\patch_base.ino
+..\..\..\ports\eve_bt82x\patch_base.h -> gyminterval_arduino\patch_base.h
 ```
 
 ### Copy Files Manually
 
-The following files **must** be copied into the `simple_arduino` directory to be compiled into the sketch.
+The following files **must** be copied into the `gyminterval_arduino` directory to be compiled into the sketch.
 
 - From the `include` directory add the library header files:
   - EVE.h
@@ -57,14 +63,16 @@ The following files **must** be copied into the `simple_arduino` directory to be
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino
   - README.md
-- From the `examples\simple\common` directory the files for the simple example functionality:
+- From the `examples\gyminterval\common` directory the files for the gyminterval example functionality:
   - eve_example.c
   - eve_example.h
-  - eve_fonts.c
-  - eve_images.c
 - From the `examples\snippets` directory the files for the snippets functionality:
   - touch.c
   - touch.h
+  - trig_furman.c
+  - arcs.c
+  - fonts.c
+  - sound.c
 
 All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
 
@@ -81,7 +89,7 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 The directory will look similar to this:
 
 ```
- Directory of <path>EVE-MCU-Dev\examples\simple\arduino\simple_arduino
+ Directory of <path>EVE-MCU-Dev\examples\gyminterval\arduino\gyminterval_arduino
 
 EVE.h    
 MCU.h      
@@ -97,21 +105,27 @@ eve_arch_arduino.ino
 README.md  
 eve_example.ino       
 eve_example.h         
-eve_fonts.ino   
-eve_images.ino  
-simple_arduino.ino
+gyminterval_arduino.ino
 touch.ino
 touch.h
+trig_furman.ino
+trig_furman.h
+arcs.ino
+arcs.h
+fonts.ino
+fonts.h
+sound.ino
+sound.h
 ```
 The files above will appear as tabs in the sketch in the Arduino IDE.
 
-## Compiling the Simple Arduino Example
+## Compiling the GymInterval Arduino Example
 
 The sketch can be verified and uploaded to the Arduino device. Please follow the instructions in the Arduino IDE and web pages on Arduino web site.
 
 ## Reusing the Example Code
 
-This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_images.c`, `eve_fonts.c`. If using the python script then the list of files for the example code will need updated.
+This code can be reused by altering the code in the "example" files `eve_example.c`. If using the python script then the list of files for the example code will need updated.
 
 ## Updating the Configuration
 
