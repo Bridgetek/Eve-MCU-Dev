@@ -142,8 +142,10 @@ static void time2str(uint16_t val, char *str)
     str[i++] = '\0';
 }
 
-static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch)
+static int8_t chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch)
 {
+    // Set to non-zero if a vertex translate is set
+    int8_t vt = 0;
     if (cache->legacy)
     {
         // This is a legacy font.
@@ -152,6 +154,7 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
 #if IS_EVE_API(2, 3, 4, 5)
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
+            vt = 1;
 #endif
             EVE_VERTEX2II(0, 0, cache->handle, ch);
         }
@@ -172,6 +175,7 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
 #if IS_EVE_API(2, 3, 4, 5)
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
+            vt = 1;
 #endif
             EVE_VERTEX2F(0, 0);
         }
@@ -180,11 +184,8 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
             EVE_VERTEX2F(x * 16, y * 16);
         }
     }
-
-#if IS_EVE_API(2, 3, 4, 5)
-    EVE_VERTEX_TRANSLATE_X(0);
-    EVE_VERTEX_TRANSLATE_Y(0);
-#endif
+    // Return non-zero if a vertex translate reset is needed
+    return vt;
 }
 
 static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
@@ -208,14 +209,27 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
 static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
 {
     const char *ch = str;
+    int8_t vt = 0;
 
     while (*ch)
     {
-        chardraw(cache, x, y, *ch);
+        if (chardraw(cache, x, y, *ch))
+        {
+            vt = 1;
+        }
     
         // Move the cursor in the x-axis.
         x = x + (((uint32_t)font_getcharwidth(cache, *ch) * zoom) / 0x10000);
         ch++;
+    }
+
+    // If resetting vertex translate X,Y is required from the character drawing
+    if (vt)
+    {
+#if IS_EVE_API(2, 3, 4, 5)
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
+#endif
     }
 }
 
@@ -473,6 +487,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x1_zoom, button_y2_zoom);
         EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
@@ -486,6 +502,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
@@ -499,6 +517,8 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
@@ -512,10 +532,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x2_zoom, button_y2_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
 #endif
+
         EVE_COLOR_MASK(1, 1, 1, 1);
         EVE_TAG_MASK(0);
 
@@ -632,6 +655,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
             EVE_COLOR(col_clock);
             EVE_COLOR_A(msg_alpha);
+
+#if IS_EVE_API(2, 3, 4, 5)
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
+#endif
 
             setupzoom(&clockfont, msg_zoom);
             stringdraw(&clockfont, msg_zoom, 
@@ -789,6 +817,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6) * 16);
             EVE_VERTEX2F(0, 0);
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
 #else
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0)) * 16);
@@ -815,6 +845,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13) * 16);
             EVE_VERTEX2F(0, 0);
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
 #else
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7)) * 16);
@@ -823,10 +855,6 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 #endif
         }
 
-#if IS_EVE_API(2, 3, 4, 5)
-        EVE_VERTEX_TRANSLATE_X(0);
-        EVE_VERTEX_TRANSLATE_Y(0);
-#endif
         EVE_TAG_MASK(0);
 
         EVE_COLOR(col_text);
@@ -945,6 +973,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * 3 / 4) * 16);
         EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F((EVE_DISP_WIDTH * 3 / 4) * 16,
             (((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
