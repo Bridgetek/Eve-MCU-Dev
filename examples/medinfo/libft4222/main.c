@@ -47,18 +47,9 @@
 #ifndef _WIN32
 #include <sys/time.h>
 #endif
-#if defined(PLATFORM_RP2040)
-#include <pico/time.h>
-#endif
 
 #include <EVE.h>
-typedef
-#if defined(PLATFORM_RP2040)
-    absolute_time_t
-#else
-    struct timespec
-#endif
-    platform_time_t;
+typedef struct timespec platform_time_t;
 
 #include "eve_example.h"
 #include "touch.h"
@@ -173,21 +164,13 @@ static int clock_gettime(int clockname, struct timespec* tv)
 
 static void get_platform_time(platform_time_t *tm)
 {
-#if defined(PLATFORM_RP2040)
-    *tm = get_absolute_time();
-#else
     clock_gettime(CLOCK_MONOTONIC, tm);
-#endif
 }
 
 static uint32_t diff_platform_time(platform_time_t *start, platform_time_t *end)
 {
     uint32_t diff;
-#if defined(PLATFORM_RP2040)
-    diff = (absolute_time_diff_us(*start, *end) / 1000);
-#else
     diff = (uint32_t)((end->tv_sec - start->tv_sec) * 1000 + (end->tv_nsec - start->tv_nsec) / 1000000);
-#endif
     return diff;
 }
 
