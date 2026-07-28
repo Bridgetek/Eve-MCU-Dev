@@ -88,7 +88,7 @@
  * Undefine or set to "NO_MODULE" if not used.
  */
 #ifndef MODULE_TYPE
-#define MODULE_TYPE VM820B15A
+#define MODULE_TYPE NO_MODULE
 #endif
 
 /** @brief Select Bridgetek Panel Types

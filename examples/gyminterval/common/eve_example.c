@@ -65,6 +65,18 @@ const uint16_t furmans_top = 0x8000;
 
 #define ARC_GAP(A) ((A) * 8 / 10)
 
+// Configuration screen keys
+const int key_conf_row_1 = 1;
+const int key_conf_row_2 = 4;
+const int key_wheel = 100;
+const int key_go = 101;
+
+// Countdown screen keys
+const int key_finish = 1;
+const int key_restart = 2;
+const int key_skip = 3;
+const int key_pause = 4;
+
 // Colours in hexadecimal RGB
 const uint32_t col_timer_active = 0x6666ff;
 const uint32_t col_rest_active = 0x444466;
@@ -319,7 +331,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                             playClick();
                         }
 
-                        if ((timer == 0) || (skip))
+                        if ((timer == 0) || (skip == 1))
                         {
                             interval--;
                             if (interval > 0)
@@ -354,10 +366,14 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                     playChimes(NOTE_C3);
                                 }
                             }
-                            if (skip)
+                            if (skip == 1)
                             {
                                 timer = timer_count;
                             }
+                        }
+                        if (skip == -1)
+                        {
+                            timer = timer_count;
                         }
                     }
                 }
@@ -373,9 +389,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         playBell(NOTE_C3);
                     }
 
-                    if (skip)
+                    if (skip == 1)
                     {
                         rest = 0;
+                    }
+                    if (skip == -1)
+                    {
+                        rest = interval_rest_count;
                     }
                 }
         
@@ -444,20 +464,33 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_BEGIN(EVE_BEGIN_RECTS);
         // Don't show on screen
         EVE_COLOR_MASK(0, 0, 0, 0);
-        EVE_TAG(1);
+        EVE_TAG(key_finish);
         // Finish active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
-        EVE_VERTEX_TRANSLATE_Y(button_y_zoom * 16);
+        EVE_VERTEX_TRANSLATE_Y(button_y2_zoom * 16);
         EVE_VERTEX2F(0, 0);
         EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
-        EVE_VERTEX_TRANSLATE_Y((button_y_zoom + button_h_zoom) * 16);
+        EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
 #else
-        EVE_VERTEX2F(button_x1_zoom, button_y_zoom);
-        EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y_zoom + button_h_zoom);
+        EVE_VERTEX2F(button_x1_zoom, button_y2_zoom);
+        EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
 #endif
-        EVE_TAG(2);
+        EVE_TAG(key_restart);
+        // Skip active area
+#if IS_EVE_API(2, 3, 4, 5)
+        EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
+        EVE_VERTEX_TRANSLATE_Y(button_y1_zoom * 16);
+        EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
+        EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
+        EVE_VERTEX2F(0, 0);
+#else
+        EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
+        EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
+#endif
+        EVE_TAG(key_skip);
         // Skip active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
@@ -470,7 +503,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
 #endif
-        EVE_TAG(3);
+        EVE_TAG(key_pause);
         // Pause active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
@@ -498,15 +531,19 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
         EVE_TAG_MASK(1);
         setupzoom(&clockfont, button_zoom);
-        EVE_TAG(1);
+        EVE_TAG(key_finish);
         stringdraw(&clockfont, button_zoom, 
             button_x1_zoom, 
-            button_y_zoom, "FINISH");
-        EVE_TAG(2);
+            button_y2_zoom, "FINISH");
+        EVE_TAG(key_restart);
+        stringdraw(&clockfont, button_zoom, 
+            button_x1_zoom, 
+            button_y1_zoom, "RESTART");
+        EVE_TAG(key_skip);
         stringdraw(&clockfont, button_zoom, 
             button_x2_zoom, 
             button_y1_zoom, "SKIP");
-        EVE_TAG(3);
+        EVE_TAG(key_pause);
         if (pause == 0)
         {
             stringdraw(&clockfont, button_zoom, 
@@ -627,7 +664,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             if ((key_debounce > key_debounce_filter) && (key != key_prev))
             {
                 key_prev = key;
-                if (key == 1)
+                if (key == key_finish)
                 {
                     if (cycle > 0)
                     {
@@ -646,7 +683,15 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         rest_max = 0;
                     }
                 }
-                else if (key == 2)
+                else if (key == key_restart)
+                {
+                    // Back
+                    skip = -1;
+                    //pause = 0;
+
+                    msg_text = "Restart";
+                }
+                else if (key == key_skip)
                 {
                     // Skip
                     skip = 1;
@@ -654,7 +699,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
                     msg_text = "Skipped";
                 }
-                else if (key == 3)
+                else if (key == key_pause)
                 {
                     // Pause
                     if (pause == 0)
@@ -728,8 +773,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Top row active rectangles
         for (i = 0; i < 3; i++)
         {
-            EVE_TAG(i + 1);
-            if (selected == i + 1)
+            EVE_TAG(key_conf_row_1 + i);
+            if (selected == key_conf_row_1 + i)
             {
                 EVE_COLOR(col_selected);
             }
@@ -754,8 +799,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Middle row active rectangles
         for (i = 0; i < 2; i++)
         {
-            EVE_TAG(i + 4);
-            if (selected == i + 4)
+            EVE_TAG(key_conf_row_2 + i);
+            if (selected == key_conf_row_2 + i)
             {
                 EVE_COLOR(col_selected);
             }
@@ -864,7 +909,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Active areas to adjust values
         // tag and add a tracker to the arc gauge point
         EVE_TAG_MASK(1); // enable tagging
-        EVE_TAG(100);
+        EVE_TAG(key_wheel);
         arc_simple_gauge(
             (EVE_DISP_WIDTH * 3 / 4), 
             (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), 
@@ -892,7 +937,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         EVE_TAG_MASK(1); // enable tagging
         msg_text = "GO";
         EVE_COLOR(col_selected);
-        EVE_TAG(101);
+        EVE_TAG(key_go);
         // Start active area
         EVE_BEGIN(EVE_BEGIN_POINTS);
         EVE_POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
@@ -924,11 +969,11 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             if ((key_debounce > key_debounce_filter) && (key != key_prev))
             {
                 key_prev = key;
-                if ((key > 0) && (key < 100))
+                if ((key > 0) && (key < key_wheel))
                 {
                     selected = key;
                 }
-                else if (key == 101)
+                else if (key == key_go)
                 {
                     // Start!
                     playBell(NOTE_C3);
@@ -936,7 +981,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 }
             }
             
-            if (key == 100)
+            if (key == key_wheel)
             {
                 uint32_t trackVal;
                 // register has a differnt name for the FT80x series
@@ -980,31 +1025,31 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 dial_prev = dial_pos;
 
                 // Update the cycles count
-                if (selected == 1)
+                if (selected == key_conf_row_1 + 0)
                 {
                     *cycle_count += adjust;
                     if (*cycle_count < 1) *cycle_count = 1;
                     if (*cycle_count > cycle_count_max) *cycle_count = cycle_count_max;
                 }
-                else if (selected == 2)
+                else if (selected == key_conf_row_1 + 1)
                 {
                     *interval_count += adjust;
                     if (*interval_count < 1) *interval_count = 1;
                     if (*interval_count > interval_count_max) *interval_count = interval_count_max;
                 }
-                else if (selected == 3) 
+                else if (selected == key_conf_row_1 + 2) 
                 {
                     *timer_count += adjust;
                     if (*timer_count < dial_time_step) *timer_count = dial_time_step;
                     if (*timer_count > timer_max) *timer_count = timer_max;
                 }
-                else if (selected == 4) 
+                else if (selected == key_conf_row_2 + 0) 
                 {
                     *cycle_rest_count += adjust;
                     if (*cycle_rest_count < dial_time_step) *cycle_rest_count = dial_time_step;
                     if (*cycle_rest_count > timer_max) *cycle_rest_count = timer_max;
                 }
-                else if (selected == 5) 
+                else if (selected == key_conf_row_2 + 1) 
                 {
                     *interval_rest_count += adjust;
                     if (*interval_rest_count < dial_time_step) *interval_rest_count = dial_time_step;
