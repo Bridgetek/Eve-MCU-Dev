@@ -162,6 +162,7 @@ static int clock_gettime(int clockname, struct timespec* tv)
 
     return 0;
 }
+#endif
 
 uint32_t platform_get_time(void)
 {
@@ -171,7 +172,6 @@ uint32_t platform_get_time(void)
     time_ms = (uint32_t)now.tv_sec * 1000 + (uint32_t)now.tv_nsec / 1000000;
     return time_ms;
 }
-#endif
 //@}
 
 int main(void)
