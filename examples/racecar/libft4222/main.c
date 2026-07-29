@@ -190,10 +190,23 @@ int main(int argc, char **argv)
     /* Setup UART */
     setup();
 
+#if (ASSETS == USE_FLASH)
+    printf("Ensure device Flash is programmed with image in \"assets\" directory.\n");
+#elif (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
     if (argc > 1)
     {
         assets = argv[1];
     }
+    else
+    {
+#if (ASSETS == USE_FLASHIMAGE)
+        printf("USAGE: The path to the flash images must be passed as a parameter.\n");
+#else // (ASSETS == USE_FILES)
+        printf("USAGE: The path to the assets must be passed as a parameter.\n");
+#endif
+        exit(-1);
+    }
+#endif
 
     /* Start example code */
     eve_example(assets);

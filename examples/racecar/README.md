@@ -56,7 +56,7 @@ Setup of the flash file mapping addresses in the program using `flashmap.py` is 
 
 #### Running the Example
 
-The example application must be passed a command line argument telling it where the flash image file `.bin` file is located. It will load assets from there at runtime as if they were stored in the EVE device flash. 
+The example application must be passed a command line argument telling it where the flash image file `.bin` file is located. It will load assets from there at runtime as if they were stored in the EVE device flash. The flash images are distributed in the `assets` directory.
 
 ### `USE_C_ARRAYS` 
 
@@ -80,7 +80,7 @@ There is no setup required for this method.
 
 #### Running the Example
 
-The example application must be passed a command line argument telling it where the source files are located. It will load files from there at runtime and write them into the RAM_G. 
+The example application must be passed a command line argument telling it where the source files are located. It will load files from there at runtime and write them into the RAM_G. The source files are distributed in the `assets\source` directory.
 
 ## Platform Support
 

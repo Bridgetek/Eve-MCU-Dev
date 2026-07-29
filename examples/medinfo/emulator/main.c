@@ -182,13 +182,33 @@ uint32_t platform_get_time(void)
     return time_ms;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    char *assets = NULL;
+
     /* Setup UART */
     setup();
 
+#if (ASSETS == USE_FLASH)
+    printf("Ensure device Flash is programmed with image in \"assets\" directory.\n");
+#elif (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
+    if (argc > 1)
+    {
+        assets = argv[1];
+    }
+    else
+    {
+#if (ASSETS == USE_FLASHIMAGE)
+        printf("USAGE: The path to the flash images must be passed as a parameter.\n");
+#else // (ASSETS == USE_FILES)
+        printf("USAGE: The path to the assets must be passed as a parameter.\n");
+#endif
+        exit(-1);
+    }
+#endif
+
     /* Start example code */
-    eve_example();
+    eve_example(assets);
 }
 
 void setup(void)
@@ -196,6 +216,6 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev GymInterval Example for the EVE Emulator\r\n");
+    printf ("Welcome to EVE-MCU-Dev MedInfo Example for the EVE Emulator\r\n");
     printf ("\n");
 }
