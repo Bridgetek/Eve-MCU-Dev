@@ -109,6 +109,17 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 }
 //@}
 
+/** @brief Functions used to get platform time
+ */
+//@{
+uint32_t platform_get_time(void)
+{
+    uint32_t time_ms;
+    time_ms = to_ms_since_boot(get_absolute_time());
+    return time_ms;
+}
+//@}
+
 int main(void)
 {
     /* Setup UART */
@@ -119,13 +130,6 @@ int main(void)
 
     // function never returns
     for (;;) ;
-}
-
-uint32_t platform_get_time(void)
-{
-    uint32_t time_ms;
-    time_ms = to_ms_since_boot(get_absolute_time());
-    return time_ms;
 }
 
 void setup(void)

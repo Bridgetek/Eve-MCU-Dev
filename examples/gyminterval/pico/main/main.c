@@ -106,7 +106,11 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     memcpy(calib, p, sizeof(struct touchscreen_calibration));
     return 0;
 }
+//@}
 
+/** @brief Functions used to get platform time
+ */
+//@{
 uint32_t platform_get_time(void)
 {
     uint32_t time_ms;

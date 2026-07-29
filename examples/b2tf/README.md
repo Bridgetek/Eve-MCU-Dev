@@ -16,6 +16,7 @@ This example supports the following platforms:
 | --- | --- | 
 | [Generic using libFT4222 CMake](libft4222/README.md#command-line-compilation) | [libft4222](libft4222/) | 
 | [Generic using libFT4222 Visual Studio](libft4222/README.md#visual-studio) | [libft4222](libft4222/) | 
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
