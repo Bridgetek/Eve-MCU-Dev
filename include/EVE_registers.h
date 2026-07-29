@@ -183,7 +183,7 @@
 #if IS_EVE_API(1)
     #undef  EVE_USE_CMDB_METHOD
 #else
-    #undef EVE_USE_CMDB_METHOD
+    #define EVE_USE_CMDB_METHOD
 #endif
 
 /* =========================================================================
