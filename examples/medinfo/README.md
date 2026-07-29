@@ -95,6 +95,7 @@ This example supports the following platforms:
 | --- | --- | --- |
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
@@ -148,13 +149,25 @@ void eve_example(const char *assets)
 {
     eve_asset_properties(assets); // Configure asset properties for custom assets used in application
 
-    EVE_Init();                 // Initialise the display
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    EVE_Init();
 
-    eve_calibrate();          // Calibrate the display
+     // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while (1);
+    }
 
-    eve_display_load_assets();   // Load assets into RAM_G
+    // Load assets into RAM_G
+    DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    eve_display_load_assets();   
 
-    eve_display();              // Run Application
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.

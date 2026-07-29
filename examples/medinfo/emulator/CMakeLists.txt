@@ -72,7 +72,7 @@ include_directories(
 add_compile_definitions(USE_EMULATOR=0)
 
 # BY DEFAULT: On emulator use the files in the "assets" directory
-add_compile_definitions(ASSETS=USE_FILES)
+add_compile_definitions(ASSETS=USE_C_ARRAYS)
 
 # Source code for EVE library (targetted at the EVE Emulator)
 add_library(eve_library # EVE library name

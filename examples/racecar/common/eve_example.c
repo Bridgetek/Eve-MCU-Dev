@@ -2101,12 +2101,13 @@ while(1)
         scaledVertex(scale, x * 16, y * 16);
 #else // (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
         // For BT81x when the background image is decoded from a PNG just draw a purple tinged background.
-        EVE_COLOR_RGB(0,0,0); // black
+        EVE_COLOR_RGB(30,30,30); // grey
         EVE_BEGIN(EVE_BEGIN_RECTS);
         scaledVertex(scale, x * 16, y * 16);
         scaledVertex(scale, (x + 800) * 16, (y + 480) * 16);
 #endif // (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
-
+       
+        EVE_BEGIN(EVE_BEGIN_BITMAPS);
         EVE_COLOR_RGB(255,255,255);
         EVE_BITMAP_HANDLE(Bottom_Bar_800x8_asset.Handle);
         EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, SCALE(Bottom_Bar_800x8_asset.Width, scale), SCALE(Bottom_Bar_800x8_asset.CellHeight, scale));
@@ -2351,16 +2352,27 @@ int eve_loadpatch(void)
 #endif
 
 // Application Code begins here
-
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets);   // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
 
-    EVE_Init();                     // Initialise the display
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    EVE_Init();
 
-    eve_calibrate();                // Calibrate the display
+     // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while (1);
+    }
 
-    eve_display_load_assets();      // Load assets into RAM_G
+    // Load assets into RAM_G
+    DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    eve_display_load_assets();   
 
-    eve_display();                  // Run Application
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

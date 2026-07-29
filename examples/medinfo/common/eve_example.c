@@ -998,16 +998,27 @@ void eve_display(void)
 }
 
 // Application Code begins here
-
 void eve_example(const char *assets)
 {
     eve_asset_properties(assets); // Configure asset properties for custom assets used in application
 
-    EVE_Init();                 // Initialise the display
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    EVE_Init();
 
-    eve_calibrate();          // Calibrate the display
+     // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while (1);
+    }
 
-    eve_display_load_assets();   // Load assets into RAM_G
+    // Load assets into RAM_G
+    DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    eve_display_load_assets();   
 
-    eve_display();              // Run Application
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
