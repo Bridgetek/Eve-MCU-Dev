@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.

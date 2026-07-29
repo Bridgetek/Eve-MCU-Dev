@@ -37,7 +37,6 @@
  * ============================================================================
  */
 #include <stdio.h>
-#include <time.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -355,6 +354,7 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
     DEBUG_PRINTF("Loading patch...\n");

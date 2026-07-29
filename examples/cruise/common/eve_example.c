@@ -91,8 +91,6 @@ const uint32_t grnbg = 0x003000;
 const uint32_t blufg = 0x0000ff;
 const uint32_t blubg = 0x000030;
 
-
-
 void eve_display(void)
 {
     int set_speed = 65;

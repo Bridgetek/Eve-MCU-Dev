@@ -52,10 +52,6 @@ uint32_t platform_get_time(void);
 /* Entry point to the example code */
 void eve_example(void);
 
-/* Functions called within the eve_example code */
-uint8_t eve_romfont_width(uint8_t font);
-uint8_t eve_romfont_height(uint8_t font);
-
 #include "touch.h"
 #include "controls/arcs.h"
 #include "controls/fonts.h"

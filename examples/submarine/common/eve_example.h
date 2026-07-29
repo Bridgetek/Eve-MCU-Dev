@@ -1,6 +1,6 @@
 /**
     @file eve_example.h
- **/
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -48,21 +48,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/**
- @brief Definitions of handles for custom fonts and bitmaps.
- */
-//@{
-#define FONT_CUSTOM 8
-#define BITMAP_BRIDGETEK_LOGO 7
-//@}
-
-/* Globals available within the eve_example code */
-extern uint32_t eve_img_bridgetek_logo_width;
-extern uint32_t eve_img_bridgetek_logo_height;
-
-/* Functions called within the eve_example code */
-uint8_t eve_romfont_width(uint8_t font);
-uint8_t eve_romfont_height(uint8_t font);
 
 /* Entry point to the example code */
 void eve_example(void);

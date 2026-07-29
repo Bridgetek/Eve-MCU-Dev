@@ -1,6 +1,6 @@
 /**
     @file eve_example.h
- **/
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -50,7 +50,6 @@ extern "C" {
  @brief Definitions of handles for custom fonts and bitmaps.
  */
 //@{
-#define FONT_CUSTOM 8
 #define BITMAP_BRIDGETEK_LOGO 7
 #define BITMAP_SKETCH 6
 //@}

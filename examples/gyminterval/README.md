@@ -81,13 +81,23 @@ The example contains a common directory with several files which comprises all t
 In the function `eve_example` the basic format is as follows:
 
 ```
-void eve_example(const char *assets)
+void eve_example(void)
 {
-    EVE_Init();                 // Initialise the display
+    // Initialise the display
+    DEBUG_PRINTF("Initialising EVE...\n");
+    EVE_Init();
 
-    eve_calibrate();          // Calibrate the display
+    // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_PRINTF("Exception...\n");
+        while(1);
+    }
 
-    eve_display();              // Run Application
+    // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();
 }
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.

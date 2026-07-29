@@ -55,14 +55,29 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(void)
 {
-    uint32_t font_end;
     // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
+
+    DEBUG_PRINTF("Loading patch...\n");
+    if (eve_loadpatch())
+    {
+        DEBUG_PRINTF("Failed to load patch file...\n");
+        exit(-1);
+    }
+
     // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
     eve_calibrate();
+
+    // Load backup image
+    DEBUG_PRINTF("Loading image...\n");
+    eve_load_image(lake_wanaka, lake_wanaka_size, 0, HND_BACKUP);
+
     // Start example code
+    DEBUG_PRINTF("Starting demo:\n");
     eve_display();
- }
+}
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
