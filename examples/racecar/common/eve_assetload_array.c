@@ -142,7 +142,7 @@ void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
         if (filetype == 0x89504e47)
         {
             // Array holds a PNG file
-            asset->Format = EVE_FORMAT_ARGB1555;
+            asset->Format = EVE_FORMAT_ARGB4;
             DEBUG_PRINTF("PNG file\n");
         }
         else if (filetype == 0xffd8ff0e)

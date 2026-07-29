@@ -708,9 +708,8 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
     uint16_t gauge_radius = radius;
     uint8_t line_width = 2; // this is the width of the thickest line drawn on the rev bar, and is used in the scissor and positioning variables (must be at least 2)
     uint16_t thickness = radius - gauge_thickness;
-    uint16_t underline_thickness = (line_width * 2);
     uint16_t underline_offset = (line_width * 3);
-    uint16_t number_offset = (thickness - underline_offset - underline_thickness) - 20; //can adjust this 20 value here based on a font metric block read
+    uint16_t number_offset = (thickness - underline_offset - line_width) - 20; //can adjust this 20 value here based on a font metric block read
 
     //angle vairbles 
     //ensure these are within limits
@@ -767,8 +766,8 @@ void revCounter(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t radiu
         // use a blend to make the line red after here
         if(angle - 5 == redline_start)
             EVE_COLOR_RGB(255,0,0);
-        line_start_x = CIRC_X_DEG((thickness - line_width) * 8 + 8, angle);
-        line_start_y = CIRC_Y_DEG((thickness - line_width) * 8 + 8, angle);
+        line_start_x = CIRC_X_DEG((thickness - underline_offset) * 8 + 8, angle);
+        line_start_y = CIRC_Y_DEG((thickness - underline_offset) * 8 + 8, angle);
         scaledVertex(scale, ((input_x + gauge_circle_x) * 8) - line_start_x, ((input_y + gauge_circle_y) * 8) + line_start_y); 
     }
     EVE_END();
@@ -2360,7 +2359,7 @@ void eve_example(const char *assets)
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
-     // Calibrate the display
+    // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
