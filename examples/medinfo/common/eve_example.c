@@ -1000,19 +1000,20 @@ void eve_display(void)
 // Application Code begins here
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
-
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
-     // Calibrate the display
+    // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
         DEBUG_PRINTF("Exception...\n");
         while (1);
     }
+
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);
 
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");

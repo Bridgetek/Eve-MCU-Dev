@@ -147,19 +147,20 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
-
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
-     // Calibrate the display
+    // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
         DEBUG_PRINTF("Exception...\n");
         while (1);
     }
+
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);
 
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");
@@ -169,6 +170,7 @@ void eve_example(const char *assets)
     DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
+
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
