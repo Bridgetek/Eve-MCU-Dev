@@ -387,9 +387,6 @@ void scaledTranslate(uint32_t scale, int16_t x, int16_t y)
 
 void tractionCircle(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t array_end, uint16_t count, const int16_t *acc_x, const int16_t *acc_y) {
  
-    //total width 90, height 90
-    //----------------------------------------
- 
     //save graphics context
     EVE_SAVE_CONTEXT();
  
@@ -589,9 +586,6 @@ void shiftLight(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t value)
 
 void cornerIndicator(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t corner_number, uint8_t corner_direction, uint8_t data_font, EVE_ASSET_PROPS *image){
 
-    //total width 110, height 110
-    //----------------------------------------
-
     //save graphics context
     EVE_SAVE_CONTEXT();
 
@@ -646,8 +640,6 @@ void cornerIndicator(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t c
 
 void trackMap(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t angle, EVE_ASSET_PROPS *image){
 
-    //total width 110, height 110
-    //----------------------------------------
     uint16_t size = MAX(image->Width, image->CellHeight);
 
     //save graphics context
@@ -912,9 +904,6 @@ void speedWidget(uint32_t scale, uint16_t input_x, uint16_t input_y, uint8_t img
 
 void drsIcon(uint32_t scale, uint16_t input_x, uint16_t input_y, uint8_t data_font, uint8_t value){
 
-    //total width 60, height 40
-    //----------------------------------------
-
     //save graphics context
     EVE_SAVE_CONTEXT();
 
@@ -923,13 +912,13 @@ void drsIcon(uint32_t scale, uint16_t input_x, uint16_t input_y, uint8_t data_fo
     EVE_COLOR_RGB(0,0,0); //black
 
     //set pixel precision format that we want to use
-    EVE_VERTEX_FORMAT(4);
-
+    EVE_VERTEX_FORMAT(3);
+   
     //draw background box
     EVE_BEGIN(EVE_BEGIN_RECTS);
     scaledLineWidth(scale, 80); //5
-    scaledVertex(scale, (input_x + 5) * 16, (input_y + 5) * 16);
-    scaledVertex(scale, (input_x + 55) * 16, (input_y + 35) * 16);
+    scaledVertex(scale, (input_x + 5) * 8, (input_y + 5) * 8);
+    scaledVertex(scale, (input_x + 55) * 8, (input_y + 35) * 8);
     
     //reset color and alpha
     EVE_COLOR_A(255);
@@ -949,30 +938,30 @@ void drsIcon(uint32_t scale, uint16_t input_x, uint16_t input_y, uint8_t data_fo
     //add to alpha buffer
     //outline outer edge
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    scaledVertex(scale, (input_x + 5) * 16, (input_y + 5) * 16);
-    scaledVertex(scale, (input_x + 55) * 16, (input_y + 35) * 16);
+    scaledVertex(scale, (input_x + 5) * 8, (input_y + 5) * 8);
+    scaledVertex(scale, (input_x + 55) * 8, (input_y + 35) * 8);
     //erase from alpha buffer
     //outline inner edge
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-    scaledVertex(scale, (input_x + 6) * 16, (input_y + 6) * 16);
-    scaledVertex(scale, (input_x + 54) * 16, (input_y + 34) * 16);
+    scaledVertex(scale, (input_x + 6) * 8, (input_y + 6) * 8);
+    scaledVertex(scale, (input_x + 54) * 8, (input_y + 34) * 8);
 
     //re-enable colours
     EVE_COLOR_MASK(1,1,1,0);
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE);
     EVE_BEGIN(EVE_BEGIN_RECTS); // Visit every pixel on the screen
-    scaledVertex(scale, input_x * 16, input_y * 16);
-    scaledVertex(scale, (input_x + 55) * 16, (input_y + 35) * 16);
+    scaledVertex(scale, input_x * 8, input_y * 8);
+    scaledVertex(scale, (input_x + 55) * 8, (input_y + 35) * 8);
 
     //stop blending
     EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-
+     
     //colour in the icon if DRS is active
     if (value == 1){
         EVE_COLOR_RGB(0,175,0); //green
         EVE_BEGIN(EVE_BEGIN_RECTS);
-        scaledVertex(scale, (input_x + 6) * 16, (input_y + 6) * 16);
-        scaledVertex(scale, (input_x + 54) * 16, (input_y + 34) * 16);
+        scaledVertex(scale, (input_x + 6) * 8, (input_y + 6) * 8);
+        scaledVertex(scale, (input_x + 54) * 8, (input_y + 34) * 8);
     }
 
     //set text colour
@@ -1020,9 +1009,6 @@ void verticalBarGauge(uint32_t scale, int16_t input_x, int16_t input_y, uint32_t
         value = 100;
     if (value < 0)
         value = 0;
-
-    //total width 50, height 100
-    //----------------------------------------
 
     //save graphics context
     EVE_SAVE_CONTEXT();
@@ -1310,9 +1296,6 @@ void arc_point_gauge(uint32_t scale, int16_t arc_centerx, int16_t arc_centery, u
 
 void elevationWidget(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t label_font, uint8_t max, uint8_t min, uint8_t value){
 
-    //total width 90, height 90
-    //----------------------------------------
-
     //save graphics context
     EVE_SAVE_CONTEXT();
     scaledTranslate(scale, input_x * 16, input_y * 16);
@@ -1362,9 +1345,6 @@ void elevationWidget(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t l
 }
 
 void tyreTemps(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t img_handle, uint8_t cold_threshold, uint8_t hot_threshold, uint8_t left_front, uint8_t left_rear, uint8_t right_front, uint8_t right_rear){
-
-    //total width 200, height 90
-    //----------------------------------------
 
     //save graphics context
     EVE_SAVE_CONTEXT();
@@ -1749,9 +1729,6 @@ void lapAndSectorTimes(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t
     // Calculate final remaining milliseconds
     uint16_t milliseconds = remaining_ms_after_minutes % 1000;
 
-    //total width 200, height 90
-    //----------------------------------------
-
     //--------------------------------------------------------------------------------------------------------
     // Draw background and fill shapes
     //--------------------------------------------------------------------------------------------------------
@@ -1879,9 +1856,6 @@ void lapAndSectorTimes(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t
 }
 
 void batteryIndicator(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t img_handle, uint32_t color, uint8_t value){
-
-    //total width 160, height 90
-    //----------------------------------------
 
     //save graphics context
     EVE_SAVE_CONTEXT();
@@ -2358,13 +2332,13 @@ int eve_loadpatch(void)
 
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);   // Configure asset properties for custom assets used in application
 
-    EVE_Init();                 // Initialise the display
+    EVE_Init();                     // Initialise the display
 
-    eve_calibrate();          // Calibrate the display
+    eve_calibrate();                // Calibrate the display
 
-    eve_display_load_assets();   // Load assets into RAM_G
+    eve_display_load_assets();      // Load assets into RAM_G
 
-    eve_display();              // Run Application
+    eve_display();                  // Run Application
 }

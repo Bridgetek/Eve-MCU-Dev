@@ -13,23 +13,74 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\eve\ports\eve_bt82x</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c">
       <Filter>Library\eve\ports\eve_emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\controls\arcs.c">
-      <Filter>Example\snippets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\snippets\controls\sound.c">
-      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\controls\fonts.c">
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
       <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_array.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_file.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_flash.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve3.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve4.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve5.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_helper.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\patch_textscale.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\arrows_96x192_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Battery_Cells_40x1440_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Bottom_Bar_800x8_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Car_Overhead_44x80_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Carbon_Fiber_800x480_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\LED_32x32_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\patch_textscale_BIN.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\trackmap_96x96_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_Gear_152x152_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_RPM_152x56_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_Speed_104x56_PNG.c">
+      <Filter>Assets\c_array_assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,20 +117,17 @@
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\sound.h">
-      <Filter>Example\snippets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\arcs.h">
-      <Filter>Example\snippets</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_registers.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\patch_textscale.h">
+      <Filter>Example</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,5 +164,43 @@
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{8cc1eb5d-e568-4ac4-a2b5-f35048bddedc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{b3de22f9-3d1b-465c-baba-a2cd3bb051ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\eve3">
+      <UniqueIdentifier>{915afceb-8066-4a4d-8bc2-5a9d8bc282e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\c_array_assets">
+      <UniqueIdentifier>{6f2db187-508b-41b5-b392-39fe8ab693d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\eve4">
+      <UniqueIdentifier>{c7807988-10b3-4753-bdae-d62758645940}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\eve5">
+      <UniqueIdentifier>{c5613388-d8a5-4f81-a578-25bb945d59f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\eve3\flash-815-default.bin">
+      <Filter>Assets\eve3</Filter>
+    </None>
+    <None Include="..\..\assets\eve3\flash-815-default.map">
+      <Filter>Assets\eve3</Filter>
+    </None>
+    <None Include="..\..\assets\eve4\flash-817-default.bin">
+      <Filter>Assets\eve4</Filter>
+    </None>
+    <None Include="..\..\assets\eve4\flash-817-default.map">
+      <Filter>Assets\eve4</Filter>
+    </None>
+    <None Include="..\..\assets\eve5\flash-820-default.bin">
+      <Filter>Assets\eve5</Filter>
+    </None>
+    <None Include="..\..\assets\eve5\flash-820-default.map">
+      <Filter>Assets\eve5</Filter>
+    </None>
+    <None Include="..\..\assets\flashmap.py">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
 </Project>

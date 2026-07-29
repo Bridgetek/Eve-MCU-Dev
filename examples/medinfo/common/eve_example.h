@@ -81,6 +81,12 @@ void eve_example(const char *assets);
 #include <stdio.h>
 #endif
 
+#if defined(USE_EMULATOR)
+#if ASSETS != USE_C_ARRAYS
+#error Emulation in this example currently only supports USE_C_ARRAYS for the ASSETS macro
+#endif
+#endif
+
 #if defined(ARDUINO)
 #if defined(ARDUINO_ARCH_AVR)
 #if ASSETS == USE_C_ARRAYS

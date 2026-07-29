@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>gyminterval</RootNamespace>
-    <ProjectName>gyminterval</ProjectName>
+    <RootNamespace>medinfo</RootNamespace>
+    <ProjectName>medinfo</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,15 +108,37 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
-    <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
-    <ClCompile Include="..\..\..\snippets\controls\sound.c" />
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\widgets\dialogs.c" />
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\bad.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\ecg_heart.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\good.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\lock.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\lock_open_right.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\off_on.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\patch_medinfo2.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\pause_circle.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\play_circle.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\sick.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\silence.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\volume_down.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\volume_off.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\volume_up.c" />
+    <ClCompile Include="..\..\common\eve_assetload_array.c" />
+    <ClCompile Include="..\..\common\eve_assetload_file.c" />
+    <ClCompile Include="..\..\common\eve_assetload_flash.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
+    <ClCompile Include="..\..\common\eve_graph_extension.c" />
+    <ClCompile Include="..\..\common\eve_graph_vertexes.c" />
+    <ClCompile Include="..\..\common\eve_tracedata.c" />
+    <ClCompile Include="..\..\common\patch_medinfo.c" />
     <ClCompile Include="..\main.c" />
   </ItemGroup>
   <ItemGroup>
@@ -126,15 +148,39 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h" />
-    <ClInclude Include="..\..\..\snippets\controls\sound.h" />
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
+    <ClInclude Include="..\..\..\snippets\widgets\dialogs.h" />
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
+    <ClInclude Include="..\..\common\patch_medinfo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\flash-820-default.bin" />
+    <None Include="..\..\assets\flash-820-default.map" />
+    <None Include="..\..\assets\flashmap.py" />
+    <None Include="..\..\assets\source\eurostile_150_L8.raw" />
+    <None Include="..\..\assets\source\patch_medinfo2.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\assets\source\bad.png" />
+    <Image Include="..\..\assets\source\ecg_heart.png" />
+    <Image Include="..\..\assets\source\good.png" />
+    <Image Include="..\..\assets\source\lock.png" />
+    <Image Include="..\..\assets\source\lock_open_right.png" />
+    <Image Include="..\..\assets\source\off_on.png" />
+    <Image Include="..\..\assets\source\pause_circle.png" />
+    <Image Include="..\..\assets\source\play_circle.png" />
+    <Image Include="..\..\assets\source\sick.png" />
+    <Image Include="..\..\assets\source\silence.png" />
+    <Image Include="..\..\assets\source\volume_down.png" />
+    <Image Include="..\..\assets\source\volume_off.png" />
+    <Image Include="..\..\assets\source\volume_up.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

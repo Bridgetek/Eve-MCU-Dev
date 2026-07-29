@@ -48,8 +48,9 @@
 #include <sys/time.h>
 #endif
 
-#include <EVE.h>
 typedef struct timespec platform_time_t;
+
+#include <EVE.h>
 
 #include "eve_example.h"
 
@@ -119,6 +120,9 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 }
 //@}
 
+/** @brief Functions used to get platform time
+ */
+//@{
 #ifdef _MSC_VER
 // Code only needed for Windows MSVC compilations
 // This will make a glock_gettime function similar enough to POSIX.

@@ -70,7 +70,7 @@ void eve_example(const char *assets);
 
 // Choose the methods for storing assets
 #ifndef ASSETS
-#define ASSETS USE_FLASHIMAGE
+#define ASSETS USE_C_ARRAYS
 #endif
 
 // Validate asset storage method is appropriate
@@ -79,6 +79,12 @@ void eve_example(const char *assets);
 // If the target platform does not support stdio 
 // then this line will result in a compilation error
 #include <stdio.h>
+#endif
+
+#if defined(USE_EMULATOR)
+#if ASSETS != USE_C_ARRAYS
+#error Emulation in this example currently only supports USE_C_ARRAYS for the ASSETS macro
+#endif
 #endif
 
 /* Array containing the bitmap sizes of ROM fonts. */
