@@ -52,10 +52,10 @@
  @param y y position for the center of the arc.
  @param r0 radius value of inner part of the arc.
  @param r1 radius value of outer part of the arc.
- @param a0 degrees clockwise from the bottom of the circle where 
-                      we want the arc to start.
- @param a1 degrees clockwise from the bottom of the circle where 
-                    we want the arc to end.
+ @param a0 angle clockwise from the bottom of the circle where 
+                      we want the arc to start (in furmans).
+ @param a1 angle clockwise from the bottom of the circle where 
+                    we want the arc to end (in furmans).
  */
 void arc_simple(int16_t x, int16_t y, 
     uint16_t r0, uint16_t r1,
@@ -72,10 +72,10 @@ void arc_simple(int16_t x, int16_t y,
  @param y y position for the center of the arc.
  @param r0 radius value of inner part of the arc.
  @param r1 radius value of outer part of the arc.
- @param a0 degrees clockwise from the bottom of the circle where 
-                      we want the arc to start.
- @param a1 degrees clockwise from the bottom of the circle where 
-                    we want the arc to end.
+ @param a0 angle clockwise from the bottom of the circle where 
+                      we want the arc to start (in furmans).
+ @param a1 angle clockwise from the bottom of the circle where 
+                    we want the arc to end (in furmans).
  @param user_value position of indicator on the arc.
  */
 void arc_simple_gauge(int16_t x, int16_t y, 

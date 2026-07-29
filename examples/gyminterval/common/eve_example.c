@@ -342,7 +342,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         timer--;
                         if ((timer < 4) && (timer > 0))
                         {
-                            playClick();
+                            sound_click();
                         }
 
                         if ((timer == 0) || (skip == 1))
@@ -356,7 +356,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                 if (skip == 0)
                                 {
                                     msg_text = "Interval Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_chimes(NOTE_C3);
                                 }
                             }
                             else if (cycle > 0)
@@ -369,7 +369,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                     rest_max = cycle_rest_count;
 
                                     msg_text = "Cycle Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_chimes(NOTE_C3);
                                 }
                                 else
                                 {
@@ -377,7 +377,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                     rest_max = cycle_rest_count;
 
                                     msg_text = "Workout Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_chimes(NOTE_C3);
                                 }
                             }
                             if (skip == 1)
@@ -396,11 +396,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                     rest--;
                     if ((rest < 4) && (rest > 0))
                     {
-                        playPip(NOTE_C3);
+                        sound_pip(NOTE_C3);
                     }
                     else if (rest == 0)
                     {
-                        playBell(NOTE_C3);
+                        sound_bell(NOTE_C3);
                     }
 
                     if (skip == 1)
@@ -1006,7 +1006,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 else if (key == key_go)
                 {
                     // Start!
-                    playBell(NOTE_C3);
+                    sound_bell(NOTE_C3);
                     break;
                 }
             }
@@ -1044,13 +1044,13 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                     (dial_pos == dial_prev + 1))
                 {
                     adjust = +step;
-                    playClick();
+                    sound_click();
                 }
                 else if (((dial_pos == units - 1) && (dial_prev == 0)) ||
                     (dial_pos == dial_prev - 1))
                 {
                     adjust = -step;
-                    playClick();
+                    sound_click();
                 }
                 dial_prev = dial_pos;
 

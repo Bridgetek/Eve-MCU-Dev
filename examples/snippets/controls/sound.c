@@ -43,7 +43,7 @@
 
 #include "sound.h"
 
-void enableSound(void)
+void sound_enable(void)
 { 
 #if IS_EVE_API(1)
     uint8_t regGpio;
@@ -140,7 +140,7 @@ void enableSound(void)
 #endif
 }
 
-int checkRegPlay(void)
+int sound_is_playing(void)
 {
 #if IS_EVE_API(1,2,3,4)
 	uint8_t play; 
@@ -155,7 +155,7 @@ int checkRegPlay(void)
 return play;
 } 
 
-void playSound(uint8_t sound, uint8_t note)
+void sound_play(uint8_t sound, uint8_t note)
 {
 #if IS_EVE_API(1,2,3,4)
 	// set synthesizer to note
@@ -170,7 +170,7 @@ void playSound(uint8_t sound, uint8_t note)
 #endif
 } 
 
-void playMute(void)
+void sound_mute(void)
 {
 #if IS_EVE_API(1,2,3,4)
 	// set synthesizer to note
@@ -185,27 +185,27 @@ void playMute(void)
 #endif
 } 
 
-void playClick(void) 
+void sound_click(void) 
 {
-    playSound(SOUND_CLICK, 0);
+    sound_play(SOUND_CLICK, 0);
 }
  
-void playChimes(uint8_t note) 
+void sound_chimes(uint8_t note) 
 {
-    playSound(SOUND_CHIMES, note);
+    sound_play(SOUND_CHIMES, note);
 }
  
-void playBell(uint8_t note)
+void sound_bell(uint8_t note)
 {
-    playSound(SOUND_BELL, note);
+    sound_play(SOUND_BELL, note);
 }
  
-void playPip(uint8_t note)
+void sound_pip(uint8_t note)
 {
-    playSound(SOUND_1PIP, note);
+    sound_play(SOUND_1PIP, note);
 }
  
-void playClack(void)
+void sound_clack(void)
 {
-    playSound(SOUND_CLACK, 0);
+    sound_play(SOUND_CLACK, 0);
 }

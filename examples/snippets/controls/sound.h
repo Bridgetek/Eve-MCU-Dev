@@ -189,14 +189,14 @@
 #define NOTE_B7 107 // B7 3951.1
 #define NOTE_C8 108 // C8 4186.0
 
-void enableSound(void);
-int checkRegPlay();
-void playSound(uint8_t sound, uint8_t note);
-void playMute(void);
-void playClick(void);
-void playChimes(uint8_t note);
-void playBell(uint8_t note);
-void playPip(uint8_t note);
-void playClack(void);
+void sound_enable(void);
+int sound_is_playing();
+void sound_play(uint8_t sound, uint8_t note);
+void sound_mute(void);
+void sound_click(void);
+void sound_chimes(uint8_t note);
+void sound_bell(uint8_t note);
+void sound_pip(uint8_t note);
+void sound_clack(void);
 
 #endif // EVE_SOUNDS_H

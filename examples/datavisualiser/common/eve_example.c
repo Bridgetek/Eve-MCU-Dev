@@ -2122,7 +2122,7 @@ void checkTouchStatus(void)
         settings = !settings;
 
         // play click sound
-        playClick(); 
+        sound_click(); 
         // set boolen for sound playback
         sound_played = true;
     }
@@ -2138,7 +2138,7 @@ void checkTouchStatus(void)
         settings_menu_item_2_press = !settings_menu_item_2_press;
 
         // play click sound
-        playClick();
+        sound_click();
         // set boolean for sound playback
         sound_played = true;
     }
@@ -2154,7 +2154,7 @@ void checkTouchStatus(void)
         settings_menu_item_1_press = !settings_menu_item_1_press;
 
         // play click sound
-        playClick();
+        sound_click();
         // set boolean for sound playback
         sound_played = true;
     }
@@ -2187,7 +2187,7 @@ void checkTouchStatus(void)
         demoMode = !demoMode;
 
         // play click sound
-        playClick();
+        sound_click();
         // set boolen for sound playback
         sound_played = true;
     }
@@ -2204,7 +2204,7 @@ void checkTouchStatus(void)
         demoMode = !demoMode;
 
         // play click sound
-        playClick();
+        sound_click();
         // set boolen for sound playback
         sound_played = true;
     }
@@ -2253,10 +2253,10 @@ void checkTouchStatus(void)
     if(sound_played){
         // wait until the sound has finished playing
         // we can do this here as we are only using short non-continious sounds in this example
-        while (checkRegPlay() !=0);
+        while (sound_is_playing() !=0);
 
         // Set synthesizer to mute
-        playMute();
+        sound_mute();
         
         // reset sound played boolean
         sound_played = !sound_played;
@@ -2435,7 +2435,7 @@ void eve_example(void)
 
     // Enable audio amplifier
     DEBUG_PRINTF("Enabling audio amplifier...\n");
-    enableSound();
+    sound_enable();
 
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");

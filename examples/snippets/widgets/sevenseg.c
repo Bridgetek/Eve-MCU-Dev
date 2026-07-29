@@ -49,7 +49,7 @@
  * fgcolor - colour of on/highlighted segment
  * bgcolor - colour of off segment
 */
-void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
+void sevensegment(int16_t x, int16_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
 {
 #if IS_EVE_API(2, 3, 4, 5)
     const int32_t vertex = 4;
