@@ -48,6 +48,8 @@
 #include <sys/time.h>
 #endif
 
+typedef struct timespec platform_time_t;
+
 #include <EVE.h>
 
 #include "eve_example.h"
@@ -120,13 +122,12 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 /** @brief Functions used to get platform time
  */
+//@{
 #ifdef _MSC_VER
 // Code only needed for Windows MSVC compilations
 // This will make a glock_gettime function similar enough to POSIX.
 #include <windows.h>
 #include <winnt.h>
-
-typedef struct timespec platform_time_t;
 
 #define CLOCK_MONOTONIC 0
 #define MS_PER_SEC      1000ULL     // MS = milliseconds
@@ -145,10 +146,10 @@ static int clock_gettime(int clockname, struct timespec* tv)
 
     (void)clockname;
 
-    if (!ticksPerSec.QuadPart)
+    if (!ticksPerSec.QuadPart) 
     {
         QueryPerformanceFrequency(&ticksPerSec);
-        if (!ticksPerSec.QuadPart)
+        if (!ticksPerSec.QuadPart) 
         {
             errno = ENOTSUP;
             return -1;
@@ -164,11 +165,23 @@ static int clock_gettime(int clockname, struct timespec* tv)
 }
 #endif
 
+static void get_platform_time(platform_time_t *tm)
+{
+    clock_gettime(CLOCK_MONOTONIC, tm);
+}
+
+static uint32_t diff_platform_time(platform_time_t *start, platform_time_t *end)
+{
+    uint32_t diff;
+    diff = (uint32_t)((end->tv_sec - start->tv_sec) * 1000 + (end->tv_nsec - start->tv_nsec) / 1000000);
+    return diff;
+}
+
 uint32_t platform_get_time(void)
 {
     uint32_t time_ms;
     platform_time_t now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
+    get_platform_time(&now);
     time_ms = (uint32_t)now.tv_sec * 1000 + (uint32_t)now.tv_nsec / 1000000;
     return time_ms;
 }

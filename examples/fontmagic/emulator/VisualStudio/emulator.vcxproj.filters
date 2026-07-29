@@ -10,9 +10,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_images.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_fonts.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -26,6 +23,9 @@
       <Filter>Library\eve\ports\eve_emulator</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\controls\fonts.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,6 +69,9 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -104,5 +107,13 @@
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{33e043e0-0991-493b-bcfd-31293a48c021}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{ac72695d-8281-4cb3-b4ad-5bfb481153a3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\Roboto-BoldCondensed_32_L4.raw">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
 </Project>

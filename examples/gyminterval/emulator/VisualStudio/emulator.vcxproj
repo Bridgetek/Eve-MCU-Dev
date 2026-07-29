@@ -113,6 +113,7 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
     <ClCompile Include="..\..\..\snippets\controls\sound.c" />
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
@@ -128,6 +129,7 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
     <ClInclude Include="..\..\..\snippets\controls\fonts.h" />
     <ClInclude Include="..\..\..\snippets\controls\sound.h" />
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />

@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>simple</RootNamespace>
-    <ProjectName>simple</ProjectName>
+    <RootNamespace>fontmagic</RootNamespace>
+    <ProjectName>fontmagic</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -112,10 +112,10 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
+    <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\common\eve_fonts.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
-    <ClCompile Include="..\..\common\eve_images.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main.c" />
@@ -129,10 +129,14 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
+    <ClInclude Include="..\..\..\snippets\controls\fonts.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\Roboto-BoldCondensed_32_L4.raw" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
