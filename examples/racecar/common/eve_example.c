@@ -105,6 +105,13 @@ void eve_display_load_assets(void)
     uint32_t last = 0;
     uint8_t AssetHandle = 0;
 
+#if IS_EVE_API(4)
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_APILEVEL(2);
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+#endif
+
 #if ASSETS == USE_FLASH
     eve_flash_full_speed();
 #endif
@@ -2107,11 +2114,11 @@ while(1)
 
         // Draw background image 
         //----------------------------------------------------------------
+#if (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         // We want to darken this image slightly, so we use a COLOR_RGB command here to do this.
         // Only draw if the background image is ASTC
         EVE_COLOR_RGB(150,150,225); // slight purple tint
-#if (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
         // Draw the background image if it can be drawn.
         EVE_BITMAP_HANDLE(Carbon_Fiber_800x480_asset.Handle);
         EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, SCALE(Carbon_Fiber_800x480_asset.Width, scale), SCALE(Carbon_Fiber_800x480_asset.CellHeight, scale));
@@ -2120,6 +2127,7 @@ while(1)
         scaledVertex(scale, x * 16, y * 16);
 #else // (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
         // For BT81x when the background image is decoded from a PNG just draw a purple tinged background.
+        EVE_COLOR_RGB(0,0,0); // black
         EVE_BEGIN(EVE_BEGIN_RECTS);
         scaledVertex(scale, x * 16, y * 16);
         scaledVertex(scale, (x + 800) * 16, (y + 480) * 16);
@@ -2184,6 +2192,10 @@ while(1)
         // Draw rev counter
         revCounter(scale, x + 10, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
 
+        EVE_LIB_EndCoProList();
+        if (EVE_LIB_AwaitCoProEmpty()) break;
+        EVE_LIB_BeginCoProList();
+
         // Draw RPM widget and colour when we hit redline
         if(RPM[count] > redline)
             rpmWidget(scale, x + 152, y + 300, Widget_RPM_152x56_asset.Handle, data_font_large, units_font, "RPM", 0xFF0000, RPM[count]);
@@ -2201,6 +2213,10 @@ while(1)
 
         // Draw throttle pos
         verticalBarGauge(scale, x + 495, y + 240, 0x00CC00, data_font_small, units_font, "Throttle", throttle[count]);
+
+        EVE_LIB_EndCoProList();
+        if (EVE_LIB_AwaitCoProEmpty()) break;
+        EVE_LIB_BeginCoProList();
 
         // Draw brake
         verticalBarGauge(scale, x + 570, y + 240, 0xFF0000, data_font_small, units_font, "Brake", (brake[count]) * 100);
@@ -2228,16 +2244,22 @@ while(1)
         if(battery_level < 21)
             batteryIndicator(scale, x + 690, y + 380, Battery_Cells_40x1440_asset.Handle, 0xEE0000, battery_level); //colour red
 
+        EVE_LIB_EndCoProList();
+        if (EVE_LIB_AwaitCoProEmpty()) break;
+        EVE_LIB_BeginCoProList();
+
         EVE_CMD_LOADIDENTITY();
         EVE_CMD_SETMATRIX();
         //print FPS and screen update info on screen
         scaledText(scale, x + 0, y + 0, label_font_small, EVE_OPT_FORMAT, "%d FPS", FPS);
         scaledText(scale, x + 800, y + 0, label_font_small, EVE_OPT_FORMAT | EVE_OPT_RIGHTX, "%d DL/sec", DLPS);
-
+        
         // Send display to EVE
+        EVE_DISPLAY();
         EVE_DISPLAY();
         EVE_CMD_SWAP();
         EVE_LIB_EndCoProList();
+        if (EVE_LIB_AwaitCoProEmpty()) break;
 
         // Perform some logic for screen updates
         //----------------------------------------------------------------

@@ -164,10 +164,9 @@
 /** @brief Co-processor error/report buffer (EVE3+).
  *  Called EVE_RAM_ERR_REPORT on EVE3/4; EVE_RAM_REPORT on EVE5. */
 #if IS_EVE_API(3,4)
-#define EVE_RAM_ERR_REPORT      0x309800ul
+#define EVE_COPROC_REPORT       0x309800ul
 #endif
 #if IS_EVE_API(5)
-#define EVE_RAM_REPORT          0x00309800ul
 #define EVE_COPROC_REPORT       0x7f004800ul
 #endif
 
@@ -184,7 +183,7 @@
 #if IS_EVE_API(1)
     #undef  EVE_USE_CMDB_METHOD
 #else
-    #define EVE_USE_CMDB_METHOD
+    #undef EVE_USE_CMDB_METHOD
 #endif
 
 /* =========================================================================

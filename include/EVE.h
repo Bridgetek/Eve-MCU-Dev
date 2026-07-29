@@ -354,7 +354,7 @@ int EVE_LIB_AwaitCoProEmpty(void);
  */
 uint32_t EVE_LIB_GetResult(int offset);
 
-#if IS_EVE_API(5)
+#if IS_EVE_API(3,4,5)
 /**
  @brief EVE API: Get co-processor exception description
  @details Will query the co-processor exception description to a string.

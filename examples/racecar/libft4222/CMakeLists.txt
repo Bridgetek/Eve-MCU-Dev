@@ -165,8 +165,6 @@ add_library(eve_example # Example code library name
 # Example code assets
 # Add all C files, the EVE generation macro selects the correct data
 file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
-        "${EXAMPLE_ASSETS}/eve5/*.c" 
-        "${EXAMPLE_ASSETS}/eve34/*.c"
         "${EXAMPLE_ASSETS}/c_array_assets/*.c")
 target_sources(eve_example PRIVATE
         ${EVE_ASSET_LIST})

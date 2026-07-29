@@ -340,7 +340,7 @@ uint32_t EVE_LIB_GetResult(int offset)
     return HAL_MemRead32(EVE_RAM_CMD + CmdBufPointer);
 }
 
-#if IS_EVE_API(5)
+#if IS_EVE_API(3,4,5)
 // Obtain the co-processor exception description (up-to 128 characters)
 void EVE_LIB_GetCoProException(char* desc)
 {

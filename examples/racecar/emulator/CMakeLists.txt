@@ -57,6 +57,7 @@ ENDIF(MODULE_TYPE)
 # Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
+set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
@@ -145,8 +146,6 @@ add_library(eve_example # Example code library name
 # Example code assets
 # Add all C files, the EVE generation macro selects the correct data
 file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 
-        "${EXAMPLE_ASSETS}/eve5/*.c" 
-        "${EXAMPLE_ASSETS}/eve34/*.c"
         "${EXAMPLE_ASSETS}/c_array_assets/*.c")
 target_sources(eve_example PRIVATE
         ${EVE_ASSET_LIST})

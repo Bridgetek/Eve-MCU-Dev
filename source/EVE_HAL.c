@@ -622,17 +622,17 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
     if(readCmdPointer & 1)
     {
         // Return 0xFF if an error occurred
-        #if DEBUG_LEVEL > 0
-        #if IS_EVE_API(5)
+#if DEBUG_LEVEL > 0
+#if IS_EVE_API(3,4,5)
         char message[256];
 
         memset(message, 0, sizeof(message));
         EVE_LIB_GetCoProException(message);
         DEBUG_ERROR("Co-processor exception: %s\n", message);
-        #else // IS_EVE_API(5)
+#else // IS_EVE_API(5)
         DEBUG_ERROR("Co-processor exception\n");
-        #endif // IS_EVE_API(5)
-        #endif // DEBUG_LEVEL
+#endif // IS_EVE_API(5)
+#endif // DEBUG_LEVEL
         
         return 0xFF;
     }

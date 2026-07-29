@@ -68,7 +68,7 @@ void eve_example(const char *assets);
 // (Convert to EVE assets as required)
 #define USE_FILES 4
 
-// Choose the methods for storing assets
+// Choose the methods for storing assets (check setting in CMakeLists.txt or build file)
 #ifndef ASSETS
 #define ASSETS USE_FLASHIMAGE
 #endif
