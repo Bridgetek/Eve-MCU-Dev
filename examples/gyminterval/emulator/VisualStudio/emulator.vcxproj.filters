@@ -31,6 +31,9 @@
     <ClCompile Include="..\..\..\snippets\controls\fonts.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
@@ -79,6 +82,9 @@
       <Filter>Library\eve\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>

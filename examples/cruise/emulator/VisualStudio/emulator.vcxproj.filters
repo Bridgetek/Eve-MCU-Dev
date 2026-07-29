@@ -10,12 +10,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\eve\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_images.c">
-      <Filter>Example</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\eve_fonts.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -26,6 +20,12 @@
       <Filter>Library\eve\ports\eve_emulator</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_helper.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\eve\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
