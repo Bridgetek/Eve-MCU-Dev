@@ -110,10 +110,7 @@ The minimum screen size supported is 800x480 pixels. The display will scale for 
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system. 
 - **platform_get_time** get the system time elapsed since start in milliseconds.
 
 The example program in the common code is then called.
@@ -126,13 +123,13 @@ The example contains a common directory with several files which comprises all t
 | --- | --- |
 | [README.md](README.md) | This file |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [common/eve_assetload_array.c](common/eve_assetload_array.c) | Load assets from C arrays - used in `USE_C_ARRAYS` |
 | [common/eve_assetload_file.c](common/eve_assetload_file.c) | Load assets from files - used in `USE_FILES` |
 | [common/eve_assetload_flash.c](common/eve_assetload_flash.c) | Load assets from flash or flash image file - used in `USE_FLASH` and `USE_FLASHIMAGE` |
 | [common/eve_assetload_flash_eve5.c](common/eve_assetload_flash_eve5.c) | Flash mapping addresses for BT82x |
 | [common/eve_assetload_flash_eve4.c](common/eve_assetload_flash_eve4.c) | Flash mapping addresses for BT817/8 |
 | [common/eve_assetload_flash_eve3.c](common/eve_assetload_flash_eve3.c) | Flash mapping addresses for BT815/6 |
+| [snippets/maths/trig_furman.c](../snippets/maths/trig_furman.c) | Trigonometric (Furman) macros and routines |
 | [docs](docs) | Documentation support files |
 | [assets](assets) | Directory for storage of assets |
 | [assets/eve5](assets/eve5) | Directory for storage of encoded ASTC compressed images for BT82x |
@@ -148,19 +145,12 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
-
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
 
-     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
-    if (eve_calibrate() != 0)
-    {
-        DEBUG_PRINTF("Exception...\n");
-        while (1);
-    }
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets); 
 
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");
@@ -173,17 +163,9 @@ void eve_example(const char *assets)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
-
 Following this the `eve_asset_properties()` function is called to configure specific properties for each asset (size, height, witdth, format, etc), which are then used in the `eve_display_load_assets()` funciton to load the assets into RAM_G fo use in the applciation.
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
-
-### `touch.c`
-
-This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
-
-The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
 ### `eve_helper.c`
 

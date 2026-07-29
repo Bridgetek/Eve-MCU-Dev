@@ -42,8 +42,6 @@
 
 #include <stdint.h>
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -79,12 +77,6 @@ void eve_example(const char *assets);
 // If the target platform does not support stdio 
 // then this line will result in a compilation error
 #include <stdio.h>
-#endif
-
-#if defined(USE_EMULATOR)
-#if ASSETS != USE_C_ARRAYS
-#error Emulation in this example currently only supports USE_C_ARRAYS for the ASSETS macro
-#endif
 #endif
 
 /* Array containing the bitmap sizes of ROM fonts. */
@@ -136,7 +128,6 @@ int eve_loadpatch_impl(void);
 void eve_flash_full_speed(void);
 #endif
 
-#include "touch.h"
 #include "maths/trig_furman.h"
 
 #ifdef __cplusplus

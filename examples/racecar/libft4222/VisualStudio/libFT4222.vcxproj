@@ -193,7 +193,6 @@
     <ClCompile Include="..\..\common\eve_assetload_flash_eve3.c" />
     <ClCompile Include="..\..\common\eve_assetload_flash_eve4.c" />
     <ClCompile Include="..\..\common\eve_assetload_flash_eve5.c" />
-    <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
@@ -210,7 +209,6 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
-    <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />

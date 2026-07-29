@@ -157,9 +157,8 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_assetload_flash_eve5.c
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
-        ${EXAMPLE_SNIPPETS}/touch.c
-        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_COMMON}/patch_textscale.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
 )
 
 # Example code assets

@@ -59,56 +59,14 @@
 #include <EVE.h>
 
 #include "eve_example.h"
-#include "touch.h"
 
 /* CONSTANTS ***********************************************************************/
-
-/**
- * @brief Location in flash to store touchscreen configuration.
- */
-#define FLASH_OFFSET_CONFIG (256 * 1024)
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-#if (PICO_FLASH_SIZE_BYTES < FLASH_OFFSET_CONFIG + FLASH_SECTOR_SIZE)
-#error Configuration written above top of flash
-#endif
-    // Data to write to flash must be aligned to a flash page
-    uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE);
-    uint32_t ints = save_and_disable_interrupts();
-
-    memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, sizeof(struct touchscreen_calibration));
-
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
-
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, sizeof(struct touchscreen_calibration));
-    return 0;
-}
-//@}
 
 /** @brief Functions used to get platform time
  */

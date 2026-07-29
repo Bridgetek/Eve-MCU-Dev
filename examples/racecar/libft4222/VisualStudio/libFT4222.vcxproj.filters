@@ -76,9 +76,6 @@
     <ClCompile Include="..\..\common\patch_textscale.c">
       <Filter>Example\Patch</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example\Snippets</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
       <Filter>Example\Snippets</Filter>
     </ClCompile>
@@ -107,9 +104,6 @@
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Example\Snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example\Snippets</Filter>
