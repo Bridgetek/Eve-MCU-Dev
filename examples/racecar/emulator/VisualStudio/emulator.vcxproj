@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36C68550-640E-4CC5-B5A5-4F6909B40CEC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>gyminterval</RootNamespace>
-    <ProjectName>gyminterval</ProjectName>
+    <RootNamespace>racecar</RootNamespace>
+    <ProjectName>racecar</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,15 +108,32 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
-    <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
-    <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
-    <ClCompile Include="..\..\..\snippets\controls\sound.c" />
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\arrows_96x192_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Battery_Cells_40x1440_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Bottom_Bar_800x8_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Carbon_Fiber_800x480_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Car_Overhead_44x80_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\LED_32x32_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\patch_textscale_BIN.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\trackmap_96x96_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_Gear_152x152_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_RPM_152x56_PNG.c" />
+    <ClCompile Include="..\..\assets\c_array_assets\Widget_Speed_104x56_PNG.c" />
+    <ClCompile Include="..\..\common\eve_assetload_array.c" />
+    <ClCompile Include="..\..\common\eve_assetload_file.c" />
+    <ClCompile Include="..\..\common\eve_assetload_flash.c" />
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve3.c" />
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve4.c" />
+    <ClCompile Include="..\..\common\eve_assetload_flash_eve5.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
+    <ClCompile Include="..\..\common\eve_helper.c" />
+    <ClCompile Include="..\..\common\patch_textscale.c" />
     <ClCompile Include="..\main.c" />
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +142,7 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
-    <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h" />
-    <ClInclude Include="..\..\..\snippets\controls\sound.h" />
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
@@ -135,6 +150,16 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
+    <ClInclude Include="..\..\common\patch_textscale.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\eve3\flash-815-default.bin" />
+    <None Include="..\..\assets\eve3\flash-815-default.map" />
+    <None Include="..\..\assets\eve4\flash-817-default.bin" />
+    <None Include="..\..\assets\eve4\flash-817-default.map" />
+    <None Include="..\..\assets\eve5\flash-820-default.bin" />
+    <None Include="..\..\assets\eve5\flash-820-default.map" />
+    <None Include="..\..\assets\flashmap.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

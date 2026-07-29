@@ -13,23 +13,89 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\eve\ports\eve_bt82x</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c">
       <Filter>Library\eve\ports\eve_emulator</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\controls\arcs.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\controls\sound.c">
-      <Filter>Example\snippets</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\controls\fonts.c">
+    <ClCompile Include="..\..\common\eve_assetload_array.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_file.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_assetload_flash.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_graph_extension.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_graph_vertexes.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\eve_tracedata.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\patch_medinfo.c">
+      <Filter>Example</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\dialogs.c">
       <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\bad.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\ecg_heart.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\good.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\lock.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\lock_open_right.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\off_on.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\patch_medinfo2.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\pause_circle.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\play_circle.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\sick.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\silence.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_down.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_off.c">
+      <Filter>Assets\C_Array_Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\assets\c_array_assets\volume_up.c">
+      <Filter>Assets\C_Array_Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,9 +132,6 @@
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\sound.h">
-      <Filter>Example\snippets</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\snippets\controls\arcs.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
@@ -78,7 +141,16 @@
     <ClInclude Include="..\..\..\..\include\EVE_registers.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+    <ClInclude Include="..\..\common\patch_medinfo.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\dialogs.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,5 +188,72 @@
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{8cc1eb5d-e568-4ac4-a2b5-f35048bddedc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{f3206ddd-fcb5-4663-8381-28cfe4fd3900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Source">
+      <UniqueIdentifier>{7359b0d0-665d-41e1-ad27-129dfa85e797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\C_Array_Assets">
+      <UniqueIdentifier>{9f8fafa3-ee7c-4e71-ada9-ff039006db7c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\flash-820-default.bin">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="..\..\assets\flash-820-default.map">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="..\..\assets\flashmap.py">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="..\..\assets\source\eurostile_150_L8.raw">
+      <Filter>Assets\Source</Filter>
+    </None>
+    <None Include="..\..\assets\source\patch_medinfo2.bin">
+      <Filter>Assets\Source</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\assets\source\bad.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\ecg_heart.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\good.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\lock.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\lock_open_right.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\off_on.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\pause_circle.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\play_circle.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\sick.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\silence.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\volume_down.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\volume_off.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
+    <Image Include="..\..\assets\source\volume_up.png">
+      <Filter>Assets\Source</Filter>
+    </Image>
   </ItemGroup>
 </Project>
