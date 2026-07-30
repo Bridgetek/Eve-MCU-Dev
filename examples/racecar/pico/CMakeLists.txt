@@ -107,7 +107,6 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
         ${EXAMPLE_COMMON}
-	${EXAMPLE_SNIPPETS}/maths
 )
 
 # Tell EVE library to use RP2040 as base class

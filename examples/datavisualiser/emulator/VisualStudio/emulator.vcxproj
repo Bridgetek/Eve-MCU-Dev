@@ -43,11 +43,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\release\libftd2xx;..\..\..\..\source;..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\eve_bt82x;..\..\..\..\include;..\..\common;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -64,16 +68,12 @@
       <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
+
+copy /Y ..\..\..\..\ports\eve_emulator\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+
+copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-
-copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configuration)\zlib.dll</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -86,7 +86,7 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_EMULATOR=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_EMULATOR=0;DEBUG_LEVEL=0;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,16 +96,12 @@ copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configu
       <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
+
+copy /Y ..\..\..\..\ports\eve_emulator\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+
+copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>copy ..\..\..\..\ports\eve_emulator\bt8xxemu.dll $(SolutionDir)$(Platform)\$(Configuration)\bt8xxemu.dll
-
-copy ..\..\..\..\ports\eve_emulator\mx25lemu.dll $(SolutionDir)$(Platform)\$(Configuration)\mx25lemu.dll
-
-copy ..\..\..\..\ports\eve_emulator\zlib.dll $(SolutionDir)$(Platform)\$(Configuration)\zlib.dll</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c" />
