@@ -68,6 +68,24 @@ void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
+/** @brief Portable version of fopen/fopen_s
+ */
+FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
+
 /** @brief Functions used to get platform time
  */
 //@{
