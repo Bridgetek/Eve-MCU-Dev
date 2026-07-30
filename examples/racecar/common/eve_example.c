@@ -2225,10 +2225,6 @@ while(1)
         if(battery_level < 21)
             batteryIndicator(scale, x + 690, y + 380, Battery_Cells_40x1440_asset.Handle, 0xEE0000, battery_level); //colour red
 
-        EVE_LIB_EndCoProList();
-        if (EVE_LIB_AwaitCoProEmpty()) break;
-        EVE_LIB_BeginCoProList();
-
         EVE_CMD_LOADIDENTITY();
         EVE_CMD_SETMATRIX();
         // print FPS and screen update info on screen
