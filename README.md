@@ -4,6 +4,19 @@ This library allows a variety of hardware to communicate with FT8xx and BT8xx gr
 
 This library is intended to provide a **C** library for embedded designs.
 
+There are multiple generations of EVE devices, these are referred by their API (and for some devices their SUB API) number from the following table:
+
+| Device | API | SUB API |
+| --- | --- | --- |
+| FT800, FT801 | 1 | N/A |
+| FT810, FT811, FT812, FT813 | 2 | 1 |
+| BT880, BT881, BT882, BT883 | 2 | 2 |
+| BT815, BT816 | 3 | N/A |
+| BT817, BT818 | 4 | N/A |
+| BT820 | 5 | N/A |
+
+The library is compiled for the API (and where applicable the SUB API) during compilation. The API cannot be selected at runtime.
+
 ## Contents
 
 - [Overview](#overview)
@@ -73,22 +86,11 @@ This code can be used on a wide range of MCUs. Key requirements for compatible M
 - GPIO line or controllable Chip Select signal for device control
 - GPIO line for Power Down control
 
-The code is designed with SPI master routines which can read/write *at a minimum* a single byte at a time and have manual control over chip select. 
-
-Chip select control is required to meet the EVE SPI protocol. 
+The code is designed with SPI host routines which can read/write *at a minimum* a single byte at a time for EVE API 1 to 4; and a 32-bit word for EVE 5. All SPI host interfaces must have program control over chip select or a similar mechanism, such as a GPIO, to control the chip select line to the EVE device to conform with the EVE SPI protocol. 
 
 Some of the provided ports require source code modification if the MCU uses a SPI API library which sends a complete buffer of bytes (such as via a DMA transfer) with automatic chip select control. This is out of the scope of this document and sample code. Most MCUs can however be programmed at a level which interacts directly with the SPI hardware registers and GPIO for chip select. 
 
 This library includes several example projects containing an example framework and sample main application for the following MCUs. However, the code can be ported to other MCUs.
-
-There are 5 levels of API coinciding with each generation of EVE device and one generation has a SUB API version to allow for hardware differences:
-
-- EVE API 1: FT800, FT801
-- EVE API 2 - SUB API 1: FT810, FT811, FT812, FT813
-- EVE API 2 - SUB API 2: BT880, BT881, BT882, BT883
-- EVE API 3: BT815, BT816
-- EVE API 4: BT817, BT818
-- EVE API 5: BT820
 
 ## Software Layers
 
@@ -134,7 +136,7 @@ The examples directory contains all the examples provided. There are more detail
 
 ### Device and Panel Selection
 
-The library __must__ be built for the correct EVE device and panel type. The target EVE device and panel type are defined in the file [include/EVE_config.h](include/EVE_config.h).
+The library __must__ be compiled for the correct EVE device and panel type. The target EVE device and panel type are defined in the file [include/EVE_config.h](include/EVE_config.h).
 
 It is recommended that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
 
@@ -157,7 +159,7 @@ The `PANEL_TYPE` macro is not used in the library, however it is optionally used
 
 The following options are supported in [include/EVE_config.h](include/EVE_config.h):
 
-- `FT8XX_TYPE` The EVE device type. The following devices are supported:
+- `FT8XX_TYPE` The EVE device type. The following device type are supported as macros:
   - FT800 
   - FT801 
   - FT810 
@@ -369,7 +371,7 @@ These cables have wire-ends colour coded as follows.
 
 ## Library Usage
 
-This callable layer is implemented in `EVE_API.c` and is called by the main loop of the application. 
+This callable layer is implemented in `EVE.h` and `EVE_API.c` and is called by the main loop of the application. 
 
 Its purpose is to allow the program to use the same syntax as the EVE Programmers Guide when writing to the co-processor and so make programming of the display simpler and more easily maintained. 
 
@@ -400,9 +402,13 @@ Puts Chip Select low and sends the starting address of the RAM_CMD location wher
 
 Brings Chip Select high to end the burst and ensures that the co-processor will execute the newly added commands.
 
-`void EVE_LIB_AwaitCoProEmpty(void)`
+`int EVE_LIB_AwaitCoProEmpty(void)`
 
 Waits for the completion of the current commands sent to the co-processor.
+
+`uint16_t EVE_LIB_GetCoProSpace(void)`
+
+Returns the sapce remaining for further commands to be sent to the co-processor.
 
 ### Creating screens and executing commands
 
@@ -431,6 +437,10 @@ And followed by:
 ```
 A call to `EVE_LIB_AwaitCoProEmpty()` is implied in the call to `EVE_LIB_BeginCoProList()`. Therefore it is not necessary to wait at the end of the co-processor
 list for the completion of the commands allowing program to perform other tasks not related to programming the EVE device.
+
+The `EVE_LIB_AwaitCoProEmpty()` function will return zero if the co-processor commands have run successfully. If there was an error with a co-processor command or data used by the co-processor then an exception can be raised which will require the application to handle. The Programming Guide for each generation details the actions required when this occurs. See the section called "Coprocessor Faults" or "Fault Scenarios". 
+
+On EVE API 3, 4 and 5 there is a text message generated by the co-processor with a brief description of the fault. This message can be obtained with the `EVE_LIB_GetCoProException()` function.
 
 #### Simple Co-Processor List
 
@@ -508,6 +518,16 @@ The above sequence will create the same set of commands in RAM_DL as the code be
   // (commands executed)
 ```
 The usage is fundamentally the same as the library and examples described in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) and BRT_AN_014 (FT81X Simple PIC Library Examples) and so these can be used as a reference when using this library. 
+
+The API function `EVE_LIB_GetCoProSpace()` can be used to check if there is sufficient space available in the co-processor for further commands to be sent. The command will not stop and restart the co-processor lists as in the example above but will pause the SPI transfer to perform a register read before resuming another transfer.
+
+#### Profiling the Co-processor List
+
+Setting the `EVE_COPROC_PROFILE` macro will enable code that can count the number of bytes sent to the co-processor. This is useful to find out the size of each co-processor list.
+
+It is initilised using `EVE_LIB_BeginCoProProfile()` at the beginning of a list to measure. The call to `EVE_LIB_GetCoProProfile()` will return the number of bytes written since the list profiling was initialised.
+
+This feature can be used in conjunction with `EVE_LIB_GetCoProSpace()` to predict the size of the co-processor fullness.
 
 #### Limitations in RAM_DL and RAM_CMD
 
