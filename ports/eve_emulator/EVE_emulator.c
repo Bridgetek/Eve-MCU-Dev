@@ -55,12 +55,7 @@
 #include <sys/stat.h>
 
 /* EVE MCU HEADER */
-
-#if defined(__linux__) || defined(__CYGWIN__)
-// Linux endianness (not BSD variants)
-#include <endian.h>
-#include <unistd.h>
-#elif defined(_WIN32)
+#if defined(_WIN32)
 // Windows endianness is little endian
 #include <windows.h>
 #else
@@ -139,7 +134,6 @@ int MCU_Init(void)
     printf("\n");
     printf(BT8XXEMU_version());
     printf("\n\n");
-
 
 // Set emulator type from EVE_conig.h EVE type setting
 #if (FT8XX_TYPE == FT800)
@@ -287,7 +281,6 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-
     //NOTE: called in EVE_API.c after MCU_PDlow(), which reults in the emulator instance being restarted.
 
     /*
