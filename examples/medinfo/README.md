@@ -147,6 +147,9 @@ In the function `eve_example` the basic format is as follows:
 ```
 void eve_example(const char *assets)
 {
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);
+    
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
@@ -159,9 +162,6 @@ void eve_example(const char *assets)
         while (1);
     }
 
-    // Configure asset properties for custom assets used in application
-    eve_asset_properties(assets);
-
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");
     eve_display_load_assets();   
@@ -170,13 +170,14 @@ void eve_example(const char *assets)
     DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
-
 ```
+The `eve_asset_properties()` function is intially called to configure specific properties for each asset (size, height, witdth, format, etc) used in the applciaiton.
+
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
 Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
-Following this the `eve_asset_properties()` function is called to configure specific properties for each asset (size, height, witdth, format, etc), which are then used in the `eve_display_load_assets()` funciton to load the assets into RAM_G fo use in the applciation.
+Following this the `eve_display_load_assets()` funciton is called to load the assets into RAM_G for use in the applciation, using the asset properties conigured by `eve_asset_properties()`.
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 

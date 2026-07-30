@@ -2359,12 +2359,12 @@ int eve_loadpatch(void)
 // Application Code begins here
 void eve_example(const char *assets)
 {
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets); 
+    
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
     EVE_Init();
-
-    // Configure asset properties for custom assets used in application
-    eve_asset_properties(assets); 
 
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");
