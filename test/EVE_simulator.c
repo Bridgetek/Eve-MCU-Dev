@@ -98,10 +98,10 @@ char const *get_register()
     else if (address == EVE_REG_CPURESET) return "REG_CPURESET";
     else if (address == EVE_REG_CMD_READ) return "REG_CMD_READ";
     else if (address == EVE_REG_CMD_WRITE) return "REG_CMD_WRITE";
-#ifdef EVE_USE_CMDB_METHOD
+#if defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_CMDB_SPACE) return "REG_CMDB_SPACE";
     else if (address == EVE_REG_CMDB_WRITE) return "REG_CMDB_WRITE";
-#endif
+#endif // defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_PCLK_POL) return "REG_PCLK_POL";
     else if (address == EVE_REG_FREQUENCY) return "REG_FREQUENCY";
 #if IS_EVE_API(1,2,3,4)
@@ -161,12 +161,12 @@ uint32_t get_response()
     {
         response = 0x00;
     }
-#ifdef EVE_USE_CMDB_METHOD
+#if defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_CMDB_SPACE)
     {
         response = EVE_RAM_CMD_SIZE - 4;
     }
-#endif
+#endif // defined(EVE_USE_CMDB_METHOD)
 #if IS_EVE_API(5)
     else if (address == EVE_REG_BOOT_STATUS)
     {

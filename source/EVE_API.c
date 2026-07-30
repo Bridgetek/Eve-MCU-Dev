@@ -151,10 +151,13 @@ int EVE_Init(void)
     // set synthesizer to mute
     HAL_MemWrite16(EVE_REG_SOUND, 0x6000);
 
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
     HAL_MemWrite32(EVE_REG_CMD_READ, 0);
     HAL_ResetCmdPointer();
     HAL_WriteCmdPointer();
+#endif
+#if defined(EVE_COPROC_PROFILE)
+    HAL_ResetProfilePointer();
 #endif
 
 #elif IS_EVE_API(5) 
@@ -298,7 +301,7 @@ void EVE_LIB_BeginCoProList(void)
     // Begins SPI transaction
     HAL_ChipSelect(1);
 
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
     // Send address for writing as the next free location in the co-pro buffer
     HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
 #else
@@ -313,9 +316,8 @@ void EVE_LIB_EndCoProList(void)
     // End SPI transaction
     HAL_ChipSelect(0);
     // Update the ring buffer pointer to start decode
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
     HAL_WriteCmdPointer();
-
 #endif
 }
 
@@ -325,6 +327,51 @@ int EVE_LIB_AwaitCoProEmpty(void)
     // Await completion of processing
     return HAL_WaitCmdFifoEmpty();
 }
+
+// Gets the free space in the co-processor list
+uint16_t EVE_LIB_GetCoProSpace(void)
+{
+    // End SPI transaction
+    HAL_ChipSelect(0);
+
+    uint32_t readCmdPointer = HAL_CheckCmdFreeSpace();
+
+    // Begins SPI transaction
+    HAL_ChipSelect(1);
+
+#if !defined(EVE_USE_CMDB_METHOD)
+    // Send address for writing as the next free location in the co-pro buffer
+    HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
+#else
+    // Send address for writing
+    HAL_SetWriteAddress(EVE_REG_CMDB_WRITE);
+#endif
+    return readCmdPointer;
+}
+
+// Starts profiling a co-processor list
+#if defined(EVE_COPROC_PROFILE)
+void EVE_LIB_BeginCoProProfile(void)
+{
+    HAL_ResetProfilePointer();
+}
+#endif
+
+// Gets the current size of the co-processor list
+#if defined(EVE_COPROC_PROFILE)
+uint16_t EVE_LIB_GetCoProProfile(void)
+{
+    return HAL_GetProfilePointer();
+}
+#endif
+
+// Gets the current size of the display list
+#if defined(EVE_COPROC_PROFILE)
+uint16_t EVE_LIB_GetDlProfile(void)
+{
+    return HAL_MemRead32(EVE_REG_CMD_DL); 
+}
+#endif
 
 // Gets a result from the command buffer
 uint32_t EVE_LIB_GetResult(int offset)
@@ -511,7 +558,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
         HAL_ChipSelect(1);
 
         // to the next location in the FIFO
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
         HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
 #else
         HAL_SetWriteAddress(EVE_REG_CMDB_WRITE);
@@ -526,7 +573,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize)
         // Calculate where end of data lies
         // Note ChunkSize limited to HAL_MAX_CHUNK_SIZE
         HAL_IncCmdPointer((uint16_t)ChunkSize);
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
         HAL_WriteCmdPointer();
 #endif
 

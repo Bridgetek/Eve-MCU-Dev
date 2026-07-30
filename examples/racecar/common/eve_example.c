@@ -2072,6 +2072,11 @@ void eve_display(void)
     uint16_t redline = 11500;
     uint16_t count = 0;
 
+#if defined(EVE_COPROC_PROFILE)
+    // Profiling high water mark for co-processor
+    uint16_t profile = 0;
+#endif
+
     // Configure background images
     // Some images we will use in every screen update, we will configure these here
     // Other images will be configured as they are needed
@@ -2083,6 +2088,9 @@ void eve_display(void)
 
 while(1)
     {
+#if defined(EVE_COPROC_PROFILE)
+        EVE_LIB_BeginCoProProfile();
+#endif
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
@@ -2170,12 +2178,14 @@ while(1)
                 trackMap(scale, x + 675, y + 15, corner_angle[upcomming_corner-1], &Trackmap_96x96_asset);
         }
 
+        // Wait until there is space to add the rev counter code to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
+
         // Draw rev counter
         revCounter(scale, x + 10, y + 73, 427, 35, 115, 130, (redline/100), rev_font, (RPM[count]/100));     
 
-        EVE_LIB_EndCoProList();
-        if (EVE_LIB_AwaitCoProEmpty()) break;
-        EVE_LIB_BeginCoProList();
+        // Wait until there is space to add the following widgets to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
 
         // Draw RPM widget and colour when we hit redline
         if(RPM[count] > redline)
@@ -2186,6 +2196,9 @@ while(1)
         // Draw DRS indicator
         drsIcon(scale, x + 370, y + 155, data_font_small, DRS[count]);
 
+        // Wait until there is space to add the following widgets to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
+
         // Draw speed widget
         speedWidget(scale, x + 200, y + 235, Widget_Speed_104x56_asset.Handle, data_font_large, units_font, "km/h", speed[count]);
 
@@ -2195,15 +2208,17 @@ while(1)
         // Draw throttle pos
         verticalBarGauge(scale, x + 495, y + 240, 0x00CC00, data_font_small, units_font, "Throttle", throttle[count]);
 
-        EVE_LIB_EndCoProList();
-        if (EVE_LIB_AwaitCoProEmpty()) break;
-        EVE_LIB_BeginCoProList();
+        // Wait until there is space to add the following widgets to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
 
         // Draw brake
         verticalBarGauge(scale, x + 570, y + 240, 0xFF0000, data_font_small, units_font, "Brake", (brake[count]) * 100);
 
         // Draw elevation
         elevationWidget(scale, x + 25, y + 380, label_font_small, elevation_limits[0], elevation_limits[1], elevation[count]);
+
+        // Wait until there is space to add the following widgets to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
 
         // Print tyre tempratues
         tyreTemps(scale, x + 135, y + 380, Car_Overhead_44x80_asset.Handle, 94, 96, left_front, left_rear, right_front, right_rear);
@@ -2212,6 +2227,9 @@ while(1)
         //Last data point is 40m short of the start finish line, so lets use the last value in the data array instead to get a full circle fill
         sectorWidget(scale, x + 400, y + 425, 40, 10, data_font_med, ((sector_thresholds[0]*360)/distance[array_max-1]), ((sector_thresholds[1]*360)/distance[array_max-1]), current_sector, ((distance[count]*360)/distance[array_max-1]));
             
+        // Wait until there is space to add the following widgets to the co-processor
+        while(EVE_LIB_GetCoProSpace() < 2048);
+
         // Print lap and sector times
         // This function can take a colour to print for sector times delta indication, but as we are only using one lap of data we will send RED for sector 1 and Green for sector 2
         lapAndSectorTimes(scale, x + 465, y + 380, data_font_large, label_font_med, 0xFF0000, 0x00BB00, sector_times[0], sector_times[1], laptime_msec[count]);
@@ -2238,6 +2256,9 @@ while(1)
         EVE_LIB_EndCoProList();
         if (EVE_LIB_AwaitCoProEmpty()) break;
 
+#if defined(EVE_COPROC_PROFILE)
+        profile = MAX(EVE_LIB_GetCoProProfile(), profile);
+#endif
         // Perform some logic for screen updates
         //----------------------------------------------------------------
         count ++;
@@ -2331,6 +2352,9 @@ while(1)
             //update varible for current data updates/sec
             DLPS = DLCount;
             DLCount = 0;
+#if defined(EVE_COPROC_PROFILE)
+            DEBUG_PRINTF("CoPro: %d DL: %d ", profile, EVE_LIB_GetDlProfile());
+#endif
             DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, DLPS);
         } 
     }

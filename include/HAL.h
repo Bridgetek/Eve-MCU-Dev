@@ -104,6 +104,7 @@ void HAL_IncCmdPointer(uint16_t commandSize);
  */
 uint16_t HAL_GetCmdPointer(void);
 
+#if !defined(EVE_USE_CMDB_METHOD)
 /**
  @brief Reset the current command memory write pointer
  @details Sets the current command memory write pointer to zero
@@ -111,7 +112,9 @@ uint16_t HAL_GetCmdPointer(void);
      REG_CMD_WRITE register.
  */
 void HAL_ResetCmdPointer(void);
+#endif
 
+#if !defined(EVE_USE_CMDB_METHOD)
 /**
  @brief Commits the current command memory write pointer
  @details Stores the internal HAL command memory write pointer to
@@ -119,6 +122,26 @@ void HAL_ResetCmdPointer(void);
      working through items in the display list.
  */
 void HAL_WriteCmdPointer(void);
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+/**
+ @brief Gets the current co-processor list size for profiling
+ @details Returns the current length of the co-processor instruction
+     list. This is reset using HAL_ResetProfilePointer and increments
+     when a command is added using HAL_IncCmdPointer.
+ */
+uint16_t HAL_GetProfilePointer(void);
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+/**
+ @brief Resets current co-processor list profiling size
+ @details This will set the current length of the co-processor instruction
+     list to zero. Call when a new co-processor list is started.
+ */
+void HAL_ResetProfilePointer(void);
+#endif
 
 /**
  @brief Wait for display list to complete

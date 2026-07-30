@@ -78,6 +78,9 @@ add_compile_definitions(ASSETS=USE_FILES)
 # Enable debug logging output to stdio
 add_compile_definitions(DEBUG_LEVEL=1)
 
+# Turn on profiling of co-processor lists
+add_compile_definitions(EVE_COPROC_PROFILE)
+
 # Source code for EVE library (targetted at FT4222)
 add_library(eve_library # EVE library name
         # Source code for EVE library

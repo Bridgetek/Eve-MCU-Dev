@@ -89,10 +89,10 @@
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-void* Emulator;
-void* EmulatorFlash;
-BT8XXEMU_EmulatorParameters* EmulatorParameters;
-BT8XXEMU_FlashParameters* EmulatorFlashParameters;
+static void* Emulator;
+static void* EmulatorFlash;
+static BT8XXEMU_EmulatorParameters* EmulatorParameters;
+static BT8XXEMU_FlashParameters* EmulatorFlashParameters;
 
 static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
 {

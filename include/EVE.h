@@ -346,6 +346,43 @@ void EVE_LIB_EndCoProList(void);
 int EVE_LIB_AwaitCoProEmpty(void);
 
 /**
+ @brief EVE API: Free space in of co-processor list 
+ @details Obtains the free space in the co-processor circular buffer. 
+     This operation may have an effect on the performance of the device.
+ @returns The number of free instructions in the co-processor circular 
+     buffer.
+ */
+uint16_t EVE_LIB_GetCoProSpace(void);
+
+#if defined(EVE_COPROC_PROFILE)
+/**
+ @brief EVE API: Resets the co-processor list profiling length
+ @details Sets the profiling pointer to zero to restart profiling.
+ */
+void EVE_LIB_BeginCoProProfile(void);
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+/**
+ @brief EVE API: Size of co-processor list since last reset
+ @details Obtains the current profiling pointer for the co-processor list.
+ @returns The number of instructions added to the co-processor list since 
+     the last reset of the profiling pointer.
+ */
+uint16_t EVE_LIB_GetCoProProfile(void);
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+/**
+ @brief EVE API: Size of display list
+ @details Obtains the current size of the display list.
+ @returns The number of instructions instructions currently in the display
+     list.
+ */
+uint16_t EVE_LIB_GetDlProfile(void);
+#endif
+
+/**
  @brief EVE API: Returns a result from the co-processor command buffer
  @details Will return a result value from "offset" words back in the command buffer.
  If the value of offset is 1 then the previous value from the co-processor

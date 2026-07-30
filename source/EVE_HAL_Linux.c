@@ -72,7 +72,9 @@
 
 
 // Used to navigate command ring buffer
+#if !defined(EVE_USE_CMDB_METHOD)
 static uint16_t writeCmdPointer = 0x0000;
+#endif // defined(EVE_USE_CMDB_METHOD)
 
 int HAL_EVE_Init(void)
 {
@@ -715,62 +717,102 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
 // --------- Increment co-processor address offset counter --------------------
 void HAL_IncCmdPointer(uint16_t commandSize)
 {
+    (void)commandSize;
+#if !defined(EVE_USE_CMDB_METHOD)
     // Calculate new offset
-    writeCmdPointer = (writeCmdPointer + commandSize) & (EVE_RAM_CMD_SIZE   - 1);
+    writeCmdPointer = (writeCmdPointer + commandSize) & (EVE_RAM_CMD_SIZE - 1);
     dbg_printf("%s is now 0x%x\n", __FUNCTION__, writeCmdPointer);
+#endif // defined(EVE_USE_CMDB_METHOD)
+
+#if defined(EVE_COPROC_PROFILE)
+    profileCmdPointer += commandSize;
+#endif // defined(EVE_COPROC_PROFILE)
 }
 
 // --------- Increment co-processor address offset counter --------------------
 uint16_t HAL_GetCmdPointer(void)
 {
+    // Return new offset
+#if defined(EVE_USE_CMDB_METHOD)
+    // If we are using the CMDB method then get the current command pointer
+    uint16_t writeCmdPointer;
+    writeCmdPointer = HAL_MemRead32(EVE_REG_CMD_WRITE) & 0xffff;
+#endif // defined(EVE_USE_CMDB_METHOD)
     dbg_printf("%s 0x%x\n", __FUNCTION__, writeCmdPointer);
     // Return new offset
     return writeCmdPointer;
 }
 
+#if !defined(EVE_USE_CMDB_METHOD)
+void HAL_ResetCmdPointer(void)
+{
+    writeCmdPointer = 0;
+}
+#endif
+
+#if !defined(EVE_USE_CMDB_METHOD)
 void HAL_WriteCmdPointer(void)
 {
     dbg_printf("%s 0x%x\n", __FUNCTION__, writeCmdPointer);
     // and move write pointer to here
     HAL_MemWrite32(EVE_REG_CMD_WRITE, writeCmdPointer);
 }
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+uint16_t HAL_GetProfilePointer(void)
+{
+    return profileCmdPointer;
+}
+#endif
+
+#if defined(EVE_COPROC_PROFILE)
+void HAL_ResetProfilePointer(void)
+{
+    profileCmdPointer = 0;
+}
+#endif
 
 // ------ Wait for co-processor read and write pointers to be equal ------------
 uint8_t HAL_WaitCmdFifoEmpty(void)
 {
     uint32_t readCmdPointer;
 
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
     // Wait until the two registers match
     do
     {
         // Read the graphics processor read pointer
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
+        // Detect an exception
+        if (readCmdPointer & 1) break;
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
-#else
+#else // defined(EVE_USE_CMDB_METHOD)
     // Wait until there is all the potential space free
     do
     {
         // Read the graphics processor read pointer
         readCmdPointer = HAL_MemRead32(EVE_REG_CMDB_SPACE);
-    } while (readCmdPointer != (EVE_RAM_CMD_SIZE - 4));
-    // Check for exceptions
-    writeCmdPointer = readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
-#endif
-    if(readCmdPointer & 1)
+        // Detect an exception
+        if (readCmdPointer & 1) break;
+    } while (readCmdPointer < (EVE_RAM_CMD_SIZE - 4));
+#endif // defined(EVE_USE_CMDB_METHOD)
+
+
+if(readCmdPointer & 1)
     {
         // Return 0xFF if an error occurred
-        #ifdef EVE_HAL_ERROR
-        #if IS_EVE_API(5)
+#ifdef EVE_HAL_ERROR
+#if IS_EVE_API(3,4,5)
         char message[256];
 
         memset(message, 0, sizeof(message));
         EVE_LIB_GetCoProException(message);
         err_printf("Co-processor exception: %s\n", message);
-        #else // IS_EVE_API(5)
+#else // IS_EVE_API(3,4,5)
         err_printf("Co-processor exception\n");
-        #endif // IS_EVE_API(5)
-        #endif // EVE_HAL_ERROR
+#endif // IS_EVE_API(3,4,5)
+#endif // EVE_HAL_ERROR
         
         return 0xFF;
     }
@@ -783,7 +825,7 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
 // ------------ Check how much free space is available in CMD FIFO -------------
 uint16_t HAL_CheckCmdFreeSpace(void)
 {
-#ifndef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD)
     uint32_t readCmdPointer = 0;
     uint16_t Fullness, Freespace;
 
@@ -796,12 +838,12 @@ uint16_t HAL_CheckCmdFreeSpace(void)
     Freespace = (EVE_RAM_CMD_SIZE   - 4) - Fullness;
 
     return Freespace;
-#else
+#else // defined(EVE_USE_CMDB_METHOD)
     uint32_t readCmdSpace;
     readCmdSpace = HAL_MemRead32(EVE_REG_CMDB_SPACE);
 
     return readCmdSpace;
-#endif
+#endif // defined(EVE_USE_CMDB_METHOD)
 }
 
 #endif // __linux__
