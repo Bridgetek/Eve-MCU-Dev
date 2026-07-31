@@ -90,8 +90,8 @@ static const eve_tchar_t* SDCardFolder = NULL;
 static BT8XXEMU_EmulatorParameters* EmulatorParameters = NULL;
 static BT8XXEMU_FlashParameters* EmulatorFlashParameters = NULL;
 
-// helper fucntion for setting path to flash binary images
-static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
+// helper fucntion for setting path to flash binary images in flash emulator parameters
+static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
 {
     eve_tchar_t resolvedPath[260];
     eve_tchar_t* lastSeparator;
@@ -126,7 +126,7 @@ static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const 
         return -1;
     }
 
-    // print ully resolved path
+    // print fully resolved path
     //wprintf(L"Resolved path to flash: \\%ls\n\n", resolvedPath);
 
     // return the result of a copy of the resolved path to the emulator parameters
@@ -135,7 +135,7 @@ static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const 
         resolvedPath) == 0 ? 0 : -1;
 }
 
-// helper fucntion to resolve SD card folder path 
+// helper function to resolve SD card folder path 
 static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
 {
     static eve_tchar_t resolvedPath[260];
@@ -147,9 +147,9 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
         return NULL;
 
     // print path relative to exe
-    wprintf(L"Realative SD folder path from executable: %ls\n", folderPath);
+    wprintf(L"Realative SD card folder path from executable: %ls\n", folderPath);
 
-    /* Resolve relative paths beside the running executable. */
+    // Resolve relative paths beside the running executable.
     pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
     if (!pathLength || pathLength >= _countof(resolvedPath))
         return NULL;
@@ -170,6 +170,10 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
         return NULL;
     }
 
+     // print fully resolved path
+    //wprintf(L"Resolved path to SD card Folder: \\%ls\n\n", resolvedPath);
+
+    // return the resolved path
     return resolvedPath;
 }
 
@@ -250,9 +254,8 @@ int MCU_Init(void)
             // initialize default flash emulator parameters
             BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
 
-            // set the name of the flash binary we want to attach to the emulator
-            // fixed to "__flash.bin" and must be available in the project .exe directory 
-            if (MCU_SetFlashDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_USE_FLASH_FILE) != 0)
+            // set the name and path of the data file we want to load onto the flash
+            if (MCU_SetFlashEmulatorDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_USE_FLASH_FILE) != 0)
             {
                 printf("ERROR: Unable to resolve emulator Flash file path.\n\n");
                 printf("Check that the .bin file exists on the path defined by:\n");
@@ -314,10 +317,10 @@ int MCU_Init(void)
             else{
                 // check if we have defined a size for the SD card folder
                 #if defined(EVE_EMULATOR_SD_FOLDER_SIZE)
-                    // insert the SD card folder to the eumlator 
+                    // insert the SD card folder to the eumlator with (size: EVE_EMULATOR_SD_FOLDER_SIZE)
                     BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false);
                 #else
-                    // insert the SD card folder to the eumlator 
+                    // insert the SD card folder to the eumlator (size: 64MiB)
                     BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, 64 * 1024 * 1024, false);
                 #endif
                 printf("SUCESS: SD card folder sucessfully attached to emulator.\n\n");
@@ -361,10 +364,14 @@ int MCU_Deinit(void)
         free(EmulatorFlashParameters);
         EmulatorFlashParameters = NULL;
     }
-
+ 
     // Release SD folder path
-    SDCardFolder = NULL;
-
+    if (SDCardFolder != NULL)
+    {
+        free(SDCardFolder);
+        SDCardFolder = NULL;
+    }
+ 
     return 0;
 }
 
@@ -396,7 +403,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    //NOTE: called in EVE_API.c after MCU_Init(), which reults in the emulator instance being imemditaly killed.
+    //NOTE: called in EVE_API.c after MCU_Init(), which reults in the emulator instance being immediately killed.
 
     /*
     if (!Emulator)
