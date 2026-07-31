@@ -146,7 +146,7 @@
 
 #elif defined(ARDUINO)
 /* Arduino SPI bus is set to 1 MHz by default */
-   #define MCU_SPI_TIMEOUT 8
+#define MCU_SPI_TIMEOUT 8
 
 #elif defined(USE_EMULATOR)
 #define MCU_SPI_TIMEOUT 8
@@ -159,7 +159,7 @@
  @details Map debug output to nul or to printf function.
  For MCUs this will not normally ever be mapped. 
  On Un*x like systems it may be mapped.
- For PCs with MPSSE or FT4222 interfaces is is probably mapped.
+ For PCs with MPSSE or FT4222 interfaces it is probably mapped.
  The DEBUG_LEVEL macro will override this for MCUs.
  DEBUG_LEVEL 0 for error reports.
  DEBUG_LEVEL 1 for error reports and information.
