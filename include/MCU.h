@@ -159,7 +159,7 @@
  @details Map debug output to nul or to printf function.
  For MCUs this will not normally ever be mapped. 
  On Un*x like systems it may be mapped.
- For PCs with MPSSE or FT4222 interfaces it is probably mapped.
+ For PCs with MPSSE, FT4222 or Emulator interfaces it is probably mapped.
  The DEBUG_LEVEL macro will override this for MCUs.
  DEBUG_LEVEL 0 for error reports.
  DEBUG_LEVEL 1 for error reports and information.
