@@ -203,21 +203,21 @@ int MCU_Init(void)
             continue;
         }
 
-        printf("FT4222 device %u: ", (uint32_t)iDev);
+        DEBUG_PRINTF("FT4222 device %u: ", (uint32_t)iDev);
 
         if( ! strcmp( devInfo.Description, "FT4222 A"))
         {
             if (countSPI == 0)
             {
                 devNumSPI = devInfo.LocId;
-                printf("selected for SPI\n");
-                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
-                printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
-                printf("\t\tDescription: %s\n", devInfo.Description);
+                DEBUG_PRINTF("selected for SPI\n");
+                DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
+                DEBUG_PRINTF("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
+                DEBUG_PRINTF("\t\tDescription: %s\n", devInfo.Description);
             }
             else
             {
-                printf("ignored\n");
+                DEBUG_PRINTF("ignored\n");
             }
             countSPI--;
         }
@@ -227,14 +227,14 @@ int MCU_Init(void)
             if (countGPIO == 0)
             {
                 devNumGPIO = devInfo.LocId;
-                printf("selected for GPIO\n");
-                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
-                printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
-                printf("\t\tDescription: %s\n", devInfo.Description);
+                DEBUG_PRINTF("selected for GPIO\n");
+                DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
+                DEBUG_PRINTF("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
+                DEBUG_PRINTF("\t\tDescription: %s\n", devInfo.Description);
             }
             else
             {
-                printf("ignored\n");
+                DEBUG_PRINTF("ignored\n");
             }
             countGPIO--;
         }

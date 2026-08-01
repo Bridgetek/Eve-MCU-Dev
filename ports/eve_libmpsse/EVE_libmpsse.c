@@ -119,13 +119,13 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     ftStatus = SPI_OpenChannel(channel, &ftHandle);
     if (ftStatus != FT_OK)
     {
-        fprintf(stderr, "Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
+        DEBUG_ERROR("Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
         exit (-2);
     }
     ftStatus = SPI_InitChannel(ftHandle, &channelConf);
     if (ftStatus != FT_OK)
     {
-        fprintf(stderr, "Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
+        DEBUG_ERROR("Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
         exit (-3);
     }
     
@@ -147,24 +147,24 @@ int MCU_Init(void)
         ftStatus = SPI_GetChannelInfo(channel, &devList);
         if (ftStatus != FT_OK)
         {
-            printf("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
+            DEBUG_PRINTF("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
             continue;
         }
 
-        printf("SPI channel %u: ", (uint32_t)channel);
+        DEBUG_PRINTF("SPI channel %u: ", (uint32_t)channel);
         if (channel == USE_MPSSE)
         {
-            printf("selected\n");
+            DEBUG_PRINTF("selected\n");
             /*print the dev info*/
-            printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
-            printf("\t\tSerialNumber: %s\n", devList.SerialNumber);
-            printf("\t\tDescription: %s\n", devList.Description);
+            DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
+            DEBUG_PRINTF("\t\tSerialNumber: %s\n", devList.SerialNumber);
+            DEBUG_PRINTF("\t\tDescription: %s\n", devList.Description);
 
             openChannel = channel;
         }
         else
         {
-            printf("ignored\n");
+            DEBUG_PRINTF("ignored\n");
         }
     }
 
@@ -177,14 +177,14 @@ int MCU_Init(void)
     }
     else
     {
-        fprintf(stderr, "No SPI channels found\n");
+        DEBUG_ERROR("No SPI channels found\n");
         return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        fprintf(stderr, "Setup malloc failed\n");
+        DEBUG_ERROR("Setup malloc failed\n");
         return -1;
     }
     MCU_bufferLen = 0;
@@ -230,7 +230,7 @@ void MCU_transmit_buffer(void)
      if (FT_OK != ftStatus)
      {
          // spi master write failed
-        fprintf(stderr, "MCU_transmit_buffer failed %d\n", (int)ftStatus);
+        DEBUG_ERROR("MCU_transmit_buffer failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
     MCU_bufferLen = 0;
@@ -330,8 +330,8 @@ uint8_t MCU_SPIRead8(void)
     ftStatus = SPI_Read(ftHandle, &DataRead, 1, &transferred, 0);
      if (FT_OK != ftStatus)
      {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead8 failed %d\n", (int)ftStatus);
+        // spi master read failed
+        DEBUG_ERROR("MCU_SPIRead8 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -353,8 +353,8 @@ uint16_t MCU_SPIRead16(void)
     ftStatus = SPI_Read(ftHandle, (UCHAR *)&DataRead, 2, &transferred, 0);
      if (FT_OK != ftStatus)
      {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead16 failed %d\n", (int)ftStatus);
+        // spi master read failed
+        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -382,7 +382,7 @@ uint32_t MCU_SPIRead32(void)
      if (FT_OK != ftStatus)
      {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead32 failed %d\n", (int)ftStatus);
+        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -403,8 +403,8 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     ftStatus = SPI_Read(ftHandle, (UCHAR *)DataToRead, length, &transferred, 0);
      if (FT_OK != ftStatus)
      {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead failed %d\n", (int)ftStatus);
+        // spi master read failed
+        DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 }

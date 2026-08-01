@@ -72,7 +72,6 @@ int HAL_EVE_Init(void)
 {
     if (MCU_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: MCU_Init() non-zero return value.\n");
         return -1;
     }
 

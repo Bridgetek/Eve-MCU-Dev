@@ -80,7 +80,6 @@ int HAL_EVE_Init(void)
 {
     if (Platform_Init() < 0)
     {
-        info_printf("ERROR: Platform_Init() non-zero return value.\n");
         return -1;
     }
 
