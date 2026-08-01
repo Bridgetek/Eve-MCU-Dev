@@ -165,19 +165,25 @@
  DEBUG_LEVEL 1 for error reports and information.
  */
 //@{
-#if defined(DEBUG_LEVEL) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR)
+#if defined(DEBUG_LEVEL) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR))
 #include <stdio.h>
 #define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
-#elif defined(DEBUG_LEVEL) || defined(PLATFORM_ESP32)
+#elif (defined(DEBUG_LEVEL) && defined(PLATFORM_ESP32))
 #include "esp_log.h"
 #define DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
+#elif (defined(DEBUG_LEVEL) && defined(PLATFORM_RP2040))
+// Pico's standard library does not separate stderr on USB/UART connections.
+#include <stdio.h>
+#define DEBUG_ERROR(...) printf("[ERROR] " __VA_ARGS__)
 #else
 #define DEBUG_ERROR(...)
 #endif
-#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) || defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR)
+#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR))
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
-#elif DEBUG_LEVEL > 0 || defined(PLATFORM_ESP32)
+#elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_ESP32))
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
+#elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_RP2040))
+#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINTF(...)
 #endif
