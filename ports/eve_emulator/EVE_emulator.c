@@ -90,7 +90,7 @@ static BT8XXEMU_EmulatorParameters* EmulatorParameters = NULL;
 static BT8XXEMU_FlashParameters* EmulatorFlashParameters = NULL;
 static eve_tchar_t* SDCardFolder = NULL;
 
-// helper fucntion for setting path to flash binary images
+// helper function for setting path to flash binary images
 static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
 {
 #ifdef _WIN32
@@ -295,7 +295,7 @@ int MCU_Init(void)
         return -1;
     }
 
-    // initialize default flash emulator parameters
+    // initialise default flash emulator parameters
     BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
 
     // set the name and path of the data file we want to load onto the flash
@@ -313,7 +313,7 @@ int MCU_Init(void)
 #define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)    // 8 MiB default
 #endif
 
-    // set flash size to EVE_EMULATOR_FLASH_FILE_SIZ
+    // set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
     EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
 
     // Create flash emulator instance
@@ -368,7 +368,7 @@ int MCU_Init(void)
 #ifndef EVE_EMULATOR_SD_FOLDER_SIZE
 #define EVE_EMULATOR_SD_FOLDER_SIZE (64 * 1024 * 1024)
 #endif
-        // insert the SD card folder to the eumlator (fuction returns size of inserted SD folder)
+        // insert the SD card folder to the eumlator (function returns size of inserted SD folder)
         if (BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
         {
             DEBUG_ERROR("ERROR: Unable to attach SD card to emulator.\n\n");
