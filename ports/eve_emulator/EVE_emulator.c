@@ -303,7 +303,7 @@ int MCU_Init(void)
     {
         DEBUG_ERROR("ERROR: Unable to resolve emulator Flash file path.\n\n");
         DEBUG_ERROR("Check that the .bin file exists on the path defined by:\n");
-        DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n");
+        DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n\n");
         MCU_Deinit();
         return -1;
     }
@@ -358,7 +358,7 @@ int MCU_Init(void)
     if (SDCardFolder == NULL) {
         DEBUG_ERROR("ERROR: Unable to resolve emulator SD card folder file path.\n\n");
         DEBUG_ERROR("Check that the folder exists on the path defined by:\n");
-        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\").\n");
+        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\").\n\n");
         MCU_Deinit();
         return -1;
     }
