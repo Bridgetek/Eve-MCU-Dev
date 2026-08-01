@@ -67,6 +67,7 @@ int EVE_Init(void)
 
     if (HAL_EVE_Init() < 0)
     {
+        DEBUG_ERROR("ERROR: HAL_EVE_Init() non-zero return value.\n");
         return -1;
     }
 
