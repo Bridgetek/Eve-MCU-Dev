@@ -69,7 +69,7 @@
 #endif
 #endif
 
-#if defined(USE_EMULATOR)
+#if defined(PLATFORM_EMULATOR)
 // Emulator only supports c arrays and flash
 #if !((ASSETS == USE_C_ARRAYS) || (ASSETS == USE_FLASH))
 #error Emulation in this example currently only supports USE_C_ARRAYS or USE_FLASH for the ASSETS macro

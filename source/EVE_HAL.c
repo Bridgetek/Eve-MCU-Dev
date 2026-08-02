@@ -47,7 +47,7 @@
 // with a console running turn on DEBUG_LEVEL unless it is has specifically
 // been set to zero in the environment.
 #ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(USE_EMULATOR)
+#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR)
 #define DEBUG_LEVEL 1
 #endif
 #endif
@@ -124,7 +124,7 @@ int HAL_EVE_Init(void)
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
         DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
-#if defined(USE_EMULATOR)
+#if defined(PLATFORM_EMULATOR)
         // Emulator reset bits on FT80x
         HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif

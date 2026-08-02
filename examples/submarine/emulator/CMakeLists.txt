@@ -69,7 +69,7 @@ include_directories(
         ${EXAMPLE_COMMON}
 )
 # Tell EVE library to use the EVE Emulator as base class
-add_compile_definitions(USE_EMULATOR=0)
+add_compile_definitions(PLATFORM_EMULATOR)
 
 # Source code for EVE library (targetted at the EVE Emulator)
 add_library(eve_library # EVE library name

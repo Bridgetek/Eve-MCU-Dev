@@ -38,11 +38,11 @@
  */
 
  // Guard against being used for incorrect platform or architecture.
- // USE_EMULATOR macro enables this file to open the emulator library.
- // In gcc compilers this is in the Makefile. -DUSE_EMULATOR=0
+ // PLATFORM_EMULATOR macro enables this file to open the emulator library.
+ // In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
  // In VisualStudio this is in Project Properties -> Configuration Properties -> 
  //     C/C++ -> Preprocessor -> Preprocessor Definitions.
-#if defined(USE_EMULATOR)
+#if defined(PLATFORM_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
 
@@ -695,4 +695,4 @@ uint32_t MCU_le32toh(uint32_t h)
 
 /* EVE MCU END */
 
-#endif /* defined(USE_EMULATOR) */
+#endif /* defined(PLATFORM_EMULATOR) */

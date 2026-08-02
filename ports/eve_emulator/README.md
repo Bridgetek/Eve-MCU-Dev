@@ -83,7 +83,7 @@ In `CMakeLists.txt`:
 
 ```
 # Tell EVE library to use the EVE Emulator as base class
-add_compile_definitions(USE_EMULATOR=0)
+add_compile_definitions(PLATFORM_EMULATOR)
 
 # Tell the EVE Emulator to use the flash image "flash-image-name.bin"
 add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("flash-image-name.bin"))

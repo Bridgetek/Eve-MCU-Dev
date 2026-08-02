@@ -84,7 +84,7 @@
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
-#elif defined (USE_MPSSE) || defined (USE_FT4222) || defined(USE_EMULATOR)
+#elif defined (USE_MPSSE) || defined (USE_FT4222) || defined(PLATFORM_EMULATOR)
 #define MCU_SPI_TRANSFER 0x100
 #elif defined(USE_LINUX_SPI_DEV)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
@@ -148,7 +148,7 @@
 /* Arduino SPI bus is set to 1 MHz by default */
 #define MCU_SPI_TIMEOUT 8
 
-#elif defined(USE_EMULATOR)
+#elif defined(PLATFORM_EMULATOR)
 #define MCU_SPI_TIMEOUT 8
 #endif
 
@@ -165,7 +165,7 @@
  DEBUG_LEVEL 1 for error reports and information.
  */
 //@{
-#if defined(DEBUG_LEVEL) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR))
+#if defined(DEBUG_LEVEL) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR))
 #include <stdio.h>
 #define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 #elif (defined(DEBUG_LEVEL) && defined(PLATFORM_ESP32))
@@ -178,7 +178,7 @@
 #else
 #define DEBUG_ERROR(...)
 #endif
-#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR) || defined(PLATFORM_RP2040))
+#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR) || defined(PLATFORM_RP2040))
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_ESP32))
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
