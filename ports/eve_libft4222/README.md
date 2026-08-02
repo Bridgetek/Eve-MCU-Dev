@@ -17,8 +17,8 @@ The UMFT4222EV-D module uses the FT2222H chipset. The module can be connected to
 | SCK | JP5 Pin 9 | SCK |
 | MOSI | JP5 Pin 7 | MOSI |
 | MISO | JP5 Pin 8 | MISO |
-| GPIO1 | JP4 Pin 5 | CS# |
-| GPIO1 | JP4 Pin 4 | PD# |
+| SSO0 | JP4 Pin 9 | CS# |
+| GPIO0 | JP4 Pin 4 | PD# |
 | VCC (5V) | JP4 Pin 1 | 5V |
 | GND | JP4 Pin 3 / JP5 Pin 10 | GND |
 

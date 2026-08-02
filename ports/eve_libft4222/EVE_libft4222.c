@@ -97,7 +97,7 @@
 // This platform specific section contains the functions which
 // enable the GPIO and SPI interfaces.
 
-// GPIO is not utilized in Lib4222 as it is directly managed by firmware.
+// GPIO is not utilized in Libft4222 as it is directly managed by firmware.
 #define FT8XX_CS_N_PIN   1    
 #define FT8XX_PD_N_PIN   GPIO_PORT0
 // GPIO0         , GPIO1      , GPIO2       , GPIO3         }
@@ -510,7 +510,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 0, connect GPIO0 of FT4222 PD# of FT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 0)))
     {
         DEBUG_ERROR("FT4222 MCU_PDlow change failed!\n");
@@ -521,7 +521,7 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 1, connect GPIO0 of FT4222 to PD# of FT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 1)))
     {
         DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");

@@ -178,12 +178,10 @@
 #else
 #define DEBUG_ERROR(...)
 #endif
-#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR))
+#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined (USE_MPSSE) || defined (USE_FT4222) || defined (USE_EMULATOR) || defined(PLATFORM_RP2040))
 #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_ESP32))
 #define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
-#elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_RP2040))
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #else
 #define DEBUG_PRINTF(...)
 #endif

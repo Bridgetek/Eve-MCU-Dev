@@ -110,6 +110,7 @@ int EVE_Init(void)
     #endif
 
     // Write first display list
+    // Clear Screen Ready to Start
     HAL_MemWrite32((EVE_RAM_DL + 0), EVE_ENC_CLEAR_COLOR_RGB(0,0,0));
     HAL_MemWrite32((EVE_RAM_DL + 4), EVE_ENC_CLEAR(1,1,1));
     HAL_MemWrite32((EVE_RAM_DL + 8), EVE_ENC_DISPLAY());
@@ -150,6 +151,8 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_VOL_SOUND, EVE_VOL_ZERO);
     // set synthesizer to mute
     HAL_MemWrite16(EVE_REG_SOUND, 0x6000);
+
+    DEBUG_PRINTF("[Display Settings Configured]\n");
 
 #if !defined(EVE_USE_CMDB_METHOD)
     HAL_MemWrite32(EVE_REG_CMD_READ, 0);
@@ -228,10 +231,10 @@ int EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
+    DEBUG_PRINTF("[Display Settings Configured]\n");
+
     // Load base patch or project defined patch if overriden
     eve_loadpatch();
-
-#endif
 
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
@@ -242,6 +245,7 @@ int EVE_Init(void)
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
+#endif
 
 #if IS_EVE_API(1)
 

@@ -72,6 +72,7 @@ int HAL_EVE_Init(void)
 {
     if (MCU_Init() != 0)
     {
+        DEBUG_ERROR("MCU_Init() Failed... \n");
         return -1;
     }
 
@@ -114,6 +115,7 @@ int HAL_EVE_Init(void)
     uint8_t val;
     while ((val = HAL_MemRead8(EVE_REG_ID)) != 0x7C)
     {
+        DEBUG_PRINTF("[Waiting for REG_ID...]\n");
         MCU_Delay_20ms();
         (void)val;
     }
@@ -121,6 +123,7 @@ int HAL_EVE_Init(void)
     // Ensure CPUreset register reads 0 and so FT8xx is ready
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
+        DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
 #if defined(USE_EMULATOR)
         // Emulator reset bits on FT80x
         HAL_MemWrite8(EVE_REG_CPURESET, 0);
@@ -131,7 +134,7 @@ int HAL_EVE_Init(void)
 #if IS_EVE_API(3, 4)
     HAL_MemWrite32(EVE_REG_FREQUENCY, 72000000);
 #endif
-
+    DEBUG_PRINTF("[Boot complete]\n");
 #endif
 
 #if IS_EVE_API(5)
@@ -224,6 +227,7 @@ int HAL_EVE_Init(void)
     // could be switched to QuadSPI.
     if (MCU_Setup() != 0)
     {
+        DEBUG_ERROR("MCU_Setup() Failed... \n");
         return -1;
     }
 
@@ -235,6 +239,7 @@ int HAL_EVE_Deinit(void)
 {
     if (MCU_Deinit() != 0)
     {
+        DEBUG_ERROR("MCU_Deinit() Failed... \n");
         return -1;
     }
 
