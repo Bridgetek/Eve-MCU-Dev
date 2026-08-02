@@ -170,7 +170,6 @@ int main(void)
 
 void setup(void)
 {
-#ifdef DEBUG_PRINT
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \n\n");
     printf ("---------------------------------------------------------------- \n");
@@ -185,5 +184,4 @@ void setup(void)
     printf ("P9 Pin 15 - PD# (GPIO 48) - Powerdown pin\n");
     printf ("P9 Pin 1 or 2 - GND for power and signal for FT8xx\n");
     printf ("P9 Pin 5 or 6 - 5v supply for FT8xx\n");
-#endif
 }

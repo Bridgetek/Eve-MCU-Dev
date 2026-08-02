@@ -156,7 +156,7 @@ int main(int argc, char **argv)
     setup();
 
 #if (ASSETS == USE_FLASH)
-    printf("Ensure device Flash is programmed with image in \"assets\" directory.\n");
+    DEBUG_PRINTF("Ensure device Flash is programmed with image in \"assets\" directory.\n");
 #elif (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
     if (argc > 1)
     {
@@ -165,9 +165,9 @@ int main(int argc, char **argv)
     else
     {
 #if (ASSETS == USE_FLASHIMAGE)
-        printf("USAGE: The path to the flash images must be passed as a parameter.\n");
+        DEBUG_PRINTF("USAGE: The path to the flash images must be passed as a parameter.\n");
 #else // (ASSETS == USE_FILES)
-        printf("USAGE: The path to the assets must be passed as a parameter.\n");
+        DEBUG_PRINTF("USAGE: The path to the assets must be passed as a parameter.\n");
 #endif
         exit(-1);
     }

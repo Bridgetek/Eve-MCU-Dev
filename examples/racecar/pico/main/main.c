@@ -125,6 +125,7 @@ void setup(void)
     // Wait for stdio (UART/USB) connection if enabled
     // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
     while (!stdio_usb_connected()) { sleep_ms(100);  }
+#endif
 
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
@@ -140,5 +141,5 @@ void setup(void)
     printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
     printf ("Pin 40 - 5v supply for FT8xx\n");
     printf ("Pin 23 - signal GND for SPI\n");
-#endif
+
 }
