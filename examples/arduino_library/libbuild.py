@@ -140,10 +140,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 # Change code to use C++ class instead of C library
                 if apirefactor:
                     # Add in eve.setup before eve.Init
-                    line = re.sub(r'^(\s*)EVE_Init\s*\(\s*\)\s*;', r'\g<1>// Setup the EVE display (' + defres + ')\n' \
+                    line = re.sub(r'^(\s*)if\s*\(\s*EVE_Init\s*\(\s*\)\s*!=\s*0\s*\)\s*$', r'\g<1>// Setup the EVE display (' + defres + ')\n' \
                                                       r'\g<1>' 'eve.setup(DISPLAY_RES);\n' \
-                                                      r'\g<1>' '// Setup the EVE library\n' \
-                                                      r'\g<1>' 'eve.Init();\n' \
+                                                      r'\g<1>' '// Initialise the EVE library\n' \
+                                                      r'\g<1>' 'if(eve.Init() !=0)' \
                         , line)
                     # General replace of EVE_ with eve. (except on preprocessor lines)
                     # when it matches an entry in the 
@@ -200,6 +200,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     line = re.sub(r'\beve\.(ROMFONT_\w+)\b', 'Bridgetek_EVE' + str_full_version + r'::\g<1>', line)
                     # Rename refereces to EVE_DISP_WIDTH/HEIGHT to class member
                     line = re.sub(r'\bEVE_(DISP_\w+)\b', r'eve.\g<1>()', line)
+                    # Rename refereces to DEBUG_PRINTF to Serial.print
+                    line = re.sub(r'\bDEBUG_PRINTF\(', r'Serial.print(', line)
+                    # Rename refereces to DEBUG_ERROR to Serial.print
+                    line = re.sub(r'\bDEBUG_ERROR\(', r'Serial.print(', line)
                     # Add extern or definition of the EVE class
                     extern = ""
                     if not file_out.endswith("eve_example.ino"):
