@@ -167,7 +167,7 @@ The EVE-MCU-Dev Emulator port utilises the `BT8XXEMU_insertSDCardFolder` functio
 
 On Windows, file paths in the native API use `eve_tchar_t`, which is
 `wchar_t`. SD writes are enabled by default; set `true` for the 
-`readOnly` parameter in the `BT8XXEMU_insertSDCardFolder` function call when changes should be note written back to the files.
+`readOnly` parameter in the `BT8XXEMU_insertSDCardFolder` function call when changes should be not written back to the files.
 
 Users can generate SD Card assets to use in applications via the [EVE Asset Builder](https://brtchip.com/eab/) toolchain.
 
