@@ -1,6 +1,6 @@
 /**
 @file EVE_emulator.c
-* /
+*/
 /*
  * ============================================================================
  * (C) Copyright Bridgetek Pte Ltd
@@ -90,7 +90,38 @@ static BT8XXEMU_EmulatorParameters* EmulatorParameters = NULL;
 static BT8XXEMU_FlashParameters* EmulatorFlashParameters = NULL;
 static eve_tchar_t* SDCardFolder = NULL;
 
-// helper function for setting path to flash binary images
+/*
+ * Determines whether a Windows path is absolute.
+ *
+ * Absolute paths:
+ *   C:\folder\file.bin
+ *   C:/folder/file.bin
+ *   \\server\share\file.bin
+ *   //server/share/file.bin
+ */
+static bool MCU_IsAbsoluteWindowsPath(const eve_tchar_t* path)
+{
+    if (!path || !path[0])
+        return false;
+
+    /* UNC path */
+    if ((path[0] == L'\\' || path[0] == L'/') &&
+        (path[1] == L'\\' || path[1] == L'/'))
+    {
+        return true;
+    }
+
+    /* Drive-rooted path */
+    if (path[1] == L':' &&
+        (path[2] == L'\\' || path[2] == L'/'))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+// Helper function for setting path to flash binary images
 static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
 {
 #ifdef _WIN32
@@ -99,21 +130,29 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
     DWORD pathLength;
     DWORD attributes;
 
-
-    if (!filePath || !filePath[0])
+    if (!parameters || !filePath || !filePath[0])
         return -1;
+        
+    // Preserve absolute paths supplied by the application.
+    if (MCU_IsAbsoluteWindowsPath(filePath))
+    {
+        // Print the absolute path.
+        wprintf(L"Flash (.bin) file path: %ls\n", filePath);
 
-    // Preserve absolute path supplied by the application.
-    if (filePath[1] == L':') {
-        // print absolute path
-        wprintf(L"Flash binary path: %ls\n", filePath);
-        // return the result of a copy of the absolute path to the emulator parameters
+        // Verify that the file exists.
+        attributes = GetFileAttributesW(filePath);
+        if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+            return -1;
+        }
+
+        // Copy the absolute path into the emulator parameters and return the result.
         return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), filePath) == 0 ? 0 : -1;
     }
-
-    // print path relative to exe
-    wprintf(L"Relative flash binary path from executable: %ls\n", filePath);
-
+    
+    // Print the path relative to the executable.
+    wprintf(L"Relative flash (.bin) file path from executable: %ls\n", filePath);
     // Resolve relative paths beside the running executable.
     pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
     if (!pathLength || pathLength >= _countof(resolvedPath))
@@ -125,43 +164,51 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
 
     lastSeparator[1] = L'\0';
 
-    if (wcscat_s(resolvedPath, _countof(resolvedPath), filePath) != 0)
+    // Remove a leading path separator so "/../file.bin" and "\\..\\assets\\file.bin" resolve beside the executable.
+    const eve_tchar_t* relativePath = filePath;
+
+    if (relativePath[0] == L'/' || relativePath[0] == L'\\')
+        ++relativePath;
+
+    if (wcscat_s(resolvedPath, _countof(resolvedPath), relativePath) != 0)
         return -1;
 
     // Verify that the resolved file exists.
     attributes = GetFileAttributesW(resolvedPath);
-    if (attributes == INVALID_FILE_ATTRIBUTES ||
-        (attributes & FILE_ATTRIBUTE_DIRECTORY)) {
-        DEBUG_ERROR("ERROR: Flash file does not exist.\n");
+    if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+        DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
         return -1;
     }
 
-    // return the result of a copy of the resolved path to the emulator parameters
-    return wcscpy_s(parameters->DataFilePath,
-        _countof(parameters->DataFilePath),
-        resolvedPath) == 0 ? 0 : -1;
+    // Copy the resolved path into the emulator parameters and return the result.
+    return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), resolvedPath) == 0 ? 0 : -1;
+
 #else
     struct stat st;
 
-    if (!filePath || !filePath[0])
+    if (!parameters || !filePath || !filePath[0])
         return -1;
 
-    // Verify that the file exists and is not a directory
-    if (stat(filePath, &st) != 0 || !S_ISREG(st.st_mode)) {
-        DEBUG_ERROR("ERROR: Flash file does not exist.\n");
+    if (stat(filePath, &st) != 0 || !S_ISREG(st.st_mode))
+    {
+        DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
         return -1;
     }
 
-    strncpy(parameters->DataFilePath,
+    strncpy(
+        parameters->DataFilePath,
         filePath,
         sizeof(parameters->DataFilePath) - 1);
-    parameters->DataFilePath[sizeof(parameters->DataFilePath) - 1] = '\0';
+
+    parameters->DataFilePath[
+        sizeof(parameters->DataFilePath) - 1] = '\0';
 
     return 0;
-#endif // _WIN32
+#endif /* _WIN32 */
 }
 
-// helper function to resolve SD card folder path 
+// Helper function to resolve SD card folder path 
 static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
 {
 #ifdef _WIN32
@@ -173,38 +220,57 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
     if (!folderPath || !folderPath[0])
         return NULL;
 
-    // Preserve absolute path supplied by the application.
-    if (folderPath[1] == L':') {
-        // print absolute path
+    // Preserve absolute paths supplied by the application.
+    if (MCU_IsAbsoluteWindowsPath(folderPath))
+    {
+        // Print the absolute path.
         wprintf(L"SD card folder path: %ls\n", folderPath);
-        // return the absolute path
+
+        // Verify that the folder exists.
+        attributes = GetFileAttributesW(folderPath);
+        if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+            return NULL;
+        }
+
+        // return the absolute path.
         return folderPath;
     }
 
-    // print path relative to exe
+    // Print the path relative to the executable.
     wprintf(L"Relative SD card folder path from executable: %ls\n", folderPath);
-
     // Resolve relative paths beside the running executable.
     pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
+
     if (!pathLength || pathLength >= _countof(resolvedPath))
         return NULL;
 
     lastSeparator = wcsrchr(resolvedPath, L'\\');
+
     if (!lastSeparator)
         return NULL;
 
     lastSeparator[1] = L'\0';
 
-    if (wcscat_s(resolvedPath, _countof(resolvedPath), folderPath) != 0)
+    // Remove a leading path separator so "/sdFolderName" and "\\sdFolderName" resolve beside the executable.
+    const eve_tchar_t* relativePath = folderPath;
+
+    if (relativePath[0] == L'/' || relativePath[0] == L'\\')
+        ++relativePath;
+
+    if (wcscat_s(resolvedPath, _countof(resolvedPath), relativePath) != 0)
         return NULL;
 
     // Verify the folder exists.
     attributes = GetFileAttributesW(resolvedPath);
-    if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY)) {
+    if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
         DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
         return NULL;
     }
 
+    // Return the resolved path.
     return resolvedPath;
 
 #else
@@ -220,19 +286,19 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
     }
 
     return folderPath;
-#endif // _WIN32
+#endif /* _WIN32 */
 }
 
 // ------------------ Platform specific initialisation  ------------------------
 int MCU_Init(void)
 {
 #ifdef _WIN32
-    // print Emulator Version
+    // Print Emulator Version
     DEBUG_PRINTF("\n");
-    DEBUG_PRINTF(BT8XXEMU_version());
+    DEBUG_PRINTF("%s", BT8XXEMU_version());
     DEBUG_PRINTF("\n\n");
 
-    // Set emulator type from EVE_conig.h EVE type setting
+    // Set emulator type from EVE_config.h EVE type setting
 #if (FT8XX_TYPE == FT800)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT800
 #elif (FT8XX_TYPE == FT801)
@@ -265,7 +331,7 @@ int MCU_Init(void)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
 #endif
 
-    // create emulator defaults
+    // Create emulator parameters.
     EmulatorParameters = (BT8XXEMU_EmulatorParameters*)malloc(sizeof(BT8XXEMU_EmulatorParameters));
     if (!EmulatorParameters)
     {
@@ -274,19 +340,19 @@ int MCU_Init(void)
         return -1;
     }
 
-    // initialize default emulator parameters
+    // Initialise the default emulator parameters.
     BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
-    // turn off EmulatorEnableDynamicDegrade and EmulatorEnableRegPwmDutyEmulation 
+    // Disable EmulatorEnableDynamicDegrade and EmulatorEnableRegPwmDutyEmulation
     EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
 
-    // check if the flash file definition is set
+    // Check whether the flash file macro is defined.
 #ifdef EVE_EMULATOR_FLASH_FILE
-    // flash is only supoprted in EVE API level = 3,4,5
+    // flash is only supported in EVE API level = 3,4,5
 #if IS_EVE_API(3,4,5)
 
-    DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach Flash to emulator.\n");
+    DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator.\n");
 
-    // create flash emulator defualts
+    // Create flash emulator parameters.
     EmulatorFlashParameters = (BT8XXEMU_FlashParameters*)malloc(sizeof(BT8XXEMU_FlashParameters));
     if (!EmulatorFlashParameters)
     {
@@ -295,25 +361,27 @@ int MCU_Init(void)
         return -1;
     }
 
-    // initialise default flash emulator parameters
+    // Initialise the default flash emulator parameters.
     BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
 
-    // set the name and path of the data file we want to load onto the flash
+    // Set the path of the flash (.bin) file to load into the emulator.
     if (MCU_SetFlashEmulatorDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
     {
-        DEBUG_ERROR("ERROR: Unable to resolve emulator Flash file path.\n\n");
-        DEBUG_ERROR("Check that the .bin file exists on the path defined by:\n");
+        DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
+        DEBUG_ERROR("Check that the flash (.bin) file exists on the path defined by:\n");
+        DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"flash-name.bin\").\n");
+        DEBUG_ERROR("OR\n");
         DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n\n");
         MCU_Deinit();
         return -1;
     }
 
-    // check if EVE_EMULATOR_FLASH_FILE_SIZE as been defined if not use (8 MiB)
+    // Check if EVE_EMULATOR_FLASH_FILE_SIZE has been defined if not use (8 MiB)
 #ifndef EVE_EMULATOR_FLASH_FILE_SIZE
 #define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)    // 8 MiB default
 #endif
 
-    // set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
+    // Set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
     EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
 
     // Create flash emulator instance
@@ -325,10 +393,10 @@ int MCU_Init(void)
         return -1;
     }
 
-    // connect emulator to the flash device we have created
+    // Connect the emulator to the flash device.
     EmulatorParameters->Flash = EmulatorFlash;
 
-    DEBUG_PRINTF("SUCCESS: Flash image attached to emulator!\n\n");
+    DEBUG_PRINTF("SUCCESS: Flash (.bin) file attached to emulator.\n");
 
 #else
     DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined but flash is not available on EVE API = 1,2.\n");
@@ -344,32 +412,36 @@ int MCU_Init(void)
         return -1;
     }
 
-    // check if the SD folder definition is set
+    // Check whether the SD card folder macro is defined.
 #ifdef EVE_EMULATOR_SD_FOLDER
-    // SD cards are only supoprted in EVE API level = 5
+    // SD cards are only supported in EVE API level = 5
 #if IS_EVE_API(5)
 
     DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined, attempting to attach SD card folder to emulator.\n");
 
-    // set SDCardFolder to supplied path in definition 
+    // Set SDCardFolder to the path supplied by the definition.
     SDCardFolder = MCU_ResolveSDFolderPath(EVE_EMULATOR_SD_FOLDER);
 
-    // check the SDCardFolder path is valid
-    if (SDCardFolder == NULL) {
+    // Check that the SDCardFolder path is valid
+    if (SDCardFolder == NULL)
+    {
         DEBUG_ERROR("ERROR: Unable to resolve emulator SD card folder file path.\n\n");
         DEBUG_ERROR("Check that the folder exists on the path defined by:\n");
-        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\").\n\n");
+        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"sdFolderName\").\n");
+        DEBUG_ERROR("OR\n");
+        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\\\\sdFolderName\").\n\n");
         MCU_Deinit();
         return -1;
     }
     else {
 
-    // check if EVE_EMULATOR_SD_FOLDER_SIZE as been defined if not use (0)
+    // Check whether EVE_EMULATOR_SD_FOLDER_SIZE has been defined, if not set (0).
     // Passing zero for minimumSize lets the emulator calculate the required FAT32 image size from the folder contents.
 #ifndef EVE_EMULATOR_SD_FOLDER_SIZE
 #define EVE_EMULATOR_SD_FOLDER_SIZE 0
 #endif
-        // insert the SD card folder to the eumlator (function returns size of inserted SD folder)
+        // Insert the SD card folder into the emulator.
+        // The function returns the size of the inserted SD card folder.
         if (BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
         {
             DEBUG_ERROR("ERROR: Unable to attach SD card to emulator.\n\n");
@@ -377,7 +449,7 @@ int MCU_Init(void)
             return -1;
         }
 
-        DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator!\n\n");
+        DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator.\n\n");
     }
 #else
     DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined but SD cards are only available on EVE API = 5.\n");
@@ -389,7 +461,7 @@ int MCU_Init(void)
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
 
-    DEBUG_PRINTF("SUCCESS: Emulator instance running!\n\n");
+    DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
 
     return 0;
 #else
@@ -407,7 +479,7 @@ int MCU_Deinit(void)
         Emulator = NULL;
     }
 
-    // Release flash
+    // Release flash emulator
     if (EmulatorFlash)
     {
         BT8XXEMU_Flash_destroy(EmulatorFlash);
@@ -420,6 +492,8 @@ int MCU_Deinit(void)
         free(EmulatorParameters);
         EmulatorParameters = NULL;
     }
+
+    // Release flash emulator parameters
     if (EmulatorFlashParameters)
     {
         free(EmulatorFlashParameters);
@@ -443,11 +517,11 @@ int MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void)
 {
-    // check here if the emulator window is still running 
+    // Check whether the emulator window is still running 
     if (!BT8XXEMU_isRunning(Emulator)) {
-        // if the window is no longer running, then call MCU_Deinit() to destory the emluator
+        // If the window is no longer running, call MCU_Deinit() to destroy the emulator
         MCU_Deinit();
-        // exit application with code 0
+        // Exit application with exit code 0
         exit(0);
     }
  
@@ -463,7 +537,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    //NOTE: called in EVE_API.c after MCU_Init(), which reults in the emulator instance being immediately killed.
+    // NOTE: called in EVE_API.c after MCU_Init(), which results in the emulator instance being immediately killed.
 
     /*
     if (!Emulator)
@@ -480,7 +554,7 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    //NOTE: called in EVE_API.c after MCU_PDlow(), which reults in the emulator instance being restarted.
+    // NOTE: called in EVE_API.c after MCU_PDlow(), which results in the emulator instance being restarted.
 
     /*
     if (Emulator)
