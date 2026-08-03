@@ -121,7 +121,9 @@ int HAL_EVE_Init(void)
 #if IS_EVE_API(3, 4)
     HAL_MemWrite32(EVE_REG_FREQUENCY, 72000000);
 #endif
+ 
     DEBUG_PRINTF("[Boot complete]\n");
+ 
 #endif  //IS_EVE_API(1, 2, 3, 4)
 
 #if IS_EVE_API(5) 
