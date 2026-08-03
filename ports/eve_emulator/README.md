@@ -75,7 +75,7 @@ The `Visual Studio` project or the `CMakeLists.txt` file in each example will co
 
 ### Visual Studio
 
-The Visual Studio project files for examples are found in the `\emulator\VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\{Debug|Release}\x64` folder.
+The Visual Studio project files for examples are found in the `\emulator\VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
 
 When the example application is launched in Visual Studio it will run a post build event to copy the `bt8xxemu.dll`, `mx25lemu`, and `zlib.dll` DLLs from the `ports\eve_emulator` folder to the program executable folder.
 
