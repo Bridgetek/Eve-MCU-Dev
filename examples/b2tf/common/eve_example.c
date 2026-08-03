@@ -40,6 +40,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <EVE.h>
 
 #include "eve_example.h"
@@ -332,13 +333,22 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
-
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+    
     // Calibrate the display
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
+        while(1);
+    }
 
     // Start example code
-    printf("Starting demo:\n");
-    eve_display();
+    DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

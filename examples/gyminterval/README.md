@@ -84,14 +84,37 @@ In the function `eve_example` the basic format is as follows:
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising EVE...\n");
-    EVE_Init();
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+
+    // Get a cache of the ROM font we want to use.
+    font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
+
+    // Map the ROM font we are using onto a normal bitmap.
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_DLSTART();
+#if IS_EVE_API(1)
+    font_romfont(SCALED_FONT, EVE_ROMFONT_MAX);
+#else
+    EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
+#endif
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+
+    // Tell the program to use the mapped handle instead of the ROM font handle.
+    clockfont.handle = SCALED_FONT;
 
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
         while(1);
     }
 

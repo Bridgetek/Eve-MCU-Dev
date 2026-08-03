@@ -2388,9 +2388,13 @@ void eve_example(const char *assets)
     // Configure asset properties for custom assets used in application
     eve_asset_properties(assets); 
     
-    // Initialise the display
+  // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
 
     // Load assets into RAM_G
     DEBUG_PRINTF("Loading assets into RAM_G...\n");

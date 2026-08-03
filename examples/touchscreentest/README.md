@@ -59,8 +59,13 @@ In the function `eve_example` the basic format is as follows:
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
-
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+    
     // Load images (and obtain the start of the sketch bitmap)
     DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
@@ -81,7 +86,7 @@ void eve_example(void)
         DEBUG_PRINTF("Calibrating display...\n");
         if (eve_calibrate() != 0)
         {
-            DEBUG_PRINTF("Exception...\n");
+            DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
             while(1);
         }
 
@@ -89,7 +94,7 @@ void eve_example(void)
         DEBUG_PRINTF("Starting demo:\n");
         eve_display();
     }
-} 
+}
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 

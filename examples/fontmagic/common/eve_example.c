@@ -41,6 +41,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <EVE.h>
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 
@@ -210,6 +211,7 @@ uint32_t loadlegacyfont(const uint8_t *fontptr, uint32_t fontsize, uint32_t font
 	return ((fontsize + fontoffset) + 16) & (~15);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     int action = 0;
@@ -217,19 +219,29 @@ void eve_example(void)
     int x;
     uint8_t key;
     
-    // Initialise the display.
-    EVE_Init();
+    // Initialise the display
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+    
 
-    // Calibrate the display.
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    // Calibrate the display
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
+        while(1);
+    }
 
     // Load fonts and images.
-    printf("Loading font...\n");
+    DEBUG_PRINTF("Loading font...\n");
     loadlegacyfont(font0, font0_size, font0_offset);
 
     // Start example code.
-    printf("Starting demo...\n");
+    DEBUG_PRINTF("Starting demo...\n");
     font_getfontinforom(&romfontcache, FONT_ROM);
     font_getfontinfocustom(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
 

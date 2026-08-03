@@ -79,8 +79,12 @@ void eve_example(void)
 {
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
-
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+    
     // Enable audio amplifier
     DEBUG_PRINTF("Enabling audio amplifier...\n");
     sound_enable();
@@ -89,8 +93,8 @@ void eve_example(void)
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
-        while (1);
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
+        while(1);
     }
 
     // Start example code

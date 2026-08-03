@@ -67,12 +67,37 @@ In the function `eve_example` the basic initialisation is performed:
 ```
 void eve_example(void)
 {
-    uint32_t font_end;
+    int action = 0;
+    int y;
+    int x;
+    uint8_t key;
+    
     // Initialise the display
-    EVE_Init();
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
+    
+
     // Calibrate the display
-    eve_calibrate();
-    // Start example code
+    DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
+        while(1);
+    }
+
+    // Load fonts and images.
+    DEBUG_PRINTF("Loading font...\n");
+    loadlegacyfont(font0, font0_size, font0_offset);
+
+    // Start example code.
+    DEBUG_PRINTF("Starting demo...\n");
+    font_getfontinforom(&romfontcache, FONT_ROM);
+    font_getfontinfocustom(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
+
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 

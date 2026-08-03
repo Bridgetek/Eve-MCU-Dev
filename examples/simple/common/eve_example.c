@@ -38,7 +38,7 @@
  */
 #include <stdio.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 #include <EVE.h>
 #include <MCU.h> // For DEBUG_PRINTF
 
@@ -122,19 +122,24 @@ void eve_display(void)
     } while (1);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     uint32_t font_end;
 
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
 
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
         while(1);
     }
 

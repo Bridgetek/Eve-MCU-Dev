@@ -1108,11 +1108,17 @@ void eve_display(void)
     }
 }
 
+
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising EVE...\n");
-    EVE_Init();
+    DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
+    }
 
     // Get a cache of the ROM font we want to use.
     font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
@@ -1137,7 +1143,7 @@ void eve_example(void)
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
         while(1);
     }
 

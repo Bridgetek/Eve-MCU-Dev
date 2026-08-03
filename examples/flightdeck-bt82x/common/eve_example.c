@@ -351,22 +351,27 @@ void eve_display(void)
     video_LVDS();
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
     DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
-
-    DEBUG_PRINTF("Loading patch...\n");
-    if (eve_loadpatch())
+    if (EVE_Init() != 0)
     {
-        DEBUG_PRINTF("Failed to load patch file...\n");
-        exit(-1);
+        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        while(1);
     }
 
+    DEBUG_PRINTF("Loading patch...\n");
+    eve_loadpatch();
+ 
     // Calibrate the display
     DEBUG_PRINTF("Calibrating display...\n");
-    eve_calibrate();
+    if (eve_calibrate() != 0)
+    {
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate()  ...\n");
+        while(1);
+    }
 
     // Load backup image
     DEBUG_PRINTF("Loading image...\n");
