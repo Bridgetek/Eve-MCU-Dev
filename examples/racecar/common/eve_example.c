@@ -75,8 +75,8 @@
 #error Emulation in this example currently only supports USE_C_ARRAYS or USE_FLASH for the ASSETS macro
 #endif
 // check for the flash file pre-processor definition 
-#if ((ASSETS == USE_FLASH) && !defined(EVE_EMULATOR_USE_FLASH_FILE))
-#error EVE_EMULATOR_USE_FLASH_FILE not defined, please ensure this is added as a preprocessor deinition which equals TEXT("..\\path\\to\\desried\\bin")
+#if ((ASSETS == USE_FLASH) && !defined(EVE_EMULATOR_FLASH_FILE))
+#error EVE_EMULATOR_FLASH_FILE not defined, please ensure this is added as a preprocessor deinition which equals TEXT("..\\path\\to\\desried\\bin")
 #endif
 #endif
 

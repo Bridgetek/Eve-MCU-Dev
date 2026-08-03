@@ -50,15 +50,52 @@ There are no runtime requirements for the example application.
 
 A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in the `racecar\emulator` folder. When using the emualtor port with the `ASSETS` macro configured to `USE_FLASH` the appliation must define the correct flash file to use for the emulator using the emulator specific `EVE_EMULATOR_FLASH_FILE` marco.
 
+The macro can be defined in either the `Visual Studio` project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, the `CMakeLists.txt` file , or during command line compilation.
+
 ##### EVE_API 3
 
+In `VisualStudio`:
+
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+
+In `CMakeLists.txt`:
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin"))
+
+In In gcc compilers via the `command line`:
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
 
 
 ##### EVE_API 4
+In `VisualStudio`:
+
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
+
+In `CMakeLists.txt`:
+
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+
+
+In In gcc compilers via the `command line`:
+
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
 
 ##### EVE_API 5
+In `VisualStudio`:
 
-There are no runtime requirements for the example application.
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
+In `CMakeLists.txt`:
+
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+
+In In gcc compilers via the `command line`:
+
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
 
 ### `USE_FLASHIMAGE` 
 
