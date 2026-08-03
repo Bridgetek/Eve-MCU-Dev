@@ -37,20 +37,11 @@
  * ============================================================================
  */
 
-/* Only compile for non-linux platforms or when MPSSE is being used. */
-#if !defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE)
+/* Only compile for non-linux platforms are being used. */
+#if !defined(USE_LINUX_SPI_DEV) 
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
-
-// Note: on platforms where there is assumed to be an operating system
-// with a console running turn on DEBUG_LEVEL unless it is has specifically
-// been set to zero in the environment.
-#ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR)
-#define DEBUG_LEVEL 1
-#endif
-#endif
 
 #include <EVE.h>
 #include <HAL.h>
@@ -190,9 +181,9 @@ int HAL_EVE_Init(void)
                 uint32_t boot;
 
                 // Wait for the REG_ID register to be set to 0x7c
+                DEBUG_PRINTF("[Waiting for REG_ID...]\n");
                 while (HAL_MemRead32(EVE_REG_ID) != 0x7c)
                 {
-                    DEBUG_PRINTF("[Waiting for REG_ID...]\n");
                     MCU_Delay_20ms();
                 }
 

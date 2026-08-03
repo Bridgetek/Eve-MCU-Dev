@@ -165,6 +165,16 @@
  DEBUG_LEVEL 1 for error reports and information.
  */
 //@{
+
+// Note: on platforms where there is assumed to be an operating system
+// with a console running turn on DEBUG_LEVEL unless it is has specifically
+// been set to zero in the environment.
+#ifndef DEBUG_LEVEL
+#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR)
+#define DEBUG_LEVEL 1
+#endif
+#endif
+
 #if defined(DEBUG_LEVEL) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR))
 #include <stdio.h>
 #define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
