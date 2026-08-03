@@ -63,7 +63,7 @@ int HAL_EVE_Init(void)
 {
     if (MCU_Init() != 0)
     {
-        DEBUG_ERROR("MCU_Init() Failed... \n");
+        DEBUG_ERROR("MCU_Init() Failed.\n");
         return -1;
     }
 
@@ -216,7 +216,7 @@ int HAL_EVE_Init(void)
     // could be switched to QuadSPI.
     if (MCU_Setup() != 0)
     {
-        DEBUG_ERROR("MCU_Setup() Failed... \n");
+        DEBUG_ERROR("MCU_Setup() Failed.\n");
         return -1;
     }
 
@@ -228,7 +228,7 @@ int HAL_EVE_Deinit(void)
 {
     if (MCU_Deinit() != 0)
     {
-        DEBUG_ERROR("MCU_Deinit() Failed... \n");
+        DEBUG_ERROR("MCU_Deinit() Failed.\n");
         return -1;
     }
 

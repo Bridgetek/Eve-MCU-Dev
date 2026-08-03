@@ -357,7 +357,7 @@ void eve_example(void)
     DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
@@ -368,7 +368,7 @@ void eve_example(void)
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in eve_calibrate()...\n");
+        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
@@ -378,5 +378,5 @@ void eve_example(void)
 
     // Start example code
     DEBUG_PRINTF("Starting demo:\n");
-    eve_display();
+    eve_display();          // Run Application
 }
