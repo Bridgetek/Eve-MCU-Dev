@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The EVE Emulator port consists of a Windows host PC running the EVE_Emulator library.. The emulator simulates an EVE device on the Windows display, and supports `x64` (64-bit) architectures only. 
+The EVE Emulator port consists of a Windows host PC running the EVE_Emulator library. The emulator simulates an EVE device on the Windows display, and supports `x64` (64-bit) architectures only. 
 
 To compile this you will have to download the **EVE_Emulator** library, it is available from the following GitHub repository:
 
@@ -12,7 +12,7 @@ Download or clone the EVE_Emulator repository to a new directory.
 
 ## Installing the EVE_Emulator in EVE-MCU-Dev library
 
-The EVE_Emulator repository directory will have a subfolders named `include`, `bin`, and `lib`. The repository contains library files for `x64` (64-bit Windows) architectures only.
+The EVE_Emulator repository directory will have subfolders named `include`, `bin`, and `lib`. The repository contains library files for `x64` (64-bit Windows) architectures only.
 
 The subfolders include:
 - A DLL file for `bt8xxemu`.
@@ -69,7 +69,7 @@ In gcc compilers via the `command line`:
 
 Example applications will load and use the `bt8xxemu.dll` file at runtime. This file must be available locally (in the same directory as the example executable).
 
-If the `mx25lemu` and `zlib.dll` files are required for the application these must also be available locally (in the same directory as the example executable).
+If the `mx25lemu.dll` and `zlib.dll` files are required for the application these must also be available locally (in the same directory as the example executable).
 
 The `Visual Studio` project or the `CMakeLists.txt` file in each example will copy the DLLs to the same output directory as the executable.
 
@@ -77,7 +77,7 @@ The `Visual Studio` project or the `CMakeLists.txt` file in each example will co
 
 The Visual Studio project files for examples are found in the `\emulator\VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
 
-When the example application is launched in Visual Studio it will run a post build event to copy the `bt8xxemu.dll`, `mx25lemu`, and `zlib.dll` DLLs from the `ports\eve_emulator` folder to the program executable folder.
+When the example application is launched in Visual Studio it will run a post build event to copy the `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` DLLs from the `ports\eve_emulator` folder to the program executable folder.
 
 ### Command Line Compilation
 
