@@ -364,9 +364,10 @@ int MCU_Init(void)
     }
     else {
 
-    // check if EVE_EMULATOR_SD_FOLDER_SIZE as been defined if not use (64 MiB)
+    // check if EVE_EMULATOR_SD_FOLDER_SIZE as been defined if not use (0)
+    // Passing zero for minimumSize lets the emulator calculate the required FAT32 image size from the folder contents.
 #ifndef EVE_EMULATOR_SD_FOLDER_SIZE
-#define EVE_EMULATOR_SD_FOLDER_SIZE (64 * 1024 * 1024)
+#define EVE_EMULATOR_SD_FOLDER_SIZE 0
 #endif
         // insert the SD card folder to the eumlator (function returns size of inserted SD folder)
         if (BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
