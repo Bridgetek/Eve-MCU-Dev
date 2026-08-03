@@ -383,6 +383,13 @@ int MCU_Init(void)
 #endif  // IS_EVE_API(,5)
 #endif  // EVE_EMULATOR_SD_FOLDER
 
+    // Write Emulator reset bits on EVE_API = 1,2,3,4
+#if IS_EVE_API(1,2,3,4)
+    HAL_MemWrite8(EVE_REG_CPURESET, 0);
+#endif
+
+    DEBUG_PRINTF("SUCCESS: Emulator instance running!\n\n");
+
     return 0;
 #else
     return -1;

@@ -67,8 +67,8 @@ int HAL_EVE_Init(void)
         return -1;
     }
 
+#if IS_EVE_API(1, 2, 3, 4) 
     // Set Chip Select OFF
-#if IS_EVE_API(1, 2, 3, 4)
     HAL_ChipSelect(0);
 
     // Reset the display
@@ -103,10 +103,10 @@ int HAL_EVE_Init(void)
     HAL_HostCmdWrite(0, 0x00);
     
     // Read REG_ID register (0x302000) until reads 0x7C
+    DEBUG_PRINTF("[Waiting for REG_ID...]\n");
     uint8_t val;
     while ((val = HAL_MemRead8(EVE_REG_ID)) != 0x7C)
     {
-        DEBUG_PRINTF("[Waiting for REG_ID...]\n");
         MCU_Delay_20ms();
         (void)val;
     }
@@ -115,10 +115,6 @@ int HAL_EVE_Init(void)
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
         DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
-#if defined(PLATFORM_EMULATOR)
-        // Emulator reset bits on FT80x
-        HAL_MemWrite8(EVE_REG_CPURESET, 0);
-#endif
     }
 #endif
 
@@ -126,9 +122,9 @@ int HAL_EVE_Init(void)
     HAL_MemWrite32(EVE_REG_FREQUENCY, 72000000);
 #endif
     DEBUG_PRINTF("[Boot complete]\n");
-#endif
+#endif  //IS_EVE_API(1, 2, 3, 4)
 
-#if IS_EVE_API(5)
+#if IS_EVE_API(5) 
 
     while (1)
     {
@@ -212,7 +208,7 @@ int HAL_EVE_Init(void)
 
     DEBUG_PRINTF("[Boot complete]\n");
 
-#endif
+#endif  //IS_EVE_API(5)
 
     // Perform any additional MCU functions. This is when the SPI interface
     // could be switched to QuadSPI.
