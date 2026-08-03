@@ -46,6 +46,20 @@ The example program will expect assets loaded from the EVE device flash to be at
 
 There are no runtime requirements for the example application.
 
+#### Emulator 
+
+A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in the `racecar\emulator` folder. When using the emualtor port with the `ASSETS` macro configured to `USE_FLASH` the appliation must define the correct flash file to use for the emulator using the emulator specific `EVE_EMULATOR_FLASH_FILE` marco.
+
+##### EVE_API 3
+
+
+
+##### EVE_API 4
+
+##### EVE_API 5
+
+There are no runtime requirements for the example application.
+
 ### `USE_FLASHIMAGE` 
 
 Assets are loaded from an image of the Flash on the host PC file system. Different Flash images for BT815/6, BT817/8 and BT82x are required. This method is not suitable for embedded applications where there is no file system. This method uses the same flash image file can be programmed into the EVE device Flash.

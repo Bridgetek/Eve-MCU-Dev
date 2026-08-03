@@ -42,6 +42,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <EVE.h>
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 

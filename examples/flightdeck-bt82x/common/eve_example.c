@@ -42,8 +42,7 @@
 #include <stdlib.h>
 
 #include <EVE.h>
-// Include DEBUG_PRINTF
-#include <MCU.h>
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #if IS_EVE_API(1,2,3,4)
 #error This example requires EVE API 5 or above.
