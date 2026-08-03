@@ -87,9 +87,9 @@ This code can be used on a wide range of MCUs. Key requirements for compatible M
 - GPIO line or controllable Chip Select signal for device control
 - GPIO line for Power Down control
 
-The SPI host routines must support transfers of at least one byte *at a minimum* for EVE API levels 1–4 and at least one 32-bit word for EVE API level 5.
+The SPI host routines must support transfers of *at least one byte* for EVE API levels 1–4 and at least one 32-bit word for EVE API level 5.
 
-The host interface must also provide software control of the EVE chip-select signal, either directly or through a GPIO, so that it can conform to the EVE SPI protocol. 
+The host interface must also provide software control of the EVE chip-select signal, either directly or through a GPIO, so that it can conform to the EVE SPI protocol.
 
 Some of the provided ports require source code modification if the MCU uses a SPI API library which sends a complete buffer of bytes (such as via a DMA transfer) with automatic chip select control. This is out of the scope of this document and sample code. Most MCUs can however be programmed at a level which interacts directly with the SPI hardware registers and GPIO for chip select. 
 
@@ -108,7 +108,7 @@ The library structure is designed to provide a format where multiple examples wi
 
 ### Folder Structure
 
-The library is structured as follows. There are common sections with have source code for the EVE API and EVE HAL layer and header files for the EVE API, EVE HAL and MCU Specific layer. The interface between the EVE HAL layer and the MCU Specific layer are defined in these headers and the source code for each MCU port can be selected in the build instructions or using defined macros.
+The library is structured as follows. There are common sections containing source code for the EVE API and EVE HAL layers and header files for the EVE API, EVE HAL and MCU Specific layer. The interface between the EVE HAL layer and the MCU Specific layer are defined in these headers and the source code for each MCU port can be selected in the build instructions or using defined macros.
 
 #### Common Library Files
 
@@ -162,7 +162,7 @@ The `PANEL_TYPE` macro is not used in the library, however it is optionally used
 
 The following options are supported in [include/EVE_config.h](include/EVE_config.h):
 
-- `FT8XX_TYPE` specifies the EVE device type. The following device types are supported
+- `FT8XX_TYPE` specifies the EVE device type. The following device types are supported:
   - FT800 
   - FT801 
   - FT810 
