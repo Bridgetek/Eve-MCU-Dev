@@ -67,17 +67,17 @@ In gcc compilers via the `command line`:
  -DPLATFORM_EMULATOR
 ```
 
-Example applications will load and use the `bt8xxemu.dll` file at runtime. This file must be available locally (in the same directory as the example executable).
+Example applications load and use the `bt8xxemu.dll` file at runtime. This DLL must be available in the same directory as the example executable.
 
-If the `mx25lemu.dll` and `zlib.dll` files are required for the application these must also be available locally (in the same directory as the example executable).
+If the application requires the `mx25lemu.dll` and `zlib.dll` files, these DLLs must also be available in the same directory as the executable.
 
-The `Visual Studio` project or the `CMakeLists.txt` file in each example will copy the DLLs to the same output directory as the executable.
+The `Visual Studio` project and the `CMakeLists.txt` file provided with each example automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `mx25lemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
 
 ### Visual Studio
 
 The Visual Studio project files for examples are found in the `\emulator\VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
 
-When the example application is launched in Visual Studio it will run a post build event to copy the `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` DLLs from the `ports\eve_emulator` folder to the program executable folder.
+When the example application is launched in Visual Studio it will run a post build event to copy the `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` DLLs from the `ports\eve_emulator` folder to the program executable folder. 
 
 ### Command Line Compilation
 
