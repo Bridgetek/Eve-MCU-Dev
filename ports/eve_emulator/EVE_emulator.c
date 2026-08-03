@@ -328,7 +328,7 @@ int MCU_Init(void)
     // connect emulator to the flash device we have created
     EmulatorParameters->Flash = EmulatorFlash;
 
-    DEBUG_PRINTF("SUCESS: Flash image attached to emulator.\n\n");
+    DEBUG_PRINTF("SUCCESS: Flash image attached to emulator!\n\n");
 
 #else
     DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined but flash is not available on EVE API = 1,2.\n");
@@ -377,7 +377,7 @@ int MCU_Init(void)
             return -1;
         }
 
-        DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator.\n\n");
+        DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator!\n\n");
     }
 #else
     DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined but SD cards are only available on EVE API = 5.\n");
