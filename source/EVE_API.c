@@ -247,8 +247,6 @@ int EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 #endif
 
-#if IS_EVE_API(1)
-
     // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -256,32 +254,19 @@ int EVE_Init(void)
     EVE_CLEAR(1,1,1);
     for (i = 0; i < 16; i++)
     {
+#if IS_EVE_API(1)
         EVE_BITMAP_HANDLE(i);
         EVE_BITMAP_LAYOUT(0, 0, 0);
         EVE_BITMAP_SIZE(0, 0, 0, 0, 0);
-    }
-    EVE_DISPLAY();
-    EVE_CMD_SWAP();
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
-
 #elif IS_EVE_API(2, 3, 4, 5)
-
-    // Reset All Bitmap Properties
-    EVE_LIB_BeginCoProList();
-    EVE_CMD_DLSTART();
-    EVE_CLEAR_COLOR_RGB(0, 0, 0);
-    EVE_CLEAR(1,1,1);
-    for (i = 0; i < 16; i++)
-    {
         EVE_BITMAP_HANDLE(i);
         EVE_CMD_SETBITMAP(0,0,0,0);
+#endif
     }
     EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-#endif
 
     return 0;
 }
