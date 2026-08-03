@@ -4,7 +4,7 @@ This library allows a variety of hardware to communicate with FT8xx and BT8xx gr
 
 This library is intended to provide a **C** library for embedded designs.
 
-There are multiple generations of EVE devices, these are referred by their API (and for some devices their SUB API) number from the following table:
+There are multiple generations of EVE devices. Each generation is identified by an API number and, where applicable, a sub-API number, as shown below:
 
 | Device | API | SUB API |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ There are multiple generations of EVE devices, these are referred by their API (
 | BT817, BT818 | 4 | N/A |
 | BT820 | 5 | N/A |
 
-The library is compiled for the API (and where applicable the SUB API) during compilation. The API cannot be selected at runtime.
+The library is compiled for the selected API and, where applicable, sub-API. The API cannot be selected at runtime.
 
 ## Contents
 
@@ -45,7 +45,8 @@ The library is compiled for the API (and where applicable the SUB API) during co
     - [Simple Co-Processor List](#simple-co-processor-list)
     - [Executing a Single Co-Processor Command](#executing-a-single-co-processor-command)
     - [Co-Processor Lists of more than 4K Size](#co-processor-helpers)
-    - [Limitations in RAM_DL and RAM_CMD#### Writing RAM_G and RAM_CMD](#limitations-in-ram_dl-and-ram_cmd)
+    - [Limitations in RAM_DL and RAM_CMD](#limitations-in-ram_dl-and-ram_cmd)
+    - [Writing RAM_G and RAM_CMD](#writing-ram_g-and-ram_cmd)
 
 ## Overview
 
@@ -57,7 +58,7 @@ In addition to the example library framework, the code also includes a simple de
 
 ### History
 
-This document and code library are reffered to from the following page on the Bridgetek Website [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). 
+This document and code library are referred to from the following page on the Bridgetek Website [Home / Software Examples / EVE Examples / Portable EVE Library](https://brtchip.com/software-examples/eve-examples-2/). 
 
 This library was previously described by Application Note [BRT_AN_025 EVE Portable MCU Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf). **This document and the code within this library supersedes BRT_AN_025**.
 
@@ -86,7 +87,9 @@ This code can be used on a wide range of MCUs. Key requirements for compatible M
 - GPIO line or controllable Chip Select signal for device control
 - GPIO line for Power Down control
 
-The code is designed with SPI host routines which can read/write *at a minimum* a single byte at a time for EVE API 1 to 4; and a 32-bit word for EVE 5. All SPI host interfaces must have program control over chip select or a similar mechanism, such as a GPIO, to control the chip select line to the EVE device to conform with the EVE SPI protocol. 
+The SPI host routines must support transfers of at least one byte *at a minimum* for EVE API levels 1–4 and at least one 32-bit word for EVE API level 5.
+
+The host interface must also provide software control of the EVE chip-select signal, either directly or through a GPIO, so that it can conform to the EVE SPI protocol. 
 
 Some of the provided ports require source code modification if the MCU uses a SPI API library which sends a complete buffer of bytes (such as via a DMA transfer) with automatic chip select control. This is out of the scope of this document and sample code. Most MCUs can however be programmed at a level which interacts directly with the SPI hardware registers and GPIO for chip select. 
 
@@ -159,7 +162,7 @@ The `PANEL_TYPE` macro is not used in the library, however it is optionally used
 
 The following options are supported in [include/EVE_config.h](include/EVE_config.h):
 
-- `FT8XX_TYPE` The EVE device type. The following device type are supported as macros:
+- `FT8XX_TYPE` specifies the EVE device type. The following device types are supported
   - FT800 
   - FT801 
   - FT810 
