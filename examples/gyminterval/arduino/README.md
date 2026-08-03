@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The sketch needs to be additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`gyminterval_arduino`](gyminterval_arduino/).
+The sketch needs additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`gyminterval_arduino`](gyminterval_arduino/).
 
 ## Sketch Directory
 
@@ -10,7 +10,7 @@ There are two methods of setting up the sketch directory. A python script is pro
 
 ### Python Script
 
-The python script `sketchbuild.py` can be used to copy the required files to the sketch automatically. It is run from the directory where the script is located and will find the API and example common directory.
+The python script `sketchbuild.py` can be used to copy the required files to the sketch automatically. It is run from the directory where the script is located and will find the API and example common directory. This script relies on the `sketchlib.py` module in the [`examples\arduino_sketches`](../../arduino_sketches/) directory.
 
 The script will report the names of the files copied. There are no parameters for the script.
 
