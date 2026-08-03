@@ -10,7 +10,7 @@ https://github.com/Bridgetek/EVE_Emulator
 
 Download or clone the EVE_Emulator repository to a new directory.
 
-## Install the EVE_Emulator in EVE-MCU-Dev library
+## Installing the EVE_Emulator in EVE-MCU-Dev library
 
 The EVE_Emulator repository directory will have a subfolders named `include`, `bin`, and `lib`. The repository contains library files for `x64` (64-bit Windows) architectures only.
 
@@ -204,7 +204,7 @@ In In gcc compilers via the `command line`:
 ```
 #### EVE_EMULATOR_SD_FOLDER_SIZE
 
-A similar `EVE_EMULATOR_SD_FOLDER_SIZE` can be used to define the size of the attached FAT32 image size, this value is passsed into the `minimumSize` parameter of the `BT8XXEMU_insertSDCardFolder call`. By default a value of **zero** is passed in for minimumSize, which lets the emulator calculate the required FAT32 image size from the folder contents.
+A similar `EVE_EMULATOR_SD_FOLDER_SIZE` can be used to define the size of the attached FAT32 image size, this value is passsed into the `minimumSize` parameter of the `BT8XXEMU_insertSDCardFolder` call. By default a value of **zero** is passed in for minimumSize, which lets the emulator calculate the required FAT32 image size from the folder contents.
 
 ### Recommendations
 
