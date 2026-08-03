@@ -100,7 +100,6 @@
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,7 +115,6 @@
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +134,6 @@
       </AdditionalIncludeDirectories>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
