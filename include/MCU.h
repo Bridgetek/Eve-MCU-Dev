@@ -41,6 +41,7 @@
 #define MCU_HEADER_H
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
+#include <EVE.h> // for IS_EVE_API()
 
 /**
  @brief MCU allows unalligned accesses to memory.
