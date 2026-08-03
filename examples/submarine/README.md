@@ -59,7 +59,7 @@ void eve_example(void)
     DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
@@ -67,7 +67,7 @@ void eve_example(void)
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in eve_calibrate()...\n");
+        DEBUG_ERROR("ERROR: Exception in eve_calibrate() failed.\n");
         while(1);
     }
 
