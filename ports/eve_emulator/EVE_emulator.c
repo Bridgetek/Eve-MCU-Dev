@@ -121,7 +121,7 @@ static bool MCU_IsAbsoluteWindowsPath(const eve_tchar_t* path)
 
     return false;
 }
-#endif _WIN32
+#endif /* _WIN32 */
 
 // Helper function for setting path to flash binary images
 static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
@@ -166,7 +166,7 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
 
     lastSeparator[1] = L'\0';
 
-    // Remove a leading path separator so "/../file.bin" and "\\..\\assets\\file.bin" are resolved relative to the executable directory.
+    // Remove one leading path separator so "/../file.bin" and "\\..\\assets\\file.bin" are resolved relative to the executable directory.
     const eve_tchar_t* relativePath = filePath;
 
     if (relativePath[0] == L'/' || relativePath[0] == L'\\')
@@ -255,7 +255,7 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
 
     lastSeparator[1] = L'\0';
 
-    // Remove a leading path separator so "/sdFolderName" and "\\sdFolderName" are resolved relative to the executable directory.
+    // Remove one leading path separator so "/sdFolderName" and "\\sdFolderName" are resolved relative to the executable directory.
     const eve_tchar_t* relativePath = folderPath;
 
     if (relativePath[0] == L'/' || relativePath[0] == L'\\')
@@ -384,7 +384,7 @@ int MCU_Init(void)
     // Check if EVE_EMULATOR_FLASH_FILE_SIZE has been defined if not use (8 MiB)
 #ifndef EVE_EMULATOR_FLASH_FILE_SIZE
 #define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)    // 8 MiB default
-#endif
+#endif /* EVE_EMULATOR_FLASH_FILE_SIZE */
 
     // Set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
     EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
@@ -405,8 +405,8 @@ int MCU_Init(void)
 
 #else
     DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined but flash is not available on EVE API = 1,2.\n");
-#endif  // IS_EVE_API(3,4,5)
-#endif  // EVE_EMULATOR_FLASH_FILE
+#endif /* IS_EVE_API(3,4,5) */
+#endif /* EVE_EMULATOR_FLASH_FILE */
 
     // Run the emulator on the current thread
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
@@ -444,7 +444,7 @@ int MCU_Init(void)
     // Passing zero for minimumSize lets the emulator calculate the required FAT32 image size from the folder contents.
 #ifndef EVE_EMULATOR_SD_FOLDER_SIZE
 #define EVE_EMULATOR_SD_FOLDER_SIZE 0
-#endif
+#endif /* EVE_EMULATOR_SD_FOLDER_SIZE */
         // Insert the SD card folder into the emulator.
         // The function returns the size of the inserted SD card folder.
         if (BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
@@ -458,20 +458,20 @@ int MCU_Init(void)
     }
 #else
     DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined but SD cards are only available on EVE API = 5.\n");
-#endif  // IS_EVE_API(,5)
-#endif  // EVE_EMULATOR_SD_FOLDER
+#endif /* IS_EVE_API(5) */
+#endif /* EVE_EMULATOR_SD_FOLDER */
 
     // Write Emulator reset bits on EVE_API = 1,2,3,4
 #if IS_EVE_API(1,2,3,4)
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
-#endif
+#endif /* IS_EVE_API(1,2,3,4) */
 
     DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
 
     return 0;
 #else
     return -1;
-#endif // _WIN32
+#endif /* _WIN32 */
 }
 
 int MCU_Deinit(void)
