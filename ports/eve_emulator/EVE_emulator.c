@@ -40,7 +40,7 @@
  // Guard against being used for incorrect platform or architecture.
  // PLATFORM_EMULATOR macro enables this file to open the emulator library.
  // In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
- // In VisualStudio this is in Project Properties -> Configuration Properties -> 
+ // In Visual Studio this is in Project Properties -> Configuration Properties -> 
  //     C/C++ -> Preprocessor -> Preprocessor Definitions.
 #if defined(PLATFORM_EMULATOR)
 
@@ -88,8 +88,9 @@ static BT8XXEMU_Emulator* Emulator = NULL;
 static BT8XXEMU_Flash* EmulatorFlash = NULL;
 static BT8XXEMU_EmulatorParameters* EmulatorParameters = NULL;
 static BT8XXEMU_FlashParameters* EmulatorFlashParameters = NULL;
-static eve_tchar_t* SDCardFolder = NULL;
+static const eve_tchar_t* SDCardFolder = NULL;
 
+#ifdef _WIN32
 /*
  * Determines whether a Windows path is absolute.
  *
@@ -120,6 +121,7 @@ static bool MCU_IsAbsoluteWindowsPath(const eve_tchar_t* path)
 
     return false;
 }
+#endif _WIN32
 
 // Helper function for setting path to flash binary images
 static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
@@ -164,7 +166,7 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
 
     lastSeparator[1] = L'\0';
 
-    // Remove a leading path separator so "/../file.bin" and "\\..\\assets\\file.bin" resolve beside the executable.
+    // Remove a leading path separator so "/../file.bin" and "\\..\\assets\\file.bin" are resolved relative to the executable directory.
     const eve_tchar_t* relativePath = filePath;
 
     if (relativePath[0] == L'/' || relativePath[0] == L'\\')
@@ -253,11 +255,14 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
 
     lastSeparator[1] = L'\0';
 
-    // Remove a leading path separator so "/sdFolderName" and "\\sdFolderName" resolve beside the executable.
+    // Remove a leading path separator so "/sdFolderName" and "\\sdFolderName" are resolved relative to the executable directory.
     const eve_tchar_t* relativePath = folderPath;
 
     if (relativePath[0] == L'/' || relativePath[0] == L'\\')
         ++relativePath;
+
+    if (!relativePath[0])
+        return NULL;
 
     if (wcscat_s(resolvedPath, _countof(resolvedPath), relativePath) != 0)
         return NULL;
