@@ -20,7 +20,7 @@
  *          a5 = EVE5 address (BT820)
  *  
  *      EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
- *      Using an absent register at runtime is a logic error — guard call sites
+ *      Using an absent register at runtime is a logic error - guard call sites
  *      with IS_EVE_API() to make absence visible at compile time.
  *  
  *  NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
@@ -60,7 +60,7 @@
     EVE_API_SELECT(0xFFFFFul, 0x3FFFFFul, 0x7FFFFFul, 0x7FFFFFul, 0xFFFFFFul)
 
 /* =========================================================================
- * DISPLAY LIST ENCODING MACROS — COMMON TO ALL FIVE GENERATIONS
+ * DISPLAY LIST ENCODING MACROS - COMMON TO ALL FIVE GENERATIONS
  * ========================================================================= */
 
 #define EVE_ENC_ALPHA_FUNC(func,ref)        ((0x09ul<<24)|(((func)&0x7ul)<<8)|(((ref)&0xfful)<<0))
@@ -180,7 +180,7 @@
 #endif /* IS_EVE_API(5) */
 
 /* =========================================================================
- * BITMAP TRANSFORM A/B/D/E — GENERATION-DEPENDENT ALIAS
+ * BITMAP TRANSFORM A/B/D/E - GENERATION-DEPENDENT ALIAS
  * EVE1/2: simple 17-bit form (no precision bit).
  * EVE3/4/5: alias to _EXT(0, value).  Use _EXT directly for the p=1 range.
  * ========================================================================= */
@@ -205,7 +205,7 @@
  * - IS_EVE_API guards for commands that exist on a subset of generations.
  * ========================================================================= */
 
-/* Universal — identical opcode in all five generations */
+/* Universal - identical opcode in all five generations */
 #define EVE_ENC_CMD_DLSTART             0xffffff00ul
 #define EVE_ENC_CMD_SWAP                0xffffff01ul
 #define EVE_ENC_CMD_INTERRUPT           0xffffff02ul
@@ -414,7 +414,7 @@
 /* Added in EVE3 */
 #if IS_EVE_API(3,4,5)
 #define EVE_FORMAT_L2                   0x11ul
-/** Marker for extended GL / ASTC formats — use with EVE_ENC_BITMAP_EXT_FORMAT. */
+/** Marker for extended GL / ASTC formats - use with EVE_ENC_BITMAP_EXT_FORMAT. */
 #define EVE_GLFORMAT                    0x1ful
 #define EVE_FORMAT_COMPRESSED_RGBA_ASTC_4x4_KHR   0x93b0ul
 #define EVE_FORMAT_COMPRESSED_RGBA_ASTC_5x4_KHR   0x93b1ul

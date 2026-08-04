@@ -42,17 +42,15 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#include "patch_textscale.h"
-
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
 /* Entry point to the example code */
 void eve_example(const char *assets);
+
+/* Headers required for this example */
+#include "maths/trig_furman.h"
+#include "patch_textscale.h"
 
 // ---- Method for storing assets ----
 
@@ -127,11 +125,5 @@ int eve_loadpatch_impl(void);
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
-
-#include "maths/trig_furman.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

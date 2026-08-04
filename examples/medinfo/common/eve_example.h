@@ -42,19 +42,17 @@
 
 #include <stdint.h>
 
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#include "patch_medinfo.h"
-
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
 /* Entry point to the example code */
 void eve_example(const char *assets);
+
+/* Headers required for this example */
+#include "touch.h"
+#include "widgets/sevenseg.h"
+#include "widgets/dialogs.h"
+#include "patch_medinfo.h"
 
 // ---- Method for storing assets ----
 
@@ -258,13 +256,5 @@ void graph_draw(uint8_t num, uint32_t pos, uint32_t rpos, uint32_t x, uint32_t y
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
-
-#include "touch.h"
-#include "widgets/sevenseg.h"
-#include "widgets/dialogs.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

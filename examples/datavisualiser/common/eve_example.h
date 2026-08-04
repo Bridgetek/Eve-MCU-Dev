@@ -42,15 +42,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#include "touch.h"
-#include "controls/sound.h"
-#include "maths/trig_furman.h"
-#include "controls/arcs.h"
-
 /* Functions called from eve_example code to platform specific code */
 int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
@@ -60,8 +51,10 @@ uint32_t platform_get_time(void); // not currently used, but will be useful for 
 /* Entry point to the example code */
 void eve_example(void);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
+/* Headers required for this example */
+#include "touch.h"
+#include "controls/sound.h"
+#include "maths/trig_furman.h"
+#include "controls/arcs.h"
 
 #endif /* _EVE_EXAMPLE_H */

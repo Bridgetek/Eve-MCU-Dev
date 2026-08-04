@@ -42,10 +42,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -75,23 +71,14 @@ extern const uint32_t font0_size;
 #define ZOOM_OUT_3_4 ((1 << 16) * 3 / 4)
 //}
 
-/**
- @brief Functions called within the eve_example code. 
- */
-//{
+/* Functions called within the eve_example code. */
 uint32_t eve_init_fonts(uint8_t fontnumber);
-//}
 
-/**
- @brief Entry point to the example code .
- */
+/* Entry point to the example code */
 void eve_example(void);
 
+/* Headers required for this example */
 #include "touch.h"
 #include "controls/fonts.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H_ */

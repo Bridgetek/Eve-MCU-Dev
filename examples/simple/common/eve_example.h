@@ -41,11 +41,6 @@
 #define _EVE_EXAMPLE_H
 
 #include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -65,10 +60,7 @@ uint32_t eve_load_images(uint32_t);
 /* Entry point to the example code */
 void eve_example(void);
 
+/* Headers required for this example */
 #include "touch.h"
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */
