@@ -50,7 +50,9 @@
 #include <string.h>
 #include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 #define _XTAL_FREQ 12000000      // Required for _delay() function, internal OSC Max

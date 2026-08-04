@@ -50,8 +50,10 @@
 
 typedef struct timespec platform_time_t;
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 
@@ -157,7 +159,7 @@ int main(int argc, char **argv)
     setup();
 
 #if (ASSETS == USE_FLASH)
-    DEBUG_PRINTF("Ensure device Flash is programmed with image in \"assets\" directory.\n");
+    EVE_DEBUG_PRINTF("Ensure device Flash is programmed with image in \"assets\" directory.\n");
 #elif (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
     if (argc > 1)
     {
@@ -166,9 +168,9 @@ int main(int argc, char **argv)
     else
     {
 #if (ASSETS == USE_FLASHIMAGE)
-        DEBUG_PRINTF("USAGE: The path to the flash images must be passed as a parameter.\n");
+        EVE_DEBUG_PRINTF("USAGE: The path to the flash images must be passed as a parameter.\n");
 #else // (ASSETS == USE_FILES)
-        DEBUG_PRINTF("USAGE: The path to the assets must be passed as a parameter.\n");
+        EVE_DEBUG_PRINTF("USAGE: The path to the assets must be passed as a parameter.\n");
 #endif
         exit(-1);
     }

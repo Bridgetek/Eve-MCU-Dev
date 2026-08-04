@@ -41,9 +41,14 @@
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdarg.h>
 
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> // for IS_EVE_API() macro
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #if IS_EVE_API(5)
 #include "patch_base.h"
@@ -67,7 +72,7 @@ int EVE_Init(void)
 
     if (HAL_EVE_Init() < 0)
     {
-        DEBUG_ERROR("ERROR: HAL_EVE_Init() non-zero return value.\n");
+        EVE_DEBUG_ERROR("ERROR: HAL_EVE_Init() non-zero return value.\n");
         return -1;
     }
 

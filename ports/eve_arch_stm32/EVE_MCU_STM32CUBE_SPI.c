@@ -62,7 +62,11 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 /* EVE MCU */

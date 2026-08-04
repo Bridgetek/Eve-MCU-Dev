@@ -34,6 +34,7 @@ Sketch name is gyminterval_arduino
 ..\..\..\include\MCU.h -> gyminterval_arduino\MCU.h
 ..\..\..\include\EVE_config.h -> gyminterval_arduino\EVE_config.h
 ..\..\..\include\EVE_commands.h -> gyminterval_arduino\EVE_commands.h
+..\..\..\include\EVE_debug.h -> gyminterval_arduino\EVE_debug.h
 ..\..\..\include\EVE_registers.h -> gyminterval_arduino\EVE_registers.h
 ..\..\..\source\EVE_API.c -> gyminterval_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> gyminterval_arduino\EVE_HAL.ino

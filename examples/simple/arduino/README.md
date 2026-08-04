@@ -28,6 +28,7 @@ Sketch name is simple_arduino
 ..\..\..\include\MCU.h -> simple_arduino\MCU.h
 ..\..\..\include\EVE_config.h -> simple_arduino\EVE_config.h
 ..\..\..\include\EVE_commands.h -> simple_arduino\EVE_commands.h
+..\..\..\include\EVE_debug.h -> simple_arduino\EVE_debug.h
 ..\..\..\include\EVE_registers.h -> simple_arduino\EVE_registers.h
 ..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino

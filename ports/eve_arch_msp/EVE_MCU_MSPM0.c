@@ -46,9 +46,10 @@
 #include "ti_msp_dl_config.h"
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-
 
 #define Nop() __no_operation()
 #define MISO            GPIO_SPI_0_POCI_PORT->GPIO_SPI_0_POCI_PIN  // SPI MISO

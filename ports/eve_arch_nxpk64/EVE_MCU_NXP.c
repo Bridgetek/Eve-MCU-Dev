@@ -52,9 +52,10 @@
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)

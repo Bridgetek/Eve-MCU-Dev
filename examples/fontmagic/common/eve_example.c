@@ -40,8 +40,10 @@
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 
@@ -220,27 +222,27 @@ void eve_example(void)
     uint8_t key;
     
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Load fonts and images.
-    DEBUG_PRINTF("Loading font...\n");
+    EVE_DEBUG_PRINTF("Loading font...\n");
     loadlegacyfont(font0, font0_size, font0_offset);
 
     // Start example code.
-    DEBUG_PRINTF("Starting demo...\n");
+    EVE_DEBUG_PRINTF("Starting demo...\n");
     font_getfontinforom(&romfontcache, FONT_ROM);
     font_getfontinfocustom(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
 

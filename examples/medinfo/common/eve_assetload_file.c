@@ -42,8 +42,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 
@@ -65,7 +67,7 @@ const char *join(const char *dirname, const char *filename)
     
     if (!joined)
     {
-        DEBUG_PRINTF("Failed to malloc %zu chars for patch path \"%s\" and \"%s\"\n", joinedlen, dirname, filename);
+        EVE_DEBUG_PRINTF("Failed to malloc %zu chars for patch path \"%s\" and \"%s\"\n", joinedlen, dirname, filename);
         exit(-3);
     }
     
@@ -110,7 +112,7 @@ int eve_loadpatch_impl(void)
     }
     else
     {
-        DEBUG_PRINTF("Patch file error\n");
+        EVE_DEBUG_PRINTF("Patch file error\n");
         exit(-1);
     }
 
@@ -154,7 +156,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // Decode image
         if (loadimage)
         {
-            DEBUG_PRINTF("Load image %s\n", asset->filename);
+            EVE_DEBUG_PRINTF("Load image %s\n", asset->filename);
 
             EVE_LIB_BeginCoProList();
             EVE_CMD_LOADIMAGE(asset->RAM_G_Start, 0);
@@ -185,16 +187,16 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
             // EVE4 and EVE5 support CMD_GETIMAGE for CMD_LOADIMAGE results
             EVE_LIB_GetImage(&dummy, &asset->Format, &w, &h, &dummy);
 #endif
-            DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
+            EVE_DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
 
             if ((asset->Width != w) || (asset->Height != h))
             {
-                DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
+                EVE_DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
             }
         }
         else
         {
-            DEBUG_PRINTF("Load to memory %s\n", asset->filename);
+            EVE_DEBUG_PRINTF("Load to memory %s\n", asset->filename);
     
             EVE_LIB_BeginCoProList();
             EVE_CMD_MEMWRITE(asset->RAM_G_Start, (uint32_t)sz);
@@ -217,11 +219,11 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
 
         fclose(h1); 
 
-        DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start,  asset->RAM_G_EndAddr);
+        EVE_DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start,  asset->RAM_G_EndAddr);
     }
     else
     {
-        DEBUG_PRINTF("RAM_G: file error %s\n", asset->filename);
+        EVE_DEBUG_PRINTF("RAM_G: file error %s\n", asset->filename);
         exit(-1);
     }
 }

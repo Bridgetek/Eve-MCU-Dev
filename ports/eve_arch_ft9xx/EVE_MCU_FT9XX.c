@@ -50,7 +50,9 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 // SPI Master pins

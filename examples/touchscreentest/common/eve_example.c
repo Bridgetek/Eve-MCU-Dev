@@ -39,8 +39,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
+
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 
@@ -283,7 +286,7 @@ void eve_display(void)
         else if (key == button_recalibrate)
         {
             // Recalibrate...
-            DEBUG_PRINTF("Perform recalibration.\n");
+            EVE_DEBUG_PRINTF("Perform recalibration.\n");
             eve_recalibrate();
             eve_readcalib();
             tag = 0;
@@ -291,7 +294,7 @@ void eve_display(void)
         else if (key == button_restore)
         {
             // Restore calibration...
-            DEBUG_PRINTF("Restoring saved calibration.\n");
+            EVE_DEBUG_PRINTF("Restoring saved calibration.\n");
             eve_calibrate();
             eve_readcalib();
             tag = 0;
@@ -299,7 +302,7 @@ void eve_display(void)
         else if (key == button_clear)
         {
             // Clear sketch...
-            DEBUG_PRINTF("Clearing sketch bitmap.\n");
+            EVE_DEBUG_PRINTF("Clearing sketch bitmap.\n");
             eve_clear_sketch();
             tag = 0;
         }
@@ -312,15 +315,15 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
     // Load images (and obtain the start of the sketch bitmap)
-    DEBUG_PRINTF("Loading images...\n");
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
 
     // Reset calibration data to force re-calibration on first call
@@ -336,15 +339,15 @@ void eve_example(void)
     while (1)
     {
         // Calibrate the display
-        DEBUG_PRINTF("Calibrating display...\n");
+        EVE_DEBUG_PRINTF("Calibrating display...\n");
         if (eve_calibrate() != 0)
         {
-            DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+            EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
             while(1);
         }
 
         // Start example code
-        DEBUG_PRINTF("Starting demo:\n");
+        EVE_DEBUG_PRINTF("Starting demo:\n");
         eve_display();
     }
 }

@@ -50,9 +50,10 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-
 
 #define Nop() __no_operation()
 #define MISO            BIT1                // P1.1 is SPI MISO

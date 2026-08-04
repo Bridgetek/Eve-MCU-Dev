@@ -43,8 +43,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 

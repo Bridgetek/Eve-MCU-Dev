@@ -40,8 +40,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+#include <EVE_debug.h>
 
 #include "eve_example.h"
 
@@ -2393,6 +2395,7 @@ void eve_display(void)
         // for touch input and use this to call the checkTouchStatus() function. We could also call
         // renderScreenUpdate() if required based upon touch inputs
         checkTouchStatus();
+        EVE_DEBUG_PRINTF("touch.\n");
 
         //--------------------------------------------------------------------------------------------------------
         // Update the screen with either demo data or sensor data
@@ -2406,6 +2409,7 @@ void eve_display(void)
 
             // call render screen function to update the screen
             renderScreenUpdate();
+            EVE_DEBUG_ERROR("Render.\n");
         }
         else {
             // else we want to read some data from our attached sensors
@@ -2430,26 +2434,26 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
     // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
     sound_enable();
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }

@@ -78,6 +78,9 @@
     <ClInclude Include="..\..\..\..\include\EVE_commands.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\EVE_debug.h">
+      <Filter>Library\eve\include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_registers.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>

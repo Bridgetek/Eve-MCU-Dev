@@ -47,6 +47,11 @@
  */
 #include <EVE_config.h>
 
+/*
+  Include the macros for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF.
+  */
+#include <EVE_debug.h>
+
 /* Definitions used for target device selection */
 #define FT800 800
 #define FT801 801

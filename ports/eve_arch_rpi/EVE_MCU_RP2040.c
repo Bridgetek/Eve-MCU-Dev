@@ -47,7 +47,9 @@
 #include <stdio.h>
 #include <machine/endian.h>
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 #include <hardware/gpio.h>

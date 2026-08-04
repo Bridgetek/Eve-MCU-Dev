@@ -57,8 +57,11 @@
  */
 //@{
 extern "C" {
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 }
 //@}
