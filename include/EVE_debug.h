@@ -35,16 +35,17 @@
  * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
- */
+*/
 
 #ifndef EVE_DEBUG_H_
 #define EVE_DEBUG_H_
 
 /*
-* Enable informational debug output by default on host platforms that
-* normally provide an operating-system console. An explicitly defined
-* DEBUG_LEVEL, including DEBUG_LEVEL=0, is preserved.
-*/
+ * Enable informational debug output by default on host platforms that
+ * normally provide an operating-system console. An explicitly defined
+ * DEBUG_LEVEL, including DEBUG_LEVEL=0, is preserved.
+ */
+
 #ifndef DEBUG_LEVEL
 #if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR) 
 #define DEBUG_LEVEL 1
@@ -52,20 +53,19 @@
 #endif
 
 /**
-* @brief Configure debug output.
-* @details
-* Debug output is enabled by defining DEBUG_LEVEL:
-*
-* - DEBUG_LEVEL=0 enables error messages only.
-* - DEBUG_LEVEL>0 enables error and informational messages.
-*
-* Map debug output to null or to fprintf/printf function.
-* Host platforms normally write errors to stderr and informational output
-* to stdout. ESP32 uses the ESP-IDF logging API. RP2040 writes both error
-* and informational output to stdout because Pico stdio does not normally
-* separate stderr from stdout over USB or UART. All other platforms will
-* will send informational output to null.
-*/
+ * @brief Configure debug output.
+ * @details
+ * Debug output is enabled by defining DEBUG_LEVEL:
+ *
+ * - DEBUG_LEVEL=0 enables error messages only.
+ * - DEBUG_LEVEL>0 enables error and informational messages.
+ *
+ * Host platforms normally write errors to stderr and informational output
+ * to stdout. ESP32 uses the ESP-IDF logging API. RP2040 writes both error
+ * and informational output to stdout because Pico stdio does not normally
+ * separate stderr from stdout over USB or UART. On unsupported platforms,
+ * the debug macros expand to no-op expressions.
+ */
 
 #if defined(PLATFORM_RASPBERRYPI) || \
     defined(USE_LINUX_SPI_DEV) || \
@@ -121,7 +121,6 @@
 #ifdef EVE_DEBUG_USES_STDIO
 #undef EVE_DEBUG_USES_STDIO
 #endif
-
 
 /* EVE DEBUG END */
 
