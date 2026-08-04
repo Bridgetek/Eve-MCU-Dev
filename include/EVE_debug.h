@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _EVE_DEBUG_H_
-#define _EVE_DEBUG_H_
+#ifndef EVE_DEBUG_H_
+#define EVE_DEBUG_H_
 
 /*
 * Enable informational debug output by default on host platforms that
@@ -61,14 +61,18 @@
 * - DEBUG_LEVEL>0 enables error and informational messages.
 *
 * Host platforms normally write errors to stderr and information to stdout.
-* Map debug output to nul or to fprintf/printf function.
+* Map debug output to null or to fprintf/printf function.
 * For MCUs this will not normally ever be mapped.
 * On Un*x like systems it may be mapped.
 * For PCs with MPSSE, FT4222 or Emulator interfaces it is probably mapped.
 * The DEBUG_LEVEL macro will override this for MCUs.
 */
 
-#if defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) ||  defined(USE_MPSSE) || defined(USE_FT4222) ||  defined(PLATFORM_EMULATOR)
+#if defined(PLATFORM_RASPBERRYPI) || \
+    defined(USE_LINUX_SPI_DEV) || \
+    defined(USE_MPSSE) || \
+    defined(USE_FT4222) || \
+    defined(PLATFORM_EMULATOR)
 #define EVE_DEBUG_USES_STDIO
 #endif
 
@@ -109,8 +113,8 @@
 #else
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
-#endif 
-#else /* EVE_DEBUG_USES_STDIO || PLATFORM_RP2040  */
+#endif /* EVE_DEBUG_USES_STDIO || PLATFORM_RP2040  */
+#else 
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
 #endif /* DEBUG_LEVEL > 0 */
@@ -122,4 +126,4 @@
 
 /* EVE DEBUG END */
 
-#endif	/* _EVE_DEBUG_H_ */
+#endif	/* EVE_DEBUG_H_ */

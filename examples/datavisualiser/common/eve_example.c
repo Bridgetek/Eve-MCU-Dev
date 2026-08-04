@@ -42,7 +42,7 @@
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
-/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+/* Include the EVE debug-output macro definitions
 #include <EVE_debug.h>
 
 #include "eve_example.h"
@@ -2395,7 +2395,6 @@ void eve_display(void)
         // for touch input and use this to call the checkTouchStatus() function. We could also call
         // renderScreenUpdate() if required based upon touch inputs
         checkTouchStatus();
-        EVE_DEBUG_PRINTF("touch.\n");
 
         //--------------------------------------------------------------------------------------------------------
         // Update the screen with either demo data or sensor data
@@ -2409,7 +2408,6 @@ void eve_display(void)
 
             // call render screen function to update the screen
             renderScreenUpdate();
-            EVE_DEBUG_ERROR("Render.\n");
         }
         else {
             // else we want to read some data from our attached sensors

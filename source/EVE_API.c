@@ -47,7 +47,7 @@
 #include <HAL.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-/* Include marco definitions for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF */
+/* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
 #if IS_EVE_API(5)
