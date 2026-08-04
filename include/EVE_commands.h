@@ -635,8 +635,8 @@
 /* =========================================================================
  * ADC MODE  (REG_TOUCH_ADC_MODE on resistive panels)
  * ========================================================================= */
-#define EVE_ADC_SINGLE_ENDED            0x0ul
-#define EVE_ADC_DIFFERENTIAL            0x1ul
+#define EVE_ADC_SINGLE_ENDED_MODE       0x0ul   // renamed from EVE_ADC_SINGLE_ENDED
+#define EVE_ADC_DIFFERENTIAL_MODE       0x1ul   // renamed from EVE_ADC_DIFFERENTIAL
 
 /* =========================================================================
  * ANIMATION LOOP MODES  (CMD_ANIMSTART loop argument)
