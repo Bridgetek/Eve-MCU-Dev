@@ -86,7 +86,7 @@ Display lists can be generated through the co-processor in the same way as they 
 The latest Programming Guide for the ### EVE LIB NAME ### can be found on the 
 [Bridgetek Programming Guides](https://brtchip.com/document/programming-guides/) page. 
 
-This covers the command set implemented by the device and methods for acheiving the 
+This covers the command set implemented by the device and methods for achieving the 
 desired output on the screen.
 
 ### Co-Processor Helpers
@@ -110,7 +110,7 @@ Waits for the completion of the current commands sent to the co-processor.
 ### Creating screens and executing commands
 
 The API Layer provides functions to begin and end lists of co-processor commands. The co-processor 
-commands must be preceeded and followed by co-processor management functions. 
+commands must be preceded and followed by co-processor management functions. 
 
 #### Writing DL Instructions and Co-Processor Commands
 
@@ -128,7 +128,7 @@ call to `CMD_DLSTART()` is required immediately after this.
 For the avoidance of doubt, commands that only read or write registers, read or write memory, access 
 flash or access the SD card do not require the `CMD_DLSTART()` call.
 
-All co-processor lists displaying graphics would be preceeded by:
+All co-processor lists displaying graphics would be preceded by:
 ```
     eve.LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
     eve.CMD_DLSTART(); // When executed, EVE will begin a new DL
@@ -315,7 +315,7 @@ The wiring colours in the section for each connection are defined in the followi
 
 ### Through-Board 2x8 Pins
 
-This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board on top of the EVE module.
 
 | Pin | EVE Signal | Pin | EVE Signal |
 | --- | --- | --- | --- |

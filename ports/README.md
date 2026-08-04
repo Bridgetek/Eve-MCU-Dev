@@ -31,4 +31,4 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 
 For most parts a generic variant of the device has been chosen. The specific device variant is shown in the table above.
 
-Note: The Rasberrry Pi and BeagleBone Black ports are based on Linux builds and are suitable for most embedded Linux platforms by modifying the GPIO pins and device names to match the CPU and board package.
+Note: The Raspberrry Pi and BeagleBone Black ports are based on Linux builds and are suitable for most embedded Linux platforms by modifying the GPIO pins and device names to match the CPU and board package.
