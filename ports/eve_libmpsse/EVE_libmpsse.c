@@ -77,7 +77,7 @@
 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-/* Include the EVE debug-output macro definitions
+/* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
