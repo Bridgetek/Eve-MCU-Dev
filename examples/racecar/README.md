@@ -46,6 +46,57 @@ The example program will expect assets loaded from the EVE device flash to be at
 
 There are no runtime requirements for the example application.
 
+#### Emulator 
+
+A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in the `racecar\emulator` folder. When using the emualtor port with the `ASSETS` macro configured to `USE_FLASH` the appliation must define the correct flash file to use for the emulator using the emulator specific `EVE_EMULATOR_FLASH_FILE` marco.
+
+The macro can be defined in either the `Visual Studio` project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, the `CMakeLists.txt` file , or during command line compilation.
+
+##### EVE_API 3
+
+In `VisualStudio`:
+
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+
+In `CMakeLists.txt`:
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin"))
+
+In In gcc compilers via the `command line`:
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+
+
+##### EVE_API 4
+In `VisualStudio`:
+
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
+
+In `CMakeLists.txt`:
+
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+
+
+In In gcc compilers via the `command line`:
+
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
+
+##### EVE_API 5
+In `VisualStudio`:
+
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
+In `CMakeLists.txt`:
+
+
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+
+In In gcc compilers via the `command line`:
+
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+
+
 ### `USE_FLASHIMAGE` 
 
 Assets are loaded from an image of the Flash on the host PC file system. Different Flash images for BT815/6, BT817/8 and BT82x are required. This method is not suitable for embedded applications where there is no file system. This method uses the same flash image file can be programmed into the EVE device Flash.
@@ -152,7 +203,7 @@ void eve_example(const char *assets)
     DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 

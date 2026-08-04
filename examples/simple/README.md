@@ -15,7 +15,7 @@ This example supports the following platforms:
 | Port Name | Port Directory | 
 | --- | --- | 
 | [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
-| [Arduino IDE](arduino/README.md) | [ft900](arduino/) | 
+| [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
 | [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) (1) | 
 | [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
 | [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) (1) |
@@ -75,7 +75,7 @@ void eve_example(void)
     DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
@@ -83,7 +83,7 @@ void eve_example(void)
     DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in eve_calibrate()...\n");
+        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 

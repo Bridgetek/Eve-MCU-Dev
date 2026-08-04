@@ -151,7 +151,6 @@ void setup(void)
     while (!stdio_usb_connected()) { sleep_ms(100);  }
 #endif
     /* Print out a welcome message... */
-    /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
     printf ("Welcome to the EVE-MCU-Dev Medinfo Example for Raspberry Pi Pico RP2040\r\n");

@@ -51,6 +51,7 @@
 typedef struct timespec platform_time_t;
 
 #include <EVE.h>
+#include <MCU.h> // For DEBUG_PRINTF only
 
 #include "eve_example.h"
 #include "touch.h"

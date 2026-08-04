@@ -9,7 +9,7 @@
   *
   * This source code ("the Software") is provided by Bridgetek Pte Ltd
   * ("Bridgetek") subject to the licence terms set out
-  * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+  * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
   * You must read the Licence Terms before downloading or using the Software.
   * By installing or using the Software you agree to the Licence Terms. If you
   * do not agree to the Licence Terms then do not download or use the Software.
@@ -75,8 +75,8 @@
 #error Emulation in this example currently only supports USE_C_ARRAYS or USE_FLASH for the ASSETS macro
 #endif
 // check for the flash file pre-processor definition 
-#if ((ASSETS == USE_FLASH) && !defined(EVE_EMULATOR_USE_FLASH_FILE))
-#error EVE_EMULATOR_USE_FLASH_FILE not defined, please ensure this is added as a preprocessor deinition which equals TEXT("..\\path\\to\\desried\\bin")
+#if ((ASSETS == USE_FLASH) && !defined(EVE_EMULATOR_FLASH_FILE))
+#error EVE_EMULATOR_FLASH_FILE not defined, please ensure this is added as a preprocessor deinition which equals TEXT("..\\path\\to\\desried\\bin")
 #endif
 #endif
 
@@ -2392,7 +2392,7 @@ void eve_example(const char *assets)
     DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: Exception in EVE_Init()...\n");
+        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
