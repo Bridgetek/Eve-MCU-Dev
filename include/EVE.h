@@ -48,8 +48,8 @@
 #include <EVE_config.h>
 
 /*
-  Include the macros for EVE_DEBUG_ERROR and EVE_DEBUG_PRINTF.
-  */
+ * Include the EVE debug-output macros.
+ */
 #include <EVE_debug.h>
 
 /* Definitions used for target device selection */

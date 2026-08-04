@@ -53,19 +53,18 @@
 
 /**
 * @brief Configure debug output.
-*
 * @details
 * Debug output is enabled by defining DEBUG_LEVEL:
 *
 * - DEBUG_LEVEL=0 enables error messages only.
 * - DEBUG_LEVEL>0 enables error and informational messages.
 *
-* Host platforms normally write errors to stderr and information to stdout.
 * Map debug output to null or to fprintf/printf function.
-* For MCUs this will not normally ever be mapped.
-* On Un*x like systems it may be mapped.
-* For PCs with MPSSE, FT4222 or Emulator interfaces it is probably mapped.
-* The DEBUG_LEVEL macro will override this for MCUs.
+* Host platforms normally write errors to stderr and informational output
+* to stdout. ESP32 uses the ESP-IDF logging API. RP2040 writes both error
+* and informational output to stdout because Pico stdio does not normally
+* separate stderr from stdout over USB or UART. All other platforms will
+* will send informational output to null.
 */
 
 #if defined(PLATFORM_RASPBERRYPI) || \
@@ -87,7 +86,7 @@
 #define EVE_DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
 
 #elif defined(PLATFORM_RP2040)
-//Pico's standard library does not separate stderr on USB or UART connections.
+/* Pico stdio does not normally separate stderr from stdout over USB or UART. */
 #include <stdio.h>
 #define EVE_DEBUG_ERROR(...) printf("[ERROR] " __VA_ARGS__)
 
