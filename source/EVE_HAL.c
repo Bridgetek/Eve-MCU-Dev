@@ -1,5 +1,6 @@
 /**
- @file EVE_HAL.c
+ * @file EVE_HAL.c
+ * @details Function implementations for EVE-MCU-Dev library HAL layer.
  */
 /*
  * ============================================================================
@@ -37,8 +38,10 @@
  * ============================================================================
  */
 
-/* Only compile for non-linux platforms*/
+/* Only compile for non-linux platforms */
 #if !defined(USE_LINUX_SPI_DEV)
+
+/* EVE HAL INCLUDES */
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -52,6 +55,10 @@
 /* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
+/* EVE HAL INCLUDES END */
+
+/* EVE HAL */
+
 // Used to navigate command ring buffer on FT800
 #if !defined(EVE_USE_CMDB_METHOD)
 static uint16_t writeCmdPointer = 0x0000;
@@ -62,7 +69,7 @@ static uint16_t writeCmdPointer = 0x0000;
 static uint16_t profileCmdPointer = 0x0000;
 #endif
 
-/* EVE HAL */
+/* EVE HAL Library functions */
 
 int HAL_EVE_Init(void)
 {

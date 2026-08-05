@@ -1,9 +1,10 @@
 /**
- @file EVE_MCU_PIC.c
+ * @file EVE_MCU_PIC.c
+ * @details MCU-specific code for controlling EVE on PIC devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -42,6 +43,8 @@
 
 #pragma message "Compiling " __FILE__ " for Microchip PIC"
 
+/* EVE MCU HEADER */
+
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
@@ -75,9 +78,12 @@
 #pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 #pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the PIC platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -365,5 +371,7 @@ uint32_t MCU_le32toh (uint32_t h)
 {
      return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_PIC) */

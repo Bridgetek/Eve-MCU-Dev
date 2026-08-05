@@ -1,5 +1,6 @@
 /**
- @file EVE_MCU_FT9XX.c
+ * @file EVE_MCU_FT9XX.c
+ * @details MCU-specific code for controlling EVE on FT9xx devices.
  */
 /*
  * ============================================================================
@@ -37,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_FT9XX)
 
 #pragma message "Compiling " __FILE__ " for BridgeTek FT9XX"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -80,9 +83,12 @@
 
 #endif //
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the FT9xx platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -307,5 +313,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_FT9XX) */

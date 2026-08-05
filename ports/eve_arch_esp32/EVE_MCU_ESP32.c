@@ -1,6 +1,6 @@
 /**
- @file EVE_MCU_ESP32.c
- @details MCU-specific code for controlling FT8XX on ESP32 devices.
+ * @file EVE_MCU_ESP32.c
+ * @details MCU-specific code for controlling EVE on ESP32 devices.
  */
 /*
  * ============================================================================
@@ -38,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type. ESP32 is Xtensa LE based.
+// Guard against being used for incorrect platform or architecture. ESP32 is Xtensa LE based.
 #if defined(PLATFORM_ESP32)
 
 #pragma message "Compiling " __FILE__ " for Espressif ESP32"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdint.h>
@@ -80,9 +82,12 @@ static spi_device_handle_t spi;
 // Status LED
 #define PIN_NUM_BLUE_LED 5
 
-// This is the MCU specific section and contains the functions which talk to the
-// MCU registers. If porting the code to another MCU, these should be modified
-// to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the ESP32 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 void mcu_setup_spi(int speed)
 {
@@ -359,5 +364,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return le32toh(h);
 }
+
+/* EVE MCU */
 
 #endif /* defined(PLATFORM_ESP32) */

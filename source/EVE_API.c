@@ -1,5 +1,6 @@
 /**
- @file EVE_API.c
+ * @file EVE_API.c
+ * @details Function implementations for EVE-MCU-Dev library API layer.
  */
 /*
  * ============================================================================
@@ -37,6 +38,8 @@
  * ============================================================================
  */
 
+/* EVE API INCLUDES */
+
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdarg.h>
@@ -53,6 +56,8 @@
 #if IS_EVE_API(5)
 #include "patch_base.h"
 #endif
+
+/* EVE API INCLUDES END */
 
 /* EVE API */
 
@@ -116,6 +121,7 @@ int EVE_Init(void)
     #endif
 
     // Write first display list
+    // Clear Screen Ready to Start
     HAL_MemWrite32((EVE_RAM_DL + 0), EVE_ENC_CLEAR_COLOR_RGB(0,0,0));
     HAL_MemWrite32((EVE_RAM_DL + 4), EVE_ENC_CLEAR(1,1,1));
     HAL_MemWrite32((EVE_RAM_DL + 8), EVE_ENC_DISPLAY());
@@ -237,8 +243,6 @@ int EVE_Init(void)
     // Load base patch or project defined patch if overriden
     eve_loadpatch();
 
-#endif
-
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -249,7 +253,7 @@ int EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-#if IS_EVE_API(1)
+#endif
 
     // Reset All Bitmap Properties
     EVE_LIB_BeginCoProList();
@@ -258,32 +262,19 @@ int EVE_Init(void)
     EVE_CLEAR(1,1,1);
     for (i = 0; i < 16; i++)
     {
+#if IS_EVE_API(1)
         EVE_BITMAP_HANDLE(i);
         EVE_BITMAP_LAYOUT(0, 0, 0);
         EVE_BITMAP_SIZE(0, 0, 0, 0, 0);
-    }
-    EVE_DISPLAY();
-    EVE_CMD_SWAP();
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
-
 #elif IS_EVE_API(2, 3, 4, 5)
-
-    // Reset All Bitmap Properties
-    EVE_LIB_BeginCoProList();
-    EVE_CMD_DLSTART();
-    EVE_CLEAR_COLOR_RGB(0, 0, 0);
-    EVE_CLEAR(1,1,1);
-    for (i = 0; i < 16; i++)
-    {
         EVE_BITMAP_HANDLE(i);
         EVE_CMD_SETBITMAP(0,0,0,0);
+#endif
     }
     EVE_DISPLAY();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-#endif
 
     return 0;
 }

@@ -1,9 +1,10 @@
 /**
- @file EVE_MCU_NXP.c
+ * @file EVE_MCU_NXP.c
+ * @details MCU-specific code for controlling EVE on NXP_K64 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,15 +38,16 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_NXPK64)
 
 #pragma message "Compiling " __FILE__ " for NXP K64"
 
+/* EVE MCU HEADER */
+
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
-
 
 
 #include "MK64F12.h"
@@ -56,6 +58,13 @@
 #include <EVE.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the NXPK64 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -436,5 +445,7 @@ uint32_t MCU_le32toh (uint32_t h)
 {
         return bswap32(h);
 }
+
+/* EVE MCU */
 
 #endif /* defined(PLATFORM_NXPK64) */

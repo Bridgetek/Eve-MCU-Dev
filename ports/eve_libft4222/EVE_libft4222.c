@@ -1,9 +1,10 @@
 /**
- @file EVE_libft4222.c
+ * @file EVE_libft4222.c
+ * @details Platform-specific code for controlling EVE on FT4222 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -46,6 +47,8 @@
 
 #pragma message ("Compiling " __FILE__ " for libFT4222")
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -53,8 +56,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
-/* EVE MCU HEADER */
 
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
@@ -86,8 +87,6 @@
 #include "ftd2xx.h"
 #include "libft4222.h"
 
-/* EVE MCU HEADER END */
-
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
@@ -97,9 +96,11 @@
 /* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
+/* EVE MCU HEADER END */
+
 /* EVE MCU */
 
-// This platform specific section contains the functions which
+// This is the FT4222 platform specific section, and contains the functions which
 // enable the GPIO and SPI interfaces.
 
 // GPIO is not utilized in Libft4222 as it is directly managed by firmware.

@@ -1,9 +1,10 @@
 /**
- @file eve_arch_arduino.ino
+ * @file eve_arch_arduino.ino
+ * @details MCU-specific code for controlling EVE on Arduino devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,15 +38,13 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(ARDUINO)
 
 /* EVE MCU HEADER */
 
 #include <Arduino.h>
 #include <SPI.h>
-
-/* EVE MCU HEADER END */
 
 /** @brief Library Includes
  * NOTE That all the file used in the example sketch must be in the same directory
@@ -65,6 +64,8 @@ extern "C" {
 #include <MCU.h>
 }
 //@}
+
+/* EVE MCU HEADER END */
 
 /* EVE MCU */
 

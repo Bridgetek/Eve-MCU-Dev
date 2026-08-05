@@ -1,5 +1,6 @@
 /**
- @file EVE_MCU_RP2040.c
+ * @file EVE_MCU_RP2040.c
+ * @details MCU-specific code for controlling EVE on RP2040 devices.
  */
 /*
  * ============================================================================
@@ -42,6 +43,8 @@
 
 #pragma message "Compiling " __FILE__ " for Raspberry Pi pico RP2040"
 
+/* EVE MCU END */
+
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdio.h>
@@ -68,9 +71,12 @@ const uint miso_pin = 4;
 // Port to match Bridgetek IDM2040-7A board.
 spi_inst_t *spi_port = spi0;
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the RP240 Platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -285,5 +291,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_RP2040) */

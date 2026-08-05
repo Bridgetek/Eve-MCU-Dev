@@ -1,5 +1,5 @@
 /**
-  @file main.c
+ * @file main.c
  */
 /*
  * ============================================================================
@@ -22,17 +22,17 @@
  * There are no warranties (or similar) in relation to the quality of the
  * Software. You use it at your own risk.
  * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of FTDI liability for certain types of loss
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
  * such as: special loss or damage; incidental loss or damage; indirect or
  * consequential loss or damage; loss of income; loss of business; loss of
  * profits; loss of revenue; loss of contracts; business interruption; loss of
  * the use of money or anticipated savings; loss of information; loss of
  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
  * corruption of data.
- * There is a monetary cap on FTDI's liability.
+ * There is a monetary cap on Bridgetek's liability.
  * The Software may have subsequently been amended by another user and then
  * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, FTDI
+ * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
  */
@@ -47,8 +47,6 @@
 #ifndef _WIN32
 #include <sys/time.h>
 #endif
-
-typedef struct timespec platform_time_t;
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
@@ -71,6 +69,7 @@ void setup(void);
 
 /** @brief Portable version of fopen/fopen_s
  */
+//@{
 FILE *port_fopen(char const * _FileName, char const * _Mode)
 {
 #if defined(_MSC_VER)
@@ -86,6 +85,7 @@ FILE *port_fopen(char const * _FileName, char const * _Mode)
     return fopen(_FileName, _Mode);
 #endif
 }
+//@}
 
 /**
  * @brief Functions used to store calibration data in file.
@@ -130,6 +130,8 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 // This will make a glock_gettime function similar enough to POSIX.
 #include <windows.h>
 #include <winnt.h>
+
+typedef struct timespec platform_time_t;
 
 #define CLOCK_MONOTONIC 0
 #define MS_PER_SEC      1000ULL     // MS = milliseconds

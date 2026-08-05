@@ -1,9 +1,10 @@
 /**
-@file EVE_emulator.c
-*/
+ * @file EVE_emulator.c
+ * @details Platform-specific code for controlling EVE on STM32 devices.
+ */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,14 +38,16 @@
  * ============================================================================
  */
 
- // Guard against being used for incorrect platform or architecture.
- // PLATFORM_EMULATOR macro enables this file to open the emulator library.
- // In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
- // In Visual Studio this is in Project Properties -> Configuration Properties -> 
- //     C/C++ -> Preprocessor -> Preprocessor Definitions.
+// Guard against being used for incorrect platform or architecture.
+// PLATFORM_EMULATOR macro enables this file to open the emulator library.
+// In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
+// In Visual Studio this is in Project Properties -> Configuration Properties -> 
+//     C/C++ -> Preprocessor -> Preprocessor Definitions.
 #if defined(PLATFORM_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdio.h>
@@ -55,7 +58,6 @@
 #include <sys/stat.h>
 #endif
 
-/* EVE MCU HEADER */
 #ifdef _WIN32
 // Windows endianness is little endian
 #include <windows.h>
@@ -74,8 +76,6 @@
 #include "bt8xxemu_inttypes.h"
 #include "bt8xxemu.h"
 
-/* EVE MCU HEADER END */
-
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
@@ -84,6 +84,8 @@
 #include <MCU.h>
 /* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
+
+/* EVE MCU HEADER END */
 
 /* EVE MCU */
 

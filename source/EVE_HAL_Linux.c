@@ -1,5 +1,6 @@
 /**
- @file EVE_HAL_Linux.c
+ * @file EVE_HAL_Linux.c
+ * @details Function implementations for EVE-MCU-Dev library HAL_Linux layer.
  */
 /*
  * ============================================================================
@@ -40,6 +41,8 @@
 /* Only compile for linux platforms. Do not compile if libMPSSE/libFT4222 are being used. */
 #if defined(USE_LINUX_SPI_DEV) && !defined(USE_MPSSE) && !defined(USE_FT4222)
 
+/* EVE HAL INCLUDES */
+
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdio.h>
@@ -51,6 +54,10 @@
 #include <EVE.h>
 #include <HAL.h>
 #include <Platform.h>
+
+/* EVE HAL INCLUDES END */
+
+/* EVE HAL CONSTANTS */
 
 #ifdef EVE_HAL_DEBUG
 #define dbg_printf(...) printf(__VA_ARGS__)
@@ -70,11 +77,16 @@
 #define err_printf(...)
 #endif
 
-
 // Used to navigate command ring buffer
 #if !defined(EVE_USE_CMDB_METHOD)
 static uint16_t writeCmdPointer = 0x0000;
 #endif // defined(EVE_USE_CMDB_METHOD)
+
+/* EVE HAL CONSTANTS END */
+
+/* EVE HAL */
+
+/* EVE HAL Library functions */
 
 int HAL_EVE_Init(void)
 {
@@ -845,6 +857,8 @@ uint16_t HAL_CheckCmdFreeSpace(void)
     return readCmdSpace;
 #endif // defined(EVE_USE_CMDB_METHOD)
 }
+
+/* EVE HAL END */
 
 #endif // __linux__
 

@@ -1,11 +1,11 @@
 /**
- @file EVE_registers.h
- @brief Cross-generation EVE register address map.
- @details Provides a single unified set of EVE_REG_* macros that resolve to
+ * @file EVE_registers.h
+ * @brief Cross-generation EVE register address map.
+ * @details Provides a single unified set of EVE_REG_* macros that resolve to
  *  the correct hardware address for the selected generation at compile time.
  *  The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
  *  and converted to the EVE generation in EVE.h. The generation is set in
- *  EVE_API to 1–5 and EVE_SUB_API if required.
+ *  EVE_API to 1-5 and EVE_SUB_API if required.
  *  
  *  Usage:
  *      #include <EVE.h>          // sets EVE_API, includes this file
@@ -13,7 +13,7 @@
  *  Macro convention:
  *      EVE_API_SELECT(a1, a2, a3, a4, a5)
  *          a1 = EVE1 address (FT800/FT801)
- *          a2 = EVE2 address (FT810–FT813, BT880–BT883)
+ *          a2 = EVE2 address (FT810-FT813, BT880-BT883)
  *          a3 = EVE3 address (BT815/BT816)
  *          a4 = EVE4 address (BT817/BT818)
  *          a5 = EVE5 address (BT820)
@@ -26,7 +26,7 @@
  *  throughout this file. They are kept as separate columns so that if a
  *  future BT81x variant diverges the table stays correct.
  */
- /*
+/*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
@@ -792,7 +792,7 @@
 
 /** @brief Swapchain 0 reset (write to reset) - EVE5 only */
 #define EVE_REG_SC0_RESET      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006034ul)
-/** @brief Swapchain 0 ring size 1–4 - EVE5 only */
+/** @brief Swapchain 0 ring size 1-4 - EVE5 only */
 #define EVE_REG_SC0_SIZE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006038ul)
 /** @brief Swapchain 0 pointer 0 - EVE5 only */
 #define EVE_REG_SC0_PTR0       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00603cul)
@@ -805,7 +805,7 @@
 
 /** @brief Swapchain 1 reset - EVE5 only */
 #define EVE_REG_SC1_RESET      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00604cul)
-/** @brief Swapchain 1 ring size 1–4 - EVE5 only */
+/** @brief Swapchain 1 ring size 1-4 - EVE5 only */
 #define EVE_REG_SC1_SIZE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006050ul)
 /** @brief Swapchain 1 pointer 0 - EVE5 only */
 #define EVE_REG_SC1_PTR0       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006054ul)

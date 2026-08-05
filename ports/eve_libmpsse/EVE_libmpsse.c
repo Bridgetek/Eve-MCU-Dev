@@ -1,9 +1,10 @@
 /**
- @file EVE_libmpsse.c
+ * @file EVE_libmpsse.c
+ * @details Platform-specific code for controlling EVE on MPSSE devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -46,6 +47,8 @@
 
 #pragma message ("Compiling " __FILE__ " for libMPSSE")
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -80,14 +83,18 @@
 /* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the MPSSE Platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
+
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
 #define MCU_BUFFER_SIZE 512
 uint8_t *MCU_buffer;
 uint16_t MCU_bufferLen;
-
-// This is the Windows Platform specific section and contains the functions which
-// enable the GPIO and SPI interfaces.
 
 /*
     MPSSE pin connections:
@@ -489,5 +496,7 @@ uint32_t MCU_le32toh(uint32_t h)
     return le32toh(h);
 #endif // _WIN32
 }
+
+/* EVE MCU END */
 
 #endif /* defined(USE_MPSSE) */

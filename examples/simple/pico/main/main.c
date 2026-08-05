@@ -1,12 +1,6 @@
 /**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#include "pico/stdlib.h"
-
-/**
-  @file main.c
+ * @file main.c
+ * @brief Example source file for a new Pico project.
  */
 /*
  * ============================================================================
@@ -29,22 +23,24 @@
  * There are no warranties (or similar) in relation to the quality of the
  * Software. You use it at your own risk.
  * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of FTDI liability for certain types of loss
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
  * such as: special loss or damage; incidental loss or damage; indirect or
  * consequential loss or damage; loss of income; loss of business; loss of
  * profits; loss of revenue; loss of contracts; business interruption; loss of
  * the use of money or anticipated savings; loss of information; loss of
  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
  * corruption of data.
- * There is a monetary cap on FTDI's liability.
+ * There is a monetary cap on Bridgetek's liability.
  * The Software may have subsequently been amended by another user and then
  * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, FTDI
+ * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
  */
 
 /* INCLUDES ************************************************************************/
+
+#include "pico/stdlib.h"
 
 #include <stdint.h>
 #include <stdio.h>

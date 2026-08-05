@@ -1,5 +1,5 @@
 /**
- @file EVE_debug.h
+ * @file EVE_debug.h
  */
 /*
  * ============================================================================
@@ -35,7 +35,7 @@
  * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
-*/
+ */
 
 #ifndef EVE_DEBUG_H_
 #define EVE_DEBUG_H_

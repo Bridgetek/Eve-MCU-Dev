@@ -1,12 +1,12 @@
 /**
- @file EVE_commands.h 
- @brief Cross-generation EVE command definitions.
- @details Provides a single unified set of EVE_ display list commands and
+ * @file EVE_commands.h 
+ * @brief Cross-generation EVE command definitions.
+ * @details Provides a single unified set of EVE_ display list commands and
  *  EVE_CMD_ co-processor commands that correct command codes for the selected 
  *  generation at compile time.
  *  The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
  *  and converted to the EVE generation in EVE.h. The generation is set in
- *  EVE_API to 1–5 and EVE_SUB_API if required.
+ *  EVE_API to 1-5 and EVE_SUB_API if required.
  *  
  *  Usage:
  *      #include <EVE.h>          // sets EVE_API, includes this file
@@ -14,7 +14,7 @@
  *  Macro convention:
  *      EVE_API_SELECT(a1, a2, a3, a4, a5)
  *          a1 = EVE1 address (FT800/FT801)
- *          a2 = EVE2 address (FT810–FT813, BT880–BT883)
+ *          a2 = EVE2 address (FT810-FT813, BT880-BT883)
  *          a3 = EVE3 address (BT815/BT816)
  *          a4 = EVE4 address (BT817/BT818)
  *          a5 = EVE5 address (BT820)

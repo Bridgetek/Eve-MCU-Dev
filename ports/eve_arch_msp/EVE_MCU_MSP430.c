@@ -1,9 +1,10 @@
 /**
- @file EVE_MCU_MSP430.c
+ * @file EVE_MCU_MSP430.c
+ * @details MCU-specific code for controlling EVE on MSP430 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,8 +38,10 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_MSP430)
+
+/* EVE MCU HEADER */
 
 #pragma diag_push
 #pragma diag_remark 1181
@@ -62,6 +65,13 @@
 #define SCLK            BIT4                // P1.4 is SPI clock
 #define CS              BIT5                // P1.5 is Chip Select
 #define CPU_FREQ        1000                // for use in delay function
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the MSP430 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 void initClock()
 {
@@ -377,5 +387,7 @@ uint32_t MCU_le32toh (uint32_t h)
         return bswap32(h);
 
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_MSP430) */

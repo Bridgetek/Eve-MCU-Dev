@@ -1,5 +1,5 @@
 /**
- @file HAL.h
+ * @file HAL.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -349,9 +349,9 @@ typedef enum EVE_SPI_CHANNELS_T
  @details Changes from single SPI (default) to Dual SPI to
     Quad SPI.
  @param mode - SPI mode:
-                0 – 1bit (Default Single mode)
-                1 – 2bits (Dual mode)
-                2 – 4bits (Quad mode)
+                0 - 1bit (Default Single mode)
+                1 - 2bits (Dual mode)
+                2 - 4bits (Quad mode)
  */
 void HAL_SetSPIMode(uint32_t mode);
 

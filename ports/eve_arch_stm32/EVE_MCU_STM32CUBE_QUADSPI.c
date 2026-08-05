@@ -1,42 +1,44 @@
 /**
- @file EVE_MCU_STM32CUBE.c
-*/
+ * @file EVE_MCU_STM32CUBE.c
+ * @details MCU-specific code for controlling EVE on STM32 devices.
+ */
 /*
-* ============================================================================
-* (C) Copyright Bridgetek Pte Ltd
-* ============================================================================
-*
-* This source code ("the Software") is provided by Bridgetek Pte Ltd
-* ("Bridgetek") subject to the licence terms set out
-* http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
-* You must read the Licence Terms before downloading or using the Software.
-* By installing or using the Software you agree to the Licence Terms. If you
-* do not agree to the Licence Terms then do not download or use the Software.
-*
-* Without prejudice to the Licence Terms, here is a summary of some of the key
-* terms of the Licence Terms (and in the event of any conflict between this
-* summary and the Licence Terms then the text of the Licence Terms will
-* prevail).
-*
-* The Software is provided "as is".
-* There are no warranties (or similar) in relation to the quality of the
-* Software. You use it at your own risk.
-* The Software should not be used in, or for, any medical device, system or
-* appliance. There are exclusions of Bridgetek liability for certain types of loss
-* such as: special loss or damage; incidental loss or damage; indirect or
-* consequential loss or damage; loss of income; loss of business; loss of
-* profits; loss of revenue; loss of contracts; business interruption; loss of
-* the use of money or anticipated savings; loss of information; loss of
-* opportunity; loss of goodwill or reputation; and/or loss of, damage to or
-* corruption of data.
-* There is a monetary cap on Bridgetek's liability.
-* The Software may have subsequently been amended by another user and then
-* distributed by that other user ("Adapted Software").  If so that user may
-* have additional licence terms that apply to those amendments. However, Bridgetek
-* has no liability in relation to those amendments.
-* ============================================================================
-*/
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
 
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_STM32_CUBE)
 
 /* EVE MCU HEADER */
@@ -53,7 +55,6 @@
 #define STR(x) STR_HELPER(x)
 #pragma message ("STM32Cube Quad Channel SPI controller enabled on channel " STR(PLATFORM_STM32_CUBE_CHANNEL))
 
-/* EVE MCU HEADER END */
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <string.h>
@@ -68,8 +69,6 @@
 /* Include the EVE debug-output macro definitions */
 #include <EVE_debug.h>
 
-/* EVE MCU */
-
 #include "quadspi.h"
 
 /* Define a "safe" prescaler for QUADSPI. This is used during initialisation
@@ -78,6 +77,12 @@
  * The speed will be set to the full speed after initialisation. */
 #define QSPI_CLK_DIV (64 - 1)
 
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the STM32 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 #if defined(QUADSPI_ENABLE)
 #pragma message ("SPI Mode: Quad channel")
