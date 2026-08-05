@@ -1841,7 +1841,7 @@ void renderScreenUpdate() {
 
 /**
  @brief Helper function to set on screen content sizing & positiong, and font handle variables.
- @detials This fucntion will use the screen width and height to initialise the global variables for the application,
+ @detials This function will use the screen width and height to initialise the global variables for the application,
  such as positioning & sizing variables for on screen items, and in-built ROM font handles to be used. It also sets
  the axis labels to be used on the line plot axes.
  */
@@ -1969,7 +1969,7 @@ void initialiseGlobals(void) {
     pie_chart_readout_x = ((screen_width * 38)/40); // 95% 
     pie_chart_readout_y = ((screen_height * 69)/160); // 43.125%
 
-    // set settings menut size and position
+    // set settings menu size and position
     //--------------------------------------------------------------------------------------------------------
     // set settings menu button size and position.
     settings_button_x1 = ((screen_width * 71)/80); // 88.75% 
