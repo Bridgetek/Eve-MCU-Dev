@@ -204,6 +204,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     line = re.sub(r'\bEVE_DEBUG_PRINTF\(', r'Serial.print(', line)
                     # Rename refereces to EVE_DEBUG_ERROR to Serial.print
                     line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
+                    # Rename references from @file <file>.c to @file <file>.ino
+                    line = re.sub(r'@file (\w+).c', r'@file \g<1>.ino', line)
                     # Add extern or definition of the EVE class
                     extern = ""
                     if not file_out.endswith("eve_example.ino"):
