@@ -108,14 +108,6 @@ int MCU_Init(void)
     gpio_set_function(mosi_pin, GPIO_FUNC_SPI);
     gpio_set_function(miso_pin, GPIO_FUNC_SPI);
 
-#if defined QUADSPI_ENABLE
-
-#if IS_EVE_API(2,3,4,5)
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
-#endif
-
-#endif // QUADSPI_ENABLE
-
     return 0;
 }
 
@@ -131,8 +123,13 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-//#ifdef QUADSPI_ENABLE
-//#endif // QUADSPI_ENABLE
+#if defined QUADSPI_ENABLE
+
+#if IS_EVE_API(2,3,4,5)
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+#endif
+
+#endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
