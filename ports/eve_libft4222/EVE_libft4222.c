@@ -57,6 +57,18 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "ftd2xx.h"
+#include "libft4222.h"
+
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> // for IS_EVE_API() macro
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+/* Include the EVE debug-output macro definitions */
+#include <EVE_debug.h>
+
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
 #include <endian.h>
@@ -83,18 +95,6 @@
 #else
 #pragma message ("libFT4222 Single SPI enabled")
 #endif
-
-#include "ftd2xx.h"
-#include "libft4222.h"
-
-/* Include functions for EVE-MCU-Dev library API layer */
-#include <EVE.h> // for IS_EVE_API() macro
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> 
-/* Include functions for EVE-MCU-Dev library MCU layer */
-#include <MCU.h>
-/* Include the EVE debug-output macro definitions */
-#include <EVE_debug.h>
 
 /* EVE MCU HEADER END */
 
