@@ -125,9 +125,11 @@ exclude_boards = [
     "Arduino Gemma", # Does not include Serial
     "Arduino Portenta X8", # Requires SerialRPC
 ]
+
 # Example and Arduino core types to skip
 exclude_example_board = [
     {"src": "b2tf", "fqbn": "arduino:sam:"},
+    {"src": "medinfo", "fqbn": "arduino:avr:"},
 ]
 
 # Examples to compile, library paths to use and compiler flags
