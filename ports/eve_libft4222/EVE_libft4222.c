@@ -117,7 +117,7 @@ static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTP
  * sent in one go then the write address may not be
  * valid on subsequent packets.
  */
-#define MCU_BUFFER_SIZE (HAL_MAX_CHUNK_SIZE)
+#define MCU_BUFFER_SIZE (64 * 1024)
 static uint8_t *MCU_buffer;
 static uint16_t MCU_bufferLen;
 
