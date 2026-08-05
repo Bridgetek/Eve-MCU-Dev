@@ -1,9 +1,10 @@
 /**
- @file EVE_Linux_RPi.c
+ * @file EVE_Linux_RPi.c
+ * @details Platform-specific code for controlling EVE on Raspberry Pi devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -44,6 +45,8 @@
 
 #pragma message "Compiling " __FILE__ " for Raspberry Pi"
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -72,7 +75,11 @@
 #define str(s) xstr(s)
 #define xstr(s) #s
 
-// This is the Linux Platform specific section and contains the functions which
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the Linux Platform specific section and and contains the functions which
 // enable the GPIO and SPI interfaces.
 
 // ------------------ Platform specific initialisation  ------------------------
@@ -278,6 +285,8 @@ uint32_t Platform_le32toh(uint32_t h)
 {
     return le32toh(h);
 }
+
+/* EVE MCU */
 
 #endif /* (PLATFORM_RASPBERRYPI) */
 

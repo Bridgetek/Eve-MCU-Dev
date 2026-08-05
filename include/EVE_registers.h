@@ -1,11 +1,11 @@
 /**
- @file EVE_registers.h
- @brief Cross-generation EVE register address map.
- @details Provides a single unified set of EVE_REG_* macros that resolve to
+ * @file EVE_registers.h
+ * @brief Cross-generation EVE register address map.
+ * @details Provides a single unified set of EVE_REG_* macros that resolve to
  *  the correct hardware address for the selected generation at compile time.
  *  The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
  *  and converted to the EVE generation in EVE.h. The generation is set in
- *  EVE_API to 1–5 and EVE_SUB_API if required.
+ *  EVE_API to 1-5 and EVE_SUB_API if required.
  *  
  *  Usage:
  *      #include <EVE.h>          // sets EVE_API, includes this file
@@ -13,20 +13,20 @@
  *  Macro convention:
  *      EVE_API_SELECT(a1, a2, a3, a4, a5)
  *          a1 = EVE1 address (FT800/FT801)
- *          a2 = EVE2 address (FT810–FT813, BT880–BT883)
+ *          a2 = EVE2 address (FT810-FT813, BT880-BT883)
  *          a3 = EVE3 address (BT815/BT816)
  *          a4 = EVE4 address (BT817/BT818)
  *          a5 = EVE5 address (BT820)
  *  
  *      EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
- *      Using an absent register at runtime is a logic error — guard call sites
+ *      Using an absent register at runtime is a logic error - guard call sites
  *      with IS_EVE_API() to make absence visible at compile time.
  *  
  *  NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
  *  throughout this file. They are kept as separate columns so that if a
  *  future BT81x variant diverges the table stays correct.
  */
- /*
+/*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
@@ -74,7 +74,7 @@
 #endif
 
 /* =========================================================================
- * Sentinel value — register not available on this generation.
+ * Sentinel value - register not available on this generation.
  * ========================================================================= */
 #ifndef EVE_REG_NOT_AVAILABLE
 #define EVE_REG_NOT_AVAILABLE  0ul
@@ -97,8 +97,8 @@
 /** @brief General-purpose RAM size.
  *  EVE1 (FT800/801): 256 KB.
  *  EVE2 (FT810/811): 256 KB; FT812/813/BT88x: 1 MB.
- *  EVE3/4 (BT815–818): 1 MB.
- *  EVE5 (BT820): configured externally — define EVE_RAM_G_CONFIG_SIZE before
+ *  EVE3/4 (BT815-818): 1 MB.
+ *  EVE5 (BT820): configured externally - define EVE_RAM_G_CONFIG_SIZE before
  *                including this file (default: 32 MB for BT820). */
 #undef EVE_RAM_G_SIZE
 #if IS_EVE_API(1)
@@ -146,7 +146,7 @@
 #define EVE_ROMFONT_TABLEADDRESS \
     EVE_API_SELECT(0x0ffffcul,  0x2ffffcul,  0x2ffffcul,  0x2ffffcul,  0x07ffff00ul)
 
-/** @brief Palette RAM (EVE1 only — included in RAM_G on EVE2+). */
+/** @brief Palette RAM (EVE1 only - included in RAM_G on EVE2+). */
 #if IS_EVE_API(1)
 #define EVE_RAM_PAL             0x102000ul
 #endif
@@ -190,7 +190,7 @@
  * CHIP ID REGISTER
  * ========================================================================= */
 
-/** @brief Identification register — always reads as 0x7C */
+/** @brief Identification register - always reads as 0x7C */
 #define EVE_REG_ID             EVE_API_SELECT(0x102400ul,  0x302000ul,  0x302000ul,  0x302000ul,  0x7f006000ul)
 
 /* =========================================================================
@@ -283,7 +283,7 @@
 #define EVE_REG_DISP           EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0060e4ul)
 
 /* =========================================================================
- * TOUCH REGISTERS — single-touch (resistive / basic capacitive)
+ * TOUCH REGISTERS - single-touch (resistive / basic capacitive)
  * ========================================================================= */
 
 /** @brief Tag query result at REG_TAG_X / REG_TAG_Y */
@@ -415,28 +415,28 @@
  *  @note EVE1: extended mode only via CTOUCH_TOUCH1_XY alias. */
 #define EVE_REG_CTOUCH_TOUCH1_XY  EVE_API_SELECT(0x102508ul,  0x30211cul,  0x30211cul,  0x30211cul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Capacitive touch 2 (x,y) — EVE1/2/3/4 */
+/** @brief Capacitive touch 2 (x,y) - EVE1/2/3/4 */
 #define EVE_REG_CTOUCH_TOUCH2_XY  EVE_API_SELECT(0x102574ul,  0x30218cul,  0x30218cul,  0x30218cul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Capacitive touch 3 (x,y) — EVE1/2/3/4 */
+/** @brief Capacitive touch 3 (x,y) - EVE1/2/3/4 */
 #define EVE_REG_CTOUCH_TOUCH3_XY  EVE_API_SELECT(0x102578ul,  0x302190ul,  0x302190ul,  0x302190ul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Capacitive touch 4 X — EVE1/2/3/4 */
+/** @brief Capacitive touch 4 X - EVE1/2/3/4 */
 #define EVE_REG_CTOUCH_TOUCH4_X   EVE_API_SELECT(0x102538ul,  0x30216cul,  0x30216cul,  0x30216cul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Capacitive touch 4 Y — EVE1/2/3/4 */
+/** @brief Capacitive touch 4 Y - EVE1/2/3/4 */
 #define EVE_REG_CTOUCH_TOUCH4_Y   EVE_API_SELECT(0x10250cul,  0x302120ul,  0x302120ul,  0x302120ul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Capacitive touch 4 (x,y) packed — EVE5 only */
+/** @brief Capacitive touch 4 (x,y) packed - EVE5 only */
 #define EVE_REG_CTOUCH_TOUCH4_XY  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006170ul)
 
-/** @brief Capacitive raw (x,y) — EVE5 extended mode (touch A) */
+/** @brief Capacitive raw (x,y) - EVE5 extended mode (touch A) */
 #define EVE_REG_CTOUCH_TOUCHA_XY  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006164ul)
 
-/** @brief Capacitive touch B (x,y) — EVE5 extended mode */
+/** @brief Capacitive touch B (x,y) - EVE5 extended mode */
 #define EVE_REG_CTOUCH_TOUCHB_XY  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006168ul)
 
-/** @brief Capacitive touch C (x,y) — EVE5 extended mode */
+/** @brief Capacitive touch C (x,y) - EVE5 extended mode */
 #define EVE_REG_CTOUCH_TOUCHC_XY  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00616cul)
 
 /* =========================================================================
@@ -478,10 +478,10 @@
 /** @brief Volume for synth sound */
 #define EVE_REG_VOL_SOUND      EVE_API_SELECT(0x102480ul,  0x302084ul,  0x302084ul,  0x302084ul,  0x7f0060d0ul)
 
-/** @brief Volume for playback left channel — EVE5 only */
+/** @brief Volume for playback left channel - EVE5 only */
 #define EVE_REG_VOL_L_PB       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0060c8ul)
 
-/** @brief Volume for playback right channel — EVE5 only */
+/** @brief Volume for playback right channel - EVE5 only */
 #define EVE_REG_VOL_R_PB       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0060ccul)
 
 /** @brief Audio playback RAM start address */
@@ -529,10 +529,10 @@
 /** @brief Media FIFO write offset */
 #define EVE_REG_MEDIAFIFO_WRITE EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, 0x309018ul,  0x309018ul,  0x309018ul,  0x7f004018ul)
 
-/** @brief Media FIFO base address — EVE3/4 only */
+/** @brief Media FIFO base address - EVE3/4 only */
 #define EVE_REG_MEDIAFIFO_BASE  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x30901cul,  0x30901cul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Media FIFO size — EVE3/4 only */
+/** @brief Media FIFO size - EVE3/4 only */
 #define EVE_REG_MEDIAFIFO_SIZE  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x309020ul,  0x309020ul,  EVE_REG_NOT_AVAILABLE)
 
 /* =========================================================================
@@ -690,30 +690,30 @@
  *  @note Not present on EVE1 or EVE5. */
 #define EVE_REG_SNAPFORMAT     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, 0x30201cul,  0x30201cul,  0x30201cul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Screenshot enable — EVE1 only */
+/** @brief Screenshot enable - EVE1 only */
 #define EVE_REG_SCREENSHOT_EN  EVE_API_SELECT(0x102410ul,  EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE)
 
-/** @brief Screenshot Y line — EVE1 only */
+/** @brief Screenshot Y line - EVE1 only */
 #define EVE_REG_SCREENSHOT_Y   EVE_API_SELECT(0x102414ul,  EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE)
 
-/** @brief Screenshot start — EVE1 only */
+/** @brief Screenshot start - EVE1 only */
 #define EVE_REG_SCREENSHOT_START EVE_API_SELECT(0x102418ul, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE)
 
-/** @brief Screenshot busy flag — EVE1 only */
+/** @brief Screenshot busy flag - EVE1 only */
 #define EVE_REG_SCREENSHOT_BUSY  EVE_API_SELECT(0x1024d8ul, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE)
 
-/** @brief Screenshot read data — EVE1 only */
+/** @brief Screenshot read data - EVE1 only */
 #define EVE_REG_SCREENSHOT_READ  EVE_API_SELECT(0x102554ul, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE)
 
 /* =========================================================================
  * TAP DETECTION REGISTERS
- * EVE1/2/3/4 only — not present on EVE5.
+ * EVE1/2/3/4 only - not present on EVE5.
  * ========================================================================= */
 
-/** @brief Tap detection CRC — EVE1/2/3/4 only */
+/** @brief Tap detection CRC - EVE1/2/3/4 only */
 #define EVE_REG_TAP_CRC        EVE_API_SELECT(0x102420ul,  0x302024ul,  0x302024ul,  0x302024ul,  EVE_REG_NOT_AVAILABLE)
 
-/** @brief Tap detection mask — EVE1/2/3/4 only */
+/** @brief Tap detection mask - EVE1/2/3/4 only */
 #define EVE_REG_TAP_MASK       EVE_API_SELECT(0x102424ul,  0x302028ul,  0x302028ul,  0x302028ul,  EVE_REG_NOT_AVAILABLE)
 
 /* =========================================================================
@@ -727,7 +727,7 @@
 /** @brief Flash status (0=INIT 1=DETACHED 2=BASIC 3=FULL) */
 #define EVE_REG_FLASH_STATUS   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x3025f0ul,   0x3025f0ul,  0x7f0065d4ul)
 
-/** @brief Flash DTR (Double Transfer Rate) enable — EVE5 only */
+/** @brief Flash DTR (Double Transfer Rate) enable - EVE5 only */
 #define EVE_REG_FLASH_DTR      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0065ecul)
 
 /* =========================================================================
@@ -735,197 +735,197 @@
  * EVE5 only.
  * ========================================================================= */
 
-/** @brief I2S interface enable — EVE5 only */
+/** @brief I2S interface enable - EVE5 only */
 #define EVE_REG_I2S_EN         EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006714ul)
 
-/** @brief I2S sample frequency — EVE5 only */
+/** @brief I2S sample frequency - EVE5 only */
 #define EVE_REG_I2S_FREQ       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006718ul)
 
-/** @brief I2S adjusted main frequency — EVE5 only */
+/** @brief I2S adjusted main frequency - EVE5 only */
 #define EVE_REG_FREQUENCY_A    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00671cul)
 
-/** @brief I2S configuration registers — EVE5 only */
+/** @brief I2S configuration registers - EVE5 only */
 #define EVE_REG_I2S_CFG        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800800ul)
 
-/** @brief I2S control registers — EVE5 only */
+/** @brief I2S control registers - EVE5 only */
 #define EVE_REG_I2S_CTL        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800804ul)
 
-/** @brief I2S status — EVE5 only */
+/** @brief I2S status - EVE5 only */
 #define EVE_REG_I2S_STAT       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800810ul)
 
-/** @brief I2S pad configuration — EVE5 only */
+/** @brief I2S pad configuration - EVE5 only */
 #define EVE_REG_I2S_PAD_CFG    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800814ul)
 
 /* =========================================================================
  * RENDER ENGINE REGISTERS
- * EVE5 only — render-to-texture / off-screen rendering.
+ * EVE5 only - render-to-texture / off-screen rendering.
  * ========================================================================= */
 
-/** @brief RE destination address — EVE5 only */
+/** @brief RE destination address - EVE5 only */
 #define EVE_REG_RE_DEST        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006010ul)
 
-/** @brief RE format (bitmap format) — EVE5 only */
+/** @brief RE format (bitmap format) - EVE5 only */
 #define EVE_REG_RE_FORMAT      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006014ul)
 
-/** @brief RE rotate control — EVE5 only */
+/** @brief RE rotate control - EVE5 only */
 #define EVE_REG_RE_ROTATE      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006018ul)
 
-/** @brief RE target width in pixels — EVE5 only */
+/** @brief RE target width in pixels - EVE5 only */
 #define EVE_REG_RE_W           EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00601cul)
 
-/** @brief RE target height in pixels — EVE5 only */
+/** @brief RE target height in pixels - EVE5 only */
 #define EVE_REG_RE_H           EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006020ul)
 
-/** @brief RE target dither enable — EVE5 only */
+/** @brief RE target dither enable - EVE5 only */
 #define EVE_REG_RE_DITHER      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006024ul)
 
-/** @brief RE write path active — EVE5 only */
+/** @brief RE write path active - EVE5 only */
 #define EVE_REG_RE_ACTIVE      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006028ul)
 
-/** @brief RE render counter — EVE5 only */
+/** @brief RE render counter - EVE5 only */
 #define EVE_REG_RE_RENDERS     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00602cul)
 
 /* =========================================================================
  * SWAPCHAIN REGISTERS
- * EVE5 only — hardware triple/quad-buffering.
+ * EVE5 only - hardware triple/quad-buffering.
  * ========================================================================= */
 
-/** @brief Swapchain 0 reset (write to reset) — EVE5 only */
+/** @brief Swapchain 0 reset (write to reset) - EVE5 only */
 #define EVE_REG_SC0_RESET      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006034ul)
-/** @brief Swapchain 0 ring size 1–4 — EVE5 only */
+/** @brief Swapchain 0 ring size 1-4 - EVE5 only */
 #define EVE_REG_SC0_SIZE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006038ul)
-/** @brief Swapchain 0 pointer 0 — EVE5 only */
+/** @brief Swapchain 0 pointer 0 - EVE5 only */
 #define EVE_REG_SC0_PTR0       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00603cul)
-/** @brief Swapchain 0 pointer 1 — EVE5 only */
+/** @brief Swapchain 0 pointer 1 - EVE5 only */
 #define EVE_REG_SC0_PTR1       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006040ul)
-/** @brief Swapchain 0 pointer 2 — EVE5 only */
+/** @brief Swapchain 0 pointer 2 - EVE5 only */
 #define EVE_REG_SC0_PTR2       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006044ul)
-/** @brief Swapchain 0 pointer 3 — EVE5 only */
+/** @brief Swapchain 0 pointer 3 - EVE5 only */
 #define EVE_REG_SC0_PTR3       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006048ul)
 
-/** @brief Swapchain 1 reset — EVE5 only */
+/** @brief Swapchain 1 reset - EVE5 only */
 #define EVE_REG_SC1_RESET      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00604cul)
-/** @brief Swapchain 1 ring size 1–4 — EVE5 only */
+/** @brief Swapchain 1 ring size 1-4 - EVE5 only */
 #define EVE_REG_SC1_SIZE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006050ul)
-/** @brief Swapchain 1 pointer 0 — EVE5 only */
+/** @brief Swapchain 1 pointer 0 - EVE5 only */
 #define EVE_REG_SC1_PTR0       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006054ul)
-/** @brief Swapchain 1 pointer 1 — EVE5 only */
+/** @brief Swapchain 1 pointer 1 - EVE5 only */
 #define EVE_REG_SC1_PTR1       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006058ul)
-/** @brief Swapchain 1 pointer 2 — EVE5 only */
+/** @brief Swapchain 1 pointer 2 - EVE5 only */
 #define EVE_REG_SC1_PTR2       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00605cul)
-/** @brief Swapchain 1 pointer 3 — EVE5 only */
+/** @brief Swapchain 1 pointer 3 - EVE5 only */
 #define EVE_REG_SC1_PTR3       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006060ul)
-/** @brief Swapchain 1 input valid (read) — EVE5 only */
+/** @brief Swapchain 1 input valid (read) - EVE5 only */
 #define EVE_REG_SC1_I_VALID    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00607cul)
-/** @brief Swapchain 1 input ready (write) — EVE5 only */
+/** @brief Swapchain 1 input ready (write) - EVE5 only */
 #define EVE_REG_SC1_I_READY    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006080ul)
-/** @brief Swapchain 1 input pointer (read) — EVE5 only */
+/** @brief Swapchain 1 input pointer (read) - EVE5 only */
 #define EVE_REG_SC1_I_PTR      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006084ul)
 
-/** @brief Swapchain 2 reset — EVE5 only */
+/** @brief Swapchain 2 reset - EVE5 only */
 #define EVE_REG_SC2_RESET      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006064ul)
-/** @brief Swapchain 2 ring size — EVE5 only */
+/** @brief Swapchain 2 ring size - EVE5 only */
 #define EVE_REG_SC2_SIZE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006068ul)
-/** @brief Swapchain 2 pointer 0 — EVE5 only */
+/** @brief Swapchain 2 pointer 0 - EVE5 only */
 #define EVE_REG_SC2_PTR0       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00606cul)
-/** @brief Swapchain 2 pointer 1 — EVE5 only */
+/** @brief Swapchain 2 pointer 1 - EVE5 only */
 #define EVE_REG_SC2_PTR1       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006070ul)
-/** @brief Swapchain 2 pointer 2 — EVE5 only */
+/** @brief Swapchain 2 pointer 2 - EVE5 only */
 #define EVE_REG_SC2_PTR2       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006074ul)
-/** @brief Swapchain 2 pointer 3 — EVE5 only */
+/** @brief Swapchain 2 pointer 3 - EVE5 only */
 #define EVE_REG_SC2_PTR3       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006078ul)
-/** @brief Swapchain 2 status — EVE5 only */
+/** @brief Swapchain 2 status - EVE5 only */
 #define EVE_REG_SC2_STATUS     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006780ul)
-/** @brief Swapchain 2 address — EVE5 only */
+/** @brief Swapchain 2 address - EVE5 only */
 #define EVE_REG_SC2_ADDR       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006784ul)
 
 /* =========================================================================
  * SCANOUT REGISTERS
- * EVE5 only — controls pixel output from swapchain to display.
+ * EVE5 only - controls pixel output from swapchain to display.
  * ========================================================================= */
 
-/** @brief Scanout 0 enable — EVE5 only */
+/** @brief Scanout 0 enable - EVE5 only */
 #define EVE_REG_SO_EN          EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006600ul)
 
-/** @brief Scanout pixel mode — EVE5 only */
+/** @brief Scanout pixel mode - EVE5 only */
 #define EVE_REG_SO_MODE        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0065f4ul)
 
-/** @brief Scanout 0 source — EVE5 only */
+/** @brief Scanout 0 source - EVE5 only */
 #define EVE_REG_SO_SOURCE      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0065f8ul)
 
-/** @brief Scanout 0 format — EVE5 only */
+/** @brief Scanout 0 format - EVE5 only */
 #define EVE_REG_SO_FORMAT      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f0065fcul)
 
 /* =========================================================================
  * LVDS REGISTERS
- * EVE5 only — LVDS transmitter / receiver interface.
+ * EVE5 only - LVDS transmitter / receiver interface.
  * ========================================================================= */
 
-/** @brief LVDSRX enable — EVE5 only */
+/** @brief LVDSRX enable - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_ENABLE  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006670ul)
-/** @brief LVDSRX capture enable — EVE5 only */
+/** @brief LVDSRX capture enable - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_CAPTURE EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006674ul)
-/** @brief LVDSRX pixel setup — EVE5 only */
+/** @brief LVDSRX pixel setup - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_SETUP   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006678ul)
-/** @brief LVDSRX destination frame address — EVE5 only */
+/** @brief LVDSRX destination frame address - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_DEST    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00667cul)
-/** @brief LVDSRX output pixel format — EVE5 only */
+/** @brief LVDSRX output pixel format - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_FORMAT  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006680ul)
-/** @brief LVDSRX dither enable — EVE5 only */
+/** @brief LVDSRX dither enable - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_DITHER  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006684ul)
-/** @brief LVDSRX frame counter — EVE5 only */
+/** @brief LVDSRX frame counter - EVE5 only */
 #define EVE_REG_LVDSRX_CORE_FRAMES  EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006698ul)
-/** @brief LVDSRX system set-up — EVE5 only */
+/** @brief LVDSRX system set-up - EVE5 only */
 #define EVE_REG_LVDSRX_SETUP        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800500ul)
-/** @brief LVDSRX analog block config — EVE5 only */
+/** @brief LVDSRX analog block config - EVE5 only */
 #define EVE_REG_LVDSRX_CTRL         EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800504ul)
-/** @brief LVDSRX status — EVE5 only */
+/** @brief LVDSRX status - EVE5 only */
 #define EVE_REG_LVDSRX_STAT         EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800508ul)
-/** @brief LVDSTX enables — EVE5 only */
+/** @brief LVDSTX enables - EVE5 only */
 #define EVE_REG_LVDSTX_EN           EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800300ul)
-/** @brief LVDSTX PLL and clock config — EVE5 only */
+/** @brief LVDSTX PLL and clock config - EVE5 only */
 #define EVE_REG_LVDSTX_PLLCFG       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800304ul)
-/** @brief LVDSTX channel 0 control — EVE5 only */
+/** @brief LVDSTX channel 0 control - EVE5 only */
 #define EVE_REG_LVDSTX_CTRL_CH0     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800314ul)
-/** @brief LVDSTX channel 1 control — EVE5 only */
+/** @brief LVDSTX channel 1 control - EVE5 only */
 #define EVE_REG_LVDSTX_CTRL_CH1     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800318ul)
-/** @brief LVDSTX status — EVE5 only */
+/** @brief LVDSTX status - EVE5 only */
 #define EVE_REG_LVDSTX_STAT         EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f80031cul)
-/** @brief LVDSTX error status — EVE5 only */
+/** @brief LVDSTX error status - EVE5 only */
 #define EVE_REG_LVDSTX_ERR_STAT     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800320ul)
 
 /* =========================================================================
  * EXTENT / WIDGET REGISTERS
- * EVE5 only — bounding box of the last widget rendered.
+ * EVE5 only - bounding box of the last widget rendered.
  * ========================================================================= */
 
-/** @brief Previous widget extent X0 — EVE5 only */
+/** @brief Previous widget extent X0 - EVE5 only */
 #define EVE_REG_EXTENT_X0      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f00403cul)
-/** @brief Previous widget extent Y0 — EVE5 only */
+/** @brief Previous widget extent Y0 - EVE5 only */
 #define EVE_REG_EXTENT_Y0      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f004040ul)
-/** @brief Previous widget extent X1 — EVE5 only */
+/** @brief Previous widget extent X1 - EVE5 only */
 #define EVE_REG_EXTENT_X1      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f004044ul)
-/** @brief Previous widget extent Y1 — EVE5 only */
+/** @brief Previous widget extent Y1 - EVE5 only */
 #define EVE_REG_EXTENT_Y1      EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f004048ul)
 
-/** @brief Object complete register (used with OPT_COMPLETEREG) — EVE5 only */
+/** @brief Object complete register (used with OPT_COMPLETEREG) - EVE5 only */
 #define EVE_REG_OBJECT_COMPLETE EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f004038ul)
 
 /* =========================================================================
  * EVE5 SYSTEM CONTROL REGISTERS
  * ========================================================================= */
 
-/** @brief Boot control byte — EVE5 only */
+/** @brief Boot control byte - EVE5 only */
 #define EVE_REG_BOOT_CONTROL   EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f006628ul)
-/** @brief Miscellaneous system configuration — EVE5 only */
+/** @brief Miscellaneous system configuration - EVE5 only */
 #define EVE_REG_SYS_CFG        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800420ul)
-/** @brief System status — EVE5 only */
+/** @brief System status - EVE5 only */
 #define EVE_REG_SYS_STAT       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800424ul)
-/** @brief CHIP_ID info — EVE5 only */
+/** @brief CHIP_ID info - EVE5 only */
 #define EVE_REG_CHIP_ID        EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800448ul)
-/** @brief EVE boot status — EVE5 only */
+/** @brief EVE boot status - EVE5 only */
 #define EVE_REG_BOOT_STATUS    EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f80044cul)
-/** @brief DDR DRAM type setting — EVE5 only */
+/** @brief DDR DRAM type setting - EVE5 only */
 #define EVE_REG_DDR_TYPE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800454ul)
 
 #endif /* _EVE_REGISTERS_H_ */

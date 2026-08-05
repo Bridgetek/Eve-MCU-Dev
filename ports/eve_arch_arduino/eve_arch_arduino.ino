@@ -1,9 +1,10 @@
 /**
- @file eve_arch_arduino.ino
+ * @file eve_arch_arduino.ino
+ * @details MCU-specific code for controlling EVE on Arduino devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,15 +38,13 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(ARDUINO)
 
 /* EVE MCU HEADER */
 
 #include <Arduino.h>
 #include <SPI.h>
-
-/* EVE MCU HEADER END */
 
 /** @brief Library Includes
  * NOTE That all the file used in the example sketch must be in the same directory
@@ -57,11 +56,16 @@
  */
 //@{
 extern "C" {
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 }
 //@}
+
+/* EVE MCU HEADER END */
 
 /* EVE MCU */
 
@@ -102,6 +106,8 @@ int MCU_Deinit(void) {
 }
 
 int MCU_Setup(void) {
+
+  /* Additional SPI Configuration */
   SPI.endTransaction();
 
   // Increase SPI speed to 8 MHz after initialisation is complete

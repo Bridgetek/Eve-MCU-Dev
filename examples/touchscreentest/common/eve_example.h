@@ -1,5 +1,5 @@
 /**
-    @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,6 +46,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -64,8 +67,6 @@ void eve_clear_sketch(void);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-#include "touch.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1,5 +1,5 @@
 /**
- @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,6 +46,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+#include "controls/fonts.h"
+
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -75,20 +79,11 @@ extern const uint32_t font0_size;
 #define ZOOM_OUT_3_4 ((1 << 16) * 3 / 4)
 //}
 
-/**
- @brief Functions called within the eve_example code. 
- */
-//{
+/* Functions called within the eve_example code. */
 uint32_t eve_init_fonts(uint8_t fontnumber);
-//}
 
-/**
- @brief Entry point to the example code .
- */
+/* Entry point to the example code */
 void eve_example(void);
-
-#include "touch.h"
-#include "controls/fonts.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

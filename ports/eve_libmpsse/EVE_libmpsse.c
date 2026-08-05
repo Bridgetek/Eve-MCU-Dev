@@ -1,9 +1,10 @@
 /**
- @file EVE_libmpsse.c
+ * @file EVE_libmpsse.c
+ * @details Platform-specific code for controlling EVE on MPSSE devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -46,6 +47,8 @@
 
 #pragma message ("Compiling " __FILE__ " for libMPSSE")
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -75,15 +78,23 @@
 #include "ftd2xx.h"
 #include "libmpsse_spi.h"
 
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+/* Include the EVE debug-output macro definitions */
+#include <EVE_debug.h>
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the MPSSE Platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
 #define MCU_BUFFER_SIZE 512
 uint8_t *MCU_buffer;
 uint16_t MCU_bufferLen;
-
-// This is the Windows Platform specific section and contains the functions which
-// enable the GPIO and SPI interfaces.
 
 /*
     MPSSE pin connections:
@@ -119,13 +130,13 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     ftStatus = SPI_OpenChannel(channel, &ftHandle);
     if (ftStatus != FT_OK)
     {
-        DEBUG_ERROR("Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
+        EVE_DEBUG_ERROR("Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
         exit (-2);
     }
     ftStatus = SPI_InitChannel(ftHandle, &channelConf);
     if (ftStatus != FT_OK)
     {
-        DEBUG_ERROR("Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
+        EVE_DEBUG_ERROR("Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
         exit (-3);
     }
     
@@ -147,24 +158,24 @@ int MCU_Init(void)
         ftStatus = SPI_GetChannelInfo(channel, &devList);
         if (ftStatus != FT_OK)
         {
-            DEBUG_PRINTF("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
+            EVE_DEBUG_PRINTF("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
             continue;
         }
 
-        DEBUG_PRINTF("SPI channel %u: ", (uint32_t)channel);
+        EVE_DEBUG_PRINTF("SPI channel %u: ", (uint32_t)channel);
         if (channel == USE_MPSSE)
         {
-            DEBUG_PRINTF("selected\n");
+            EVE_DEBUG_PRINTF("selected\n");
             /*print the dev info*/
-            DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
-            DEBUG_PRINTF("\t\tSerialNumber: %s\n", devList.SerialNumber);
-            DEBUG_PRINTF("\t\tDescription: %s\n", devList.Description);
+            EVE_DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
+            EVE_DEBUG_PRINTF("\t\tSerialNumber: %s\n", devList.SerialNumber);
+            EVE_DEBUG_PRINTF("\t\tDescription: %s\n", devList.Description);
 
             openChannel = channel;
         }
         else
         {
-            DEBUG_PRINTF("ignored\n");
+            EVE_DEBUG_PRINTF("ignored\n");
         }
     }
 
@@ -177,14 +188,14 @@ int MCU_Init(void)
     }
     else
     {
-        DEBUG_ERROR("No SPI channels found\n");
+        EVE_DEBUG_ERROR("No SPI channels found\n");
         return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        DEBUG_ERROR("Setup malloc failed\n");
+        EVE_DEBUG_ERROR("Setup malloc failed\n");
         return -1;
     }
     MCU_bufferLen = 0;
@@ -210,6 +221,8 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* Additional SPI Configuration */
+
     SPI_CloseChannel(ftHandle);
 
     // Increase SPI speed to 15 MHz after initialisation is complete
@@ -230,7 +243,7 @@ void MCU_transmit_buffer(void)
      if (FT_OK != ftStatus)
      {
          // spi master write failed
-        DEBUG_ERROR("MCU_transmit_buffer failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_transmit_buffer failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
     MCU_bufferLen = 0;
@@ -331,7 +344,7 @@ uint8_t MCU_SPIRead8(void)
      if (FT_OK != ftStatus)
      {
         // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead8 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead8 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -354,7 +367,7 @@ uint16_t MCU_SPIRead16(void)
      if (FT_OK != ftStatus)
      {
         // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -382,7 +395,7 @@ uint32_t MCU_SPIRead32(void)
      if (FT_OK != ftStatus)
      {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -404,7 +417,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
      if (FT_OK != ftStatus)
      {
         // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 }
@@ -485,5 +498,7 @@ uint32_t MCU_le32toh(uint32_t h)
     return le32toh(h);
 #endif // _WIN32
 }
+
+/* EVE MCU END */
 
 #endif /* defined(USE_MPSSE) */

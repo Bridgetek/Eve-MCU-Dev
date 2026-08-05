@@ -34,6 +34,7 @@ Sketch name is gyminterval_arduino
 ..\..\..\include\MCU.h -> gyminterval_arduino\MCU.h
 ..\..\..\include\EVE_config.h -> gyminterval_arduino\EVE_config.h
 ..\..\..\include\EVE_commands.h -> gyminterval_arduino\EVE_commands.h
+..\..\..\include\EVE_debug.h -> gyminterval_arduino\EVE_debug.h
 ..\..\..\include\EVE_registers.h -> gyminterval_arduino\EVE_registers.h
 ..\..\..\source\EVE_API.c -> gyminterval_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> gyminterval_arduino\EVE_HAL.ino
@@ -81,6 +82,7 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <MCU.h>` --> `#include "MCU.h"`
 - `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
 - `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
 - `#include <patch_base.h>` --> `#include "patch_base.h"`
 
@@ -96,6 +98,7 @@ MCU.h
 HAL.h    
 EVE_commands.h   
 EVE_config.h 
+EVE_debug.h 
 EVE_registers.h   
 EVE_API.ino   
 EVE_HAL.ino   

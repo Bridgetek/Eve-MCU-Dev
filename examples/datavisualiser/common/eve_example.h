@@ -1,5 +1,5 @@
 /**
- @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -46,6 +46,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
 #include "touch.h"
 #include "controls/sound.h"
 #include "maths/trig_furman.h"

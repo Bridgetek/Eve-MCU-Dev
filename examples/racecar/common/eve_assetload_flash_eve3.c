@@ -1,5 +1,5 @@
 /**
- @file eve_assetload_flash_eve3.c
+ * @file eve_assetload_flash_eve3.c
  */
 /*
  * ============================================================================
@@ -43,8 +43,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 

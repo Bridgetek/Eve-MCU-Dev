@@ -59,15 +59,15 @@ In the function `eve_example` the basic format is as follows:
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
     // Load images (and obtain the start of the sketch bitmap)
-    DEBUG_PRINTF("Loading images...\n");
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
 
     // Reset calibration data to force re-calibration on first call
@@ -83,15 +83,15 @@ void eve_example(void)
     while (1)
     {
         // Calibrate the display
-        DEBUG_PRINTF("Calibrating display...\n");
+        EVE_DEBUG_PRINTF("Calibrating display...\n");
         if (eve_calibrate() != 0)
         {
-            DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+            EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
             while(1);
         }
 
         // Start example code
-        DEBUG_PRINTF("Starting demo:\n");
+        EVE_DEBUG_PRINTF("Starting demo:\n");
         eve_display();
     }
 }

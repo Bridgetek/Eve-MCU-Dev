@@ -1,5 +1,5 @@
 /**
- @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -46,13 +46,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Entry point to the example code */
-void eve_example(void);
-
+/* Headers required for this example */
 #include "touch.h"
 #include "maths/trig_furman.h"
 #include "dials/flight_controls.h"
 #include "dials/compass_controls.h"
+
+/* Entry point to the example code */
+void eve_example(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

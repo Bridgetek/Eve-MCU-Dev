@@ -1,8 +1,6 @@
 /**
-  @file main.c
-  @brief
-  Empty source file for a new FT90x project.
-
+ * @file main.c
+ * @brief Example source file for a new FT90x project.
  */
 /*
  * ============================================================================

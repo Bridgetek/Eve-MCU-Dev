@@ -151,27 +151,27 @@ void eve_example(const char *assets)
     eve_asset_properties(assets);
     
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Load assets into RAM_G
-    DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    EVE_DEBUG_PRINTF("Loading assets into RAM_G...\n");
     eve_display_load_assets();   
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
 ```

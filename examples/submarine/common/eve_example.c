@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -42,8 +42,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <EVE.h>
-#include <MCU.h> // for DEBUG_PRINTF()
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 
@@ -474,22 +474,22 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }

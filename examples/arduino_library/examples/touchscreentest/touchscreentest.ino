@@ -1,5 +1,5 @@
 /**
- @file touchscreentest_EVE### EVE API VER ###.ino
+ * @file touchscreentest_EVE### EVE API VER ###.ino
  */
 /*
  * ============================================================================

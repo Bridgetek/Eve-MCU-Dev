@@ -1,5 +1,6 @@
 /**
- @file EVE_MCU_FT9XX.c
+ * @file EVE_MCU_FT9XX.c
+ * @details MCU-specific code for controlling EVE on FT9xx devices.
  */
 /*
  * ============================================================================
@@ -37,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_FT9XX)
 
 #pragma message "Compiling " __FILE__ " for BridgeTek FT9XX"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -50,7 +53,9 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 // SPI Master pins
@@ -78,9 +83,12 @@
 
 #endif //
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the FT9xx platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -133,10 +141,11 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* QSPI configuration */
 #if defined QUADSPI_ENABLE
 
 #if IS_EVE_API(2,3,4)
-    // Turn on EVE quad-SPI for FT81x devices.
+    // Turn on EVE quad-SPI for FT81x/BT81x devices.
     MCU_CSlow();
     MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
     MCU_SPIWrite8(2);
@@ -145,7 +154,7 @@ int MCU_Setup(void)
     // Turn on FT9xx quad-SPI.
     spi_option(SPIM, spi_option_bus_width, 4);
 #elif IS_EVE_API(5)
-    // Turn on EVE quad-SPI for FT81x devices.
+    // Turn on EVE quad-SPI for BT82x devices.
     MCU_CSlow();
     MCU_SPIWrite32(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
     MCU_SPIWrite32(2);
@@ -156,6 +165,7 @@ int MCU_Setup(void)
 #endif // IS_EVE_API(2,3,4,5)
 #endif // QUADSPI_ENABLE
 
+    /* Additional SPI Configuration */
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
 
@@ -305,5 +315,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_FT9XX) */

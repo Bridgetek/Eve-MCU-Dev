@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ * @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -46,6 +46,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "maths/trig_furman.h"
 #include "patch_textscale.h"
 
 /* Functions called from eve_example code to platform specific code */
@@ -127,8 +129,6 @@ int eve_loadpatch_impl(void);
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
-
-#include "maths/trig_furman.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1,6 +1,6 @@
 /**
-    @file touch.h
- **/
+ * @file touch.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -41,10 +41,6 @@
 #define EVE_TOUCH_H
 
 #include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 /**
  @brief Key for identifying if touchscreen calibration values are programmed correctly.
@@ -107,9 +103,5 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib);
  */
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
 //@}
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif /* EVE_TOUCH_H */

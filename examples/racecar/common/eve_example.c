@@ -1,6 +1,6 @@
 
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
  /*
   * ============================================================================
@@ -43,8 +43,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 
@@ -2359,9 +2359,9 @@ while(1)
             DLPS = DLCount;
             DLCount = 0;
 #if defined(EVE_COPROC_PROFILE)
-            DEBUG_PRINTF("CoPro: %d DL: %d ", profile, EVE_LIB_GetDlProfile());
+            EVE_DEBUG_PRINTF("CoPro: %d DL: %d ", profile, EVE_LIB_GetDlProfile());
 #endif
-            DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, DLPS);
+            EVE_DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, DLPS);
         } 
     }
 }
@@ -2375,7 +2375,7 @@ int eve_loadpatch(void)
     char actual[128];
 
     EVE_LIB_GetCoProException(actual);
-    DEBUG_PRINTF("%s\n", actual);
+    EVE_DEBUG_PRINTF("%s\n", actual);
 
     return 0;
 }
@@ -2389,18 +2389,18 @@ void eve_example(const char *assets)
     eve_asset_properties(assets); 
     
   // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
     // Load assets into RAM_G
-    DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    EVE_DEBUG_PRINTF("Loading assets into RAM_G...\n");
     eve_display_load_assets();   
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
