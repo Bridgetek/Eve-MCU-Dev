@@ -138,24 +138,14 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-//#ifdef FT81X_ENABLE
-// Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
-//	MCU_CSlow();
-//	MCU_SPIWrite24(MCU_htobe32((REG_SPI_WIDTH << 8) | (1 << 31)));
-//	MCU_SPIWrite8(2);
-//	MCU_CShigh();
+    /* QSPI Configuration */
+//#ifdef QUADSPI_ENABLE
+//#endif // QUADSPI_ENABLE
 
-// Turn on quad-SPI.
-//	spi_option(SPIM, spi_option_bus_width, 4);
-
-//#endif // FT81X_ENABLE
-
-// Turn off SPI buffering. Timing of chip select is critical.
-//	spi_option(SPIM, spi_option_fifo, 0);
+    /* Additional SPI Configuration */
 
     return 0;
 }
-
 
 // ########################### GPIO CONTROL ####################################
 

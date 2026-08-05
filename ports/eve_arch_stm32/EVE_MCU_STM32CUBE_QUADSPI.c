@@ -155,6 +155,7 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* QSPI Configuration */
     /* Increase SPI speed after initialisation is complete.
      * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
      * This will set the QUADSPI to maximum speed configured

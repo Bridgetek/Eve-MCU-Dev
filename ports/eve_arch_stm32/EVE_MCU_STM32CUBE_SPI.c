@@ -123,6 +123,7 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* Additional SPI Configuration */
     /* Increase SPI speed after initialisation is complete.
      * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
      * This will set the SPI to maximum speed configured

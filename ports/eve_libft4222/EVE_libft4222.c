@@ -348,6 +348,7 @@ int MCU_Setup(void)
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
     ftIsQuad = FALSE;
 #endif // QUADSPI_ENABLE
+
     return 0;
 }
 

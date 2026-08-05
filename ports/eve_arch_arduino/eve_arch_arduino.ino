@@ -106,6 +106,8 @@ int MCU_Deinit(void) {
 }
 
 int MCU_Setup(void) {
+
+  /* Additional SPI Configuration */
   SPI.endTransaction();
 
   // Increase SPI speed to 8 MHz after initialisation is complete

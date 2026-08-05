@@ -105,6 +105,7 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* Additional SPI Configuration */
     hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     if (HAL_SPI_Init(&hspi1) != HAL_OK)
     {

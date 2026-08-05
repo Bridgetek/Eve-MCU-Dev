@@ -85,10 +85,11 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-/* function to configure QSPI*/
-//#ifdef FT81X_ENABLE
+    /* QSPI Configuration */
+//#ifdef QUADSPI_ENABLE
+//#endif // QUADSPI_ENABLE
 
-//#endif // FT81X_ENABLE
+    /* Additional SPI Configuration */
     return 0;
 }
 

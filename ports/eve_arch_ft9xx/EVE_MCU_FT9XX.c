@@ -141,10 +141,11 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* QSPI configuration */
 #if defined QUADSPI_ENABLE
 
 #if IS_EVE_API(2,3,4)
-    // Turn on EVE quad-SPI for FT81x devices.
+    // Turn on EVE quad-SPI for FT81x/BT81x devices.
     MCU_CSlow();
     MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
     MCU_SPIWrite8(2);
@@ -153,7 +154,7 @@ int MCU_Setup(void)
     // Turn on FT9xx quad-SPI.
     spi_option(SPIM, spi_option_bus_width, 4);
 #elif IS_EVE_API(5)
-    // Turn on EVE quad-SPI for FT81x devices.
+    // Turn on EVE quad-SPI for BT82x devices.
     MCU_CSlow();
     MCU_SPIWrite32(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
     MCU_SPIWrite32(2);
@@ -164,6 +165,7 @@ int MCU_Setup(void)
 #endif // IS_EVE_API(2,3,4,5)
 #endif // QUADSPI_ENABLE
 
+    /* Additional SPI Configuration */
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
 

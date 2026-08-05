@@ -221,6 +221,8 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* Additional SPI Configuration */
+
     SPI_CloseChannel(ftHandle);
 
     // Increase SPI speed to 15 MHz after initialisation is complete

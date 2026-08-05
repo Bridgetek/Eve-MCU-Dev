@@ -130,9 +130,11 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-#if defined QUADSPI_ENABLE
-#endif // QUADSPI_ENABLE
+    /* QSPI Configuration */
+//#ifdef QUADSPI_ENABLE
+//#endif // QUADSPI_ENABLE
 
+    /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     spi_init(spi_port, 25 * 1000 * 1000);
