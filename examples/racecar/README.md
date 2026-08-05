@@ -18,7 +18,7 @@ The following is an screenshot of the racecar example.
 
 ## Assets
 
-The program contains image assets, font assets and for BT82x, an extension patch asset. These assets can be stored in different locations that suit the platform that the example code is being run on. The options are to store them in the EVE Flash, in the example program code or as files on the host system. The later option is not suitable for embedded systems without a file system. It is recommended that the assets are stored in EVE Flash as this is the fastest method of loading them into RAM_G when the example is started.
+The program contains image assets, font assets and for BT82x, an extension patch asset. These assets can be stored in different locations that suit the platform that the example code is being run on. The options are to store them in the EVE Flash, in the example program code or as files on the host system. The latter option is not suitable for embedded systems without a file system. It is recommended that the assets are stored in EVE Flash as this is the fastest method of loading them into RAM_G when the example is started.
 
 The asset storage method is set in the file `eve_example.h` file in the `ASSETS` macro. Change this macro in the file to choose the method. The macro can be set to one of 4 different values:
 
@@ -48,7 +48,7 @@ There are no runtime requirements for the example application.
 
 #### Emulator 
 
-A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in the `racecar\emulator` folder. When using the emualtor port with the `ASSETS` macro configured to `USE_FLASH` the appliation must define the correct flash file to use for the emulator using the emulator specific `EVE_EMULATOR_FLASH_FILE` marco.
+A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in the `racecar\emulator` folder. When using the emualator port with the `ASSETS` macro configured to `USE_FLASH` the application must define the correct flash file to use for the emulator using the emulator specific `EVE_EMULATOR_FLASH_FILE` macro.
 
 The macro can be defined in either the `Visual Studio` project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, the `CMakeLists.txt` file , or during command line compilation.
 
@@ -111,7 +111,7 @@ The example application must be passed a command line argument telling it where 
 
 ### `USE_C_ARRAYS` 
 
-C arrays containing PNG compressed images or raw data for RAM_G are compiled into the example program code. The C arrays and are always compiled in the example. The data will be discarded by the linker if the data is not used in the final application. This method does not require use of the EVE device flash or the host PC file system at the expense of larger binary code for the example. With the `USE_C_ARRAYS` method each asset has PNG images and raw data encodeded into a C source file with the data encoded into an array. The arrays and a counterpart constant `uint32_t` containing the size of the array are included as an `extern` in the `eve_assetload_array.c` file. This allows them to be compiled into the example. 
+C arrays containing PNG compressed images or raw data for RAM_G are compiled into the example program code. The C arrays and are always compiled in the example. The data will be discarded by the linker if the data is not used in the final application. This method does not require use of the EVE device flash or the host PC file system at the expense of larger binary code for the example. With the `USE_C_ARRAYS` method each asset has PNG images and raw data encoded into a C source file with the data encoded into an array. The arrays and a counterpart constant `uint32_t` containing the size of the array are included as an `extern` in the `eve_assetload_array.c` file. This allows them to be compiled into the example. 
 
 #### Setup
 
@@ -216,13 +216,13 @@ void eve_example(const char *assets)
     eve_display();          // Run Application
 }
 ```
-The `eve_asset_properties()` function is intially called to configure specific properties for each asset (size, height, witdth, format, etc) used in the applciaiton.
+The `eve_asset_properties()` function is intially called to configure specific properties for each asset (size, height, width, format, etc) used in the application.
 
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Following this the `eve_display_load_assets()` funciton is called to load the assets into RAM_G for use in the applciation, using the asset properties conigured by `eve_asset_properties()`.
+Following this the `eve_display_load_assets()` function is called to load the assets into RAM_G for use in the application, using the asset properties configured by `eve_asset_properties()`.
 
-Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
+Once the preceding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
 ### `eve_helper.c`
 
@@ -238,7 +238,7 @@ This code facilitates loading asset files directly from the file system. When `U
 
 ### `eve_assetload_flash.c`
 
-This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. The mapping of the flash may be different for BT815/6, BT817/8 and BT820 so seperate files contain a mapping function. These are `eve_assetload_flash_eve5.c` for BT820, `eve_assetload_flash_eve4.c` for BT817/8 and `eve_assetload_flash_eve3.c` for BT815/6.
+This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. The mapping of the flash may be different for BT815/6, BT817/8 and BT820 so separate files contain a mapping function. These are `eve_assetload_flash_eve5.c` for BT820, `eve_assetload_flash_eve4.c` for BT817/8 and `eve_assetload_flash_eve3.c` for BT815/6.
 
 ### `eve_assetload_flash_eve5.c`
 
