@@ -46,6 +46,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -64,9 +67,6 @@ uint32_t eve_load_images(uint32_t);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-/* Headers required for this example */
-#include "touch.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

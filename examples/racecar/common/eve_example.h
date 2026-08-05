@@ -46,15 +46,15 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "maths/trig_furman.h"
+#include "patch_textscale.h"
+
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
 /* Entry point to the example code */
 void eve_example(const char *assets);
-
-/* Headers required for this example */
-#include "maths/trig_furman.h"
-#include "patch_textscale.h"
 
 // ---- Method for storing assets ----
 

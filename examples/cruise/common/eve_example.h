@@ -46,16 +46,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+#include "widgets/sevenseg.h"
+
 /* Functions called within the eve_example code */
 uint8_t eve_romfont_width(uint8_t font);
 uint8_t eve_romfont_height(uint8_t font);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-/* Headers required for this example */
-#include "touch.h"
-#include "widgets/sevenseg.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

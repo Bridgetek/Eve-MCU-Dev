@@ -45,17 +45,17 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Functions called from eve_example code to platform specific code */
-uint32_t platform_get_time(void);
-
-/* Entry point to the example code */
-void eve_example(const char *assets);
-
 /* Headers required for this example */
 #include "touch.h"
 #include "widgets/sevenseg.h"
 #include "widgets/dialogs.h"
 #include "patch_medinfo.h"
+
+/* Functions called from eve_example code to platform specific code */
+uint32_t platform_get_time(void);
+
+/* Entry point to the example code */
+void eve_example(const char *assets);
 
 // ---- Method for storing assets ----
 

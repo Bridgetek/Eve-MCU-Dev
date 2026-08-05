@@ -46,6 +46,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+#include "controls/fonts.h"
+
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
@@ -80,10 +84,6 @@ uint32_t eve_init_fonts(uint8_t fontnumber);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-/* Headers required for this example */
-#include "touch.h"
-#include "controls/fonts.h"
 
 #ifdef __cplusplus
 } /* extern "C" */
