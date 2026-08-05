@@ -41,6 +41,9 @@
 #define _EVE_EXAMPLE_H
 
 #include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
@@ -256,5 +259,9 @@ void graph_draw(uint8_t num, uint32_t pos, uint32_t rpos, uint32_t x, uint32_t y
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

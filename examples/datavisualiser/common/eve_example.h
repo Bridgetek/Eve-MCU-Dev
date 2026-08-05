@@ -42,6 +42,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Functions called from eve_example code to platform specific code */
 int8_t platform_calib_init(void);
 int8_t platform_calib_write(struct touchscreen_calibration *calib);
@@ -56,5 +60,9 @@ void eve_example(void);
 #include "controls/sound.h"
 #include "maths/trig_furman.h"
 #include "controls/arcs.h"
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

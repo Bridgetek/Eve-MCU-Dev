@@ -42,6 +42,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Entry point to the example code */
 void eve_example(void);
 
@@ -50,5 +54,9 @@ void eve_example(void);
 #include "maths/trig_furman.h"
 #include "dials/flight_controls.h"
 #include "dials/compass_controls.h"
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

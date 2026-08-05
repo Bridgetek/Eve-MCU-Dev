@@ -42,6 +42,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
@@ -125,5 +129,9 @@ int eve_loadpatch_impl(void);
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

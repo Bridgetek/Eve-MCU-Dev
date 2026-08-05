@@ -42,6 +42,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
@@ -53,5 +57,9 @@ void eve_example(void);
 #include "controls/arcs.h"
 #include "controls/fonts.h"
 #include "controls/sound.h"
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */

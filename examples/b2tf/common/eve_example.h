@@ -42,6 +42,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Functions called within the eve_example code */
 uint8_t eve_romfont_width(uint8_t font);
 uint8_t eve_romfont_height(uint8_t font);
@@ -52,5 +56,9 @@ void eve_example(void);
 /* Headers required for this example */
 #include "touch.h"
 #include "widgets/sevenseg.h"
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif /* __cplusplus */
 
 #endif /* _EVE_EXAMPLE_H */
