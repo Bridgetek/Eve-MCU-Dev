@@ -1,5 +1,6 @@
 /**
  * @file EVE_debug.h
+ * @details file provides platform specific macro definitions for debug messaging.
  */
 /*
  * ============================================================================
@@ -67,17 +68,15 @@
  * the debug macros expand to no-op expressions.
  */
 
+/* DEBUG_LEVEL=0 */
+#if defined(DEBUG_LEVEL)
+/* select from supported platforms */
 #if defined(PLATFORM_RASPBERRYPI) || \
     defined(USE_LINUX_SPI_DEV) || \
     defined(USE_MPSSE) || \
     defined(USE_FT4222) || \
     defined(PLATFORM_EMULATOR)
-#define EVE_DEBUG_USES_STDIO
-#endif
 
-#if defined(DEBUG_LEVEL)
-
-#if defined(EVE_DEBUG_USES_STDIO)
 #include <stdio.h>
 #define EVE_DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 
@@ -91,17 +90,27 @@
 #define EVE_DEBUG_ERROR(...) printf("[ERROR] " __VA_ARGS__)
 
 #else
+/* else map to no op if no platfrom support */
 #define EVE_DEBUG_ERROR(...) ((void)0)
 
-#endif /* EVE_DEBUG_USES_STDIO */
+#endif
+
 #else
+/* else map to no op if DEBUG_LEVEL is not defined */
 #define EVE_DEBUG_ERROR(...) ((void)0)
 
-#endif /* DEBUG_LEVEL */
+#endif /* defined(DEBUG_LEVEL) */
 
+/* DEBUG_LEVEL>0 */
 #if defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)
+/* select from supported platforms */
+#if defined(PLATFORM_RASPBERRYPI) || \
+    defined(USE_LINUX_SPI_DEV) || \
+    defined(USE_MPSSE) || \
+    defined(USE_FT4222) || \
+    defined(PLATFORM_EMULATOR) || \
+    defined(PLATFORM_RP2040)
 
-#if defined(EVE_DEBUG_USES_STDIO) || defined(PLATFORM_RP2040)
 #include <stdio.h>
 #define EVE_DEBUG_PRINTF(...) printf(__VA_ARGS__)
 
@@ -110,17 +119,16 @@
 #define EVE_DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
 
 #else
+/* else map to no op if no platfrom support */
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
-#endif /* EVE_DEBUG_USES_STDIO || PLATFORM_RP2040  */
-#else 
-#define EVE_DEBUG_PRINTF(...) ((void)0)
-
-#endif /* DEBUG_LEVEL > 0 */
-
-#ifdef EVE_DEBUG_USES_STDIO
-#undef EVE_DEBUG_USES_STDIO
 #endif
+
+#else
+/* else map to no op if DEBUG_LEVEL is not defined */
+#define EVE_DEBUG_PRINTF(...) ((void)0)
+
+#endif /* defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0) */
 
 /* EVE DEBUG END */
 
