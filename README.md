@@ -121,6 +121,7 @@ The library is structured as follows. There are common sections containing sourc
 - **`\include\EVE.h`** Header file to include to access all required programming interface entry points and definitions.
 - `\include\EVE_commands.h` Header file which provides cross-generation EVE command and option definitions.
 - **`\include\EVE_config.h`** Overridable configuration file for target application.
+- `\include\EVE_debug.h` Header file which provides platform specific macro definitions for debug messaging.
 - `\include\EVE_registers.h` Header file which provides cross-generation EVE register address map.
 - `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - `\include\MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
