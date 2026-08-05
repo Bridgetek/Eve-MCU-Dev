@@ -200,10 +200,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     line = re.sub(r'\beve\.(ROMFONT_\w+)\b', 'Bridgetek_EVE' + str_full_version + r'::\g<1>', line)
                     # Rename refereces to EVE_DISP_WIDTH/HEIGHT to class member
                     line = re.sub(r'\bEVE_(DISP_\w+)\b', r'eve.\g<1>()', line)
-                    # Rename refereces to DEBUG_PRINTF to Serial.print
-                    line = re.sub(r'\bDEBUG_PRINTF\(', r'Serial.print(', line)
-                    # Rename refereces to DEBUG_ERROR to Serial.print
-                    line = re.sub(r'\bDEBUG_ERROR\(', r'Serial.print(', line)
+                    # Rename refereces to EVE_DEBUG_PRINTF to Serial.print
+                    line = re.sub(r'\bEVE_DEBUG_PRINTF\(', r'Serial.print(', line)
+                    # Rename refereces to EVE_DEBUG_ERROR to Serial.print
+                    line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
                     # Add extern or definition of the EVE class
                     extern = ""
                     if not file_out.endswith("eve_example.ino"):
@@ -402,7 +402,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
             exit(0)
 
 # Collate header files needed (from include directory)
-dist_inc_files = ["HAL.h", "MCU.h", "EVE_registers.h", "EVE_commands.h"]
+dist_inc_files = ["HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h"]
 
 # Destination API file
 dest_api = os.path.join(dest_lib,"EVE_API.c")
@@ -569,6 +569,10 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                 elif definep[0].startswith("RAM_G_SIZE"):
                     pass
                 elif definep[0].startswith("API_SELECT"):
+                    pass
+                elif definep[0].startswith("DEBUG_ERROR"):
+                    pass
+                elif definep[0].startswith("DEBUG_PRINTF"):
                     pass
                 else:
                     cppline = f"      {definep[0]} = {definep[1]},"

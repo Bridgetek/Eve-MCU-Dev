@@ -1,5 +1,5 @@
 /**
-  @file main.c
+ * @file main.c
  */
 /*
  * ============================================================================
@@ -22,17 +22,17 @@
  * There are no warranties (or similar) in relation to the quality of the
  * Software. You use it at your own risk.
  * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of FTDI liability for certain types of loss
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
  * such as: special loss or damage; incidental loss or damage; indirect or
  * consequential loss or damage; loss of income; loss of business; loss of
  * profits; loss of revenue; loss of contracts; business interruption; loss of
  * the use of money or anticipated savings; loss of information; loss of
  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
  * corruption of data.
- * There is a monetary cap on FTDI's liability.
+ * There is a monetary cap on Bridgetek's liability.
  * The Software may have subsequently been amended by another user and then
  * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, FTDI
+ * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
  */
@@ -48,10 +48,7 @@
 #include <sys/time.h>
 #endif
 
-typedef struct timespec platform_time_t;
-
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+#include <EVE.h> 
 
 #include "eve_example.h"
 
@@ -64,6 +61,26 @@ void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
+/** @brief Portable version of fopen/fopen_s
+ */
+//@{
+FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
+//@}
+
 /** @brief Functions used to get platform time
  */
 //@{
@@ -72,6 +89,8 @@ void setup(void);
 // This will make a glock_gettime function similar enough to POSIX.
 #include <windows.h>
 #include <winnt.h>
+
+typedef struct timespec platform_time_t;
 
 #define CLOCK_MONOTONIC 0
 #define MS_PER_SEC      1000ULL     // MS = milliseconds
@@ -109,24 +128,6 @@ static int clock_gettime(int clockname, struct timespec* tv)
 }
 #endif
 
-/** @brief Portable version of fopen/fopen_s
- */
-FILE *port_fopen(char const * _FileName, char const * _Mode)
-{
-#if defined(_MSC_VER)
-    FILE *h1;
-    errno_t err;
-    err = fopen_s(&h1, _FileName, _Mode);
-    if (err)
-    {
-        return NULL;
-    }
-    return h1;
-#else
-    return fopen(_FileName, _Mode);
-#endif
-}
-
 static void get_platform_time(platform_time_t *tm)
 {
     clock_gettime(CLOCK_MONOTONIC, tm);
@@ -157,7 +158,7 @@ int main(int argc, char **argv)
     setup();
 
 #if (ASSETS == USE_FLASH)
-    DEBUG_PRINTF("Ensure device Flash is programmed with image in \"assets\" directory.\n");
+    EVE_DEBUG_PRINTF("Ensure device Flash is programmed with image in \"assets\" directory.\n");
 #elif (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)
     if (argc > 1)
     {
@@ -166,9 +167,9 @@ int main(int argc, char **argv)
     else
     {
 #if (ASSETS == USE_FLASHIMAGE)
-        DEBUG_PRINTF("USAGE: The path to the flash images must be passed as a parameter.\n");
+        EVE_DEBUG_PRINTF("USAGE: The path to the flash images must be passed as a parameter.\n");
 #else // (ASSETS == USE_FILES)
-        DEBUG_PRINTF("USAGE: The path to the assets must be passed as a parameter.\n");
+        EVE_DEBUG_PRINTF("USAGE: The path to the assets must be passed as a parameter.\n");
 #endif
         exit(-1);
     }

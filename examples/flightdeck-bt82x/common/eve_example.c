@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -41,8 +41,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #if IS_EVE_API(1,2,3,4)
 #error This example requires EVE API 5 or above.
@@ -106,7 +106,7 @@ uint32_t eve_load_image(const uint8_t *img, const uint32_t sz, uint32_t address,
     // EVE4 and EVE5 support CMD_GETIMAGE for CMD_LOADIMAGE results
     EVE_LIB_GetImage(&dummy, &fmt, &w, &h, &dummy);
 #endif
-    DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, fmt);
+    EVE_DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, fmt);
 
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -209,7 +209,7 @@ void video_LVDS(void)
     uint32_t lvdsrx_data_addr;
     uint32_t conn;
 
-    DEBUG_PRINTF("LVDS start...\n");
+    EVE_DEBUG_PRINTF("LVDS start...\n");
     eve_message("LVDS start...");
     lvds_connected = 1;
     EVE_LIB_BeginCoProList();
@@ -230,7 +230,7 @@ void video_LVDS(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    DEBUG_PRINTF("Waiting for LVDS connection...\n");
+    EVE_DEBUG_PRINTF("Waiting for LVDS connection...\n");
     do
     {
         eve_message("Waiting for LVDS connection...");
@@ -247,7 +247,7 @@ void video_LVDS(void)
     lvdsrx_data_addr_prev = 0;
     lvdsrx_data_addr = EVE_LIB_GetResult(1);
 
-    DEBUG_PRINTF("Demo starting...\n");
+    EVE_DEBUG_PRINTF("Demo starting...\n");
     eve_message("Demo starting...");
 
     // Main loop
@@ -272,7 +272,7 @@ void video_LVDS(void)
             if (lvds_connected == 2) 
             {
                 // Disable LVDS
-                DEBUG_PRINTF("LVDS sync lost stopped\n");
+                EVE_DEBUG_PRINTF("LVDS sync lost stopped\n");
                 EVE_LIB_BeginCoProList();
                 EVE_CMD_LVDSSTOP();
                 EVE_LIB_EndCoProList();
@@ -282,7 +282,7 @@ void video_LVDS(void)
             if (lvds_connected == 0)
             {
                 // Enable LVDS
-                DEBUG_PRINTF("LVDS re-start\n");
+                EVE_DEBUG_PRINTF("LVDS re-start\n");
                 EVE_LIB_BeginCoProList();
                 EVE_CMD_LVDSSTART();
                 EVE_LIB_EndCoProList();
@@ -295,7 +295,7 @@ void video_LVDS(void)
             if (lvds_connected == 1)
             {
                 // Sync established
-                DEBUG_PRINTF("LVDS re-synced\n");
+                EVE_DEBUG_PRINTF("LVDS re-synced\n");
                 // 2 is normal connected state
                 lvds_connected = 2;
             }
@@ -345,7 +345,7 @@ void eve_display(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    DEBUG_PRINTF("Swapchain 2: 0x%x and 0x%x\n", EVE_LIB_MemRead32(EVE_REG_SC2_PTR0), EVE_LIB_MemRead32(EVE_REG_SC2_PTR1));
+    EVE_DEBUG_PRINTF("Swapchain 2: 0x%x and 0x%x\n", EVE_LIB_MemRead32(EVE_REG_SC2_PTR0), EVE_LIB_MemRead32(EVE_REG_SC2_PTR1));
 
     video_LVDS();
 }
@@ -354,29 +354,29 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
-    DEBUG_PRINTF("Loading patch...\n");
+    EVE_DEBUG_PRINTF("Loading patch...\n");
     eve_loadpatch();
  
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Load backup image
-    DEBUG_PRINTF("Loading image...\n");
+    EVE_DEBUG_PRINTF("Loading image...\n");
     eve_load_image(lake_wanaka, lake_wanaka_size, 0, HND_BACKUP);
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }

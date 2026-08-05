@@ -1,9 +1,10 @@
 /**
- @file EVE_MCU_NXP.c
+ * @file EVE_MCU_NXP.c
+ * @details MCU-specific code for controlling EVE on NXP_K64 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,24 +38,33 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_NXPK64)
 
 #pragma message "Compiling " __FILE__ " for NXP K64"
+
+/* EVE MCU HEADER */
 
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
 
-
 #include "MK64F12.h"
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the NXPK64 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -176,20 +186,11 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-//#ifdef FT81X_ENABLE
-// Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
-//	MCU_CSlow();
-//	MCU_SPIWrite24(MCU_htobe32((REG_SPI_WIDTH << 8) | (1 << 31)));
-//	MCU_SPIWrite8(2);
-//	MCU_CShigh();
+    /* QSPI Configuration */
+//#ifdef QUADSPI_ENABLE
+//#endif // QUADSPI_ENABLE
 
-// Turn on quad-SPI.
-//	spi_option(SPIM, spi_option_bus_width, 4);
-
-//#endif // FT81X_ENABLE
-
-// Turn off SPI buffering. Timing of chip select is critical.
-//	spi_option(SPIM, spi_option_fifo, 0);
+    /* Additional SPI Configuration */
 
     return 0;
 }
@@ -435,5 +436,7 @@ uint32_t MCU_le32toh (uint32_t h)
 {
         return bswap32(h);
 }
+
+/* EVE MCU */
 
 #endif /* defined(PLATFORM_NXPK64) */

@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
  /*
   * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -7,7 +7,7 @@
   *
   * This source code ("the Software") is provided by Bridgetek Pte Ltd
   * ("Bridgetek") subject to the licence terms set out
-  * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+  * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
   * You must read the Licence Terms before downloading or using the Software.
   * By installing or using the Software you agree to the Licence Terms. If you
   * do not agree to the Licence Terms then do not download or use the Software.
@@ -40,8 +40,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 
@@ -2430,26 +2430,26 @@ void eve_display(void)
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
     
     // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
     sound_enable();
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }

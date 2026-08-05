@@ -1,5 +1,5 @@
 /**
- @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,13 +46,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Entry point to the example code */
-void eve_example(void);
-
+/* Headers required for this example */
 #include "touch.h"
 #include "dials/flight_controls.h"
 #include "dials/compass_controls.h"
 #include "maths/trig_furman.h"
+
+/* Entry point to the example code */
+void eve_example(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1,5 +1,5 @@
 /**
- @file eve_example.h
+ * @file eve_example.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,16 +46,17 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+#include "controls/arcs.h"
+#include "controls/fonts.h"
+#include "controls/sound.h"
+
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-#include "touch.h"
-#include "controls/arcs.h"
-#include "controls/fonts.h"
-#include "controls/sound.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

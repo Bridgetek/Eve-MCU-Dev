@@ -1,5 +1,5 @@
 /**
- @file medinfo_EVE### EVE API VER ###.ino
+ * @file medinfo_EVE### EVE API VER ###.ino
  */
 /*
  * ============================================================================

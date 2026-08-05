@@ -1,3 +1,7 @@
+/**
+ * @file main.c
+ * @brief Example source file for a new MSP430 project.
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -19,20 +23,23 @@
  * There are no warranties (or similar) in relation to the quality of the
  * Software. You use it at your own risk.
  * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of FTDI liability for certain types of loss
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
  * such as: special loss or damage; incidental loss or damage; indirect or
  * consequential loss or damage; loss of income; loss of business; loss of
  * profits; loss of revenue; loss of contracts; business interruption; loss of
  * the use of money or anticipated savings; loss of information; loss of
  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
  * corruption of data.
- * There is a monetary cap on FTDI's liability.
+ * There is a monetary cap on Bridgetek's liability.
  * The Software may have subsequently been amended by another user and then
  * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, FTDI
+ * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
@@ -40,9 +47,15 @@
 
 #include "eve_example.h"
 
+/* CONSTANTS ***********************************************************************/
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
+/* FUNCTIONS ***********************************************************************/
+
 /**
  * @brief Functions used to store calibration data in file.
-   @details Currently not used.
+ * @details Currently not used.
  */
 //@{
 int8_t platform_calib_init(void)

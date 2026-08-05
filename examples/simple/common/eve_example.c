@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -39,8 +39,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 #include "touch.h"
@@ -128,28 +128,28 @@ void eve_example(void)
     uint32_t font_end;
 
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {
-        DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
         while(1);
     }
 
     // Load fonts and images
-    DEBUG_PRINTF("Loading font...\n");
+    EVE_DEBUG_PRINTF("Loading font...\n");
     font_end = eve_init_fonts();
-    DEBUG_PRINTF("Loading images...\n");
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(font_end);
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();
 }

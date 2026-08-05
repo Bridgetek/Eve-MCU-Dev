@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ * @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -41,13 +41,14 @@
 #define _EVE_EXAMPLE_H
 
 #include <stdint.h>
-
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
+/* Headers required for this example */
+#include "touch.h"
+#include "widgets/sevenseg.h"
+#include "widgets/dialogs.h"
 #include "patch_medinfo.h"
 
 /* Functions called from eve_example code to platform specific code */
@@ -258,10 +259,6 @@ void graph_draw(uint8_t num, uint32_t pos, uint32_t rpos, uint32_t x, uint32_t y
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
-
-#include "touch.h"
-#include "widgets/sevenseg.h"
-#include "widgets/dialogs.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

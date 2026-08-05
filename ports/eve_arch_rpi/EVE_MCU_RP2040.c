@@ -1,5 +1,6 @@
 /**
- @file EVE_MCU_RP2040.c
+ * @file EVE_MCU_RP2040.c
+ * @details MCU-specific code for controlling EVE on RP2040 devices.
  */
 /*
  * ============================================================================
@@ -42,12 +43,16 @@
 
 #pragma message "Compiling " __FILE__ " for Raspberry Pi pico RP2040"
 
+/* EVE MCU END */
+
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdio.h>
 #include <machine/endian.h>
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 #include <hardware/gpio.h>
@@ -66,9 +71,12 @@ const uint miso_pin = 4;
 // Port to match Bridgetek IDM2040-7A board.
 spi_inst_t *spi_port = spi0;
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the RP240 Platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -100,14 +108,6 @@ int MCU_Init(void)
     gpio_set_function(mosi_pin, GPIO_FUNC_SPI);
     gpio_set_function(miso_pin, GPIO_FUNC_SPI);
 
-#if defined QUADSPI_ENABLE
-
-#if IS_EVE_API(2,3,4,5)
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
-#endif
-
-#endif // QUADSPI_ENABLE
-
     return 0;
 }
 
@@ -122,9 +122,16 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* QSPI Configuration */
 #if defined QUADSPI_ENABLE
+
+#if IS_EVE_API(2,3,4,5)
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+#endif
+
 #endif // QUADSPI_ENABLE
 
+    /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     spi_init(spi_port, 25 * 1000 * 1000);
@@ -283,5 +290,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_RP2040) */

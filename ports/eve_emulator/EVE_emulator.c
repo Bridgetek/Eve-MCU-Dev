@@ -1,9 +1,10 @@
 /**
-@file EVE_emulator.c
-*/
+ * @file EVE_emulator.c
+ * @details Platform-specific code for controlling EVE on STM32 devices.
+ */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -37,14 +38,16 @@
  * ============================================================================
  */
 
- // Guard against being used for incorrect platform or architecture.
- // PLATFORM_EMULATOR macro enables this file to open the emulator library.
- // In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
- // In Visual Studio this is in Project Properties -> Configuration Properties -> 
- //     C/C++ -> Preprocessor -> Preprocessor Definitions.
+// Guard against being used for incorrect platform or architecture.
+// PLATFORM_EMULATOR macro enables this file to open the emulator library.
+// In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
+// In Visual Studio this is in Project Properties -> Configuration Properties -> 
+//     C/C++ -> Preprocessor -> Preprocessor Definitions.
 #if defined(PLATFORM_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdio.h>
@@ -55,7 +58,6 @@
 #include <sys/stat.h>
 #endif
 
-/* EVE MCU HEADER */
 #ifdef _WIN32
 // Windows endianness is little endian
 #include <windows.h>
@@ -74,11 +76,16 @@
 #include "bt8xxemu_inttypes.h"
 #include "bt8xxemu.h"
 
-/* EVE MCU HEADER END */
-
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> // for IS_EVE_API() macro
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> // for HAL_MemWrite8()
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include the EVE debug-output macro definitions */
+#include <EVE_debug.h>
+
+/* EVE MCU HEADER END */
 
 /* EVE MCU */
 
@@ -145,7 +152,7 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
         attributes = GetFileAttributesW(filePath);
         if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
         {
-            DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+            EVE_DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
             return -1;
         }
 
@@ -179,7 +186,7 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
     attributes = GetFileAttributesW(resolvedPath);
     if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-        DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+        EVE_DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
         return -1;
     }
 
@@ -194,7 +201,7 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
 
     if (stat(filePath, &st) != 0 || !S_ISREG(st.st_mode))
     {
-        DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+        EVE_DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
         return -1;
     }
 
@@ -232,7 +239,7 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
         attributes = GetFileAttributesW(folderPath);
         if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
         {
-            DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+            EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
             return NULL;
         }
 
@@ -271,7 +278,7 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
     attributes = GetFileAttributesW(resolvedPath);
     if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-        DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+        EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
         return NULL;
     }
 
@@ -286,7 +293,7 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
 
     if (stat(folderPath, &st) != 0 || !S_ISDIR(st.st_mode))
     {
-        DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+        EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
         return NULL;
     }
 
@@ -299,9 +306,9 @@ int MCU_Init(void)
 {
 #ifdef _WIN32
     // Print Emulator Version
-    DEBUG_PRINTF("\n");
-    DEBUG_PRINTF("%s", BT8XXEMU_version());
-    DEBUG_PRINTF("\n\n");
+    EVE_DEBUG_PRINTF("\n");
+    EVE_DEBUG_PRINTF("%s", BT8XXEMU_version());
+    EVE_DEBUG_PRINTF("\n\n");
 
     // Set emulator type from EVE_config.h EVE type setting
 #if (FT8XX_TYPE == FT800)
@@ -340,7 +347,7 @@ int MCU_Init(void)
     EmulatorParameters = (BT8XXEMU_EmulatorParameters*)malloc(sizeof(BT8XXEMU_EmulatorParameters));
     if (!EmulatorParameters)
     {
-        DEBUG_ERROR("ERROR: Unable to allocate emulator parameters.\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to allocate emulator parameters.\n");
         MCU_Deinit();
         return -1;
     }
@@ -355,13 +362,13 @@ int MCU_Init(void)
     // flash is only supported in EVE API level = 3,4,5
 #if IS_EVE_API(3,4,5)
 
-    DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator.\n");
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator.\n");
 
     // Create flash emulator parameters.
     EmulatorFlashParameters = (BT8XXEMU_FlashParameters*)malloc(sizeof(BT8XXEMU_FlashParameters));
     if (!EmulatorFlashParameters)
     {
-        DEBUG_ERROR("ERROR: Unable to allocate flash emulator parameters.\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to allocate flash emulator parameters.\n");
         MCU_Deinit();
         return -1;
     }
@@ -372,18 +379,18 @@ int MCU_Init(void)
     // Set the path of the flash (.bin) file to load into the emulator.
     if (MCU_SetFlashEmulatorDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
     {
-        DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
-        DEBUG_ERROR("Check that the flash (.bin) file exists on the path defined by:\n");
-        DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"flash-name.bin\").\n");
-        DEBUG_ERROR("OR\n");
-        DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
+        EVE_DEBUG_ERROR("Check that the flash (.bin) file exists on the path defined by:\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"flash-name.bin\").\n");
+        EVE_DEBUG_ERROR("OR\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n\n");
         MCU_Deinit();
         return -1;
     }
 
     // Check if EVE_EMULATOR_FLASH_FILE_SIZE has been defined if not use (8 MiB)
 #ifndef EVE_EMULATOR_FLASH_FILE_SIZE
-#define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)    // 8 MiB default
+#define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)  /* 8 MiB default */
 #endif /* EVE_EMULATOR_FLASH_FILE_SIZE */
 
     // Set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
@@ -393,7 +400,7 @@ int MCU_Init(void)
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
     if (!EmulatorFlash)
     {
-        DEBUG_ERROR("ERROR: Unable to create Emulator Flash.\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to create Emulator Flash.\n");
         MCU_Deinit();
         return -1;
     }
@@ -401,10 +408,10 @@ int MCU_Init(void)
     // Connect the emulator to the flash device.
     EmulatorParameters->Flash = EmulatorFlash;
 
-    DEBUG_PRINTF("SUCCESS: Flash (.bin) file attached to emulator.\n");
+    EVE_DEBUG_PRINTF("SUCCESS: Flash (.bin) file attached to emulator.\n");
 
 #else
-    DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined but flash is not available on EVE API = 1,2.\n");
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined but flash is not available on EVE API = 1,2.\n");
 #endif /* IS_EVE_API(3,4,5) */
 #endif /* EVE_EMULATOR_FLASH_FILE */
 
@@ -412,7 +419,7 @@ int MCU_Init(void)
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
     if (!Emulator)
     {
-        DEBUG_ERROR("ERROR: Unable to create Emulator.\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to create Emulator.\n");
         MCU_Deinit();
         return -1;
     }
@@ -422,7 +429,7 @@ int MCU_Init(void)
     // SD cards are only supported in EVE API level = 5
 #if IS_EVE_API(5)
 
-    DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined, attempting to attach SD card folder to emulator.\n");
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined, attempting to attach SD card folder to emulator.\n");
 
     // Set SDCardFolder to the path supplied by the definition.
     SDCardFolder = MCU_ResolveSDFolderPath(EVE_EMULATOR_SD_FOLDER);
@@ -430,11 +437,11 @@ int MCU_Init(void)
     // Check that the SDCardFolder path is valid
     if (SDCardFolder == NULL)
     {
-        DEBUG_ERROR("ERROR: Unable to resolve emulator SD card folder file path.\n\n");
-        DEBUG_ERROR("Check that the folder exists on the path defined by:\n");
-        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"sdFolderName\").\n");
-        DEBUG_ERROR("OR\n");
-        DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\\\\sdFolderName\").\n\n");
+        EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator SD card folder file path.\n\n");
+        EVE_DEBUG_ERROR("Check that the folder exists on the path defined by:\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"sdFolderName\").\n");
+        EVE_DEBUG_ERROR("OR\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\\\\sdFolderName\").\n\n");
         MCU_Deinit();
         return -1;
     }
@@ -444,20 +451,20 @@ int MCU_Init(void)
     // Passing zero for minimumSize lets the emulator calculate the required FAT32 image size from the folder contents.
 #ifndef EVE_EMULATOR_SD_FOLDER_SIZE
 #define EVE_EMULATOR_SD_FOLDER_SIZE 0
-#endif /* EVE_EMULATOR_SD_FOLDER_SIZE */
+#endif  /* EVE_EMULATOR_SD_FOLDER_SIZE */
         // Insert the SD card folder into the emulator.
         // The function returns the size of the inserted SD card folder.
         if (BT8XXEMU_insertSDCardFolder(Emulator, SDCardFolder, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
         {
-            DEBUG_ERROR("ERROR: Unable to attach SD card to emulator.\n\n");
+            EVE_DEBUG_ERROR("ERROR: Unable to attach SD card to emulator.\n\n");
             MCU_Deinit();
             return -1;
         }
 
-        DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator.\n\n");
+        EVE_DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator.\n\n");
     }
 #else
-    DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined but SD cards are only available on EVE API = 5.\n");
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined but SD cards are only available on EVE API = 5.\n");
 #endif /* IS_EVE_API(5) */
 #endif /* EVE_EMULATOR_SD_FOLDER */
 
@@ -466,7 +473,7 @@ int MCU_Init(void)
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif /* IS_EVE_API(1,2,3,4) */
 
-    DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
+    EVE_DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
 
     return 0;
 #else
@@ -515,7 +522,8 @@ int MCU_Deinit(void)
 }
 
 int MCU_Setup(void)
-{
+{ 
+    /* No Additional "SPI" Configuration */
     return 0;
 }
 

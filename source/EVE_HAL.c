@@ -1,5 +1,6 @@
 /**
- @file EVE_HAL.c
+ * @file EVE_HAL.c
+ * @details Function implementations for EVE-MCU-Dev library HAL layer.
  */
 /*
  * ============================================================================
@@ -37,15 +38,26 @@
  * ============================================================================
  */
 
-/* Only compile for non-linux platforms. */
-#if !defined(USE_LINUX_SPI_DEV)
+/* Only compile for non-linux platforms */
+#if !defined(USE_LINUX_SPI_DEV)
+
+/* EVE HAL INCLUDES */
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> // for IS_EVE_API() macro
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include the EVE debug-output macro definitions */
+#include <EVE_debug.h>
+
+/* EVE HAL INCLUDES END */
+
+/* EVE HAL */
 
 // Used to navigate command ring buffer on FT800
 #if !defined(EVE_USE_CMDB_METHOD)
@@ -57,13 +69,13 @@ static uint16_t writeCmdPointer = 0x0000;
 static uint16_t profileCmdPointer = 0x0000;
 #endif
 
-/* EVE HAL */
+/* EVE HAL Library functions */
 
 int HAL_EVE_Init(void)
 {
     if (MCU_Init() != 0)
     {
-        DEBUG_ERROR("MCU_Init() Failed.\n");
+        EVE_DEBUG_ERROR("MCU_Init() Failed.\n");
         return -1;
     }
 
@@ -103,7 +115,7 @@ int HAL_EVE_Init(void)
     HAL_HostCmdWrite(0, 0x00);
     
     // Read REG_ID register (0x302000) until reads 0x7C
-    DEBUG_PRINTF("[Waiting for REG_ID...]\n");
+    EVE_DEBUG_PRINTF("[Waiting for REG_ID...]\n");
     uint8_t val;
     while ((val = HAL_MemRead8(EVE_REG_ID)) != 0x7C)
     {
@@ -112,9 +124,10 @@ int HAL_EVE_Init(void)
     }
 
     // Ensure CPUreset register reads 0 and so FT8xx is ready
+    EVE_DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
-        DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
+        
     }
 #endif
 
@@ -122,7 +135,7 @@ int HAL_EVE_Init(void)
     HAL_MemWrite32(EVE_REG_FREQUENCY, 72000000);
 #endif
  
-    DEBUG_PRINTF("[Boot complete]\n");
+    EVE_DEBUG_PRINTF("[Boot complete]\n");
  
 #endif  //IS_EVE_API(1, 2, 3, 4)
 
@@ -179,7 +192,7 @@ int HAL_EVE_Init(void)
                 uint32_t boot;
 
                 // Wait for the REG_ID register to be set to 0x7c
-                DEBUG_PRINTF("[Waiting for REG_ID...]\n");
+                EVE_DEBUG_PRINTF("[Waiting for REG_ID...]\n");
                 while (HAL_MemRead32(EVE_REG_ID) != 0x7c)
                 {
                     MCU_Delay_20ms();
@@ -188,11 +201,11 @@ int HAL_EVE_Init(void)
                 boot = HAL_MemRead32(EVE_REG_BOOT_STATUS);
                 if (boot != 0x522e2e2e)
                 {
-                    DEBUG_PRINTF("[Timeout waiting for BOOT_STATUS, stuck at 0x%08x, retrying...]\n", boot);
+                    EVE_DEBUG_PRINTF("[Timeout waiting for BOOT_STATUS, stuck at 0x%08x, retrying...]\n", boot);
                 }
                 else if (HAL_MemRead32(EVE_REG_FREQUENCY) != 72000000)
                 {
-                    DEBUG_PRINTF("[frequency %d, retrying...]\n", HAL_MemRead32(EVE_REG_FREQUENCY));
+                    EVE_DEBUG_PRINTF("[frequency %d, retrying...]\n", HAL_MemRead32(EVE_REG_FREQUENCY));
                 }
                 MCU_Delay_20ms();
                 break;
@@ -200,7 +213,7 @@ int HAL_EVE_Init(void)
         }
         if (i < sizeof(bb)) break;
 
-        DEBUG_PRINTF("[Boot fail after reset, retrying...]\n");
+        EVE_DEBUG_PRINTF("[Boot fail after reset, retrying...]\n");
     }
 
 #if 0 // If we need to disable sequential reads.
@@ -208,7 +221,7 @@ int HAL_EVE_Init(void)
     HAL_MemWrite32(EVE_REG_SYS_CFG, 1 << 10);
 #endif
 
-    DEBUG_PRINTF("[Boot complete]\n");
+    EVE_DEBUG_PRINTF("[Boot complete]\n");
 
 #endif  //IS_EVE_API(5)
 
@@ -216,7 +229,7 @@ int HAL_EVE_Init(void)
     // could be switched to QuadSPI.
     if (MCU_Setup() != 0)
     {
-        DEBUG_ERROR("MCU_Setup() Failed.\n");
+        EVE_DEBUG_ERROR("MCU_Setup() Failed.\n");
         return -1;
     }
 
@@ -228,7 +241,7 @@ int HAL_EVE_Deinit(void)
 {
     if (MCU_Deinit() != 0)
     {
-        DEBUG_ERROR("MCU_Deinit() Failed.\n");
+        EVE_DEBUG_ERROR("MCU_Deinit() Failed.\n");
         return -1;
     }
 
@@ -649,9 +662,9 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
 
         memset(message, 0, sizeof(message));
         EVE_LIB_GetCoProException(message);
-        DEBUG_ERROR("Co-processor exception: %s\n", message);
+        EVE_DEBUG_ERROR("Co-processor exception: %s\n", message);
 #else // IS_EVE_API(3,4,5)
-        DEBUG_ERROR("Co-processor exception\n");
+        EVE_DEBUG_ERROR("Co-processor exception\n");
 #endif // IS_EVE_API(3,4,5)
 #endif // DEBUG_LEVEL
         

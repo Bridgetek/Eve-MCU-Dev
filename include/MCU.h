@@ -1,5 +1,5 @@
 /**
- @file MCU.h
+ * @file MCU.h
  */
 /*
  * ============================================================================
@@ -154,49 +154,6 @@
 #endif
 
 #endif
-
-/**
- @brief MCU allows debug information.
- @details Map debug output to nul or to printf function.
- For MCUs this will not normally ever be mapped. 
- On Un*x like systems it may be mapped.
- For PCs with MPSSE, FT4222 or Emulator interfaces it is probably mapped.
- The DEBUG_LEVEL macro will override this for MCUs.
- DEBUG_LEVEL 0 for error reports.
- DEBUG_LEVEL 1 for error reports and information.
- */
-//@{
-
-// Note: on platforms where there is assumed to be an operating system
-// with a console running turn on DEBUG_LEVEL unless it is has specifically
-// been set to zero in the environment.
-#ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR)
-#define DEBUG_LEVEL 1
-#endif
-#endif
-
-#if defined(DEBUG_LEVEL) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR))
-#include <stdio.h>
-#define DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
-#elif (defined(DEBUG_LEVEL) && defined(PLATFORM_ESP32))
-#include "esp_log.h"
-#define DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
-#elif (defined(DEBUG_LEVEL) && defined(PLATFORM_RP2040))
-// Pico's standard library does not separate stderr on USB/UART connections.
-#include <stdio.h>
-#define DEBUG_ERROR(...) printf("[ERROR] " __VA_ARGS__)
-#else
-#define DEBUG_ERROR(...)
-#endif
-#if (defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && (defined(PLATFORM_RASPBERRYPI) || defined(USE_LINUX_SPI_DEV) || defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR) || defined(PLATFORM_RP2040))
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
-#elif ((defined(DEBUG_LEVEL) && DEBUG_LEVEL > 0) && defined(PLATFORM_ESP32))
-#define DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
-#else
-#define DEBUG_PRINTF(...)
-#endif
-//@}
 
 /* EVE MCU */
 

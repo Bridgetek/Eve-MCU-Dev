@@ -1,9 +1,10 @@
 /**
- @file EVE_MCU_PIC.c
+ * @file EVE_MCU_PIC.c
+ * @details MCU-specific code for controlling EVE on PIC devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
@@ -42,6 +43,8 @@
 
 #pragma message "Compiling " __FILE__ " for Microchip PIC"
 
+/* EVE MCU HEADER */
+
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
@@ -50,7 +53,9 @@
 #include <string.h>
 #include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 #define _XTAL_FREQ 12000000      // Required for _delay() function, internal OSC Max
@@ -73,9 +78,12 @@
 #pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 #pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the PIC platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -130,24 +138,14 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-//#ifdef FT81X_ENABLE
-// Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
-//	MCU_CSlow();
-//	MCU_SPIWrite24(MCU_htobe32((REG_SPI_WIDTH << 8) | (1 << 31)));
-//	MCU_SPIWrite8(2);
-//	MCU_CShigh();
+    /* QSPI Configuration */
+//#ifdef QUADSPI_ENABLE
+//#endif // QUADSPI_ENABLE
 
-// Turn on quad-SPI.
-//	spi_option(SPIM, spi_option_bus_width, 4);
-
-//#endif // FT81X_ENABLE
-
-// Turn off SPI buffering. Timing of chip select is critical.
-//	spi_option(SPIM, spi_option_fifo, 0);
+    /* Additional SPI Configuration */
 
     return 0;
 }
-
 
 // ########################### GPIO CONTROL ####################################
 
@@ -363,5 +361,7 @@ uint32_t MCU_le32toh (uint32_t h)
 {
      return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_PIC) */

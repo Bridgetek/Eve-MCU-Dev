@@ -1,5 +1,6 @@
 /**
- @file EVE_Linux_BBB.c
+ * @file EVE_Linux_BBB.c
+ * @details Platform-specific code for controlling EVE on BeagleBone devices.
  */
 /*
  * ============================================================================
@@ -8,7 +9,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_BEAGLEBONE)
 
 #pragma message "Compiling " __FILE__ " for Beaglebone Black"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdio.h>
@@ -67,6 +70,10 @@
 /* Stringification macros. */
 #define str(s) xstr(s)
 #define xstr(s) #s
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
 
 // This is the Linux Platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
@@ -292,5 +299,7 @@ uint32_t Platform_le32toh(uint32_t h)
 {
     return le32toh(h);
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_BEAGLEBONE) */

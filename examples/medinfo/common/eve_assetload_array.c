@@ -1,5 +1,5 @@
 /**
- @file eve_assetload_array.c
+ * @file eve_assetload_array.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/  ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -39,8 +39,8 @@
 
 #include <stdint.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include functions for EVE-MCU-Dev library API layer */
+#include <EVE.h> 
 
 #include "eve_example.h"
 
@@ -119,7 +119,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
     // Read directy from flash
     if (loadimage)
     {
-        DEBUG_PRINTF("Load image from array\n");
+        EVE_DEBUG_PRINTF("Load image from array\n");
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_LOADIMAGE(asset->RAM_G_Start, 0);
@@ -147,17 +147,17 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         {
             // Array holds a PNG file
             asset->Format = EVE_FORMAT_ARGB1555;
-            DEBUG_PRINTF("PNG file\n");
+            EVE_DEBUG_PRINTF("PNG file\n");
         }
         else if (filetype == 0xffd8ff0e)
         {
             // Array holds a JPG file
             asset->Format = EVE_FORMAT_RGB565;
-            DEBUG_PRINTF("JPG file\n");
+            EVE_DEBUG_PRINTF("JPG file\n");
         }
         else
         {
-            DEBUG_PRINTF("Unknown file type\n");
+            EVE_DEBUG_PRINTF("Unknown file type\n");
         }
 #elif IS_EVE_API(4,5)
         // EVE4 and EVE5 support CMD_GETPTR on CMD_LOADIMAGE
@@ -165,16 +165,16 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // EVE4 and EVE5 support CMD_GETIMAGE for CMD_LOADIMAGE results
         EVE_LIB_GetImage(&dummy, &asset->Format, &w, &h, &dummy);
 #endif
-        DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
+        EVE_DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
 
         if ((asset->Width != w) || (asset->Height != h))
         {
-            DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
+            EVE_DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
         }
     }
     else
     {
-        DEBUG_PRINTF("Load to memory from array\n");
+        EVE_DEBUG_PRINTF("Load to memory from array\n");
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_MEMWRITE(asset->RAM_G_Start, asset->Array_Size);
@@ -194,7 +194,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         asset->RAM_G_EndAddr = asset->RAM_G_Start + total;
     }
 
-    DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start, asset->RAM_G_EndAddr);
+    EVE_DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start, asset->RAM_G_EndAddr);
 }
 
 void eve_asset_properties(const char *assets)

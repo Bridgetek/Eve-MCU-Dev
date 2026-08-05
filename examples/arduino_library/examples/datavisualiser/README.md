@@ -45,26 +45,26 @@ The control program for the example is in `eve_example.ino`. The sets up the EVE
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
+    EVE_DEBUG_PRINTF("Initialising display...\n");
     // Setup the EVE display (WUXGA)
     eve.setup(FULLHD);
     // Setup the EVE library
     eve.Init();
 
     // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
     sound_enable();
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
+        EVE_DEBUG_PRINTF("Exception...\n");
         while (1);
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
 ```
