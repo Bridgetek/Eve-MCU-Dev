@@ -14,7 +14,7 @@ The example includes a 'settings menu' button in the top right corner, which inc
  
 - The second sub menu utilises a arc control widget to implement a slider for controlling the LCD display brightness. The tracker feature is used for touch inputs on this widget.
 
-The following is an screenshot of the datavisulaiser screen:
+The following is an screenshot of the datavisualiser screen:
 
 ![DataVisualiser Screen Example](docs/dataVisualiser.png)
 

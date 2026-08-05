@@ -163,7 +163,7 @@ Once loaded into RAM_G the `EVE_CMD_GETPROPS` command can find the size of the i
     EVE_LIB_GetProps(&eve_addr, &img_width, &img_height);
 ```
 
-Using the information returned from `EVE_CMD_GETPROPS` the bitmap is intialised.
+Using the information returned from `EVE_CMD_GETPROPS` the bitmap is initialised.
 The code will select bitmap mode with the `EVE_BEGIN`, this tells the device that it is going to be processing bitmap instructions.
 Then it will set the source address of the bitmap in RAM_G with `EVE_BITMAP_SOURCE`. 
 Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device how to render the bitmaps included in the font.

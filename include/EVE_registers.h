@@ -451,7 +451,7 @@
 
 /** @brief EHOST touch point Y injection
  *  @note EVE3/4 only. */
-#define EVE_REG_EHOST_TOUCH_Y      (EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x302118ul,  0x302118ul,  EVE_REG_NOT_AVAILABLE)
+#define EVE_REG_EHOST_TOUCH_Y     EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x302118ul,  0x302118ul,  EVE_REG_NOT_AVAILABLE)
 
 /** @brief EHOST touch point ID
  *  @note EVE3/4 only. */

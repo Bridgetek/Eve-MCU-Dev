@@ -196,7 +196,7 @@ This file contains the data array of a font which was produced by the Font Conve
 The font created from EVE Asset Builder will be located at a certain address in RAM_G. In the example here the font was at address 1000(decimal). This must be 32-bit aligned.
 
 ```
-const uint32_t font0_offset = 1000; // Taken from commmand line
+const uint32_t font0_offset = 1000; // Taken from command line
 const uint8_t font0[] = { <data for font> };
 ```
 

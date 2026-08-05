@@ -292,7 +292,7 @@ font_getfontinfocustom(&clockfont, DIGITAL_FONT, 0x1000, 32);
 
 #### font_getheight/font_getwidth
 
-Get the width or height of the maximim extent of a character in the cached font.
+Get the width or height of the maximum extent of a character in the cached font.
 
 _Calling format:_
 
@@ -485,7 +485,7 @@ _Parameters:_
 
 ## Widgets
 
-The widget snippets draw complex items on the display. They are usually comprised of several primatives to make the final result. There is source code for widgets in the directory:
+The widget snippets draw complex items on the display. They are usually comprised of several primitives to make the final result. There is source code for widgets in the directory:
 
 | Snippet | Description |
 | --- | --- |
@@ -494,7 +494,7 @@ The widget snippets draw complex items on the display. They are usually comprise
 
 ### Dialogs Widget
 
-This file provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the seleccted options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by defualt, take an input font handle, and message string. Opptions are aviable to render the widgets flat, and their colour can be set by preceeding CMD_FGCOLOUR call, while the text colour can be set similarly with a COLOR_RGB call.
+This file provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the selected options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by default, take an input font handle, and message string. Options are available to render the widgets flat, and their colour can be set by preceding CMD_FGCOLOUR call, while the text colour can be set similarly with a COLOR_RGB call.
 
 _Header File:_
 
@@ -828,7 +828,7 @@ sub_depth(300, 300, 150, 400, OPT_SUB_BEZEL, 382 * SUB_UNITS_SCALE, 50 * SUB_UNI
 
 ### Trigonometry using Furmans
 
-A utility is provided to perform trigonometery using angles in furmans rather than degrees or radians. 
+A utility is provided to perform trigonometry using angles in furmans rather than degrees or radians. 
 
 The return value is an `int16_t` format ranging from -0x8000 to +0x7fff or when cast as a `uint16_t` from 0x0000 to 0xffff.
 

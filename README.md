@@ -4,18 +4,6 @@ This library allows a variety of hardware to communicate with FT8xx and BT8xx gr
 
 This library is intended to provide a **C** library for embedded designs.
 
-There are multiple generations of EVE devices. Each generation is identified by an API number and, where applicable, a sub-API number, as shown below:
-
-| Device | API | SUB API |
-| --- | --- | --- |
-| FT800, FT801 | 1 | N/A |
-| FT810, FT811, FT812, FT813 | 2 | 1 |
-| BT880, BT881, BT882, BT883 | 2 | 2 |
-| BT815, BT816 | 3 | N/A |
-| BT817, BT818 | 4 | N/A |
-| BT820 | 5 | N/A |
-
-The library is compiled for the selected API and, where applicable, sub-API. The API cannot be selected at runtime.
 
 ## Contents
 
@@ -68,9 +56,9 @@ The BRT_AN_025 application note built upon the framework described in earlier ap
 
 This document covers the following topics:
 
-- The structure of the library
+- The structure of the library.
 - The different library layers which are common to all platforms.
-- The basic main sample application provided with the library
+- The basic main sample application provided with the library.
 - How to modify the settings and the main example code to produce your own application 
 - A separate section for each of the target MCUs describing the hardware requirements and any MCU-specific considerations.
 
@@ -95,6 +83,21 @@ Some of the provided ports require source code modification if the MCU uses a SP
 
 This library includes several example projects containing an example framework and sample main application for the following MCUs. However, the code can be ported to other MCUs.
 
+## Device API Support
+
+There are multiple generations of EVE devices, these are referred by their API (and for some devices their SUB API) number from the following table:
+
+| Device | API | SUB API |
+| --- | --- | --- |
+| FT800, FT801 | 1 | N/A |
+| FT810, FT811, FT812, FT813 | 2 | 1 |
+| BT880, BT881, BT882, BT883 | 2 | 2 |
+| BT815, BT816 | 3 | N/A |
+| BT817, BT818 | 4 | N/A |
+| BT820 | 5 | N/A |
+
+The library is compiled for the API (and where applicable the SUB API) during compilation. The API cannot be selected at runtime.
+
 ## Software Layers
 
 The software consists of several layers which are shown below. The different layers are discussed in greater detail in following sections of this document.
@@ -117,8 +120,7 @@ The library is structured as follows. There are common sections containing sourc
 - `\source\EVE_HAL_Linux.c` The abstraction layer between the programming interface and the Linux SPI character device.
 - **`\include\EVE.h`** Header file to include to access all required programming interface entry points and definitions.
 - `\include\EVE_commands.h` Header file which provides cross-generation EVE command and option definitions.
-- **`\include\EVE_Config.h`** Overridable configuration file for target application.
-- `\include\EVE_debug.h` Header file which provides platform specific macro definitions for debug messaging.
+- **`\include\EVE_config.h`** Overridable configuration file for target application.
 - `\include\EVE_registers.h` Header file which provides cross-generation EVE register address map.
 - `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - `\include\MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
@@ -234,30 +236,7 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
 
 The EVE device to target is set in the file `EVE_config.h`. The macro `FT8XX_TYPE` or `EVE_API`/`EVE_SUB_API` is set to choose the device or the API respectively. One or other of these macros **must** be set correctly for the device being used.
 
-There are predefined settings mapping of device names for `FT8XX_TYPE` to `EVE_API`/`EVE_SUB_API` in the EVE API in the library. The following table can be used to select the correct value of `FT8XX_TYPE`.
-
-- EVE API 1
-  - `FT800` 
-  - `FT801`
-- EVE API 2
-  - EVE SUB API 1
-    - `FT810`
-    - `FT811`
-    - `FT812`
-    - `FT813`
-  - EVE SUB API 2
-    - `BT880`
-    - `BT881`
-    - `BT882`
-    - `BT883`
-- EVE API 3
-  - `BT815`
-  - `BT816`
-- EVE API 4
-  - `BT817`
-  - `BT818`
-- EVE API 5
-  - `BT820`
+There are predefined settings mapping of device names for `FT8XX_TYPE` to `EVE_API`/`EVE_SUB_API` in the EVE API in the library. The [device API table](#device-api-support) can be used to select the correct value of `FT8XX_TYPE`.
 
 If the `FT8XX_TYPE` macro is used then the "FT" or "BT" part number, above, of the device is set. This line will set a BT820 device and EVE API 5 will be selected automatically.
 ```
@@ -294,7 +273,7 @@ Note that the preprocessor may complain if it is asked to change the value of on
 
 The supported platforms are listed in the [ports/README.md](ports/README.md) file. 
 
-The source code for each platform is stored in the [ports](ports) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros, USE_<i>xxx</i> macros, or a develoment environment specific macro. This way all the files in the ports directory can be loaded into a compiler and ignored if they are not relevant.
+The source code for each platform is stored in the [ports](ports) directory. Each source file in each ports folder is guarded by one of the PLATFORM_<i>xxx</i> macros, USE_<i>xxx</i> macros, or a development environment specific macro. This way all the files in the ports directory can be loaded into a compiler and ignored if they are not relevant.
 
 ## Example Code
 
@@ -319,7 +298,7 @@ The connectors can be interfaced with a host MCU using jumper wires. The wiring 
 
 ### Through-Board 2x8 Pins
 
-This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board on top of the EVE module.
 
 | Pin | EVE Signal | Pin | EVE Signal |
 | --- | --- | --- | --- |
@@ -416,7 +395,7 @@ Returns the sapce remaining for further commands to be sent to the co-processor.
 
 ### Creating screens and executing commands
 
-The API Layer provides functions to begin and end lists of co-processor commands. The co-processor commands must be preceeded and followed by co-processor management functions. 
+The API Layer provides functions to begin and end lists of co-processor commands. The co-processor commands must be preceded and followed by co-processor management functions. 
 
 #### Writing DL Instructions and Co-Processor Commands
 
@@ -429,7 +408,7 @@ If any display list items or co-processor commands which use the display list ar
 
 For the avoidance of doubt, commands that only read or write registers, read or write memory, access flash or access the SD card do not require the `EVE_CMD_DLSTART()` call.
 
-All co-processor lists displaying graphics would be preceeded by:
+All co-processor lists displaying graphics would be preceded by:
 ```
     EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
     EVE_CMD_DLSTART(); // When executed, EVE will begin a new DL
@@ -574,7 +553,7 @@ This function performs an SPI burst write to RAM_G. The starting address, as wel
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize) 
 ```
 This function allows a block of data to be written to RAM_CMD which is needed when writing data to be inflated for example. This is more complex as the circular nature of the buffer must be handled in addition to splitting data into chunks since the buffer is only 4K in size. This function handles the entire process and so makes writing to RAM_CMD as simple as to RAM_G for the layers above. A flow chart can be found in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) for loading data via the co-processor buffer RAM_CMD.
-Other helper functions are provided such as for writing strings and for retrieving co-processor results (as some commands such as GetProps return their result via RAM_CMD).
+Other helper functions are provided such as for writing strings and for retrieving co-processor results (as some commands such as CMD_GETPROPS return their result via RAM_CMD).
 ```
 uint16_t EVE_LIB_SendString(const char* string)
 ```

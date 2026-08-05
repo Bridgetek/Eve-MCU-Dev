@@ -52,6 +52,8 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 "#elif defined(__AVR__)",
                                 "#include <avr/pgmspace.h>",
                                 "#else",
+                                "#define PROGMEM",
+                                "#define memcpy_P(A,B,C) memcpy((A),(B),(C))",
                                 "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
                                 "#endif",
                                 "",
