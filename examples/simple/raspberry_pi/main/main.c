@@ -126,7 +126,7 @@ void setup(void)
 	printf ("J8 Pin 23 - SCLK (SPI0_SCLK)\n");
 	printf ("J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin\n");
 	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
-	printf ("J8 Pin 2 - 5v supply for FT8xx\n");
+	printf ("J8 Pin 2 - 5v supply for FT8xx/BT8xx\n");
 	printf ("J8 Pin 25 - signal GND for SPI\n");
 #endif
 }

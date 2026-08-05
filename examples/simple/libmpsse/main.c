@@ -144,6 +144,6 @@ void setup(void)
 	printf ("MPSSE2  DI (Green)      MISO - Master In Slave Out\n");
 	printf ("MPSSE3  CS (Brown)      CS - Serial Chip Select pin\n");
 	printf ("MPSSE7  GPIO L3 (Blue)  PD# - Powerdown pin\n");
-	printf ("N/A     VBUS (Red)      5v supply for FT8xx\n");
+	printf ("N/A     VBUS (Red)      5v supply for FT8xx/BT8xx\n");
 	printf ("N/A     GND (Black)     Signal GND for SPI\n");
 }

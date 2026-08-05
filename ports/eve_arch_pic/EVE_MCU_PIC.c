@@ -183,7 +183,7 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
     DataRead = SSP1BUF;                                                         // Dummy read, ensure BF clearedDataRead = SSP1BUF;
     SSP1BUF = (DataToWrite);                                                    // Write data to SPI data register
     while(!SSP1STATbits.BF);                                                    // Wait for completion of the SPI transfer
-    DataRead = SSP1BUF;                                                         // Get the value clocked in from the FT8xx
+    DataRead = SSP1BUF;                                                         // Get the value clocked in from the FT8xx/BT8xx
 
     return DataRead;
 }

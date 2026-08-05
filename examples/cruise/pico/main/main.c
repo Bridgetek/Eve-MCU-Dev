@@ -151,6 +151,6 @@ void setup(void)
 	printf ("Pin 14 - SCLK (GPIO10)\n");
 	printf ("Pin 17 - CS (GPIO13) - Note this is not the SPI0_CS0 pin\n");
 	printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
-	printf ("Pin 40 - 5v supply for FT8xx\n");
+	printf ("Pin 40 - 5v supply for FT8xx/BT8xx\n");
 	printf ("Pin 23 - signal GND for SPI\n");
 }

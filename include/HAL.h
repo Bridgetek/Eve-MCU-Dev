@@ -48,7 +48,7 @@
  @brief Initialise EVE HAL Layer.
  @details Power cycle and start the EVE display in a controlled manner.
      This will call the MCU-specific initialisation routine and check for
-     the presence of a supported FT8xx device on the SPI bus.
+     the presence of a supported FT8xx/BT8xx device on the SPI bus.
  @return 0 for success or -1 for failure (device not found or unsupported).
  */
 int HAL_EVE_Init(void);
