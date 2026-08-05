@@ -568,6 +568,10 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                     pass
                 elif definep[0].startswith("API_SELECT"):
                     pass
+                elif definep[0].startswith("DEBUG_ERROR"):
+                    pass
+                elif definep[0].startswith("DEBUG_PRINTF"):
+                    pass
                 else:
                     cppline = f"      {definep[0]} = {definep[1]},"
                     cppapiconsts.append(cppline)
