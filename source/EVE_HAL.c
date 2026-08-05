@@ -124,9 +124,10 @@ int HAL_EVE_Init(void)
     }
 
     // Ensure CPUreset register reads 0 and so FT8xx is ready
+    EVE_DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
-        EVE_DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
+        
     }
 #endif
 
