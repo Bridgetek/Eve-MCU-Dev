@@ -29,13 +29,15 @@ echo Installing AMD64 libraries from "%1"
 set INSTALL_PATH_FT4222=LibFT4222\dll\amd64
 set INSTALL_PATH_FTD2XX=ftd2xx\dll\amd64
 set INSTALL_FT4222_DLL=LibFT4222-64.dll
+set INSTALL_FT4222_LIB=LibFT4222-64.lib
 goto commoncopy
 
 :installx86
 echo Installing x86 libraries from "%1"
-set INSTALL_PATH_FT4222=LibFT4222\dll\x86
-set INSTALL_PATH_FTD2XX=ftd2xx\dll\x86
+set INSTALL_PATH_FT4222=LibFT4222\dll\i386
+set INSTALL_PATH_FTD2XX=ftd2xx\dll\i386
 set INSTALL_FT4222_DLL=LibFT4222.dll
+set INSTALL_FT4222_LIB=LibFT4222.lib
 goto commoncopy
 
 :installARM64
@@ -43,6 +45,7 @@ echo Installing ARM64 libraries from "%1"
 set INSTALL_PATH_FT4222=LibFT4222\dll\arm64
 set INSTALL_PATH_FTD2XX=ftd2xx\dll\arm64
 set INSTALL_FT4222_DLL=LibFT4222-64.dll
+set INSTALL_FT4222_LIB=LibFT4222-64.lib
 goto commoncopy
 
 :commoncopy
@@ -53,8 +56,8 @@ goto commoncopy
 echo Copying "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\%INSTALL_FT4222_DLL%" to %INSTALL_FT4222_DLL%
 copy /y "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\%INSTALL_FT4222_DLL%" 
 :: Copy the FT4222 library to a common file name
-echo Copying "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\LibFT4222-64.lib" to libft4222.lib
-copy /y "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\LibFT4222-64.lib" libft4222.lib
+echo Copying "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\%INSTALL_FT4222_LIB%" to libft4222.lib
+copy /y "%INSTALL_PATH%\%INSTALL_PATH_FT4222%\%INSTALL_FT4222_LIB%" libft4222.lib
 :: Copy the FT4222 library header to a common file name
 echo Copying "%INSTALL_PATH%\LibFT4222\inc\LibFT4222.h" to libft4222.h
 copy /y "%INSTALL_PATH%\LibFT4222\inc\LibFT4222.h" libft4222.h

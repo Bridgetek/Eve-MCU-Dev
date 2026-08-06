@@ -90,7 +90,6 @@ target_sources(eve_library PRIVATE # EVE library name
         # Source code for MPSSE library
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_infra.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_spi.c
-        ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_i2c.c
         ${API_DIRECTORY}/ports/eve_libmpsse/ftdi_mid.c
 )
 endif()

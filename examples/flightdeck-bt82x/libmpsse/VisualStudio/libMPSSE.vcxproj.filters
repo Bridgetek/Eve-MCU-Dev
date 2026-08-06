@@ -16,9 +16,6 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c">
-      <Filter>Library\eve\ports\eve_libmpsse</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\release\include\libmpsse_i2c.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\release\include\libmpsse_spi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -93,13 +87,7 @@
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.h">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_i2c.h">
-      <Filter>Library\eve\ports\eve_libmpsse</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h">
-      <Filter>Library\eve\ports\eve_libmpsse</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\WinTypes.h">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\patch_lvds.h">
