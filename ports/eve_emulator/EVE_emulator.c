@@ -1,6 +1,6 @@
 /**
  * @file EVE_emulator.c
- * @details Platform-specific code for controlling EVE on STM32 devices.
+ * @details Platform-specific code for controlling running a EVE Emulator instance.
  */
 /*
  * ============================================================================

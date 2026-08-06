@@ -1,6 +1,6 @@
 /**
  * @file EVE_MCU_MSPM0.c
- * @details MCU-specific code for controlling EVE on MSPMO devices.
+ * @details MCU-specific code for controlling EVE on MSPM0 devices.
  */
 /*
  * ============================================================================
