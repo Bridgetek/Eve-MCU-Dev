@@ -46,7 +46,7 @@ fi
 # Use the same filenames as Linux (libft4222 and libftd2xx)
 
 # Copy the MPSSE LIB
-echo Copying "$INSTALL_PATH/$INSTALL_MPSSE_PATH/$INSTALL_MPSSE_LIB" to $INSTALL_MPSSE_LIB
+echo Copying "$INSTALL_PATH/$INSTALL_MPSSE_PATH$INSTALL_MPSSE_LIB" to $INSTALL_MPSSE_LIB
 cp "$INSTALL_PATH/$INSTALL_MPSSE_PATH/$INSTALL_MPSSE_LIB" 
 
 # Copy the MPSSE SPI headers

@@ -41,7 +41,7 @@ goto commoncopy
 :: Use the same filenames as Linux (libmpsse and libftd2xx)
 
 :: Copy the MPSSE LIB
-echo Copying "%INSTALL_PATH%\%INSTALL_MPSSE_PATH%\%INSTALL_MPSSE_LIB%" to %INSTALL_MPSSE_LIB%
+echo Copying "%INSTALL_PATH%\%INSTALL_MPSSE_PATH%%INSTALL_MPSSE_LIB%" to %INSTALL_MPSSE_LIB%
 copy /y "%INSTALL_PATH%\%INSTALL_MPSSE_PATH%\%INSTALL_MPSSE_LIB%" 
 
 :: Copy the MPSSE  SPI headers
