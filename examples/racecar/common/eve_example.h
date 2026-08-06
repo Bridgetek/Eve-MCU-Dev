@@ -73,6 +73,20 @@ void eve_example(const char *assets);
 #define ASSETS USE_C_ARRAYS
 #endif
 
+#if defined(PLATFORM_EMULATOR)
+#if ASSETS != USE_C_ARRAYS
+#error Emulation in this example currently only supports USE_C_ARRAYS for the ASSETS macro
+#endif
+#endif
+
+#if defined(ARDUINO)
+#if defined(ARDUINO_ARCH_AVR)
+#if ASSETS == USE_C_ARRAYS
+#error Arduinos based on AVR are not supported (program memory access restricted)
+#endif
+#endif
+#endif
+
 // Validate asset storage method is appropriate
 // Asset storage options which require a filesystem use the stdio library
 #if (ASSETS == USE_FLASHIMAGE) || (ASSETS == USE_FILES)

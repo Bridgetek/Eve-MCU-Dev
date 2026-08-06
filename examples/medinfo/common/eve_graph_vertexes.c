@@ -104,7 +104,7 @@ static void graph_draw_line(uint8_t num, uint32_t pos, uint32_t count, uint32_t 
 
             // Draw the second last point if it is not within the filter
             // Then update filter to the second last point
-            if ((abs(((x2 - x1) * (y3 - y2)) + y2 - y1) > filter) || (k == 0))
+            if ((abs((int32_t)(((x2 - x1) * (y3 - y2)) + y2 - y1)) > filter) || (k == 0))
             {
                 y1 = y2;
                 x1 = x2;

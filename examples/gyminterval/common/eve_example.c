@@ -278,8 +278,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     int timer = timer_count;
     int quit_rest_count = 10;
 
-    int rest = 0;
-    int rest_max;
+    // Start exercise with a rest period
+    int rest = interval_rest_count;
+    int rest_max = interval_rest_count;
     int skip = 0;
     int pause = 0;
 
@@ -342,7 +343,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         timer--;
                         if ((timer < 4) && (timer > 0))
                         {
-                            sound_click();
+                            sound_pip(NOTE_C3);
                         }
 
                         if ((timer == 0) || (skip == 1))
@@ -356,7 +357,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                 if (skip == 0)
                                 {
                                     msg_text = "Interval Complete";
-                                    sound_chimes(NOTE_C3);
+                                    sound_play(SOUND_BELL, NOTE_C3);
                                 }
                             }
                             else if (cycle > 0)
@@ -1119,7 +1120,11 @@ void eve_example(void)
         EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
         while(1);
     }
-
+    
+    // Enable audio amplifier
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
+    sound_enable();
+    
     // Get a cache of the ROM font we want to use.
     font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
 

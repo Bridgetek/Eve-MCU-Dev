@@ -57,6 +57,7 @@ ENDIF(MODULE_TYPE)
 # Add environment for example code
 set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
+set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}

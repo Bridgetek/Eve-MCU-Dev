@@ -104,6 +104,20 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
         apilib = "BT820"
         defres = "WUXGA" # 1920 x 1200
 
+    progmem_header = [
+            "#include <string.h>",
+            "",
+            "#if defined(ESP8266) || defined(ESP32)",
+            "#include <pgmspace.h>",
+            "#elif defined(__AVR__)",
+            "#include <avr/pgmspace.h>",
+            "#else",
+            "#define PROGMEM",
+            "#define memcpy_P(A,B,C) memcpy((A),(B),(C))",
+            "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
+            "#endif",
+            "",
+    ]
     # Preprocess and replace markers with values
     with open(file_in, "r") as file:
         try:
@@ -201,9 +215,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     # Rename refereces to EVE_DISP_WIDTH/HEIGHT to class member
                     line = re.sub(r'\bEVE_(DISP_\w+)\b', r'eve.\g<1>()', line)
                     # Rename refereces to EVE_DEBUG_PRINTF to Serial.print
-                    line = re.sub(r'\bEVE_DEBUG_PRINTF\(', r'Serial.print(', line)
+                    #line = re.sub(r'\bEVE_DEBUG_PRINTF\(', r'Serial.print(', line)
                     # Rename refereces to EVE_DEBUG_ERROR to Serial.print
-                    line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
+                    #line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
                     # Rename references from @file <file>.c to @file <file>.ino
                     line = re.sub(r'@file (\w+).c', r'@file \g<1>.ino', line)
                     # Add extern or definition of the EVE class
@@ -343,20 +357,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     # Add PROGMEM storage read for patch_base.c
                     elif file_out.endswith("patch_base.c"):
                         if line == "#include \"patch_base.h\"":
-                            cppadd = [
-                                    "#include <string.h>",
-                                    "",
-                                    "#if defined(ESP8266) || defined(ESP32)",
-                                    "#include <pgmspace.h>",
-                                    "#elif defined(__AVR__)",
-                                    "#include <avr/pgmspace.h>",
-                                    "#else",
-                                    "#define PROGMEM",
-                                    "#define memcpy_P(A,B,C) memcpy((A),(B),(C))",
-                                    "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
-                                    "#endif",
-                                    "",
-                            ]
+                            cppadd = progmem_header
                             print("patch_base.c updated for PROGMEM")
                         else:
                             match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
