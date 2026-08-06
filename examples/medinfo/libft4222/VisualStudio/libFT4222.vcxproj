@@ -216,7 +216,6 @@
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />

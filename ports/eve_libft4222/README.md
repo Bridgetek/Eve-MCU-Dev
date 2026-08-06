@@ -10,7 +10,7 @@ This code requires an FT4222H adapter to connect to the EVE module. The FT4222H 
 
 A popular solution which makes it easy to get up and running quickly is the FTDI [UMFT4222EV-D](https://ftdichip.com/products/umft4222ev/) module. 
 
-The UMFT4222EV-D module uses the FT2222H chipset. The module can be connected to the associated pins of the EVE module using jumper wires.
+The UMFT4222EV-D module uses the FT4222H chipset. The module can be connected to the associated pins of the EVE module using jumper wires.
 
 | UMFT4222EV-D Name | UMFT4222EV-D Pin | EVE Signal |
 | --- | --- | --- |

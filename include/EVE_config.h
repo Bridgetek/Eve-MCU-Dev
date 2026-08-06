@@ -40,8 +40,8 @@
 #ifndef _EVE_CONFIG_H_
 #define _EVE_CONFIG_H_
 
-/** @note IMPORTANT This header file must be included before FT8xx.h.
- * @details The macro FT9XX_TYPE and the panel display settings (EVE_DISP_*) must 
+/** @note IMPORTANT This header file must be included before EVE.h.
+ * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
  * be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
  * also be configured.
  * Values from the macros defined in this file can be used in code based on this library. 
@@ -113,16 +113,16 @@
 /** @brief Select the EVE controller type and panel resolution.
  *  @details If a module is selected then the EVE controller type and panel
  * resolution are set correctly for the module.
- * In FT8xx.h the EVE controller type will lead to the selection of the EVE 
+ * In EVE.h the EVE controller type will lead to the selection of the EVE 
  * Programming support methods via macros "EVE_API" where the value depends on 
  * the level of the EVE device support. 
  * Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro 
  * as required. 
- * The FT9XX_TYPE and the display settings must be configured before calling FT8xx.h.
+ * The FT8XX_TYPE and the display settings must be configured before calling EVE.h.
  * "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
  * Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
  * The FT8XX_TYPE macro and PANEL_TYPE macro must not be expanded until their
- * allowable values are defined (FT8XX_TYPE in FT8xx.h).
+ * allowable values are defined (FT8XX_TYPE in EVE.h).
  */
 #if !defined(MODULE_TYPE) || MODULE_TYPE == NO_MODULE
 /** @brief Manual selection of FT8XX_TYPE and PANEL_TYPE

@@ -1,6 +1,6 @@
 /**
  * @file EVE_emulator.c
- * @details Platform-specific code for controlling EVE on STM32 devices.
+ * @details Platform-specific code for controlling running a EVE Emulator instance.
  */
 /*
  * ============================================================================
@@ -146,7 +146,10 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
     if (MCU_IsAbsoluteWindowsPath(filePath))
     {
         // Print the absolute path.
-        wprintf(L"Flash (.bin) file path: %ls\n", filePath);
+        // EVE_Debug.h does not provide a wprintf macro.
+    #if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
+        wprintf(L"Flash (.bin) file path: %ls\n", filePath); 
+    #endif
 
         // Verify that the file exists.
         attributes = GetFileAttributesW(filePath);
@@ -161,7 +164,11 @@ static int MCU_SetFlashEmulatorDataFilePath(BT8XXEMU_FlashParameters* parameters
     }
     
     // Print the path relative to the executable.
+    // EVE_Debug.h does not provide a wprintf macro.
+#if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
     wprintf(L"Relative flash (.bin) file path from executable: %ls\n", filePath);
+#endif
+
     // Resolve relative paths beside the running executable.
     pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
     if (!pathLength || pathLength >= _countof(resolvedPath))
@@ -233,7 +240,10 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
     if (MCU_IsAbsoluteWindowsPath(folderPath))
     {
         // Print the absolute path.
+        // EVE_Debug.h does not provide a wprintf macro.
+    #if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
         wprintf(L"SD card folder path: %ls\n", folderPath);
+    #endif
 
         // Verify that the folder exists.
         attributes = GetFileAttributesW(folderPath);
@@ -248,7 +258,11 @@ static const eve_tchar_t* MCU_ResolveSDFolderPath(const eve_tchar_t* folderPath)
     }
 
     // Print the path relative to the executable.
+    // EVE_Debug.h does not provide a wprintf macro..
+#if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
     wprintf(L"Relative SD card folder path from executable: %ls\n", folderPath);
+#endif
+
     // Resolve relative paths beside the running executable.
     pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
 

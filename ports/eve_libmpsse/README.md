@@ -49,7 +49,7 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **libMPSSE** library for Windows. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+To compile this you will have to download the **libMPSSE** library for Windows. The recommended version is v1.0.9 or later. It is available from the FTDI website:
 
 https://ftdichip.com/software-examples/mpsse-projects/
 
@@ -59,7 +59,7 @@ The library is installed *once* into the `ports\eve_libmpsse` directory. When bu
 
 ### Install the LibMPSSE SPI Middleware Library in EVE-MCU-Dev library
 
-The LibMPSSE library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `release`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32-bit Windows).
+The LibMPSSE library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `release`. The distribution contains libraries for various CPU architectures. On v1.0.9 these architectures are AMD64 (64-bit Windows) and x86 (32-bit Windows).
 
 Each architecture has:
 - A DLL file for LibMPSSE and LIB files for connecting the application to the LibMPSSE DLLs
@@ -76,9 +76,7 @@ To run the BAT file change directory to the `ports\eve_libmpsse` directory. The 
 > cd ports\eve_libmpsse
 > install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.9\release
 Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.9\release"
-Copying "..\..\..\libmpsse-windows-1.0.9\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
+Copying "..\..\..\libmpsse-windows-1.0.9\release\build\x64\LIB\libmpsse.lib" to libmpsse.lib
         1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_spi.h" to libmpsse_spi.h
         1 file(s) copied.
@@ -90,8 +88,6 @@ Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.h" to ftdi_in
         1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_spi.c" to ftdi_spi.c
         1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_i2c.c" to ftdi_i2c.c
-        1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.c" to ftdi_mid.c
         1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.h" to ftdi_mid.h
@@ -99,8 +95,6 @@ Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.h" to ftdi_mid.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\source\memcpy.c" to memcpy.c
         1 file(s) copied.
 Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\ftd2xx.h" to ftd2xx.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\WinTypes.h" to WinTypes.h
         1 file(s) copied.
 
 IMPORTANT:
@@ -134,6 +128,8 @@ Change the "L" before the DLL name to the Microsoft `TEXT` macro which will auto
 	}
 #else
 ```
+
+A **bash** script file `install_libmpsse.sh` is also included in this folder. It has the same functionality as `install_libmpsse.bat` but can run in a bash shell to help with setting up the environment.
 
 ### Command Line Compilation
 

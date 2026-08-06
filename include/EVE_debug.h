@@ -42,9 +42,10 @@
 #define EVE_DEBUG_H_
 
 /*
- * Enable informational debug output by default on host platforms that
- * normally provide an operating-system console. An explicitly defined
- * DEBUG_LEVEL, including DEBUG_LEVEL=0, is preserved.
+ * Enable informational debug output by default for the on host platforms that
+ * normally provide an operating-system console, such as MPSSE, FT4222 and
+ * emulator ports. Preserve an explicitly defined DEBUG_LEVEL, including
+ * DEBUG_LEVEL=0.
  */
 
 #ifndef DEBUG_LEVEL
@@ -68,7 +69,7 @@
  * the debug macros expand to no-op expressions.
  */
 
-/* DEBUG_LEVEL=0 */
+/* Error output */
 #if defined(DEBUG_LEVEL)
 /* select from supported platforms */
 #if defined(PLATFORM_RASPBERRYPI) || \
@@ -87,10 +88,15 @@
 #elif defined(PLATFORM_RP2040)
 /* Pico stdio does not normally separate stderr from stdout over USB or UART. */
 #include <stdio.h>
-#define EVE_DEBUG_ERROR(...) printf("[ERROR] " __VA_ARGS__)
+#define EVE_DEBUG_ERROR(...)         \
+    do                               \
+    {                                \
+        printf("[ERROR] ");          \
+        printf(__VA_ARGS__);         \
+    } while (0)
 
 #else
-/* else map to no op if no platfrom support */
+/* else map to no op if no platform support */
 #define EVE_DEBUG_ERROR(...) ((void)0)
 
 #endif
@@ -101,7 +107,7 @@
 
 #endif /* defined(DEBUG_LEVEL) */
 
-/* DEBUG_LEVEL>0 */
+/* Informational output */
 #if defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)
 /* select from supported platforms */
 #if defined(PLATFORM_RASPBERRYPI) || \
@@ -119,7 +125,7 @@
 #define EVE_DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
 
 #else
-/* else map to no op if no platfrom support */
+/* else map to no op if no platform support */
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
 #endif

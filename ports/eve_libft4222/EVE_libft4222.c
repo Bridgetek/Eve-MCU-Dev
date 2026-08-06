@@ -517,7 +517,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    // PD# set to 0, connect GPIO0 of FT4222 PD# of FT8xx board
+    // PD# set to 0, connect GPIO0 of FT4222 PD# of FT8xx/BT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 0)))
     {
         EVE_DEBUG_ERROR("FT4222 MCU_PDlow change failed!\n");
@@ -528,7 +528,7 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    // PD# set to 1, connect GPIO0 of FT4222 to PD# of FT8xx board
+    // PD# set to 1, connect GPIO0 of FT4222 to PD# of FT8xx/BT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 1)))
     {
         EVE_DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");

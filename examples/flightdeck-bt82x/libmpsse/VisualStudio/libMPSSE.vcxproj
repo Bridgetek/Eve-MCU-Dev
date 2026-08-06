@@ -161,7 +161,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c" />
@@ -191,9 +190,7 @@
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_common.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_i2c.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\WinTypes.h" />
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dial\flightcontrols.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />

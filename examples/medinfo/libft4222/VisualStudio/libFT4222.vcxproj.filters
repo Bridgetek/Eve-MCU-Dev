@@ -108,7 +108,6 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\WinTypes.h" />
     <ClInclude Include="..\..\common\patch_medinfo.h">
       <Filter>Example\Patch</Filter>
     </ClInclude>

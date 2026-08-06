@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_i2c.c">
-      <Filter>Library\eve\ports\eve_libmpsse</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClCompile>
@@ -62,9 +59,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_i2c.h">
-      <Filter>Library\eve\ports\eve_libmpsse</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h">
       <Filter>Library\eve\ports\eve_libmpsse</Filter>

@@ -143,15 +143,15 @@ volatile uint8_t DataRead;      // Stores slave data
 __interrupt void USCI_SPIRX_ISR(void)
 {
     if (IFG2 & UCA0RXIFG){      // check if SPI receiver interrupt flag is set
-      DataRead = UCA0RXBUF;     //Store value clocked in from FT8xx from SPI Rx buffer (auto resets UCA0RxIFG)
-    }
+      DataRead = UCA0RXBUF;     // Store value clocked in from FT8xx/BT8xx 
+    }                           // from SPI Rx buffer (auto resets UCA0RxIFG)
 }
 // --------------------- SPI Read/Write 8 bits ----------------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
 
     while (!(IFG2 & UCA0TXIFG));            // USCI_A0 TX (SPI) buffer ready?
-    UCA0TXBUF = DataToWrite;                // Send data to FT8xx by writing data to SPI buffer
+    UCA0TXBUF = DataToWrite;                // Send data to FT8xx/BT8xx by writing data to SPI buffer
     IFG2 = UCA0RXIFG;                       // trigger UCA0RXIFG to receive SPI data
 
     return DataRead;

@@ -295,7 +295,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx/BT8xx board
     SPI_ToggleCS(ftHandle, FALSE);
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS7 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, TRUE);
@@ -304,7 +304,7 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx/BT8xx board
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS7 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, FALSE);
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
