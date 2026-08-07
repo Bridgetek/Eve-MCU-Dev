@@ -71,6 +71,7 @@ static uint16_t profileCmdPointer = 0x0000;
 
 /* EVE HAL Library functions */
 
+// Initialise EVE HAL Layer
 int HAL_EVE_Init(void)
 {
     if (MCU_Init() != 0)
@@ -237,6 +238,7 @@ int HAL_EVE_Init(void)
     return 0;
 }
 
+// De-Initialise EVE HAL Layer
 int HAL_EVE_Deinit(void)
 {
     if (MCU_Deinit() != 0)

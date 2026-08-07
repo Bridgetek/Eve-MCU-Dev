@@ -71,6 +71,7 @@
 #pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
 #endif
 
+// Initialise EVE API
 int EVE_Init(void)
 {
     uint8_t i;
@@ -175,6 +176,7 @@ int EVE_Init(void)
     HAL_ResetCmdPointer();
     HAL_WriteCmdPointer();
 #endif
+
 #if defined(EVE_COPROC_PROFILE)
     HAL_ResetProfilePointer();
 #endif // IS_EVE_API(1, 2, 3, 4)
@@ -286,6 +288,7 @@ int EVE_Init(void)
     return 0;
 }
 
+// De-Initialise EVE API.
 int EVE_Deinit(void)
 {
     if (HAL_EVE_Deinit() < 0)
