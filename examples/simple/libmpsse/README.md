@@ -32,7 +32,7 @@ It is possible to use the command line instructions above in a terminal windows 
 
 ## Visual Studio
 
-The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
+The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder. 
 
 ## Linux
 

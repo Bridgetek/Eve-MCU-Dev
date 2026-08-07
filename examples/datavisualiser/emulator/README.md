@@ -22,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is normally `build\Debug\datavisualiser_emulator.exe` or  `build\datavisualiser_emulator.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\datavisualiser_emulator.exe` or `build\datavisualiser_emulator.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
@@ -42,7 +42,10 @@ It is possible to use the command line instructions above in a terminal windows 
 
 ## Visual Studio
 
-The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
+The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder.
+
+The example application will automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `mx25lemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
+
 
 ## Linux
 

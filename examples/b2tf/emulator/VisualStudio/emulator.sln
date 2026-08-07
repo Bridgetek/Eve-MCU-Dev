@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bt2f", "emulator.vcxproj", "{36C68550-640E-4CC5-B5A5-4F6909B40CEC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bt2f", "emulator.vcxproj", "{7D3484A0-EB1A-417B-BF0A-8F590FFA4CF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,12 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{36C68550-640E-4CC5-B5A5-4F6909B40CEC}.Debug|x64.ActiveCfg = Debug|x64
-		{36C68550-640E-4CC5-B5A5-4F6909B40CEC}.Debug|x64.Build.0 = Debug|x64
-		{36C68550-640E-4CC5-B5A5-4F6909B40CEC}.Release|x64.ActiveCfg = Release|x64
-		{36C68550-640E-4CC5-B5A5-4F6909B40CEC}.Release|x64.Build.0 = Release|x64
+		{7D3484A0-EB1A-417B-BF0A-8F590FFA4CF6}.Debug|x64.ActiveCfg = Debug|x64
+		{7D3484A0-EB1A-417B-BF0A-8F590FFA4CF6}.Debug|x64.Build.0 = Debug|x64
+		{7D3484A0-EB1A-417B-BF0A-8F590FFA4CF6}.Release|x64.ActiveCfg = Release|x64
+		{7D3484A0-EB1A-417B-BF0A-8F590FFA4CF6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {196B6DB2-9FB1-4A9F-9F1C-B9B3C96A8FE5}
 	EndGlobalSection
 EndGlobal

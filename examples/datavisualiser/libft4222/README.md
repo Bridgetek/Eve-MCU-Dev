@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Simple Example for libft4222
+# EVE-MCU-Dev Cruise Example for libft4222
 
 Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
 
@@ -22,9 +22,9 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\simple_libft4222.exe` or `build\simple_libft4222.exe`. This can be run from the command line. 
+The executable file is `build\Debug\datavisualiser_libft4222.exe`. This can be run from the command line. 
 
-Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
+Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
@@ -44,7 +44,7 @@ It is possible to use the command line instructions above in a terminal windows 
 
 The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder. 
 
-The example application will automatically copy either the `LibFT4222-64.dll` or `LibFT4222.dll` DLLs to the executable output directory.
+The example application will automatically copy either the `LibFT4222-64.dll` or `LibFT4222.dll` DLLs to the executable output directory. 
 
 ## Linux
 
