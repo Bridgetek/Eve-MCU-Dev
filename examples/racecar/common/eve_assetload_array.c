@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
 /* Include functions for EVE-MCU-Dev library API layer */
@@ -45,6 +48,8 @@
 #include "eve_example.h"
 
 #if ASSETS == USE_C_ARRAYS
+
+/* CONSTANTS ***********************************************************************/
 
 // Patch
 extern const uint8_t patch_textscale[];
@@ -78,6 +83,8 @@ extern const uint32_t eurostile_150_L8_converted_size;
 
 // Patches only apply to BT82x
 #if IS_EVE_API(5)
+
+/* FUNCTIONS ***********************************************************************/
 
 int eve_loadpatch_impl(void)
 {

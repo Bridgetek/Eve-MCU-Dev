@@ -60,7 +60,7 @@
 #error This project requires a screen of at least 800x480 pixels.
 #endif
 
-// Check each platform can use host file system or arrays for assets
+/* Check each platform can use host file system or arrays for assets */
 
 #if (ASSETS != USE_FLASH)
 // Pico platform cannot use host file system or arrays for assets

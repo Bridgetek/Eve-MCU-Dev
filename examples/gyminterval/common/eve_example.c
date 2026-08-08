@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -45,12 +48,16 @@
 
 #include "eve_example.h"
 
+/* MACROS **************************************************************************/
+
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
 #ifndef MIN
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #endif
+
+/* CONSTANTS ***********************************************************************/
 
 // Bitmap handle to use for scaled fonts
 #define SCALED_FONT 14
@@ -96,6 +103,8 @@ const int interval_count_max = 99;
 const int timer_max = (59*60) + 59;
 
 const int key_debounce_filter = 3;
+
+/* FUNCTIONS ***********************************************************************/
 
 // Turn an unsigned integer into a string.
 static void uint2str(uint8_t val, char *str)
@@ -1108,7 +1117,6 @@ void eve_display(void)
         timer_page(cycle_count, cycle_rest_count, interval_count, interval_rest_count, timer_count);
     }
 }
-
 
 // Application Code begins here
 void eve_example(void)

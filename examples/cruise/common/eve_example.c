@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -51,6 +54,8 @@
 #if EVE_DISP_WIDTH < 480
 #error This example needs a screen width of 480 pixels or above.
 #endif
+
+/* CONSTANTS ***********************************************************************/
 
 // Draw a stencil to show a circular display
 #define TARGET_CIRCULAR
@@ -90,6 +95,8 @@ const uint32_t grnfg = 0x00ff00;
 const uint32_t grnbg = 0x003000;
 const uint32_t blufg = 0x0000ff;
 const uint32_t blubg = 0x000030;
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display(void)
 {

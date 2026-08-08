@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -44,17 +47,19 @@
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
-#if IS_EVE_API(1,2,3,4)
-#error This example requires EVE API 5 or above.
-#endif
-
 #include "patch_lvds.h"
 
 #include "eve_example.h"
 
+#if IS_EVE_API(1,2,3,4)
+#error This example requires EVE API 5 or above.
+#endif
+
 #if EVE_DISP_WIDTH < 480
 #error This example needs a screen width of 480 pixels or above.
 #endif
+
+/* CONSTANTS ***********************************************************************/
 
 // Bitmap handles
 #define HND_LVDSRX 1
@@ -70,6 +75,8 @@
 
 extern const uint32_t lake_wanaka_size;
 extern const uint8_t lake_wanaka [];
+
+/* FUNCTIONS ***********************************************************************/
     
 uint32_t eve_load_image(const uint8_t *img, const uint32_t sz, uint32_t address, int handle)
 {

@@ -36,16 +36,22 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
 #include "eve_example.h"
+
+/* TYPES / STRUCTURES **************************************************************/
 
 // Structure to hold information to draw animated bubbles
 struct bubbles_s
@@ -88,6 +94,8 @@ struct prop_size_s
     uint8_t handle; // prop handle
  } prop_info_g;
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 static inline void draw_vertex(int16_t x, int16_t y)
 {
 #if IS_EVE_API(1)
@@ -96,6 +104,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
     EVE_VERTEX2F(x, y);
 #endif
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 // Animate bubbles rising past the lens
 static void animate_bubbles(void)

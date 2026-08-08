@@ -36,6 +36,7 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+ 
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -43,11 +44,11 @@
 
 #include "maths/trig_furman.h"
 
-#ifndef min
-#define min(X,Y) ((X) < (Y) ? (X) : (Y))
+#ifndef MIN
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 #endif
-#ifndef max
-#define max(X,Y) ((X) > (Y) ? (X) : (Y))
+#ifndef MAX
+#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
 #endif
 
 static inline void draw_vertex(int16_t x, int16_t y)
@@ -67,8 +68,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
 void altwidget(int16_t x, int16_t y, uint16_t radius, int alt)
 {
     // Like a real altitude instrument it will never go beyond the limits
-    alt = max(alt, 0);
-    alt = min(alt, 10000);
+    alt = MAX(alt, 0);
+    alt = MIN(alt, 10000);
 
     // Dimensions of the widget are detemined by the radius
     int16_t radius_outer = radius;

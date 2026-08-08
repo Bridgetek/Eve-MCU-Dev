@@ -60,7 +60,7 @@ set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}
-        main.c
+        main/main.c
 )
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}

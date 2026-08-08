@@ -37,6 +37,8 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,13 +51,17 @@
 
 #if ASSETS == USE_FILES
 
+/* CONSTANTS ***********************************************************************/
+
+static const char *assetdir;
+
+/* FUNCTIONS ***********************************************************************/
+
 /** @brief Portable version of fopen/fopen_s
  *  @details This is provided in the main.c file if the platform is able to use
  *           a file system for accessing assets.
  */
 extern FILE *port_fopen(char const * _FileName, char const * _Mode);
-
-static const char *assetdir;
 
 const char *join(const char *dirname, const char *filename)
 {

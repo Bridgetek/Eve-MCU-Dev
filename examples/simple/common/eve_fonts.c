@@ -37,11 +37,16 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 const uint32_t font0_offset = 1000; // Taken from commmand line
 
@@ -167,6 +172,8 @@ static const uint8_t font0[] =
 };
 
 const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+
+/* FUNCTIONS ***********************************************************************/
 
 uint32_t eve_init_fonts(void)
 {

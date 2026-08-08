@@ -37,15 +37,22 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"
 
 #if GRAPHING_METHOD == USE_GRAPH_EXTENSIONS
 
+/* GLOBAL VARIABLES ****************************************************************/
+
 EVE_TRACE_PROPS trace[trace_total];
+
+/* FUNCTIONS ***********************************************************************/
 
 static void graph_trace_zero(EVE_TRACE_PROPS *asset)
 {

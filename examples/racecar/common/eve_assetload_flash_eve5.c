@@ -37,6 +37,8 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
@@ -52,11 +54,16 @@
 
 #if (ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE)
 
+/* CONSTANTS ***********************************************************************/
+
+
 #if ASSETS == USE_FLASHIMAGE
 extern const char *flashimage;
 extern const char *assetdir;
 extern const char *join(const char *dirname, const char *filename);
 #endif
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_asset_properties(const char *assets)
 {

@@ -47,10 +47,12 @@
 #include <ft900.h>
 #include <ft900_dlog.h>
 #include <ft900_memctl.h>
-
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 #if defined(__FT900__)
 #define GPIO_UART0_TX 48
@@ -70,8 +72,6 @@
  	 programmable Flash sector is 256 bytes.
  */
 __flash__ uint8_t __attribute__((aligned(256))) dlog_pm[256] = {[0 ... 255] = 0xff };
-
-/* CONSTANTS ***********************************************************************/
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
