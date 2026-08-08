@@ -48,6 +48,7 @@
 #include <sys/time.h>
 #endif
 
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
 #include "eve_example.h"

@@ -9,10 +9,10 @@
 	<createSlaveProjects value=""/>
 	<ignoreDefaultDeviceSettings value="true"/>
 	<ignoreDefaultCCSSettings value="true"/>
-	<templateProperties value="id=empty_LP_MSPM0G3519_nortos_gcc.projectspec.empty_LP_MSPM0G3519_nortos_gcc,buildProfile=release,isHybrid=true"/>
+	<templateProperties value="id=empty_LP_MSPM0G3519_nortos_ticlang.projectspec.MSPM0,buildProfile=release,isHybrid=true"/>
 	<activeTargetConfiguration value="targetConfigs/MSPM0G3519.ccxml"/>
 	<isTargetConfigurationManual value="false"/>
 	<sourceLookupPath value="${COM_TI_MSPM0_SDK_INSTALL_DIR}/source/ti/driverlib"/>
-	<origin value="C:\TI\mspm0_sdk_2_05_01_00\examples\nortos\LP_MSPM0G3519\driverlib\empty\gcc\empty_LP_MSPM0G3519_nortos_gcc.projectspec"/>
+	<origin value="C:\ti\mspm0_sdk_2_11_00_07\examples\nortos\LP_MSPM0G3519\driverlib\empty\ticlang\empty_LP_MSPM0G3519_nortos_ticlang.projectspec"/>
 	<filesToOpen value="README.md,empty.syscfg"/>
 </projectOptions>

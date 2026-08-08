@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\main.c">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c">
       <Filter>Library\eve\source</Filter>
@@ -32,22 +32,20 @@
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\clownfish_102x54_ARGB1555.c">
-      <Filter>Example\assets</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\parrotfish_116x43_ARGB1555.c">
-      <Filter>Example\assets</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\prop1_128x128_ARGB2.c">
-      <Filter>Example\assets</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\surgeonfish_133x56_ARGB1555.c">
-      <Filter>Example\assets</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\yellowtang_128x81_ARGB1555.c">
-      <Filter>Example\assets</Filter>
+      <Filter>Assets</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -62,12 +60,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
       <Filter>Example\snippets</Filter>
@@ -99,6 +91,12 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
+      <Filter>Library\eve\ports\eve_emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
+      <Filter>Library\eve\ports\eve_emulator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -116,12 +114,6 @@
     <Filter Include="Example">
       <UniqueIdentifier>{ba84a78f-0fec-4e05-a5c8-7326f9ab765d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{02091f89-4430-4313-93ec-2df964f31911}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\eve\ports">
       <UniqueIdentifier>{68d7fd8b-5282-498d-b523-f261cf854fbb}</UniqueIdentifier>
     </Filter>
@@ -134,7 +126,10 @@
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{ba57b70c-d8d9-4b5f-b705-4d47d5cb2d34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Example\assets">
+    <Filter Include="Main">
+      <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
       <UniqueIdentifier>{59b342ed-dda7-4283-99b7-9b672eb0b650}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

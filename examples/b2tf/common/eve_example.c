@@ -36,15 +36,21 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
 #include "eve_example.h"
+
+/* FUNCTIONS ***********************************************************************/
 
 void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
 {

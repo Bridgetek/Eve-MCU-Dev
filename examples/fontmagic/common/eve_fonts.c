@@ -37,11 +37,16 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 const uint32_t font0_offset = 0x0; // Taken from commmand line
 const uint8_t font0_first = 0x20; // Taken from commmand line

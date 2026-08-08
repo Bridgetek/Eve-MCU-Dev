@@ -50,6 +50,7 @@ extern "C" {
 #include "touch.h"
 #include "controls/fonts.h"
 
+/* Constants available within the eve_example code. */
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */

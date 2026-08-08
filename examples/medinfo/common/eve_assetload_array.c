@@ -37,12 +37,16 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 #if ASSETS == USE_C_ARRAYS
 
@@ -79,6 +83,8 @@ extern const uint8_t sick[];
 extern const uint32_t sick_size;
 extern const uint8_t off_on[];
 extern const uint32_t off_on_size;
+
+/* FUNCTIONS ***********************************************************************/
 
 // Patches only apply to BT82x
 #if IS_EVE_API(5)

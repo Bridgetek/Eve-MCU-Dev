@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -49,9 +52,12 @@
 #error This example requires EVE API 5 or above.
 #endif
 
+/* CONSTANTS ***********************************************************************/
+
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
 
+/* FUNCTIONS ***********************************************************************/
 
 // Check a ROM font is supported by a platform.
 int isromfont(uint8_t fontnumber)

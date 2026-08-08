@@ -37,15 +37,22 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
+/* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"
 
+/* CONSTANTS ***********************************************************************/
+
 /* Array containing the bitmap sizes of ROM fonts. */
 const uint8_t eve_rom_font_widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t eve_rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
+
+/* FUNCTIONS ***********************************************************************/
 
 uint8_t eve_romfont_width(uint8_t font)
 {

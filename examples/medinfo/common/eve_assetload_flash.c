@@ -37,6 +37,8 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
@@ -54,8 +56,12 @@
 
 #if ASSETS == USE_FLASHIMAGE
 
+/* CONSTANTS ***********************************************************************/
+
 const char *flashimage;
 const char *assetdir;
+
+/* FUNCTIONS ***********************************************************************/
 
 /** @brief Portable version of fopen/fopen_s
  *  @details This is provided in the main.c file if the platform is able to use

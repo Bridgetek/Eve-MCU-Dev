@@ -36,16 +36,24 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 
 #include "eve_example.h"
 #include "touch.h"
 
+/* CONSTANTS ***********************************************************************/
+
 extern const EVE_GPU_FONT_HEADER *font0_hdr;
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display(void)
 {

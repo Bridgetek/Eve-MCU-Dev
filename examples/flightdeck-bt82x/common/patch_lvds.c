@@ -1,9 +1,12 @@
 /* Generated file by extension.py */
 
+/* INCLUDES ************************************************************************/
+
 #include "patch_lvds.h"
 #include <EVE.h>
 #include <HAL.h>
 
+/* FUNCTIONS ***********************************************************************/
 
 #if IS_EVE_API(5)
 

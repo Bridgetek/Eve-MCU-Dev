@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>simple_MSPM0</name>
+	<name>MSPM0</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,7 +31,7 @@
 		<link>
 			<name>eve_bt82x</name>
 			<type>2</type>
-			<location>C:/Users/gordon.mcnab/Documents/GitHub/EVE-MCU-Dev/ports/eve_bt82x</location>
+			<locationURI>PARENT-3-PROJECT_LOC/ports/eve_bt82x</locationURI>
 		</link>
 		<link>
 			<name>include</name>

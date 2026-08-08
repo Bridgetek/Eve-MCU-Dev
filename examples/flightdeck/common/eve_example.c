@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -45,12 +48,16 @@
 
 #include "eve_example.h"
 
+/* MACROS **************************************************************************/
+
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
 #ifndef MIN
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #endif
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display(void)
 {

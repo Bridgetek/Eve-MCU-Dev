@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\main.c">
-      <Filter>Source Files</Filter>
+      <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c">
       <Filter>Library\eve\source</Filter>
@@ -28,8 +28,6 @@
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\eve\include</Filter>
     </ClInclude>
@@ -44,12 +42,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
       <Filter>Library\eve\ports\eve_bt82x</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
@@ -75,6 +67,12 @@
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
+      <Filter>Library\eve\ports\eve_emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
+      <Filter>Library\eve\ports\eve_emulator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -92,12 +90,6 @@
     <Filter Include="Example">
       <UniqueIdentifier>{ba84a78f-0fec-4e05-a5c8-7326f9ab765d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{02091f89-4430-4313-93ec-2df964f31911}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\eve\ports">
       <UniqueIdentifier>{68d7fd8b-5282-498d-b523-f261cf854fbb}</UniqueIdentifier>
     </Filter>
@@ -109,6 +101,9 @@
     </Filter>
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{33e043e0-0991-493b-bcfd-31293a48c021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

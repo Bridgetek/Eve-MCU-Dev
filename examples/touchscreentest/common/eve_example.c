@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -45,14 +48,24 @@
 
 #include "eve_example.h"
 
+/* CONSTANTS ***********************************************************************/
+
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
-uint8_t font;
+
 const uint8_t button_clear = 102;
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
+/* TYPES / STRUCTURES **************************************************************/
+
 struct touchscreen_calibration calib;
+
+/* GLOBAL VARIABLES ****************************************************************/
+
+uint8_t font;
+
+/* FUNCTIONS ***********************************************************************/
 
 int eve_recalibrate(void)
 {

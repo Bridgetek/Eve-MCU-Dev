@@ -49,6 +49,7 @@ extern "C" {
 /* Headers required for this example */
 #include "touch.h"
 
+/* Constants available within the eve_example code */
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
