@@ -17,6 +17,87 @@ Arduino UNO                         arduino:avr:uno
 
 > arduino-cli compile -b arduino:avr:uno --build-property compiler.cpp.extra_flags="-DFT8XX_TYPE=BT820 -DDISPLAY_RES=WXUGA"
 
+The following boards have successfully compiled the simple example:
+
+- Adafruit Circuit Playground (arduino:avr:circuitplay32u4cat)
+- Adafruit Circuit Playground Express (arduino:samd:adafruit_circuitplayground_m0)
+- Arduino BT (arduino:avr:bt)
+- Arduino Due (Native USB Port) (arduino:sam:arduino_due_x)
+- Arduino Due (Programming Port) (arduino:sam:arduino_due_x_dbg)
+- Arduino Duemilanove or Diecimila (arduino:avr:diecimila)
+- Arduino Esplora (arduino:avr:esplora)
+- Arduino Ethernet (arduino:avr:ethernet)
+- Arduino Fio (arduino:avr:fio)
+- Arduino Giga R1 (arduino:zephyr_main:giga)
+- Arduino Industrial 101 (arduino:avr:chiwawa)
+- Arduino Leonardo (arduino:avr:leonardo)
+- Arduino Leonardo ETH (arduino:avr:leonardoeth)
+- Arduino M0 (arduino:samd:mzero_bl)
+- Arduino M0 Pro (Native USB Port) (arduino:samd:mzero_pro_bl)
+- Arduino M0 Pro (Programming Port) (arduino:samd:mzero_pro_bl_dbg)
+- Arduino MKR 1000 WiFi (arduino:samd:mkr1000)
+- Arduino MKR FOX 1200 (arduino:samd:mkrfox1200)
+- Arduino MKR GSM 1400 (arduino:samd:mkrgsm1400)
+- Arduino MKR NB 1500 (arduino:samd:mkrnb1500)
+- Arduino MKR Vidor 4000 (arduino:samd:mkrvidor4000)
+- Arduino MKR WAN 1300 (arduino:samd:mkrwan1300)
+- Arduino MKR WAN 1310 (arduino:samd:mkrwan1310)
+- Arduino MKR WiFi 1010 (arduino:samd:mkrwifi1010)
+- Arduino MKR Zero (arduino:samd:mkrzero)
+- Arduino Mega ADK (arduino:avr:megaADK)
+- Arduino Mega or Mega 2560 (arduino:avr:mega)
+- Arduino Micro (arduino:avr:micro)
+- Arduino Mini (arduino:avr:mini)
+- Arduino NANO 33 IoT (arduino:samd:nano_33_iot)
+- Arduino Nano (arduino:avr:nano)
+- Arduino Nano 33 BLE (arduino:zephyr_main:nano33ble)
+- Arduino Nano ESP32 (arduino:esp32:nano_nora)
+- Arduino Nano Every (arduino:megaavr:nona4809)
+- Arduino Nano Matter (arduino:zephyr_main:nano_matter)
+- Arduino Nano Matter (SiliconLabs:silabs:nano_matter)
+- Arduino Nano R4 (arduino:renesas_uno:nanor4)
+- Arduino Nano RP2040 Connect (arduino:zephyr_main:nano_connect)
+- Arduino Nicla Vision (arduino:zephyr_main:nicla_vision)
+- Arduino Portenta C33 (arduino:renesas_portenta:portenta_c33)
+- Arduino Portenta C33 (arduino:zephyr_main:portentac33)
+- Arduino Portenta H7 (arduino:zephyr_main:portentah7)
+- Arduino Portenta H7 (arduino:mbed_portenta:envie_m7)
+- Arduino Primo (arduino:nrf52:primo)
+- Arduino Primo Core (arduino:nrf52:primo_core)
+- Arduino Pro or Pro Mini (arduino:avr:pro)
+- Arduino Robot Control (arduino:avr:robotControl)
+- Arduino Robot Motor (arduino:avr:robotMotor)
+- Arduino Tian (arduino:samd:tian)
+- Arduino UNO (arduino:avr:uno)
+- Arduino UNO Mini (arduino:avr:unomini)
+- Arduino UNO Q (arduino:zephyr:unoq)
+- Arduino UNO R4 Minima (arduino:renesas_uno:minima)
+- Arduino UNO R4 WiFi (arduino:renesas_uno:unor4wifi)
+- Arduino UNO WiFi (arduino:avr:unowifi)
+- Arduino Uno WiFi Rev2 (arduino:megaavr:uno2018)
+- Arduino Yún (arduino:avr:yun)
+- Arduino Yún Mini (arduino:avr:yunmini)
+- Arduino Zero (Native USB Port) (arduino:samd:arduino_zero_native)
+- Arduino Zero (Programming Port) (arduino:samd:arduino_zero_edbg)
+- Ezurio Lyra 24P 20dBm Dev Kit (SiliconLabs:silabs:lyra24p20)
+- LilyPad Arduino (arduino:avr:lilypad)
+- LilyPad Arduino USB (arduino:avr:LilyPadUSB)
+- Linino One (arduino:avr:one)
+- Seeed Studio XIAO MG24 (Sense) (SiliconLabs:silabs:xiao_mg24)
+- Silicon Labs BGM220 Explorer Kit (SiliconLabs:silabs:bgm220explorerkit)
+- Silicon Labs xG24 Dev Kit (SiliconLabs:silabs:xg24devkit)
+- Silicon Labs xG24 Explorer Kit (SiliconLabs:silabs:xg24explorerkit)
+- Silicon Labs xG27 Dev Kit (SiliconLabs:silabs:xg27devkit)
+- SparkFun Thing Plus Matter (SiliconLabs:silabs:thingplusmatter)
+
+The following boards do not successfully compile:
+
+- Arduino NG or older (arduino:avr:atmegang) - Insufficient program space
+- Arduino Gemma (arduino:avr:gemma) - No Serial class
+- Arduino Nicla Sense ME (arduino:zephyr_main:nicla_sense) - No SPI class
+- Arduino Opta (arduino:zephyr_main:opta) - No SPI class
+- Arduino Portenta X8 (arduino:mbed_portenta:portenta_x8) - No Serial class
+
 """
 level = 1
 verbose = 0
@@ -168,6 +249,10 @@ def compile_sketch(ex, brd, flg=None, lib=None, verbose=0):
 # Arduino boards to exclude from testing
 exclude_boards = [
     "arduino:avr:atmegang", # "Arduino NG or older" - Too small a memory
+    "arduino:avr:gemma", # "Arduino Gemma" - No Serial class
+    "arduino:zephyr_main:nicla_sense", # "Arduino Nicla Sense ME" - No SPI class
+    "arduino:mbed_portenta:portenta_x8", # "Arduino Portenta X8" - No Serial class
+    "arduino:zephyr_main:opta", # "Arduino Opta" - No SPI class
 ]
 # TODO add args.exclude to exclude_boards
 if args.exclude:
