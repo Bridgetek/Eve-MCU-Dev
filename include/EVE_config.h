@@ -118,7 +118,7 @@
 #define DP_0502_11A 0502   // DP-0502-11A WQVGA (Resistive)
 #define DP_0701_01A 0701   // DP-0701-11A WVGA (Capacitive)
 #define DP_1011_01A 10111  // DP-1011-01A WXGA (Capacitive)
-#define DP_1011_02A 10112  // DP-1011-02A WXGA (Capacitive)
+#define DP_1011_02A 10112  // DP-1011-02A WXGA_NG (Capacitive)
 #define DP_1012_01A 1012   // DP-1012-01A WUXGA (Capacitive)
 #define DP_1561_01A 156101 // DP-1561-01A FullHD (Capacitive)
 #define DP_1561_02A 156102 // DP-1561-02A FullHD (Capacitive)
@@ -130,17 +130,17 @@
 /**
  *  @brief Select the EVE controller type and panel resolution.
  *  @details If a module is selected then the EVE controller type and panel
- * resolution are set correctly for the module.
- * In EVE.h the EVE controller type will lead to the selection of the EVE 
- * Programming support methods via macros "EVE_API" where the value depends on 
- * the level of the EVE device support. 
- * Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro 
- * as required. 
- * The FT8XX_TYPE and the display settings must be configured before calling EVE.h.
- * "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
- * Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
- * The FT8XX_TYPE macro and PANEL_TYPE macro must not be expanded until their
- * allowable values are defined (FT8XX_TYPE in EVE.h).
+ *      resolution are set correctly for the module.
+ *      In EVE.h the EVE controller type will lead to the selection of the EVE 
+ *      Programming support methods via macros "EVE_API" where the value depends on 
+ *      the level of the EVE device support. 
+ *      Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro 
+ *      as required. 
+ *      The FT8XX_TYPE and the display settings must be configured before calling EVE.h.
+ *      "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
+ *      Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
+ *      The FT8XX_TYPE macro and PANEL_TYPE macro must not be expanded until their
+ *      allowable values are defined (FT8XX_TYPE in EVE.h).
  */
 #if !defined(MODULE_TYPE) || MODULE_TYPE == NO_MODULE
 /**
@@ -326,7 +326,7 @@
 #define DISPLAY_RES WXGA
 
 #elif PANEL_TYPE == DP_1011_02A
-// DP-1011-02A WXGA (Capacitive)
+// DP-1011-02A WXGA_NG (Capacitive)
 #define DISPLAY_RES WXGA_NG
 
 #elif PANEL_TYPE == DP_1012_01A
@@ -349,7 +349,6 @@
 // IDM204021R (Capacitive)
 #define DISPLAY_RES WQVGAR  
 #endif
-
 
 /**
  * @brief Definitions used for touch controllers

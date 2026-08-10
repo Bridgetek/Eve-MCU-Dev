@@ -212,12 +212,12 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   | **DP_0502_11A** | 5 inch display panel (**WQVGA**) |  Resistive |
   | **DP_0701_01A** | 7 inch display panel (**WVGA**) | Capacitive |
   | **DP_1011_01A** | 10.1 inch display panel (**WXGA**) | Capacitive |
-  | **DP_1011_02A** | 10.1 inch display panel (**WXGA**) | Capacitive |
+  | **DP_1011_02A** | 10.1 inch display panel (**WXGA_NG**) | Capacitive |
   | **DP_1012_01A** | 10.1 inch  display panel (**WUXGA**) |  Capacitive |
   | **DP_1561_01A** | 15.6 inch display panel (**FullHD**) | Capacitive |
   | **DP_1561_02A** | 15.6 inch display panel (**FullHD**) | Capacitive |
-  | **DP_IDM43A**  | 4.3 inch display panel (**WQVGA**) | Capacitive |
-  | **DP_IDM21R**  | 2.1 inch display panel (**WQVGAR**) | Capacitive |
+  | **DP_IDM43A**   | 4.3 inch display panel (**WQVGA**) | Capacitive |
+  | **DP_IDM21R**   | 2.1 inch display panel (**WQVGAR**) | Capacitive |
 
 - `MODULE_TYPE` The Bridgetek module or development kit type for EVE device and display panel. The following options are defined:
   | Module or Kit Name | Description |
