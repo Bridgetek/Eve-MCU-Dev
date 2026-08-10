@@ -70,7 +70,7 @@
  *		IDK_FT810_43A	- FT810 IC Development Kit with 4.3-inch display (FT810 with DP-0431-11A)
  *		IDK_BT816_50A	- BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
  *		IDK_BT817_70A	- BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
- *		IDK_BT817_101A	- BT817 IC Development Kit with 7.0-inch display (BT817 with DP-1011-02A)
+ *		IDK_BT817_101A	- BT817 IC Development Kit with 10.1 inch display (BT817 with DP-1011-02A)
  *		IDK_BT820_101A	- BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
  * 
  *  Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
@@ -243,7 +243,7 @@
 #define PANEL_TYPE DP_0701_01A
 
 #elif MODULE_TYPE == IDK_BT817_101A  
-// BT817 IC Development Kit with 7.0-inch display (BT817 with DP-1011-02A)
+// BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
 #define FT8XX_TYPE BT817
 #define PANEL_TYPE DP_1011_02A
 
