@@ -40,58 +40,75 @@
 #ifndef _EVE_CONFIG_H_
 #define _EVE_CONFIG_H_
 
-/** @note IMPORTANT This header file must be included before EVE.h.
+/**
+ * @note IMPORTANT This header file must be included before EVE.h.
  * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
  * be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
  * also be configured.
  * Values from the macros defined in this file can be used in code based on this library. 
  * To make a custom configuration file, edit this file as required as long as the macros
- * listed above are correctly defined. */
+ * listed above are correctly defined.
+ */
  
-/** @brief Select Bridgetek EVE Module Types.
+/**
+ *  @brief Select Bridgetek EVE Module or Development Kit Types.
  *  @details The following options are defined:
- *    VM800B     - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
- *    VM800C35A  - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
- *    VM800C43A  - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
- *    VM800C50A  - VM800C50A-D with 5 inch display (FT800 with DP-0502-11A)
- *    VM810C     - VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
- *    ME812A     - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812)
- *    ME813A     - ME813A-WH50C with 5 inch display (FT813)
- *    VM816C     - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0502-11A)
- *    VM880C     - VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
- *    IDM204021R - IDM2040-21R (FT800)
- *    IDM204043A - IDM2040-43A (BT883 with DP-0431-11A)
- *    IDM20407A  - IDM2040-7A (BT817 with DP-0701-01A)
- *    VM820B10A  - VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
- *    VM820B15A  - VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
- * Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
+ *		VM800B			- VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
+ *		VM800C35A		- VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
+ *		VM800C43A		- VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
+ *		VM800C50A		- VM800C50A-D with 5 inch display (FT800 with DP-0502-11A)
+ *		VM810C			- VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
+ *		ME812A			- ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812 with DP-0501-11A)
+ *		ME813A			- ME813A-WH50C with 5 inch display (FT813 with DP-0501-01A)
+ *		VM816C			- VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0501-11A)
+ *		VM880C			- VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
+ *		IDM204021R		- IDM2040-21R (FT800 with 2.1 inch display)
+ *		IM204043A		- IDM2040-43A (BT883 with DP-0431-11A)
+ *		IDM20407A		- IDM2040-7A (BT817 with DP-0701-01A)
+ *		VM820B10A		- VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+ *		VM820B15A		- VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
+ *		IDK_FT810_43A	- FT810 IC Development Kit with 4.3-inch display (FT810 with DP-0431-11A)
+ *		IDK_BT816_50A	- BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
+ *		IDK_BT817_70A	- BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
+ *		IDK_BT817_101A	- BT817 IC Development Kit with 7.0-inch display (BT817 with DP-1011-02A)
+ *		IDK_BT820_101A	- BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
+ * 
+ *  Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
  */
 //@{
-#define VM800B     800     // VM800B35A-BK 
-#define VM800C35A  835     // VM800C35A-D 
-#define VM800C43A  843     // VM800C43A-D 
-#define VM800C50A  850     // VM800C50A-D 
-#define VM810C     810     // VM810C50A-D 
-#define ME812A     812     // ME812A-WH50R, ME812AU-WH50R 
-#define ME813A     813     // ME813A-WH50C 
-#define VM816C     816     // VM816C50A-D, VM816CU50A-D 
-#define VM880C     880     // VM880C 
-#define IDM204021R 204021  // IDM2040-21R 
-#define IDM204043A 204043  // IDM2040-43A 
-#define IDM20407A  20407   // IDM2040-7A 
-#define VM820B10A  82010   // VM820B10A 
-#define VM820B15A  82015   // VM820B15A 
-#define NO_MODULE  0       // Select PANEL_TYPE and FT8XX_TYPE manually
+#define VM800B			800     // VM800B35A-BK 
+#define VM800C35A		835     // VM800C35A-D 
+#define VM800C43A		843     // VM800C43A-D 
+#define VM800C50A		850     // VM800C50A-D 
+#define VM810C			810     // VM810C50A-D 
+#define ME812A			812     // ME812A-WH50R, ME812AU-WH50R 
+#define ME813A			813     // ME813A-WH50C 
+#define VM816C			816     // VM816C50A-D, VM816CU50A-D 
+#define VM880C			880     // VM880C 
+#define IDM204021R		204021  // IDM2040-21R 
+#define IDM204043A		204043  // IDM2040-43A 
+#define IDM20407A		20407   // IDM2040-7A 
+#define VM820B10A		82010   // VM820B10A 
+#define VM820B15A		82015   // VM820B15A 
+#define VM820B15A		82015   // VM820B15A 
+#define IDK_FT810_43A	81043   // IDK-FT810-43A 
+#define IDK_BT816_50A	81650   // IDK-BT816-50A 
+#define IDK_BT817_70A	81770   // IDK-BT817-70A 
+#define IDK_BT817_101A	817101  // IDK-BT817-101A  
+#define IDK_BT820_101A	820101  // IDK-BT820-101A
+#define NO_MODULE		0       // Select PANEL_TYPE and FT8XX_TYPE manually
 //@}
 
-/** @brief Module selection from above list.
- * Undefine or set to "NO_MODULE" if not used.
+/** 
+ *  @brief Module selection from above list.
+ *  Undefine or set to "NO_MODULE" if not used.
  */
 #ifndef MODULE_TYPE
-#define MODULE_TYPE NO_MODULE
+#define MODULE_TYPE IDK_FT810_43A
 #endif
 
-/** @brief Select Bridgetek Panel Types
+/**
+ *  @brief Define Bridgetek Panel Types
  */
 //@{
 #define DP_0351_11A 0351   // DP-0351-11A QVGA (Resistive)
@@ -110,7 +127,8 @@
 #define NO_PANEL    0      // Not defined
 //@}
 
-/** @brief Select the EVE controller type and panel resolution.
+/**
+ *  @brief Select the EVE controller type and panel resolution.
  *  @details If a module is selected then the EVE controller type and panel
  * resolution are set correctly for the module.
  * In EVE.h the EVE controller type will lead to the selection of the EVE 
@@ -125,7 +143,8 @@
  * allowable values are defined (FT8XX_TYPE in EVE.h).
  */
 #if !defined(MODULE_TYPE) || MODULE_TYPE == NO_MODULE
-/** @brief Manual selection of FT8XX_TYPE and PANEL_TYPE
+/**
+ *  @brief Manual selection of FT8XX_TYPE and PANEL_TYPE
  */
 //@{
 #ifndef FT8XX_TYPE
@@ -208,51 +227,69 @@
 #define FT8XX_TYPE BT820
 #define PANEL_TYPE DP_1561_02A
 
+#elif MODULE_TYPE == IDK_FT810_43A  
+// FT810 IC Development Kit with 4.3 - inch display (FT810 with DP-0431-11A)
+#define FT8XX_TYPE FT810
+#define PANEL_TYPE DP_0431_11A
+
+#elif MODULE_TYPE == IDK_BT816_50A  
+// BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
+#define FT8XX_TYPE BT816
+#define PANEL_TYPE DP_0501_11A
+
+#elif MODULE_TYPE == IDK_BT817_70A	 
+// BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
+#define FT8XX_TYPE BT817
+#define PANEL_TYPE DP_0701_01A
+
+#elif MODULE_TYPE == IDK_BT817_101A  
+// BT817 IC Development Kit with 7.0-inch display (BT817 with DP-1011-02A)
+#define FT8XX_TYPE BT817
+#define PANEL_TYPE DP_1011_02A
+
+#elif MODULE_TYPE == IDK_BT820_101A   
+// BT820B IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1012_01A
+
 #else
 
 #error MODULE_TYPE must be configured.
 
 #endif
 
-/** @brief Select Panel Resolution for Bridgetek Panels
+/** 
+ *  @brief Select Panel Resolution for Bridgetek Panels
  *  @details The following options are defined:
- *     QVGA      - 320x240   e.g. VM800B with 3.5 inch display
- *     WQVGA     - 480x272   e.g. IDM2040-43A with 4.3 inch display
- *     WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
- *     WVGA      - 800x480   e.g. ME813A-WH50C with 5 inch display
- *     WSVGA     - 1024x600  e.g. ME817EV with 7 inch display
- *     WXGA      - 1280x800  e.g. ME817EV with 10.1 inch display
- *     WXGA_NG   - 1280x800  e.g. VM820B10A with 10.1 inch display
- *     FULLHD    - 1920x1080 e.g. BT820 with 15 inch high definition display
- *     WUXGA     - 1920x1200 e.g. BT820 with 10 inch high definition display
- *     DP101101A - same as WXGA  e.g. DP-1011-01A
- *     DP101102A - same as WXGA_NG  e.g. DP-1011-02A
- *     DP101201A - same as WUXGA  e.g. DP-1012-01A
- *     DP156101A - same as FULLHD e.g. DP-1561-01A
- *     DP156102A - same as FULLHD e.g. DP-1561-02A
+ *		QVGA      - 320x240   e.g.	DP-0351-11A
+ *		WQVGA     - 480x272   e.g.	DP-0431-11A, DP-0502-11A
+ *		WQVGAR    - 480x480   e.g.	IDM2040-21R with 2.1 inch round display
+ *		WVGA      - 800x480   e.g.	DP-0501-01A, DP-0501-11A, DP-0701-11A
+ *		WSVGA     - 1024x600  e.g.	BT817 with 7 inch display
+ *		WXGA      - 1280x800  e.g.	DP-1011-01A
+ *		WXGA_NG   - 1280x800  e.g.	DP-1011-02A
+ *		FULLHD    - 1920x1080 e.g.	DP-1561-01A, DP-1561-02A
+ *		WUXGA     - 1920x1200 e.g.	DP-1012-01A
  */
 //@{
-#define QVGA    320        // 320x240   e.g. VM800B with 3.5 inch display
-#define WQVGA   480        // 480x272   e.g. IDM2040-43A with 4.3 inch display
-#define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
-#define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
-#define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
-#define WXGA    12801      // 1280x800  e.g. ME817EV with 10.1 inch display
-#define WXGA_NG 12802      // 1280x800  e.g. VM820B10A with 10.1 inch display
-#define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
-#define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
-#define DP101101A  WXGA    // DP-1011-01A
-#define DP101102A  WXGA_NG // DP-1011-02A
-#define DP101201A  WUXGA   // DP-1012-01A
-#define DP156101A  FULLHD  // DP-1561-01A
-#define DP156102A  FULLHD  // DP-1561-02A
+#define QVGA    320        // 320x240   e.g.	DP-0351-11A
+#define WQVGA   480        // 480x272   e.g.	DP-0431-11A, DP-0502-11A
+#define WQVGAR  480480     // 480x480   e.g.	IDM2040-21R with 2.1 inch round display
+#define WVGA    800        // 800x480   e.g.	DP-0501-01A, DP-0501-11A, DP-0701-11A
+#define WSVGA   1024       // 1024x600  e.g.	BT817 with 7 inch display
+#define WXGA    12801      // 1280x800  e.g.	DP-1011-01A
+#define WXGA_NG 12802      // 1280x800  e.g.	DP-1011-02A
+#define FULLHD  1920       // 1920x1080 e.g.	DP-1561-01A, DP-1561-02A
+#define WUXGA   19201200   // 1920x1200 e.g.	DP-1012-01A
 //@}
 
-/** @brief Match display resolution to panel type
+/**
+ *  @brief Match display resolution to panel type
  */
 //@{
 #if !defined(PANEL_TYPE) || PANEL_TYPE == NO_PANEL
-/** @brief Manual selection of DISPLAY_RES
+/** 
+ *  @brief Manual selection of DISPLAY_RES
  */
 //@{
 #ifndef DISPLAY_RES
@@ -314,7 +351,8 @@
 #endif
 
 
-/** @brief Definitions used for touch controllers
+/**
+ * @brief Definitions used for touch controllers
  */
 //@{
 #define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
@@ -323,14 +361,16 @@
 #define TOUCH_TYPE_GOODIX 2
 //@}
 
-/** @brief Select the touchscreen automatically
+/**
+ * @brief Select the touchscreen automatically
  */
 //@{
 #undef EVE_TOUCH_ADDR
 #undef EVE_TOUCH_TYPE
 //@}
 
-/** @brief Enable or Disable QuadSPI
+/**
+ *  @brief Enable or Disable QuadSPI
  *  @details If the macro is set then the platform port may only enable QSPI
  *           on the EVE device (using HAL_SetSPIMode) if QSPI is supported by
  *           the platform. 

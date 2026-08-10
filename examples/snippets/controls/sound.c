@@ -76,7 +76,7 @@ void sound_enable(void)
 	uint16_t regGpioxDir;
 
 	// VM810C and VM880C modules use GPIO1
-	#if (MODULE_TYPE == VM810C) || (MODULE_TYPE == VM880C)
+	#if (MODULE_TYPE == VM810C) || (MODULE_TYPE == IDK_FT810_43A) || (MODULE_TYPE == VM880C)
 
 	// Read GPIOX_DIR register
 	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
@@ -118,8 +118,8 @@ void sound_enable(void)
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 #else
 
-	// if we have purposely defined AUDIO_I2S or we ar using a module with I2S support
-	#if defined(AUDIO_I2S) || (MODULE_TYPE == VM820B10A) || (MODULE_TYPE == VM820B15A)
+	// if we have purposely defined AUDIO_I2S or we are using a module with I2S support
+	#if defined(AUDIO_I2S) || (MODULE_TYPE == VM820B10A) || (MODULE_TYPE == VM820B15A) 
 	// send I2S startup command to co-processor
     EVE_LIB_BeginCoProList();
     EVE_CMD_I2SSTARTUP(44100);
