@@ -119,7 +119,9 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_DITHER, (uint16_t)EVE_DISP_DITHER);
 
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
+    HAL_MemWrite8(EVE_REG_CPURESET, 2);
     HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, (uint16_t)EVE_TOUCH_ADDR << 4);
+    HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
 
     /* Write first display list */
