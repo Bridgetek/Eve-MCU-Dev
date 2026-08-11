@@ -90,7 +90,6 @@
 #define IDM20407A		20407   // IDM2040-7A 
 #define VM820B10A		82010   // VM820B10A 
 #define VM820B15A		82015   // VM820B15A 
-#define VM820B15A		82015   // VM820B15A 
 #define IDK_FT810_43A	81043   // IDK-FT810-43A 
 #define IDK_BT816_50A	81650   // IDK-BT816-50A 
 #define IDK_BT817_70A	81770   // IDK-BT817-70A 
@@ -104,7 +103,7 @@
  *  Undefine or set to "NO_MODULE" if not used.
  */
 #ifndef MODULE_TYPE
-#define MODULE_TYPE IDK_FT810_43A
+#define MODULE_TYPE NO_MODULE
 #endif
 
 /**
