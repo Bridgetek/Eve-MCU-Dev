@@ -11,12 +11,12 @@ fi
 
 if [[ ! -e "$INSTALL_PATH" ]]; then
     echo The distribution directory "$INSTALL_PATH" was not found.
-    exit
+    exit 1
 fi
 
-if [[ ! -e "$INSTALL_PATH/libftd2xx" || ! -e "$INSTALL_PATH/source" || ! -e "$INSTALL_PATH/include"]]; then
+if [[ ! -e "$INSTALL_PATH/libftd2xx" || ! -e "$INSTALL_PATH/source" || ! -e "$INSTALL_PATH/include" ]]; then
     echo The distribution directory "$INSTALL_PATH" is not right.
-    exit
+    exit 1
 fi
 
 if [[ $PROCESSOR_ARCHITECTURE == "" ]]; then
@@ -39,7 +39,7 @@ elif [[ $PROCESSOR_ARCHITECTURE == "x86" ]]; then
 else
     echo Could not identify library to install. System reports "$PROCESSOR_ARCHITECTURE".
     echo AMD64 and x86 are supported.
-    exit
+    exit 1
 fi
 
 # Copy the MPSSE LIB and source files for libMPSSE and FTD2XX to the ports/eve_libmpsse directory
@@ -55,19 +55,19 @@ cp "$INSTALL_PATH/include/libmpsse_spi.h"
 
 # Copy the SPI source code
 echo Copying "$INSTALL_PATH/source/ftdi_common.h" to ftdi_common.h
-cp  "$INSTALL_PATH/source/ftdi_common.h"
+cp  "$INSTALL_PATH/source/ftdi_common.h" ftdi_common.h
 echo Copying "$INSTALL_PATH/source/ftdi_infra.c" to ftdi_infra.c
-cp "$INSTALL_PATH/source/ftdi_infra.c"
+cp "$INSTALL_PATH/source/ftdi_infra.c" ftdi_infra.c
 echo Copying "$INSTALL_PATH/source/ftdi_infra.h" to ftdi_infra.h
-cpp  "$INSTALL_PATH/source/ftdi_infra.h"
+cp  "$INSTALL_PATH/source/ftdi_infra.h" ftdi_infra.h
 echo Copying "$INSTALL_PATH/source/ftdi_spi.c" to ftdi_spi.c
-cp "$INSTALL_PATH/source/ftdi_spi.c"
+cp "$INSTALL_PATH/source/ftdi_spi.c" ftdi_spi.c
 echo Copying "$INSTALL_PATH/source/ftdi_mid.c" to ftdi_mid.c
-cp "$INSTALL_PATH/source/ftdi_mid.c"
+cp "$INSTALL_PATH/source/ftdi_mid.c" ftdi_mid.c
 echo Copying "$INSTALL_PATH/source/ftdi_mid.h" to ftdi_mid.h
-cp "$INSTALL_PATH/source/ftdi_mid.h"
+cp "$INSTALL_PATH/source/ftdi_mid.h" ftdi_mid.h
 echo Copying "$INSTALL_PATH/source/memcpy.c" to memcpy.c
-cp "$INSTALL_PATH/source/memcpy.c"
+cp "$INSTALL_PATH/source/memcpy.c" memcpy.c
 
 # Copy the D2XX library header
 echo Copying "$INSTALL_PATH/libftd2xx/ftd2xx.h" to ftd2xx.h
