@@ -1902,7 +1902,7 @@ void renderScreenUpdate() {
     // send display list to co-processor
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-
+ 
 }
 
 // #################################################################################
@@ -2207,7 +2207,7 @@ void checkTouchStatus(void)
     }
 
     // if the pen up tag equals settings_menu_item_1 AND the current menu press is not settings_menu_item_1
-    if ((Pen_Up_Tag == settings_menu_item_1_tag) && settings_menu_item_1_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_1_tag) && (!settings_menu_item_1_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
@@ -2222,12 +2222,12 @@ void checkTouchStatus(void)
         // set boolean for sound playback
         sound_played = true;
 
-        // flag that we want to update the screen (if not currently set)
+        // flag that we want to update the screen
         screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_2 AND the current menu press is not settings_menu_item_2
-    if ((Pen_Up_Tag == settings_menu_item_2_tag) && settings_menu_item_2_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_2_tag) && (!settings_menu_item_2_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
@@ -2248,40 +2248,39 @@ void checkTouchStatus(void)
 
     //-------- perform logic for mode menu buttons -------
 
-    // if the current tag value equals mode button 1 tag
-    if (TagVal == mode_button_1_tag) {
+    // if the current tag value equals mode button 1 tag && mode_button_1_press is false
+    if ((TagVal == mode_button_1_tag) && (!mode_button_1_press)) {
 
         // set mode button 1 press to true
         mode_button_1_press = true; 
 
         // flag that we want to update the screen
         screen_render = true;
-    }      
-    else {
+    }
+    else if (mode_button_1_press && (TagVal != mode_button_1_tag)) {
         // set mode button 1 press to false
-        mode_button_1_press = false; 
+        mode_button_1_press = false;
 
         // flag that we want to update the screen
         screen_render = true;
     }
         
-    // if the current tag value equals mode button 2 tag
-    if (TagVal == mode_button_2_tag) {
-        
+    // if the current tag value equals mode button 2 tag && mode_button_2_press is false
+    if ((TagVal == mode_button_2_tag) && (!mode_button_1_press)) {
         // set mode button 2 press to true
         mode_button_2_press = true; 
 
         // flag that we want to update the screen
         screen_render = true;
-    }        
-    else {
+    }
+    else if (mode_button_2_press && (TagVal != mode_button_2_tag)) {
         // set mode button 2 press to false
-        mode_button_2_press = false; 
+        mode_button_2_press = false;
 
         // flag that we want to update the screen
         screen_render = true;
     }
-        
+
     // if the pen up tag equals mode button 1 tag
     if (Pen_Up_Tag == mode_button_1_tag) {
         //reset variables
@@ -2497,11 +2496,9 @@ void eve_display(void)
     // main loop
     while (1)
     {
-
         // check if any of our buttons have been pressed
-        // we are polling this for simplicity, but we can use the INT_N pin to trigger an  interrupt
-        // for touch input and use this to call the checkTouchStatus() function. We could also call
-        // renderScreenUpdate() if required based upon touch inputs
+        // we are polling this for simplicity, but we can use the INT_N pin to trigger an interrupt
+        // for touch input and use this to call the checkTouchStatus() function. 
         checkTouchStatus();
 
         //--------------------------------------------------------------------------
@@ -2513,7 +2510,6 @@ void eve_display(void)
         if (demoMode) {
             // call the helper function to update data arrays
             demoDataUpdates();
-
             // flag that we want to update the screen
             screen_render = true;
         }
@@ -2524,6 +2520,7 @@ void eve_display(void)
 
         // call render screen function to update the screen if flag has been set
         if (screen_render) {
+            // render screen update
             renderScreenUpdate();
 
             // set screen rendering flag to false
@@ -2532,9 +2529,9 @@ void eve_display(void)
 
         // check if we played a sound due to a button press
         if (sound_played) {
+
             // check if the sound has finished playing
             if (sound_is_playing() == 0) {
-
                 // Set synthesizer to mute
                 sound_mute();
 
