@@ -88,6 +88,12 @@ const uint8_t pix_precision = 16; // 1/16th
 /* GLOBAL VARIABLES ****************************************************************/
 
 //----------------------------------------------------------------------------------
+// flag for screen renders
+//----------------------------------------------------------------------------------
+
+bool screen_render = false;
+
+//----------------------------------------------------------------------------------
 // screen data related variables
 //----------------------------------------------------------------------------------
 
@@ -954,6 +960,7 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
  * @brief Function to render a vertical bar gauge widget on screen. 
  * @details This function will render a vertical bar gauge using rectangles, and
  *  stencilling to draw a fill value for the bar based upon the input 'value' variable.
+ * 
  * @param input_x x value for top left of widget
  * @param input_y y value for top left of widget
  * @param width width of the bar
@@ -987,7 +994,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     EVE_COLOR_A(50);
     // use input colour for rectangles
     EVE_COLOR_RGB(((uint8_t)(colour_bottom >> 16)), ((uint8_t)(colour_bottom >> 8)), ((uint8_t)(colour_bottom)));
-    // begin rectanles
+    // begin rectangles
     EVE_BEGIN(EVE_BEGIN_RECTS);
     // draw intial shadow bar
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
@@ -1012,7 +1019,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     // re-enable colours
     EVE_COLOR_MASK(1, 1, 1, 0);
 
-    // draw the fill (this will colour all pixels where the stenicl = 1)
+    // draw the fill (this will colour all pixels where the stencil = 1)
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
 
     // if colour_top is set to black, then just draw a rectangle with colour bottom
@@ -1021,7 +1028,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     }
     else {
-        //else add a gradient from colour bottom to colour top
+        // else add a gradient from colour bottom to colour top
         addRectangularGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
     }
     // end drawing
@@ -1029,6 +1036,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 
     // restore graphics context
     EVE_RESTORE_CONTEXT();
+
 }
 
 /**
@@ -1036,6 +1044,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
  * @details This function draws a section of a pie or doughnut chart whose fill
  *  colour is based on a preceeding COLOR_RGB call, where the radius and start/end
  *  angles are input as vvariables to the function
+ * 
  * @param chart_center_x x position for the center of the circle where the pie/doughnut segment would reside
  * @param chart_center_y y position for the center of the circle where the pie/doughnut segment would reside
  * @param radius radius value of the circle used to size the pie/doughnut chart segment
@@ -2189,8 +2198,12 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click(); 
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_1 AND the current menu press is not settings_menu_item_1
@@ -2205,8 +2218,12 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click();
+
         // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen (if not currently set)
+        screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_2 AND the current menu press is not settings_menu_item_2
@@ -2221,26 +2238,50 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click();
+
         // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     //-------- perform logic for mode menu buttons -------
 
     // if the current tag value equals mode button 1 tag
-    if (TagVal == mode_button_1_tag)
-        mode_button_1_press = true; // set button 1 press to true
-    else
-        mode_button_1_press = false; // set button 1 press to false
+    if (TagVal == mode_button_1_tag) {
 
+        // set mode button 1 press to true
+        mode_button_1_press = true; 
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }      
+    else {
+        // set mode button 1 press to false
+        mode_button_1_press = false; 
+
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+        
     // if the current tag value equals mode button 2 tag
-    if (TagVal == mode_button_2_tag)
-        mode_button_2_press = true; // set button 2 press to true
-    else
-        mode_button_2_press = false; // set button 2 press to false
+    if (TagVal == mode_button_2_tag) {
+        
+        // set mode button 2 press to true
+        mode_button_2_press = true; 
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }        
+    else {
+        // set mode button 2 press to false
+        mode_button_2_press = false; 
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+        
     // if the pen up tag equals mode button 1 tag
     if (Pen_Up_Tag == mode_button_1_tag) {
         //reset variables
@@ -2249,13 +2290,18 @@ void checkTouchStatus(void)
 
         // flip boolean state for mode button 1 press
         mode_button_1_press = !mode_button_1_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
         sound_click();
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals mode button 2 tag
@@ -2266,13 +2312,18 @@ void checkTouchStatus(void)
 
         // flip boolean state for mode button 1 press
         mode_button_2_press = !mode_button_2_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
         sound_click();
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     //-------- perform logic for lcd backlight menu buttons -------
@@ -2313,21 +2364,8 @@ void checkTouchStatus(void)
         // add 27 here to the backlight value so the value range becomes 27-127
         EVE_LIB_MemWrite32(EVE_REG_PWM_DUTY, (backlight_value + 27));
 
-    }
-
-    // check if we played a sound due to a button press
-    if(sound_played){
-        // wait until the sound has finished playing
-        /**
-         * NOTE: we can do this here as we are only using short non-continious sounds.
-         */
-        while (sound_is_playing() !=0);
-
-        // Set synthesizer to mute
-        sound_mute();
-        
-        // reset sound played boolean
-        sound_played = !sound_played;
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     return;
@@ -2476,15 +2514,33 @@ void eve_display(void)
             // call the helper function to update data arrays
             demoDataUpdates();
 
-            // call render screen function to update the screen
-            renderScreenUpdate();
+            // flag that we want to update the screen
+            screen_render = true;
         }
         else {
             // else we want to read some data from our attached sensors
             // TODO: add code to read real sensor values 
+        }
 
-            // call render screen function to update the screen
+        // call render screen function to update the screen if flag has been set
+        if (screen_render) {
             renderScreenUpdate();
+
+            // set screen rendering flag to false
+            screen_render = false;
+        }
+
+        // check if we played a sound due to a button press
+        if (sound_played) {
+            // check if the sound has finished playing
+            if (sound_is_playing() == 0) {
+
+                // Set synthesizer to mute
+                sound_mute();
+
+                // reset sound played boolean
+                sound_played = false;
+            }
         }
     }
 }
