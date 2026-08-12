@@ -2171,9 +2171,9 @@ void checkTouchStatus(void)
         TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
     #else
         // BT82x requires that a screen be rendered so that we can check REG_TOUCH_TAG
-        // if there is currently a touch on the screen AND screen_render == false
-        // the set screen_render = true, so we can check the tag next time through the loop
-        if ((!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000)) && (!screen_render))
+        // if there is currently a touch on the screen then set screen_render = true,
+        // so we can check the tag next time through the loop
+        if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
             screen_render = true;
  
         TagVal = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
