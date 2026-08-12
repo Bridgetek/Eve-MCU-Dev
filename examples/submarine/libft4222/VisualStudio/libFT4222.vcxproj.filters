@@ -23,19 +23,19 @@
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\clownfish_102x54_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\parrotfish_116x43_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\prop1_128x128_ARGB2.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\sub_depth.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\surgeonfish_133x56_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
@@ -44,7 +44,7 @@
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\yellowtang_128x81_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
@@ -129,11 +129,11 @@
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{93504071-25ac-4fb8-b96c-7176593467ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{07577574-d5e9-4833-84f5-e925d1c4a9d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Assets">
+      <UniqueIdentifier>{07577574-d5e9-4833-84f5-e925d1c4a9d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
