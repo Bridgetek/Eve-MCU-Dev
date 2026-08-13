@@ -170,7 +170,7 @@
  *  Undefine or set to "NO_MODULE" if not used.
  */
 #ifndef MODULE_TYPE
-#define MODULE_TYPE IDK_BT817_101A
+#define MODULE_TYPE NO_MODULE
 #endif
 
 /**
@@ -214,7 +214,7 @@
  */
 //@{
 #ifndef FT8XX_TYPE
-#define FT8XX_TYPE BT817
+#define FT8XX_TYPE BT820
 #endif
 #ifndef PANEL_TYPE
 #define PANEL_TYPE NO_PANEL
@@ -359,7 +359,7 @@
  */
 //@{
 #ifndef DISPLAY_RES
-#define DISPLAY_RES WSVGA
+#define DISPLAY_RES FULLHD
 #endif
 //@}
 
