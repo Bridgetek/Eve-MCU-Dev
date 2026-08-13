@@ -419,8 +419,9 @@ dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), dest_api))
 dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(dest_lib,"EVE_HAL.c")))
 dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
 if eve_api == 5:
-    dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.c"), os.path.join(dest_lib,"patch_base.c")))
-    dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
+    dist_source_files.append((os.path.join(src_api,"source","extensions","patch_base.c"), os.path.join(dest_lib,"patch_base.c")))
+    dist_source_files.append((os.path.join(src_api,"source","extensions","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
+    dist_source_files.append((os.path.join(src_api,"source","extensions","custom_touch.h"), os.path.join(dest_lib,"custom_touch.h")))
 dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 
 # Copy API source and header files

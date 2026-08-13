@@ -34,8 +34,9 @@ Sketch name is simple_arduino
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
 ..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
 ..\..\..\ports\eve_arch_arduino\README.md -> simple_arduino\README.md
-..\..\..\ports\eve_bt82x\patch_base.c -> simple_arduino\patch_base.ino
-..\..\..\ports\eve_bt82x\patch_base.h -> simple_arduino\patch_base.h
+..\..\..\source\extensions\patch_base.c -> simple_arduino\patch_base.ino
+..\..\..\source\extensions\patch_base.h -> simple_arduino\patch_base.h
+..\..\..\source\extensions\custom_touch.h -> simple_arduino\custom_touch.h
 ```
 
 ### Copy Files Manually
@@ -52,9 +53,10 @@ The following files **must** be copied into the `simple_arduino` directory to be
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `ports\eve_bt82x` directory add the BT82x base patch (if BT82x will be used):
+- From the `source\extensions` directory add the BT82x base patch (if BT82x will be used), and custom touch FW support (applicable to FT81x/BT88x/BT81x)::
   - patch_base.c
   - patch_base.h
+  - custom_touch.h
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino
   - README.md

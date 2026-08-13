@@ -136,13 +136,13 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_MCU_RP2040.c
-        #${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+        #${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${API_DIRECTORY}/source/extensions # BT82x base patch & custom touch FW
 )
 
 # Source for example code
@@ -174,7 +174,7 @@ target_sources(eve_example PRIVATE
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+        ${API_DIRECTORY}/source/extensions # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
         ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )

@@ -73,7 +73,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${API_DIRECTORY}/ports/eve_arch_ft9xx/EVE_MCU_FT9XX.c
     
     # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c
+    ${API_DIRECTORY}/source/extensions/patch_base.c
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN
     # GENERATED: SOURCES - DO NOT MODIFY - END
@@ -105,7 +105,7 @@ target_include_directories(${EXECUTABLE} PRIVATE
     # API Includes
     ${API_DIRECTORY}/include
     # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x
+    ${API_DIRECTORY}/source/extensions
     # Example project includes
     ${EXAMPLE_COMMON}
     # Snippets includes

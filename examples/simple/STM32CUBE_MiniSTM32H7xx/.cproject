@@ -55,7 +55,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/snippets}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/common}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fontmagic_STM32CUBE/eve_bt82x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/extensions}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.151906948" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -70,7 +70,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\snippets&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\ports\eve_arch_stm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_bt82x&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source\extensions&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.537725202" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -91,7 +91,7 @@
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="source"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="eve_arch_stm32"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="eve_bt82x"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="extensions"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="snippets"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
@@ -150,7 +150,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/snippets}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/common}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fontmagic_STM32CUBE/eve_bt82x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/extensions}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.312701902" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -165,7 +165,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/eve_arch_stm32}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/snippets}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/source}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_bt82x&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source\extensions&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.482487610" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

@@ -26,7 +26,7 @@ src_snippets = os.path.normpath("../../snippets")
 src_api_source = os.path.normpath("../../../source")
 src_api_include = os.path.normpath("../../../include")
 src_port = os.path.normpath("../../../ports/eve_arch_arduino")
-src_patch = os.path.normpath("../../../ports/eve_bt82x")
+src_patch = os.path.normpath("../../../source/extensions")
 
 src_flatten_dirs = ["maths", "controls"]
 

@@ -116,7 +116,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${API_DIRECTORY}/ports/eve_arch_stm32/EVE_MCU_STM32CUBE.c
     ${API_DIRECTORY}/ports/eve_arch_stm32/EVE_MCU_STM32CUBE_SPI.c
     ${API_DIRECTORY}/ports/eve_arch_stm32/EVE_MCU_STM32CUBE_QUADSPI.c
-    ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+    ${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
     # Source files for example code library
     ${EXAMPLE_COMMON}/eve_example.c
     ${EXAMPLE_COMMON}/eve_fonts.c
@@ -129,7 +129,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${API_DIRECTORY}/include
-    ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
+    ${API_DIRECTORY}/source/extensions # BT82x base patch & custom touch FW
     ${API_DIRECTORY}/ports/eve_arch_stm32 # FT4222 Library headers
     ${EXAMPLE_COMMON}/ # Headers for example code
     ${EXAMPLE_SNIPPETS}/ # Headers for snippets 

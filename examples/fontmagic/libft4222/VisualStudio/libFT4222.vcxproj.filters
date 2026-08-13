@@ -19,8 +19,8 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
+      <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
@@ -34,8 +34,11 @@
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClInclude Include="..\..\..\..\source\extensions\patch_base.h">
+      <Filter>Library\source\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.h">
+      <Filter>Library\source\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
@@ -90,7 +93,7 @@
     <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{b65025ee-59ea-492f-90e5-b748101d3209}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\snippets">
