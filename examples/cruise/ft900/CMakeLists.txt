@@ -72,7 +72,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${API_DIRECTORY}/source/EVE_HAL.c
     ${API_DIRECTORY}/ports/eve_arch_ft9xx/EVE_MCU_FT9XX.c
     
-    # Base patch include
+    # Base patch & custom touch FW include
     ${API_DIRECTORY}/source/extensions/patch_base.c
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN

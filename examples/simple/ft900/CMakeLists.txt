@@ -102,7 +102,7 @@ target_include_directories(${EXECUTABLE} PRIVATE
     Includes
     # API Includes
     ${API_DIRECTORY}/include
-    # Base patch include
+    # Base patch & custom touch FW include
     ${API_DIRECTORY}/source/extensions
     # Example project includes
     ${EXAMPLE_COMMON}
