@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
@@ -174,8 +175,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />

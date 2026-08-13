@@ -57,8 +57,10 @@
 #include "patch_base.h"
 #endif
 
-#if defined(CUSTOM_TOUCH) && IS_EVE_API(2,3,4)
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
 #include "custom_touch.h"
+#endif
 #endif
 
 /* EVE API INCLUDES END */
@@ -132,14 +134,13 @@ int EVE_Init(void)
 #endif
 
     // load custom touch FW (only supported on FT81X/BT88X/BT81X)
-#if defined(CUSTOM_TOUCH) && IS_EVE_API(2,3,4)
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
     // send custom touch FW data to co-processor
-    EVE_LIB_BeginCoProList();
-    EVE_LIB_WriteDataToCMD(custom_touch_fw, sizeof(custom_touch_fw));
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
+    eve_loadcustomtouch();
     EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
 #endif  
+#endif 
 
     /* Write first display list */
 

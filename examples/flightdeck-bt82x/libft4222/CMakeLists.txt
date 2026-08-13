@@ -84,7 +84,7 @@ add_library(eve_library # EVE library name
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/source/extensions # BT82x base patch
+        ${API_DIRECTORY}/source/extensions # BT82x base patch 
         ${API_DIRECTORY}/ports/eve_libft4222 # FT4222 Library headers
 )
 

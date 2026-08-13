@@ -25,6 +25,9 @@
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c">
       <Filter>Library\ports\eve_libmpsse</Filter>
     </ClCompile>
@@ -37,8 +40,6 @@
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\include</Filter>
     </ClInclude>

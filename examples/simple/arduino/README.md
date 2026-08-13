@@ -37,6 +37,7 @@ Sketch name is simple_arduino
 ..\..\..\source\extensions\patch_base.c -> simple_arduino\patch_base.ino
 ..\..\..\source\extensions\patch_base.h -> simple_arduino\patch_base.h
 ..\..\..\source\extensions\custom_touch.h -> simple_arduino\custom_touch.h
+..\..\..\source\extensions\custom_touch.c -> simple_arduino\custom_touch.c
 ```
 
 ### Copy Files Manually

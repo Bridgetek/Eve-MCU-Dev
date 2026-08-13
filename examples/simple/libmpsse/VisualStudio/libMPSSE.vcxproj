@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c" />
@@ -165,8 +166,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />

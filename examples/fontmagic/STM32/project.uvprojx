@@ -461,6 +461,16 @@
             </File>
           </Files>
         </Group>
+          <Group>
+          <GroupName>EVE Custom Touch Code</GroupName>
+          <Files>
+            <File>
+              <FileName>custom_touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\source\extensions\custom_touch.c</FilePath>
+            </File>
+          </Files>
+        </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>

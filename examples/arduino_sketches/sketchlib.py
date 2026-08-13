@@ -36,6 +36,8 @@ def copy_norm(src_file, dest_file, flatten_filter):
                 line = line.replace("<EVE_commands.h>", "\"EVE_commands.h\"")
                 line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
                 line = line.replace("<patch_base.h>", "\"patch_base.h\"")
+                line = line.replace("<custom_touch.h>", "\"custom_touch.h\"")#
+                line = line.replace("<custom_touch.c>", "\"custom_touch.c\"")
                 # Remove directory paths in the files that need flattened for the sketch
                 for fl in flatten_filter:
                     line = line.replace(f"\"{fl}/", "\"")
@@ -127,6 +129,30 @@ def copy_norm(src_file, dest_file, flatten_filter):
                         ]
                         print("patch_base.ino updated for accessing PROGMEM")
 
+                # Add PROGMEM storage read for custom_touch.ino
+                elif dest_file.endswith("custom_touch.ino"):
+                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
+                    if match:
+                        len = int(match.group(3))
+                        line = None
+                        cppadd = [
+                                f"{match.group(1)}/* Read the data from the program memory into CMD. */",
+                                f"{match.group(1)}uint8_t pgm[16];",
+                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {len}; pgmoffset += 16)",
+                                f"{match.group(1)}{{",
+                                f"{match.group(1)}    // Maximum of pgm buffer",
+                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
+                                f"{match.group(1)}    if (pgmoffset + chunk > {len})",
+                                f"{match.group(1)}    {{",
+                                f"{match.group(1)}        chunk = {len} - pgmoffset;",
+                                f"{match.group(1)}    }}",
+                                f"{match.group(1)}    // Load the pgm buffer",
+                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
+                                f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                f"{match.group(1)}}}",
+                        ]
+                        print("custom_touch.ino updated for accessing PROGMEM")
                 if line != None:
                     cppfile.append(line)
 

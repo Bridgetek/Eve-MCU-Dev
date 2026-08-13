@@ -74,6 +74,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     
     # Base patch & custom touch FW include
     ${API_DIRECTORY}/source/extensions/patch_base.c
+    ${API_DIRECTORY}/source/extensions/custom_touch.c
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN
     # GENERATED: SOURCES - DO NOT MODIFY - END

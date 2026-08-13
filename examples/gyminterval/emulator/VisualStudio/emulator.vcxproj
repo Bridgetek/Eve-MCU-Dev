@@ -99,6 +99,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
@@ -109,8 +110,6 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />

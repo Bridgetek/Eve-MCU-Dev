@@ -19,6 +19,9 @@
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c">
       <Filter>Library\ports\eve_emulator</Filter>
     </ClCompile>

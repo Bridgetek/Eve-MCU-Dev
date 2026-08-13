@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
@@ -85,6 +88,12 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
+      <Filter>Library\ports\eve_libft4222</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
+      <Filter>Library\ports\eve_libft4222</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -114,13 +123,5 @@
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
-      <Filter>Library\ports\eve_libft4222</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Library\ports\eve_libft4222</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
