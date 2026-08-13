@@ -5,7 +5,7 @@
  *		touch controllers to FT81X/BT88X/BT81X series devices, and by default
  *    holds binary data for the ILI213X series touch controllers.
  * 
- * @note Users can generate cutom touch FW with the EVE Asset Builder toolchian
+ * @note Users can generate custom touch FW with the EVE Asset Builder toolchian
  *    (https://brtchip.com/eab/) and update the binary data in custom_touch_fw
  *    to support their required touch controller
  *
