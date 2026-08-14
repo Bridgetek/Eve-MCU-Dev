@@ -137,10 +137,13 @@ int EVE_Init(void)
 #if IS_EVE_API(2,3,4)
 #if defined(CUSTOM_TOUCH)
     // send custom touch FW data to co-processor
-    eve_loadcustomtouch();
+    EVE_LIB_BeginCoProList();
+    EVE_LIB_WriteDataToCMD(custom_touch_fw, sizeof(custom_touch_fw));
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
     EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
 #endif  
-#endif 
+#endif
 
     /* Write first display list */
 

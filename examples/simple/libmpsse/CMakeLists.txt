@@ -84,7 +84,6 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
         ${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
-        ${API_DIRECTORY}/source/extensions/custom_touch.c # Only applicable for custom touch FW
 )
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 target_sources(eve_library PRIVATE # EVE library name

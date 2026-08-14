@@ -22,9 +22,6 @@
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
-      <Filter>Library\source\extensions</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>

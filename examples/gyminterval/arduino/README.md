@@ -43,7 +43,6 @@ Sketch name is gyminterval_arduino
 ..\..\..\source\extensions\patch_base.c -> gyminterval_arduino\patch_base.ino
 ..\..\..\source\extensions\patch_base.h -> gyminterval_arduino\patch_base.h
 ..\..\..\source\extensions\custom_touch.h -> gyminterval_arduino\custom_touch.h
-..\..\..\source\extensions\custom_touch.c -> gyminterval_arduino\custom_touch.c
 ```
 
 ### Copy Files Manually
@@ -64,7 +63,6 @@ The following files **must** be copied into the `gyminterval_arduino` directory 
   - patch_base.c
   - patch_base.h
   - custom_touch.h
-  - custom_touch.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino
   - README.md

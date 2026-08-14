@@ -37,7 +37,7 @@ dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
 dist_source_files.extend(add_files(src_patch, sketch, ["patch_base.c", "patch_base.h"]))
-dist_source_files.extend(add_files(src_patch, sketch, ["custom_touch.c", "custom_touch.h"]))
+dist_source_files.extend(add_files(src_patch, sketch, ["custom_touch.h"]))
 
 # Copy files into sketch
 try:

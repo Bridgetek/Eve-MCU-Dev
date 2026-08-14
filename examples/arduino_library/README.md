@@ -91,7 +91,6 @@ The following files are copied without change from the EVE-MCU-Dev library.
 - From the `source\extensions` directory add the BT82x base patch (for API 5 only), and custome touch FW support (for API 2/3/4 only):
   - patch_base.c
   - patch_base.h
-  - custom_touch.c
   - custom_touch.h
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino (renamed to EVE_MCU.cpp)

@@ -76,7 +76,6 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/test/EVE_simulator.c
         ${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
-        ${API_DIRECTORY}/source/extensions/custom_touch.c # Only applicable for custom touch FW
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC

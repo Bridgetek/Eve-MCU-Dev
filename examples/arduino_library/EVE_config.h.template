@@ -94,8 +94,11 @@
 #undef EVE_TOUCH_ADDR
 #undef EVE_TOUCH_TYPE
 
+
+#if IS_EVE_API(3,4,5)
 // Enable or Disable custom couch FW load
-#define CUSTOM_TOUCH
+#undef CUSTOM_TOUCH
+#endif
 
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE
