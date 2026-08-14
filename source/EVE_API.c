@@ -133,8 +133,8 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
 
-    // load custom touch FW (only supported on FT81X/BT88X/BT81X)
 #if IS_EVE_API(2,3,4)
+    // load custom touch FW (only supported on FT81X/BT88X/BT81X)
 #if defined(CUSTOM_TOUCH)
     // send custom touch FW data to co-processor
     EVE_LIB_BeginCoProList();
