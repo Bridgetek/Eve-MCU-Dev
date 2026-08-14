@@ -166,6 +166,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
 
                         line = re.sub(r'\beve_loadpatch\b', 'patch_eve_loadpatch', line)
 
+                        line = re.sub(r'\beve_loadcustomtouch\b', 'patch_eve_loadcustomtouch', line)
+
                         token = re.search(r'\bEVE_[\w]+\b', line)
                         while token:
                             skiptoken = False
@@ -178,6 +180,11 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                     # Rename and hence ignore base patch symbols
                                     scrambletoken = True
                                 if re.match('eve_loadpatch', subtoken):
+                                    # Rename and hence ignore base patch symbols
+                                    scrambletoken = True
+                                                        # Check if the token is part of the API base patch
+                            if os.path.basename(file_in).startswith("custom_"):
+                                if re.match('eve_loadcustomtouch', subtoken):
                                     # Rename and hence ignore base patch symbols
                                     scrambletoken = True
 
@@ -394,9 +401,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                 line = None
                                 cppadd = [
                                         f"{match.group(1)}/* Read the data from the program memory into CMD. */",
-                                        f"{match.group(1)}uint8_t pgm[16];",
+                                        f"{match.group(1)}uint8_t pgm[4];",
                                         f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {dlen}; pgmoffset += 16)",
+                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {dlen}; pgmoffset += 4)",
                                         f"{match.group(1)}{{",
                                         f"{match.group(1)}    // Maximum of pgm buffer",
                                         f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",

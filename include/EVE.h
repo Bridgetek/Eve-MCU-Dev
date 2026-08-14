@@ -794,4 +794,11 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq);
 #include <patch_base.h>
 #endif
 
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
+// custom touch FW implementaion 
+#include <custom_touch.h>
+#endif
+#endif
+
 #endif    /* EVE_HEADER_H */
