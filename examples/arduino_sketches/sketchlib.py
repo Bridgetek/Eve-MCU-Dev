@@ -36,12 +36,13 @@ def copy_norm(src_file, dest_file, flatten_filter):
                 line = line.replace("<EVE_commands.h>", "\"EVE_commands.h\"")
                 line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
                 line = line.replace("<patch_base.h>", "\"patch_base.h\"")
-                line = line.replace("<custom_touch.h>", "\"custom_touch.h\"")#
+                line = line.replace("<custom_touch.h>", "\"custom_touch.h\"")
                 # Remove directory paths in the files that need flattened for the sketch
                 for fl in flatten_filter:
                     line = line.replace(f"\"{fl}/", "\"")
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
+                line = re.sub(r'^const uint8_t\s*(\w+)\s*\[', r'PROGMEM const uint8_t \g<1> [', line)
                 # Add PROGMEM storage linkage for eve_example.h
                 if dest_file.endswith("eve_example.h"):
                     if line == "#include <stdint.h>":
@@ -127,34 +128,30 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 f"{match.group(1)}}}",
                         ]
                         print("patch_base.ino updated for accessing PROGMEM")
-
                 # Add PROGMEM storage read for EVE_API.ino (CUSTOM_TOUCH)
-                elif file_out.endswith("EVE_API.ino"):
-                    if line == "#include \"custom_touch.h\"":
-                        cppadd = progmem_header
-                        print("EVE_API.ino updated for PROGMEM")
-                    else:
-                        match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(([^)]+)\)\);", line)
-                        if match:
-                            line = None
-                            cppadd = [
-                                    f"{match.group(1)}/* Read the data from the program memory into CMD. */",
-                                    f"{match.group(1)}uint8_t pgm[4];",
-                                    f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                    f"{match.group(1)}for (pgmoffset = 0; pgmoffset < sizeof({match.group(2)}); pgmoffset += 4)",
-                                    f"{match.group(1)}{{",
-                                    f"{match.group(1)}    // Maximum of pgm buffer",
-                                    f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
-                                    f"{match.group(1)}    if (pgmoffset + chunk > sizeof({match.group(2)}))",
-                                    f"{match.group(1)}    {{",
-                                    f"{match.group(1)}        chunk = sizeof({match.group(2)}) - pgmoffset;",
-                                    f"{match.group(1)}    }}",
-                                    f"{match.group(1)}    // Load the pgm buffer",
-                                    f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
-                                    f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
-                                    f"{match.group(1)}}}",
-                            ]
-                            print("EVE_API.c updated for accessing PROGMEM")
+                elif dest_file.endswith("EVE_API.ino"):
+                    match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(([^)]+)\)\);", line)
+                    if match:
+                        line = None
+                        cppadd = [
+                                f"{match.group(1)}/* Read the data from the program memory into CMD. */",
+                                f"{match.group(1)}uint8_t pgm[16];",
+                                f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
+                                f"{match.group(1)}for (pgmoffset = 0; pgmoffset < sizeof({match.group(2)}); pgmoffset += 16)",
+                                f"{match.group(1)}{{",
+                                f"{match.group(1)}    // Maximum of pgm buffer",
+                                f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
+                                f"{match.group(1)}    if (pgmoffset + chunk > sizeof({match.group(2)}))",
+                                f"{match.group(1)}    {{",
+                                f"{match.group(1)}        chunk = sizeof({match.group(2)}) - pgmoffset;",
+                                f"{match.group(1)}    }}",
+                                f"{match.group(1)}    // Load the pgm buffer",
+                                f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
+                                f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                f"{match.group(1)}}}",
+                        ]
+                        print("EVE_API.ino updated for accessing PROGMEM")
+
                 if line != None:
                     cppfile.append(line)
 

@@ -382,6 +382,11 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                         f"{match.group(1)}}}",
                                 ]
                                 print("patch_base.c updated for accessing PROGMEM")
+                    # Add PROGMEM storage read for custom_touch.h (CUSTOM_TOUCH)
+                    elif file_out.endswith("custom_touch.h"):
+                        if line.strip() == "#if defined(CUSTOM_TOUCH)":
+                            cppadd = progmem_header
+                            print("custom_touch.h updated for PROGMEM")
                     # Add PROGMEM storage read for EVE_API.c (CUSTOM_TOUCH)
                     elif file_out.endswith("EVE_API.c"):
                         if line == "#include \"custom_touch.h\"":
