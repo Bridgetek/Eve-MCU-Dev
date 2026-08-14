@@ -172,7 +172,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     if not line.strip().startswith("#"):
                         subline = ""
 
+                        # Hide extension implementation helpers from the generated Arduino API
                         line = re.sub(r'\beve_loadpatch\b', 'patch_eve_loadpatch', line)
+
+                        line = re.sub( r'\beve_loadcustomtouch\b','custom_touch_eve_loadcustomtouch', line)
 
                         token = re.search(r'\bEVE_[\w]+\b', line)
                         while token:
