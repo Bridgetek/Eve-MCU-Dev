@@ -37,6 +37,8 @@
  * ============================================================================
  */
  
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -44,6 +46,8 @@
 
 #include "maths/trig_furman.h"
 #include "compass_controls.h"
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -297,6 +301,8 @@ static void draw_compass_point(int16_t x, int16_t y, int16_t radius, int16_t opt
         }
     }
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of widget in pixels

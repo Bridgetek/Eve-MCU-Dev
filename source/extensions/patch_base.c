@@ -2,16 +2,22 @@
 /* This file can be included in an EVE-MCU-Dev project */
 /* See https://github.com/Bridgetek/Eve-MCU-Dev/ */
 
-#include <extensions/patch_base.h>
+/* INCLUDES ************************************************************************/
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h>
 
 /* EVE-MCU-Dev macro to limit compilation to EVE API 5 (BT82x) */
 #if IS_EVE_API(5)
 
+/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
+#include <HAL.h>
+
+#include <extensions/patch_base.h>
+
 /* EVE PATCH */
+
+/* FUNCTIONS ***********************************************************************/
 
 void EVE_CMD_REGION(void)
 {

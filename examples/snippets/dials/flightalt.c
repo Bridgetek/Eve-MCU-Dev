@@ -37,6 +37,8 @@
  * ============================================================================
  */
  
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -44,12 +46,16 @@
 
 #include "maths/trig_furman.h"
 
+/* MACROS **************************************************************************/
+
 #ifndef MIN
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 #endif
 #ifndef MAX
 #define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
 #endif
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -59,6 +65,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
     EVE_VERTEX2F(x, y);
 #endif
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of widget in pixels

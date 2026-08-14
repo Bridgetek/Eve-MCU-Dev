@@ -37,6 +37,8 @@
  * ============================================================================
  */
  
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -44,6 +46,8 @@
 
 #include "maths/trig_furman.h"
 #include "sub_controls.h"
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -97,6 +101,9 @@ static void draw_char_font(int16_t x, int16_t y, uint16_t furmans, int16_t width
     EVE_CMD_LOADIDENTITY();
     EVE_CMD_SETMATRIX(); 
 }
+
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of widget in pixels

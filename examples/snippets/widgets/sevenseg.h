@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+#ifndef EVE_SEVENSEG_H
+#define EVE_SEVENSEG_H
+ 
 #define EVE_OPT_DECIMAL 16
 #define EVE_OPT_TIMECOLON 32
 #define EVE_OPT_NUMBER 15
@@ -46,3 +49,5 @@
 #define EVE_OPT_FILL 0x2000ul
 #endif
 void sevensegment(int16_t x, int16_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);
+
+#endif // EVE_SEVENSEG_H

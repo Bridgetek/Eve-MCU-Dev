@@ -1,9 +1,10 @@
 /**
  * @file custom_touch.c
  * @details File holds an array which contains custom touch FW binary data.
- *		This data can be loaded into the co-processor to add support for 
- *		touch controllers to FT81X/BT88X/BT81X series devices, and by default
- *    holds binary data for the ILI213X series touch controllers.
+ *		This data can be loaded into the co-processor via the eve_loadcustomtouch()
+ *    fucntion to add support for touch controllers to FT81X/BT88X/BT81X series 
+ *    devices, and by default holds binary data for the ILI213X series
+ *    touch controllers. Generally eve_loadcustomtouch() is called in EVE_API.c
  * 
  * @note Users can generate custom touch FW with the EVE Asset Builder toolchain
  *    (https://brtchip.com/eab/) and update the binary data in custom_touch_fw
@@ -46,18 +47,22 @@
   * ============================================================================
   */
 
-
-/* CUSTOM TOUCH */
-
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
 
+/* EVE-MCU-Dev macro to limit compilation to EVE API 2,3,4 (FT81x/BT88x/BT81x) */
 #if IS_EVE_API(2,3,4)
+
+/* CUSTOM TOUCH */
 #if defined(CUSTOM_TOUCH)
+
+/* INCLUDES ************************************************************************/
 
 #include <extensions/custom_touch.h>
 
 #include <stdint.h>
+
+/* LOCAL VARIABLES *****************************************************************/
 
 /* it2130.load.bin data  */
 static const uint8_t custom_touch_fw[] = {
@@ -127,6 +132,8 @@ static const uint8_t custom_touch_fw[] = {
 0xFD, 0x07, 0xD0, 0x0B, 0x7F, 0x1A, 0x00, 0x1A, 0xFF, 0xFF, 0xFF, 0x20, 0x20, 0x30, 0x00,
 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
+
+/* FUNCTIONS ***********************************************************************/
 
 /**
   * @brief Load custom touch firmware into the co-processor.
