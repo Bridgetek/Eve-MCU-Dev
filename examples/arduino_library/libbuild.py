@@ -151,6 +151,14 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r'^static const uint8_t\s*(\w+)\s*\[', r'PROGMEM static const uint8_t \g<1> [', line)
                 line = re.sub(r'^const uint8_t\s*(\w+)\s*\[', r'PROGMEM const uint8_t \g<1> [', line)
+
+                # The Arduino library output is flat. Rewrite extension includes
+                # from the source-tree namespace to headers in the library root.
+                if line.strip() == "#include <extensions/patch_base.h>":
+                    line = '#include "patch_base.h"'
+                elif line.strip() == "#include <extensions/custom_touch.h>":
+                    line = '#include "custom_touch.h"'
+
                 # Change code to use C++ class instead of C library
                 if apirefactor:
                     # Add in eve.setup before eve.Init
@@ -354,66 +362,42 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             line = None
                         #line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
                         #line = re.sub(r"EVE_RAM_G_SIZE", "EVE_RAM_G_SIZE", line)
-                    # Add PROGMEM storage read for patch_base.c
-                    elif file_out.endswith("patch_base.c"):
-                        if line == "#include \"patch_base.h\"":
+                    # Add PROGMEM storage read for extension firmware data.
+                    elif file_out.endswith("patch_base.c") or file_out.endswith("custom_touch.c"):
+                        # The include has already been flattened above.
+                        if line == '#include "patch_base.h"' or line == '#include "custom_touch.h"':
                             cppadd = progmem_header
-                            print("patch_base.c updated for PROGMEM")
+                            print(f"{os.path.basename(file_out)} updated for PROGMEM")
                         else:
-                            match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
+                            # Convert:
+                            #   EVE_LIB_WriteDataToCMD(data, sizeof(data));
+                            # into buffered reads from PROGMEM.
+                            match = re.match(
+                                r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(\2\)\);",
+                                line
+                            )
                             if match:
-                                dlen = int(match.group(3))
+                                indent = match.group(1)
+                                data = match.group(2)
                                 line = None
                                 cppadd = [
-                                        f"{match.group(1)}/* Read the data from the program memory into CMD. */",
-                                        f"{match.group(1)}uint8_t pgm[16];",
-                                        f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {dlen}; pgmoffset += 16)",
-                                        f"{match.group(1)}{{",
-                                        f"{match.group(1)}    // Maximum of pgm buffer",
-                                        f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
-                                        f"{match.group(1)}    if (pgmoffset + chunk > {dlen})",
-                                        f"{match.group(1)}    {{",
-                                        f"{match.group(1)}        chunk = {dlen} - pgmoffset;",
-                                        f"{match.group(1)}    }}",
-                                        f"{match.group(1)}    // Load the pgm buffer",
-                                        f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
-                                        f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
-                                        f"{match.group(1)}}}",
+                                        f"{indent}/* Read the data from the program memory into CMD. */",
+                                        f"{indent}uint8_t pgm[16];",
+                                        f"{indent}uint32_t pgmoffset;",
+                                        f"{indent}for (pgmoffset = 0; pgmoffset < sizeof({data}); pgmoffset += sizeof(pgm))",
+                                        f"{indent}{{",
+                                        f"{indent}    // Maximum of pgm buffer",
+                                        f"{indent}    uint32_t chunk = sizeof(pgm);",
+                                        f"{indent}    if (pgmoffset + chunk > sizeof({data}))",
+                                        f"{indent}    {{",
+                                        f"{indent}        chunk = sizeof({data}) - pgmoffset;",
+                                        f"{indent}    }}",
+                                        f"{indent}    // Load the pgm buffer",
+                                        f"{indent}    memcpy_P(pgm, &{data}[pgmoffset], chunk);",
+                                        f"{indent}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                        f"{indent}}}",
                                 ]
-                                print("patch_base.c updated for accessing PROGMEM")
-                    # Add PROGMEM storage read for custom_touch.h (CUSTOM_TOUCH)
-                    elif file_out.endswith("custom_touch.h"):
-                        if line.strip() == "#if defined(CUSTOM_TOUCH)":
-                            cppadd = progmem_header
-                            print("custom_touch.h updated for PROGMEM")
-                    # Add PROGMEM storage read for EVE_API.c (CUSTOM_TOUCH)
-                    elif file_out.endswith("EVE_API.c"):
-                        if line == "#include \"custom_touch.h\"":
-                            cppadd = progmem_header
-                            print("EVE_API.c updated for PROGMEM")
-                        else:
-                            match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(([^)]+)\)\);", line)
-                            if match:
-                                line = None
-                                cppadd = [
-                                        f"{match.group(1)}/* Read the data from the program memory into CMD. */",
-                                        f"{match.group(1)}uint8_t pgm[4];",
-                                        f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < sizeof({match.group(2)}); pgmoffset += 4)",
-                                        f"{match.group(1)}{{",
-                                        f"{match.group(1)}    // Maximum of pgm buffer",
-                                        f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
-                                        f"{match.group(1)}    if (pgmoffset + chunk > sizeof({match.group(2)}))",
-                                        f"{match.group(1)}    {{",
-                                        f"{match.group(1)}        chunk = sizeof({match.group(2)}) - pgmoffset;",
-                                        f"{match.group(1)}    }}",
-                                        f"{match.group(1)}    // Load the pgm buffer",
-                                        f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
-                                        f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
-                                        f"{match.group(1)}}}",
-                                ]
-                                print("EVE_API.c updated for accessing PROGMEM")
+                                print(f"{os.path.basename(file_out)} updated for accessing PROGMEM")
 
                     if line != None:
                         cppfile.append(line)
@@ -450,11 +434,24 @@ for d in dist_inc_files:
 dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), dest_api))
 dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(dest_lib,"EVE_HAL.c")))
 dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
-if eve_api == 2 or eve_api == 3 or eve_api == 4:
-    dist_source_files.append((os.path.join(src_api,"source","extensions","custom_touch.h"), os.path.join(dest_lib,"custom_touch.h")))
+if eve_api ==2 or eve_api == 3 or eve_api == 4:
+    dist_source_files.append((
+        os.path.join(src_api, "include", "extensions", "custom_touch.h"),
+        os.path.join(dest_lib, "custom_touch.h")
+    ))
+    dist_source_files.append((
+        os.path.join(src_api, "source", "extensions", "custom_touch.c"),
+        os.path.join(dest_lib, "custom_touch.c")
+    ))
 if eve_api == 5:
-    dist_source_files.append((os.path.join(src_api,"source","extensions","patch_base.c"), os.path.join(dest_lib,"patch_base.c")))
-    dist_source_files.append((os.path.join(src_api,"source","extensions","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
+    dist_source_files.append((
+        os.path.join(src_api, "source", "extensions", "patch_base.c"),
+        os.path.join(dest_lib, "patch_base.c")
+    ))
+    dist_source_files.append((
+        os.path.join(src_api, "include", "extensions", "patch_base.h"),
+        os.path.join(dest_lib, "patch_base.h")
+    ))
 dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 
 # Copy API source and header files

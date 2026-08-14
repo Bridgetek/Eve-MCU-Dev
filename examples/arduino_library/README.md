@@ -88,13 +88,24 @@ The following files are copied without change from the EVE-MCU-Dev library.
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `source\extensions` directory add the BT82x base patch (for API 5 only), and custome touch FW support (for API 2/3/4 only):
-  - patch_base.c
-  - patch_base.h
-  - custom_touch.h
-  - custom_touch.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino (renamed to EVE_MCU.cpp)
+
+Extension source and header files are stored separately in the EVE-MCU-Dev
+source tree:
+
+  From `include/extensions`:
+
+  - `custom_touch.h` - EVE API 2, 3 and 4
+  - `patch_base.h` - EVE API 5
+
+  From `source/extensions`:
+
+  - `custom_touch.c` - EVE API 2, 3 and 4
+  - `patch_base.c` - EVE API 5
+
+When the Arduino library is generated, these files are copied into the
+library root directory. The `extensions` directory structure is not retained
 
 Template files are added to this to form the library.
 - EVE_config.h.template 
@@ -105,7 +116,12 @@ Template files are added to this to form the library.
 - test.ino.template
 
 The following example projects are added:
+- examples/b2tf
+- examples/datavisualiser
+- examples/gyminterval
+- examples/medinfo
 - examples/simple
+- examples/touchscreentest
 
 The output directory is a library specifically for the API version that was specified in the command line. It cannot be used for EVE devices that support a different API level.
 
