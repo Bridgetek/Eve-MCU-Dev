@@ -124,6 +124,9 @@
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>

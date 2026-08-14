@@ -176,7 +176,6 @@
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_common.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h" />

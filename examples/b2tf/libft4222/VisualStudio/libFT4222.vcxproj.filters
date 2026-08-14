@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\include\extensions\custom_touch.h">
-      <Filter>Library\include\extensions</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
@@ -111,5 +108,10 @@
     <Filter Include="Library\include\extensions">
       <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

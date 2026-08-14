@@ -38,40 +38,40 @@
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\arrows_96x192_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Battery_Cells_40x1440_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Bottom_Bar_800x8_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Car_Overhead_44x80_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Carbon_Fiber_800x480_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\eurostile_150_L8.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\LED_32x32_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\patch_textscale_BIN.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\trackmap_96x96_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Widget_Gear_152x152_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Widget_RPM_152x56_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\c_array_assets\Widget_Speed_104x56_PNG.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\patch_textscale.c">
       <Filter>Example\Patch</Filter>
@@ -124,6 +124,9 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -159,7 +162,7 @@
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets">
+    <Filter Include="Example\Assets">
       <UniqueIdentifier>{dd8d4e60-49a0-4dfb-a430-50c1ce48eb15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
