@@ -5,7 +5,7 @@
  *		touch controllers to FT81X/BT88X/BT81X series devices, and by default
  *    holds binary data for the ILI213X series touch controllers.
  * 
- * @note Users can generate custom touch FW with the EVE Asset Builder toolchian
+ * @note Users can generate custom touch FW with the EVE Asset Builder toolchain
  *    (https://brtchip.com/eab/) and update the binary data in custom_touch_fw
  *    to support their required touch controller
  *
@@ -59,8 +59,9 @@
 
 #include <stdint.h>
 
+// custom touch FW size
 /* it2130.load.bin data  */
-const uint8_t custom_touch_fw[] = {
+static const uint8_t custom_touch_fw[] = {
 0x1A, 0xFF, 0xFF, 0xFF, 0x20, 0x20, 0x30, 0x00, 0x04, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
 0x00, 0x1A, 0xFF, 0xFF, 0xFF, 0x00, 0xB0, 0x30, 0x00, 0x04, 0x00, 0x00, 0x00, 0x81, 0x02,
 0x00, 0x00, 0x22, 0xFF, 0xFF, 0xFF, 0x04, 0xB0, 0x30, 0x00, 0x78, 0xDA, 0x5D, 0x54, 0x5D,
@@ -128,7 +129,21 @@ const uint8_t custom_touch_fw[] = {
 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-const size_t custom_touch_fw_size = sizeof(custom_touch_fw);
+// custom touch FW size
+static const size_t custom_touch_fw_size = sizeof(custom_touch_fw);
+
+/**
+  * @brief fucntion to load touch FW into co-processor
+  */
+int eve_loadcustomtouch(void)
+{
+    /* Load custom touch FW into co-processor */
+    EVE_LIB_BeginCoProList();
+    EVE_LIB_WriteDataToCMD(custom_touch_fw, sizeof(custom_touch_fw));
+    EVE_LIB_EndCoProList();
+    
+    return EVE_LIB_AwaitCoProEmpty();
+}
 
 #endif // defined(CUSTOM_TOUCH)
 #endif // IS_EVE_API(2,3,4)
