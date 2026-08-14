@@ -59,7 +59,6 @@
 
 #include <stdint.h>
 
-// custom touch FW size
 /* it2130.load.bin data  */
 static const uint8_t custom_touch_fw[] = {
 0x1A, 0xFF, 0xFF, 0xFF, 0x20, 0x20, 0x30, 0x00, 0x04, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
@@ -129,11 +128,8 @@ static const uint8_t custom_touch_fw[] = {
 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-// custom touch FW size
-static const size_t custom_touch_fw_size = sizeof(custom_touch_fw);
-
 /**
-  * @brief fucntion to load touch FW into co-processor
+  * @brief Load custom touch firmware into the co-processor.
   */
 int eve_loadcustomtouch(void)
 {

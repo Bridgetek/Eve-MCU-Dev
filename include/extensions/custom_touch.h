@@ -41,12 +41,6 @@
 #ifndef EVE_CUSTOM_TOUCH_H
 #define EVE_CUSTOM_TOUCH_H
 
-#include <stddef.h>
-#include <stdint.h>
+int eve_loadcustomtouch(void);
 
-extern const uint8_t custom_touch_fw[];
-extern const size_t custom_touch_fw_size;
-
-#endif
-
-/* CUSTOM TOUCH END */
+#endif /* EVE_CUSTOM_TOUCH_H */
