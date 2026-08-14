@@ -95,8 +95,8 @@
 #undef EVE_TOUCH_TYPE
 
 
-#if IS_EVE_API(3,4,5)
-// Enable or Disable custom couch FW load
+#if IS_EVE_API(2,3,4)
+// Enable or Disable custom touch FW load
 #undef CUSTOM_TOUCH
 #endif
 
