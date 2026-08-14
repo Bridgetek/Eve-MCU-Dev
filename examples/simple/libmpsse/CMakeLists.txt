@@ -84,6 +84,7 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
         ${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
+        ${API_DIRECTORY}/source/extensions/custom_touch.c # Only applicable to FT81x/BT88x/BT81x
 )
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 target_sources(eve_library PRIVATE # EVE library name
@@ -97,7 +98,6 @@ endif()
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/source/extensions # BT82x base patch & custom touch FW
         ${API_DIRECTORY}/ports/eve_libmpsse # MPSSE Library headers
 )
 
@@ -151,7 +151,6 @@ add_library(eve_example # Example code library name
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
-        ${API_DIRECTORY}/source/extensions # BT82x base patch & custom touch FW
         ${EXAMPLE_COMMON}/ # Headers for example code
         ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 

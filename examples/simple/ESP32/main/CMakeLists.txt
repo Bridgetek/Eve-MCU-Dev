@@ -5,6 +5,6 @@ set(COMPONENT_SRCS "main.c"
                     "../../common/eve_fonts.c" 
                     "../../common/eve_images.c")
                     
-set(COMPONENT_ADD_INCLUDEDIRS ${CMAKE_CURRENT_SOURCE_DIR} "../../../../include" "../../../../source/extensions" "../../common" "../../../snippets")
+set(COMPONENT_ADD_INCLUDEDIRS ${CMAKE_CURRENT_SOURCE_DIR} "../../../../include" "../../common" "../../../snippets")
 
 register_component()

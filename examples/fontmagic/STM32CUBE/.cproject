@@ -67,7 +67,6 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_arch_stm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source\extensions&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.1298723565" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -162,7 +161,6 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_arch_stm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source\extensions&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.1321467151" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

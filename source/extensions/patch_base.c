@@ -2,7 +2,7 @@
 /* This file can be included in an EVE-MCU-Dev project */
 /* See https://github.com/Bridgetek/Eve-MCU-Dev/ */
 
-#include "patch_base.h"
+#include <extensions/patch_base.h>
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
@@ -192,7 +192,7 @@ int eve_loadpatch(void)
 	// Load extension code to BT82x
 	EVE_LIB_BeginCoProList();
 	EVE_CMD_LOADPATCH(0);
-	EVE_LIB_WriteDataToCMD(patchdata, 2160);
+	EVE_LIB_WriteDataToCMD(patchdata, sizeof(patchdata));
 	EVE_LIB_EndCoProList();
 	EVE_LIB_AwaitCoProEmpty();
 	EVE_LIB_GetCoProException(actual);

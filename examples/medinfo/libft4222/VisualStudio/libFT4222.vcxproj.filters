@@ -174,5 +174,8 @@
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{38e13919-88dc-436b-aed2-eb1d434bc8da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

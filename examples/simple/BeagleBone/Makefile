@@ -1,7 +1,7 @@
 PLATFORM?=BEAGLEBONE
 
 CC = gcc
-CFLAGS = -c -Wall -g -Os -DPLATFORM_BEAGLEBONE -DUSE_LINUX_SPI_DEV -I. -I../../../include -I../../snippets/ -I../../../source/extensions -I../common
+CFLAGS = -c -Wall -g -Os -DPLATFORM_BEAGLEBONE -DUSE_LINUX_SPI_DEV -I. -I../../../include -I../../snippets/ -I../common
 LD = $(CC)
 LDFLAGS = 
 
@@ -12,7 +12,6 @@ OBJECTS += $(patsubst %.c, %.o, $(shell find ../common -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../source -name "*.c"))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../../snippets/touch.c))
 OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../ports/eve_arch_beaglebone -name "*.c"))
-OBJECTS += $(patsubst %.c, %.o, $(shell find ../../../source/extensions -name "*.c"))
 
 all: $(TARGET)
 

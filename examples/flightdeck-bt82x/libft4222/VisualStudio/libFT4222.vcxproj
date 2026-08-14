@@ -70,25 +70,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath> 
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath> 
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -177,8 +177,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\..\common\patch_lvds.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
@@ -186,8 +184,9 @@
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
-    <ClInclude Include="..\..\..\..\source\extensions\patch_base.h" />
-    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h" />
+    <ClInclude Include="..\..\..\..\srouce\extensions\custom_touch.c" />
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dials\flight_controls.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />

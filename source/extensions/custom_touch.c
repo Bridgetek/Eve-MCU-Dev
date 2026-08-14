@@ -1,5 +1,5 @@
 /**
- * @file custom_touch.h
+ * @file custom_touch.c
  * @details File holds an array which contains custom touch FW binary data.
  *		This data can be loaded into the co-processor to add support for 
  *		touch controllers to FT81X/BT88X/BT81X series devices, and by default
@@ -46,16 +46,21 @@
   * ============================================================================
   */
 
+
+/* CUSTOM TOUCH */
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
 
 #if IS_EVE_API(2,3,4)
 #if defined(CUSTOM_TOUCH)
 
+#include <extensions/custom_touch.h>
+
 #include <stdint.h>
 
-/* it2130.load.bin data */
-const uint8_t custom_touch_fw[968] = {
+/* it2130.load.bin data  */
+const uint8_t custom_touch_fw[] = {
 0x1A, 0xFF, 0xFF, 0xFF, 0x20, 0x20, 0x30, 0x00, 0x04, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00,
 0x00, 0x1A, 0xFF, 0xFF, 0xFF, 0x00, 0xB0, 0x30, 0x00, 0x04, 0x00, 0x00, 0x00, 0x81, 0x02,
 0x00, 0x00, 0x22, 0xFF, 0xFF, 0xFF, 0x04, 0xB0, 0x30, 0x00, 0x78, 0xDA, 0x5D, 0x54, 0x5D,
@@ -123,5 +128,9 @@ const uint8_t custom_touch_fw[968] = {
 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
+const size_t custom_touch_fw_size = sizeof(custom_touch_fw);
+
 #endif // defined(CUSTOM_TOUCH)
 #endif // IS_EVE_API(2,3,4)
+
+/* CUSTOM TOUCH END */

@@ -54,12 +54,12 @@
 #include <EVE_debug.h>
 
 #if IS_EVE_API(5)
-#include "patch_base.h"
+#include "extensions/patch_base.h"
 #endif
 
 #if IS_EVE_API(2,3,4)
 #if defined(CUSTOM_TOUCH)
-#include "custom_touch.h"
+#include "extensions/custom_touch.h"
 #endif
 #endif
 
@@ -133,12 +133,12 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
 
-#if IS_EVE_API(2,3,4)
     // load custom touch FW (only supported on FT81X/BT88X/BT81X)
+#if IS_EVE_API(2,3,4)
 #if defined(CUSTOM_TOUCH)
     // send custom touch FW data to co-processor
     EVE_LIB_BeginCoProList();
-    EVE_LIB_WriteDataToCMD(custom_touch_fw, sizeof(custom_touch_fw));
+    EVE_LIB_WriteDataToCMD(custom_touch_fw, custom_touch_fw_size);
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
     EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
@@ -273,7 +273,11 @@ int EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 
     // Load base patch or project defined patch if overriden
-    eve_loadpatch();
+    if (eve_loadpatch() != 0)
+    {
+    EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
+    return -1;
+    }
 
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();

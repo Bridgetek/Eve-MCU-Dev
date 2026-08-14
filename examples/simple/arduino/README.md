@@ -37,6 +37,7 @@ Sketch name is simple_arduino
 ..\..\..\source\extensions\patch_base.c -> simple_arduino\patch_base.ino
 ..\..\..\source\extensions\patch_base.h -> simple_arduino\patch_base.h
 ..\..\..\source\extensions\custom_touch.h -> simple_arduino\custom_touch.h
+..\..\..\source\extensions\custom_touch.c -> simple_arduino\custom_touch.c
 ```
 
 ### Copy Files Manually
@@ -57,6 +58,7 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - patch_base.c
   - patch_base.h
   - custom_touch.h
+  - custom_touch.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino
   - README.md

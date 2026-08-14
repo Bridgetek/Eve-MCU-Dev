@@ -22,6 +22,9 @@
     <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
@@ -34,11 +37,11 @@
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\source\extensions\patch_base.h">
-      <Filter>Library\source\extensions</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.h">
-      <Filter>Library\source\extensions</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
@@ -104,6 +107,9 @@
     </Filter>
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{81284408-ba63-4886-bdbe-4f15db9f7e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

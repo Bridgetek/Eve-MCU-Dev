@@ -43,11 +43,11 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\source\extensions\patch_base.h">
-      <Filter>Library\source\extensions</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.h">
-      <Filter>Library\source\extensions</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
@@ -125,6 +125,9 @@
     </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

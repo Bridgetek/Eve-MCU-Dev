@@ -92,6 +92,7 @@ The following files are copied without change from the EVE-MCU-Dev library.
   - patch_base.c
   - patch_base.h
   - custom_touch.h
+  - custom_touch.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino (renamed to EVE_MCU.cpp)
 

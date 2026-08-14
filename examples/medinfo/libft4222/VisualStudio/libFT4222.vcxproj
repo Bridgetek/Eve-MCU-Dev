@@ -70,13 +70,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -84,11 +84,11 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\source\extensions;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -195,8 +195,9 @@
     <ClCompile Include="..\..\common\eve_tracedata.c" />
     <ClCompile Include="..\..\common\patch_medinfo.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
+    <ClCompile Include="..\..\..\..\include\extensions\custom_touch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
