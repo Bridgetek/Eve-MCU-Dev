@@ -74,6 +74,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     
     # Base patch & custom touch FW include
     ${API_DIRECTORY}/source/extensions/patch_base.c
+    ${API_DIRECTORY}/source/extensions/custom_touch.c # Only applicable to FT81x/BT88x/BT81x
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN
     # GENERATED: SOURCES - DO NOT MODIFY - END
@@ -104,8 +105,6 @@ target_include_directories(${EXECUTABLE} PRIVATE
     Includes
     # API Includes
     ${API_DIRECTORY}/include
-    # Base patch include
-    ${API_DIRECTORY}/source/extensions
     # Example project includes
     ${EXAMPLE_COMMON}
     # Snippets includes
