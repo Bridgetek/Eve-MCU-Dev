@@ -54,11 +54,6 @@ The following files **must** be copied into the `simple_arduino` directory to be
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `source\extensions` directory add the BT82x base patch (if BT82x will be used), and custom touch FW support (applicable to FT81x/BT88x/BT81x)::
-  - patch_base.c
-  - patch_base.h
-  - custom_touch.h
-  - custom_touch.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
   - eve_arch_arduino.ino
   - README.md
@@ -71,6 +66,22 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - touch.c
   - touch.h
 
+- Extension source and header files are stored separately in the EVE-MCU-Dev
+source tree:
+
+  From `include/extensions`:
+
+  - `custom_touch.h` - EVE API 2, 3 and 4
+  - `patch_base.h` - EVE API 5
+
+  From `source/extensions`:
+
+  - `custom_touch.c` - EVE API 2, 3 and 4
+  - `patch_base.c` - EVE API 5
+
+When the Arduino library is generated, these files are copied into the
+library root directory. The `extensions` directory structure is not retained
+
 All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
 
 - `#include <EVE.h>` --> `#include "EVE.h"`
@@ -80,7 +91,22 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
 - `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
 - `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
-- `#include <patch_base.h>` --> `#include "patch_base.h"`
+- `#include <extensions/patch_base.h>` --> `#include "patch_base.h"`
+- `#include <extensions/custom_touch.h>` --> `#include "custom_touch.h"`
+
+
+All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
+
+- `#include <EVE.h>` --> `#include "EVE.h"`
+- `#include <HAL.h>` --> `#include "HAL.h"`
+- `#include <MCU.h>` --> `#include "MCU.h"`
+- `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
+- `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
+- `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
+- `#include <extensions/patch_base.h>` --> `#include "patch_base.h"`
+- `#include <extensions/custom_touch.h>` --> `#include "custom_touch.h"`
+
 
 ## Sketch Directory
 
@@ -99,7 +125,9 @@ EVE_registers.h
 EVE_API.ino   
 EVE_HAL.ino   
 patch_base.ino      
-patch_base.h    
+patch_base.h  
+custom_touch.ino      
+custom_touch.h   
 eve_arch_arduino.ino  
 README.md  
 eve_example.ino       

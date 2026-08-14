@@ -26,18 +26,21 @@ src_snippets = os.path.normpath("../../snippets")
 src_api_source = os.path.normpath("../../../source")
 src_api_include = os.path.normpath("../../../include")
 src_port = os.path.normpath("../../../ports/eve_arch_arduino")
-src_patch = os.path.normpath("../../../source/extensions")
+src_extensions_source = os.path.normpath("../../../source/extensions")
+src_extensions_include = os.path.normpath("../../../include/extensions")
 
-src_flatten_dirs = []
+src_flatten_dirs = ["maths", "controls"]
 
 # Collate files needed for sketch
-dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
+dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
+dist_source_files.extend(add_files(os.path.join(src_snippets, "maths"), sketch, ["trig_furman.c", "trig_furman.h"]))
+dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketch, ["arcs.c", "arcs.h", "fonts.c", "fonts.h", "sound.c", "sound.h"]))
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h", "EVE_config.h"]))
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
-dist_source_files.extend(add_files(src_patch, sketch, ["patch_base.c", "patch_base.h"]))
-dist_source_files.extend(add_files(src_patch, sketch, ["custom_touch.h"]))
+dist_source_files.extend(add_files(src_extensions_source, sketch, ["patch_base.c", "custom_touch.c"]))
+dist_source_files.extend(add_files(src_extensions_include, sketch, ["patch_base.h", "custom_touch.h"]))
 
 # Copy files into sketch
 try:
