@@ -154,10 +154,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
 
                 # The Arduino library output is flat. Rewrite extension includes
                 # from the source-tree namespace to headers in the library root.
-                if line.strip() == "#include <extensions/patch_base.h>":
-                    line = '#include "patch_base.h"'
-                elif line.strip() == "#include <extensions/custom_touch.h>":
-                    line = '#include "custom_touch.h"'
+                if line.strip() == "#include <extensions/bt82x_patch.h>":
+                    line = '#include "bt82x_patch.h"'
+                elif line.strip() == "#include <extensions/custom_touch_fw.h>":
+                    line = '#include "custom_touch_fw.h"'
 
                 # Change code to use C++ class instead of C library
                 if apirefactor:
@@ -366,9 +366,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                         #line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
                         #line = re.sub(r"EVE_RAM_G_SIZE", "EVE_RAM_G_SIZE", line)
                     # Add PROGMEM storage read for extension firmware data.
-                    elif file_out.endswith("patch_base.c") or file_out.endswith("custom_touch.c"):
+                    elif file_out.endswith("bt82x_patch.c") or file_out.endswith("custom_touch_fw.c"):
                         # The include has already been flattened above.
-                        if line == '#include "patch_base.h"' or line == '#include "custom_touch.h"':
+                        if line == '#include "bt82x_patch.h"' or line == '#include "custom_touch_fw.h"':
                             cppadd = progmem_header
                             print(f"{os.path.basename(file_out)} updated for PROGMEM")
                         else:
@@ -439,21 +439,21 @@ dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.jo
 dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
 if eve_api ==2 or eve_api == 3 or eve_api == 4:
     dist_source_files.append((
-        os.path.join(src_api, "include", "extensions", "custom_touch.h"),
-        os.path.join(dest_lib, "custom_touch.h")
+        os.path.join(src_api, "include", "extensions", "custom_touch_fw.h"),
+        os.path.join(dest_lib, "custom_touch_fw.h")
     ))
     dist_source_files.append((
-        os.path.join(src_api, "source", "extensions", "custom_touch.c"),
-        os.path.join(dest_lib, "custom_touch.c")
+        os.path.join(src_api, "source", "extensions", "custom_touch_fw.c"),
+        os.path.join(dest_lib, "custom_touch_fw.c")
     ))
 if eve_api == 5:
     dist_source_files.append((
-        os.path.join(src_api, "source", "extensions", "patch_base.c"),
-        os.path.join(dest_lib, "patch_base.c")
+        os.path.join(src_api, "source", "extensions", "bt82x_patch.c"),
+        os.path.join(dest_lib, "bt82x_patch.c")
     ))
     dist_source_files.append((
-        os.path.join(src_api, "include", "extensions", "patch_base.h"),
-        os.path.join(dest_lib, "patch_base.h")
+        os.path.join(src_api, "include", "extensions", "bt82x_patch.h"),
+        os.path.join(dest_lib, "bt82x_patch.h")
     ))
 dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 

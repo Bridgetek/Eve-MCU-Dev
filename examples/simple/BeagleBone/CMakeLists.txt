@@ -79,8 +79,8 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL_Linux.c
         ${API_DIRECTORY}/ports/eve_arch_beaglebone/EVE_Linux_BBB.c
-        ${API_DIRECTORY}/source/extensions/patch_base.c # Only applicable to BT82x
-        ${API_DIRECTORY}/source/extensions/custom_touch.c # Only applicable to FT81x/BT88x/BT81x
+        ${API_DIRECTORY}/source/extensions/bt82x_patch.c # Only applicable to BT82x
+        ${API_DIRECTORY}/source/extensions/custom_touch_fw.c # Only applicable to FT81x/BT88x/BT81x
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC

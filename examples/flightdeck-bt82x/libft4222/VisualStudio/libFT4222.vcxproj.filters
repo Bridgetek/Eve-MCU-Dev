@@ -43,7 +43,7 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">

@@ -791,7 +791,7 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq);
 
 #if IS_EVE_API(5)
 // Base patch for BT82x
-#include <extensions/patch_base.h>
+#include <extensions/bt82x_patch.h>
 #endif
 
 #endif    /* EVE_HEADER_H */

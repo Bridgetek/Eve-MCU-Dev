@@ -139,13 +139,13 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\include\extensions\custom_touch.h">
+    <ClCompile Include="..\..\..\..\include\extensions\custom_touch_fw.h">
       <Filter>Library\include\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
   </ItemGroup>

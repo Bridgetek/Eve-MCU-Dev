@@ -13,7 +13,8 @@
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
 #include <HAL.h>
 
-#include <extensions/patch_base.h>
+//#include "bt82x_patch.h"
+#include <extensions/bt82x_patch.h>
 
 /* EVE PATCH */
 

@@ -9,8 +9,8 @@ idf_component_register(SRCS
                         "../../source/EVE_HAL.c" 
                         "../../source/EVE_API.c" 
                         # Add base patch for BT82x only
-                        "../../source/extensions/patch_base.c"
+                        "../../source/extensions/bt82x_patch.c"
                         # Add custom touch code FT81x/BT88x/BT81x only
-                        "../../source/extensions/custom_touch.c"
+                        "../../source/extensions/custom_touch_fw.c"
                        INCLUDE_DIRS "../../include"
                        REQUIRES driver soc)

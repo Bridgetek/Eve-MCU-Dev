@@ -100,7 +100,7 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h">
@@ -124,10 +124,10 @@
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
       <Filter>Library\ports\eve_emulator</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
   </ItemGroup>

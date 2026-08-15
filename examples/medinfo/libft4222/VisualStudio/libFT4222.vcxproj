@@ -195,9 +195,9 @@
     <ClCompile Include="..\..\common\eve_tracedata.c" />
     <ClCompile Include="..\..\common\patch_medinfo.c" />
     <ClCompile Include="..\main.c" />
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
-    <ClCompile Include="..\..\..\..\include\extensions\custom_touch.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
+    <ClCompile Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />

@@ -98,8 +98,8 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\source\extensions\patch_base.c" />
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
     <ClCompile Include="..\..\..\snippets\controls\fonts.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
@@ -114,8 +114,8 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\fonts.h" />

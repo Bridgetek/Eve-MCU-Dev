@@ -133,9 +133,9 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h" />
-    <ClInclude Include="..\..\..\..\source\extensions\custom_touch.c" />   
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
+    <ClInclude Include="..\..\..\..\source\extensions\custom_touch_fw.c" />   
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />

@@ -35,8 +35,8 @@ def copy_norm(src_file, dest_file, flatten_filter):
                 line = line.replace("<EVE_registers.h>", "\"EVE_registers.h\"")
                 line = line.replace("<EVE_commands.h>", "\"EVE_commands.h\"")
                 line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
-                line = line.replace("<extensions/patch_base.h>", "\"patch_base.h\"")
-                line = line.replace("<extensions/custom_touch.h>", "\"custom_touch.h\"")
+                line = line.replace("<extensions/bt82x_patch.h>", "\"bt82x_patch.h\"")
+                line = line.replace("<extensions/custom_touch_fw.h>", "\"custom_touch_fw.h\"")
                 # Remove directory paths in the files that need flattened for the sketch
                 for fl in flatten_filter:
                     line = line.replace(f"\"{fl}/", "\"")
@@ -105,7 +105,7 @@ def copy_norm(src_file, dest_file, flatten_filter):
                         ]
                         print("eve_fonts.ino updated for PROGMEM compatible globals")
                 # Add PROGMEM storage read for extension firmware data.
-                elif dest_file.endswith("patch_base.ino") or dest_file.endswith("custom_touch.ino"):
+                elif dest_file.endswith("bt82x_patch.ino") or dest_file.endswith("custom_touch_fw.ino"):
                     match = re.match(
                         r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(\2\)\);",
                         line

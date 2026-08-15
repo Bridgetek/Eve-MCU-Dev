@@ -140,7 +140,7 @@ endif()
 
 # Source for example code
 add_library(eve_example # Example code library name
-        # Patch file to override patch_base.c
+        # Patch file to override bt82x_patch.c
         ${EXAMPLE_COMMON}/patch_lvds.c
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c

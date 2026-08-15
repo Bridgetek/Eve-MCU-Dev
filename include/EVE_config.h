@@ -107,7 +107,7 @@
 /**
   *  @brief Enable or Disable custom couch FW load
   *  @details If the macro is set then custom touch FW will be loaded during IC
-  *			intialization from the binay data array in the "custom_touch.h" file.
+  *			intialization from the binay data array in the "custom_touch_fw.h" file.
   *			Applicable for FT81X/BT88X/BT81X devices only.
   *
   *  @note Custom touch FW for the BT82X series is implmented in extension patches.

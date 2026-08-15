@@ -184,7 +184,7 @@
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dials\flight_controls.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />

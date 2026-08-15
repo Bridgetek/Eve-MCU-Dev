@@ -19,10 +19,10 @@
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
       <Filter>Library\ports\eve_libft4222</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
@@ -37,10 +37,10 @@
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">

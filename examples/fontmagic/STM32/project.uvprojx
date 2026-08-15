@@ -455,9 +455,9 @@
           <GroupName>EVE BT82x Code</GroupName>
           <Files>
             <File>
-              <FileName>patch_base.c</FileName>
+              <FileName>bt82x_patch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\source\extensions\patch_base.c</FilePath>
+              <FilePath>..\..\..\source\extensions\bt82x_patch.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -465,9 +465,9 @@
           <GroupName>EVE Custom Touch Code</GroupName>
           <Files>
             <File>
-              <FileName>custom_touch.c</FileName>
+              <FileName>custom_touch_fw.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\source\extensions\custom_touch.c</FilePath>
+              <FilePath>..\..\..\source\extensions\custom_touch_fw.c</FilePath>
             </File>
           </Files>
         </Group>

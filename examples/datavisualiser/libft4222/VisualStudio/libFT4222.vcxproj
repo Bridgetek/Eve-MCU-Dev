@@ -165,8 +165,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\source\extensions\patch_base.c" />
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\controls\sound.c" />
@@ -183,8 +183,8 @@
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h" />
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
     <ClInclude Include="..\..\..\snippets\controls\sound.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />

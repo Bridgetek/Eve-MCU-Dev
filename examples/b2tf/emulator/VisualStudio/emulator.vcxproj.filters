@@ -13,10 +13,10 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\patch_base.c">
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\source\extensions\custom_touch.c">
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c">
@@ -43,10 +43,10 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\patch_base.h">
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\extensions\custom_touch.h">
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">

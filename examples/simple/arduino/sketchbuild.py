@@ -39,8 +39,8 @@ dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketc
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h", "EVE_config.h"]))
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
 dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
-dist_source_files.extend(add_files(src_extensions_source, sketch, ["patch_base.c", "custom_touch.c"]))
-dist_source_files.extend(add_files(src_extensions_include, sketch, ["patch_base.h", "custom_touch.h"]))
+dist_source_files.extend(add_files(src_extensions_source, sketch, ["bt82x_patch.c", "custom_touch_fw.c"]))
+dist_source_files.extend(add_files(src_extensions_include, sketch, ["bt82x_patch.h", "custom_touch_fw.h"]))
 
 # Copy files into sketch
 try:

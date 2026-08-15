@@ -2,8 +2,8 @@
 /* This file can be included in an EVE-MCU-Dev project */
 /* See https://github.com/Bridgetek/Eve-MCU-Dev/ */
 
-#ifndef EVE_PATCH_BASE_H
-#define EVE_PATCH_BASE_H
+#ifndef EVE_BT82X_PATCH_H
+#define EVE_BT82X_PATCH_H
 
 #include <stdint.h>
 #include <stdarg.h>

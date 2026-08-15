@@ -40,10 +40,10 @@ Sketch name is gyminterval_arduino
 ..\..\..\source\EVE_HAL.c -> gyminterval_arduino\EVE_HAL.ino
 ..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> gyminterval_arduino\eve_arch_arduino.ino
 ..\..\..\ports\eve_arch_arduino\README.md -> gyminterval_arduino\README.md
-..\..\..\source\extensions\patch_base.c -> gyminterval_arduino\patch_base.ino
-..\..\..\source\extensions\patch_base.h -> gyminterval_arduino\patch_base.h
-..\..\..\source\extensions\custom_touch.h -> gyminterval_arduino\custom_touch.h
-..\..\..\source\extensions\custom_touch.c -> gyminterval_arduino\custom_touch.c
+..\..\..\source\extensions\bt82x_patch.c -> gyminterval_arduino\bt82x_patch.ino
+..\..\..\source\extensions\bt82x_patch.h -> gyminterval_arduino\bt82x_patch.h
+..\..\..\source\extensions\custom_touch_fw.h -> gyminterval_arduino\custom_touch_fw.h
+..\..\..\source\extensions\custom_touch_fw.c -> gyminterval_arduino\custom_touch_fw.c
 ```
 
 ### Copy Files Manually
@@ -79,13 +79,13 @@ source tree:
 
   From `include/extensions`:
 
-  - `custom_touch.h` - EVE API 2, 3 and 4
-  - `patch_base.h` - EVE API 5
+  - `custom_touch_fw.h` - EVE API 2, 3 and 4
+  - `bt82x_patch.h` - EVE API 5
 
   From `source/extensions`:
 
-  - `custom_touch.c` - EVE API 2, 3 and 4
-  - `patch_base.c` - EVE API 5
+  - `custom_touch_fw.c` - EVE API 2, 3 and 4
+  - `bt82x_patch.c` - EVE API 5
 
 When the Arduino library is generated, these files are copied into the
 library root directory. The `extensions` directory structure is not retained
@@ -99,8 +99,8 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
 - `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
 - `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
-- `#include <extensions/patch_base.h>` --> `#include "patch_base.h"`
-- `#include <extensions/custom_touch.h>` --> `#include "custom_touch.h"`
+- `#include <extensions/bt82x_patch.h>` --> `#include "bt82x_patch.h"`
+- `#include <extensions/custom_touch_fw.h>` --> `#include "custom_touch_fw.h"`
 
 ## Sketch Directory
 
@@ -118,10 +118,10 @@ EVE_debug.h
 EVE_registers.h   
 EVE_API.ino   
 EVE_HAL.ino   
-patch_base.ino      
-patch_base.h    
-custom_touch.ino      
-custom_touch.h 
+bt82x_patch.ino      
+bt82x_patch.h    
+custom_touch_fw.ino      
+custom_touch_fw.h 
 eve_arch_arduino.ino  
 README.md  
 eve_example.ino       
