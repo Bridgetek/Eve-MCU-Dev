@@ -2,7 +2,7 @@
  * @file custom_touch_fw.c
  * @details File holds an array which contains custom touch FW binary data.
  *		This data can be loaded into the co-processor via the eve_loadcustomtouch()
- *    fucntion to add support for touch controllers to FT81X/BT88X/BT81X series 
+ *    function to add support for touch controllers to FT81X/BT88X/BT81X series 
  *    devices, and by default holds binary data for the ILI213X series
  *    touch controllers. Generally eve_loadcustomtouch() is called in EVE_API.c
  * 
