@@ -1,6 +1,6 @@
 /**
  * @file EVE_debug.h
- * @details file provides platform specific macro definitions for debug messaging.
+ * @details Provides platform-specific macro definitions for debug messaging.
  */
 /*
  * ============================================================================
@@ -41,18 +41,45 @@
 #ifndef EVE_DEBUG_H_
 #define EVE_DEBUG_H_
 
+/* EVE DEBUG */
+
 /*
- * Enable informational debug output by default for the on host platforms that
+ * Enable informational debug output by default for host platforms that
  * normally provide an operating-system console, such as MPSSE, FT4222 and
  * emulator ports. Preserve an explicitly defined DEBUG_LEVEL, including
  * DEBUG_LEVEL=0.
  */
 
 #ifndef DEBUG_LEVEL
-#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR) 
+#if defined(USE_MPSSE) || defined(USE_FT4222) || defined(PLATFORM_EMULATOR)
 #define DEBUG_LEVEL 1
 #endif
 #endif
+
+/*
+ * Include platform-specific logging/stdio headers whenever DEBUG_LEVEL is
+ * defined. These headers provide the functions used by the debug macros below.
+ */
+#if defined(DEBUG_LEVEL)
+
+#if defined(PLATFORM_RASPBERRYPI) || \
+    defined(USE_LINUX_SPI_DEV) || \
+    defined(USE_MPSSE) || \
+    defined(USE_FT4222) || \
+    defined(PLATFORM_EMULATOR) || \
+    defined(PLATFORM_RP2040)
+
+/* printf(), fprintf(), stderr */
+#include <stdio.h>
+
+#elif defined(PLATFORM_ESP32)
+
+/* ESP_LOGE(), ESP_LOGI() */
+#include "esp_log.h"
+
+#endif /* platform selection */
+
+#endif /* defined(DEBUG_LEVEL) */
 
 /**
  * @brief Configure debug output.
@@ -71,23 +98,21 @@
 
 /* Error output */
 #if defined(DEBUG_LEVEL)
-/* select from supported platforms */
+
+/* Select from supported platforms. */
 #if defined(PLATFORM_RASPBERRYPI) || \
     defined(USE_LINUX_SPI_DEV) || \
     defined(USE_MPSSE) || \
     defined(USE_FT4222) || \
     defined(PLATFORM_EMULATOR)
 
-#include <stdio.h>
 #define EVE_DEBUG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 
 #elif defined(PLATFORM_ESP32)
-#include "esp_log.h"
 #define EVE_DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
 
 #elif defined(PLATFORM_RP2040)
 /* Pico stdio does not normally separate stderr from stdout over USB or UART. */
-#include <stdio.h>
 #define EVE_DEBUG_ERROR(...)         \
     do                               \
     {                                \
@@ -96,20 +121,23 @@
     } while (0)
 
 #else
-/* else map to no op if no platform support */
+
+/* Map to no-op on unsupported platforms. */
 #define EVE_DEBUG_ERROR(...) ((void)0)
 
 #endif
 
 #else
-/* else map to no op if DEBUG_LEVEL is not defined */
+
+/* Map error output to no-op when DEBUG_LEVEL is not defined. */
 #define EVE_DEBUG_ERROR(...) ((void)0)
 
 #endif /* defined(DEBUG_LEVEL) */
 
 /* Informational output */
 #if defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)
-/* select from supported platforms */
+
+/* Select from supported platforms. */
 #if defined(PLATFORM_RASPBERRYPI) || \
     defined(USE_LINUX_SPI_DEV) || \
     defined(USE_MPSSE) || \
@@ -117,25 +145,26 @@
     defined(PLATFORM_EMULATOR) || \
     defined(PLATFORM_RP2040)
 
-#include <stdio.h>
 #define EVE_DEBUG_PRINTF(...) printf(__VA_ARGS__)
 
 #elif defined(PLATFORM_ESP32)
-#include "esp_log.h"
+
 #define EVE_DEBUG_PRINTF(...) ESP_LOGI(__FUNCTION__, __VA_ARGS__)
 
 #else
-/* else map to no op if no platform support */
+
+/* Map to no-op on unsupported platforms. */
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
 #endif
 
 #else
-/* else map to no op if DEBUG_LEVEL is not defined */
+
+/* Map informational output to no-op when DEBUG_LEVEL is undefined or zero. */
 #define EVE_DEBUG_PRINTF(...) ((void)0)
 
 #endif /* defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0) */
 
 /* EVE DEBUG END */
 
-#endif	/* EVE_DEBUG_H_ */
+#endif /* EVE_DEBUG_H_ */
