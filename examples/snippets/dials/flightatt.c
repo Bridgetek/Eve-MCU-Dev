@@ -36,6 +36,8 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
  
 #include <stdint.h>
 #include <stdlib.h>
@@ -43,6 +45,8 @@
 #include <EVE.h>
 
 #include "maths/trig_furman.h"
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -52,6 +56,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
     EVE_VERTEX2F(x, y);
 #endif
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of widget in pixels

@@ -84,6 +84,11 @@
 static uint16_t writeCmdPointer = 0x0000;
 #endif // defined(EVE_USE_CMDB_METHOD)
 
+// Used for co-processor list profiling
+#if defined(EVE_COPROC_PROFILE)
+static uint16_t profileCmdPointer = 0x0000;
+#endif // defined(EVE_COPROC_PROFILE)
+
 /* EVE HAL CONSTANTS END */
 
 /* EVE HAL */

@@ -88,6 +88,12 @@ const uint8_t pix_precision = 16; // 1/16th
 /* GLOBAL VARIABLES ****************************************************************/
 
 //----------------------------------------------------------------------------------
+// flag for screen renders
+//----------------------------------------------------------------------------------
+
+bool screen_render = false;
+
+//----------------------------------------------------------------------------------
 // screen data related variables
 //----------------------------------------------------------------------------------
 
@@ -376,15 +382,15 @@ uint32_t static_screen_location = 0;
 
 /**
  * @brief Function to dynamically create a gradient from a bitmap and a rectangle 
- *  which can also be used to colour alpha blended shapes.
+ *   which can also be used to colour alpha blended shapes.
  * @details This can be used after a shape has been created in the alpha buffer
- *  to colour the shape with using the 
- *  EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA); 
- *  blend function, it works by using the inverse alpha values from a inbuilt
- *  gradient bitmap and layering colour based on these alpha values of a rectangle
- *  shape drawn beneath the bitmap. Otherwise it can be used to create a normal 
- *  rectangular gradient that can be faded using the COLOR_A command preceding 
- *  the call to the function.
+ *   to colour the shape with using the 
+ *   EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA); 
+ *   blend function, it works by using the inverse alpha values from a inbuilt
+ *   gradient bitmap and layering colour based on these alpha values of a rectangle
+ *   shape drawn beneath the bitmap. Otherwise it can be used to create a normal 
+ *   rectangular gradient that can be faded using the COLOR_A command preceding 
+ *   the call to the function.
  *
  * @param grad_x x value on screen for the gradient
  * @param grad_y y value on screen for the gradient
@@ -557,8 +563,8 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
 /**
  * @brief Function to draw a circle gauge.
  * @details This function draws a circular guage whos unfilled section 
- *  is semi transparent, and whose filled section has the ability to 
- *  colour with a gradient fill (or solid colour) dynamically
+ *   is semi transparent, and whose filled section has the ability to 
+ *   colour with a gradient fill (or solid colour) dynamically
  * 
  * @param centerx x position for the center of the circle
  * @param centery y position for the center of the circle
@@ -806,8 +812,8 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
 /**
  * @brief Function to draw graph lines.
  * @details This function draws a series of graph lines, along the mian X and Y 
- *  axis for the graph. It dynamically draws additional lines along both axis 
- *  as determined by input variables.
+ *   axis for the graph. It dynamically draws additional lines along both axis 
+ *   as determined by input variables.
  * 
  * @param input_x x position for top left of the graph lines
  * @param input_y x position for top left of the graph lines
@@ -886,7 +892,7 @@ void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, 
 /**
  * @brief Function to draw a line plot.
  * @details This function draws a line plot line, with the number of data points 
- *  determined by an input variable and the data values provided by an input array.
+ *   determined by an input variable and the data values provided by an input array.
  * 
  * @param input_x x position for top left of the line plot
  * @param input_y y position for top left of the line plot
@@ -953,14 +959,15 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
 /**
  * @brief Function to render a vertical bar gauge widget on screen. 
  * @details This function will render a vertical bar gauge using rectangles, and
- *  stencilling to draw a fill value for the bar based upon the input 'value' variable.
+ *   stencilling to draw a fill value for the bar based upon the input 'value' variable.
+ * 
  * @param input_x x value for top left of widget
  * @param input_y y value for top left of widget
  * @param width width of the bar
  * @param height height of the bar
  * @param colour_bottom input to determine the bottom colour the bar fill and shadow
  * @param colour_top input to determine the top colour bar fill (if set to 0x000000 (or 0)
- *  only colour_bottom will be utilised in the widget)
+ *   only colour_bottom will be utilised in the widget)
  * @param value current value for the bar (0-255)
  */
 void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint32_t colour_bottom, uint32_t colour_top, uint8_t value) {
@@ -987,7 +994,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     EVE_COLOR_A(50);
     // use input colour for rectangles
     EVE_COLOR_RGB(((uint8_t)(colour_bottom >> 16)), ((uint8_t)(colour_bottom >> 8)), ((uint8_t)(colour_bottom)));
-    // begin rectanles
+    // begin rectangles
     EVE_BEGIN(EVE_BEGIN_RECTS);
     // draw intial shadow bar
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
@@ -1012,7 +1019,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     // re-enable colours
     EVE_COLOR_MASK(1, 1, 1, 0);
 
-    // draw the fill (this will colour all pixels where the stenicl = 1)
+    // draw the fill (this will colour all pixels where the stencil = 1)
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
 
     // if colour_top is set to black, then just draw a rectangle with colour bottom
@@ -1021,7 +1028,7 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     }
     else {
-        //else add a gradient from colour bottom to colour top
+        // else add a gradient from colour bottom to colour top
         addRectangularGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
     }
     // end drawing
@@ -1029,22 +1036,24 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 
     // restore graphics context
     EVE_RESTORE_CONTEXT();
+
 }
 
 /**
  * @brief Function to draw a segment of a pie or doughnut chart.
  * @details This function draws a section of a pie or doughnut chart whose fill
- *  colour is based on a preceeding COLOR_RGB call, where the radius and start/end
- *  angles are input as vvariables to the function
+ *   colour is based on a preceeding COLOR_RGB call, where the radius and start/end
+ *   angles are input as vvariables to the function
+ * 
  * @param chart_center_x x position for the center of the circle where the pie/doughnut segment would reside
  * @param chart_center_y y position for the center of the circle where the pie/doughnut segment would reside
  * @param radius radius value of the circle used to size the pie/doughnut chart segment
  * @param doughnut boolean to determine if we want ot create a doughtnut segment instead 
- *  of a pie segment (inner doughnut radius set at 3/4th of the radius input variable)
+ *   of a pie segment (inner doughnut radius set at 3/4th of the radius input variable)
  * @param start_angle degrees clockwise from the bottom of the circle where we want the 
- *  pie/doughnut segment to start (16 bit value)
+ *   pie/doughnut segment to start (16 bit value)
  * @param end_angle degrees clockwise from the bottom of the circle where we want the 
- *  pie/doughnut segment to end (16 bit value)
+ *   pie/doughnut segment to end (16 bit value)
  */
 void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
 {
@@ -1195,7 +1204,7 @@ void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y
 /**
  * @brief Helper function to add the uptime pie chart into the display list.
  * @details This function draws a pie chart with two segments and adds this into 
- *  the display list, along with the pie chart label text.
+ *   the display list, along with the pie chart label text.
  * 
  * @param uptime varible used to determine the draw size of the two pie chart segments
  */
@@ -1251,8 +1260,8 @@ void pieChart(uint8_t uptime) {
 /**
  * @brief Function to draw a simple circular button.
  * @details This function draws a simple circular button, assigning it a TAG value 
- *  based upon the input variable, and altering its rendered colour based upon its
- *  current 'pressed' state.
+ *   based upon the input variable, and altering its rendered colour based upon its
+ *   current 'pressed' state.
  *
  * @param input_x x position for center of the button
  * @param input_y x position for center of the button
@@ -1410,10 +1419,10 @@ void addBarGaugeLabelBoxes(uint32_t colour) {
 /**
  * @brief Helper function add the settings menu button onto the screen.
  * @details this function adds a invisible tagged edge strip onto the screen to
- *  act as the menu button, to indicate where the button is a line coloured the 
- *  same as the screen background colour is drawn to dissect the pie chart 
- *  background box, creating the illusion of a separate triangular shape 
- *  in the top right corner of this box.
+ *   act as the menu button, to indicate where the button is a line coloured the 
+ *   same as the screen background colour is drawn to dissect the pie chart 
+ *   background box, creating the illusion of a separate triangular shape 
+ *   in the top right corner of this box.
  * 
  * @param colour input colour for the button
  */
@@ -1473,7 +1482,7 @@ void addSettingsButton(uint32_t colour) {
 /**
  * @brief Helper function add the settings option menu into the display list.
  * @details This function draws a simple two button menu bar, constructed using 
- * the LINES primitive, each button is tagged with a individual value.
+ *   the LINES primitive, each button is tagged with a individual value.
  * 
  * @param input_x x position for the start of the menu bar line
  * @param input_y y position for the start of the menu bar line
@@ -1576,7 +1585,7 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
 /**
  * @brief Helper funciton add the LCD backlight contol menu into the display list.
  * @details This function renders and arc gauge widget onto the screen which can 
- *  be used to alter the backlight strength value of the display.
+ *   be used to alter the backlight strength value of the display.
  */
 void LCDBacklightPage() {
 
@@ -1625,7 +1634,7 @@ void LCDBacklightPage() {
 /**
  * @brief Helper function add the mode control menu into the display list.
  * @details This function renders the mode control sub-menu using the RECTS 
- *  primitive for the readout, and custom circle buttons for the controls.
+ *   primitive for the readout, and custom circle buttons for the controls.
  */
 void modePage() {
 
@@ -1667,8 +1676,8 @@ void modePage() {
 
 /**
  * @brief Function to generate a display list containing the static screen elements
- *  and copy these into RAM_G so they can be appended into screen updates using 
- *  the CMD_APPEND command.
+ *   and copy these into RAM_G so they can be appended into screen updates using 
+ *   the CMD_APPEND command.
  */
 void generateStaticScreenComponents() {
 
@@ -1838,7 +1847,7 @@ void renderScreenUpdate() {
     // add readout numbers for gauges
     //------------------------------------------------------------------------------
 
-#if (IS_EVE_API(5)) // if we are BT82x
+#if IS_EVE_API(5) // if we are BT82x
     // we want to use a monospaced font for the last usages of font_large handle here
     // as they are centred within a circle call CMD_ROMFONT to load the font data for
     // monspace font 25 (largest monospaced font available) into a the handle for font_large
@@ -1893,7 +1902,7 @@ void renderScreenUpdate() {
     // send display list to co-processor
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-
+ 
 }
 
 // #################################################################################
@@ -1903,9 +1912,9 @@ void renderScreenUpdate() {
 /**
  * @brief Set on screen content sizing & positiong, and font handle variables.
  * @details This function will use the screen width and height to initialise 
- *  the global variables for the application, such as positioning & sizing
- *  variables for on screen items, and in-built ROM font handles to be used.
- *  It also sets the axis labels to be used on the line plot axes.
+ *   the global variables for the application, such as positioning & sizing
+ *   variables for on screen items, and in-built ROM font handles to be used.
+ *   It also sets the axis labels to be used on the line plot axes.
  */
 void initialiseGlobals(void) {
 
@@ -2161,6 +2170,12 @@ void checkTouchStatus(void)
     #if IS_EVE_API(1,2,3,4)
         TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
     #else
+        // BT82x requires that a screen be rendered so that we can check REG_TOUCH_TAG
+        // if there is currently a touch on the screen then set screen_render = true,
+        // so we can check the tag next time through the loop
+        if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+            screen_render = true;
+ 
         TagVal = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     #endif
 
@@ -2189,12 +2204,16 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click(); 
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_1 AND the current menu press is not settings_menu_item_1
-    if ((Pen_Up_Tag == settings_menu_item_1_tag) && settings_menu_item_1_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_1_tag) && (!settings_menu_item_1_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
@@ -2205,12 +2224,16 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click();
+
         // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_2 AND the current menu press is not settings_menu_item_2
-    if ((Pen_Up_Tag == settings_menu_item_2_tag) && settings_menu_item_2_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_2_tag) && (!settings_menu_item_2_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
@@ -2221,25 +2244,48 @@ void checkTouchStatus(void)
 
         // play click sound
         sound_click();
+
         // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     //-------- perform logic for mode menu buttons -------
 
-    // if the current tag value equals mode button 1 tag
-    if (TagVal == mode_button_1_tag)
-        mode_button_1_press = true; // set button 1 press to true
-    else
-        mode_button_1_press = false; // set button 1 press to false
+    // if the current tag value equals mode button 1 tag && mode_button_1_press is false
+    if ((TagVal == mode_button_1_tag) && (!mode_button_1_press)) {
 
+        // set mode button 1 press to true
+        mode_button_1_press = true; 
 
-    // if the current tag value equals mode button 2 tag
-    if (TagVal == mode_button_2_tag)
-        mode_button_2_press = true; // set button 2 press to true
-    else
-        mode_button_2_press = false; // set button 2 press to false
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+    else if (mode_button_1_press && (TagVal != mode_button_1_tag)) {
+        // set mode button 1 press to false
+        mode_button_1_press = false;
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+        
+    // if the current tag value equals mode button 2 tag && mode_button_2_press is false
+    if ((TagVal == mode_button_2_tag) && (!mode_button_1_press)) {
+        // set mode button 2 press to true
+        mode_button_2_press = true; 
+
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+    else if (mode_button_2_press && (TagVal != mode_button_2_tag)) {
+        // set mode button 2 press to false
+        mode_button_2_press = false;
+
+        // flag that we want to update the screen
+        screen_render = true;
+    }
 
     // if the pen up tag equals mode button 1 tag
     if (Pen_Up_Tag == mode_button_1_tag) {
@@ -2249,13 +2295,18 @@ void checkTouchStatus(void)
 
         // flip boolean state for mode button 1 press
         mode_button_1_press = !mode_button_1_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
         sound_click();
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals mode button 2 tag
@@ -2266,13 +2317,18 @@ void checkTouchStatus(void)
 
         // flip boolean state for mode button 1 press
         mode_button_2_press = !mode_button_2_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
         sound_click();
+
         // set boolen for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     //-------- perform logic for lcd backlight menu buttons -------
@@ -2313,21 +2369,8 @@ void checkTouchStatus(void)
         // add 27 here to the backlight value so the value range becomes 27-127
         EVE_LIB_MemWrite32(EVE_REG_PWM_DUTY, (backlight_value + 27));
 
-    }
-
-    // check if we played a sound due to a button press
-    if(sound_played){
-        // wait until the sound has finished playing
-        /**
-         * NOTE: we can do this here as we are only using short non-continious sounds.
-         */
-        while (sound_is_playing() !=0);
-
-        // Set synthesizer to mute
-        sound_mute();
-        
-        // reset sound played boolean
-        sound_played = !sound_played;
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     return;
@@ -2441,10 +2484,10 @@ void demoDataUpdates() {
 /**
  * @brief Function to send display lists to EVE within a while(1) 'main' loop.
  * @details This function constructs a display list to render screens to EVE
- *  within a while (1) loop, calling functions to add widgets onto the screen.
- *  It also contains the data arrays and variables used to update readouts and
- *  widgets on the screen. Finally it will perform some logic to loop through 
- *  applicable data arrays or change variables.
+ *   within a while (1) loop, calling functions to add widgets onto the screen.
+ *   It also contains the data arrays and variables used to update readouts and
+ *   widgets on the screen. Finally it will perform some logic to loop through 
+ *   applicable data arrays or change variables.
  */
 void eve_display(void)
 {
@@ -2459,32 +2502,47 @@ void eve_display(void)
     // main loop
     while (1)
     {
-
-        // check if any of our buttons have been pressed
-        // we are polling this for simplicity, but we can use the INT_N pin to trigger an  interrupt
-        // for touch input and use this to call the checkTouchStatus() function. We could also call
-        // renderScreenUpdate() if required based upon touch inputs
-        checkTouchStatus();
-
         //--------------------------------------------------------------------------
         // Update the screen with either demo data or sensor data
         //--------------------------------------------------------------------------
 
-        // again we are simply issuing screen updates continuously, but we can gate these by time elapsed, or sensor
-        // data rates and use either to determine when to call renderScreenUpdate()
+        // check if we are in demo mode
         if (demoMode) {
-            // call the helper function to update data arrays
+            // call the helper function to update data arrays with demo data
             demoDataUpdates();
-
-            // call render screen function to update the screen
-            renderScreenUpdate();
+            // flag that we want to update the screen
+            screen_render = true;
         }
         else {
             // else we want to read some data from our attached sensors
             // TODO: add code to read real sensor values 
+        }
 
-            // call render screen function to update the screen
+        // check if any of our buttons have been pressed
+        // we are polling this for simplicity, but we can use the INT_N pin to trigger an interrupt
+        // for touch input and use this to call the checkTouchStatus() function. 
+        checkTouchStatus();
+
+        // call render screen function to update the screen if flag has been set
+        if (screen_render) {
+            // render screen update
             renderScreenUpdate();
+
+            // set screen rendering flag to false
+            screen_render = false;
+        }
+
+        // check if we played a sound due to a button press
+        if (sound_played) {
+
+            // check if the sound has finished playing
+            if (sound_is_playing() == 0) {
+                // Set synthesizer to mute
+                sound_mute();
+
+                // reset sound played boolean
+                sound_played = false;
+            }
         }
     }
 }
@@ -2496,8 +2554,8 @@ void eve_display(void)
 /**
  * @brief Function to start the EVE application, called from main.c. 
  * @details This function will call separate functions to initialize EVE,
- *  calibrate touch for the screen, and enable sound. Finally it will call
- *  eve_display() to run the main display loop and update the screen.
+ *   calibrate touch for the screen, and enable sound. Finally it will call
+ *   eve_display() to run the main display loop and update the screen.
  */
 void eve_example(void)
 {

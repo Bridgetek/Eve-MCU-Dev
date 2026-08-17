@@ -5,37 +5,40 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c">
-      <Filter>Library\eve\source</Filter>
+      <Filter>Library\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
-      <Filter>Library\eve\source</Filter>
+      <Filter>Library\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\compass_bulkhead.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\clownfish_102x54_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\parrotfish_116x43_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\prop1_128x128_ARGB2.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\sub_depth.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\surgeonfish_133x56_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
@@ -44,19 +47,22 @@
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\yellowtang_128x81_ARGB1555.c">
-      <Filter>Assets</Filter>
+      <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\..\include\Platform.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\MCU.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
-      <Filter>Library\eve\ports\eve_bt82x</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
       <Filter>Example\snippets</Filter>
@@ -77,66 +83,66 @@
       <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_debug.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_config.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_registers.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\HAL.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
       <UniqueIdentifier>{13e086ce-b56f-49bc-8574-ead66886a8c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve">
-      <UniqueIdentifier>{eabf4308-f3f0-4f01-83f2-4bd5fa32425f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\eve\source">
+    <Filter Include="Library\source">
       <UniqueIdentifier>{a0cebcae-425a-45a0-b40d-04248413a20a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\include">
+    <Filter Include="Library\include">
       <UniqueIdentifier>{677f3318-3ae0-483d-a44a-80ec9e94e886}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example">
       <UniqueIdentifier>{ba84a78f-0fec-4e05-a5c8-7326f9ab765d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports">
+    <Filter Include="Library\ports">
       <UniqueIdentifier>{68d7fd8b-5282-498d-b523-f261cf854fbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports\eve_libft4222">
+    <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{3d447ea8-f90d-4e00-99c7-8f61b1a67f58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\snippets">
       <UniqueIdentifier>{93504071-25ac-4fb8-b96c-7176593467ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{07577574-d5e9-4833-84f5-e925d1c4a9d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example\Assets">
+      <UniqueIdentifier>{07577574-d5e9-4833-84f5-e925d1c4a9d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

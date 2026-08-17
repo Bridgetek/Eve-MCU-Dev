@@ -5,16 +5,16 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c">
-      <Filter>Library\eve\source</Filter>
+      <Filter>Library\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
-      <Filter>Library\eve\source</Filter>
+      <Filter>Library\source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\eve_assetload_array.c">
       <Filter>Example</Filter>
@@ -92,10 +92,10 @@
       <Filter>Example\Snippets</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\..\include\Platform.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\MCU.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
@@ -116,53 +116,59 @@
       <Filter>Example\Snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_config.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_debug.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_registers.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\HAL.h">
-      <Filter>Library\eve\include</Filter>
+      <Filter>Library\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
-      <Filter>Library\eve\ports\eve_libft4222</Filter>
+      <Filter>Library\ports\eve_libft4222</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
       <UniqueIdentifier>{13e086ce-b56f-49bc-8574-ead66886a8c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve">
-      <UniqueIdentifier>{eabf4308-f3f0-4f01-83f2-4bd5fa32425f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Library\eve\source">
+    <Filter Include="Library\source">
       <UniqueIdentifier>{a0cebcae-425a-45a0-b40d-04248413a20a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\include">
+    <Filter Include="Library\include">
       <UniqueIdentifier>{677f3318-3ae0-483d-a44a-80ec9e94e886}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example">
       <UniqueIdentifier>{ba84a78f-0fec-4e05-a5c8-7326f9ab765d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports">
+    <Filter Include="Library\ports">
       <UniqueIdentifier>{68d7fd8b-5282-498d-b523-f261cf854fbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports\eve_libft4222">
+    <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\eve\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\Patch">
@@ -176,6 +182,9 @@
     </Filter>
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{38e13919-88dc-436b-aed2-eb1d434bc8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -61,22 +61,22 @@
 #define _XTAL_FREQ 12000000      // Required for _delay() function, internal OSC Max
 
 // PIC configuration definitions
-#pragma config WDTEN = OFF                                                      // Watchdog Timer Enable bit
-#pragma config PWRTEN = OFF                                                     // Power-up Timer Enable bit (PWRT disabled)
-#pragma config MCLRE = EXTMCLR                                                  // MCLR Pin Function Select bit (MCLR pin function is MCLR)
-#pragma config CP0 = OFF                                                        // Code Protection Block 0
-#pragma config CP1 = OFF                                                        // Code Protection Block 1
-#pragma config CP2 = OFF                                                        // Code Protection Block 2
-#pragma config CP3 = OFF                                                        // Code Protection Block 3
-#pragma config CPB = OFF                                                        // Boot Block Code Protection bit (Boot block (000000-0007FFh) not code-protected)
-#pragma config CPD = OFF                                                        // Data EEPROM Code Protection bit (Data EEPROM not code-protected)
-#pragma config BOREN = ON                                                       // Brown-out Reset Selection bits (BOR enabled)
+#pragma config WDTEN = OFF          // Watchdog Timer Enable bit
+#pragma config PWRTEN = OFF         // Power-up Timer Enable bit (PWRT disabled)
+#pragma config MCLRE = EXTMCLR      // MCLR Pin Function Select bit (MCLR pin function is MCLR)
+#pragma config CP0 = OFF            // Code Protection Block 0
+#pragma config CP1 = OFF            // Code Protection Block 1
+#pragma config CP2 = OFF            // Code Protection Block 2
+#pragma config CP3 = OFF            // Code Protection Block 3
+#pragma config CPB = OFF            // Boot Block Code Protection bit (Boot block (000000-0007FFh) not code-protected)
+#pragma config CPD = OFF            // Data EEPROM Code Protection bit (Data EEPROM not code-protected)
+#pragma config BOREN = ON           // Brown-out Reset Selection bits (BOR enabled)
 
-#pragma config IESO = ON       // Internal External Switchover enable bit 
-#pragma config FCMEN = ON       // Fail-Safe Clock Monitor Enabled bit 
-#pragma config PRICLKEN = ON       // 
-#pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
-#pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
+#pragma config IESO = ON            // Internal External Switchover enable bit 
+#pragma config FCMEN = ON           // Fail-Safe Clock Monitor Enabled bit 
+#pragma config PRICLKEN = ON        // 
+#pragma config PLLCFG = ON          // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
+#pragma config FOSC = 0x03          // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 
 /* EVE MCU HEADER END */
 
@@ -94,23 +94,23 @@ int MCU_Init(void)
     ANSELD = 0x00;
 
     // Port pin set-up
-    TRISCbits.TRISC7 = 0;                                                       // CS
-    TRISCbits.TRISC6 = 0;                                                       // PD pin
-    TRISCbits.TRISC3 = 0;                                                       // SCK
-    TRISCbits.TRISC4 = 1;                                                       // SDI (MISO)
-    TRISCbits.TRISC5 = 0;                                                       // SDO (MOSI)
+    TRISCbits.TRISC7 = 0;      // CS
+    TRISCbits.TRISC6 = 0;      // PD pin
+    TRISCbits.TRISC3 = 0;      // SCK
+    TRISCbits.TRISC4 = 1;      // SDI (MISO)
+    TRISCbits.TRISC5 = 0;      // SDO (MOSI)
 
-    TRISDbits.TRISD7 = 1;                                                       // RXD INPUT
-    TRISDbits.TRISD6 = 0;                                                       // TXD OUTPUT
-    TRISDbits.TRISD5 = 1;                                                       // RTS INPUT (FROM FT232 RTS))
-    TRISDbits.TRISD4 = 0;                                                       // CTS OUTPUT (TO FT232 CTS)
+    TRISDbits.TRISD7 = 1;      // RXD INPUT
+    TRISDbits.TRISD6 = 0;      // TXD OUTPUT
+    TRISDbits.TRISD5 = 1;      // RTS INPUT (FROM FT232 RTS))
+    TRISDbits.TRISD4 = 0;      // CTS OUTPUT (TO FT232 CTS)
 
     LATBbits.LATB0 = 1;
     
     // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
 
     // SPI 1 set-up
-    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+    SSP1CON1bits.SSPEN  = 0;    // Disable SPI1
 
     SSP1CON1bits.WCOL   = 0;
     SSP1CON1bits.SSPOV  = 0;
@@ -124,14 +124,14 @@ int MCU_Init(void)
     SSP1STATbits.CKE = 1;
     SSP1STATbits.BF  = 0;
 
-    SSP1CON1bits.SSPEN  = 1;                                                    // Enable SPI1 after configuration
+    SSP1CON1bits.SSPEN  = 1;     // Enable SPI1 after configuration
 
     return 0;
 }
 
 int MCU_Deinit(void)
 {
-    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+    SSP1CON1bits.SSPEN  = 0;     // Disable SPI1
 
     return 0;
 }
@@ -152,7 +152,7 @@ int MCU_Setup(void)
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void)
 {
-    LATCbits.LATC7 = 0;                                                         // CS# line low
+    LATCbits.LATC7 = 0;         // CS# line low
     NOP();
 }  
 
@@ -160,19 +160,19 @@ void MCU_CSlow(void)
 void MCU_CShigh(void)
 {
     NOP();
-    LATCbits.LATC7 = 1;                                                         // CS# line high
+    LATCbits.LATC7 = 1;         // CS# line high
 }
 
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    LATCbits.LATC6 = 0;                                                         // PD# line low
+    LATCbits.LATC6 = 0;         // PD# line low
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    LATCbits.LATC6 = 1;                                                         // PD# line high
+    LATCbits.LATC6 = 1;         // PD# line high
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -180,10 +180,10 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
     uint8_t DataRead = 0;
     
-    DataRead = SSP1BUF;                                                         // Dummy read, ensure BF clearedDataRead = SSP1BUF;
-    SSP1BUF = (DataToWrite);                                                    // Write data to SPI data register
-    while(!SSP1STATbits.BF);                                                    // Wait for completion of the SPI transfer
-    DataRead = SSP1BUF;                                                         // Get the value clocked in from the FT8xx/BT8xx
+    DataRead = SSP1BUF;         // Dummy read, ensure BF clearedDataRead = SSP1BUF;
+    SSP1BUF = (DataToWrite);    // Write data to SPI data register
+    while(!SSP1STATbits.BF);    // Wait for completion of the SPI transfer
+    DataRead = SSP1BUF;         // Get the value clocked in from the FT8xx/BT8xx
 
     return DataRead;
 }

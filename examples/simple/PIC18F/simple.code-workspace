@@ -16,9 +16,6 @@
 			"path": "../../../ports/eve_arch_pic"
 		},
 		{
-			"path": "../../../ports/eve_bt82x"
-		},
-		{
 			"path": "../../snippets"
 		}
 	],

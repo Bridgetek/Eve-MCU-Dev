@@ -54,7 +54,13 @@
 #include <EVE_debug.h>
 
 #if IS_EVE_API(5)
-#include "patch_base.h"
+#include <extensions/bt82x_patch.h>
+#endif
+
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
+#include <extensions/custom_touch_fw.h>
+#endif
 #endif
 
 /* EVE API INCLUDES END */
@@ -118,9 +124,26 @@ int EVE_Init(void)
     // Turn on or off Dither
     HAL_MemWrite8(EVE_REG_DITHER, (uint16_t)EVE_DISP_DITHER);
 
+    /* conigure touch if required */
+
+    // set touch i2c address
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
+    HAL_MemWrite8(EVE_REG_CPURESET, 2);
     HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, (uint16_t)EVE_TOUCH_ADDR << 4);
+    HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
+
+#if IS_EVE_API(2,3,4)
+    // load custom touch FW (only supported on FT81X/BT88X/BT81X)
+#if defined(CUSTOM_TOUCH)
+    if (eve_loadcustomtouch() != 0) // send custom touch FW data to co-processor
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load custom touch FW.\n");
+        return -1;
+    }
+    EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
+#endif  // defined(CUSTOM_TOUCH)
+#endif  // IS_EVE_API(2,3,4)
 
     /* Write first display list */
 
@@ -149,11 +172,11 @@ int EVE_Init(void)
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
-#endif
+#endif // defined (SET_PCLK_FREQ)
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
-#endif
+#endif // IS_EVE_API(4) 
 
     // turn on LCD backlight
     HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
@@ -175,7 +198,7 @@ int EVE_Init(void)
     HAL_MemWrite32(EVE_REG_CMD_READ, 0);
     HAL_ResetCmdPointer();
     HAL_WriteCmdPointer();
-#endif
+#endif // !defined(EVE_USE_CMDB_METHOD)
 
 #if defined(EVE_COPROC_PROFILE)
     HAL_ResetProfilePointer();
@@ -229,7 +252,7 @@ int EVE_Init(void)
 
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
     EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, ((uint32_t)EVE_TOUCH_ADDR << 4) | ((uint32_t)EVE_TOUCH_TYPE) | (1 << 11));
-#endif
+#endif // defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     uint32_t extsyncmode = 3;
@@ -250,7 +273,11 @@ int EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 
     // Load base patch or project defined patch if overriden
-    eve_loadpatch();
+    if (eve_loadpatch() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
+        return -1;
+    }
 
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
@@ -278,7 +305,7 @@ int EVE_Init(void)
 #elif IS_EVE_API(2, 3, 4, 5)
         EVE_BITMAP_HANDLE(i);
         EVE_CMD_SETBITMAP(0, 0, 0, 0);
-#endif
+#endif // IS_EVE_API
     }
     EVE_DISPLAY();
     EVE_CMD_SWAP();
@@ -766,7 +793,7 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t* value)
 }
 #endif
 
-// Display List Commands for the Co-processor
+/*  Display List Commands for the Co-processor */
 
 void EVE_CMD(uint32_t c)
 {
@@ -1130,7 +1157,7 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 #endif
 
-// Co-Processor Widget Commands
+/* Co-Processor Widget Commands */
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
@@ -1828,7 +1855,6 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
 
 void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame)
 {
-    //CMD_ANIMFRAME (0xFFFF FF5A)
     HAL_Write32(EVE_ENC_CMD_ANIMFRAMERAM);
     HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
     HAL_Write32(aoptr);
@@ -1838,7 +1864,6 @@ void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame)
 
 void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop)
 {
-    //CMD_ANIMSTARTRAM(0xFFFF FF6E)
     HAL_Write32(EVE_ENC_CMD_ANIMSTARTRAM);
     HAL_Write32(ch);
     HAL_Write32(aoptr);
@@ -1856,7 +1881,6 @@ void EVE_CMD_APILEVEL(uint32_t level)
 
 void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num)
 {
-    //CMD_FONTCACHE(0xFFFF FF6B)
     HAL_Write32(EVE_ENC_CMD_FONTCACHE);
     HAL_Write32(font);
     HAL_Write32(ptr);
@@ -1866,7 +1890,6 @@ void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num)
 
 void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used)
 {
-    //CMD_FONTCACHEQUERY(0xFFFF FF6C)
     HAL_Write32(EVE_ENC_CMD_FONTCACHEQUERY);
     HAL_Write32(total);
     HAL_Write32(used);
@@ -1875,7 +1898,6 @@ void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used)
 
 void EVE_CMD_HSF(uint32_t w)
 {
-    //CMD_HSF (0xFFFF FF62)
     HAL_Write32(EVE_ENC_CMD_HSF);
     HAL_Write32(w);
     HAL_IncCmdPointer(8);
@@ -1883,7 +1905,6 @@ void EVE_CMD_HSF(uint32_t w)
 
 void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
 {
-    //CMD_PCLKFREQ (0xFFFF FF6A)
     HAL_Write32(EVE_ENC_CMD_PCLKFREQ);
     HAL_Write32(ftarget);
     HAL_Write32(rounding);
@@ -1897,7 +1918,6 @@ void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
 
 void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
 {
-    //CMD_RUNANIM(0xFFFF FF6F)
     HAL_Write32(EVE_ENC_CMD_RUNANIM);
     HAL_Write32(waitmask);
     HAL_Write32(play);
@@ -1906,14 +1926,12 @@ void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
 
 void EVE_CMD_TESTCARD(void)
 {
-    //CMD_TESTCARD(0xFFFF FF61)
     HAL_Write32(EVE_ENC_CMD_TESTCARD);
     HAL_IncCmdPointer(4);
 }
 
 void EVE_CMD_WAIT(uint32_t us)
 {
-    //CMD_WAIT(0xFFFF FF65)
     HAL_Write32(EVE_ENC_CMD_WAIT);
     HAL_Write32(us);
     HAL_IncCmdPointer(8);
@@ -1921,7 +1939,6 @@ void EVE_CMD_WAIT(uint32_t us)
 
 void EVE_CMD_NEWLIST(uint32_t a)
 {
-    //CMD_NEWLIST(0xFFFF FF68)
     HAL_Write32(EVE_ENC_CMD_NEWLIST);
     HAL_Write32(a);
     HAL_IncCmdPointer(8);
@@ -1929,14 +1946,12 @@ void EVE_CMD_NEWLIST(uint32_t a)
 
 void EVE_CMD_ENDLIST(void)
 {
-    //CMD_ENDLIST(0xFFFF FF69)
     HAL_Write32(EVE_ENC_CMD_ENDLIST);
     HAL_IncCmdPointer(4);
 }
 
 void EVE_CMD_CALLLIST(uint32_t a)
 {
-    // CMD_CALLLIST(0xFFFF FF67)
     HAL_Write32(EVE_ENC_CMD_CALLLIST);
     HAL_Write32(a);
     HAL_IncCmdPointer(8);
@@ -1944,7 +1959,6 @@ void EVE_CMD_CALLLIST(uint32_t a)
 
 void EVE_CMD_RETURN(void)
 {
-    //CMD_RETURN(0xFFFF FF66)
     HAL_Write32(EVE_ENC_CMD_RETURN);
     HAL_IncCmdPointer(4);
 }
@@ -1999,10 +2013,10 @@ void EVE_CMD_FLASHERASE(void)
 }
 
 /*
-   Write data to flash. Constraints:
-     - Destination flash address must be virgin (not used before)
-     - data array must be aligned 256-bit
-     */
+ *  Write data to flash. Constraints:
+ *    - Destination flash address must be virgin (not used before)
+ *    - data array must be aligned 256-bit
+ */
 void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t* fdata)
 {
     uint32_t i, send_data32 = 0, totalnum = (num + 3) / 4;
@@ -2029,11 +2043,12 @@ void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num)
     HAL_Write32(num);
     HAL_IncCmdPointer(12);
 }
+
 /*
-    Writes the given data to flash.
-    If the data matches the existing contents of flash, nothing is done.
-    Otherwise the flash is erased in 4K units, and the data is written.
-*/
+ *  Writes the given data to flash.
+ *  If the data matches the existing contents of flash, nothing is done.
+ *  Otherwise the flash is erased in 4K units, and the data is written.
+ */
 void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num)
 {
     HAL_Write32(EVE_ENC_CMD_FLASHUPDATE);
@@ -2044,8 +2059,8 @@ void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num)
 }
 
 /*
-    Read data from flash into main memory
-*/
+ *  Read data from flash into main memory
+ */
 void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
 {
     HAL_Write32(EVE_ENC_CMD_FLASHREAD);
@@ -2056,8 +2071,8 @@ void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
 }
 
 /*
-    Program data to flash
-*/
+ *  Program data to flash
+ */
 void EVE_CMD_FLASHPROGRAM(uint32_t dest, uint32_t src, uint32_t num)
 {
     HAL_Write32(EVE_ENC_CMD_FLASHPROGRAM);
@@ -2141,6 +2156,13 @@ void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32
 #endif
 
 #if IS_EVE_API(5)
+
+void EVE_CMD_COPYLIST(uint32_t dst)
+{
+    HAL_Write32(EVE_ENC_CMD_COPYLIST);
+    HAL_Write32(dst);
+    HAL_IncCmdPointer(8);
+}
 
 void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb0, uint32_t rgb1)
 {

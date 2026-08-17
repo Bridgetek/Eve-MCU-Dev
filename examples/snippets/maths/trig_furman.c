@@ -36,6 +36,8 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
  
 #include <stdint.h>
 
@@ -64,7 +66,9 @@ int16_t cos_furman(uint16_t furman16)
     return ret;
 }
 
-#else
+#else // USE_TRIG_TABLE
+
+/* CONSTANTS ***********************************************************************/
 
 /* Use precomputed sine table for calculation of trigonometrics
  * This uses a 64 furman resolution using 257 position lookup table for 
@@ -99,6 +103,8 @@ const uint16_t sinint[257] = {
     65385, 65411, 65435, 65456, 65474, 65490, 65504, 65515, 65523, 65530, 
     65533, 65535 }; 
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 /* 
  * Integer sine function 
  * Takes an input of 16-bit furman value. 
@@ -128,6 +134,8 @@ static int16_t sin_furman_lookup(uint16_t furman16)
     return ret;
 }
 
+/* FUNCTIONS ***********************************************************************/
+
 int16_t sin_furman(uint16_t furman16)
 {
     int16_t ret;
@@ -146,4 +154,4 @@ int16_t cos_furman(uint16_t furman16)
     return sin_furman(furman16 + 0x4000);
 }
 
-#endif
+#endif // ! USE_TRIG_TABLE

@@ -36,12 +36,16 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
- 
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
 #include <EVE.h>
 
 #include "dialogs.h"
+
+/* CONSTANTS ***********************************************************************/
 
 /* Array containing the bitmap sizes of ROM fonts. */
 
@@ -52,6 +56,8 @@
 static const uint8_t rom_font_widths[] = EVE_ROMFONT_WIDTHS;
 static const uint8_t rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 static uint8_t romfont_width(uint8_t font)
 {
     return rom_font_widths[font];
@@ -61,6 +67,9 @@ static uint8_t romfont_height(uint8_t font)
 {
     return rom_font_heights[font];
 }
+
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * font - Font used for measuring the text.

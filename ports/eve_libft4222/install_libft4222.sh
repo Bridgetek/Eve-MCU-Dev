@@ -11,12 +11,12 @@ fi
 
 if [[ ! -e "$INSTALL_PATH" ]]; then
     echo The distribution directory "$INSTALL_PATH" was not found.
-    exit
+    exit 1
 fi
 
 if [[ ! -e "$INSTALL_PATH/LibFT4222" || ! -e "$INSTALL_PATH/ftd2xx" ]]; then
     echo The distribution directory "$INSTALL_PATH" is not right.
-    exit
+    exit 1
 fi
 
 if [[ $PROCESSOR_ARCHITECTURE == "" ]]; then
@@ -50,7 +50,7 @@ elif [[ $PROCESSOR_ARCHITECTURE == "ARM64" ]]; then
 else
     echo Could not identify library to install. System reports "$PROCESSOR_ARCHITECTURE".
     echo AMD64, x86 and ARM64 are supported.
-    exit
+    exit 1
 fi
 
 # Copy the FT4222 DLL and LIB files for FT4222 and FTD2XX to the ports/eve_libft4222 directory

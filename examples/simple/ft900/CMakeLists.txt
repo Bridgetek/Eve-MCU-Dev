@@ -70,8 +70,10 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${API_DIRECTORY}/source/EVE_HAL.c
     ${API_DIRECTORY}/ports/eve_arch_ft9xx/EVE_MCU_FT9XX.c
     
-    # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c
+    # BT82x Base patch
+    ${API_DIRECTORY}/source/extensions/bt82x_patch.c
+    # Only applicable to FT81x/BT88x/BT81x
+    ${API_DIRECTORY}/source/extensions/custom_touch_fw.c
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN
     # GENERATED: SOURCES - DO NOT MODIFY - END
@@ -102,8 +104,6 @@ target_include_directories(${EXECUTABLE} PRIVATE
     Includes
     # API Includes
     ${API_DIRECTORY}/include
-    # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x
     # Example project includes
     ${EXAMPLE_COMMON}
     # Header for snippets 

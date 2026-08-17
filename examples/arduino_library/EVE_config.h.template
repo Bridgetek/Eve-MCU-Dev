@@ -75,6 +75,11 @@
 #define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
 #define VM820B10A  WXGA_NG // VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
 #define VM820B15A  FULLHD  // VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
+#define IDK_FT810_43A	WQVGA    // IDK-FT810-43A 
+#define IDK_BT816_50A	WVGA     // IDK-BT816-50A 
+#define IDK_BT817_70A	WVGA     // IDK-BT817-70A 
+#define IDK_BT817_101A	WXGA_NG  // IDK-BT817-101A  
+#define IDK_BT820_101A	WUXGA    // IDK-BT820-101A
 
 // Default resolution
 #define DISPLAY_RES ### EVE RES ###
@@ -88,6 +93,12 @@
 // Select the touchscreen automatically
 #undef EVE_TOUCH_ADDR
 #undef EVE_TOUCH_TYPE
+
+
+#if IS_EVE_API(2,3,4)
+// Enable or Disable custom touch FW load
+#undef CUSTOM_TOUCH
+#endif
 
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE

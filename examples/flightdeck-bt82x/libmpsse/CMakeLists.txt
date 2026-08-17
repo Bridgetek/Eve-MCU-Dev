@@ -97,7 +97,6 @@ endif()
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${API_DIRECTORY}/ports/eve_libmpsse # MPSSE Library headers
 )
 
@@ -141,7 +140,7 @@ endif()
 
 # Source for example code
 add_library(eve_example # Example code library name
-        # Patch file to override patch_base.c
+        # Patch file to override bt82x_patch.c
         ${EXAMPLE_COMMON}/patch_lvds.c
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
@@ -156,7 +155,6 @@ add_library(eve_example # Example code library name
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${EXAMPLE_COMMON}/ # Headers for example code
         ${EXAMPLE_SNIPPETS}/ # Headers for snippets
 )

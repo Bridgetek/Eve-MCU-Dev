@@ -36,12 +36,16 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
  
 #include <stdint.h>
 
 #include <EVE.h>
 
 #include "sevenseg.h"
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of seven segment graphic in pixels
