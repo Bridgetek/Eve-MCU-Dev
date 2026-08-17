@@ -57,6 +57,12 @@
 #include <extensions/bt82x_patch.h>
 #endif
 
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
+#include <extensions/custom_touch_fw.h>
+#endif
+#endif
+
 /* EVE API INCLUDES END */
 
 /* EVE API */
@@ -130,10 +136,7 @@ int EVE_Init(void)
 #if IS_EVE_API(2,3,4)
     // load custom touch FW (only supported on FT81X/BT88X/BT81X)
 #if defined(CUSTOM_TOUCH)
-    // include custom_touch_fw.h
-    #include <extensions/custom_touch_fw.h>
-    // call eve_loadcustomtouch() to send custom touch FW data to co-processor
-    if (eve_loadcustomtouch() != 0)
+    if (eve_loadcustomtouch() != 0) // send custom touch FW data to co-processor
     {
         EVE_DEBUG_ERROR("ERROR: Failed to load custom touch FW.\n");
         return -1;
