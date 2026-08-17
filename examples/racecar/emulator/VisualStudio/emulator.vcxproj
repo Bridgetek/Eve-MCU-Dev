@@ -43,13 +43,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -99,6 +99,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\assets\c_array_assets\arrows_96x192_PNG.c" />
     <ClCompile Include="..\..\assets\c_array_assets\Battery_Cells_40x1440_PNG.c" />
@@ -124,12 +125,11 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\..\common\patch_textscale.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />

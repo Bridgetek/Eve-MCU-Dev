@@ -118,8 +118,14 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
@@ -171,7 +177,7 @@
     <Filter Include="Library\ports">
       <UniqueIdentifier>{68d7fd8b-5282-498d-b523-f261cf854fbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\ports\eve_emulator">
@@ -191,6 +197,9 @@
     </Filter>
     <Filter Include="Example\Assets\C_Array_Assets">
       <UniqueIdentifier>{9f8fafa3-ee7c-4e71-ada9-ff039006db7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

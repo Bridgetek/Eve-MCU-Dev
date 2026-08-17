@@ -43,12 +43,79 @@
 /**
  * @note IMPORTANT This header file must be included before EVE.h.
  * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
- * be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
- * also be configured.
- * Values from the macros defined in this file can be used in code based on this library. 
- * To make a custom configuration file, edit this file as required as long as the macros
- * listed above are correctly defined.
+ *		be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
+ *		also be configured.
+ *		Values from the macros defined in this file can be used in code based on this library. 
+ *		To make a custom configuration file, edit this file as required as long as the macros
+ *		listed above are correctly defined.
  */
+
+/**
+ *  @brief Enable or Disable QuadSPI
+ *  @details If the macro is set then the platform port may only enable QSPI
+ *           on the EVE device (using HAL_SetSPIMode) if QSPI is supported by
+ *           the platform.
+ *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
+ *        supported on FT80x devices. For default set this to disabled.
+ */
+//@{
+#undef QUADSPI_ENABLE
+//@}
+
+/**
+ * @brief RAM_G size options for BT82X only
+ * @details Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb, etc
+ */
+//@{
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL 
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
+//@}
+
+ /**
+  * @brief Setup RAM_G size for BT82X only
+  */
+#ifndef EVE_RAM_G_CONFIG_SIZE
+#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
+#endif
+
+/**
+ * @brief Definitions used for touch controller i2c address
+ */
+//@{
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
+#define TOUCH_TYPE_GOODIX 2
+//@}
+
+/**
+ * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
+ *		default for FT81X/BT88X/BT81X.
+ */
+//@{
+#undef EVE_TOUCH_ADDR
+#undef EVE_TOUCH_TYPE
+//@}
+
+/**
+  *  @brief Enable or Disable custom couch FW load
+  *  @details If the macro is set then custom touch FW will be loaded during IC
+  *			intialization from the binay data array in the "custom_touch_fw.h" file.
+  *			Applicable for FT81X/BT88X/BT81X devices only.
+  *
+  *  @note Custom touch FW for the BT82X series is implmented in extension patches.
+  *		EVE_TOUCH_ADDR & EVE_TOUCH_TYPE settings will be overridden when using CUSTOM_TOUCH.
+  */
+//@{
+#undef CUSTOM_TOUCH
+//@}
  
 /**
  *  @brief Select Bridgetek EVE Module or Development Kit Types.
@@ -326,7 +393,10 @@
 
 #elif PANEL_TYPE == DP_1011_02A
 // DP-1011-02A WXGA_NG (Capacitive)
+//#define DISPLAY_RES WXGA_NG
 #define DISPLAY_RES WXGA_NG
+// define CUSTOM_TOUCH for this panel
+#define CUSTOM_TOUCH
 
 #elif PANEL_TYPE == DP_1012_01A
 // DP-1012-01A WUXGA (Capacitive)
@@ -347,57 +417,6 @@
 #elif PANEL_TYPE == DP_IDM21R
 // IDM204021R (Capacitive)
 #define DISPLAY_RES WQVGAR  
-#endif
-
-/**
- * @brief Definitions used for touch controllers
- */
-//@{
-#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
-#define TOUCH_TYPE_FOCALTECH 1
-#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
-#define TOUCH_TYPE_GOODIX 2
-//@}
-
-/**
- * @brief Select the touchscreen automatically
- */
-//@{
-#undef EVE_TOUCH_ADDR
-#undef EVE_TOUCH_TYPE
-//@}
-
-/**
- *  @brief Enable or Disable QuadSPI
- *  @details If the macro is set then the platform port may only enable QSPI
- *           on the EVE device (using HAL_SetSPIMode) if QSPI is supported by
- *           the platform. 
- *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
- *        supported on FT80x devices. For default set this to disabled.
- */
-//@{
-#undef QUADSPI_ENABLE
-//@}
-
-/** @brief RAM_G size options for BT82X only
- * @details Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
- */
-//@{
-#define EVE_RAM_G_32_MBIT  0x100000UL
-#define EVE_RAM_G_64_MBIT  0x200000UL
-#define EVE_RAM_G_128_MBIT 0x400000UL
-#define EVE_RAM_G_256_MBIT 0x800000UL
-#define EVE_RAM_G_512_MBIT 0x4000000UL 
-#define EVE_RAM_G_1_GBIT   0x8000000UL
-#define EVE_RAM_G_2_GBIT   0x10000000UL
-#define EVE_RAM_G_4_GBIT   0x20000000UL
-#define EVE_RAM_G_8_GBIT   0x40000000UL
-//@}
-
-/** @brief Setup RAM_G size for BT82X only
- */
-#ifndef EVE_RAM_G_CONFIG_SIZE
-#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
 #endif
 
 /** @brief Setup default parameters for various displays.

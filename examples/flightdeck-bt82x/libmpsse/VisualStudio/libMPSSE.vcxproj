@@ -70,13 +70,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -84,11 +84,11 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;..\..\..\..\ports\eve_bt82x;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -169,15 +169,13 @@
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\..\common\patch_lvds.c" />
     <ClCompile Include="..\main.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h" />
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_common.h" />
     <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h" />

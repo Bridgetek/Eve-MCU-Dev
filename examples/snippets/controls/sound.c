@@ -36,6 +36,8 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
  
 #include <stdint.h>
 #include <stddef.h>
@@ -43,6 +45,8 @@
 #include <EVE.h>
 
 #include "sound.h"
+
+/* FUNCTIONS ***********************************************************************/
 
 void sound_enable(void)
 { 

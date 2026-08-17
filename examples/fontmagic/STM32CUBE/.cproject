@@ -51,7 +51,7 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/eve_bt82x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/extensions}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/snippets}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1135482867" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
@@ -67,7 +67,6 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_arch_stm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_bt82x&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.1298723565" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -144,7 +143,7 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/common}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/eve_bt82x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/extensions}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/snippets}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1585526020" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
@@ -162,7 +161,6 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_arch_stm32&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}..\..\..\..\ports\eve_bt82x&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.1321467151" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

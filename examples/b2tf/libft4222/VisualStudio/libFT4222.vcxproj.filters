@@ -19,8 +19,11 @@
     <ClCompile Include="..\..\common\eve_helper.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
       <Filter>Example\snippets</Filter>
@@ -46,8 +49,8 @@
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Example</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\eve_example.h">
       <Filter>Header Files</Filter>
@@ -93,7 +96,7 @@
     <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{9057c3b8-0657-4644-8fe3-58c43792cea9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\snippets">
@@ -102,5 +105,13 @@
     <Filter Include="Main">
       <UniqueIdentifier>{9a59d157-19d1-4a1c-b858-3d28005eff3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

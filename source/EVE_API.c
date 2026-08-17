@@ -54,7 +54,13 @@
 #include <EVE_debug.h>
 
 #if IS_EVE_API(5)
-#include "patch_base.h"
+#include <extensions/bt82x_patch.h>
+#endif
+
+#if IS_EVE_API(2,3,4)
+#if defined(CUSTOM_TOUCH)
+#include <extensions/custom_touch_fw.h>
+#endif
 #endif
 
 /* EVE API INCLUDES END */
@@ -118,11 +124,26 @@ int EVE_Init(void)
     // Turn on or off Dither
     HAL_MemWrite8(EVE_REG_DITHER, (uint16_t)EVE_DISP_DITHER);
 
+    /* conigure touch if required */
+
+    // set touch i2c address
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
     HAL_MemWrite8(EVE_REG_CPURESET, 2);
     HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, (uint16_t)EVE_TOUCH_ADDR << 4);
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif
+
+#if IS_EVE_API(2,3,4)
+    // load custom touch FW (only supported on FT81X/BT88X/BT81X)
+#if defined(CUSTOM_TOUCH)
+    if (eve_loadcustomtouch() != 0) // send custom touch FW data to co-processor
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load custom touch FW.\n");
+        return -1;
+    }
+    EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
+#endif  // defined(CUSTOM_TOUCH)
+#endif  // IS_EVE_API(2,3,4)
 
     /* Write first display list */
 
@@ -151,11 +172,11 @@ int EVE_Init(void)
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
-#endif
+#endif // defined (SET_PCLK_FREQ)
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
-#endif
+#endif // IS_EVE_API(4) 
 
     // turn on LCD backlight
     HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
@@ -177,7 +198,7 @@ int EVE_Init(void)
     HAL_MemWrite32(EVE_REG_CMD_READ, 0);
     HAL_ResetCmdPointer();
     HAL_WriteCmdPointer();
-#endif
+#endif // !defined(EVE_USE_CMDB_METHOD)
 
 #if defined(EVE_COPROC_PROFILE)
     HAL_ResetProfilePointer();
@@ -231,7 +252,7 @@ int EVE_Init(void)
 
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
     EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, ((uint32_t)EVE_TOUCH_ADDR << 4) | ((uint32_t)EVE_TOUCH_TYPE) | (1 << 11));
-#endif
+#endif // defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
 
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     uint32_t extsyncmode = 3;
@@ -252,7 +273,11 @@ int EVE_Init(void)
     EVE_LIB_AwaitCoProEmpty();
 
     // Load base patch or project defined patch if overriden
-    eve_loadpatch();
+    if (eve_loadpatch() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
+        return -1;
+    }
 
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
@@ -280,7 +305,7 @@ int EVE_Init(void)
 #elif IS_EVE_API(2, 3, 4, 5)
         EVE_BITMAP_HANDLE(i);
         EVE_CMD_SETBITMAP(0, 0, 0, 0);
-#endif
+#endif // IS_EVE_API
     }
     EVE_DISPLAY();
     EVE_CMD_SWAP();

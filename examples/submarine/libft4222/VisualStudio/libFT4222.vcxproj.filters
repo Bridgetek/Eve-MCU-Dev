@@ -16,8 +16,11 @@
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ports\eve_bt82x\patch_base.c">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\compass_bulkhead.c">
       <Filter>Example\snippets</Filter>
@@ -55,8 +58,11 @@
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_bt82x\patch_base.h">
-      <Filter>Library\ports\eve_bt82x</Filter>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
       <Filter>Example\snippets</Filter>
@@ -123,7 +129,7 @@
     <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{3d447ea8-f90d-4e00-99c7-8f61b1a67f58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\snippets">
@@ -134,6 +140,9 @@
     </Filter>
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{07577574-d5e9-4833-84f5-e925d1c4a9d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -50,7 +50,6 @@
                                     <listOptionValue value="${PROJECT_LOC}/../../../source"/>
                                     <listOptionValue value="${PROJECT_LOC}/../../../include"/>
                                     <listOptionValue value="${PROJECT_LOC}/../../../ports/eve_arc_msp"/>
-                                    <listOptionValue value="${PROJECT_LOC}/../../../ports/eve_bt82x"/>
                                     <listOptionValue value="${PROJECT_LOC}/../../snippets"/>
                                 </option>
                                 <option id="com.ti.ccstudio.buildDefinitions.MSP430_21.6.compilerID.ADVICE__POWER.2059033728" superClass="com.ti.ccstudio.buildDefinitions.MSP430_21.6.compilerID.ADVICE__POWER" value="all" valueType="string"/>

@@ -139,6 +139,15 @@
     <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
       <Filter>Library\ports\eve_libft4222</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\include\extensions\custom_touch_fw.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+      <Filter>Library\source\extensions</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h">
+      <Filter>Library\include\extensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -159,7 +168,7 @@
     <Filter Include="Library\ports\eve_libft4222">
       <UniqueIdentifier>{aebeccfa-a47f-4461-8c4d-e08ed939dfc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\ports\eve_bt82x">
+    <Filter Include="Library\source\extensions">
       <UniqueIdentifier>{39816ed1-6707-490c-91cf-c887d49b5516}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\Patch">
@@ -173,6 +182,9 @@
     </Filter>
     <Filter Include="Example\Assets">
       <UniqueIdentifier>{38e13919-88dc-436b-aed2-eb1d434bc8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\include\extensions">
+      <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

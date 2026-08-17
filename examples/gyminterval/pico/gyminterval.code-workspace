@@ -17,9 +17,6 @@
 		},
 		{
 			"path": "../../../ports/eve_arch_rpi"
-		},
-		{
-			"path": "../../../ports/eve_bt82x"
 		}
 	],
 	"settings": {

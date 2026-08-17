@@ -37,11 +37,15 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
 #include <EVE.h>
 
 #include "arcs.h"
+
+/* CONSTANTS ***********************************************************************/
 
 // Set pixel precision based on EVE version
 #if IS_EVE_API(2,3,4,5)
@@ -55,6 +59,8 @@
 // Options for the 
 #define OPT_NONE 0
 #define OPT_INDICATOR 1
+
+/* FUNCTIONS ***********************************************************************/
 
 /**
  @brief Function to draw a simple arc gauge, using an optional indicator point.
