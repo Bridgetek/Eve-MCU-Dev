@@ -27,6 +27,7 @@ Sketch name is simple_arduino
 ..\..\..\include\HAL.h -> simple_arduino\HAL.h
 ..\..\..\include\MCU.h -> simple_arduino\MCU.h
 ..\..\..\include\EVE_config.h -> simple_arduino\EVE_config.h
+..\..\..\include\EVE_defs.h -> simple_arduino\EVE_defs.h
 ..\..\..\include\EVE_commands.h -> simple_arduino\EVE_commands.h
 ..\..\..\include\EVE_debug.h -> simple_arduino\EVE_debug.h
 ..\..\..\include\EVE_registers.h -> simple_arduino\EVE_registers.h
@@ -50,6 +51,7 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - HAL.h
   - EVE_commands.h
   - EVE_config.h
+  - EVE_defs.h
   - EVE_registers.h
 - From the `source` directory add the library files:
   - EVE_API.c
@@ -89,24 +91,11 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 - `#include <MCU.h>` --> `#include "MCU.h"`
 - `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
+- `#include <EVE_defs.h>` --> `#include "EVE_defs.h"`
 - `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
 - `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
 - `#include <extensions/bt82x_patch.h>` --> `#include "bt82x_patch.h"`
 - `#include <extensions/custom_touch_fw.h>` --> `#include "custom_touch_fw.h"`
-
-
-All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
-
-- `#include <EVE.h>` --> `#include "EVE.h"`
-- `#include <HAL.h>` --> `#include "HAL.h"`
-- `#include <MCU.h>` --> `#include "MCU.h"`
-- `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
-- `#include <EVE_config.h>` --> `#include "EVE_config.h"`
-- `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
-- `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
-- `#include <extensions/bt82x_patch.h>` --> `#include "bt82x_patch.h"`
-- `#include <extensions/custom_touch_fw.h>` --> `#include "custom_touch_fw.h"`
-
 
 ## Sketch Directory
 
@@ -120,6 +109,7 @@ MCU.h
 HAL.h    
 EVE_commands.h   
 EVE_config.h 
+EVE_defs.h 
 EVE_debug.h 
 EVE_registers.h   
 EVE_API.ino   

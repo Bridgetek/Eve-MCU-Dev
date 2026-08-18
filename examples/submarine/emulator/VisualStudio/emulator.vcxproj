@@ -118,6 +118,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />
+    <ClInclude Include="..\..\..\..\include\EVE_defs.h" />
     <ClInclude Include="..\..\..\..\include\EVE_registers.h" />
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
