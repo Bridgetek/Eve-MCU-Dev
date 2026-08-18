@@ -76,6 +76,7 @@
 #if defined(EVE_SUB_API)
 #pragma message ("Compiling for EVE_SUB_API " STR(EVE_SUB_API))
 #endif
+#pragma message ("Display resolution " STR(EVE_DISP_WIDTH) "x" STR(EVE_DISP_HEIGHT))
 
 // Initialise EVE API
 int EVE_Init(void)

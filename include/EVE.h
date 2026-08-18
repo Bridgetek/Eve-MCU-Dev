@@ -43,6 +43,11 @@
 #include <stdint.h>
 
 /*
+ * Include the EVE configuration defintions.
+ */
+#include <EVE_defs.h>
+
+/*
  * Include the EVE configuration to select the EVE API.
  */
 #include <EVE_config.h>
@@ -52,22 +57,418 @@
  */
 #include <EVE_debug.h>
 
-/* Definitions used for target device selection */
-#define FT800 800
-#define FT801 801
-#define FT810 810
-#define FT811 811
-#define FT812 812
-#define FT813 813
-#define BT880 880
-#define BT881 881
-#define BT882 882
-#define BT883 883
-#define BT815 815
-#define BT816 816
-#define BT817 817
-#define BT818 818
-#define BT820 820
+/**
+ *  @brief Select the EVE controller type and panel resolution.
+ *  @details If a module is selected then the EVE controller type and panel
+ *      resolution are set correctly for the module.
+ *      In EVE.h the EVE controller type will lead to the selection of the EVE 
+ *      Programming support methods via macros "EVE_API" where the value depends on 
+ *      the level of the EVE device support. 
+ *      Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro 
+ *      as required. 
+ *      The FT8XX_TYPE and the display settings must be configured before calling EVE.h.
+ *      "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
+ *      Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
+ *      The FT8XX_TYPE macro and PANEL_TYPE macro must not be expanded until their
+ *      allowable values are defined (FT8XX_TYPE in EVE.h).
+ */
+//@{
+#if defined(MODULE_TYPE) && (MODULE_TYPE != MODULE_TYPE_NONE)
+#undef FT8XX_TYPE
+#undef PANEL_TYPE
+
+/** 
+ *  @brief Predefined Bridgetek module displays
+ */
+#if MODULE_TYPE == VM800B
+// VM800B35A-BK with 3.5 inch display
+#define FT8XX_TYPE FT800
+#define PANEL_TYPE DP_0351_11A
+
+#elif MODULE_TYPE == VM800C35A
+// VM800C35A-D with 3.5 inch display
+#define FT8XX_TYPE FT800
+#define PANEL_TYPE DP_0351_11A
+
+#elif MODULE_TYPE == VM800C43A
+// VM800C43A-D with 4.3 inch display
+#define FT8XX_TYPE FT800
+#define PANEL_TYPE DP_0431_11A
+
+#elif MODULE_TYPE == VM800C50A
+// VM800C50A-D with 5 inch display
+#define FT8XX_TYPE FT800
+#define PANEL_TYPE DP_0502_11A
+
+#elif MODULE_TYPE == VM810C
+// VM810C50A-D with 5 inch display
+#define FT8XX_TYPE FT810
+#define PANEL_TYPE DP_0501_11A
+
+#elif MODULE_TYPE == ME812A
+// ME812A-WH50R, ME812AU-WH50R with 5 inch display
+#define FT8XX_TYPE FT812
+#define PANEL_TYPE DP_0501_11A
+
+#elif MODULE_TYPE == ME813A
+// ME813A-WH50C with 5 inch display
+#define FT8XX_TYPE FT813
+#define PANEL_TYPE DP_0501_01A
+
+#elif MODULE_TYPE == VM816C
+// VM816C50A-D, VM816CU50A-D with 5 inch display
+#define FT8XX_TYPE BT816
+#define PANEL_TYPE DP_0501_11A
+
+#elif MODULE_TYPE == VM880C
+// VM880C with 4.3 inch display
+#define FT8XX_TYPE BT880
+#define PANEL_TYPE DP_0431_11A
+
+#elif MODULE_TYPE == IDM204021R
+// IDM2040-21R
+#define FT8XX_TYPE FT800
+#define PANEL_TYPE DP_IDM21R
+
+#elif MODULE_TYPE == IDM204043A
+// IDM2040-43A
+#define FT8XX_TYPE BT883
+#define PANEL_TYPE DP_IDM43A
+
+#elif MODULE_TYPE == IDM20407A
+// IDM2040-7A
+#define FT8XX_TYPE BT817
+#define PANEL_TYPE DP_0701_01A
+
+#elif MODULE_TYPE == VM820B10A
+// VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1011_02A
+
+#elif MODULE_TYPE == VM820B15A
+// VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1561_02A
+
+#elif MODULE_TYPE == IDK_FT810_43A
+// FT810 IC Development Kit with 4.3 - inch display (FT810 with DP-0431-11A)
+#define FT8XX_TYPE FT810
+#define PANEL_TYPE DP_0431_11A
+
+#elif MODULE_TYPE == IDK_BT816_50A
+// BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
+#define FT8XX_TYPE BT816
+#define PANEL_TYPE DP_0501_11A
+
+#elif MODULE_TYPE == IDK_BT817_70A
+// BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
+#define FT8XX_TYPE BT817
+#define PANEL_TYPE DP_0701_01A
+
+#elif MODULE_TYPE == IDK_BT817_101A
+// BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
+#define FT8XX_TYPE BT817
+#define PANEL_TYPE DP_1011_02A
+
+#elif MODULE_TYPE == IDK_BT820_101A
+// BT820B IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
+#define FT8XX_TYPE BT820
+#define PANEL_TYPE DP_1012_01A
+
+#else
+
+#error MODULE_TYPE must be configured.
+
+#endif // MODULE_TYPE
+#endif // defined(MODULE_TYPE)
+//@}
+
+/**
+ *  @brief Match display resolution to panel type
+ */
+//@{
+#if defined(PANEL_TYPE) && (PANEL_TYPE != PANEL_TYPE_NONE)
+#undef DISPLAY_RES
+
+/** 
+ *  @brief Predefined selection of DISPLAY_RES by panel type.
+ */
+#if PANEL_TYPE == DP_0351_11A
+// DP-0351-11A QVGA (Resistive)
+#define DISPLAY_RES QVGA
+
+#elif PANEL_TYPE == DP_0431_11A
+// DP-0431-11A WQVGA (Resistive)
+#define DISPLAY_RES WQVGA   
+
+#elif PANEL_TYPE == DP_0501_01A
+// DP-0501-01A WVGA (Capacitive)
+#define DISPLAY_RES WVGA    
+
+#elif PANEL_TYPE == DP_0501_11A
+// DP-0351-11A WVGA (Resistive)
+#define DISPLAY_RES WVGA    
+
+#elif PANEL_TYPE == DP_0502_11A
+// DP-0502-11A WQVGA (Resistive)
+#define DISPLAY_RES WQVGA   
+
+#elif PANEL_TYPE == DP_0701_01A
+// DP-0701-11A WVGA (Capacitive)
+#define DISPLAY_RES WVGA
+
+#elif PANEL_TYPE == DP_1011_01A
+// DP-1011-01A WXGA (Capacitive)
+#define DISPLAY_RES WXGA
+
+#elif PANEL_TYPE == DP_1011_02A
+// DP-1011-02A WXGA_NG (Capacitive)
+//#define DISPLAY_RES WXGA_NG
+#define DISPLAY_RES WXGA_NG
+
+// Enable CUSTOM_TOUCH by default for this panel
+#ifndef CUSTOM_TOUCH
+#define CUSTOM_TOUCH
+#endif
+
+#elif PANEL_TYPE == DP_1012_01A
+// DP-1012-01A WUXGA (Capacitive)
+#define DISPLAY_RES WUXGA
+
+#elif PANEL_TYPE == DP_1561_01A
+// DP-1561-01A FullHD (Capacitive)
+#define DISPLAY_RES FULLHD
+
+#elif PANEL_TYPE == DP_1561_02A
+// DP-1561-02A FullHD (Capacitive)
+#define DISPLAY_RES FULLHD
+
+#elif PANEL_TYPE == DP_IDM43A
+// IDM204043A (Capacitive)
+#define DISPLAY_RES WQVGA
+
+#elif PANEL_TYPE == DP_IDM21R
+// IDM204021R (Capacitive)
+#define DISPLAY_RES WQVGAR  
+
+#else
+
+#error PANEL_TYPE must be configured.
+
+#endif // PANEL_TYPE
+#else
+#undef PANEL_TYPE
+#define PANEL_TYPE PANEL_TYPE_NONE
+#endif // defined(PANEL_TYPE)
+
+/**
+ *  @brief Setup default parameters for various displays.
+ *  @details These can be overridden for different display modules.
+ */
+//@{
+#undef SET_PCLK_FREQ
+
+#if DISPLAY_RES == QVGA
+
+#define EVE_DISP_WIDTH 320 // Active width of LCD display
+#define EVE_DISP_HEIGHT 240 // Active height of LCD display
+#define EVE_DISP_HCYCLE 408 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 70 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 10 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 263 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 13 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 2 // End of vertical sync pulse
+#define EVE_DISP_PCLK 8 // Pixel Clock
+#define EVE_DISP_SWIZZLE 2 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WQVGA
+
+#define EVE_DISP_WIDTH 480 // Active width of LCD display
+#define EVE_DISP_HEIGHT 272 // Active height of LCD display
+#define EVE_DISP_HCYCLE 548 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 43 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 41 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 292 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 12 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 5 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WVGA
+
+#define EVE_DISP_WIDTH 800 // Active width of LCD display
+#define EVE_DISP_HEIGHT 480 // Active height of LCD display
+#define EVE_DISP_HCYCLE 928 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 88 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 48 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 525 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 32 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 3 // End of vertical sync pulse
+#define EVE_DISP_PCLK 2 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WSVGA
+
+#define EVE_DISP_WIDTH 1024 // Active width of LCD display
+#define EVE_DISP_HEIGHT 600 // Active height of LCD display
+#define EVE_DISP_HCYCLE 1344 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 160 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 100 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 635 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 23 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 1 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+#define SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WXGA
+
+#define EVE_DISP_WIDTH 1280 // Active width of LCD display
+#define EVE_DISP_HEIGHT 800 // Active height of LCD display
+#define EVE_DISP_HCYCLE 1411 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 120 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 100 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 815 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 14 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 0
+// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+#define SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WXGA_NG
+
+#define EVE_DISP_WIDTH 1280 // Active width of LCD display
+#define EVE_DISP_HEIGHT 800 // Active height of LCD display
+#define EVE_DISP_HCYCLE 1440 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 158 // Start of active line
+#define EVE_DISP_HSYNC0 72 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 70 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 838 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 36 // Start of active screen
+#define EVE_DISP_VSYNC0 12 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 14 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 0
+// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+#define SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == FULLHD
+
+#define EVE_DISP_WIDTH 1920 // Active width of LCD display
+#define EVE_DISP_HEIGHT 1080 // Active height of LCD display
+#define EVE_DISP_HCYCLE 2140 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 220 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 20 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 1108 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 28 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 4 // End of vertical sync pulse
+#define EVE_DISP_PCLK 1 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WUXGA
+
+#define EVE_DISP_WIDTH 1920 // Active width of LCD display
+#define EVE_DISP_HEIGHT 1200 // Active height of LCD display
+#define EVE_DISP_HCYCLE (1920 + 180) // Total number of clocks per line
+#define EVE_DISP_HOFFSET 50 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 30 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE (1200 + 45) // Total number of lines per screen
+#define EVE_DISP_VOFFSET 10 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 3 // End of vertical sync pulse
+#define EVE_DISP_PCLK 2 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+
+#elif DISPLAY_RES == WQVGAR
+
+#define EVE_DISP_WIDTH 480 // Active width of LCD display
+#define EVE_DISP_HEIGHT 480 // Active height of LCD display
+#define EVE_DISP_HCYCLE 578 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 40 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 40 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 576 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 12 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 3 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+
+#else
+
+#error DISPLAY_RES must be configured.
+
+#endif // DISPLAY_RES
+//@}
 
 /* Touchscreen technology versions */
 /* Note: CTOUCH_MODE_COMPATIBILITY and CTOUCH_MODE_EXTENDED definitions are deprecated */

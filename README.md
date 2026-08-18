@@ -149,9 +149,9 @@ It is recommended that the `EVE_config.h` file is modified in a user program by 
 
 There are three methods of configuring the EVE device and panel type. 
 - The `FT8XX_TYPE` macro and `DISPLAY_RES` macro.
-  This is the simplest method if a configuration is fixed. The `MODULE_TYPE` and `PANEL_TYPE` macros may be removed or be set to `NO_MODULE` and `NO_PANEL` respectively.
+  This is the simplest method if a configuration is fixed. The `MODULE_TYPE` and `PANEL_TYPE` macros may be removed or be set to `MODULE_TYPE_NONE` and `PANEL_TYPE_NONE` respectively.
 - The `FT8XX_TYPE` macro and `PANEL_TYPE` macro.
-  This sets the `DISPLAY_RES` for a panel. The `MODULE_TYPE` macros may be removed or be set to `NO_MODULE`.
+  This sets the `DISPLAY_RES` for a panel. The `MODULE_TYPE` macros may be removed or be set to `MODULE_TYPE_NONE`.
 - A Bridgetek module type may be set. 
   This will configure the `FT8XX_TYPE` and `PANEL_TYPE` macros. 
   The `PANEL_TYPE` macro will be further expanded into a `DISPLAY_RES` macro.
@@ -276,7 +276,7 @@ The display panel settings **must** be correct for the panel in used otherwise i
 
 The `MODULE_TYPE`, `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
 
-The `MODULE_TYPE` macro is parsed first. Setting this to `NO_MODULE` will allow one or all of the `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros to be picked up from the build file C definitions. 
+The `MODULE_TYPE` macro is parsed first. Setting this to `MODULE_TYPE_NONE` will allow one or all of the `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros to be picked up from the build file C definitions. 
 
 Note that the preprocessor may complain if it is asked to change the value of one of the macros. 
 

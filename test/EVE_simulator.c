@@ -237,7 +237,7 @@ int MCU_Init(void)
 #endif
 
 #ifdef MODULE_TYPE
-#if MODULE_TYPE != NO_MODULE
+#if MODULE_TYPE != MODULE_TYPE_NONE
     printf("EVE Module Name: %s\n", 
 #if MODULE_TYPE == VM800B
         "VM800B35A-BK"
@@ -263,11 +263,11 @@ int MCU_Init(void)
         "IDM2040-7A"
 #endif // MODULE_TYPE
     );
-#endif // MODULE_TYPE != NO_MODULE
+#endif // MODULE_TYPE != MODULE_TYPE_NONE
 #endif // defined(MODULE_TYPE)
 
 #ifdef PANEL_TYPE
-#if PANEL_TYPE != NO_PANEL
+#if PANEL_TYPE != PANEL_TYPE_NONE
     printf("EVE Panel Type: %s\n", 
 #if PANEL_TYPE == DP_0351_11A
         "DP-0351-11A QVGA (Resistive)"
@@ -293,7 +293,7 @@ int MCU_Init(void)
         "Other"
 #endif // PANEL_TYPE
     );
-#endif // PANEL_TYPE != NO_PANEL
+#endif // PANEL_TYPE != PANEL_TYPE_NONE
 #endif // defined(PANEL_TYPE)
 
     printf("EVE display panel resolution: %s\n", 
