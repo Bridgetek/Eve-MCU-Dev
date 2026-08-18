@@ -39,10 +39,10 @@
 
 /* INCLUDES ************************************************************************/
 
-#include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 

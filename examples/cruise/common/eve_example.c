@@ -39,9 +39,8 @@
 
 /* INCLUDES ************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
+
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> 
 

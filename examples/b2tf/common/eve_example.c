@@ -39,7 +39,6 @@
 
 /* INCLUDES ************************************************************************/
 
-#include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
@@ -152,7 +151,7 @@ void eve_display(void)
     while (1)
     {
         /*
-        printf("The date time is: %d month %d day %d year %d hour %d minutes\n",
+        EVE_DEBUG_PRINTF("The date time is: %d month %d day %d year %d hour %d minutes\n",
               present.tm_mon + 1,
               present.tm_mday,
               present.tm_year + 1900,
