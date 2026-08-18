@@ -98,7 +98,7 @@ int eve_loadpatch_impl(void)
     EVE_LIB_BeginCoProList();
     EVE_CMD_LOADPATCH(0);
     do {
-        chunk = (size_t)(patch_asset.Array_Size - total);
+        chunk = (uint32_t)(patch_asset.Array_Size - total);
         if (chunk > 256) 
         {
             chunk = 256;
@@ -130,7 +130,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         EVE_LIB_BeginCoProList();
         EVE_CMD_LOADIMAGE(asset->RAM_G_Start, 0);
         do {
-            chunk = (size_t)(asset->Array_Size - total);
+            chunk = (uint32_t)(asset->Array_Size - total);
             if (chunk > 256) 
             {
                 chunk = 256;
@@ -185,7 +185,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         EVE_LIB_BeginCoProList();
         EVE_CMD_MEMWRITE(asset->RAM_G_Start, asset->Array_Size);
         do {
-            chunk = (size_t)(asset->Array_Size - total);
+            chunk = (uint32_t)(asset->Array_Size - total);
             if (chunk > 256) 
             {
                 chunk = 256;
