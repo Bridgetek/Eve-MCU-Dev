@@ -1,0 +1,3 @@
+[submodule "ports/eve_emulator/EVE_Emulator"]
+	path = ports/eve_emulator/EVE_Emulator
+	url = https://github.com/Bridgetek/EVE_Emulator

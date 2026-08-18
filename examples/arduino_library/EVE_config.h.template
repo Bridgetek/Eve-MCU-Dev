@@ -49,46 +49,8 @@
 #endif // EVE_SUB_API
 #endif // EVE_API
 
-// Definitions used for target display resolution selection
-#define QVGA    320        // 320x240   e.g. VM800B with 3.5 inch display
-#define WQVGA   480        // 480x272   e.g. IDM2040-43A with 4.3 inch display
-#define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
-#define WVGA    800        // 800x480   e.g. ME813A-WH50C with 5 inch display
-#define WSVGA   1024       // 1024x600  e.g. ME817EV with 7 inch display
-#define WXGA    12801      // 1280x800  e.g. ME817EV with 10.1 inch display
-#define WXGA_NG 12802      // 1280x800  e.g. VM820B10A with 10.1 inch display
-#define FULLHD  1920       // 1920x1080 e.g. BT820 with 15 inch high definition display
-#define WUXGA   19201200   // 1920x1200 e.g. BT820 with 10 inch high definition display
-
-// Predefined module displays
-#define VM800B     QVGA    // VM800B35A-BK with 3.5 inch display
-#define VM800C35A  QVGA    // VM800C35A-D with 3.5 inch display
-#define VM800C43A  WQVGA   // VM800C43A-D with 4.3 inch display
-#define VM800C50A  WQVGA   // VM800C50A-D with 4.3 inch display
-#define VM810C     WVGA    // VM810C50A-D with 5 inch display
-#define ME812A     WVGA    // ME812A-WH50R, ME812AU-WH50R with 5 inch display
-#define ME813A     WVGA    // ME813A-WH50C with 5 inch display
-#define VM816C     WVGA    // VM816C50A-D, VM816CU50A-D with 5 inch display
-#define VM880C     WQVGA   // VM880C with 4.3 inch display
-#define IDM204021R WQVGAR  // IDM2040-21R (FT8XX_TYPE is FT800)
-#define IDM204043A WQVGA   // IDM2040-43A (FT8XX_TYPE is BT883)
-#define IDM20407A  WVGA    // IDM2040-7A (FT8XX_TYPE is BT817)
-#define VM820B10A  WXGA_NG // VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
-#define VM820B15A  FULLHD  // VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
-#define IDK_FT810_43A	WQVGA    // IDK-FT810-43A 
-#define IDK_BT816_50A	WVGA     // IDK-BT816-50A 
-#define IDK_BT817_70A	WVGA     // IDK-BT817-70A 
-#define IDK_BT817_101A	WXGA_NG  // IDK-BT817-101A  
-#define IDK_BT820_101A	WUXGA    // IDK-BT820-101A
-
 // Default resolution
 #define DISPLAY_RES ### EVE RES ###
-
-// Definitions used for touch controllers
-#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
-#define TOUCH_TYPE_FOCALTECH 1
-#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
-#define TOUCH_TYPE_GOODIX 2
 
 // Select the touchscreen automatically
 #undef EVE_TOUCH_ADDR
@@ -103,20 +65,6 @@
 // Explicitly disable QuadSPI
 #ifdef QUADSPI_ENABLE
 #undef QUADSPI_ENABLE
-#endif
-
-#if IS_EVE_API(5)
-// Setup RAM_G size for BT82X only
-// Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb
-#define EVE_RAM_G_32_MBIT  0x100000UL
-#define EVE_RAM_G_64_MBIT  0x200000UL
-#define EVE_RAM_G_128_MBIT 0x400000UL
-#define EVE_RAM_G_256_MBIT 0x800000UL
-#define EVE_RAM_G_512_MBIT 0x4000000UL 
-#define EVE_RAM_G_1_GBIT   0x8000000UL
-#define EVE_RAM_G_2_GBIT   0x10000000UL
-#define EVE_RAM_G_4_GBIT   0x20000000UL
-#define EVE_RAM_G_8_GBIT   0x40000000UL
 #endif
 
 // Setup default parameters for various displays.
@@ -136,7 +84,8 @@ extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 extern uint32_t EVE_RAM_G_SIZE;
 #endif
 
-#define NO_PANEL 0x5a5a5a5a
-#define PANEL_TYPE NO_PANEL
+#undef PANEL_TYPE_NONE
+#define PANEL_TYPE_NONE 0x5a5a5a5a
+#define PANEL_TYPE PANEL_TYPE_NONE
 
 #endif /* _EVE_CONFIG_H_ */

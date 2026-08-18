@@ -424,7 +424,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
             exit(0)
 
 # Collate header files needed (from include directory)
-dist_inc_files = ["HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h"]
+dist_inc_files = ["HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h", "EVE_defs.h"]
 
 # Destination API file
 dest_api = os.path.join(dest_lib,"EVE_API.c")
@@ -485,7 +485,7 @@ for t in template_files:
     template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", "", "", None, None, False)
 
 # Command line for preprocessor
-cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
+cppcmd = ['cpp', f'-I{dest_lib}', f'-DARDUINO=1', f'-DEVE_API={eve_api}']
 if eve_sub_api > 0:
     cppcmd.append(f'-DEVE_SUB_API={eve_sub_api}')
 
