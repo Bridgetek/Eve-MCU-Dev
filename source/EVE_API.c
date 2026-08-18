@@ -367,10 +367,11 @@ int EVE_LIB_AwaitCoProEmpty(void)
 void EVE_LIB_RecoverCoPro(void)
 {
 #if IS_EVE_API(1,2,3,4)
-    // EVE1-4 turn on CPU reset
+    // EVE1-4 hold co-processor engine in reset 
     HAL_MemWrite8(EVE_REG_CPURESET, 1);
 #endif  // IS_EVE_API(1, 2, 3, 4)
 
+    // set REG_CMD_READ to zero
     HAL_MemWrite32(EVE_REG_CMD_READ, 0);
 
 #if IS_EVE_API(5)
@@ -386,11 +387,12 @@ void EVE_LIB_RecoverCoPro(void)
 #if IS_EVE_API(1,2,3,4)
     // Set REG_CMD_WRITE to zero
     HAL_MemWrite32(EVE_REG_CMD_WRITE, 0);
-     // EVE1-4 turn off CPU reset
+     // EVE1-4 retart co-processor engine 
     HAL_MemWrite8(EVE_REG_CPURESET, 0);
 #endif  // IS_EVE_API(1, 2, 3, 4)
 
 #if !defined(EVE_USE_CMDB_METHOD)
+    // reset command pointer
     HAL_ResetCmdPointer();
 #endif // !defined(EVE_USE_CMDB_METHOD)
 }
