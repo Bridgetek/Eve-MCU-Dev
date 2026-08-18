@@ -41,8 +41,8 @@
 #define _EVE_CONFIG_H_
 
 /**
- * @note IMPORTANT This header file must be included before EVE.h.
- * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
+ *  @note IMPORTANT This header file must be included before EVE.h.
+ *  @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
  *        be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
  *        also be configured.
  *        Values from the macros defined in this file can be used in code based on this library. 
@@ -50,73 +50,6 @@
  *        listed above are correctly defined.
  */
 
-/**
- *  @brief Enable or Disable QuadSPI
- *  @details If the macro is set then the platform port may only enable QSPI
- *           on the EVE device (using HAL_SetSPIMode) if QSPI is supported by
- *           the platform.
- *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
- *        supported on FT80x devices. For default set this to disabled.
- */
-//@{
-#undef QUADSPI_ENABLE
-//@}
-
-/**
- * @brief RAM_G size options for BT82X only
- * @details Available options are in Gigabits: 0.5Gb, 1Gb, 2Gb, 4Gb or 8Gb, etc
- */
-//@{
-#define EVE_RAM_G_32_MBIT  0x100000UL
-#define EVE_RAM_G_64_MBIT  0x200000UL
-#define EVE_RAM_G_128_MBIT 0x400000UL
-#define EVE_RAM_G_256_MBIT 0x800000UL
-#define EVE_RAM_G_512_MBIT 0x4000000UL
-#define EVE_RAM_G_1_GBIT   0x8000000UL
-#define EVE_RAM_G_2_GBIT   0x10000000UL
-#define EVE_RAM_G_4_GBIT   0x20000000UL
-#define EVE_RAM_G_8_GBIT   0x40000000UL
-//@}
-
- /**
-  * @brief Setup RAM_G size for BT82X only
-  */
-#ifndef EVE_RAM_G_CONFIG_SIZE
-#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
-#endif
-
-/**
- * @brief Definitions used for touch controller i2c address
- */
-//@{
-#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech FT5206
-#define TOUCH_TYPE_FOCALTECH 1
-#define TOUCH_ADDR_GOODIX 0x5d // Goodix GT911
-#define TOUCH_TYPE_GOODIX 2
-//@}
-
-/**
- * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
- *        default for FT81X/BT88X/BT81X.
- */
-//@{
-#undef EVE_TOUCH_ADDR
-#undef EVE_TOUCH_TYPE
-//@}
-
-/**
-  *  @brief Enable or Disable custom couch FW load
-  *  @details If the macro is set then custom touch FW will be loaded during IC
-  *           intialization from the binay data array in the "custom_touch_fw.h" file.
-  *           Applicable for FT81X/BT88X/BT81X devices only.
-  *
-  *  @note Custom touch FW for the BT82X series is implmented in extension patches.
-  *        EVE_TOUCH_ADDR & EVE_TOUCH_TYPE settings will be overridden when using CUSTOM_TOUCH.
-  */
-//@{
-#undef CUSTOM_TOUCH
-//@}
- 
 /**
  *  @brief Select Bridgetek EVE Module or Development Kit Types.
  *  @details The following options are defined:
@@ -395,8 +328,11 @@
 // DP-1011-02A WXGA_NG (Capacitive)
 //#define DISPLAY_RES WXGA_NG
 #define DISPLAY_RES WXGA_NG
-// define CUSTOM_TOUCH for this panel
+
+// Enable CUSTOM_TOUCH by default for this panel
+#ifndef CUSTOM_TOUCH
 #define CUSTOM_TOUCH
+#endif
 
 #elif PANEL_TYPE == DP_1012_01A
 // DP-1012-01A WUXGA (Capacitive)
@@ -419,8 +355,9 @@
 #define DISPLAY_RES WQVGAR  
 #endif
 
-/** @brief Setup default parameters for various displays.
- * These can be overridden for different display modules.
+/**
+ *  @brief Setup default parameters for various displays.
+ *      These can be overridden for different display modules.
  */
 //@{
 #undef SET_PCLK_FREQ
@@ -624,6 +561,94 @@
 
 #error EVE_DISP_* parameters must be configured.
 
+#endif
+//@}
+
+/**
+ *  @brief Enable or Disable QuadSPI
+ *  @details If the macro is set then the platform port may only enable QSPI
+ *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
+ *
+ *      QUADSPI_ENABLE may be defined externally to enable QSPI, otherwise it
+ *      remains undefined.
+ * 
+ *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
+ *      supported on FT80x devices. For default set this to disabled.
+ */
+//@{
+#ifndef QUADSPI_ENABLE
+#undef QUADSPI_ENABLE
+#endif
+//@}
+
+/**
+ *  @brief RAM_G size options for BT82X only
+ *  @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
+ */
+//@{
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
+//@}
+
+ /**
+  *  @brief Setup RAM_G size for BT82X only
+  */
+#ifndef EVE_RAM_G_CONFIG_SIZE
+#define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
+#endif
+
+/**
+ *  @brief Definitions used for capacitive touch controller i2c address and type (type is BT82X only).
+ *
+ *  @note For FT81X/BT88X/BT81X only TOUCH_ADDR_FOCALTECH & TOUCH_ADDR_GOODIX are applicale.
+ */
+//@{
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
+#define TOUCH_TYPE_GOODIX 2
+#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
+#define TOUCH_TYPE_ILITEK 4
+#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
+#define TOUCH_TYPE_SITRONIX 6
+#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
+#define TOUCH_TYPE_EETI 7
+//@}
+
+/**
+ *  @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
+ *    default for FT81X/BT88X/BT81X (#undef). Assign the desired i2c address or type (BT82X)
+ *    by defining the value (#define). 
+ */
+//@{
+#undef EVE_TOUCH_ADDR
+#undef EVE_TOUCH_TYPE
+//@}
+
+/**
+  *  @brief Enable or Disable custom couch FW load
+  *  @details If the macro is set then custom touch FW will be loaded during IC
+  *			initialisation from the binary data array in the "custom_touch_fw.c" file.
+  *			Applicable for FT81X/BT88X/BT81X devices only.
+  *
+  *     CUSTOM_TOUCH may be defined externally to enable custom touch.
+  *     It is also enabled automatically for panels which require it.
+  *     Otherwise it remains undefined.
+  *
+  *  @note EVE_TOUCH_ADDR settings will be overridden when using CUSTOM_TOUCH.
+  *  @note Custom touch for the BT82X series is implemented in extension patches.
+  *
+  */
+//@{
+#ifndef CUSTOM_TOUCH
+#undef CUSTOM_TOUCH
 #endif
 //@}
 
