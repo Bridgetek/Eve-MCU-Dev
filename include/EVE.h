@@ -752,6 +752,12 @@ void EVE_LIB_EndCoProList(void);
 int EVE_LIB_AwaitCoProEmpty(void);
 
 /**
+ @brief EVE API: Recovers the co-processor in the event of an exception
+ @details Will reset the co-processor after an exception is reported by EVE_LIB_AwaitCoProEmpty.
+ */
+void EVE_LIB_RecoverCoPro(void);
+
+/**
  @brief EVE API: Free space in of co-processor list 
  @details Obtains the free space in the co-processor circular buffer. 
      This operation may have an effect on the performance of the device.

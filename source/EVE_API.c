@@ -363,6 +363,38 @@ int EVE_LIB_AwaitCoProEmpty(void)
     return HAL_WaitCmdFifoEmpty();
 }
 
+// Recovers the co-processor as described in "Fault Scenarios" in the Programming Guide
+void EVE_LIB_RecoverCoPro(void)
+{
+#if IS_EVE_API(1,2,3,4)
+    // EVE1-4 turn on CPU reset
+    HAL_MemWrite8(EVE_REG_CPURESET, 1);
+#endif  // IS_EVE_API(1, 2, 3, 4)
+
+    HAL_MemWrite32(EVE_REG_CMD_READ, 0);
+
+#if IS_EVE_API(5)
+    // EVE5 await REG_CMD_WRITE change to zero
+    while (HAL_MemRead32(EVE_REG_CMD_WRITE) != 0);
+#endif // IS_EVE_API(5)
+
+#if IS_EVE_API(2,3,4)
+    // EVE 2,3,4 set REG_CMD_DL to zero
+    HAL_MemWrite32(EVE_REG_CMD_DL, 0);
+#endif // IS_EVE_API(2,3,4)
+
+#if IS_EVE_API(1,2,3,4)
+    // Set REG_CMD_WRITE to zero
+    HAL_MemWrite32(EVE_REG_CMD_WRITE, 0);
+     // EVE1-4 turn off CPU reset
+    HAL_MemWrite8(EVE_REG_CPURESET, 0);
+#endif  // IS_EVE_API(1, 2, 3, 4)
+
+#if !defined(EVE_USE_CMDB_METHOD)
+    HAL_ResetCmdPointer();
+#endif // !defined(EVE_USE_CMDB_METHOD)
+}
+
 // Gets the free space in the co-processor list
 uint16_t EVE_LIB_GetCoProSpace(void)
 {
