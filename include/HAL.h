@@ -45,213 +45,213 @@
 /* EVE HAL */
 
 /**
- @brief Initialise EVE HAL Layer.
- @details Power cycle and start the EVE display in a controlled manner.
-     This will call the MCU-specific initialisation routine and check for
-     the presence of a supported FT8xx/BT8xx device on the SPI bus.
- @return 0 for success or -1 for failure (device not found or unsupported).
+ * @brief Initialise EVE HAL Layer.
+ * @details Power cycle and start the EVE display in a controlled manner.
+ *      This will call the MCU-specific initialisation routine and check for
+ *      the presence of a supported FT8xx/BT8xx device on the SPI bus.
+ * @return 0 for success or -1 for failure (device not found or unsupported).
  */
 int HAL_EVE_Init(void);
 
 /**
- @brief De-Initialise EVE HAL Layer.
- @details This will call the MCU-specific de-initialisation routines.
- @return 0 for success or -1 for failure.
+ * @brief De-Initialise EVE HAL Layer.
+ & @details This will call the MCU-specific de-initialisation routines.
+ * @return 0 for success or -1 for failure.
  */
 int HAL_EVE_Deinit(void);
 
 /**
- @brief Chip Select Control
- @details Abstract the low-level MCU chip select control to either
-     enable or disable. A call to this function to enable chip select
-     will result in a logic low on the SPI CS line.
- @param enable - Non-zero to enable chip select
-     Zero to deselect.
+ * @brief Chip Select Control
+ * @details Abstract the low-level MCU chip select control to either
+ *      enable or disable. A call to this function to enable chip select
+ *      will result in a logic low on the SPI CS line.
+ * @param enable - Non-zero to enable chip select
+ *      Zero to deselect.
  */
 void HAL_ChipSelect(int8_t enable);
 
 /**
- @brief Power Down Control
- @details Abstract the low-level MCU power down control line to
-     control the EVE display. A call to this function to enable
-     power down will result in a logic low on the PD line.
- @param enable - Non-zero to enable power down
-     Zero to disable (normal operating state of EVE).
+ * @brief Power Down Control
+ * @details Abstract the low-level MCU power down control line to
+ *      control the EVE display. A call to this function to enable
+ *      power down will result in a logic low on the PD line.
+ * @param enable - Non-zero to enable power down
+ *      Zero to disable (normal operating state of EVE).
  */
 void HAL_PowerDown(int8_t enable);
 
 /**
- @brief Increment command memory write pointer
- @details The command memory write pointer stores the current
-     location where co-processor commands are written. This is
-     kept internally in the HAL and is NOT written to the
-     REG_CMD_WRITE register on EVE until the HAL_WriteCmdPointer
-     function is called. This allows multiple commands (up-to
-     the size of the command memory) to be stored and executed
-     when required.
- @param commandSize - The number of bytes to advance the command
-     memory write pointer. This will wrap at the end of the
-     command memory.
+ * @brief Increment command memory write pointer
+ * @details The command memory write pointer stores the current
+ *      location where co-processor commands are written. This is
+ *      kept internally in the HAL and is NOT written to the
+ *      REG_CMD_WRITE register on EVE until the HAL_WriteCmdPointer
+ *      function is called. This allows multiple commands (up-to
+ *      the size of the command memory) to be stored and executed
+ *      when required.
+ * @param commandSize - The number of bytes to advance the command
+ *      memory write pointer. This will wrap at the end of the
+ *      command memory.
  */
 void HAL_IncCmdPointer(uint16_t commandSize);
 
 /**
- @brief Get the current command memory write pointer
- @details Obtains the current command memory write pointer from
-     the value stored internally in the HAL. It is not the value
-     read from the REG_CMD_WRITE register.
- @returns Command memory write pointer
+ * @brief Get the current command memory write pointer
+ * @details Obtains the current command memory write pointer from
+ *      the value stored internally in the HAL. It is not the value
+ *      read from the REG_CMD_WRITE register.
+ * @returns Command memory write pointer
  */
 uint16_t HAL_GetCmdPointer(void);
 
 #if !defined(EVE_USE_CMDB_METHOD)
 /**
- @brief Reset the current command memory write pointer
- @details Sets the current command memory write pointer to zero
-     internally in the HAL. It is not the value read from the
-     REG_CMD_WRITE register.
+ * @brief Reset the current command memory write pointer
+ * @details Sets the current command memory write pointer to zero
+ *      internally in the HAL. It is not the value read from the
+ *      REG_CMD_WRITE register.
  */
 void HAL_ResetCmdPointer(void);
 #endif
 
 #if !defined(EVE_USE_CMDB_METHOD)
 /**
- @brief Commits the current command memory write pointer
- @details Stores the internal HAL command memory write pointer to
-     the REG_CMD_WRITE register. This will start the co-processor
-     working through items in the display list.
+ * @brief Commits the current command memory write pointer
+ * @details Stores the internal HAL command memory write pointer to
+ *      the REG_CMD_WRITE register. This will start the co-processor
+ *      working through items in the display list.
  */
 void HAL_WriteCmdPointer(void);
 #endif
 
 #if defined(EVE_COPROC_PROFILE)
 /**
- @brief Gets the current co-processor list size for profiling
- @details Returns the current length of the co-processor instruction
-     list. This is reset using HAL_ResetProfilePointer and increments
-     when a command is added using HAL_IncCmdPointer.
+ * @brief Gets the current co-processor list size for profiling
+ * @details Returns the current length of the co-processor instruction
+ *      list. This is reset using HAL_ResetProfilePointer and increments
+ *      when a command is added using HAL_IncCmdPointer.
  */
 uint16_t HAL_GetProfilePointer(void);
 #endif
 
 #if defined(EVE_COPROC_PROFILE)
 /**
- @brief Resets current co-processor list profiling size
- @details This will set the current length of the co-processor instruction
-     list to zero. Call when a new co-processor list is started.
+ * @brief Resets current co-processor list profiling size
+ * @details This will set the current length of the co-processor instruction
+ *      list to zero. Call when a new co-processor list is started.
  */
 void HAL_ResetProfilePointer(void);
 #endif
 
 /**
- @brief Wait for display list to complete
- @details Polls the REG_CMD_READ register until it matches the
-     current command memory write pointer. This will indicate that
-     the co-processor has completed working through the items in the
-     display list.
- @returns Zero for normal completion or 0xff for an error condition.
+ * @brief Wait for display list to complete
+ * @details Polls the REG_CMD_READ register until it matches the
+ *      current command memory write pointer. This will indicate that
+ *      the co-processor has completed working through the items in the
+ *      display list.
+ * @returns Zero for normal completion or 0xff for an error condition.
  */
 uint8_t HAL_WaitCmdFifoEmpty(void);
 
 /**
- @brief Calculate free space in the command memory.
- @details Works out how many bytes of command memory is available
-     to receive display list instructions. There will always be
-     4 bytes (one display list entry) reserved in the command memory
-     to ensure that the display list can never create a loop.
- @returns Number of free bytes.
+ * @brief Calculate free space in the command memory.
+ * @details Works out how many bytes of command memory is available
+ *      to receive display list instructions. There will always be
+ *      4 bytes (one display list entry) reserved in the command memory
+ *      to ensure that the display list can never create a loop.
+ * @returns Number of free bytes.
  */
 uint16_t HAL_CheckCmdFreeSpace(void);
 
 /**
- @brief Write a 32 bit value to an EVE memory location
- @details Formats a memory space write to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @param val32 - value to write
+ * @brief Write a 32 bit value to an EVE memory location
+ * @details Formats a memory space write to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE 
+ * @param val32 - value to write
  */
 void HAL_MemWrite32(uint32_t address, uint32_t val32);
 
 /**
- @brief Write a 16 bit value to an EVE memory location
- @details Formats a memory space write to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @param val16 - value to write
+ * @brief Write a 16 bit value to an EVE memory location
+ * @details Formats a memory space write to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE
+ * @param val16 - value to write
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 void HAL_MemWrite16(uint32_t address, uint16_t val16);
 #endif
 
 /**
- @brief Write an 8 bit value to an EVE memory location
- @details Formats a memory space write to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @param val8 - value to write
+ * @brief Write an 8 bit value to an EVE memory location
+ * @details Formats a memory space write to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE
+ * @param val8 - value to write
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 void HAL_MemWrite8(uint32_t address, uint8_t val8);
 #endif
 
 /**
- @brief Read a 32 bit value from an EVE memory location
- @details Formats a memory space read to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @returns value read from EVE
+ * @brief Read a 32 bit value from an EVE memory location
+ * @details Formats a memory space read to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE
+ * @returns value read from EVE
  */
 uint32_t HAL_MemRead32(uint32_t address);
 
 /**
- @brief Read a 16 bit value from an EVE memory location
- @details Formats a memory space read to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @returns value read from EVE
+ * @brief Read a 16 bit value from an EVE memory location
+ * @details Formats a memory space read to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE
+ * @returns value read from EVE
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 uint16_t HAL_MemRead16(uint32_t address);
 #endif
 
 /**
- @brief Read an 8 bit value from an EVE memory location
- @details Formats a memory space read to EVE. This can be any register
-     or mapped memory on the device (display list or command list).
-     This function will control chip select.
- @param address - 24 bit address on EVE
- @returns value read from EVE
+ * @brief Read an 8 bit value from an EVE memory location
+ * @details Formats a memory space read to EVE. This can be any register
+ *      or mapped memory on the device (display list or command list).
+ *      This function will control chip select.
+ * @param address - 24 bit address on EVE
+ * @returns value read from EVE
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 uint8_t HAL_MemRead8(uint32_t address);
 #endif
 
 /**
- @brief Sends an address for writing to EVE
- @details Formats a memory address for writing to the EVE.
-     This function will not control chip select.
- @param address - 24 bit address on EVE
+ * @brief Sends an address for writing to EVE
+ * @details Formats a memory address for writing to the EVE.
+ *      This function will not control chip select.
+ * @param address - 24 bit address on EVE
  */
 void HAL_SetWriteAddress(uint32_t address);
 
 /**
- @brief Sends an address for reading to EVE
- @details Formats a memory address for read from the EVE.
-     This function will not control chip select.
- @param address - 24 bit address on EVE
+ * @brief Sends an address for reading to EVE
+ * @details Formats a memory address for read from the EVE.
+ *      This function will not control chip select.
+ * @param address - 24 bit address on EVE
  */
 void HAL_SetReadAddress(uint32_t address);
 
 /**
- @brief Sends a command to EVE
- @details Sends a 8 bit command and parameters using SPI to the EVE.
-     This function will control chip select.
- @returns 8 bit value read
+ * @brief Sends a command to EVE
+ * @details Sends a 8 bit command and parameters using SPI to the EVE.
+ *      This function will control chip select.
+ * @returns 8 bit value read
  */
 #if IS_EVE_API(1, 2, 3, 4) // Different host commands on BT82x
 void HAL_HostCmdWrite(uint8_t cmd, uint8_t param);
@@ -260,82 +260,82 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
 #endif
 
 /**
- @brief Sends a block of data to EVE
- @details Sends a block of data using SPI to the EVE.
-     This function will not control chip select.
- @param val32 - 32 bit value
+ * @brief Sends a block of data to EVE
+ * @details Sends a block of data using SPI to the EVE.
+ *      This function will not control chip select.
+ * @param val32 - 32 bit value
  */
 void HAL_Write(const uint8_t *buffer, uint32_t length);
 
 /**
- @brief Sends a 32 bit value to EVE
- @details Sends a 32 bit value using SPI to the EVE.
-     This function will not control chip select.
- @param val32 - 32 bit value
+ * @brief Sends a 32 bit value to EVE
+ * @details Sends a 32 bit value using SPI to the EVE.
+ *      This function will not control chip select.
+ * @param val32 - 32 bit value
  */
 void HAL_Write32(uint32_t val32);
 
 /**
- @brief Sends a 16 bit value to EVE
- @details Sends a 16 bit value using SPI to the EVE.
-     This function will not control chip select.
- @param val16 - 16 bit value
+ * @brief Sends a 16 bit value to EVE
+ * @details Sends a 16 bit value using SPI to the EVE.
+ *      This function will not control chip select.
+ * @param val16 - 16 bit value
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 void HAL_Write16(uint16_t val16);
 #endif
 
 /**
- @brief Sends a 8 bit value to EVE
- @details Sends a 8 bit value using SPI to the EVE.
-     This function will not control chip select.
- @param val8 - 8 bit value
+ * @brief Sends a 8 bit value to EVE
+ * @details Sends a 8 bit value using SPI to the EVE.
+ *      This function will not control chip select.
+ * @param val8 - 8 bit value
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 void HAL_Write8(uint8_t val8);
 #endif
 
 /**
- @brief Reads a block of data to EVE
- @details Reads a block of data using SPI to the EVE.
-     This function will not control chip select.
- @param val32 - 32 bit value
+  *@brief Reads a block of data to EVE
+ * @details Reads a block of data using SPI to the EVE.
+ *      This function will not control chip select.
+ * @param val32 - 32 bit value
  */
 void HAL_Read(uint8_t *buffer, uint32_t length);
 
 /**
- @brief Reads a 32 bit value from EVE
- @details Sends a 32 bit dummy value using SPI to the EVE
-     and receives the result.
-     This function will not control chip select.
- @returns 32 bit value read
+ * @brief Reads a 32 bit value from EVE
+ * @details Sends a 32 bit dummy value using SPI to the EVE
+ *      and receives the result.
+ *      This function will not control chip select.
+ * @returns 32 bit value read
  */
 uint32_t HAL_Read32(void);
 
 /**
- @brief Reads a 16 bit value from EVE
- @details Sends a 16 bit dummy value using SPI to the EVE
-     and receives the result.
-     This function will not control chip select.
- @returns 16 bit value read
+ * @brief Reads a 16 bit value from EVE
+ * @details Sends a 16 bit dummy value using SPI to the EVE
+ *      and receives the result.
+ *      This function will not control chip select.
+ * @returns 16 bit value read
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 uint16_t HAL_Read16(void);
 #endif
 
 /**
- @brief Reads a 8 bit value from EVE
- @details Sends a 8 bit dummy value using SPI to the EVE
-    and receives the result.
-    This function will not control chip select.
- @returns 8 bit value read
+ * @brief Reads a 8 bit value from EVE
+ * @details Sends a 8 bit dummy value using SPI to the EVE
+ *      and receives the result.
+ *      This function will not control chip select.
+ * @returns 8 bit value read
  */
 #if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
 uint8_t HAL_Read8(void);
 #endif
 
 /**
- @brief Valid SPI bus widths on EVE
+ * @brief Valid SPI bus widths on EVE
  */
 typedef enum EVE_SPI_CHANNELS_T
 {
@@ -345,23 +345,22 @@ typedef enum EVE_SPI_CHANNELS_T
 } EVE_SPI_CHANNELS_T;
 
 /**
- @brief Sets the SPI bus width on EVE
- @details Changes from single SPI (default) to Dual SPI to
-    Quad SPI.
- @param mode - SPI mode:
-                0 - 1bit (Default Single mode)
-                1 - 2bits (Dual mode)
-                2 - 4bits (Quad mode)
+ * @brief Sets the SPI bus width on EVE
+ * @details Changes from single SPI (default) to Dual SPI to Quad SPI.
+ * @param mode - SPI mode:
+ *                  0 - 1bit (Default Single mode)
+ *                  1 - 2bits (Dual mode)
+ *                  2 - 4bits (Quad mode)
  */
 void HAL_SetSPIMode(uint32_t mode);
 
 /* EVE HAL END */
 
 /**
- @brief Maximum transfer size of data transmit or receive
- @details The maximum number of bytes in a transfer using the
-    HAL_Read or HAL_Write functions.
-    This must be less than 65535 bytes in all cases.
+ * @brief Maximum transfer size of data transmit or receive
+ * @details The maximum number of bytes in a transfer using the
+ *      HAL_Read or HAL_Write functions.
+ *      This must be less than 65535 bytes in all cases.
  */
 #define HAL_MAX_CHUNK_SIZE (1024 - sizeof(uint32_t))
 

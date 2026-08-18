@@ -41,18 +41,18 @@
 #define _EVE_DEFS_H_
 
 /**
- *  @note IMPORTANT This header file must be included before EVE.h.
- *  @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
- *        be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
- *        also be configured.
- *        Values from the macros defined in this file can be used in code based on this library. 
- *        To make a custom configuration file, edit this file as required as long as the macros
- *        listed above are correctly defined.
+ * @note IMPORTANT This header file must be included before EVE.h.
+ * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
+ *      be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
+ *      also be configured.
+ *      Values from the macros defined in this file can be used in code based on this library. 
+ *      To make a custom configuration file, edit this file as required as long as the macros
+ *      listed above are correctly defined.
  */
 
 /**
- *  @brief Definitions used for target device selection.
- *  @details The following options are defined for the FT8XX_TYPE macro.
+ * @brief Definitions used for target device selection.
+ * @details The following options are defined for the FT8XX_TYPE macro.
  */
 #define FT800 800
 #define FT801 801
@@ -71,8 +71,8 @@
 #define BT820 820
 
 /**
- *  @brief Select Bridgetek EVE Module or Development Kit Types.
- *  @details The following options are defined for the MODULE_TYPE macro:
+ * @brief Select Bridgetek EVE Module or Development Kit Types.
+ * @details The following options are defined for the MODULE_TYPE macro:
  *      VM800B           - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
  *      VM800C35A        - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
  *      VM800C43A        - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
@@ -93,7 +93,7 @@
  *      IDK_BT817_101A   - BT817 IC Development Kit with 10.1 inch display (BT817 with DP-1011-02A)
  *      IDK_BT820_101A   - BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
  * 
- *  Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
+ * Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
  */
 //@{
 #define VM800B          800     // VM800B35A-BK 
@@ -119,8 +119,8 @@
 //@}
 
 /**
- *  @brief Define Bridgetek Panel Types
- *  @details The following options are defined for the PANEL_TYPE macro.
+ * @brief Define Bridgetek Panel Types
+ * @details The following options are defined for the PANEL_TYPE macro.
  */
 //@{
 #define DP_0351_11A 0351    // DP-0351-11A QVGA (Resistive)
@@ -140,17 +140,17 @@
 //@}
 
 /** 
- *  @brief Select Display Resolutions for Common Panels
- *  @details The following options are defined for the DISPLAY_RES macro:
- *        QVGA      - 320x240   e.g. DP-0351-11A
- *        WQVGA     - 480x272   e.g. DP-0431-11A, DP-0502-11A
- *        WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
- *        WVGA      - 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
- *        WSVGA     - 1024x600  e.g. BT817 with 7 inch display
- *        WXGA      - 1280x800  e.g. DP-1011-01A
- *        WXGA_NG   - 1280x800  e.g. DP-1011-02A
- *        FULLHD    - 1920x1080 e.g. DP-1561-01A, DP-1561-02A
- *        WUXGA     - 1920x1200 e.g. DP-1012-01A
+ * @brief Select Display Resolutions for Common Panels
+ * @details The following options are defined for the DISPLAY_RES macro:
+ *      QVGA      - 320x240   e.g. DP-0351-11A
+ *      WQVGA     - 480x272   e.g. DP-0431-11A, DP-0502-11A
+ *      WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
+ *      WVGA      - 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
+ *      WSVGA     - 1024x600  e.g. BT817 with 7 inch display
+ *      WXGA      - 1280x800  e.g. DP-1011-01A
+ *      WXGA_NG   - 1280x800  e.g. DP-1011-02A
+ *      FULLHD    - 1920x1080 e.g. DP-1561-01A, DP-1561-02A
+ *      WUXGA     - 1920x1200 e.g. DP-1012-01A
  */
 //@{
 #define QVGA    320        // 320x240   e.g. DP-0351-11A
@@ -165,8 +165,8 @@
 //@}
 
 /**
- *  @brief RAM_G size options for BT82X only
- *  @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
+ * @brief RAM_G size options for BT82X only
+ * @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
  */
 //@{
 #define EVE_RAM_G_32_MBIT  0x100000UL
@@ -181,9 +181,9 @@
 //@}
 
 /**
- *  @brief Definitions used for capacitive touch controller i2c address and type (type is BT82X only).
+ * @brief Definitions used for capacitive touch controller i2c address and type (type is BT82X only).
  *
- *  @note For FT81X/BT88X/BT81X only TOUCH_ADDR_FOCALTECH & TOUCH_ADDR_GOODIX are applicale.
+ * NOTE: For FT81X/BT88X/BT81X only TOUCH_ADDR_FOCALTECH & TOUCH_ADDR_GOODIX are applicale.
  */
 //@{
 #define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)

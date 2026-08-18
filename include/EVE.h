@@ -58,8 +58,8 @@
 #include <EVE_debug.h>
 
 /**
- *  @brief Select the EVE controller type and panel resolution.
- *  @details If a module is selected then the EVE controller type and panel
+ * @brief Select the EVE controller type and panel resolution.
+ * @details If a module is selected then the EVE controller type and panel
  *      resolution are set correctly for the module.
  *      In EVE.h the EVE controller type will lead to the selection of the EVE 
  *      Programming support methods via macros "EVE_API" where the value depends on 
@@ -78,7 +78,7 @@
 #undef PANEL_TYPE
 
 /** 
- *  @brief Predefined Bridgetek module displays
+ * @brief Predefined Bridgetek module displays
  */
 #if MODULE_TYPE == VM800B
 // VM800B35A-BK with 3.5 inch display
@@ -184,14 +184,14 @@
 //@}
 
 /**
- *  @brief Match display resolution to panel type
+ * @brief Match display resolution to panel type
  */
 //@{
 #if defined(PANEL_TYPE) && (PANEL_TYPE != PANEL_TYPE_NONE)
 #undef DISPLAY_RES
 
 /** 
- *  @brief Predefined selection of DISPLAY_RES by panel type.
+ * @brief Predefined selection of DISPLAY_RES by panel type.
  */
 #if PANEL_TYPE == DP_0351_11A
 // DP-0351-11A QVGA (Resistive)
@@ -223,7 +223,6 @@
 
 #elif PANEL_TYPE == DP_1011_02A
 // DP-1011-02A WXGA_NG (Capacitive)
-//#define DISPLAY_RES WXGA_NG
 #define DISPLAY_RES WXGA_NG
 
 // Enable CUSTOM_TOUCH by default for this panel
@@ -262,8 +261,8 @@
 #endif // defined(PANEL_TYPE)
 
 /**
- *  @brief Setup default parameters for various displays.
- *  @details These can be overridden for different display modules.
+ * @brief Setup default parameters for various displays.
+ * @details These can be overridden for different display modules.
  */
 //@{
 #undef SET_PCLK_FREQ
@@ -717,10 +716,9 @@ typedef struct
 /* EVE API */
 
 /**
- @brief Initialise EVE API.
- @details Initialise the EVE API layer, HAL layer and MCU-specific hardware
-      layer.
- @return 0 for success or -1 for failure (device not found or unsupported).
+ * @brief Initialise EVE API.
+ * @details Initialise the EVE API layer, HAL layer and MCU-specific hardware layer.
+ * @return 0 for success or -1 for failure (device not found or unsupported).
  */
 int EVE_Init(void);
 
@@ -732,167 +730,165 @@ int EVE_Init(void);
 int EVE_Deinit(void);
 
 /**
- @brief EVE API: Begin co-processor list
- @details Starts a co-processor list. Waits for the co-processor to be idle
-      before asserting chip select.
+ * @brief EVE API: Begin co-processor list
+ * @details Starts a co-processor list. Waits for the co-processor to be idle
+ *      before asserting chip select.
  */
 void EVE_LIB_BeginCoProList(void);
 
 /**
- @brief EVE API: End co-processor list
- @details Ends a co-processor list. Deasserts chip select.
+ * @brief EVE API: End co-processor list
+ * @details Ends a co-processor list. Deasserts chip select.
  */
 void EVE_LIB_EndCoProList(void);
 
 /**
- @brief EVE API: Waits for co-processor list to end
- @details Will poll the co-processor command list until it has been completed.
- @returns 0 for successful completion, 0xff for co-processor exception.
+ * @brief EVE API: Waits for co-processor list to end
+ * @details Will poll the co-processor command list until it has been completed.
+ * @returns 0 for successful completion, 0xff for co-processor exception.
  */
 int EVE_LIB_AwaitCoProEmpty(void);
 
 /**
- @brief EVE API: Recovers the co-processor in the event of an exception
- @details Will reset the co-processor after an exception is reported by EVE_LIB_AwaitCoProEmpty.
+ * @brief EVE API: Recovers the co-processor in the event of an exception
+ * @details Will reset the co-processor after an exception is reported by EVE_LIB_AwaitCoProEmpty.
  */
 void EVE_LIB_RecoverCoPro(void);
 
 /**
- @brief EVE API: Free space in of co-processor list 
- @details Obtains the free space in the co-processor circular buffer. 
-     This operation may have an effect on the performance of the device.
- @returns The number of free instructions in the co-processor circular 
-     buffer.
+ * @brief EVE API: Free space in of co-processor list 
+ * @details Obtains the free space in the co-processor circular buffer. 
+ *      This operation may have an effect on the performance of the device.
+ * @returns The number of free instructions in the co-processor circular buffer.
  */
 uint16_t EVE_LIB_GetCoProSpace(void);
 
 #if defined(EVE_COPROC_PROFILE)
 /**
- @brief EVE API: Resets the co-processor list profiling length
- @details Sets the profiling pointer to zero to restart profiling.
+ * @brief EVE API: Resets the co-processor list profiling length
+ * @details Sets the profiling pointer to zero to restart profiling.
  */
 void EVE_LIB_BeginCoProProfile(void);
 #endif
 
 #if defined(EVE_COPROC_PROFILE)
 /**
- @brief EVE API: Size of co-processor list since last reset
- @details Obtains the current profiling pointer for the co-processor list.
- @returns The number of instructions added to the co-processor list since 
-     the last reset of the profiling pointer.
+ * @brief EVE API: Size of co-processor list since last reset
+ * @details Obtains the current profiling pointer for the co-processor list.
+ * @returns The number of instructions added to the co-processor list since 
+ *      the last reset of the profiling pointer.
  */
 uint16_t EVE_LIB_GetCoProProfile(void);
 #endif
 
 #if defined(EVE_COPROC_PROFILE)
 /**
- @brief EVE API: Size of display list
- @details Obtains the current size of the display list.
- @returns The number of instructions instructions currently in the display
-     list.
+ * @brief EVE API: Size of display list
+ * @details Obtains the current size of the display list.
+ * @returns The number of instructions instructions currently in the display list.
  */
 uint16_t EVE_LIB_GetDlProfile(void);
 #endif
 
 /**
- @brief EVE API: Returns a result from the co-processor command buffer
- @details Will return a result value from "offset" words back in the command buffer.
- If the value of offset is 1 then the previous value from the co-processor
- command buffer is returned.
- @returns result of a previous co-processor command.
+ * @brief EVE API: Returns a result from the co-processor command buffer
+ * @details Will return a result value from "offset" words back in the command buffer.
+ *      If the value of offset is 1 then the previous value from the co-processor
+ *      command buffer is returned.
+ * @returns result of a previous co-processor command.
  */
 uint32_t EVE_LIB_GetResult(int offset);
 
 #if IS_EVE_API(3,4,5)
 /**
- @brief EVE API: Get co-processor exception description
- @details Will query the co-processor exception description to a string.
- @returns Co-processor exception description. This is a pointer to a string
-  and must be sufficient to hold 128 characters.
+ * @brief EVE API: Get co-processor exception description
+ * @details Will query the co-processor exception description to a string.
+ * @returns Co-processor exception description. This is a pointer to a string
+ *      and must be sufficient to hold 128 characters.
  */
 void EVE_LIB_GetCoProException(char *desc);
 #endif
 
 /**
- @brief EVE API: Write a buffer to memory mapped RAM
- @details Writes a block of data via SPI to the EVE.
- @param ImgData - Pointer to start of data buffer.
- @param DataSize - Number of bytes in buffer.
- @param DestAddress - 24-bit/32-bit memory mapped address on EVE.
+ * @brief EVE API: Write a buffer to memory mapped RAM
+ * @details Writes a block of data via SPI to the EVE.
+ * @param ImgData - Pointer to start of data buffer.
+ * @param DataSize - Number of bytes in buffer.
+ * @param DestAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t DestAddress);
 
 /**
- @brief EVE API: Read a buffer from memory mapped RAM
- @details Reads a block of data via SPI from the EVE.
- @param ImgData - Pointer to start of receive data buffer.
- @param DataSize - Number of bytes to read (rounded up to be 32-bit aligned).
- @param SrcAddress - 24-bit/32-bit memory mapped address on EVE.
+ * @brief EVE API: Read a buffer from memory mapped RAM
+ * @details Reads a block of data via SPI from the EVE.
+ * @param ImgData - Pointer to start of receive data buffer.
+ * @param DataSize - Number of bytes to read (rounded up to be 32-bit aligned).
+ * @param SrcAddress - 24-bit/32-bit memory mapped address on EVE.
  */
 void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcAddress);
 
 /**
- @brief EVE API: Write a buffer to the co-processor command memory
- @details Writes a block of data via SPI to the EVE co-processor.
-      This must be part of a co-processor list. It will typically be called
-      after a co-processor command to provide data for the operation.
-      The data will be added to the co-processor command list therefore the
-      write will block on available space in this list.
- @param ImgData - Pointer to start of data buffer.
- @param DataSize - Number of bytes in buffer.
+ * @brief EVE API: Write a buffer to the co-processor command memory
+ * @details Writes a block of data via SPI to the EVE co-processor.
+ *      This must be part of a co-processor list. It will typically be called
+ *      after a co-processor command to provide data for the operation.
+ *      The data will be added to the co-processor command list therefore the
+ *      write will block on available space in this list.
+ * @param ImgData - Pointer to start of data buffer.
+ * @param DataSize - Number of bytes in buffer.
  */
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
 
 /**
- @brief EVE API: Write a string the co-processor command memory
- @details Writes a string via SPI to the EVE co-processor.
-      This must be part of a co-processor list. It will typically be called
-      after a co-processor command to provide a string for the operation.
-      The data will be added to the co-processor command list therefore the
-      write will block on available space in this list.
- @param ImgData - Pointer to start of data buffer.
- @param DataSize - Number of bytes in buffer.
+ * @brief EVE API: Write a string the co-processor command memory
+ * @details Writes a string via SPI to the EVE co-processor.
+ *      This must be part of a co-processor list. It will typically be called
+ *      after a co-processor command to provide a string for the operation.
+ *      The data will be added to the co-processor command list therefore the
+ *      write will block on available space in this list.
+ * @param ImgData - Pointer to start of data buffer.
+ * @param DataSize - Number of bytes in buffer.
  */
 uint16_t EVE_LIB_SendString(const char* string);
 
 /**
- @brief EVE API: Get properties of an CMD_LOADIMAGE operation
- @details Obtains the details of an image decoded by the CMD_LOADIMAGE
-      co-processor command. The properties of the image are taken from
-      the co-processor command list.
- @param addr - Pointer to variable to receive the image start address.
- @param width - Pointer to variable to receive the image width.
- @param height - Pointer to variable to receive the image height.
+ * @brief EVE API: Get properties of an CMD_LOADIMAGE operation
+ * @details Obtains the details of an image decoded by the CMD_LOADIMAGE
+ *      co-processor command. The properties of the image are taken from
+ *      the co-processor command list.
+ * @param addr - Pointer to variable to receive the image start address.
+ * @param width - Pointer to variable to receive the image width.
+ * @param height - Pointer to variable to receive the image height.
  */
 void EVE_LIB_GetProps(uint32_t *addr, uint32_t *width, uint32_t *height);
 
 /**
- @brief EVE API: Get current allocation pointer
- @details Obtains the automatic allocation pointer of the last address
-      used for certain co-processor operations.
- @returns addr - Last allocation address rounded up to the next 32-bit 
-      boundary.
+ * @brief EVE API: Get current allocation pointer
+ * @details Obtains the automatic allocation pointer of the last address
+ *      used for certain co-processor operations.
+ * @returns addr - Last allocation address rounded up to the next 32-bit 
+ *      boundary.
  */
 void EVE_LIB_GetPtr(uint32_t *addr);
 
 /**
- @brief EVE API: Get the touchscreen transformation matrix.
- @details Obtains the transformation matrix from a CMD_CALIBRATE operation.
- @param a -  pointer of variable to receive matrix a.
- @param b -  pointer of variable to receive matrix b.
- @param c -  pointer of variable to receive matrix c.
- @param d -  pointer of variable to receive matrix d.
- @param e -  pointer of variable to receive matrix e.
- @param f -  pointer of variable to receive matrix f.
+ * @brief EVE API: Get the touchscreen transformation matrix.
+ * @details Obtains the transformation matrix from a CMD_CALIBRATE operation.
+ * @param a -  pointer of variable to receive matrix a.
+ * @param b -  pointer of variable to receive matrix b.
+ * @param c -  pointer of variable to receive matrix c.
+ * @param d -  pointer of variable to receive matrix d.
+ * @param e -  pointer of variable to receive matrix e.
+ * @param f -  pointer of variable to receive matrix f.
  */
 void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f);
 
 /**
- @brief EVE API: Calculate the CRC of a memory area.
- @details Obtains the CRC of a memory area.
- @param ptr - Start of memory area.
- @param num - Number of bytes to CRC.
- @param result - pointer to receive the CRC.
+ * @brief EVE API: Calculate the CRC of a memory area.
+ * @details Obtains the CRC of a memory area.
+ * @param ptr - Start of memory area.
+ * @param num - Number of bytes to CRC.
+ * @param result - pointer to receive the CRC.
  */
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
 
@@ -903,31 +899,31 @@ void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, in
 #endif
 #if IS_EVE_API(4, 5)
 /**
- @brief EVE API: Get image properties.
- @details From the last CMD_LOADIMAGE get the address, size, format and palette of the loaded image.
- @param *addr - pointer to variable to receive the address the image was loaded to.
- @param *fmt - pointer to variable to receive the format of the loaded image.
- @param *width - pointer to variable to receive the width of the loaded image.
- @param *height - pointer to variable to receive the height of the loaded image.
- @param *palette - pointer to variable to receive the palette of the loaded image.
+ * @brief EVE API: Get image properties.
+ * @details From the last CMD_LOADIMAGE get the address, size, format and palette of the loaded image.
+ * @param *addr - pointer to variable to receive the address the image was loaded to.
+ * @param *fmt - pointer to variable to receive the format of the loaded image.
+ * @param *width - pointer to variable to receive the width of the loaded image.
+ * @param *height - pointer to variable to receive the height of the loaded image.
+ * @param *palette - pointer to variable to receive the palette of the loaded image.
  */
 void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette);
 #endif
 #if IS_EVE_API(5)
 /**
- @brief EVE API: Read a register.
- @details Reads a register value.
- @param addr - Address of register to read.
- @param value - pointer to receive the contents of the register.
+ * @brief EVE API: Read a register.
+ * @details Reads a register value.
+ * @param addr - Address of register to read.
+ * @param value - pointer to receive the contents of the register.
  */
 void EVE_LIB_RegRead(uint32_t addr, uint32_t *value);
 #endif
 
 /**
- @brief EVE API: Write a memory location.
- @details Writes a memory location value.
- @param addr - Address of register to read.
- @param value - Value to write to memory.
+ * @brief EVE API: Write a memory location.
+ * @details Writes a memory location value.
+ * @param addr - Address of register to read.
+ * @param value - Value to write to memory.
  */
 //@{
 void EVE_LIB_MemWrite32(uint32_t addr, uint32_t value);
@@ -938,10 +934,10 @@ void EVE_LIB_MemWrite8(uint32_t addr, uint8_t value);
 //@}
 
 /**
- @brief EVE API: Read a memory location.
- @details Reads a memory location value.
- @param addr - Address of register to read.
- @return - Value read from memory.
+ * @brief EVE API: Read a memory location.
+ * @details Reads a memory location value.
+ * @param addr - Address of register to read.
+ * @return - Value read from memory.
  */
 //@{
 uint32_t EVE_LIB_MemRead32(uint32_t address);

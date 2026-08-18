@@ -47,9 +47,9 @@
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
 /**
- @brief Platform specific debugging output
- @details Set debugging preferences for Linux HALs which use this header files.
- This is different from MCU devices in that use the MCU.h header file.
+ *  @brief Platform specific debugging output
+ *  @details Set debugging preferences for Linux HALs which use this header files.
+ *       This is different from MCU devices in that use the MCU.h header file.
  */
 //@{
 #undef EVE_HAL_DEBUG
@@ -58,18 +58,18 @@
 //@}
 
 /**
- @brief Platform specific initialisation
- @details Must contain any platform-specific initialisation. This will typically be
-    setting up the SPI bus, GPIOs and operating environment requirements.
- @returns 0 if successful, -1 if failed.
+ * @brief Platform specific initialisation
+ * @details Must contain any platform-specific initialisation. This will typically be
+ *    setting up the SPI bus, GPIOs and operating environment requirements.
+ * @returns 0 if successful, -1 if failed.
  */
 int Platform_Init(void);
 
 /**
- @brief Platform specific de-initialisation
- @details Must contain any platform-specific de-initialisation. This will typically be
-    closing the SPI bus, GPIOs and operating environment requirements.
- @returns 0 if successful, -1 if failed.
+ *  @brief Platform specific de-initialisation
+ *  @details Must contain any platform-specific de-initialisation. This will typically be
+ *       closing the SPI bus, GPIOs and operating environment requirements.
+ *  @returns 0 if successful, -1 if failed.
  */
 int Platform_Deinit(void);
 

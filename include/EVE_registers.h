@@ -2,29 +2,29 @@
  * @file EVE_registers.h
  * @brief Cross-generation EVE register address map.
  * @details Provides a single unified set of EVE_REG_* macros that resolve to
- *  the correct hardware address for the selected generation at compile time.
- *  The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
- *  and converted to the EVE generation in EVE.h. The generation is set in
- *  EVE_API to 1-5 and EVE_SUB_API if required.
+ *      the correct hardware address for the selected generation at compile time.
+ *      The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+ *      and converted to the EVE generation in EVE.h. The generation is set in
+ *      EVE_API to 1-5 and EVE_SUB_API if required.
  *  
- *  Usage:
- *      #include <EVE.h>          // sets EVE_API, includes this file
+ *      Usage:
+ *          #include <EVE.h>          // sets EVE_API, includes this file
  *  
- *  Macro convention:
- *      EVE_API_SELECT(a1, a2, a3, a4, a5)
- *          a1 = EVE1 address (FT800/FT801)
- *          a2 = EVE2 address (FT810-FT813, BT880-BT883)
- *          a3 = EVE3 address (BT815/BT816)
- *          a4 = EVE4 address (BT817/BT818)
- *          a5 = EVE5 address (BT820)
+ *      Macro convention:
+ *          EVE_API_SELECT(a1, a2, a3, a4, a5)
+ *              a1 = EVE1 address (FT800/FT801)
+ *              a2 = EVE2 address (FT810-FT813, BT880-BT883)
+ *              a3 = EVE3 address (BT815/BT816)
+ *              a4 = EVE4 address (BT817/BT818)
+ *              a5 = EVE5 address (BT820)
  *  
  *      EVE_REG_NOT_AVAILABLE (0ul) marks a register absent on that generation.
  *      Using an absent register at runtime is a logic error - guard call sites
  *      with IS_EVE_API() to make absence visible at compile time.
  *  
- *  NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
- *  throughout this file. They are kept as separate columns so that if a
- *  future BT81x variant diverges the table stays correct.
+ * NOTE: EVE3 and EVE4 (BT81x) share the same address map, so a3 == a4
+ *      throughout this file. They are kept as separate columns so that if a
+ *      future BT81x variant diverges the table stays correct.
  */
 /*
  * ============================================================================
@@ -94,12 +94,14 @@
 /** @brief General-purpose RAM base address (always 0 on all devices). */
 #define EVE_RAM_G               0x0ul
 
-/** @brief General-purpose RAM size.
- *  EVE1 (FT800/801): 256 KB.
- *  EVE2 (FT810/811): 256 KB; FT812/813/BT88x: 1 MB.
- *  EVE3/4 (BT815-818): 1 MB.
- *  EVE5 (BT820): configured externally - define EVE_RAM_G_CONFIG_SIZE before
- *                including this file (default: 32 MB for BT820). */
+/** 
+ * @brief General-purpose RAM size.
+ *      EVE1 (FT800/801): 256 KB.
+ *      EVE2 (FT810/811): 256 KB; FT812/813/BT88x: 1 MB.
+ *      EVE3/4 (BT815-818): 1 MB.
+ *      EVE5 (BT820): configured externally - define EVE_RAM_G_CONFIG_SIZE before
+ *                    including this file (default: 32 MB for BT820).
+ */
 #undef EVE_RAM_G_SIZE
 #if IS_EVE_API(1)
     #define EVE_RAM_G_SIZE      (256*1024L)

@@ -44,11 +44,11 @@
 #include <EVE.h> // for IS_EVE_API()
 
 /**
- @brief MCU allows unalligned accesses to memory.
- @details Set to zero if unaligned accesses not allowed, e.g. on
- microcontrolles. This has been added to support BT82x.
- If a platform does support unaligned access please raise an 
- issue in GitHub.
+ * @brief MCU allows unalligned accesses to memory.
+ * @details Set to zero if unaligned accesses not allowed, e.g. on
+ *      microcontrolles. This has been added to support BT82x.
+ *      If a platform does support unaligned access please raise an 
+ *      issue in GitHub.
  */
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
     || defined(PLATFORM_STM32) ||  defined(PLATFORM_PIC) \
@@ -64,16 +64,16 @@
 #endif
 
 /**
- @brief MCU allows large SPI transfers.
- @details Set to maximum size of SPI transfers allowed, e.g. on
- microcontrolles. This has been added to support enhanced SPI
- access on BT82x.
- Do not make this larger than required as on BT82x (EVE API 5) 
- there will be a stack buffer allocated in HAL_Read of this 
- size plus a small number of bytes for protocol.
- A larger buffer is only needed if fast reads of large blocks 
- of data are required from the device. Normal operation can be
- acheived with 32-bit reads with good performance.
+ * @brief MCU allows large SPI transfers.
+ * @details Set to maximum size of SPI transfers allowed, e.g. on
+ *      microcontrolles. This has been added to support enhanced SPI
+ *      access on BT82x.
+ *      Do not make this larger than required as on BT82x (EVE API 5) 
+ *      there will be a stack buffer allocated in HAL_Read of this 
+ *      size plus a small number of bytes for protocol.
+ *      A larger buffer is only needed if fast reads of large blocks 
+ *      of data are required from the device. Normal operation can be
+ *      acheived with 32-bit reads with good performance.
  */
 #if IS_EVE_API(5)
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
@@ -93,17 +93,17 @@
 #endif
 
 /**
- @brief MCU SPI bus speed.
- @details In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
- Timeout for a read is a maximum of 7uS for BT82x.
- The timeout value here must be adjusted for the host system SPI clock speed.
- The SPI clock speed is set in the MCU_Init(void) function for a port.
- Values here match the default values set in the ports.
- At 1 MHz SPI bus the timeout is approximately 8 clock cycles (1 byte).
- At 20 MHz SPI bus the timeout is approximately 140 clock cycles (17.5 bytes).
- At 25 MHz SPI bus the timeout is approximately 175 clock cycles (24 bytes).
- At 60 MHz SPI bus the timeout is approximately 420 clock cycles (52 bytes).
- The minimum timeout allowed is 8 bytes.
+ * @brief MCU SPI bus speed.
+ * @details In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
+ *      Timeout for a read is a maximum of 7uS for BT82x.
+ *      The timeout value here must be adjusted for the host system SPI clock speed.
+ *      The SPI clock speed is set in the MCU_Init(void) function for a port.
+ *      Values here match the default values set in the ports.
+ *      At 1 MHz SPI bus the timeout is approximately 8 clock cycles (1 byte).
+ *      At 20 MHz SPI bus the timeout is approximately 140 clock cycles (17.5 bytes).
+ *      At 25 MHz SPI bus the timeout is approximately 175 clock cycles (24 bytes).
+ *      At 60 MHz SPI bus the timeout is approximately 420 clock cycles (52 bytes).
+ *      The minimum timeout allowed is 8 bytes.
  */
 #if IS_EVE_API(5)
 #if defined(PLATFORM_FT9XX) 
@@ -158,166 +158,159 @@
 /* EVE MCU */
 
 /**
- @brief MCU specific initialisation
- @details Must contain any MCU-specific initialisation. This will typically be
-    setting up the SPI bus, GPIOs and operating environment requirements.
- @returns 0 if successful, -1 if failed.
+ * @brief MCU specific initialisation
+ * @details Must contain any MCU-specific initialisation. This will typically be
+ *      setting up the SPI bus, GPIOs and operating environment requirements.
+ * @returns 0 if successful, -1 if failed.
  */
 int MCU_Init(void);
 
 /**
- @brief MCU specific de-initialisation
- @details Must contain any MCU-specific de-initialisation. This will typically be
-    closing the SPI bus, GPIOs and operating environment requirements.
- @returns 0 if successful, -1 if failed.
+ * @brief MCU specific de-initialisation
+ * @details Must contain any MCU-specific de-initialisation. This will typically be
+ *      closing the SPI bus, GPIOs and operating environment requirements.
+ * @returns 0 if successful, -1 if failed.
  */
 int MCU_Deinit(void);
 
 /**
- @brief MCU specific setup
- @details Called after the EVE has been power cycled and started. Contains
-    any MCU-specific configuration options for the EVE.
- @returns 0 if successful, -1 if failed.
+ * @brief MCU specific setup
+ * @details Called after the EVE has been power cycled and started. Contains
+ *      any MCU-specific configuration options for the EVE.
+ * @returns 0 if successful, -1 if failed.
  */
 int MCU_Setup(void);
 
 /**
- @brief MCU specific chip select enable
- @details This function will pull the chip select line to the EVE low to
-    allow data transmission on the SPI bus.
-    The EVE requires chip select to toggle frequently.
+ * @brief MCU specific chip select enable
+ * @details This function will pull the chip select line to the EVE low to
+ *      allow data transmission on the SPI bus.
+ *      The EVE requires chip select to toggle frequently.
  */
 void MCU_CSlow(void);
 
 /**
- @brief MCU specific chip select deassert
- @details This function will pull the chip select line to the EVE high to
-    prevent data transmission on the SPI bus.
-    The EVE requires chip select to toggle frequently.
+ * @brief MCU specific chip select deassert
+ * @details This function will pull the chip select line to the EVE high to
+ *      prevent data transmission on the SPI bus.
+ *      The EVE requires chip select to toggle frequently.
  */
 void MCU_CShigh(void);
 
 /**
- @brief MCU specific power down enable
- @details This function will pull the power down line to the EVE low to
-    force the device into power down mode.
-    This will be done during EVE initialisation and can be done to allow
-    deep power saving.
+ * @brief MCU specific power down enable
+ * @details This function will pull the power down line to the EVE low to
+ *      force the device into power down mode.
+ *      This will be done during EVE initialisation and can be done to allow
+ *      deep power saving.
  */
 void MCU_PDlow(void);
 
 /**
- @brief MCU specific power down disable
- @details This function will pull the power down line to the EVE high to
-    enable normal operation of the EVE.
-    This will be done during EVE initialisation and can be done to allow
-    recovery from deep power saving.
+ * @brief MCU specific power down disable
+ * @details This function will pull the power down line to the EVE high to
+ *      enable normal operation of the EVE.
+ *      This will be done during EVE initialisation and can be done to allow
+ *      recovery from deep power saving.
  */
 void MCU_PDhigh(void);
 
 /**
- @brief MCU specific SPI write
- @details Performs an SPI write of the data block and discards the data
-    received in response.
- @param DataToWrite - pointer to buffer to write.
- @param length - number of bytes to write.
+ * @brief MCU specific SPI write
+ * @details Performs an SPI write of the data block and discards the data
+ *      received in response.
+ * @param DataToWrite - pointer to buffer to write.
+ * @param length - number of bytes to write.
  */
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length);
 
 /**
- @brief MCU specific SPI read
- @details Performs an SPI read of the data block sending zeros as data
-    to the device as dummy writes.
- @param DataToWrite - pointer to buffer to read.
- @param length - number of bytes to read.
+ * @brief MCU specific SPI read
+ * @details Performs an SPI read of the data block sending zeros as data
+ *      to the device as dummy writes.
+ * @param DataToWrite - pointer to buffer to read.
+ * @param length - number of bytes to read.
  */
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length);
 
 /**
- @brief MCU specific SPI 8 bit read
- @details Performs an SPI dummy write and returns the data received in
-    response.
- @returns Data received from EVE.
+ * @brief MCU specific SPI 8 bit read
+ * @details Performs an SPI dummy write and returns the data received in response.
+ * @returns Data received from EVE.
  */
 uint8_t MCU_SPIRead8(void);
 
 /**
- @brief MCU specific SPI 8 bit write
- @details Performs an SPI write and discards the data received in
-    response.
- @param Data to write to EVE.
+ * @brief MCU specific SPI 8 bit write
+ * @details Performs an SPI write and discards the data received inresponse.
+ * @param Data to write to EVE.
  */
 void MCU_SPIWrite8(uint8_t DataToWrite);
 
 /**
- @brief MCU specific SPI 16 bit read
- @details Performs an SPI dummy write and returns the data received in
-    response.
- @returns Data received from EVE.
+ * @brief MCU specific SPI 16 bit read
+ * @details Performs an SPI dummy write and returns the data received in  response.
+ * @returns Data received from EVE.
  */
 uint16_t MCU_SPIRead16(void);
 
 /**
- @brief MCU specific SPI 16 bit write
- @details Performs an SPI write and discards the data received in
-    response.
- @param Data to write to EVE.
+ * @brief MCU specific SPI 16 bit write
+ * @details Performs an SPI write and discards the data received in response.
+ * @param Data to write to EVE.
  */
 void MCU_SPIWrite16(uint16_t DataToWrite);
 
 /**
- @brief MCU specific SPI 24 bit read *** DEPRECATED ***
- @details Performs an SPI dummy write and returns the data received in
-    response. There is no use case for a 24 bit read on EVE.
- @returns Data received from EVE.
+ * @brief MCU specific SPI 24 bit read *** DEPRECATED ***
+ * @details Performs an SPI dummy write and returns the data received in
+ *      response. There is no use case for a 24 bit read on EVE.
+ * @returns Data received from EVE.
  */
 /* uint32_t MCU_SPIRead24(void); */
 
 /**
- @brief MCU specific SPI 24 bit write
- @details Performs an SPI write and discards the data received in
-    response.
- @param Data to write to EVE.
+ * @brief MCU specific SPI 24 bit write
+ * @details Performs an SPI write and discards the data received in response.
+ * @param Data to write to EVE.
  */
 void MCU_SPIWrite24(uint32_t DataToWrite);
 
 /**
- @brief MCU specific SPI 32 bit read
- @details Performs an SPI dummy write and returns the data received in
-    response.
- @returns Data received from EVE.
+ * @brief MCU specific SPI 32 bit read
+ * @details Performs an SPI dummy write and returns the data received inresponse.
+ * @returns Data received from EVE.
  */
 uint32_t MCU_SPIRead32(void);
 
 /**
- @brief MCU specific SPI 32 bit write
- @details Performs an SPI write and discards the data received in
-    response.
- @param Data to write to EVE.
+ * @brief MCU specific SPI 32 bit write
+ * @details Performs an SPI write and discards the data received in response.
+ * @param Data to write to EVE.
  */
 void MCU_SPIWrite32(uint32_t DataToWrite);
 
 /**
- @brief MCU specific 20 ms delay
- @details Cause the MCU to idle or otherwise delay for a minimum of
-    20 milliseconds. This is used during initialisation to perform a
-    power down of the EVE for a controlled minimum period of time.
+ * @brief MCU specific 20 ms delay
+ * @details Cause the MCU to idle or otherwise delay for a minimum of
+ *      20 milliseconds. This is used during initialisation to perform a
+ *      power down of the EVE for a controlled minimum period of time.
  */
 void MCU_Delay_20ms(void);
 
 /**
- @brief MCU specific 500 ms delay
- @details Cause the MCU to idle or otherwise delay for a minimum of
-    500 milliseconds. This is used during initialisation to perform a
-    power down of the EVE for a controlled minimum period of time.
+ * @brief MCU specific 500 ms delay
+ * @details Cause the MCU to idle or otherwise delay for a minimum of
+ *      500 milliseconds. This is used during initialisation to perform a
+ *      power down of the EVE for a controlled minimum period of time.
  */
 void MCU_Delay_500ms(void);
 
 /**
- @brief MCU specific byte swapping routines
- @details EVE addresses from the HAL_SetReadAddress and HAL_SetWriteAddress
-    are sent in big-endian format. However, data for registers or memory
-    mapped areas are in little-endian format.
+ * @brief MCU specific byte swapping routines
+ * @details EVE addresses from the HAL_SetReadAddress and HAL_SetWriteAddress
+ *      are sent in big-endian format. However, data for registers or memory
+ *      mapped areas are in little-endian format.
  */
 //@{
 uint16_t MCU_htobe16(uint16_t h);

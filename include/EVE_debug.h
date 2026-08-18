@@ -1,6 +1,6 @@
 /**
  * @file EVE_debug.h
- * @details Provides platform-specific macro definitions for debug messaging.
+ * @brief Provides platform-specific macro definitions for debug messaging.
  */
 /*
  * ============================================================================
@@ -83,11 +83,10 @@
 
 /**
  * @brief Configure debug output.
- * @details
- * Debug output is enabled by defining DEBUG_LEVEL:
+ * @details Debug output is enabled by defining DEBUG_LEVEL:
  *
- * - DEBUG_LEVEL=0 enables error messages only.
- * - DEBUG_LEVEL>0 enables error and informational messages.
+ *      - DEBUG_LEVEL=0 enables error messages only.
+ *      - DEBUG_LEVEL>0 enables error and informational messages.
  *
  * Host platforms normally write errors to stderr and informational output
  * to stdout. ESP32 uses the ESP-IDF logging API. RP2040 writes both error

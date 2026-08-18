@@ -41,26 +41,26 @@
 #define _EVE_CONFIG_H_
 
 /**
- *  @brief EVE device and screen configuration file.
- *  @note IMPORTANT This header file must be included by EVE.h.
- *  @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) 
- *        must be configured in this file. 
- *        For BT82x the EVE_RAM_G_CONFIG_SIZE macro must also be configured.
- *        Values from the macros defined in this file can be used in code 
- *        based on this library. 
- *        To make a custom configuration file, edit this file as required as 
- *        long as the macros listed above are correctly defined.
- *        This file is included with angle brackets in EVE.h and can therefore 
- *        be copied to anywhere in the include file search path to override this 
- *        copy.
+ * @brief EVE device and screen configuration file.
+ * @note IMPORTANT This header file must be included by EVE.h.
+ * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) 
+ *      must be configured in this file. 
+ *      For BT82x the EVE_RAM_G_CONFIG_SIZE macro must also be configured.
+ *      Values from the macros defined in this file can be used in code 
+ *      based on this library. 
+ *      To make a custom configuration file, edit this file as required as 
+ *      long as the macros listed above are correctly defined.
+ *      This file is included with angle brackets in EVE.h and can therefore 
+ *      be copied to anywhere in the include file search path to override this 
+ *      copy.
  */
 
 /** 
- *  @brief Module selection.
- *  If this is set to a valid module type then the FT8XX_TYPE and DISPLAY_RES 
- *  values will be set accordingly.
- *  This selection will override any PANEL_TYPE, FT8XX_TYPE and DISPLAY_RES
- *  settings.
+ * @brief Module selection.
+ *      If this is set to a valid module type then the FT8XX_TYPE and DISPLAY_RES 
+ *      values will be set accordingly.
+ *      This selection will override any PANEL_TYPE, FT8XX_TYPE and DISPLAY_RES
+ *      settings.
  */
 //@{
 #ifndef MODULE_TYPE
@@ -69,8 +69,8 @@
 //@}
 
 /**
- *  @brief Select the EVE controller type.
- *  @details In EVE.h the EVE controller type will lead to the selection of 
+ * @brief Select the EVE controller type.
+ * @details In EVE.h the EVE controller type will lead to the selection of 
  *      the EVE Programming support methods via macros "EVE_API" where the 
  *      value depends on the level of the EVE device support. 
  *      Alternatively, to override this directly set the EVE_API and 
@@ -83,8 +83,8 @@
 //@}
 
 /**
- *  @brief Select the EVE panel type.
- *  @details Setting the EVE panel type to a valid value will lead to the 
+ * @brief Select the EVE panel type.
+ * @details Setting the EVE panel type to a valid value will lead to the 
  *      selection of the EVE panel which in turn will select a valid 
  *      DISPLAY_RES setting.
  *      This setting will override the DISPLAY_RES setting.
@@ -96,7 +96,7 @@
 //@}
 
 /**
- *  @brief Match display resolution to panel type
+ * @brief Match display resolution to panel type
  */
 //@{
 #ifndef DISPLAY_RES
@@ -105,14 +105,14 @@
 //@}
 
 /**
- *  @brief Enable or Disable QuadSPI
- *  @details If the macro is set then the platform port may only enable QSPI
+ * @brief Enable or Disable QuadSPI
+ * @details If the macro is set then the platform port may only enable QSPI
  *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
  *
  *      QUADSPI_ENABLE may be defined externally to enable QSPI, otherwise it
  *      remains undefined.
  * 
- *  @note QSPI is only supported on devices from EVE API 2 onwards. It is not
+ * NOTE: QSPI is only supported on devices from EVE API 2 onwards. It is not
  *      supported on FT80x devices. For default set this to disabled.
  */
 //@{
@@ -122,7 +122,7 @@
 //@}
 
  /**
-  *  @brief Setup RAM_G size for BT82X only
+  * @brief Setup RAM_G size for BT82X only
   */
 //@{
 #ifndef EVE_RAM_G_CONFIG_SIZE
@@ -131,9 +131,9 @@
 //@}
 
 /**
- *  @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
- *    default for FT81X/BT88X/BT81X (#undef). Assign the desired i2c address or type (BT82X)
- *    by defining the value (#define). 
+ * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
+ *      default for FT81X/BT88X/BT81X (#undef). Assign the desired i2c address or type (BT82X)
+ *      by defining the value (#define). 
  */
 //@{
 #undef EVE_TOUCH_ADDR
@@ -141,17 +141,17 @@
 //@}
 
 /**
-  *  @brief Enable or Disable custom couch FW load
-  *  @details If the macro is set then custom touch FW will be loaded during IC
-  *			initialisation from the binary data array in the "custom_touch_fw.c" file.
-  *			Applicable for FT81X/BT88X/BT81X devices only.
+  * @brief Enable or Disable custom couch FW load
+  * @details If the macro is set then custom touch FW will be loaded during IC
+  *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
+  *			  Applicable for FT81X/BT88X/BT81X devices only.
   *
-  *     CUSTOM_TOUCH may be defined externally to enable custom touch.
-  *     It is also enabled automatically for panels which require it.
-  *     Otherwise it remains undefined.
+  *       CUSTOM_TOUCH may be defined externally to enable custom touch.
+  *       It is also enabled automatically for panels which require it.
+  *       Otherwise it remains undefined.
   *
-  *  @note EVE_TOUCH_ADDR settings will be overridden when using CUSTOM_TOUCH.
-  *  @note Custom touch for the BT82X series is implemented in extension patches.
+  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using CUSTOM_TOUCH.
+  * NOTE: Custom touch for the BT82X series is implemented in extension patches.
   *
   */
 //@{
