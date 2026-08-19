@@ -56,45 +56,45 @@ The macro can be defined in either the `Visual Studio` project settings under `C
 
 In `VisualStudio`:
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
 
 In `CMakeLists.txt`:
 
 - add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin"))
 
 In In gcc compilers via the `command line`:
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
 
 
 ##### EVE_API 4
 In `VisualStudio`:
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
 
 In `CMakeLists.txt`:
 
 
-- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
 
 
 In In gcc compilers via the `command line`:
 
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
 
 
 ##### EVE_API 5
 In `VisualStudio`:
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
 
 In `CMakeLists.txt`:
 
 
-- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
 
 In In gcc compilers via the `command line`:
 
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
 
 
 ### `USE_FLASHIMAGE` 
