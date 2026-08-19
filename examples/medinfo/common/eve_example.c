@@ -54,9 +54,13 @@
 #error This project needs EVE API 3, 4 or 5 (BT81x, BT82x).
 #endif
 
+#if !defined(IS_ARDUINO_LIB) /* Do not perform check in Arduino library */
+
 #if !((DISPLAY_RES == WUXGA) || (DISPLAY_RES == FULLHD))
 #error This project requires a screen of at least 1920x1024 pixels.
 #endif
+
+#endif // !defined(IS_ARDUINO_LIB)
 
 // Handle for icon cell images
 const uint32_t handle_icons_large = 0;

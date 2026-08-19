@@ -103,8 +103,8 @@ level = 1
 verbose = 0
 
 # Default API version
-eve_api = None
-eve_sub_api = None
+eve_api = 0
+eve_sub_api = 0
 
 parser = argparse.ArgumentParser(description="Arduino Board Test Builder for EVE")
 parser.add_argument("--exclude", help="list of FQBNs of boards to exclude")
@@ -162,7 +162,7 @@ def get_boards(exclude, specific, verbose=0):
 def get_libraries(eve_api, eve_sub_api, verbose=0):
     found_libraries = []
     if eve_api:
-        if eve_sub_api:
+        if eve_sub_api > 1:
             apis = [f"Bridgetek_EVE{eve_api}_{eve_sub_api}"]
         else:
             apis = [f"Bridgetek_EVE{eve_api}"]

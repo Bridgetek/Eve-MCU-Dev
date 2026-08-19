@@ -57,6 +57,156 @@
  */
 #include <EVE_debug.h>
 
+#ifndef EVE_API
+#undef EVE_SUB_API
+
+#if (FT8XX_TYPE == FT800)
+#define EVE_API 1
+
+#elif (FT8XX_TYPE == FT801)
+#define EVE_API 1
+
+#elif (FT8XX_TYPE == FT810)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT811)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT812)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT813)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == BT880)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT881)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT882)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT883)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT815)
+#define EVE_API 3
+
+#elif (FT8XX_TYPE == BT816)
+#define EVE_API 3
+
+#elif (FT8XX_TYPE == BT817)
+#define EVE_API 4
+
+#elif (FT8XX_TYPE == BT818)
+#define EVE_API 4
+
+#elif (FT8XX_TYPE == BT820)
+#define EVE_API 5
+
+#else
+#ifndef EVE_API
+#error FT8XX_TYPE definition not recognised.
+#endif
+#endif
+
+#else // EVE_API
+
+#if (EVE_API == 2)
+#ifndef EVE_SUB_API
+#error EVE_SUB_API definition required for EVE API 2.
+#endif // EVE_SUB_API
+#endif // (EVE_API == 2)
+
+#endif // EVE_API
+
+#undef EVE1_ENABLE // deprecated
+#undef EVE2_ENABLE // deprecated
+#undef EVE3_ENABLE // deprecated
+#undef EVE4_ENABLE // deprecated
+#undef EVE5_ENABLE // deprecated
+#if EVE_API == 1
+#define EVE1_ENABLE // deprecated
+#elif EVE_API == 2
+#define EVE2_ENABLE // deprecated
+#elif EVE_API == 3
+#define EVE3_ENABLE // deprecated
+#elif EVE_API == 4
+#define EVE4_ENABLE // deprecated
+#elif EVE_API == 5
+#define EVE5_ENABLE // deprecated
+#endif
+
+/** Macros to allow us to select which API a command applies to.
+ * For APIs supported use the following:
+ *
+ * #if IS_EVE_API(api1, api2, ...)
+ *
+ * Where the APIs supported are in the macro parenthesis. The EVE
+ * API is set in the EVE_API macro.
+ * So, to support BT815, BT817, BT820 this will need EVE APIs 3, 4, and 5.
+ *
+ * #if IS_EVE_API(3,4,5)
+ *
+ * On Visual Studio it is necessary to enable the "/Zc:preprocessor" option
+ * to enable preprocessor conformance mode.
+ * This works by counting the number of parameters then calling a chain of
+ * macros to make a chain of conditions for each parameters in the macros
+ * IS_EVE_API_1/2/3/4/5. (This can be expanded to more than 5 in future)
+ * (x == n)||(y == n)||...
+ * The parameters are counted by pasting the passed parameters into the
+ * parameters passed from NUM_ARGS to _NUM_ARGS and selecting the Nth one,
+ * which then becomes one of the numbers after __VA_ARGS__ in NUM_ARGS.
+ * The first arguments in _NUM_ARGS are dummies.
+ */
+#ifndef IS_EVE_API
+#define _NUM_ARGS(X,X5,X4,X3,X2,X1,N,...) N
+#define NUM_ARGS(...) _NUM_ARGS(0, ## __VA_ARGS__ ,5,4,3,2,1,0)
+
+#define IS_EVE_API_1(a)     (a == EVE_API)
+#define IS_EVE_API_2(a,b)   (IS_EVE_API_1(a) || IS_EVE_API_1(b) )
+#define IS_EVE_API_3(a,...) (IS_EVE_API_1(a) || IS_EVE_API_2( __VA_ARGS__) )
+#define IS_EVE_API_4(a,...) (IS_EVE_API_1(a) || IS_EVE_API_3( __VA_ARGS__) )
+#define IS_EVE_API_5(a,...) (IS_EVE_API_1(a) || IS_EVE_API_4( __VA_ARGS__) )
+
+#define _IS_EVE_API_N(N, ...) IS_EVE_API_ ## N(__VA_ARGS__)
+#define _IS_EVE_API(N, ...)  _IS_EVE_API_N(N, __VA_ARGS__)
+#define IS_EVE_API(...)      _IS_EVE_API(NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__)
+
+#define IS_EVE_SUB_API(a)      (a == EVE_SUB_API)
+#endif
+
+/** Macros to select a value from a set depending on the EVE_API.
+ * The values must be constants and cannot be further preprocessor directives.
+ */
+#ifndef EVE_API_SELECT
+#define EVE_API_SELECT(a1, a2, a3, a4, a5)             \
+    ((EVE_API == 1) ? (a1) : (EVE_API == 2) ? (a2)     \
+                           : (EVE_API == 3) ? (a3)     \
+                           : (EVE_API == 4) ? (a4)     \
+                                            : (a5))
+#endif
+
+/** EVE API definitions. */
+
+#if IS_EVE_API(1, 2, 3, 4, 5)
+    #include "EVE_commands.h"
+    #include "EVE_registers.h"
+#else
+    #error No EVE API selected.
+#endif
+
+#if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
+
 /**
  * @brief Select the EVE controller type and panel resolution.
  * @details If a module is selected then the EVE controller type and panel
@@ -469,156 +619,12 @@
 #endif // DISPLAY_RES
 //@}
 
+#else
+//Hellot there!
+#endif // !defined(IS_ARDUINO_LIB)
+
 /* Touchscreen technology versions */
 /* Note: CTOUCH_MODE_COMPATIBILITY and CTOUCH_MODE_EXTENDED definitions are deprecated */
-
-#ifndef EVE_API
-#undef EVE_SUB_API
-
-#if (FT8XX_TYPE == FT800)
-#define EVE_API 1
-
-#elif (FT8XX_TYPE == FT801)
-#define EVE_API 1
-
-#elif (FT8XX_TYPE == FT810)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT811)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT812)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT813)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == BT880)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT881)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT882)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT883)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT815)
-#define EVE_API 3
-
-#elif (FT8XX_TYPE == BT816)
-#define EVE_API 3
-
-#elif (FT8XX_TYPE == BT817)
-#define EVE_API 4
-
-#elif (FT8XX_TYPE == BT818)
-#define EVE_API 4
-
-#elif (FT8XX_TYPE == BT820)
-#define EVE_API 5
-
-#else
-#ifndef EVE_API
-#error FT8XX_TYPE definition not recognised.
-#endif
-#endif
-
-#else // EVE_API
-
-#if (EVE_API == 2)
-#ifndef EVE_SUB_API
-#error EVE_SUB_API definition required for EVE API 2.
-#endif // EVE_SUB_API
-#endif // (EVE_API == 2)
-
-#endif // EVE_API
-
-#undef EVE1_ENABLE // deprecated
-#undef EVE2_ENABLE // deprecated
-#undef EVE3_ENABLE // deprecated
-#undef EVE4_ENABLE // deprecated
-#undef EVE5_ENABLE // deprecated
-#if EVE_API == 1
-#define EVE1_ENABLE // deprecated
-#elif EVE_API == 2
-#define EVE2_ENABLE // deprecated
-#elif EVE_API == 3
-#define EVE3_ENABLE // deprecated
-#elif EVE_API == 4
-#define EVE4_ENABLE // deprecated
-#elif EVE_API == 5
-#define EVE5_ENABLE // deprecated
-#endif
-
-/** Macros to allow us to select which API a command applies to.
- * For APIs supported use the following:
- *
- * #if IS_EVE_API(api1, api2, ...)
- *
- * Where the APIs supported are in the macro parenthesis. The EVE
- * API is set in the EVE_API macro.
- * So, to support BT815, BT817, BT820 this will need EVE APIs 3, 4, and 5.
- *
- * #if IS_EVE_API(3,4,5)
- *
- * On Visual Studio it is necessary to enable the "/Zc:preprocessor" option
- * to enable preprocessor conformance mode.
- * This works by counting the number of parameters then calling a chain of
- * macros to make a chain of conditions for each parameters in the macros
- * IS_EVE_API_1/2/3/4/5. (This can be expanded to more than 5 in future)
- * (x == n)||(y == n)||...
- * The parameters are counted by pasting the passed parameters into the
- * parameters passed from NUM_ARGS to _NUM_ARGS and selecting the Nth one,
- * which then becomes one of the numbers after __VA_ARGS__ in NUM_ARGS.
- * The first arguments in _NUM_ARGS are dummies.
- */
-#ifndef IS_EVE_API
-#define _NUM_ARGS(X,X5,X4,X3,X2,X1,N,...) N
-#define NUM_ARGS(...) _NUM_ARGS(0, ## __VA_ARGS__ ,5,4,3,2,1,0)
-
-#define IS_EVE_API_1(a)     (a == EVE_API)
-#define IS_EVE_API_2(a,b)   (IS_EVE_API_1(a) || IS_EVE_API_1(b) )
-#define IS_EVE_API_3(a,...) (IS_EVE_API_1(a) || IS_EVE_API_2( __VA_ARGS__) )
-#define IS_EVE_API_4(a,...) (IS_EVE_API_1(a) || IS_EVE_API_3( __VA_ARGS__) )
-#define IS_EVE_API_5(a,...) (IS_EVE_API_1(a) || IS_EVE_API_4( __VA_ARGS__) )
-
-#define _IS_EVE_API_N(N, ...) IS_EVE_API_ ## N(__VA_ARGS__)
-#define _IS_EVE_API(N, ...)  _IS_EVE_API_N(N, __VA_ARGS__)
-#define IS_EVE_API(...)      _IS_EVE_API(NUM_ARGS(__VA_ARGS__), ## __VA_ARGS__)
-
-#define IS_EVE_SUB_API(a)      (a == EVE_SUB_API)
-#endif
-
-/** Macros to select a value from a set depending on the EVE_API.
- * The values must be constants and cannot be further preprocessor directives.
- */
-#ifndef EVE_API_SELECT
-#define EVE_API_SELECT(a1, a2, a3, a4, a5)             \
-    ((EVE_API == 1) ? (a1) : (EVE_API == 2) ? (a2)     \
-                           : (EVE_API == 3) ? (a3)     \
-                           : (EVE_API == 4) ? (a4)     \
-                                            : (a5))
-#endif
-
-/** EVE API definitions. */
-
-#if IS_EVE_API(1, 2, 3, 4, 5)
-    #include "EVE_commands.h"
-    #include "EVE_registers.h"
-#else
-    #error No EVE API selected.
-#endif
 
 /* Legacy Metric Block for Fonts */
 /* Note: FT_GPU_* definitions are deprecated */

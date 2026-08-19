@@ -9,6 +9,8 @@ import argparse
 eve_api = 5
 eve_sub_api = 0
 
+eve_max_api = 5
+
 # Default path to API root
 src_api = os.path.normpath(os.path.join("..",".."))
 
@@ -23,7 +25,7 @@ if (args.api): eve_api = int(args.api)
 if (args.apisub): eve_sub_api = int(args.apisub)
 
 # Check valid input
-if (eve_api < 1) or (eve_api > 5):
+if (eve_api < 1) or (eve_api > eve_max_api):
     raise Exception("Invalid value for --api")
 if (eve_api == 2) and ((eve_sub_api < 1) or (eve_sub_api > 2)):
     raise Exception("Invalid value for --apisub required when --api is 2")
@@ -163,7 +165,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 if apirefactor:
                     # Add in eve.setup before eve.Init
                     line = re.sub(r'^(\s*)if\s*\(\s*EVE_Init\s*\(\s*\)\s*!=\s*0\s*\)\s*$', r'\g<1>// Setup the EVE display (' + defres + ')\n' \
-                                                      r'\g<1>' 'eve.setup(DISPLAY_RES);\n' \
+                                                      r'\g<1>' 'eve.setup(DISPLAY_RES);\n\n' \
                                                       r'\g<1>' '// Initialise the EVE library\n' \
                                                       r'\g<1>' 'if(eve.Init() != 0)' \
                         , line)
@@ -252,11 +254,18 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
 
                 if flag == 0:
                     # Simulate preprocessor by excluding/replacing code
+                    # Exclude all non-matching lines for EVE_API and EVE_SUB_API
                     match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\((.+)\)", line)
                     match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\((.+)\)", line)
+                    # Exclude all lines within IS_ARDUINO_LIB blocks
+                    match_ifardulib = re.match(r"\s*#if\s+(!*)defined\s*\(IS_ARDUINO_LIB\)", line)
+                    # Handle general if/elif/ifdef and ifndef blocks
                     match_if = re.match(r"\s*#(if|elif|ifdef|ifndef)\s+", line)
+                    # Simple else blocks
                     match_else = re.match(r"\s*#else\s*", line)
+                    # Simple endif blocks
                     match_endif = re.match(r"\s*#endif\s*", line)
+                    # Process defines and includes according to lists in arguments
                     match_define = re.match(r"(\s*#define\s*)(\w+)", line)
                     match_include = re.match(r"\s*#include\s*\"(.+)\"", line)
                     match_commentline = re.match(r"^ \* ", line)
@@ -284,6 +293,17 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             for lev in "".join(match_ifapi.group(2).split()).split(","):
                                 pos.append(int(lev))
                             nest.append((pos, True, cov))
+                            flag = -1
+                        elif match_ifardulib:
+                            print(match_ifardulib)
+                            cov = []
+                            for addapi in range(eve_max_api): pos.append(addapi + 1)
+                            if match_ifardulib.group(1) == "!":
+                                print("EXCLUDING")
+                                nest.append((pos, False, cov))
+                            else:
+                                print("INCLUDING")
+                                nest.append((pos, True, cov))
                             flag = -1
                         elif match_else:
                             (pos, _, cov) = nest.pop()
