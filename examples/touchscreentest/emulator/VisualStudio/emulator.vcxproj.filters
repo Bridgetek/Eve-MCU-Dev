@@ -70,10 +70,10 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h">
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h">
       <Filter>Library\ports\eve_emulator</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h">
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h">
       <Filter>Library\ports\eve_emulator</Filter>
     </ClInclude>
   </ItemGroup>

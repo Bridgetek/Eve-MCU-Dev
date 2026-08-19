@@ -63,14 +63,14 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\EVE_Emulator\lib\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
+      <Command>copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -87,14 +87,14 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\eve_emulator\EVE_Emulator\lib\bt8xxemu.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y ..\..\..\..\ports\eve_emulator\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
+      <Command>copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -117,8 +117,8 @@ copy /Y ..\..\..\..\ports\eve_emulator\zlib.dll "$(OutDir)zlib.dll" || exit /b 1
     <ClInclude Include="..\..\..\..\include\HAL.h" />
     <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\bt8xxemu_inttypes.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h" />
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\fonts.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
