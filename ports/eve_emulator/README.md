@@ -2,49 +2,17 @@
 
 [Back](../README.md)
 
-The EVE Emulator port consists of a Windows host PC running the EVE_Emulator library. The emulator simulates an EVE device on the Windows display, and supports `x64` (64-bit) architectures only. 
-
-To compile this you will have to download the **EVE_Emulator** library, it is available from the following GitHub repository:
-
-https://github.com/Bridgetek/EVE_Emulator
-
-Download or clone the EVE_Emulator repository to a new directory.
+The EVE Emulator port consists of a Windows host PC running the EVE_Emulator library. The emulator simulates an EVE device on the **Windows** display, and supports `x64` (64-bit) architectures only. There is no emulator support for Linux platforms.
 
 ## Installing the EVE_Emulator in EVE-MCU-Dev library
 
-The EVE_Emulator repository directory will have subfolders named `include`, `bin`, and `lib`. The repository contains library files for `x64` (64-bit Windows) architectures only.
+The **EVE_Emulator** library is available from the following GitHub repository:
 
-The subfolders include:
-- A DLL file for `bt8xxemu`.
-- LIB files for connecting the application to the `bt8xxemu` DLLs.
-- Header files for the `bt8xxemu` API.
-- A DLL file for `mx25lemu`. (flash emulator)
-- A DLL file for `zlib`. (compression library)
+https://github.com/Bridgetek/EVE_Emulator
 
-A Windows Command Line BAT file `install_emulator.bat` is included in this folder. This will copy the correct files from the EVE_Emulator repository directory to the 
-current directory (`ports\eve_emulator`).
+The EVE_Emulator repository has been included as a git submodule here for simplicity. 
 
-To run the BAT file, change directory to the `ports\eve_emulator` directory. The path to the EVE_Emulator repository directory in the extracted distribution folder is passed as the first parameter to the BAT file. For example:
-
-```
-> cd ports\eve_emulator
-> install_emulator.bat ..\..\..\GitHub\EVE_Emulator
-Installing AMD64 libraries from "..\..\..\GitHub\EVE_Emulator"
-Copying "..\..\..\EVE_Emulator\bin\bt8xxemu.dll" to "bt8xxemu.dll"
-        1 file(s) copied.
-Copying "..\..\..\EVE_Emulator\lib\bt8xxemu.lib" to "bt8xxemu.lib"
-        1 file(s) copied.
-Copying "..\..\..\EVE_Emulator\bin\mx25lemu.dll" to "mx25lemu.dll"
-        1 file(s) copied.
-Copying "..\..\..\EVE_Emulator\bin\zlib.dll" to "zlib.dll"
-        1 file(s) copied.
-Copying "..\..\..\EVE_Emulator\include\bt8xxemu_inttypes.h" to "bt8xxemu_inttypes.h"
-        1 file(s) copied.
-Copying "..\..\..\EVE_Emulator\include\bt8xxemu.h" to "bt8xxemu.h"
-        1 file(s) copied.
-```
-
-A **bash** script file `install_emulator.sh` is also included in this folder. It has the same functionality as `install_emulator.bat` but can run in a bash shell to help with setting up the environment.
+The repository can be copied into the subdirectory `EVE_Emulator` if the submodule is not available diring distribution.
 
 ## Using EVE_Emulator in EVE-MCU-Dev Projects
 
@@ -67,9 +35,9 @@ In gcc compilers via the `command line`:
  -DPLATFORM_EMULATOR
 ```
 
-Example applications load and use the `bt8xxemu.dll` file at runtime. This DLL must be available in the same directory as the example executable.
+Example applications load and use the `bt8xxemu.dll` file from the `EVE_Emulator\bin` directory at runtime. This DLL must be available in the same directory as the example executable.
 
-If the application requires the `mx25lemu.dll` and `zlib.dll` files, these DLLs must also be available in the same directory as the executable.
+If the application requires the `mx25lemu.dll` and `zlib.dll` files from the `EVE_Emulator\bin` directory, these DLLs must also be available in the same directory as the executable.
 
 The `Visual Studio` project and the `CMakeLists.txt` file provided with each example automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `mx25lemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
 

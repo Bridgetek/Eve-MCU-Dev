@@ -73,8 +73,8 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#include "bt8xxemu_inttypes.h"
-#include "bt8xxemu.h"
+#include "EVE_Emulator/include/bt8xxemu_inttypes.h"
+#include "EVE_Emulator/include/bt8xxemu.h"
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
