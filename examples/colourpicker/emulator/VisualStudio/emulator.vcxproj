@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{57D42838-6773-4E09-AF44-20A5CB138F84}</ProjectGuid>
+    <ProjectGuid>{F1BCF9ED-D2E7-42BC-B7CA-962CFF2374A7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>colourpicker</RootNamespace>
     <ProjectName>colourpicker</ProjectName>
