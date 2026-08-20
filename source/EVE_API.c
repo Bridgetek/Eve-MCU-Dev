@@ -126,7 +126,7 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_DITHER, (uint8_t)EVE_DISP_DITHER);
     // Turn on PCLK_2X if defined
 #if defined(EVE_DISP_PLCK_2X) && defined(EVE_REG_PCLK_2X)
-    // NOTE: See BT81x Prorammers Guide for requirements when usingg this register   
+    // NOTE: See BT81x Programmers Guide for requirements when using this register   
     HAL_MemWrite8(EVE_REG_PCLK_2X, (uint8_t)EVE_DISP_PLCK_2X);
 #endif
 
