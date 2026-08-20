@@ -258,7 +258,7 @@ If `EVE_API` is used this will override any `FT8XX_TYPE` values and a number fro
 #define EVE_API 2
 #define EVE_SUB_API 1
 ```
-**The default in the distribution will be a BT820 device**.
+**The default in the distribution will be a BT817 device**. This is the EVE device used in the IDK-BT817-70A modules.
 
 Note that the example programs will take the `EVE_config.h` file from the `include` directory.
 
@@ -270,7 +270,7 @@ The macro `DISPLAY_RES` will enable one of the pre-defined panel settings to be 
 
 The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
 
-**The default in the distribution will be a WUXGA panel**.
+**The default in the distribution will be a WVGA panel**. This is the panel used in the IDK-BT817-70A modules.
 
 #### Setting Device and Panel in Build Configuration
 

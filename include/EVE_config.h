@@ -78,7 +78,7 @@
  */
 //@{
 #ifndef FT8XX_TYPE
-#define FT8XX_TYPE BT820
+#define FT8XX_TYPE BT817
 #endif
 //@}
 
@@ -96,11 +96,12 @@
 //@}
 
 /**
- * @brief Match display resolution to panel type
+ * @brief Match display resolution to panel type.
+ * @details The distribution default is WVGA (800x480).
  */
 //@{
 #ifndef DISPLAY_RES
-#define DISPLAY_RES FULLHD
+#define DISPLAY_RES WVGA
 #endif
 //@}
 

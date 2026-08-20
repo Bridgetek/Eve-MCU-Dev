@@ -57,95 +57,6 @@
  */
 #include <EVE_debug.h>
 
-#ifndef EVE_API
-#undef EVE_SUB_API
-
-#if (FT8XX_TYPE == FT800)
-#define EVE_API 1
-
-#elif (FT8XX_TYPE == FT801)
-#define EVE_API 1
-
-#elif (FT8XX_TYPE == FT810)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT811)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT812)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == FT813)
-#define EVE_API 2
-#define EVE_SUB_API 1
-
-#elif (FT8XX_TYPE == BT880)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT881)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT882)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT883)
-#define EVE_API 2
-#define EVE_SUB_API 2
-
-#elif (FT8XX_TYPE == BT815)
-#define EVE_API 3
-
-#elif (FT8XX_TYPE == BT816)
-#define EVE_API 3
-
-#elif (FT8XX_TYPE == BT817)
-#define EVE_API 4
-
-#elif (FT8XX_TYPE == BT818)
-#define EVE_API 4
-
-#elif (FT8XX_TYPE == BT820)
-#define EVE_API 5
-
-#else
-#ifndef EVE_API
-#error FT8XX_TYPE definition not recognised.
-#endif
-#endif
-
-#else // EVE_API
-
-#if (EVE_API == 2)
-#ifndef EVE_SUB_API
-#error EVE_SUB_API definition required for EVE API 2.
-#endif // EVE_SUB_API
-#endif // (EVE_API == 2)
-
-#endif // EVE_API
-
-#undef EVE1_ENABLE // deprecated
-#undef EVE2_ENABLE // deprecated
-#undef EVE3_ENABLE // deprecated
-#undef EVE4_ENABLE // deprecated
-#undef EVE5_ENABLE // deprecated
-#if EVE_API == 1
-#define EVE1_ENABLE // deprecated
-#elif EVE_API == 2
-#define EVE2_ENABLE // deprecated
-#elif EVE_API == 3
-#define EVE3_ENABLE // deprecated
-#elif EVE_API == 4
-#define EVE4_ENABLE // deprecated
-#elif EVE_API == 5
-#define EVE5_ENABLE // deprecated
-#endif
-
 /** Macros to allow us to select which API a command applies to.
  * For APIs supported use the following:
  *
@@ -194,15 +105,6 @@
                            : (EVE_API == 3) ? (a3)     \
                            : (EVE_API == 4) ? (a4)     \
                                             : (a5))
-#endif
-
-/** EVE API definitions. */
-
-#if IS_EVE_API(1, 2, 3, 4, 5)
-    #include "EVE_commands.h"
-    #include "EVE_registers.h"
-#else
-    #error No EVE API selected.
 #endif
 
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
@@ -332,6 +234,108 @@
 #endif // MODULE_TYPE
 #endif // defined(MODULE_TYPE)
 //@}
+
+#endif // !defined(IS_ARDUINO_LIB) 
+
+#ifndef EVE_API
+#undef EVE_SUB_API
+
+#if (FT8XX_TYPE == FT800)
+#define EVE_API 1
+
+#elif (FT8XX_TYPE == FT801)
+#define EVE_API 1
+
+#elif (FT8XX_TYPE == FT810)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT811)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT812)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == FT813)
+#define EVE_API 2
+#define EVE_SUB_API 1
+
+#elif (FT8XX_TYPE == BT880)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT881)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT882)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT883)
+#define EVE_API 2
+#define EVE_SUB_API 2
+
+#elif (FT8XX_TYPE == BT815)
+#define EVE_API 3
+
+#elif (FT8XX_TYPE == BT816)
+#define EVE_API 3
+
+#elif (FT8XX_TYPE == BT817)
+#define EVE_API 4
+
+#elif (FT8XX_TYPE == BT818)
+#define EVE_API 4
+
+#elif (FT8XX_TYPE == BT820)
+#define EVE_API 5
+
+#else
+#ifndef EVE_API
+#error FT8XX_TYPE definition not recognised.
+#endif
+#endif
+
+#else // EVE_API
+
+#if (EVE_API == 2)
+#ifndef EVE_SUB_API
+#error EVE_SUB_API definition required for EVE API 2.
+#endif // EVE_SUB_API
+#endif // (EVE_API == 2)
+
+#endif // EVE_API
+
+#undef EVE1_ENABLE // deprecated
+#undef EVE2_ENABLE // deprecated
+#undef EVE3_ENABLE // deprecated
+#undef EVE4_ENABLE // deprecated
+#undef EVE5_ENABLE // deprecated
+#if EVE_API == 1
+#define EVE1_ENABLE // deprecated
+#elif EVE_API == 2
+#define EVE2_ENABLE // deprecated
+#elif EVE_API == 3
+#define EVE3_ENABLE // deprecated
+#elif EVE_API == 4
+#define EVE4_ENABLE // deprecated
+#elif EVE_API == 5
+#define EVE5_ENABLE // deprecated
+#endif
+
+/** EVE API definitions. */
+
+#if IS_EVE_API(1, 2, 3, 4, 5)
+    #include "EVE_commands.h"
+    #include "EVE_registers.h"
+#else
+    #error No EVE API selected.
+#endif
+
+#if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
 /**
  * @brief Match display resolution to panel type
@@ -619,8 +623,6 @@
 #endif // DISPLAY_RES
 //@}
 
-#else
-//Hellot there!
 #endif // !defined(IS_ARDUINO_LIB)
 
 /* Touchscreen technology versions */
