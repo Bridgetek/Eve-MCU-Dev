@@ -124,15 +124,23 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_CSPREAD, (uint8_t)EVE_DISP_CSPREAD);
     // Turn on or off Dither
     HAL_MemWrite8(EVE_REG_DITHER, (uint8_t)EVE_DISP_DITHER);
-    // Turn on or off PCLK_2X
-#if defined(EVE_DISP_PLCK_2X) && defined(EVE_REG_PCLK_2X)
-    // NOTE: See BT81x Programmers Guide for requirements when using this register   
-    HAL_MemWrite8(EVE_REG_PCLK_2X, (uint8_t)EVE_DISP_PLCK_2X);
+    // Turn on or off Adaptive Framerate (BT81x only)
+#if defined(EVE_DISP_ADAPTIVE_FRAMERATE) && defined(EVE_REG_ADAPTIVE_FRAMERATE)
+    HAL_MemWrite8(EVE_REG_TOUCH_CONFIG, (uint8_t)EVE_REG_ADAPTIVE_FRAMERATE);
+#endif
+    // Enable Adaptive HSYNC (BT817/8 only)
+#if defined(EVE_DISP_AH_HCYCLE_MAX) && defined(EVE_REG_AH_HCYCLE_MAX)
+#if (EVE_DISP_AH_HCYCLE_MAX > EVE_DISP_HCYCLE) 
+    HAL_MemWrite16(EVE_REG_AH_HCYCLE_MAX, (uint16_t)EVE_DISP_AH_HCYCLE_MAX);
+#endif
 #endif
 
-    /* conigure touch if required */
+    /* Setup Touch settings */
 
-    // set touch i2c address
+    // Eliminate any false touches
+    HAL_MemWrite16(EVE_REG_TOUCH_RZTHRESH, 1200);
+
+    // Set touch i2c address (excludes FT80x)
 #if defined(EVE_TOUCH_ADDR) && defined(EVE_REG_TOUCH_CONFIG)
     HAL_MemWrite8(EVE_REG_CPURESET, 2);
     HAL_MemWrite16(EVE_REG_TOUCH_CONFIG, (uint16_t)EVE_TOUCH_ADDR << 4);
@@ -177,7 +185,11 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_PCLK, 1);
 #else
     // Now start clocking data to the LCD panel
-    HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
+    HAL_MemWrite8(EVE_REG_PCLK, (uint8_t)EVE_DISP_PCLK);
+#endif // defined (SET_PCLK_FREQ)
+#if defined(EVE_DISP_PLCK_2X)
+    // NOTE: See BT81x Programmers Guide for requirements when using this register   
+    HAL_MemWrite8(EVE_REG_PCLK_2X, (uint8_t)EVE_DISP_PLCK_2X);
 #endif // defined (SET_PCLK_FREQ)
 #else
     // Now start clocking data to the LCD panel
@@ -187,16 +199,14 @@ int EVE_Init(void)
     // turn on LCD backlight
     HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
 
-    /* Setup Touch and Audio settings */ 
-
-    // Eliminate any false touches
-    HAL_MemWrite16(EVE_REG_TOUCH_RZTHRESH, 1200);
+    /* Setup Audio settings */ 
 
     // turn recorded audio volume down
     HAL_MemWrite8(EVE_REG_VOL_PB, EVE_VOL_ZERO);
 
     // turn synthesizer volume down
     HAL_MemWrite8(EVE_REG_VOL_SOUND, EVE_VOL_ZERO);
+
     // set synthesizer to mute
     HAL_MemWrite16(EVE_REG_SOUND, 0x6000);
 
@@ -1073,7 +1083,7 @@ void EVE_DISPLAY(void)
 
 void EVE_BITMAP_TRANSFORM_A(long a)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_A(a)); //	((21UL << 24) | (((a)&131071UL)<<0))
+    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_A(a)); //  ((21UL << 24) | (((a)&131071UL)<<0))
     HAL_IncCmdPointer(4);
 }
 
