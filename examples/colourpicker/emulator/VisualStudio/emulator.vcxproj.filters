@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\..\snippets\touch.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\include</Filter>
     </ClInclude>

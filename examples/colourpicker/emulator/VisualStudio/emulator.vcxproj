@@ -105,7 +105,6 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
-    <ClCompile Include="..\..\common\eve_helper.c" />
     <ClCompile Include="..\main.c" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />

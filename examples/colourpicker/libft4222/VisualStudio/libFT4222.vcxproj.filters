@@ -10,9 +10,6 @@
     <ClCompile Include="..\..\..\..\source\EVE_API.c">
       <Filter>Library\source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\eve_helper.c">
-      <Filter>Example</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\eve_example.c">
       <Filter>Example</Filter>
     </ClCompile>
