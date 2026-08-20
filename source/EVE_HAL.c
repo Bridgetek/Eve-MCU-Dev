@@ -122,13 +122,23 @@ int HAL_EVE_Init(void)
     {
         MCU_Delay_20ms();
         (void)val;
+
+        if (MCU_Status())
+        {
+            EVE_DEBUG_ERROR("MCU_Init() Failed: EVE_REG_ID\n");
+            return -2;
+        }
     }
 
     // Ensure CPUreset register reads 0 and so FT81x/BT88x/BT81x is ready
     EVE_DEBUG_PRINTF("[Waiting for REG_CPURESET...]\n");
     while (HAL_MemRead8(EVE_REG_CPURESET) != 0x00)
     {
-        
+        if (MCU_Status())
+        {
+            EVE_DEBUG_ERROR("MCU_Init() Failed: EVE_REG_CPURESET\n");
+            return -3;
+        }
     }
 #endif
 
@@ -197,6 +207,11 @@ int HAL_EVE_Init(void)
                 while (HAL_MemRead32(EVE_REG_ID) != 0x7c)
                 {
                     MCU_Delay_20ms();
+                    if (MCU_Status())
+                    {
+                        EVE_DEBUG_ERROR("MCU_Init() Failed: EVE_REG_ID\n");
+                        return -2;
+                    }
                 }
 
                 boot = HAL_MemRead32(EVE_REG_BOOT_STATUS);
@@ -343,12 +358,14 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
     unsigned char bb[MCU_SPI_TIMEOUT];
     uint32_t recvlen = 0;
     int i;
+    int timeout = 1;
     // Read MCU_SPI_TIMEOUT bytes before the "0x01" that signifies data ready.
     MCU_SPIRead(bb, MCU_SPI_TIMEOUT);
     for (i = 0; i < MCU_SPI_TIMEOUT; i++)
     {
         if (bb[i] == 1)
         {
+            timeout = 0;
             i++;
             // Number of bytes received that are valid
             recvlen = MCU_SPI_TIMEOUT - i;
@@ -379,6 +396,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
             break;
         }
     }
+    (void)(timeout); //TODO: Report timeout
 #endif
 }
 
@@ -635,6 +653,7 @@ void HAL_ResetProfilePointer(void)
 uint8_t HAL_WaitCmdFifoEmpty(void)
 {
     uint32_t readCmdPointer;
+    int mcu = 0;
 #if !defined(EVE_USE_CMDB_METHOD)
     // Wait until the two registers match
     do
@@ -643,6 +662,8 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
         // Detect an exception
         if (readCmdPointer & 1) break;
+        mcu = MCU_Status();
+        if (mcu) break;
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
 #else // defined(EVE_USE_CMDB_METHOD)
     // Wait until there is all the potential space free
@@ -652,6 +673,8 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
         readCmdPointer = HAL_MemRead32(EVE_REG_CMDB_SPACE);
         // Detect an exception
         if (readCmdPointer & 1) break;
+        mcu = MCU_Status();
+        if (mcu) break;
     } while (readCmdPointer < (EVE_RAM_CMD_SIZE - 4));
 #endif // defined(EVE_USE_CMDB_METHOD)
 
@@ -671,6 +694,11 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
 #endif // DEBUG_LEVEL
         
         return 0xFF;
+    }
+    else if (mcu)
+    {
+        EVE_DEBUG_ERROR("MCU exception: %x\n", mcu);
+        return mcu;
     }
     else
     {

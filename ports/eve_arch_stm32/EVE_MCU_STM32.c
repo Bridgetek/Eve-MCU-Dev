@@ -117,6 +117,12 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
+
 inline void MCU_CSlow(void)
 {
     HAL_GPIO_WritePin(config_gpio, config_pin_cs, GPIO_PIN_RESET);

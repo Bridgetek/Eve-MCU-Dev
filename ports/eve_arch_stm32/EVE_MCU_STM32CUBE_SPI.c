@@ -140,6 +140,12 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
+
 /* EVE_CS__GPIO_Port and EVE_CS__Pin are defined by STM32CubMX.
  * The "User Label" for the CS pin is set to "EVE CS#" in the
  * GPIO Mode and Configuration section.

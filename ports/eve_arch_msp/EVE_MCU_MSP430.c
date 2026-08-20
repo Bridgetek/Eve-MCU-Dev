@@ -133,6 +133,11 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
 
 // ########################### SPI Send and Receive ####################################
 // --------------------- Global variables for SPI data ----------------------------------

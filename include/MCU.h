@@ -182,6 +182,15 @@ int MCU_Deinit(void);
 int MCU_Setup(void);
 
 /**
+ * @brief MCU specific status
+ * @details Tests if an error state has been detected with the MCU by the
+ *      MCU-specific code. This may be hardware or protocol errors unrelated
+ *      to the EVE library.
+ * @returns 0 if MCU status is normal, non-zero if failed.
+ */
+int MCU_Status(void);
+
+/**
  * @brief MCU specific chip select enable
  * @details This function will pull the chip select line to the EVE low to
  *      allow data transmission on the SPI bus.

@@ -352,6 +352,12 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
+
 // ------------------------- Output buffering ----------------------------------
 
 static int MCU_multi_transfer(uint8_t *DataToRead, uint16_t len)

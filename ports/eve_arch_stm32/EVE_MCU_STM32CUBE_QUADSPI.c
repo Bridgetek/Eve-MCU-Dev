@@ -177,6 +177,12 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
+
 /* Send data in the write buffer and read in bytes from the QSPI. */
 static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
 {

@@ -93,6 +93,12 @@ int MCU_Setup(void)
     return 0;
 }
 
+int MCU_Status(void)
+{
+    // No hardware issues detected.
+    return 0;
+}
+
 /* State machine to keep track of the current SPI Controller mode */
 typedef enum SPI_ControllerModeEnum {
     IDLE_MODE,

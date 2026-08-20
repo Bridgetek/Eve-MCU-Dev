@@ -81,6 +81,28 @@
 
 /* EVE MCU HEADER END */
 
+// Toolkit for reporting MCU level errors to the HAL 
+// If MCU_Status returns non-zero then an MCU level error has occurred
+#undef EVE_MCU_REPORT
+
+#if defined(EVE_MCU_REPORT)
+static int mcu_status = 0;
+// If there are noun a function and store an error report
+#define EVE_MCU_ASSERT(fn) \
+        if (mcu_status == 0) { \
+            mcu_status = fn; \
+        }
+#define EVE_MCU_SET(S) mcu_status = (S)
+#define EVE_MCU_GET() mcu_status
+#else // !defined(EVE_MCU_REPORT)
+#define EVE_MCU_ASSERT(fn) \
+        do { \
+            fn; \
+        } while (0);
+#define EVE_MCU_SET(S)
+#define EVE_MCU_GET() 0
+#endif // defined(EVE_MCU_REPORT)
+
 /* EVE MCU */
 
 // This platform specific section contains the functions which create the EVE Emulator instance
@@ -386,6 +408,9 @@ static int MCU_AttachSDFolder(const eve_tchar_t* path) {
 // ------------------ Platform specific initialisation  ------------------------
 int MCU_Init(void)
 {
+    // Set MCU layer status (connected)
+    EVE_MCU_SET(0);
+
     // Print Emulator Version
     EVE_DEBUG_PRINTF("\n");
     EVE_DEBUG_PRINTF("%s", BT8XXEMU_version());
@@ -526,6 +551,9 @@ int MCU_Deinit(void)
         EmulatorFlashParameters = NULL;
     }
 
+    // Set MCU layer status (disconnected)
+    EVE_MCU_SET(-1);
+
     return 0;
 }
 
@@ -533,6 +561,11 @@ int MCU_Setup(void)
 {
     /* No Additional "SPI" Configuration */
     return 0;
+}
+
+int MCU_Status(void)
+{
+    return EVE_MCU_GET();
 }
 
 // --------------------- Chip Select line low ----------------------------------
