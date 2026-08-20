@@ -117,13 +117,18 @@ int EVE_Init(void)
     // End of vertical sync pulse
     HAL_MemWrite16(EVE_REG_VSYNC1, (uint16_t)EVE_DISP_VSYNC1);
     // Define active edge of PCLK
-    HAL_MemWrite8(EVE_REG_PCLK_POL, (uint16_t)EVE_DISP_PCLKPOL);
+    HAL_MemWrite8(EVE_REG_PCLK_POL, (uint8_t)EVE_DISP_PCLKPOL);
     // Define RGB output pins
-    HAL_MemWrite8(EVE_REG_SWIZZLE, (uint16_t)EVE_DISP_SWIZZLE);
+    HAL_MemWrite8(EVE_REG_SWIZZLE, (uint8_t)EVE_DISP_SWIZZLE);
     // Turn on or off CSpread
-    HAL_MemWrite8(EVE_REG_CSPREAD, (uint16_t)EVE_DISP_CSPREAD);
+    HAL_MemWrite8(EVE_REG_CSPREAD, (uint8_t)EVE_DISP_CSPREAD);
     // Turn on or off Dither
-    HAL_MemWrite8(EVE_REG_DITHER, (uint16_t)EVE_DISP_DITHER);
+    HAL_MemWrite8(EVE_REG_DITHER, (uint8_t)EVE_DISP_DITHER);
+    // Turn on PCLK_2X if defined
+#if defined(EVE_DISP_PLCK_2X) && defined(EVE_REG_PCLK_2X)
+    // NOTE: See BT81x Prorammers Guide for requirements when usingg this register   
+    HAL_MemWrite8(EVE_REG_PCLK_2X, (uint8_t)EVE_DISP_PLCK_2X);
+#endif
 
     /* conigure touch if required */
 
