@@ -63,16 +63,32 @@ void eve_example(void)
     if (EVE_Init() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
-        while(1);
+        while (1);
     }
-    
+
     // Calibrate the display
     EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
-        while(1);
     }
+
+    // Generate a colour wheel in RAM_G
+    EVE_DEBUG_PRINTF("Generating Colour Wheel...\n");
+    generate_colour_wheel();
+
+    // Load the colour wheel as a bitmap into a handle
+    EVE_DEBUG_PRINTF("configuring Colour Wheel...\n");
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_DLSTART();
+    EVE_BEGIN(EVE_BEGIN_BITMAPS);
+    EVE_BITMAP_HANDLE(WHEEL_HANDLE);
+    EVE_CMD_SETBITMAP(WHEEL_RAMG_ADDR, WHEEL_FORMAT, 250, 250);
+    EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, 250, 250);
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
 
     // Start example code
     EVE_DEBUG_PRINTF("Starting demo:\n");

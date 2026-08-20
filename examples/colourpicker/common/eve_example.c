@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,6 +37,8 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
@@ -47,6 +49,8 @@
 #include <EVE.h> 
 
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 // Configuration
 
@@ -73,11 +77,11 @@
 #define WHEEL_TAG       10
 #define TAG_BACKGROUND  255
 
-// Local Storage
+/* LOCAL VARIABLES *****************************************************************/
 
 static WHEEL_STORAGE wheelline[WHEEL_SIZE];
 
-// Local Functions
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 // Convert RGB8 to RGB565
 static uint16_t rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b)
@@ -197,6 +201,8 @@ static void generate_colour_wheel(void)
     }
 }
 
+/* FUNCTIONS ***********************************************************************/
+
 void eve_display(void)
 {
     // Colour wheel position on screen
@@ -232,68 +238,89 @@ void eve_display(void)
         EVE_CLEAR_TAG(TAG_BACKGROUND);
         // Clear the screen with black
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
-        EVE_CLEAR(1,1,1);
+        // clear colour, tag, stencil
+        EVE_CLEAR(1, 1, 1);
         // Ensure following items are not tagged
         EVE_TAG_MASK(0);
 
-        // Return colour to white for following objects.
-        // Colour must be white to ensure images are displayed in their original colours
-        EVE_COLOR_RGB(255,255,255);
+        // The generated colour wheel bitmap has a hard, non-anti-aliased round edge.
+        // To smooth the edge, we draw an invisible circle and use blending so that the bitmap is
+        // visible only within the circle. This gives the colour wheel a cleaner, anti-aliased outline.
+        // The same technique can also be applied to other shapes, such as lines and rectangles.
+
+        // Alpha mask on only
+        EVE_COLOR_MASK(0, 0, 0, 1);
+        // Draw points
+        EVE_BEGIN(EVE_BEGIN_POINTS);
+        // Draw circle diameter of colour picker wheel
+        EVE_POINT_SIZE((WHEEL_SIZE / 2) * 16);
+        // Position at the center of where the colour picker will be (colour picker is 250x250)
+        EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
+        // End points
+        EVE_END();
+
+        // Enable colours, alpha disabled
+        EVE_COLOR_MASK(1, 1, 1, 0);
+        // Blend the bitmap colours into the cicle present in the alpha bufffer
+        EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
 
         // Place the colour picker circle at the coordinates defined previously
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         EVE_VERTEX2II(image_x, image_y, WHEEL_HANDLE, 0);
         EVE_END();
 
+        // Set the blending back to default so that any later items will not be affected
+        EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);		
+        // Re-enabble colours and alpha
+        EVE_COLOR_MASK(1, 1, 1, 1);
+
         // If screen has been touched outwith the colour picker, draw a red circle to alert user that they have touched invalid area
         // This will be a red ring with inner diameter 138 and outer diameter of 142
         // This is updated after the display list and so uses the value here on the next time the screen is rendered
-        // NOTE: This is before the colour picker is drawn in the display list and so the colour picker image will be on top of it
-        // Therefore, there is no need to make the center of the red circle transparent
         if (tag_outofrange)
         {
+            //save graphics context
+            EVE_SAVE_CONTEXT();
+
             // Alpha mask on only
             EVE_COLOR_MASK(0, 0, 0, 1);
             EVE_COLOR_A(255);
-            // Clear the stencil
-            EVE_CLEAR(0, 1, 0);
+            // Clear the colour buffer
+            EVE_CLEAR(1, 0, 0);
 
             // Draw points
             EVE_BEGIN(EVE_BEGIN_POINTS);
 
-            // Draw stencil for outside part of circle
-            EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
-            EVE_ALPHA_FUNC(EVE_TEST_GREATER, 0);
-
+            // Add shape into alpha buffer
+            EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
             // Draw circle diameter slightly larger than colour picker circle
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 10) * 16);
             // Position at the center of where the colour picker will be (colour picker is 250x250)
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
 
-            // Clear stencil for internal part of circle
-            EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INCR);
+            // Remove shape from alpha buffer
+            EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
             // Draw a circle diameter slightly smaller than the outer circle
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 1) * 16);
             // Draw the circle at the center of where the colour picker will be
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
-    
+
             // Turn the colour back on
             EVE_COLOR_MASK(1, 1, 1, 1);
+            // Blend into the shape we created in the alpha buffer
+            EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
             // Draw in red
             EVE_COLOR_RGB(255, 0, 0);
-            // Set the operation to draw within the stencil
-            EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
-            EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
+            // Set the operation to draw 
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 10) * 16);
+            // Draw the circle at the center of where the colour picker will be
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
 
-            // Finish with stencil
-            EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 1, 255);
-            // Finish drawing circles
+            // Finish drawing points
             EVE_END();
-            
-            // Restore colour to white
-            EVE_COLOR_RGB(255,255,255);
+
+            // Restore graphics context
+            EVE_RESTORE_CONTEXT();
         }
 
         // Print some details for debugging purposes
@@ -346,7 +373,7 @@ void eve_display(void)
         // Begin points
         EVE_BEGIN(EVE_BEGIN_POINTS);
         // Disable writes to the R, G and B and so draw to the alpha buffer only
-        EVE_COLOR_MASK(0,0,0,255);
+        EVE_COLOR_MASK(0, 0, 0, 1);
         // Draw a circle slightly smaller than the radius of the colour picker
         EVE_POINT_SIZE(((WHEEL_SIZE - 2) / 2) * 16);
         // Draw the circle at the center of where the colour picker will be
@@ -372,7 +399,7 @@ void eve_display(void)
         touch_y = (touch_xy & 0x0000FFFF);
         touch_x = ((touch_xy & 0xFFFF0000) >> 16);
 
-        if(tag_val ==10)
+        if(tag_val == 10)
         {
             uint32_t pixel_addr = 0;
             uint32_t pixel_val = 0;
@@ -404,8 +431,8 @@ void eve_display(void)
 #elif WHEEL_FORMAT == EVE_FORMAT_RGB332
             rgb332_to_rgb(pixel_val, &cr, &cg, &cb);
 #endif
-
-            touch_cursor_x = touch_x;// Also set the coordinate for the cursor (relative to the screen and not just the image)
+            // Also set the coordinate for the cursor (relative to the screen and not just the image)
+            touch_cursor_x = touch_x; 
             touch_cursor_y = touch_y;
         }
 
@@ -425,18 +452,30 @@ void eve_display(void)
     }
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        while (1);
+    }
 
     // Calibrate the display
-    eve_calibrate();
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+    }
 
     // Generate a colour wheel in RAM_G
+    EVE_DEBUG_PRINTF("Generating Colour Wheel...\n");
     generate_colour_wheel();
 
     // Load the colour wheel as a bitmap into a handle
+    EVE_DEBUG_PRINTF("configuring Colour Wheel...\n");
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
@@ -448,8 +487,7 @@ void eve_example(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    // Start the example code
-    eve_display();
-
-    while(1) {};
+    // Start example code
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
