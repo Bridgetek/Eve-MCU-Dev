@@ -9,7 +9,7 @@ The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host
 | --- | --- | 
 | Host operating system | Windows |
 | Application architecture | `x64` | 
-| Emulator library | Bridgetek `EVE_Emulator` |
+| Emulator library | Bridgetek **EVE_Emulator** |
 | Build environment | Visual Studio or a CMake-compatible toolchain | 
 | Platform definition | `PLATFORM_EMULATOR` |
 
@@ -41,7 +41,7 @@ If the EVE-MCU-Dev repository is distributed without its submodules, the complet
 ports/eve_emulator/EVE_Emulator
 ```
 
-The emulator header files, import library, and runtime DLLs should all be taken from the same EVE_Emulator revision. Mixing files from different releases may cause build or runtime compatibility problems.
+The emulator header files, import library, and runtime DLLs should all be taken from the same **EVE_Emulator** revision. Mixing files from different releases may cause build or runtime compatibility problems.
 
 
 ## Using the EVE Emulator in EVE-MCU-Dev Projects
@@ -567,7 +567,7 @@ Ensure that:
 - The application is built for `x64`.
 - The selected Visual Studio configuration is `x64`.
 - The selected MinGW or GCC toolchain produces 64-bit Windows applications.
-- All emulator DLLs come from the same EVE_Emulator revision.
+- All emulator DLLs come from the same **EVE_Emulator** revision.
 
 A 32-bit application cannot load the supplied 64-bit emulator DLLs.
 
