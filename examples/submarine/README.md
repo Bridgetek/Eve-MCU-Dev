@@ -6,11 +6,25 @@
 
 The `submarine` example demonstrates drawing multiple scissored areas, handling overlapped drawing, and gradients for skeuomorphism. 
 
-It uses the `sub_controls` and `compass_controls` snippets to draw the indicators.
+The example code uses the `sub_controls` and `compass_controls` from the [snippets](../snippets) directory to draw the indicators
 
 The example is intended to show an submarine depth and compass. The example shows a bulkhead compass.
 
-A helper application called `trig_furman` is used to perform trigonometry using furman angles. This has an implementation to allow for use with platforms without floating point or maths implementations.
+A helper application called `trig_furman` also from the [snippets](../snippets) directory is used to perform trigonometry using furman angles.
+
+## Screenshot
+
+The following is an screenshot of the `submarine` example:
+
+![Submarine Controls Example](docs/submarine.png)
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
 
 ## Platform Support
 
@@ -22,18 +36,6 @@ This example supports the following platforms:
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
-
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
-
-The following is an screenshot of the simple example.
-
-![Submarine Controls Example](docs/submarine.png)
 
 ## Platform Files and Folders
 
@@ -47,6 +49,21 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/dials/sub_controls.h](../snippets/dials/sub_controls.h) | Header file for submarine control widgets |
+| [snippets/dials/sub_depth.c](../snippets/dials/sub_depth.c) | Implementation file for submarine depth widget |
+| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
+| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
+| [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
@@ -88,16 +105,17 @@ This function is used to show the touchscreen calibration screen and prompt the 
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
-## Files and Folders
+### `sub_depth.c`
 
-The example contains a common directory with several files which comprises all the demo functionality.
+This snippet provides a function whichs renders a simulation of a depth indicator. It reads from zero showing an indicator pointing at a scaled depth.
 
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [snippets/dials/sub_controls.h](../snippets/dials/sub_controls.h) | Header file for submarine control widgets |
-| [snippets/dials/sub_depth.c](../snippets/dials/sub_depth.c) | Implementation file for submarine depth widget |
-| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
-| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
-| [docs](docs) | Documentation support files |
+The depth and the viewing window can be specified and a scaling factor is used for both the depth and the viewing window.
+
+### `compass_bulkhead.c`
+
+This snippet provides a function whichs renders a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
+
+### `trig_fruman.c`
+
+This snippept provides fucntions to perform trigonometry using angles in furmans rather than degrees or radians. Furman angles are an implementation of angles using only integer values to enable demos to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method. Macros are provided to turn degrees into furmans and vice versa, and to turn a radius and degrees/furmans into components for X and Y vector.
+

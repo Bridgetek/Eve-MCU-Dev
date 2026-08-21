@@ -4,7 +4,7 @@
 
 ## Data Visualiser Example
 
-The `datavisualiser` example demonstrates drawing a simple data visualiser application, utilising in-built EVE graphics primitives only to generate a variety of data indicator widgets. 
+The `datavisualiser` example demonstrates drawing a simple data visualiser application, utilising in-built EVE graphics primitives only to generate a variety of data indicator widgets. The example code uses the `touch`, `arcs`, `sound`, and `trig_furman` snippets from the [snippets](../snippets) directory to perform some of the drawing and provide application functionality. 
 
 The data indicator widgets are defined in standalone functions which can be easily incorporated into other applications, and are constructed entirely without any external graphics assets. These widgets can be resized as required and include; line plot graphs, bar indicators, circular gauges, and pie (or doughnut) chart segments.
 
@@ -12,12 +12,24 @@ The example includes a 'settings menu' button in the top right corner, which inc
 
 - The first sub menu can be used to select between running the example in 'demo' mode or in 'sensor' mode. The sensor mode functionality has intentionally not been implemented to allow users freedom in this regard. The demo mode utilises global variables to cycle readings on the indicator widgets.
  
-- The second sub menu utilises a arc control widget to implement a slider for controlling the LCD display brightness. The tracker feature is used for touch inputs on this widget.
+- The second sub menu utilises the arc control widget from the [snippets](../snippets) directory to implement a slider for controlling the LCD display brightness. The tracker feature is used for touch inputs on this widget.
 
-The following is an screenshot of the datavisualiser screen:
+## Screenshot
+
+The following is an screenshot of the `datavisualiser` example:
 
 ![DataVisualiser Screen Example](docs/dataVisualiser.png)
 
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+
+The screen items are scaled based on the defined screen resolution, as such there is no set maximum or minimum supported resolution. 
 
 ## Platform Support
 
@@ -31,18 +43,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
-
-
-The screen items are scaled based on the defined screen resolution, as such there is no set maximum or minimum supported resolution. 
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -67,7 +68,7 @@ The example contains a common directory with several files which comprises all t
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Arc style control widget routines |
 | [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
-| [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines
+| [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
@@ -116,16 +117,15 @@ This function is used to show the touchscreen calibration screen and prompt the 
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
-Another function of this file is to read a single touch tag from the screen.
+### `arcs.c`
 
-```
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-```
+The arcs snippet will draw a smooth arc using blending and stencilling. An optional gauge method allows the positioning of a marker to indicate where a marker is placed on the arc.
 
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
-If that register indicates a valid touch then this is flagged to the calling program.
+### `sound.c`
+
+The sounds snippet provides funtionality to enable audio driver circuity on development boards, and provide function calls to play the built-in sounds from the audio subsystem.
+
+### `trig_furman.c`
+
+This snippept provides fucntions to perform trigonometry using angles in furmans rather than degrees or radians. Furman angles are an implementation of angles using only integer values to enable demos to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method. Macros are provided to turn degrees into furmans and vice versa, and to turn a radius and degrees/furmans into components for X and Y vector.
+

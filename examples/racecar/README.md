@@ -6,15 +6,26 @@
 
 The `racecar` example demonstrates drawing a multi-function dashboard for a racing car. **This demo only works on the BT82x and BT81x devices.**
 
-A racecar dashboard is drawn using blending, scissoring, scaling, arcs and custom fonts. The `racecar` code uses the `furman` snippet from the [snippets](../snippets) directory to calculate angles using furman trigonometry. Furman angles are an implementation of angles using only integer values to enable this demo to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method.
+A racecar dashboard is drawn using blending, scissoring, scaling, arcs and custom fonts. The example code uses the `furman` snippet from the [snippets](../snippets) directory to calculate angles using furman trigonometry. 
 
 The example is intended to show an imagined dashboard for a racecar. In real life external inputs would provide the data for the vehicle speed, engine RPM, acceleration, braking, track position, battery charge status and gear selection. This data is precomputed and stored in arrays in the program.
 
 ## Screenshot
 
-The following is an screenshot of the racecar example.
+The following is an screenshot of the `racecar` example:
 
 ![Race Car Dashboard Example](docs/racecar.png)
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| No | No | Yes | Yes | Yes |
+
+The minimum screen size supported is 800x480 pixels. The display will scale for larger displays.
+
 
 ## Assets
 
@@ -145,17 +156,8 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
 
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| No | No | Yes | Yes | Yes |
-
-The minimum screen size supported is 800x480 pixels. The display will scale for larger displays.
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -251,3 +253,8 @@ Flash mapping addresses for BT817/8.
 ### `eve_assetload_flash_eve3.c`
 
 Flash mapping addresses for BT815/6.
+
+### `trig_furman.c`
+
+This snippept provides fucntions to perform trigonometry using angles in furmans rather than degrees or radians. Furman angles are an implementation of angles using only integer values to enable demos to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method. Macros are provided to turn degrees into furmans and vice versa, and to turn a radius and degrees/furmans into components for X and Y vector.
+

@@ -4,38 +4,15 @@
 
 ## Simple Example
 
-The `simple` example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G. 
+The `simple` example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G.  The example code uses the `touch` snippet from the [snippets](../snippets) directory to provide application functionality. 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
-## Platform Support
+## Screenshot
 
-This example supports the following platforms:
+The following is an screenshot of the `simple` example:
 
-| Port Name | Port Directory | 
-| --- | --- | 
-| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
-| [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
-| [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) (1) | 
-| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
-| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) (1) |
-| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) (1) | 
-| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) (2) | 
-| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) (2) | 
-| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
-| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
-| [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
-| [Generic using libMPSSE CMake](libft4222/README.md) | [libft4222](libft4222/) | 
-| [Generic using libMPSSE Visual Studio](libft4222/README.md) | [libft4222](libft4222/) | 
-| [Generic using libFT4222 CMake](libmpsse/README.md) | [libmpsse](libmpsse/) | 
-| [Generic using libFT4222 Visual Studio](libmpsse/README.md) | [libmpsse](libmpsse/) | 
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
-
-- (1) Hardware testing ongoing.
-- (2) Build environment incomplete.
- 
-Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+![Simple Example](docs/simple.png)
 
 ## EVE API Support
 
@@ -45,11 +22,34 @@ Supported EVE APIs in this example:
 | --- | --- | --- | --- | --- |
 | Yes | Yes | Yes | Yes | Yes |
 
-The following is an screenshot of the simple example.
+## Platform Support
 
-![Simple Example](docs/simple.png)
+This example supports the following platforms:
 
-## Platform Files and Folders
+| Port Name | Port Directory | 
+| --- | --- | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
+| [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
+| [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
+| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
+| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
+| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) (1) | 
+| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) (2) | 
+| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) (2) | 
+| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
+| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
+| [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [Generic using libMPSSE](libft4222/README.md) | [libft4222](libft4222/) | 
+| [Generic using libFT4222](libmpsse/README.md) | [libmpsse](libmpsse/) | | 
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
+
+- (1) Hardware testing ongoing.
+- (2) Build environment incomplete.
+ 
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## Platform Files
 
 ### `main.c`
 
@@ -61,6 +61,19 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
+| [common/eve_images.c](common/eve_images.c) | Image helper routines |
+| [docs](docs) | Documentation support files |
+
 
 ### `eve_example.c`
 
@@ -122,7 +135,7 @@ Another function of this file is to read a single touch tag from the screen.
     }
 ```
 
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
+A TAG event is read from the `EVE_REG_TOUCH_TAG` register. This is verified by reading the `EVE_REG_TOUCH_RAW_XY` register. 
 If that register indicates a valid touch then this is flagged to the calling program.
 
 ### `eve_images.c`
@@ -186,7 +199,7 @@ Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device
 Some EVE devices have a larger address space and also have an `EVE_BITMAP_SOURCE_H` command for the higher address bits.
 Other EVE devices have `EVE_BITMAP_LAYOUT_H` and `EVE_BITMAP_SIZE_H` to cope with larger supported bitmap sizes.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the bitmap handle on the device so that it can be used by subsequent display lists.
 
 ### `eve_fonts.c`
@@ -232,29 +245,17 @@ Once this has been written to RAM_G then the EVE device must be instructed how m
 
 A font must be set-up on the device before the font can be used. A font is essentially a set of bitmaps, 
 one for each character. The bitmap parameters are therefore needed to be setup in the same way as other
-bitmaps are. The device needs the `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands 
+bitmaps are. The device needs the `EVE_BITMAP_SOURCE`, `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands 
 to properly render the font's characters. 
 
-On BT82x, using the `eve.CMD_SETFONT` command, and on FT81x, BT88x, BT81x, using the `eve.CMD_SETFONT2` 
+On BT82x, using the `EVE_CMD_SETFONT` command, and on FT81x, BT88x, BT81x, using the `EVE_CMD_SETFONT2` 
 command, the co-processor will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
 
 On FT80x the required information for setting up the font must be taken from the font structure. In this
 example it uses a cast to the data structure cast as `font0_hdr`. 
-Finally, the `eve.CMD_SETFONT` command will initialise the font on the device and associate it with the 
+Finally, the `EVE_CMD_SETFONT` command will initialise the font on the device and associate it with the 
 supplied handle.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the font handle on the device so that it can be used by subsequent display lists.
-
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
-| [common/eve_images.c](common/eve_images.c) | Image helper routines |
-| [docs](docs) | Documentation support files |

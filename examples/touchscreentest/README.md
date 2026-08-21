@@ -6,13 +6,27 @@
 
 The `touchscreentest` example demonstrates detection of a touch event on a display, displays the raw x,y touch location and the transformed x,y touch location used for tag generation. It will also show a sketch area for testing the output of the touch events.
 
+The example code uses the `touch` snippet from the [snippets](../snippets) directory to provide application functionality. 
+
 A printout of the touchscreen calibration matrix is also shown for reference. There are three buttons "Recalibrate", "Restore", and "Clear". The recalibrate button will perform a 3 point auto-calibration and update the touchscreen calibration matrix; the restore button will reload the original calibration matrix; the clear button will clear the contents of sketch area.
 
 When a touch on the screen is detected then a pair of crosshairs are drawn showing the transformed x,y touch location clearly.
 
 Multiple touch is not supported as this function depends on the same touchscreen calibration matrix transformation as a single touch.
 
-This example supports the following platforms:
+## Screenshot
+
+The following is an screenshot of the `touchscreentest` example:
+
+![Touch Screen Test Example](docs/touchscreentest.png)
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
 
 ## Platform Support
 
@@ -26,19 +40,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
-
-The following is an screenshot of the touchscreentest example.
-
-![Touch Screen Test Example](docs/touchscreentest.png)
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -50,6 +52,17 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [common/eve_images.c](common/eve_images.c) | Image helper routines |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
@@ -212,13 +225,3 @@ The sketch can be cleared at any point by setting the area for the bitmap to all
 
 Again a call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
 
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [common/eve_images.c](common/eve_images.c) | Image helper routines |
-| [docs](docs) | Documentation support files |

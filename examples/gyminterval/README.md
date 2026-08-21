@@ -4,7 +4,7 @@
 
 ## GymInterval Example
 
-The `gyminterval` example demonstrates drawing a countdown timer for interval training in a gym. 
+The `gyminterval` example demonstrates drawing a countdown timer for interval training in a gym. The example code uses the `arcs`, and `sound` snippets from the [snippets](../snippets) directory to perform some of the drawing and provide application functionality. 
 
 An animated countdown timer is drawn using arcs, text scaling and simple animation. The tracker feature is used for setting up the example. 
 
@@ -16,7 +16,7 @@ The interval timer allows a variable number of "sets" which are repeated a by th
 
 The number of sets and cycles, along with the length of each set and the reset times between each set and cycle is setup. To change one of the 5 parameters click on the setting to change then adjust the counter or time using the scroll-wheel surrounding the "GO" button.
 
-The following is an screenshot of the gyminterval setup screen.
+The following is an screenshot of the `gyminterval` setup screen.
 
 ![GymInterval Setup Screen Example](docs/setup.png)
 
@@ -27,6 +27,16 @@ Once the timer has started then the countdown will be shown as a time in the cen
 ![GymInterval Start Example](docs/start.png)
 
 ![GymInterval Timer Example](docs/timer.png)
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays.
 
 ## Platform Support
 
@@ -41,17 +51,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
-
-The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays.
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -74,6 +74,8 @@ The example contains a common directory with several files which comprises all t
 | [README.md](README.md) | This file |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Implementation file for Arc style control widget |
+| [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
@@ -148,3 +150,12 @@ Another function of this file is to read a single touch tag from the screen.
 
 A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
 If that register indicates a valid touch then this is flagged to the calling program.
+
+### `arcs.c`
+
+The arcs snippet will draw a smooth arc using blending and stencilling. An optional gauge method allows the positioning of a marker to indicate where a marker is placed on the arc.
+
+### `sound.c`
+
+The sounds snippet provides funtionality to enable audio driver circuity on development boards, and provide function calls to play the built-in sounds from the audio subsystem.
+

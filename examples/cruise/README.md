@@ -4,13 +4,29 @@
 
 ## Cruise Example
 
-The `cruise` example demonstrates drawing multiple seven segment displays on the same screen, blending, scissoring, and trackers. The `cruise` code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform some of the drawing. 
+The `cruise` example demonstrates drawing multiple seven segment displays on the same screen, blending, scissoring, and trackers. The example code code uses the `sevenseg` snippet from the [snippets](../snippets) directory to perform some of the drawing. 
 
 The example is intended to show a reimagined cruise control for a vehicle. The physical control for which would be a rotating turn wheel (with presumably a shaft encoder), an integrated click button (the whole rotating wheel physically registers a press) and a touchscreen display. An external input would provide a signal for when the vehicle would disengage cruise control, e.g. when the brakes are depressed. The touchscreen would be overridden and disabled in software by the click button.
 
 The display comprises two parts: the left side is a circular display which is the operational part of the touchscreen on the physical control; the right side are touchscreen controls to mimic the function of the turn wheel, button click and brake input.
 
 On screens of width/height 480 pixels only the circular control is shown. On wider screens the control buttons will be shown.
+
+## Screenshot
+
+The following is an screenshot of the `cruise` example:
+
+![Cruise Example](docs/cruise.png)
+
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| No | Yes | Yes | Yes | Yes |
+
 
 ## Platform Support
 
@@ -25,26 +41,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-This example supports the following platforms:
-
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-|Raspberry Pi Pico | pico | Yes |
-|Generic using libFT4222 | libft4222 | Yes |
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| No | Yes | Yes | Yes | Yes |
-
-The following is an screenshot of the simple example.
-
-![Cruise Example](docs/cruise.png)
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -56,6 +53,17 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/widgets/sevenseg.c](../widgets/sevenseg.c) | Implementation file for 7 segment LED widget |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
@@ -97,12 +105,7 @@ This function is used to show the touchscreen calibration screen and prompt the 
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
-## Files and Folders
+### `seveseg.c`
 
-The example contains a common directory with several files which comprises all the demo functionality.
+This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimal displays, and for 16 a dash '-' is displayed.
 
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [docs](docs) | Documentation support files |

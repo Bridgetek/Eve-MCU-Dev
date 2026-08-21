@@ -6,7 +6,15 @@
 
 The `colourpicker` example demonstrates drawing a colour picker wheel using several bitmap formats. If a touch is detected on the colour wheel then the colour is decoded from the raw image stored in RAM_G. The correct bitmap format is decoded into RGB components. These are displayed on the screen for reference. If a touch is detected outwith the wheel then a red circle is drawn around the wheel to indicate an error.
 
+The example code uses the `touch` snippet from the [snippets](../snippets) directory to provide application functionality.
+
 The generation of the bitmap for the colour picker wheel is done using floating point arithmetic when the program starts to run. The platform on which this is being run must therefore support floating point libraries.
+
+## Screenshot
+
+The following is an screenshot of the `colourpicker` example:
+
+![Colour Picker Example](docs/colourpicker.png)
 
 ## Platform Support
 
@@ -21,24 +29,24 @@ Platform specific build instructions and setup requirements are shown in the `RE
 
 ## EVE API Support
 
-This example supports the following platforms:
-
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-|Emulator | emulator | Yes |
-|Generic using libFT4222 | libft4222 | Yes |
-
 Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
 | No | Yes | Yes | Yes | Yes |
 
-The following is an screenshot of the simple example.
+## Files and Folders
 
-![Colour Picker Example](docs/colourpicker.png)
+The example contains a common directory with several files which comprises all the demo functionality.
 
-## Platform Files and Folders
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [docs](docs) | Documentation support files |
+
+
+## Platform Files
 
 ### `main.c`
 
@@ -50,6 +58,8 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files
 
 ### `eve_example.c`
 
@@ -106,13 +116,3 @@ Once calibration is complete, the main loop is called which sits in a continuous
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
-
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [docs](docs) | Documentation support files |

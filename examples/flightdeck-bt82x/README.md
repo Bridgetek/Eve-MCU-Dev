@@ -8,9 +8,23 @@ The `flightdeck-bt82x` example demonstrates LVDS video. **This demo only works o
 
 Video is taken from the LVDS RX channel and rendered into RAM_G as a bitmap. The rendered bitmap is used on the screen a background on the display. An altimeter and attitude indicator are drawn from the snippets library on top of the video background. If there is no LVDS input then a fixed image is used.
 
-See the [flightdeck](../flightdeck/README.md) example for information on the altimeter and attitude indicator.
-
 A WUXGA (1920x1200) or FullHD (1920x1080) screen is recommended. A FullHD LVDS video input of 1920x1080 is expected.
+
+The example code usses the `flight_controls` and `compass_controls` from the [snippets](../snippets) directory to draw the indicators. Similarly helper application called `trig_furman` also is used to perform trigonometry using furman angles.
+
+## Screenshot
+
+The following is an screenshot of the `flightdeck-bt82x` example:
+
+![Flightdeck Controls Example](docs/flightdeck-bt82x.png)
+
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| No | No | No | No | Yes |
 
 ## Platform Support
 
@@ -23,19 +37,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| No | No | No | No | Yes |
-
-The following is an screenshot of the simple example.
-
-![Flightdeck Controls Example](docs/flightdeck-bt82x.png)
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
@@ -47,6 +49,22 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 - **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/dials/flight_controls.h](../snippets/dials/flight_controls.h) | Header file for flight control widgets |
+| [snippets/dials/flightatt.c](../snippets/dials/flightatt.c) | Implementation file for flight control attitude widgets |
+| [snippets/dials/flightalt.c](../snippets/dials/flightalt.c) | Implementation file for flight control altitude widgets |
+| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
+| [snippets/dials/compass_binnacle.c](../snippets/dials/compass_binnacle.c) | Implementation file for binnacle compass widget |
+| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
@@ -95,16 +113,23 @@ This function is used to show the touchscreen calibration screen and prompt the 
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
-## Files and Folders
+### `flightatt.c`
 
-The example contains a common directory with several files which comprises all the demo functionality.
+This snippet provides a function which renders a simulation of a attitude indicator. It displays pitch, roll and climb.
 
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [snippets/dials/sub_controls.h](../snippets/dials/sub_controls.h) | Header file for submarine control widgets |
-| [snippets/dials/sub_depth.c](../snippets/dials/sub_depth.c) | Implementation file for submarine depth widget |
-| [snippets/dials/compass_controls.h](../snippets/dials/compass_controls.h) | Header file for compass widgets |
-| [snippets/dials/compass_bulkhead.c](../snippets/dials/compass_bulkhead.c) | Implementation file for bulkhead compass widget |
-| [docs](docs) | Documentation support files |
+The pitch, roll and climb are specified in the call and are in furmans. The range of pitch and climb must be between 0xc000 furmans (-90 degrees) and 0x4000 (+90 degrees). Roll may be between 0x8000 (-180 degrees) and 0x7fff (+180 degrees). 
+
+### `flightalt.c`
+
+This snippet provides a function which renders a simulation of a altitude indicator. It reads from zero to 10000 feet. It has 2 hands measuring thousands and hundreds of feet.
+
+The altitude is specified in the call. It is clamped to 0 to 10000 feet as a real-life altitude indicator would.
+
+### `compass_binnacle.c`
+
+This snippet provides a function which renders a simulation of a binnacle mounted compass. It portrays a top-down view of a rotating compass.
+
+### `compass_bulkhead.c`
+
+This snippet provides a function which renders a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
+
