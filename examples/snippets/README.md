@@ -697,7 +697,7 @@ These widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furma
 
 #### compass_binnacle
 
-This is a simulation of a binnacle mounted compass. It portrays a top-down view of a roating compass.
+This is a simulation of a binnacle mounted compass. It portrays a top-down view of a rotating compass.
 
 ![Binnacle Compass](docs/compass_binnacle.png)
 
@@ -735,7 +735,7 @@ compass_binnacle(300, 300, 250, OPT_COMPASS_BEZEL, 127);
 
 #### compass_bulkhead
 
-This is a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
+This is a simulation of a binnacle mounted compass. It portrays a side-on view of a rotating compass.
 
 ![Bulkhead Compass](docs/compass_bulkhead.png)
 
