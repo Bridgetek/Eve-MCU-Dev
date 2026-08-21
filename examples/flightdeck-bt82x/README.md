@@ -132,4 +132,3 @@ This snippet provides a function which renders a simulation of a binnacle mounte
 ### `compass_bulkhead.c`
 
 This snippet provides a function which renders a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
-

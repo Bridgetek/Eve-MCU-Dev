@@ -16,6 +16,14 @@ The following is an screenshot of the `colourpicker` example:
 
 ![Colour Picker Example](docs/colourpicker.png)
 
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| No | Yes | Yes | Yes | Yes |
+
 ## Platform Support
 
 This example supports the following platforms:
@@ -26,25 +34,6 @@ This example supports the following platforms:
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
-
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| No | Yes | Yes | Yes | Yes |
-
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [docs](docs) | Documentation support files |
-
 
 ## Platform Files
 
@@ -59,7 +48,15 @@ The `main.c` code is platform specific. It must provide any functions that rely 
 
 The example program in the common code is then called.
 
-## Common Files
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 

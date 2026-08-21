@@ -158,4 +158,3 @@ The arcs snippet will draw a smooth arc using blending and stencilling. An optio
 ### `sound.c`
 
 The sounds snippet provides funtionality to enable audio driver circuity on development boards, and provide function calls to play the built-in sounds from the audio subsystem.
-

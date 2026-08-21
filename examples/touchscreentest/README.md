@@ -224,4 +224,3 @@ The bitmap with handle `BITMAP_SKETCH` is drawn in the main look of the example 
 The sketch can be cleared at any point by setting the area for the bitmap to all zeros with a `EVE_CMD_MEMSET` command.
 
 Again a call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
-

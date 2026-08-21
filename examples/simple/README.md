@@ -242,7 +242,6 @@ Once this has been written to RAM_G then the EVE device must be instructed how m
     EVE_DISPLAY();
     EVE_CMD_SWAP();
 ```
-
 A font must be set-up on the device before the font can be used. A font is essentially a set of bitmaps, 
 one for each character. The bitmap parameters are therefore needed to be setup in the same way as other
 bitmaps are. The device needs the `EVE_BITMAP_SOURCE`, `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands 

@@ -108,4 +108,3 @@ The platform specific functions in `main.c` are called from this routine to stor
 ### `seveseg.c`
 
 This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimal displays, and for 16 a dash '-' is displayed.
-

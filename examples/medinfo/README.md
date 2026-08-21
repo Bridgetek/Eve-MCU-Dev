@@ -238,4 +238,3 @@ This widget will simulate a 7 segment LED display. Active LEDs will be drawn in 
 ### `dialogs.c`
 
 This snippet provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the selected options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by default, take an input font handle, and message string. Options are available to render the widgets flat, and their colour can be set by preceding CMD_FGCOLOUR call, while the text colour can be set similarly with a `COLOR_RGB` call.
-
