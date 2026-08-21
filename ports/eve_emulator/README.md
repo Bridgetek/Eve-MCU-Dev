@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the `EVE_Emulator` library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because as the EVE Emulator library is not currently distributed for Linux.
+The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because as the EVE Emulator library is not currently distributed for Linux.
 
 ## Requirements 
 | Requirement | Details | 
@@ -101,7 +101,7 @@ The required DLLs must be available in the same output directory as the applicat
 | --- | --- |
 | `bt8xxemu.dll` | Main EVE Emulator runtime library |
 | `mx25lemu.dll` | Additional flash-emulation dependency |
-| `zlib.dll` | Compression dependency used bbyy EVE for certain API function calls |
+| `zlib.dll` | Compression dependency used by EVE for certain API function calls |
 
 The provided Visual Studio projects and `CMakeLists.txt` files automatically copy the available DLLs to the executable output directory after the application is built.
 
@@ -179,6 +179,7 @@ The emulator port supports the following storage features:
 | SD-card folder | `EVE_EMULATOR_SD_FOLDER` | 5 only |
 
 Defining one of these macros for an unsupported EVE API level causes a compilation error.
+
 ## Emulator Asset Paths for Flash and SD Cards
 
 The flash-image and SD-card-folder macros use the same path-resolution rules.
@@ -509,7 +510,7 @@ For example, if the normal display configuration is:
 #define EVE_DISP_HEIGHT 480
 ```
 
-a configuration intended to operate permanently in a 90-degree rotated orientation should use:
+a configuration intended to operate permanently in a 90-degree or 270-degree rotated orientation should use:
 
 ```c
 #define EVE_DISP_WIDTH  480
