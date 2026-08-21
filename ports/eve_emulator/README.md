@@ -181,6 +181,36 @@ EVE_EMULATOR_SD_FOLDER_=TEXT("sdFolderName")`. This allows projects to be easily
 
 The `CMakeLists.txt` file can be utilised to copy the dessired folder to the same output directory as the executable, the folder file can also be copied via a post build command in `Visual Studio`, or manually copied to this location.
 
+
+## Emulator Limitations
+
+### Multi-Touch Support
+
+The EVE Emulator DLL provides API functions which can be used to simulate multi-touch input.
+
+Multi-touch support is not currently implemented by the EVE-MCU-Dev emulator port. Applications using this port are therefore limited to single touch inputs via a mouse during screen emulation.
+
+Support for the EVE Emulator multi-touch API may be added in a future update.
+
+### Display Rotation
+
+When display rotation is performed using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`, the dimensions of the emulator window are determined by the configured display resolution.
+
+For rotations which swap the horizontal and vertical axes, the values of `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` must also be swapped in the display configuration contained within `EVE.h`. This ensures that the emulator creates a window with the correct orientation and aspect ratio.
+
+For example, if the normal display configuration is:
+
+```
+#define EVE_DISP_WIDTH  800
+#define EVE_DISP_HEIGHT 480
+```
+a configuration intended to operate permanently in a 90-degree rotated orientation should use:
+```
+#define EVE_DISP_WIDTH  480
+#define EVE_DISP_HEIGHT 800
+```
+The `EVE_REG_ROTATE` register or `EVE_CMD_SETROTATE` command controls how the EVE display is rendered, but it does not automatically resize or reshape the host window created by the emulator.
+
 # Linux
 
 Linux builds are not supported as the emulator is not distributed for Linux.

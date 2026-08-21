@@ -111,7 +111,7 @@ The library structure is designed to provide a format where multiple examples wi
 
 ### Folder Structure
 
-The library is structured as follows. There are common sections containing source code for the EVE API and EVE HAL layers and header files for the EVE API, EVE HAL and MCU Specific layer. The interface between the EVE HAL layer and the MCU Specific layer are defined in these headers and the source code for each MCU port can be selected in the build instructions or using defined macros. Additional device- or feature-specific functionality is contained in the `extensions` subdirectories of `include` and `source`.
+The library is organised into a number of top-level directories. The `include` directory contains the public header files for the EVE API, EVE HAL, and MCU-specific interface, while the `source` directory contains the common EVE API and EVE HAL implementations. Platform-specific MCU implementations are located under the `ports` directory and are selected through the build configuration or platform-specific macros. Device- and feature-specific functionality that is not part of the common API implementation is separated into matching `include/extensions` and `source/extensions` directories, containing the public extension interfaces and their corresponding source implementations.
 
 #### Common Library Files
 
