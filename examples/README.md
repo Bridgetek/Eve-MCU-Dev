@@ -55,6 +55,7 @@ The following example code is available:
 | [simple](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
 | [b2tf](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
 | [cruise](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
+| [colourpicker](colourpicker/README.md) | Colour picker display demo code. This dynamic bitmap generation and actions for user inputs. |
 | [datavisualiser](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
 | [flightdeck](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
 | [flightdeck-bt82x](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
