@@ -323,6 +323,8 @@ void eve_display(void)
             EVE_RESTORE_CONTEXT();
         }
 
+        // TODO: OPT_FORMAT is not supported in FT80x/FT81x, refactor these text prints to be compatible.
+#if IS_EVE_API(3,4,5)
         // Print some details for debugging purposes
         // Touch X,Y coordinates
         EVE_CMD_TEXT((image_x + WHEEL_SIZE + gap_x), (image_x + gap_y + 20), 26, EVE_OPT_FORMAT , "X : %d ", touch_x);
@@ -333,6 +335,7 @@ void eve_display(void)
         EVE_CMD_TEXT((image_x + WHEEL_SIZE + gap_x), (image_x + gap_y + 110), 26, EVE_OPT_FORMAT , "B : %d ", cb);
         // Tag value of selection
         EVE_CMD_TEXT((image_x + WHEEL_SIZE + gap_x), (image_x + gap_y + 140), 26, EVE_OPT_FORMAT , "Tag : %d ", tag_val);
+#endif 
 
         // Draw a rectangle which will display the colour chosen on the colour picker
         // This rectangle and the above debug output are positioned to the right hand side of the colour picker itself
@@ -452,7 +455,6 @@ void eve_display(void)
     }
 }
 
-// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
