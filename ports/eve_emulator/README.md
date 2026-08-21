@@ -340,7 +340,7 @@ The configured size should be suitable for both the selected EVE device and the 
 
 Flash writes are temporary by default and are not written back to the flash-image file.
 
-The native `EVE Emulator` API supports persistent flash writes through the `Persistent` member of `BT8XXEMU_FlashParameters`. The EVE-MCU-Dev emulator port does not currently expose this setting through a configuration macro.
+The native `EVE Emulator` API supports persistent flash writes through the `Persistent` member of `BT8XXEMU_FlashParameters`. 
 
 ### Flash Image Recommendations
 
@@ -483,7 +483,7 @@ The folder can be copied to the executable output directory using:
 
 ### Multi-Touch Support
 
-The `EVE Emulator` DLL provides the following API functions for simulating multiple touch points:
+The **EVE_Emulator** DLL provides the following API functions for simulating multiple touch points:
 
 ```c
 BT8XXEMU_touchSetXY()
