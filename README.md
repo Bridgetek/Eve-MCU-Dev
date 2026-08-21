@@ -111,7 +111,7 @@ The library structure is designed to provide a format where multiple examples wi
 
 ### Folder Structure
 
-The library is structured as follows. There are common sections containing source code for the EVE API and EVE HAL layers and header files for the EVE API, EVE HAL and MCU Specific layer. The interface between the EVE HAL layer and the MCU Specific layer are defined in these headers and the source code for each MCU port can be selected in the build instructions or using defined macros.
+The library is structured as follows. There are common sections containing source code for the EVE API and EVE HAL layers and header files for the EVE API, EVE HAL and MCU Specific layer. The interface between the EVE HAL layer and the MCU Specific layer are defined in these headers and the source code for each MCU port can be selected in the build instructions or using defined macros. Additional device- or feature-specific functionality is contained in the `extensions` subdirectories of `include` and `source`.
 
 #### Common Library Files
 
@@ -126,8 +126,19 @@ The library is structured as follows. There are common sections containing sourc
 - `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
 - `\include\MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
 - `\include\Platform.h` Linux header file for access to the MCU layer from the abstraction layer.
+
   
 **Bold** files are the files with the recommended access points for a program into the library.
+
+
+Extension-specific functionality is separated from the common EVE API source and header files. Extension header files are located in `\include\extensions`, with their corresponding implementations located in `\source\extensions`. These files provide functionality which is required only for specific EVE device generations or configurations and can be excluded from projects if the are not required.
+
+* `\source\extensions\bt82x_patch.c` Implementation of the BT82x base patch loader and the additional API commands provided by the base patch for EVE API level 5 devices.
+* `\include\extensions\bt82x_patch.h` Definitions and function declarations for the BT82x base patch functionality.
+* `\source\extensions\custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `CUSTOM_TOUCH` define is enabled.
+* `\include\extensions\custom_touch_fw.h` Function declarations for the custom touch firmware extension.
+
+The extension source files are included in the build only where required for the selected EVE API or configuration. Extension headers are referenced through the main `\include` directory, for example `#include <extensions//t82x_patch.h>`.
 
 The file `EVE_HAL.c` is intended for MCU platforms, the file `EVE_HAL_Linux.c` is for _Linux-like_ platforms such as BeagleBone and RPi platforms. Code which uses the MPSSE and FT4222H interfaces will use the simpler `EVE_HAL.c` code.
 
