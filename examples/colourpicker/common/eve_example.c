@@ -248,22 +248,31 @@ void eve_display(void)
         // visible only within the circle. This gives the colour wheel a cleaner, anti-aliased outline.
         // The same technique can also be applied to other shapes, such as lines and rectangles.
 
+        // As the circle used for the colour picker image is actually a square shape and we don't want the tag to be valid on the corners
+        // By using the invisible circle as our tagged item we can ensure only the actual colour wheel area is tagged.
+        // When we draw invisible circle we also want to tag this with tag = 10
+
+        // Enable tagging
+        EVE_TAG_MASK(1);
+        // Set tag to 10 for any items drawn after this
+        EVE_TAG(WHEEL_TAG);
         // Alpha mask on only
         EVE_COLOR_MASK(0, 0, 0, 1);
         // Draw points
         EVE_BEGIN(EVE_BEGIN_POINTS);
-        // Draw circle diameter of colour picker wheel
-        EVE_POINT_SIZE((WHEEL_SIZE / 2) * 16);
+        // Draw a circle slightly smaller (1px) than the radius of the colour picker
+        EVE_POINT_SIZE(((WHEEL_SIZE / 2) - 1) * 16);
         // Position at the center of where the colour picker will be (colour picker is 250x250)
         EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
         // End points
         EVE_END();
-
+        // Disable tagging for any subsequent items
+        EVE_TAG_MASK(0);
         // Enable colours, alpha disabled
         EVE_COLOR_MASK(1, 1, 1, 0);
         // Blend the bitmap colours into the cicle present in the alpha bufffer
         EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
-
+        
         // Place the colour picker circle at the coordinates defined previously
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         EVE_VERTEX2II(image_x, image_y, WHEEL_HANDLE, 0);
@@ -365,24 +374,6 @@ void eve_display(void)
         // 10 pixels to the right of the center of the cursor point
         EVE_VERTEX2F((touch_cursor_x + 10) * 16, touch_cursor_y * 16);
         EVE_END();
-
-        // Draw an invisible circle tagged with tag 10
-        // This circle is used as the colour picker image is actually a square shape and we don't want the tag to be valid on the corners
-        // By using the invisible circle, only the actual colour wheel area is tagged.
-        // Enable tagging
-        EVE_TAG_MASK(1);
-        // Set tag to 10 for any items drawn after this
-        EVE_TAG(WHEEL_TAG);
-        // Begin points
-        EVE_BEGIN(EVE_BEGIN_POINTS);
-        // Disable writes to the R, G and B and so draw to the alpha buffer only
-        EVE_COLOR_MASK(0, 0, 0, 1);
-        // Draw a circle slightly smaller than the radius of the colour picker
-        EVE_POINT_SIZE(((WHEEL_SIZE - 2) / 2) * 16);
-        // Draw the circle at the center of where the colour picker will be
-        EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
-        // Disable tagging for any subsequent items
-        EVE_TAG_MASK(0);
 
         // Finish the display list
         EVE_DISPLAY();
