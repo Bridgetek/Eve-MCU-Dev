@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because as the EVE Emulator library is not currently distributed for Linux.
+The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because the **EVE_Emulator** library is not currently distributed for Linux.
 
 ## Requirements 
 | Requirement | Details | 
