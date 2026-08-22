@@ -122,12 +122,14 @@ The application must be built using an `x64` configuration.
 
 When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
 
+## Command-Line Builds (CMake)
 
-### Visual Studio
+The `CMakeLists.txt` files for an example are normally located in its:
 
-The Visual Studio project files for examples are found in the `\emulator\VisualStudio` folder. .
-
-### Command-Line Builds
+```text
+emulator
+```
+subdirectory.
 
 To configure an example using CMake's default generator:
 
@@ -169,6 +171,8 @@ cmake --build build --config Release
 
 The executable location depends on the selected generator and build configuration. For example, a Visual Studio build commonly places the executable in `build\Debug` or `build\Release`.
 
+When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
+
 ## Flash and SD Card Support
 
 The emulator port supports the following storage features:
@@ -180,13 +184,13 @@ The emulator port supports the following storage features:
 
 Defining one of these macros for an unsupported EVE API level causes a compilation error.
 
-## Emulator Asset Paths for Flash and SD Cards
+### Emulator Asset Paths for Flash and SD Cards
 
 The flash-image and SD-card-folder macros use the same path-resolution rules.
 
 On Windows, the native emulator API defines `eve_tchar_t` as `wchar_t`. Paths should therefore be supplied using either the Windows `TEXT("...")` macro or a wide string literal such as `L"..."`.
 
-### Relative Paths
+#### Relative Paths
 
 Relative paths are resolved from the directory containing the application executable.
 
@@ -212,7 +216,7 @@ A path beginning with a single `/` or `\` is also treated as relative to the exe
 
 For clarity, relative paths should normally be specified without a leading separator.
 
-### Absolute Paths
+#### Absolute Paths
 
 Drive-rooted Windows paths are treated as absolute:
 
@@ -226,7 +230,7 @@ UNC paths are also treated as absolute:
 TEXT("\\\\server\\share\\flash.bin")
 ```
 
-### Path Validation
+#### Path Validation
 
 Before starting or configuring the emulator, the port verifies that:
 
