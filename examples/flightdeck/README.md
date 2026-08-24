@@ -72,7 +72,7 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
     // Initialise the display

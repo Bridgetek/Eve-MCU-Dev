@@ -3,19 +3,19 @@
 ## Command Line Compilation
 
 To configure the project with the default C compiler:
-```
+```console
     cmake -B build -S .
 ```
 On Windows, if an MSVC compiler is not the default compiler on your platform then choose a suitable Visual Studio compiler explicitly:
-```
+```console
     cmake -B build -S . -G "Visual Studio 17 2022"
 ```
 On Windows, to compile the project use the MinGW C compiler:
-```
+```console
     cmake -B build -S . -G "MinGW Makefiles"
 ```
 Then to compile:
-```
+```console
     cmake --build build
 ```
 Default builds are compiled with debugging enabled. 

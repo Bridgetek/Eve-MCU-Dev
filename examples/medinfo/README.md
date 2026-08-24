@@ -36,13 +36,13 @@ Assets are stored in the EVE device Flash. Different Flash images for BT815/6, B
 The addresses of the various assets in the flash image must be modified if the flash image is recreated or modified. To do this a python script called `flashmap.py` is provided in the `assets` directory. This will modify code associated with markers in the source code files to match the flash image. There is a `.bin` file and a `.map` file created by EVE Asset Builder (EAB) when a flash image is created. The script takes the data for the assets from the `.map` file and modifies one of the `common/eve_assetload_flash_eve*.c` files. 
 
 For example, to update the flash image pointers for a BT817/8 (EVE4) the script on Windows from the `assets` directory is run as follows:
-```
-python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
+```console
+    python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
 ```
 The map file for the flash image is `assets\eve4\flash-817-default.map` and the C file to update is `common\eve_assetload_flash_eve4.c`. Relative paths from the `assets` directory are shown.
 
 The script confirms the update with the output:
-```
+```console
 Setting map offsets and sizes from "eve4\flash-817-default.map" to "..\common\eve_assetload_flash_eve4.c"
 ```
 The example program will expect assets loaded from the EVE device flash to be at the addresses in the `.map` file. The `.bin` file must be programmed into the EVE device flash.
@@ -146,7 +146,7 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(const char *assets)
 {
     // Configure asset properties for custom assets used in application
@@ -219,7 +219,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {

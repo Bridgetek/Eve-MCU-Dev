@@ -68,7 +68,7 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
     // Initialise the display
@@ -124,7 +124,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {
@@ -148,7 +148,7 @@ RAM_G address specified in the command.
 In the following code snippet from the example the `while` loop will look for the end marker of the JPG
 data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
-```
+```c
     EVE_CMD_LOADIMAGE(start_addr, 0);
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
@@ -172,7 +172,7 @@ data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
 Once loaded into RAM_G the `EVE_CMD_GETPROPS` command can find the size of the image.
 
-```
+```c
     EVE_LIB_GetProps(&eve_addr, &img_width, &img_height);
 ```
 
@@ -181,7 +181,7 @@ The code will select bitmap mode with the `EVE_BEGIN`, this tells the device tha
 Then it will set the source address of the bitmap in RAM_G with `EVE_BITMAP_SOURCE`. 
 Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device how to render the bitmaps included in the font.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);
@@ -205,7 +205,7 @@ If this memory allocation is too large for the available RAM_G on a device then 
 The memory area for the bitmap is cleared to zero initially. 
 The sketch is started when the `EVE_CMD_SKETCH` command is received.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_CMD_MEMSET(sketch_addr, 0, EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
     EVE_CMD_SKETCH(0, 0, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, sketch_addr, EVE_FORMAT_L8);

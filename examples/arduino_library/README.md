@@ -29,7 +29,7 @@ The display panel settings can be chosen at runtime from a set configured into t
 
 The python script `libbuild.py` is run with the following options:
 
-```
+```console
 > libbuild.py --help
 usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB]
 
@@ -166,7 +166,7 @@ The script needs a valid EVE-MCU-Dev directory with current files located either
 ### Manually Adding the Library to a Sketch
 
 The library can be added to a sketch by including the lines in the example below. This example is for the API 5 library for BT82x, the number corresponds to the API.
-```
+```c++
 #include <BridgetekEVE5.h>
 
 BridgetekEVE5 eve;

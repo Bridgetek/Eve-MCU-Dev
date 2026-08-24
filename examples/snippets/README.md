@@ -58,8 +58,8 @@ _Returns:_
 
 _Example:_
 
-```
-   eve_calibrate();
+```c
+eve_calibrate();
 ```
 
 ### Touch Detection Utility
@@ -88,8 +88,8 @@ _Returns:_
 
 _Example:_
 
-```
-   eve_key_detect();
+```c
+eve_key_detect();
 ```
 
 ### Tag Reading Utility
@@ -118,12 +118,12 @@ _Returns:_
 
 _Example:_
 
-```
-   uint8_t tag_val = 0;
-   if (eve_read_tag(&tag_val))
-   {
-      // Screen is pressed, action the tag stored in tag_val
-   }
+```c
+uint8_t tag_val = 0;
+if (eve_read_tag(&tag_val))
+{
+   // Screen is pressed, action the tag stored in tag_val
+}
 ```
 ## Controls
 
@@ -212,7 +212,7 @@ _Returns:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 
 uint8_t maxfont = font_getmax();
@@ -236,7 +236,7 @@ _Returns:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 
 uint32_t fontptr = font_getromptr(16);
@@ -257,7 +257,7 @@ _Parameters - messagebox():_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 #define CLOCK_FONT 21
 
@@ -282,7 +282,7 @@ _Parameters - messagebox():_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 #define DIGITAL_FONT 12
 
@@ -309,7 +309,7 @@ _Returns:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 #define DIGITAL_FONT 12
 
@@ -338,7 +338,7 @@ _Returns:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/fonts.h"
 #define DIGITAL_FONT 12
 
@@ -374,7 +374,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/sound.h"
 
 sound_enable();
@@ -399,7 +399,7 @@ _Returns:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/sound.h"
 
 sound_enable();
@@ -422,7 +422,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/sound.h"
 
 sound_enable();
@@ -446,7 +446,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/controls/sound.h"
 
 sound_enable();
@@ -518,7 +518,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/widgets/dialogs.h"
 
 messagebox(27, 0, "message");
@@ -539,7 +539,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/widgets/dialogs.h"
 
 tooltip(100, 100, 27, 0, "message");
@@ -560,7 +560,7 @@ _Parameters:_
 
 _Examples:_
 
-```
+```c
 #include "snippets/widgets/dialogs.h"
 uint16_t w, h;
 textsize(27, 0, "message", &w, &h);
@@ -594,7 +594,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 #include "snippets/widgets/sevenseg.h"
 
 void drawLED(void){
@@ -647,7 +647,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/flight_controls.h"
 
 altwidget(300, 300, 200, 4382);
@@ -683,7 +683,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/flight_controls.h"
 
 attwidget(300, 300, 200, 0x1000, 0xe000, 0xd000);
@@ -727,7 +727,7 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/compass_controls.h"
 
 compass_binnacle(300, 300, 250, OPT_COMPASS_BEZEL, 127);
@@ -767,7 +767,7 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/compass_controls.h"
 
 compass_bulkhead(300, 300, 250, OPT_COMPASS_BULKHEAD_RECT | OPT_COMPASS_TRANSPARENT, 127);
@@ -814,7 +814,7 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/sub_controls.h"
 
 sub_depth(300, 300, 150, 400, OPT_SUB_BEZEL, 382 * SUB_UNITS_SCALE, 50 * SUB_UNITS_SCALE);
@@ -851,7 +851,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 uint16_t scale = sin_furman(0xd000);
 ```
 
@@ -871,7 +871,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 int16_t angle = DEG2FURMAN(0x4000); // angle = 90
 ```
 
@@ -894,7 +894,7 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 // angle = 45
 int16_t vx = CIRC_X(0x2000); 
 int16_t vy = CIRC_Y(0x2000); 

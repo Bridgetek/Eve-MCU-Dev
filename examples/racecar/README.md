@@ -42,13 +42,13 @@ Assets are stored in the EVE device Flash. Different Flash images for BT815/6, B
 The addresses of the various assets in the flash image must be modified if the flash image is recreated or modified. To do this a python script called `flashmap.py` is provided in the `assets` directory. This will modify code associated with markers in the source code files to match the flash image. There is a `.bin` file and a `.map` file created by EVE Asset Builder (EAB) when a flash image is created. The script takes the data for the assets from the `.map` file and modifies one of the `common/eve_assetload_flash_eve*.c` files. 
 
 For example, to update the flash image pointers for a BT817/8 (EVE4) the script on Windows from the `assets` directory is run as follows:
-```
-python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
+```console
+    python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
 ```
 The map file for the flash image is `assets\eve4\flash-817-default.map` and the C file to update is `common\eve_assetload_flash_eve4.c`. Relative paths from the `assets` directory are shown.
 
 The script confirms the update with the output:
-```
+```console
 Setting map offsets and sizes from "eve4\flash-817-default.map" to "..\common\eve_assetload_flash_eve4.c"
 ```
 The example program will expect assets loaded from the EVE device flash to be at the addresses in the `.map` file. The `.bin` file must be programmed into the EVE device flash.
@@ -63,50 +63,88 @@ A [EVE Emulator](../../ports/eve_emulator/) port of this example is available in
 
 The macro can be defined in either the `Visual Studio` project settings under `Configuration Properties > C\C++ > Preprocessor > Preprocessor Definitions`, the `CMakeLists.txt` file , or during command line compilation.
 
-##### EVE_API 3
 
-In `VisualStudio`:
+Select the default flash image that corresponds to the configured EVE API level. Relative paths are resolved from the directory containing the application executable.
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+The exact quotation and escaping rules for command-line definitions may vary between shells and build systems.
 
-In `CMakeLists.txt`:
+##### EVE API Level 3
 
-- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin"))
+###### Visual Studio
 
-In In gcc compilers via the `command line`:
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+Add the following to the project's **Preprocessor Definitions**:
 
+```text
+    EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+```
 
-##### EVE_API 4
-In `VisualStudio`:
+###### CMake
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
+Add the following to the project's `CMakeLists.txt` file:
 
-In `CMakeLists.txt`:
+```cmake
+    add_compile_definitions(EVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin")
+```
 
+###### GCC or MinGW
 
-- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+For shells which use backslash escaping, add the following compiler definition:
 
+```console
+    -DEVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\..\\assets\\eve3\\flash-815-default.bin"
+```
 
-In In gcc compilers via the `command line`:
+##### EVE API Level 4
 
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+###### Visual Studio
 
+Add the following to the project's **Preprocessor Definitions**:
 
-##### EVE_API 5
-In `VisualStudio`:
+```text
+    EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin")
+```
 
-- EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+###### CMake
 
-In `CMakeLists.txt`:
+Add the following to the project's `CMakeLists.txt` file:
 
+```cmake
+    add_compile_definitions(EVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\assets\\eve4\\\\flash-817-default.bin")
+```
 
-- add_compile_definitions(EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"))
+###### GCC or MinGW
 
-In In gcc compilers via the `command line`:
+For shells which use backslash escaping, add the following compiler definition:
 
-- -DEVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+```console
+    -DEVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\..\\assets\\eve4\\flash-817-default.bin"
+```
 
+##### EVE API Level 5
+
+###### Visual Studio
+
+Add the following to the project's **Preprocessor Definitions**:
+
+```text
+    EVE_EMULATOR_FLASH_FILE=TEXT("..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+```
+
+###### CMake
+
+Add the following to the project's `CMakeLists.txt` file:
+
+```cmake
+    add_compile_definitions(EVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin")
+```
+
+###### GCC or MinGW
+
+For shells which use backslash escaping, add the following compiler definition:
+
+```console
+    -DEVE_EMULATOR_FLASH_FILE=L\"..\\..\\..\\..\\..\\assets\\eve5\\flash-820-default.bin"
+```
 
 ### `USE_FLASHIMAGE` 
 
@@ -195,13 +233,13 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(const char *assets)
 {
     // Configure asset properties for custom assets used in application
     eve_asset_properties(assets); 
     
-  // Initialise the display
+    // Initialise the display
     EVE_DEBUG_PRINTF("Initialising display...\n");
     if (EVE_Init() != 0)
     {

@@ -14,7 +14,7 @@ The python script `sketchbuild.py` can be used to copy the required files to the
 
 The script will report the names of the files copied. There are no parameters for the script.
 
-```
+```console
 > python .\sketchbuild.py
 Sketch name is simple_arduino
 ..\common\eve_example.c -> simple_arduino\eve_example.ino
@@ -101,7 +101,7 @@ All files with a ".c" extension must be renamed to have the extension ".ino". In
 
 The directory will look similar to this:
 
-```
+```text
  Directory of <path>EVE-MCU-Dev\examples\simple\arduino\simple_arduino
 
 EVE.h    

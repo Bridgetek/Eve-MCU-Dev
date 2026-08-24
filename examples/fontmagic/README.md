@@ -77,7 +77,7 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic initialisation is performed:
 
-```
+```c
 void eve_example(void)
 {
     int action = 0;
@@ -118,7 +118,7 @@ Next, the function `eve_calibrate()` is then called which uses the calibration c
 
 Once calibration is complete, the code will load in the custom font and create a cache data structure of font information.
 
-```
+```c
     // Load fonts and images.
     printf("Loading font...\n");
     loadlegacyfont(font0, font0_size, font0_offset);

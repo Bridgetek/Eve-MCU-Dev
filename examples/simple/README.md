@@ -79,7 +79,7 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
     uint32_t font_end;
@@ -126,7 +126,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {
@@ -150,7 +150,7 @@ RAM_G address specified in the command.
 In the following code snippet from the example the `while` loop will look for the end marker of the JPG
 data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
-```
+```c
     EVE_CMD_LOADIMAGE(start_addr, 0);
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
@@ -174,7 +174,7 @@ data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
 Once loaded into RAM_G the `EVE_CMD_GETPROPS` command can find the size of the image.
 
-```
+```c
     EVE_LIB_GetProps(&eve_addr, &img_width, &img_height);
 ```
 
@@ -183,7 +183,7 @@ The code will select bitmap mode with the `EVE_BEGIN`, this tells the device tha
 Then it will set the source address of the bitmap in RAM_G with `EVE_BITMAP_SOURCE`. 
 Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device how to render the bitmaps included in the font.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);
@@ -208,7 +208,7 @@ This file contains the data array of a font which was produced by the Font Conve
 
 The font created from EVE Asset Builder will be located at a certain address in RAM_G. In the example here the font was at address 1000(decimal). This must be 32-bit aligned.
 
-```
+```c
 const uint32_t font0_offset = 1000; // Taken from command line
 const uint8_t font0[] = { <data for font> };
 ```
@@ -216,13 +216,13 @@ const uint8_t font0[] = { <data for font> };
 The font data in the array `font0` is directly written into RAM_G using the API call `EVE_LIB_WriteDataToRAMG`. 
 This function takes a pointer to an array and writes to RAM_G.
 
-```
+```c
     EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 ```
 
 Once this has been written to RAM_G then the EVE device must be instructed how make a font use the data in RAM_G. 
 
-```
+```c
     EVE_CMD_DLSTART();
 #if IS_EVE_API(5)
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);

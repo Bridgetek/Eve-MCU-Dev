@@ -26,7 +26,7 @@ The build depends on the `PICO_SDK_PATH` environment variable. This __must__ be 
 
 To configure the build environment using CMake:
 
-```
+```console
 cmake --fresh  -G "Unix Makefiles" -B build -S .
 ```
 
@@ -34,7 +34,7 @@ This will configure the compilation to take place in the `build` directory. It m
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
-```
+```console
 cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQVGA -S .
 ```
 
@@ -42,7 +42,7 @@ cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQV
 
 The following CMake command will build the code and place the resulting files in the `build` directory:
 
-```
+```console
 cmake --build build
 ```
 
