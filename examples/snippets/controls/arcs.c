@@ -219,7 +219,7 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
         EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     }
 
-    // Draw a circle which will fill the arc with the colour set in the graphics context before the funciton call
+    // Draw a circle which will fill the arc with the colour set in the graphics context before the function call
     EVE_COLOR_MASK(1, 1, 1, 0);
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
     EVE_POINT_SIZE(r1 * 16);

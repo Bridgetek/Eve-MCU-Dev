@@ -105,7 +105,7 @@ void eve_example(void)
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-The `sound_enable()` funciton is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development modules. After which the sound synthesizer is set to play the MUTE sound.
+The `sound_enable()` function is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development modules. After which the sound synthesizer is set to play the MUTE sound.
 
 Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 

@@ -183,7 +183,7 @@ The call to `EVE_Init()` is made which sets up the EVE environment on the platfo
 
 Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
-Following this the `eve_display_load_assets()` funciton is called to load the assets into RAM_G for use in the application, using the asset properties conigured by `eve_asset_properties()`.
+Following this the `eve_display_load_assets()` function is called to load the assets into RAM_G for use in the application, using the asset properties conigured by `eve_asset_properties()`.
 
 Once the preceding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 

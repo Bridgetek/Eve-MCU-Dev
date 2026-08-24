@@ -1583,7 +1583,7 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
 }
 
 /**
- * @brief Helper funciton add the LCD backlight contol menu into the display list.
+ * @brief Helper function add the LCD backlight contol menu into the display list.
  * @details This function renders and arc gauge widget onto the screen which can 
  *   be used to alter the backlight strength value of the display.
  */
