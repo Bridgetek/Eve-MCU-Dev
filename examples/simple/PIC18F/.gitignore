@@ -3,3 +3,4 @@ dist
 out
 _build
 cmake
+!.vscode/

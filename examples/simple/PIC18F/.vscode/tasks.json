@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "MPLAB-CMake",
+			"label": "PIC18F44K22: default - Full Build",
+			"action": "fullbuild",
+			"buildType": "debug",
+			"configName": "default",
+			"configPath": "${workspaceFolder}/.vscode/PIC18F44K22.mplab.json",
+			"problemMatcher": [
+				"$cmakeGenerate",
+				"$cmakeBuildCompiler",
+				"$cmakeBuildLinker",
+				"$xc8Error1",
+				"$xc8Error2",
+				"$nonLineSpecific",
+				"$noSeverity"
+			],
+			"group": "build"
+		}
+	]
+}
