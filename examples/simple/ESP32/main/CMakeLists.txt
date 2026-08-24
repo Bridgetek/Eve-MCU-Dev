@@ -7,4 +7,4 @@ set(COMPONENT_SRCS "main.c"
                     
 set(COMPONENT_ADD_INCLUDEDIRS ${CMAKE_CURRENT_SOURCE_DIR} "../../../../include" "../../common" "../../../snippets")
 
-register_component()
+idf_component_register()
