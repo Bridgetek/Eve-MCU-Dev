@@ -1855,11 +1855,11 @@ void renderScreenUpdate() {
 #endif
 
     // first gauge
-    EVE_CMD_NUMBER(circle_guage3_x, circle_guage3_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
+    EVE_CMD_NUMBER(circle_guage1_x, circle_guage3_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
     // second guage
     EVE_CMD_NUMBER(circle_guage2_x, circle_guage2_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
     // third guage
-    EVE_CMD_NUMBER(circle_guage1_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
+    EVE_CMD_NUMBER(circle_guage3_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
 
     //------------------------------------------------------------------------------
     // add pie chart onto the screen (if required)
