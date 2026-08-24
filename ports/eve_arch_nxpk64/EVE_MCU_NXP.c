@@ -173,6 +173,15 @@ int MCU_Init(void)
     // 1		RESERVED	= 0			Reserved
     // 0		HALT		= 1			Halt
 
+    /* setup tick timer */
+    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+    SysTick->LOAD = (32000000 / 1000);
+    SysTick->VAL  = 0;
+    /* Enable interrupt */
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    /* Enable counter */
+    SysTick->CTRL |= (SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk);
+
     return 0;
 }
 
@@ -325,6 +334,12 @@ void MCU_Delay_500ms(void)
     {
         MCU_Delay_20ms();
     }
+}
+
+// --------------------------- msec delay based on timer -------------------------
+uint32_t MCU_Time_ms(void)
+{
+    return SysTick->VAL;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

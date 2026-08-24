@@ -74,7 +74,12 @@ int MCU_Init(void)
 {
     /* set pins to be used for CS# and PD# */
     DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN | GPIO_GRP_0_PD_PIN);
-
+    /* setup tick timer */
+    DL_SYSTICK_init(32000000 / 1000);
+    /* Enable interrupt */
+    DL_SYSTICK_enableInterrupt();
+    /* Enable counter */
+    DL_SYSTICK_enable();
     return 0;
 }
 
@@ -344,6 +349,12 @@ void MCU_Delay_20ms(void)
 void MCU_Delay_500ms(void)
 {
     delay(500);
+}
+
+// --------------------------- msec delay based on timer -------------------------
+uint32_t MCU_Time_ms(void)
+{
+    return DL_SYSTICK_getValue();
 }
 
 // ########################### ENDIAN CONVERSION ####################################

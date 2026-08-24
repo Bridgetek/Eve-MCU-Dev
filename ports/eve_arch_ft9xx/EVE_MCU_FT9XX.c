@@ -58,6 +58,11 @@
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
+/* The Timer Prescaler will divide the 100MHz Master clock down to 2kHz */
+#define TIMER_PRESCALER (50000)
+#define TIMER_ONE_MILLISECOND (100000/TIMER_PRESCALER)
+#define TIMER_ONE_SECOND (1000*TIMER_ONE_MILLISECOND)
+
 // SPI Master pins
 #if defined(__FT900__)
 
@@ -85,10 +90,14 @@
 
 /* EVE MCU HEADER END */
 
+// FT9xx tick timer
+static void timerISR(void);
+static volatile uint32_t ticks = 0;
+
 /* EVE MCU */
 
 // This is the FT9xx platform specific section and contains the functions which
-// enable the GPIO and SPI interfaces.
+// enable the Tiemr, GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -122,6 +131,40 @@ int MCU_Init(void)
 #endif
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
+
+    /* Enable Timers... */
+    sys_enable(sys_device_timer_wdt);
+    /* Set up the Timer tick to be 1 ms... */
+    /* FT900 Rev A and B have timers that share the prescaler */
+    /* FT900 Rev C and FT93x timers have dedicated prescalers */
+#if defined(__FT900__)
+    if (sys_check_ft900_revB()) //90x series rev B
+    {
+        timer_prescaler(TIMER_PRESCALER);
+    }
+    else
+#endif
+    {
+        timer_prescaler(timer_select_a, TIMER_PRESCALER);
+    }
+    /* Set up Timer A to be triggered after 5 seconds... */
+    timer_init(timer_select_a,              /* Device */
+               TIMER_ONE_MILLISECOND,       /* Initial Value */
+               timer_direction_down,        /* Count Direction */
+               timer_prescaler_select_on,   /* Prescaler Select */
+               timer_mode_continuous);      /* Timer Mode */
+
+    /* Register the interrupt... */
+    interrupt_attach(interrupt_timers, 17, timerISR);
+
+    /* Enable all the timers... */
+    timer_enable_interrupt(timer_select_a);
+
+    /* Enable interrupts to fire... */
+    interrupt_enable_globally();
+
+    /* Start all the timers at the same time... */
+    timer_start(timer_select_a);
 
     // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Divide by 8 is 25 MHz
@@ -170,6 +213,20 @@ int MCU_Setup(void)
     spi_option(SPIM, spi_option_fifo, 0);
 
     return 0;
+}
+
+/**
+ The interrupt handler for the timers.
+
+ This will keep a count of how many times each interrupt has fired in a global
+ variable
+*/
+static void timerISR(void)
+{
+    if (timer_is_interrupted(timer_select_a) == 1)
+    {
+        ticks++;
+    }
 }
 
 // ########################### GPIO CONTROL ####################################
@@ -272,6 +329,11 @@ void MCU_Delay_20ms(void)
 void MCU_Delay_500ms(void)
 {
     delayms(500);
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return ticks;
 }
 
 // FT9XX is Little Endian.

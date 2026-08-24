@@ -587,6 +587,12 @@ void MCU_Delay_500ms(void)
     Sleep(500);
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 // Exchange a single byte on the SPI bus

@@ -248,6 +248,11 @@ void MCU_Delay_500ms(void)
     sleep_ms(500);
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    return to_ms_since_boot(get_absolute_time());
+}
+
 // RP2040 is Little Endian. There is no sys/endian.h.
 // Use toolchain defined functions.
 

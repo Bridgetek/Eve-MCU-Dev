@@ -104,6 +104,19 @@ void initSPI()
     IE2 |= UCA0RXIE;                        // Enable USCI0 RX interrupt
 }
 
+void initTimer()
+{
+    // The ACLK runs at 12 kHz
+    // Enable Timer Interrupts
+    TACCTL0 |= CCIE; 
+    // Set timer counter to 1 ms
+    TACCR0 = (12000 / 1000); 
+    // Use ACLK (low-power clock)
+    TACTL |= TASSEL_1;
+    // Count up continuous
+    TACTL |= MC_1; 
+}
+
 /* configure MCU, SPI and PD pins */
 int MCU_Init(void){
 
@@ -111,6 +124,7 @@ int MCU_Init(void){
 
     initClock();                            // set Clocks
     initSPI();                              // configure SPI
+    initTimer();                            // configure timer
 
     __enable_interrupt();                   // enable interrupts
 
@@ -323,6 +337,20 @@ void MCU_Delay_20ms(void)
 void MCU_Delay_500ms(void)
 {
     delay(500);
+}
+
+// --------------------------- msec delay based on timer -------------------------
+static volatile uint32_t ticks = 0;
+
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void Timer_A0(void)
+{
+    ticks++;
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return ticks;
 }
 
 // ########################### ENDIAN CONVERSION ####################################

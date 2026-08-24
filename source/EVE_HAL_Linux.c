@@ -793,9 +793,16 @@ void HAL_ResetProfilePointer(void)
 #endif
 
 // ------ Wait for co-processor read and write pointers to be equal ------------
-uint8_t HAL_WaitCmdFifoEmpty(void)
+uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 {
     uint32_t readCmdPointer;
+    uint32_t starttime, curtime;
+
+    if (timeout)
+    {
+        // Reference start point for timeout
+        starttime = Platform_Time_ms();
+    }
 
 #if !defined(EVE_USE_CMDB_METHOD)
     // Wait until the two registers match
@@ -805,6 +812,13 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
         // Detect an exception
         if (readCmdPointer & 1) break;
+        // Detect a timeout
+        if (timeout)
+        {
+            // Elapsed time since function call
+            curtime = Platform_Time_ms();
+            if ((curtime - starttime) > timeout) break;
+        }
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
 #else // defined(EVE_USE_CMDB_METHOD)
     // Wait until there is all the potential space free
@@ -814,9 +828,15 @@ uint8_t HAL_WaitCmdFifoEmpty(void)
         readCmdPointer = HAL_MemRead32(EVE_REG_CMDB_SPACE);
         // Detect an exception
         if (readCmdPointer & 1) break;
+        // Detect a timeout
+        if (timeout)
+        {
+            // Elapsed time since function call
+            curtime = Platform_Time_ms();
+            if ((curtime - starttime) > timeout) break;
+        }
     } while (readCmdPointer < (EVE_RAM_CMD_SIZE - 4));
 #endif // defined(EVE_USE_CMDB_METHOD)
-
 
 if(readCmdPointer & 1)
     {
@@ -835,12 +855,21 @@ if(readCmdPointer & 1)
         
         return 0xFF;
     }
-    else
+    else if (timeout)
     {
-        // Return 0 if pointers became equal successfully
-        return 0;
+        if ((curtime - starttime) > timeout)
+        {
+#if DEBUG_LEVEL > 0
+            EVE_DEBUG_ERROR("Co-processor timeout\n");
+#endif // DEBUG_LEVEL
+            return 0xFE;
+        }
     }
+
+    // Return 0 if pointers became equal successfully
+    return 0;
 }
+
 // ------------ Check how much free space is available in CMD FIFO -------------
 uint16_t HAL_CheckCmdFreeSpace(void)
 {

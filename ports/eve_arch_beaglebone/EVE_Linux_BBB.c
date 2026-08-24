@@ -258,6 +258,14 @@ void Platform_Delay_500ms(void)
     usleep(500 * 1000);
 }
 
+uint32_t Platform_Time_ms(void)
+{
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+}
+
 // Beaglebone is Little Endian.
 // Use toolchain defined functions.
 uint16_t Platform_htobe16(uint16_t h)

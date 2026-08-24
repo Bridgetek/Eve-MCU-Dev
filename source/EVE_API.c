@@ -375,7 +375,14 @@ void EVE_LIB_EndCoProList(void)
 int EVE_LIB_AwaitCoProEmpty(void)
 {
     // Await completion of processing
-    return HAL_WaitCmdFifoEmpty();
+    return HAL_WaitCmdFifoEmpty(0);
+}
+
+// Waits for the read and write pointers to become equal with a millisecond timeout
+int EVE_LIB_AwaitCoProEmptyTimeout(uint32_t timeout)
+{
+    // Await completion of processing
+    return HAL_WaitCmdFifoEmpty(timeout);
 }
 
 // Recovers the co-processor as described in "Fault Scenarios" in the Programming Guide

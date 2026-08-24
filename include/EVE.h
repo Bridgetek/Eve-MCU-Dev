@@ -758,6 +758,14 @@ void EVE_LIB_EndCoProList(void);
 int EVE_LIB_AwaitCoProEmpty(void);
 
 /**
+ * @brief EVE API: Waits for co-processor list to end with a timeout value
+ * @details Will poll the co-processor command list until it has been completed.
+ * @param timeout - timeout in milliseconds (zero for NO timeout)
+ * @returns 0 for successful completion, 0xff for co-processor exception, 0xfe for a timeout.
+ */
+int EVE_LIB_AwaitCoProEmptyTimeout(uint32_t timeout);
+
+/**
  * @brief EVE API: Recovers the co-processor in the event of an exception
  * @details Will reset the co-processor after an exception is reported by EVE_LIB_AwaitCoProEmpty.
  */

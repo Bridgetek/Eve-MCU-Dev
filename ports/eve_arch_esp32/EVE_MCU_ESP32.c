@@ -328,6 +328,11 @@ void MCU_Delay_500ms(void)
     vTaskDelay(500 / portTICK_PERIOD_MS);
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    return xTaskGetTickCount();
+}
+
 // ESP32 is Little Endian.
 // Use toolchain defined functions.
 uint16_t MCU_htobe16(uint16_t h)

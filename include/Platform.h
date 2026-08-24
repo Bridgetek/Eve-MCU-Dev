@@ -214,6 +214,13 @@ void Platform_Delay_20ms(void);
 void Platform_Delay_500ms(void);
 
 /**
+ * @brief Platform specific ms clock counter
+ * @details Get the current monotonic clock counter from the platform for the
+ *      purpose of making a useful timeout.
+ */
+uint32_t Platform_Time_ms(void);
+
+/**
  @brief Platform specific byte swapping routines
  @details EVE addresses from the HAL_SetReadAddress and HAL_SetWriteAddress
     are sent in big-endian format. However, data for registers or memory

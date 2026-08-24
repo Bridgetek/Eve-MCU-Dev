@@ -307,6 +307,13 @@ void MCU_Delay_20ms(void);
 void MCU_Delay_500ms(void);
 
 /**
+ * @brief MCU specific ms clock counter
+ * @details Get the current monotonic clock counter from the MCU for the
+ *      purpose of making a useful timeout.
+ */
+uint32_t MCU_Time_ms(void);
+
+/**
  * @brief MCU specific byte swapping routines
  * @details EVE addresses from the HAL_SetReadAddress and HAL_SetWriteAddress
  *      are sent in big-endian format. However, data for registers or memory

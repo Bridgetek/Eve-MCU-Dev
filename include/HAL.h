@@ -149,9 +149,10 @@ void HAL_ResetProfilePointer(void);
  *      current command memory write pointer. This will indicate that
  *      the co-processor has completed working through the items in the
  *      display list.
- * @returns Zero for normal completion or 0xff for an error condition.
+ * @param timeout - timeout in milliseconds (zero for NO timeout)
+ * @returns Zero for normal completion, 0xff for an error condition, 0xfe for a timeout.
  */
-uint8_t HAL_WaitCmdFifoEmpty(void);
+uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout);
 
 /**
  * @brief Calculate free space in the command memory.

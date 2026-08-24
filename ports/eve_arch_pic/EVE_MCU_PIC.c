@@ -126,6 +126,15 @@ int MCU_Init(void)
 
     SSP1CON1bits.SSPEN  = 1;     // Enable SPI1 after configuration
 
+    // Millisecond interrupt
+    T1CON = 0x01;
+
+    PIR1bits.TMR1IF = 0;
+    TMR1H = 0xEC;
+    TMR1L = 0x78;
+    PIE1bits.TMR1IE = 1;
+    INTCON = 0xC0;
+
     return 0;
 }
 
@@ -247,6 +256,24 @@ void MCU_Delay_500ms(void)
     {
         __delay_ms(20);
     }
+}
+
+// --------------------------- msec delay based on timer -------------------------
+static volatile uint32_t ticks = 0;
+void Interrupt() 
+{
+    if(PIR1bits.TMR1IF)
+    {  
+        PIR1bits.TMR1IF = 0;
+        TMR1H = 0xEC;
+        TMR1L = 0x78;
+        ticks++;
+    }
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return ticks;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

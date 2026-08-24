@@ -186,6 +186,11 @@ void MCU_Delay_500ms(void) {
   delay(500);
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    return millis();
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void) {

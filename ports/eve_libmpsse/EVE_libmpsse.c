@@ -331,6 +331,20 @@ void MCU_Delay_500ms(void)
 #endif
 }
 
+uint32_t MCU_Time_ms(void)
+{
+#ifdef _WIN32
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+#else
+    // For MinGW synthesize a tick counter from clock_gettime. Resolution 1 ms.
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+#endif
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)

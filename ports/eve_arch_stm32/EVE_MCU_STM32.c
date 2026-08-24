@@ -225,6 +225,11 @@ void MCU_Delay_500ms(void)
     HAL_Delay(500);
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    return HAL_GetTick();
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)
