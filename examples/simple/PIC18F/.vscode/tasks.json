@@ -3,11 +3,11 @@
 	"tasks": [
 		{
 			"type": "MPLAB-CMake",
-			"label": "PIC18F44K22: default - Full Build",
+			"label": "PIC18F46K22: default - Full Build",
 			"action": "fullbuild",
 			"buildType": "debug",
 			"configName": "default",
-			"configPath": "${workspaceFolder}/.vscode/PIC18F44K22.mplab.json",
+			"configPath": "${workspaceFolder}/.vscode/PIC18F46K22.mplab.json",
 			"problemMatcher": [
 				"$cmakeGenerate",
 				"$cmakeBuildCompiler",

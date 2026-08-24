@@ -1,27 +1,6 @@
 {
-    "version": "1.8",
+    "version": "1.9",
     "importedFrom": "./",
-    "configurations": [
-        {
-            "name": "default",
-            "id": "",
-            "device": "PIC18F46K22",
-            "imageType": "application",
-            "imagePath": "./out/PIC18F44K22/simple_PIC18F.elf",
-            "toolProperties": "default-tool",
-            "tool": "Simulator",
-            "packs": [
-                {
-                    "name": "PIC18F-K_DFP",
-                    "vendor": "Microchip",
-                    "version": "1.14.301"
-                }
-            ],
-            "fileSet": "Project files",
-            "toolchain": "default-XC8",
-            "userVariables": "default-uservariables"
-        }
-    ],
     "propertyGroups": [
         {
             "name": "default-uservariables",
@@ -46,7 +25,6 @@
                 "HI-TECH-COMP.extra-include-directories": [
                     "../common",
                     "../../snippets",
-                    "../../../ports/eve_bt82x",
                     "../../../include",
                     "."
                 ],
@@ -206,9 +184,32 @@
                 "../../../source/*.c",
                 "../../snippets/*.c",
                 "main/*.c",
-                "../../../ports/eve_bt82x/patch_base.c"
+                "../../../source/extensions/bt82x_patch.c",
+                "../../../source/extensions/custom_touch_fw.c"
             ],
             "encoding": "ISO-8859-1"
+        }
+    ],
+    "configurations": [
+        {
+            "name": "default",
+            "id": "",
+            "device": "PIC18F46K22",
+            "imageType": "application",
+            "imagePath": "./out/PIC18F46K22/simple_PIC18F.elf",
+            "toolProperties": "default-tool",
+            "tool": "Simulator",
+            "packs": [
+                {
+                    "name": "PIC18F-K_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.14.301"
+                }
+            ],
+            "fileSet": "Project files",
+            "toolchain": "default-XC8",
+            "userVariables": "default-uservariables",
+            "includeLegacyMacros": true
         }
     ]
 }

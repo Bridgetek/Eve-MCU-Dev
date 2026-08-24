@@ -1,6 +1,27 @@
 {
-    "version": "1.9",
+    "version": "1.8",
     "importedFrom": "./",
+    "configurations": [
+        {
+            "name": "default",
+            "id": "",
+            "device": "PIC18F46K22",
+            "imageType": "application",
+            "imagePath": "./out/PIC18F46K22/simple_PIC18F.elf",
+            "toolProperties": "default-tool",
+            "tool": "Simulator",
+            "packs": [
+                {
+                    "name": "PIC18F-K_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.14.301"
+                }
+            ],
+            "fileSet": "Project files",
+            "toolchain": "default-XC8",
+            "userVariables": "default-uservariables"
+        }
+    ],
     "propertyGroups": [
         {
             "name": "default-uservariables",
@@ -188,28 +209,6 @@
                 "../../../ports/eve_bt82x/patch_base.c"
             ],
             "encoding": "ISO-8859-1"
-        }
-    ],
-    "configurations": [
-        {
-            "name": "default",
-            "id": "",
-            "device": "PIC18F46K22",
-            "imageType": "application",
-            "imagePath": "./out/PIC18F44K22/simple_PIC18F.elf",
-            "toolProperties": "default-tool",
-            "tool": "Simulator",
-            "packs": [
-                {
-                    "name": "PIC18F-K_DFP",
-                    "vendor": "Microchip",
-                    "version": "1.14.301"
-                }
-            ],
-            "fileSet": "Project files",
-            "toolchain": "default-XC8",
-            "userVariables": "default-uservariables",
-            "includeLegacyMacros": true
         }
     ]
 }

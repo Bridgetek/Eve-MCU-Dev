@@ -45,8 +45,8 @@ The device support packs needed for configuration. These packs provide device-sp
 
 To compile the project start the build task. In the menu bar choose "Terminal" then "Run Build Task...". Choose the following option to build a complete image for the device.
 
-"PIC18F44K22: default - Full Build"
+"PIC18F46K22: default - Full Build"
 
 ## Running the Simple PIC18F Example
 
-The executable image is found in the file `simple_PIC18F.elf` in the `out/PIC18F44K22` directory. Follow the instructions in the MPLAB Tools for VS Code to run the output on the device.
+The executable image is found in the file `simple_PIC18F.elf` in the `out/PIC18F46K22` directory. Follow the instructions in the MPLAB Tools for VS Code to run the output on the device.
