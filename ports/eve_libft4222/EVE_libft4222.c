@@ -377,6 +377,7 @@ static int MCU_multi_transfer(uint8_t *DataToRead, uint16_t len)
         MCU_bufferLen = 0;
     }
 
+    // Calling function will handle ftStatus errors
     return ftStatus;
 }
 
@@ -411,7 +412,7 @@ static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
 
     if (ftIsQuad)
     {
-        MCU_multi_transfer(DataToRead, len);
+        ftStatus = MCU_multi_transfer(DataToRead, len);
     }
     else
     {
@@ -421,11 +422,13 @@ static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
         ftStatus = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, len, &transferred, end);
     }
 
+    // Calling function will handle ftStatus errors
     return ftStatus;
 }
 
 static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
 {
+    FT_STATUS ftStatus = FT4222_OK;
     uint16_t i = MCU_bufferLen;
     uint16_t j = 0;
     uint16_t plength;
@@ -448,7 +451,13 @@ static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
         {
             if (ftIsQuad)
             {
-                MCU_multi_transfer(NULL, 0);
+                ftStatus = MCU_multi_transfer(NULL, 0);
+                if (FT4222_OK != ftStatus)
+                {
+                    // spi master transfer failed
+                    EVE_DEBUG_ERROR("FT4222 MCU_append_buffer failed %d\n", (int)ftStatus);
+                    exit(ftStatus);
+                }
                 /* Keep the previous write address in the transmit buffer if we are not
                  * ending this transfer. */
                 if (end == 0)
@@ -489,9 +498,17 @@ void MCU_CSlow(void)
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void)
 {
+    FT_STATUS ftStatus = FT_OK;
+    
     if (ftIsQuad)
     {
-        MCU_multi_transfer(NULL, 0);
+        ftStatus = MCU_multi_transfer(NULL, 0);
+        if (FT4222_OK != ftStatus)
+        {
+            // spi master read failed
+            EVE_DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)ftStatus);
+            exit(ftStatus);
+        }
     }
     else
     {
@@ -499,17 +516,10 @@ void MCU_CShigh(void)
         {
             // Pull CS high with a dummy read to address zero.
             // This is only required after an unaddressed read.
-            FT_STATUS ftStatus;
 
             MCU_bufferLen = 4;
             memset(MCU_buffer, 0, 4);
-            ftStatus = MCU_transmit_buffer(1);
-            if (FT4222_OK != ftStatus)
-            {
-                // spi master read failed
-                EVE_DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)ftStatus);
-                exit(ftStatus);
-            }
+            MCU_transmit_buffer(1);
         }
     }
 }

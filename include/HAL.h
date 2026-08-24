@@ -248,10 +248,9 @@ void HAL_SetWriteAddress(uint32_t address);
 void HAL_SetReadAddress(uint32_t address);
 
 /**
- * @brief Sends a command to EVE
- * @details Sends a 8 bit command and parameters using SPI to the EVE.
+ * @brief Sends a host command to EVE
+ * @details Sends a special host command and parameters using SPI to the EVE.
  *      This function will control chip select.
- * @returns 8 bit value read
  */
 #if IS_EVE_API(1, 2, 3, 4) // Different host commands on BT82x
 void HAL_HostCmdWrite(uint8_t cmd, uint8_t param);
