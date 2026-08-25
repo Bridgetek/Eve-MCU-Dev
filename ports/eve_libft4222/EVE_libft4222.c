@@ -106,6 +106,7 @@
 // GPIO is not utilized in Libft4222 as it is directly managed by firmware.
 #define FT8XX_CS_N_PIN   1    
 #define FT8XX_PD_N_PIN   GPIO_PORT0
+#define FT8XX_INT_N_PIN  GPIO_PORT2
 // GPIO0         , GPIO1      , GPIO2       , GPIO3         }
 static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTPUT };
 
@@ -544,6 +545,19 @@ void MCU_PDhigh(void)
         EVE_DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");
         exit(-100);
     }
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+    BOOL val;
+    // INT# read, connect GPIO2 of FT4222 to INT# of FT8xx/BT8xx board
+    if (FT4222_OK != (FT4222_GPIO_Read(ftHandleGPIO, FT8XX_INT_N_PIN, &val)))
+    {
+        EVE_DEBUG_ERROR("FT4222 MCU_Int read failed!\n");
+        exit(-100);
+    }
+    return (int)val;
 }
 
 // ------------------------- Delay functions -----------------------------------

@@ -19,8 +19,11 @@ The UMFT4222EV-D module uses the FT4222H chipset. The module can be connected to
 | MISO | JP5 Pin 8 | MISO |
 | SSO0 | JP4 Pin 9 | CS# |
 | GPIO0 | JP4 Pin 4 | PD# |
+| GPIO2 | JP4 Pin 6 | INT# (1) |
 | VCC (5V) | JP4 Pin 1 | 5V |
 | GND | JP4 Pin 3 / JP5 Pin 10 | GND |
+
+(1) - The INT# line is not required for operation unless `EVE_USE_INTERRUPT_METHOD` macro is set in the configuration for EVE-MCU-Dev.
 
 The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 

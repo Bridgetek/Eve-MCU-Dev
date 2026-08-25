@@ -535,8 +535,7 @@ int MCU_Setup(void)
     return 0;
 }
 
-// --------------------- Chip Select line low ----------------------------------
-void MCU_CSlow(void)
+static void emulator_check(void)
 {
     // Check whether the emulator window is still running 
     if (!Emulator || !BT8XXEMU_isRunning(Emulator)) {
@@ -545,7 +544,12 @@ void MCU_CSlow(void)
         // Exit application with exit code 0
         exit(0);
     }
+}
 
+// --------------------- Chip Select line low ----------------------------------
+void MCU_CSlow(void)
+{
+    emulator_check();
     BT8XXEMU_chipSelect(Emulator, 1);
 }
 
@@ -578,6 +582,7 @@ void MCU_PDhigh(void)
 // ------------------------ Interrupt line high --------------------------------
 int MCU_Int(void)
 {
+    emulator_check();
     return BT8XXEMU_hasInterrupt(Emulator);
 }
 
