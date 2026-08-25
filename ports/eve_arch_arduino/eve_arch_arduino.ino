@@ -79,6 +79,8 @@ extern "C" {
 #define PIN_CHIPSELECT  10  // CS#
 /// Additional pin for power down on EVE
 #define PIN_POWERDOWN   9   // PD#
+/// Additional pin for interrupt on EVE
+#define PIN_INTERRUPT   8   // INT#
 //@}
 
 int MCU_Init(void) {
@@ -87,6 +89,7 @@ int MCU_Init(void) {
 
   pinMode(PIN_CHIPSELECT, OUTPUT);
   pinMode(PIN_POWERDOWN, OUTPUT);
+  pinMode(PIN_INTERRUPT, INPUT);
 
   digitalWrite(PIN_CHIPSELECT, HIGH);  //disable CS#
   digitalWrite(PIN_POWERDOWN, HIGH);   //disable HD#
@@ -142,6 +145,11 @@ void MCU_PDlow(void) {
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void) {
   digitalWrite(PIN_POWERDOWN, HIGH);  // disable HD#
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) {
+  digitalRead(PIN_INTERRUPT);
 }
 
 // Exchange a single byte on the SPI bus

@@ -50,6 +50,8 @@ The emulator header files, import library, and runtime DLLs should all be taken 
 
 The `PLATFORM_EMULATOR` macro enables an EVE-MCU-Dev application to use the `EVE Emulator` port.
 
+If the interrupt line is to be used to detect the completion of a co-processor list then the `EVE_USE_INTERRUPT_METHOD` macro can be defined.
+
 #### Visual Studio
 
 In Visual Studio, add the following definition under:
