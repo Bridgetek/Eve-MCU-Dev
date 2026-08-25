@@ -75,7 +75,12 @@ int MCU_Init(void)
     /* set pins to be used for CS# and PD# */
     DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_CS_PIN | GPIO_GRP_0_PD_PIN);
     /* setup tick timer */
-    DL_SYSTICK_init(32000000 / 1000);
+    DL_SYSTICK_init(CPUCLK_FREQ / 1000U);
+
+    /* SPI has higher priority than the millisecond timer. */
+    NVIC_SetPriority(SPI_0_INST_INT_IRQN, 0U);
+    NVIC_SetPriority(SysTick_IRQn, 1U);
+
     /* Enable interrupt */
     DL_SYSTICK_enableInterrupt();
     /* Enable counter */
@@ -424,4 +429,4 @@ uint32_t MCU_le32toh (uint32_t h)
 
 /* EVE MCU END */
 
-#endif /* defined(PLATFORM_MSP430) */
+#endif /* defined(PLATFORM_MSPM0) */

@@ -150,23 +150,62 @@ int MCU_Setup(void)
 
 // ########################### SPI Send and Receive ####################################
 // --------------------- Global variables for SPI data ----------------------------------
-volatile uint8_t DataRead;      // Stores slave data
+static volatile uint8_t DataRead;
+static volatile uint8_t SpiRxComplete;
 
 // --------------------- SPI RX ISR ----------------------------------
+
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI_SPIRX_ISR(void)
 {
-    if (IFG2 & UCA0RXIFG){      // check if SPI receiver interrupt flag is set
-      DataRead = UCA0RXBUF;     // Store value clocked in from FT8xx/BT8xx 
-    }                           // from SPI Rx buffer (auto resets UCA0RxIFG)
+    if ((IFG2 & UCA0RXIFG) != 0U)
+    {
+        /*
+         * Reading UCA0RXBUF clears UCA0RXIFG.
+         */
+        DataRead = UCA0RXBUF;
+        SpiRxComplete = 1U;
+    }
 }
+
 // --------------------- SPI Read/Write 8 bits ----------------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
+    uint8_t timerWasEnabled;
 
-    while (!(IFG2 & UCA0TXIFG));            // USCI_A0 TX (SPI) buffer ready?
-    UCA0TXBUF = DataToWrite;                // Send data to FT8xx/BT8xx by writing data to SPI buffer
-    IFG2 = UCA0RXIFG;                       // trigger UCA0RXIFG to receive SPI data
+    timerWasEnabled = ((TACCTL0 & CCIE) != 0U);
+
+    /*
+     * Defer Timer_A0 until this SPI byte has been received.
+     * Do not disable global interrupts because the SPI ISR
+     * still needs to execute.
+     */
+    TACCTL0 &= ~CCIE;
+
+    SpiRxComplete = 0U;
+
+    while ((IFG2 & UCA0TXIFG) == 0U)
+    {
+    }
+
+    UCA0TXBUF = DataToWrite;
+
+    /*
+     * UCA0RXIFG is set by the hardware when the transfer
+     * completes. Do not set it manually.
+     */
+    while (SpiRxComplete == 0U)
+    {
+    }
+
+    /*
+     * If CCIFG became set during the transfer, restoring
+     * CCIE allows Timer_A0 to run now, after the SPI ISR.
+     */
+    if (timerWasEnabled != 0U)
+    {
+        TACCTL0 |= CCIE;
+    }
 
     return DataRead;
 }
