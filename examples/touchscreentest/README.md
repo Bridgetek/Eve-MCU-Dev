@@ -76,7 +76,7 @@ void eve_example(void)
     if (EVE_Init() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
-        while(1);
+        return;
     }
     
     // Load images (and obtain the start of the sketch bitmap)
@@ -100,7 +100,7 @@ void eve_example(void)
         if (eve_calibrate() != 0)
         {
             EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
-            while(1);
+            return;
         }
 
         // Start example code

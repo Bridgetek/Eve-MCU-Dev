@@ -107,9 +107,6 @@ int main(void)
 
     /* Start example code */
     eve_example();
-
-    // function never returns
-    for (;;) ;
 }
 
 void setup(void)

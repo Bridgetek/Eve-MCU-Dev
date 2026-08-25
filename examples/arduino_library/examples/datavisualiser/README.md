@@ -56,11 +56,10 @@ void eve_example(void)
     sound_enable();
 
     // Calibrate the display
-    EVE_DEBUG_PRINTF("Calibrating display...\n");
-    if (eve_calibrate() != 0)
-    {
-        EVE_DEBUG_PRINTF("Exception...\n");
-        while (1);
+    Serial.print("Calibrating display...\n");
+    if (eve_calibrate() != 0) {
+      Serial.print("Exception...\n");
+      return;
     }
 
     // Start example code

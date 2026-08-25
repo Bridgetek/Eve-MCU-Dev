@@ -78,7 +78,7 @@ void eve_example(void)
     if (EVE_Init() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
-        while(1);
+        return;
     }
 
     EVE_DEBUG_PRINTF("Loading patch...\n");
@@ -89,7 +89,7 @@ void eve_example(void)
     if (eve_calibrate() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
-        while(1);
+        return;
     }
 
     // Load backup image

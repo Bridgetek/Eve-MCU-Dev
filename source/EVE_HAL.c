@@ -234,6 +234,15 @@ int HAL_EVE_Init(void)
         return -1;
     }
 
+#if defined(EVE_USE_INTERRUPT_METHOD)
+
+    // Enable only the INT_CMDEMPTY interrupt
+    HAL_MemWrite32(EVE_REG_INT_MASK, 0x20);
+    // Enable global interrupts
+    HAL_MemWrite32(EVE_REG_INT_EN, 1);
+
+#endif // defined(EVE_USE_INTERRUPT_METHOD)
+
     // This function will not return unless an EVE device is present.
     return 0;
 }
@@ -643,7 +652,26 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
         starttime = MCU_Time_ms();
     }
 
-#if !defined(EVE_USE_CMDB_METHOD)
+#if defined(EVE_USE_INTERRUPT_METHOD)
+
+    while (!MCU_Int())
+    {
+        // Detect a timeout
+        if (timeout)
+        {
+            // Elapsed time since function call
+            curtime = MCU_Time_ms();
+            if ((curtime - starttime) > timeout) break;
+        }
+    }
+    // Dummy read of REG_INT_FLAGS to clear interrupt
+    HAL_MemRead32(EVE_REG_INT_FLAGS);
+
+    // Read the graphics processor read pointer
+    readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
+
+#elif !defined(EVE_USE_CMDB_METHOD)
+
     // Wait until the two registers match
     do
     {
@@ -659,7 +687,9 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
             if ((curtime - starttime) > timeout) break;
         }
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
+
 #else // defined(EVE_USE_CMDB_METHOD)
+
     // Wait until there is all the potential space free
     do
     {
@@ -675,6 +705,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
             if ((curtime - starttime) > timeout) break;
         }
     } while (readCmdPointer < (EVE_RAM_CMD_SIZE - 4));
+
 #endif // defined(EVE_USE_CMDB_METHOD)
 
     if(readCmdPointer & 1)

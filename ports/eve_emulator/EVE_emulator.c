@@ -575,6 +575,12 @@ void MCU_PDhigh(void)
      */
 }
 
+// ------------------------ Interrupt line high --------------------------------
+int MCU_Int(void)
+{
+    return BT8XXEMU_hasInterrupt(Emulator);
+}
+
 // ------------------------- Delay functions -----------------------------------
 
 void MCU_Delay_20ms(void)

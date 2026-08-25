@@ -218,7 +218,7 @@ int EVE_Init(void)
 
 #if defined(EVE_COPROC_PROFILE)
     HAL_ResetProfilePointer();
-#endif // IS_EVE_API(1, 2, 3, 4)
+#endif // defined(EVE_COPROC_PROFILE)
 
 #elif IS_EVE_API(5) 
     EVE_LIB_BeginCoProList();
@@ -345,9 +345,6 @@ int EVE_Deinit(void)
 // Begin co-pro list for display creation
 void EVE_LIB_BeginCoProList(void)
 {
-    // Wait for command FIFO to be empty and record current position in FIFO
-    EVE_LIB_AwaitCoProEmpty();
-
     // Begins SPI transaction
     HAL_ChipSelect(1);
 

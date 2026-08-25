@@ -2392,7 +2392,7 @@ void eve_example(const char *assets)
     if (EVE_Init() != 0)
     {
         EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
-        while(1);
+        return;
     }
 
     // Load assets into RAM_G

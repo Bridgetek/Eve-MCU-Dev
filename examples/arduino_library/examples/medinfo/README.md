@@ -53,8 +53,7 @@ void eve_example(void) {
   Serial.print("Calibrating display...\n");
   if (eve_calibrate() != 0) {
     Serial.print("Exception...\n");
-    while (1)
-      ;
+    return;
   }
 
   // Load fonts and images

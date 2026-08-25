@@ -70,6 +70,9 @@ include_directories(
 # Tell EVE library to use the EVE Emulator as base class
 add_compile_definitions(PLATFORM_EMULATOR)
 
+# Use the interrupt line from the EVE device to signal FIFO empty
+add_compile_definitions(EVE_USE_INTERRUPT_METHOD)
+
 # Source code for EVE library (targetted at the EVE Emulator)
 add_library(eve_library # EVE library name
         # Source code for EVE library

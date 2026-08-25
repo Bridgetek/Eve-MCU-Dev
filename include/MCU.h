@@ -216,6 +216,17 @@ void MCU_PDlow(void);
 void MCU_PDhigh(void);
 
 /**
+ * @brief MCU specific interrupt input
+ * @details This function will check the interrupt input GPIO for an
+ *      assertion of the interrupt line from the EVE device.
+ *      The mechanism for detecting the input signal is platform
+ *      specific.
+ * @returns zero if there is no interrupt, non-zero if the EVE device is
+ *      asserting an interrupt.
+ */
+int MCU_Int(void);
+
+/**
  * @brief MCU specific SPI write
  * @details Performs an SPI write of the data block and discards the data
  *      received in response.
