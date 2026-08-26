@@ -72,8 +72,6 @@
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h> // for IS_EVE_API() macro
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> // for HAL_MemWrite8()
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 /* Include the EVE debug-output macro definitions */
@@ -487,7 +485,12 @@ int MCU_Init(void)
 
     // Release the emulator CPU from reset on EVE API levels 1 through 4.
 #if IS_EVE_API(1,2,3,4)
-    HAL_MemWrite8(EVE_REG_CPURESET, 0);
+    MCU_CSlow();
+    // send EVE_REG_CPURESET address
+    MCU_SPIWrite24(MCU_htobe32((EVE_REG_CPURESET << 8) | (1UL << 31)));
+    // write register to 0
+    MCU_SPIWrite8(0);
+    MCU_CShigh();
 #endif /* IS_EVE_API(1,2,3,4) */
 
     EVE_DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
