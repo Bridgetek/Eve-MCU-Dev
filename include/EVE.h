@@ -335,6 +335,49 @@
     #error No EVE API selected.
 #endif
 
+/** Co-processor transfer method.
+ *
+ *   EVE1 always writes directly to the co-processor ring buffer then
+ *   REG_CMD_WRITE is updated.
+ *   EVE2+ can write to the co-processor ring buffer via the REG_CMDB_WRITE
+ *   register.
+ * 
+ *   If this is undefined then EVE_TRANSFER_CMD_WRITE is used for EVE1
+ *   and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
+ *   If this is set for EVE_TRANSFER_CMDB_WRITE on EVE1 then the setting
+ *   will be modified to EVE_TRANSFER_CMD_WRITE.
+ *   The EVE_TRANSFER_INT can be used to modify the EVE_TRANSFER_CMD_WRITE
+ *   method to use the hardware INT# line as well. This requires support
+ *   from the port in the MCU layer. It is not compatible with QuadSPI
+ *   as the INT# line is used as a data line.
+ */
+#if IS_EVE_API(1)
+    // Always undefined for EVE1
+    #undef EVE_USE_CMDB_METHOD
+    #if defined(EVE_USE_INTERRUPT_METHOD)
+    #error interrupt method in play
+    #endif
+#elif IS_EVE_API(5)
+    // Always define for EVE5
+    #define EVE_USE_CMDB_METHOD
+#else // IS_EVE_API(2,3,4)
+    // Default setting for EVE2 onwards
+    #define EVE_USE_CMDB_METHOD
+    #if defined(COPROCESSOR_TRANSFER)
+        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_CMD_WRITE)
+            #undef EVE_USE_CMDB_METHOD
+        #endif // EVE_TRANSFER_CMD_WRITE
+    #endif // defined(COPROCESSOR_TRANSFER)
+#endif
+
+#if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
+    #if defined(COPROCESSOR_TRANSFER)
+        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
+            #define EVE_USE_INTERRUPT_METHOD
+        #endif // EVE_TRANSFER_INT
+    #endif // defined(COPROCESSOR_TRANSFER)
+#endif // !defined(EVE_USE_CMDB_METHOD)
+
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
 /**

@@ -550,9 +550,9 @@ void MCU_PDhigh(void)
 // ------------------------ interrupt input ------------------------------------
 int MCU_Int(void) 
 {
-    BOOL val;
+    unsigned int val;
     // INT# read, connect GPIO2 of FT4222 to INT# of FT8xx/BT8xx board
-    if (FT4222_OK != (FT4222_GPIO_Read(ftHandleGPIO, FT8XX_INT_N_PIN, &val)))
+    if (FT4222_OK != (FT4222_GPIO_Read(ftHandleGPIO, (GPIO_Port)FT8XX_INT_N_PIN, &val)))
     {
         EVE_DEBUG_ERROR("FT4222 MCU_Int read failed!\n");
         exit(-100);

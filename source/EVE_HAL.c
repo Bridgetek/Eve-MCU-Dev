@@ -621,6 +621,11 @@ void HAL_ResetCmdPointer(void)
 #if !defined(EVE_USE_CMDB_METHOD)
 void HAL_WriteCmdPointer(void)
 {
+#if defined(EVE_USE_INTERRUPT_METHOD)
+    // Clear the interrupt flags register and reset the interrupt line
+    HAL_MemRead32(EVE_REG_INT_FLAGS);
+#endif // defined(EVE_USE_INTERRUPT_METHOD)
+
     // and move write pointer to here
     HAL_MemWrite32(EVE_REG_CMD_WRITE, writeCmdPointer);
 }
@@ -652,6 +657,8 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
         starttime = MCU_Time_ms();
     }
 
+#if !defined(EVE_USE_CMDB_METHOD)
+
 #if defined(EVE_USE_INTERRUPT_METHOD)
 
     while (!MCU_Int())
@@ -667,11 +674,9 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
     // Dummy read of REG_INT_FLAGS to clear interrupt
     HAL_MemRead32(EVE_REG_INT_FLAGS);
 
-    // Read the graphics processor read pointer
+    // Read the graphics processor read pointer (contains error flag)
     readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
-
-#elif !defined(EVE_USE_CMDB_METHOD)
-
+#else
     // Wait until the two registers match
     do
     {
@@ -687,6 +692,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
             if ((curtime - starttime) > timeout) break;
         }
     } while ((writeCmdPointer != readCmdPointer) && (readCmdPointer != (EVE_RAM_CMD_SIZE - 1)));
+#endif
 
 #else // defined(EVE_USE_CMDB_METHOD)
 

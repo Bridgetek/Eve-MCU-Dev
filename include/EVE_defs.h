@@ -198,4 +198,24 @@
 #define TOUCH_TYPE_EETI 7
 //@}
 
+/**
+ * @brief Defintions for transfer methods for co-processor lists.
+ * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
+ *      or enable the INT# line to be used when REG_CMD_WRITE method
+ *      is being used. See the "Command FIFO" section in the Programming
+ *      Guides for details of the differences. The "Interrupts" section
+ *      in the Data Sheets explains the use of the INT# line.
+ *      The EVE_TRANSFER_INT option is not permissible with the
+ *      EVE_CMDB_WRITE setting and will be ignored.
+ */
+//@{
+// Add to the co-processor circular buffer through REG_CMDB_WRITE if it
+// is supported.
+#define EVE_TRANSFER_CMDB_WRITE     0
+// Add to the co-processor circular buffer directly then update REG_CMD_WRITE.
+#define EVE_TRANSFER_CMD_WRITE      1
+// Modifier for EVE_TRANSFER_CMD_WRITE to use the INT# line when detecting
+// the co-processor reaching the end of the list.
+#define EVE_TRANSFER_INT            2
+//@}
 #endif /* _EVE_DEFS_H_ */

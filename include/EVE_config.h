@@ -106,7 +106,7 @@
 //@}
 
 /**
- * @brief Enable or Disable QuadSPI
+ * @brief Enable or Disable QuadSPI.
  * @details If the macro is set then the platform port may only enable QSPI
  *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
  *
@@ -132,7 +132,7 @@
 //@}
 
 /**
- * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG 
+ * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG.
  *      default for FT81X/BT88X/BT81X (#undef). Assign the desired i2c address or type (BT82X)
  *      by defining the value (#define). 
  */
@@ -142,7 +142,7 @@
 //@}
 
 /**
-  * @brief Enable or Disable custom couch FW load
+  * @brief Enable or Disable custom couch FW load.
   * @details If the macro is set then custom touch FW will be loaded during IC
   *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
   *			  Applicable for FT81X/BT88X/BT81X devices only.
@@ -160,5 +160,25 @@
 #undef CUSTOM_TOUCH
 #endif
 //@}
+
+/**
+  * @brief Specify method to write to the co-processor circular buffer.
+  * @details If the macro is set then the appropriate method of writing to
+  *   the co-processor is used.
+  *   If this is undefined then EVE_TRANSFER_CMD_WRITE is used for EVE1
+  *   and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
+  *   If this is set for EVE_TRANSFER_CMDB_WRITE on EVE1 then the setting
+  *   will be modified to EVE_TRANSFER_CMD_WRITE.
+  *   The EVE_TRANSFER_INT can be used to modify the EVE_TRANSFER_CMD_WRITE
+  *   method to use the hardware INT# line as well. This requires support
+  *   from the port in the MCU layer. It will be ignored if QuadSPI is
+  *   enabled as this uses the INT# line as a data line.
+  */
+//@{
+#ifndef COPROCESSOR_TRANSFER
+#define COPROCESSOR_TRANSFER EVE_TRANSFER_CMDB_WRITE
+#endif
+//@}
+
 
 #endif /* _EVE_CONFIG_H_ */

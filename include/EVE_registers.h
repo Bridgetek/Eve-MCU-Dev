@@ -178,17 +178,6 @@
 #endif
 
 /* =========================================================================
- * CO-PROCESSOR WRITE METHOD
- * EVE1 writes directly to the co-processor ring buffer.
- * EVE2+ can write via REG_CMDB_WRITE (the "CMDB" bulk-write method).
- * ========================================================================= */
-#if IS_EVE_API(1)
-    #undef  EVE_USE_CMDB_METHOD
-#else
-    #define EVE_USE_CMDB_METHOD
-#endif
-
-/* =========================================================================
  * CHIP ID REGISTER
  * ========================================================================= */
 
