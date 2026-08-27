@@ -40,8 +40,8 @@ This example supports the following platforms:
 | [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) _(3)_ | 
 | [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
-| [Generic using libMPSSE](libft4222/README.md) | [libft4222](libft4222/) _(3)_ | 
-| [Generic using libFT4222](libmpsse/README.md) | [libmpsse](libmpsse/) | | 
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) _(3)_ | 
+| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | | 
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
 
 - (1) Hardware testing ongoing.
