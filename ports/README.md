@@ -6,9 +6,9 @@
 
 The EVE-MCU-Dev library is intended for simple porting to MCU and embedded environments. There are several common target types which are provided with this library:
 
-| Port Name | Platform Macro | Port Directory | Variant | Test Status (1) |
+| Port Name | Platform Macro | Port Directory | Variant | Test Status _(1)_ |
 | --- | --- | --- | --- | --- |
-| Arduino | `ARDUINO` (2) | [eve_arch_arduino](eve_arch_arduino/README.md) | Arduino Leonardo and Arduino Zero | Pass |
+| Arduino | `ARDUINO` _(2)_ | [eve_arch_arduino](eve_arch_arduino/README.md) | Arduino Leonardo and Arduino Zero | Pass |
 | Beaglebone | `PLATFORM_BEAGLEBONE` | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | Beaglebone Black | Under Test |
 | Expressif ESP32 | `PLATFORM_ESP32` | [eve_arch_esp32](eve_arch_esp32/README.md) | SparkFun ESP32 Thing | Pass |
 | Bridgetek FT9xx | `PLATFORM_FT9XX` | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | FT90X and FT93X | Pass |
@@ -19,8 +19,8 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 | Raspberry Pi Pico (SDK and VS Code) | `PLATFORM_RP2040` | [eve_arch_rpi](eve_arch_rpi/README.md#hardware-rp2040) | RP2040 | Pass |
 | ST STM32 (Keil) | `PLATFORM_STM32` | [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Pass |
 | ST STM32Cube | `PLATFORM_STM32CUBE` | [eve_arch_stm32](eve_arch_stm32/README.md) | STM32F0DISCOVERY and MiniSTM32H7xx | Pass |
-| Generic using libMPSSE | `USE_MPSSE` (3) | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
-| Generic using libFT4222 | `USE_FT4222` (3) | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
+| Generic using libMPSSE | `USE_MPSSE` _(3)_ | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |
+| Generic using libFT4222 | `USE_FT4222` _(3)_ | [eve_libft4222](eve_libft4222/README.md) | FT4222H | Pass |
 | Generic using EVE Emulator | `PLATFORM_EMULATOR` | [eve_emulator](eve_emulator/README.md) | N/A | Pass |
 
 - (1) Key for Test Status

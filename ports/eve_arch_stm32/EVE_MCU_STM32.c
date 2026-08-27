@@ -143,6 +143,15 @@ inline void MCU_PDhigh(void)
     HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_SET);
 }
 
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
+#error Interrupt input is not supported on STM32
+#endif
+    return 1;
+}
+
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
     uint8_t DataRead;

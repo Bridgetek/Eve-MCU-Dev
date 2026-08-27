@@ -312,6 +312,26 @@ void HAL_Write(const uint8_t *buffer, uint32_t length)
     MCU_SPIWrite(buffer, length);
 }
 
+// Send a 32-bit data value to command buffer
+void HAL_WriteCmd(uint32_t val32)
+{
+    // Send four bytes of data after previously sending address. Ignore return
+    // values as this is an SPI write only.
+    MCU_SPIWrite32(MCU_htole32(val32));
+
+#if !defined(EVE_USE_CMDB_METHOD)
+    // Calculate new offset.
+    writeCmdPointer = (writeCmdPointer + 4) & (EVE_RAM_CMD_SIZE - 1);
+
+    // If the command buffer has overflowed then restart the list at the start.
+    if (writeCmdPointer == 0)
+    {
+        EVE_LIB_EndCoProList();
+        EVE_LIB_BeginCoProList();
+    }
+#endif // defined(EVE_USE_CMDB_METHOD)
+}
+
 // Send a 32-bit data value
 void HAL_Write32(uint32_t val32)
 {    
@@ -661,7 +681,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 
 #if defined(EVE_USE_INTERRUPT_METHOD)
 
-    while (!MCU_Int())
+    while (MCU_Int())
     {
         // Detect a timeout
         if (timeout)

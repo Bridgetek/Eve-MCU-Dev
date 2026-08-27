@@ -63,9 +63,11 @@
 /* P9 Pin 18 - MOSI (SPI0_D1) */
 /* P9 Pin 21 - MISO (SPI0_D0) */
 /* P9 Pin 22 - SCLK (SPI0_SCLK) */
-#define PIN_NUM_CS   51 /* P9 Pin 16 - Note this is not the SPI0_CS0 pin. */
+#define PIN_NUM_CS   51 /* (GPIO1/19) P9 Pin 16 - Note this is not the SPI0_CS0 pin. */
 /* Powerdown pin */
-#define PIN_NUM_PD   48 /* P9 Pin 15 */
+#define PIN_NUM_PD   48 /* (GPIO1/16) P9 Pin 15 */
+/* Interrupt pin */
+#define PIN_NUM_INT  50 /* (GPIO1/18) P9 Pin 14 */
 
 /* Stringification macros. */
 #define str(s) xstr(s)
@@ -87,8 +89,10 @@ const char *GPIO_export = "/sys/class/gpio/export";
 const char *GPIO_unexport = "/sys/class/gpio/unexport";
 const char *GPIO_pd_dir = "/sys/class/gpio/gpio" str(PIN_NUM_PD) "/direction";
 const char *GPIO_cs_dir = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/direction";
+const char *GPIO_int_dir = "/sys/class/gpio/gpio" str(PIN_NUM_INT) "/direction";
 const char *GPIO_pd_val = "/sys/class/gpio/gpio" str(PIN_NUM_PD) "/value";
 const char *GPIO_cs_val = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/value";
+const char *GPIO_int_val = "/sys/class/gpio/gpio" str(PIN_NUM_INT) "/value";
 
 int Platform_Init(void)
 {
@@ -169,6 +173,17 @@ int Platform_Init(void)
         printf("failed to set GPIO chip select %d!\n", PIN_NUM_CS);
     }
 
+    if ((hGPIO = fopen(GPIO_int_dir, "r+")) != NULL)
+    {
+        fwrite("in", sizeof(char), 2, hGPIO);
+        fclose(hGPIO);
+        hGPIO = NULL;
+    }
+    else
+    {
+        printf("failed to set GPIO chip select %d!\n", PIN_NUM_INT);
+    }
+
     if (hGPIO == NULL)
     {
         printf("failed to export GPIO %d. Make sure you run this with \"sudo\"\n", PIN_NUM_PD);
@@ -244,6 +259,20 @@ void Platform_PDhigh(void)
         fwrite("1", sizeof(char), 1, h1);
         fclose(h1);
     }
+}
+
+// ------------------------ interrupt input ------------------------------------
+int Platform_Int(void)
+{
+    FILE *h1;
+    int val;
+
+    if ((h1 = fopen(GPIO_int_val, "r")) != NULL)
+    {
+        fscanf(h1,"%d",(int *)&val);
+        fclose(h1);
+    }
+    return val;
 }
 
 // ------------------------- Delay functions -----------------------------------

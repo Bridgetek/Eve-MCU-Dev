@@ -268,6 +268,15 @@ void HAL_HostCmdWrite(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5
 void HAL_Write(const uint8_t *buffer, uint32_t length);
 
 /**
+ * @brief Sends a 32 bit value to EVE command buffer
+ * @details Sends a 32 bit value using SPI to the EVE.
+ *      This function will not control chip select. If the EVE_USE_CMDB_METHOD
+ *      is not defined then it will wrap at the end of the command buffer.
+ * @param val32 - 32 bit value
+ */
+void HAL_WriteCmd(uint32_t val32);
+
+/**
  * @brief Sends a 32 bit value to EVE
  * @details Sends a 32 bit value using SPI to the EVE.
  *      This function will not control chip select.

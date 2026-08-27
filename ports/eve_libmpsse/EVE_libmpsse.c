@@ -104,6 +104,7 @@ uint16_t MCU_bufferLen;
     BD2 - MISO
     BD3 - SS#	(SPI_CONFIG_OPTION_CS_DBUS3)
     BD7 - PD#	(SPI_CONFIG_OPTION_CS_DBUS7)
+    BD5 - INT#	(SPI_CONFIG_OPTION_CS_DBUS5)
 
     Direction (1 =Output, 0 =Inputs) 1xxx 1011
 */
@@ -309,6 +310,15 @@ void MCU_PDhigh(void)
     SPI_ToggleCS(ftHandle, FALSE);
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, FALSE);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
+#error Interrupt input is not supported on libmpsse
+#endif
+    return 1;
 }
 
 // ------------------------- Delay functions -----------------------------------

@@ -28,24 +28,25 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) _(3)_ | 
 | [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
 | [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
-| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
-| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
-| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) (1) | 
-| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) (2) | 
-| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) (2) | 
-| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
-| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
+| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) _(3)_ | 
+| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) _(3)_ |
+| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) _(1)_ _(3)_ | 
+| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) _(2)_ | 
+| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) _(2)_ _(3)_ | 
+| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) _(3)_ | 
+| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) _(3)_ | 
 | [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
-| [Generic using libMPSSE](libft4222/README.md) | [libft4222](libft4222/) | 
+| [Generic using libMPSSE](libft4222/README.md) | [libft4222](libft4222/) _(3)_ | 
 | [Generic using libFT4222](libmpsse/README.md) | [libmpsse](libmpsse/) | | 
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
 
 - (1) Hardware testing ongoing.
 - (2) Build environment incomplete.
+- (3) Using the INT# line for coprocessor completion is not supported.
  
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 

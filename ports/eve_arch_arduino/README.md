@@ -15,17 +15,19 @@ The Arduino port was developed using an Arduino Zero and Arduino Leonardo. The A
 | CIPO | ISCP 1 | MISO |
 | D10 | - | CS# |
 | D9 | - | PD# |
-| D8 | - | INT# (1) |
+| D8 | - | INT# _(1)_ |
 | - | ISCP 2 | 5V |
 | - | ISCP 6 / GND | GND |
 
-(1) - The INT# line is not required for operation unless `EVE_USE_INTERRUPT_METHOD` macro is set in the configuration for EVE-MCU-Dev.
+- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
 
 An Arduino board can be connected to an EVE board as in the following picture (the INT# line is not shown).
 
 ![Arduino Wiring Picture](../../docs/arduino.png)
+
+**NOTE:** The INT# line is not shown connected.
 
 ## Software
 

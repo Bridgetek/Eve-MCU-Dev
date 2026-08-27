@@ -23,6 +23,7 @@ If the version of the cable is used which has the 3.3V power output (or if using
 | Green | MISO |
 | Brown | CS# |
 | Blue | PD# |
+| Purple | INT# _(1)_ |
 | Red | 5V |
 | Black | GND |
 
@@ -36,7 +37,7 @@ The VA800A-SPI has a 10-way connector and can be connected directly to the "VM" 
 | CN1-2 | MOSI |
 | CN1-3 | MISO |
 | CN1-4 | CS# |
-| CN1-5 | INT# |
+| CN1-5 | INT# _(1)_ |
 | CN1-6 | PD# |
 | CN1-7 | 5V |
 | CN1-8 | N/C |
@@ -44,6 +45,8 @@ The VA800A-SPI has a 10-way connector and can be connected directly to the "VM" 
 | CN1-10 | GND |
 
 Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
+
+- (1) Please note that the INT# line is not supported in the libmpsse port. Therefore there will be a build error for libmpsse when `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 ## Windows
 

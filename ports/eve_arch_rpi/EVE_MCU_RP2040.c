@@ -63,11 +63,12 @@
 #undef QUADSPI_ENABLE
 
 // Pins to match Bridgetek IDM2040-7A board.
-const uint pd_pin = 15;
+const uint pd_pin = 7;
 const uint cs_pin = 5;
 const uint sck_pin = 2;
 const uint mosi_pin = 3;
 const uint miso_pin = 4;
+const uint int_pin = 6;
 // Port to match Bridgetek IDM2040-7A board.
 spi_inst_t *spi_port = spi0;
 
@@ -90,6 +91,10 @@ int MCU_Init(void)
     gpio_init(pd_pin);
     gpio_set_dir(pd_pin, GPIO_OUT);
     gpio_put(pd_pin, 1);
+
+    // Initialise INT# (Interrupt) pin input
+    gpio_init(int_pin);
+    gpio_set_dir(int_pin, GPIO_IN);
 
     // Set SPI clock speed to 1 MHz
     // 1 MHz allows all EVE devices to initialise correctly
@@ -163,6 +168,13 @@ inline void MCU_PDlow(void)
 inline void MCU_PDhigh(void)
 {
     gpio_put(pd_pin, 1);
+}
+
+// ------------------------ interrupt input ------------------------------------
+inline int MCU_Int(void) 
+{
+    bool val = gpio_get(int_pin);
+    return (int)val;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

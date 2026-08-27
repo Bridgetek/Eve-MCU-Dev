@@ -288,13 +288,6 @@ int EVE_Init(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    // Load base patch or project defined patch if overriden
-    if (eve_loadpatch() != 0)
-    {
-        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
-        return -1;
-    }
-
     // Clear Screen Ready to Start
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -304,6 +297,13 @@ int EVE_Init(void)
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
+
+    // Load base patch or project defined patch if overriden
+    if (eve_loadpatch() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
+        return -1;
+    }
 
 #endif // IS_EVE_API(5)
 
@@ -347,7 +347,6 @@ void EVE_LIB_BeginCoProList(void)
 {
     // Begins SPI transaction
     HAL_ChipSelect(1);
-
 #if !defined(EVE_USE_CMDB_METHOD)
     // Send address for writing as the next free location in the co-pro buffer
     HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
@@ -647,10 +646,15 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
         // to the next location in the FIFO
 #if !defined(EVE_USE_CMDB_METHOD)
         HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
+        uint32_t c;
+        for (c = 0; c < ChunkSize; c+=4)
+        {
+            HAL_WriteCmd(*(uint32_t *)(ImgData + c));
+        }
 #else
         HAL_SetWriteAddress(EVE_REG_CMDB_WRITE);
-#endif
         HAL_Write(ImgData, ChunkSize);
+#endif
         ImgData += ChunkSize;
         CurrentIndex += ChunkSize;
 
@@ -659,7 +663,6 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
 
         // Calculate where end of data lies
         // Note ChunkSize limited to HAL_MAX_CHUNK_SIZE
-        HAL_IncCmdPointer((uint16_t)ChunkSize);
 #if !defined(EVE_USE_CMDB_METHOD)
         HAL_WriteCmdPointer();
 #endif
@@ -720,7 +723,7 @@ uint16_t EVE_LIB_SendString(const char* string)
     // Send string as 32 bit data.
     while (length)
     {
-        HAL_Write32(*(uint32_t*)string);
+        HAL_WriteCmd(*(uint32_t*)string);
         string += 4;
         length -= 4;
     }
@@ -732,7 +735,7 @@ uint16_t EVE_LIB_SendString(const char* string)
         val32 |= ((uint32_t)*string++ << 8);
         val32 |= ((uint32_t)*string++ << 16);
         val32 |= ((uint32_t)*string++ << 24);
-        HAL_Write32(val32);
+        HAL_WriteCmd(val32);
         length -= 4;
     }
 #endif
@@ -851,318 +854,266 @@ void EVE_LIB_RegRead(uint32_t addr, uint32_t* value)
 
 void EVE_CMD(uint32_t c)
 {
-    HAL_Write32(c);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(c);
 }
 
 void EVE_CLEAR_COLOR_RGB(uint8_t R, uint8_t G, uint8_t B)
 {
-    HAL_Write32(EVE_ENC_CLEAR_COLOR_RGB(R, G, B));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR_COLOR_RGB(R, G, B));
 }
 
 void EVE_CLEAR_COLOR(uint32_t c)
 {
-    HAL_Write32(EVE_ENC_CLEAR_COLOR(c));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR_COLOR(c));
 }
 
 void EVE_CLEAR(uint8_t C, uint8_t S, uint8_t T)
 {
-    HAL_Write32(EVE_ENC_CLEAR((C & 0x01), (S & 0x01), (T & 0x01)));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR((C & 0x01), (S & 0x01), (T & 0x01)));
 }
 
 void EVE_COLOR_RGB(uint8_t R, uint8_t G, uint8_t B)
 {
-    HAL_Write32(EVE_ENC_COLOR_RGB(R, G, B));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_COLOR_RGB(R, G, B));
 }
 
 void EVE_COLOR(uint32_t c)
 {
-    HAL_Write32(EVE_ENC_COLOR(c));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_COLOR(c));
 }
 
 void EVE_VERTEX2F(int16_t x, int16_t y)
 {
-    HAL_Write32(EVE_ENC_VERTEX2F(x, y));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_VERTEX2F(x, y));
 }
 
 void EVE_VERTEX2II(uint16_t x, uint16_t y, uint8_t handle, uint8_t cell)
 {
-    HAL_Write32(EVE_ENC_VERTEX2II(x, y, handle, cell));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_VERTEX2II(x, y, handle, cell));
 }
 
 void EVE_BITMAP_HANDLE(uint8_t handle)
 {
-    HAL_Write32(EVE_ENC_BITMAP_HANDLE(handle));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_HANDLE(handle));
 }
 
 void EVE_BITMAP_SOURCE(int32_t addr)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SOURCE((int32_t)addr));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SOURCE((int32_t)addr));
 }
 
 #if IS_EVE_API(3, 4)
 void EVE_BITMAP_SOURCE2(uint8_t flash_or_ram, int32_t addr)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SOURCE2((uint32_t)flash_or_ram, (int32_t)addr));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SOURCE2((uint32_t)flash_or_ram, (int32_t)addr));
 }
 #endif
 
 void EVE_BITMAP_LAYOUT(uint8_t format, uint16_t linestride, uint16_t height)
 {
-    HAL_Write32(EVE_ENC_BITMAP_LAYOUT(format, linestride, height));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_LAYOUT(format, linestride, height));
 }
 
 void EVE_BITMAP_SIZE(uint8_t filter, uint8_t wrapx, uint8_t wrapy, uint16_t width, uint16_t height)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SIZE(filter, wrapx, wrapy, width, height));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SIZE(filter, wrapx, wrapy, width, height));
 }
 
 void EVE_CELL(uint8_t cell)
 {
-    HAL_Write32(EVE_ENC_CELL(cell));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CELL(cell));
 }
 
 void EVE_TAG(uint8_t s)
 {
-    HAL_Write32(EVE_ENC_TAG(s));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_TAG(s));
 }
 
 void EVE_ALPHA_FUNC(uint8_t func, uint8_t ref)
 {
-    HAL_Write32(EVE_ENC_ALPHA_FUNC(func, ref));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_ALPHA_FUNC(func, ref));
 }
 
 void EVE_STENCIL_FUNC(uint8_t func, uint8_t ref, uint8_t mask)
 {
-    HAL_Write32(EVE_ENC_STENCIL_FUNC(func, ref, mask));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_STENCIL_FUNC(func, ref, mask));
 }
 
 void EVE_BLEND_FUNC(uint8_t src, uint8_t dst)
 {
-    HAL_Write32(EVE_ENC_BLEND_FUNC(src, dst));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BLEND_FUNC(src, dst));
 }
 
 void EVE_STENCIL_OP(uint8_t sfail, uint8_t spass)
 {
-    HAL_Write32(EVE_ENC_STENCIL_OP(sfail, spass));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_STENCIL_OP(sfail, spass));
 }
 
 void EVE_POINT_SIZE(uint16_t size)
 {
-    HAL_Write32(EVE_ENC_POINT_SIZE(size));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_POINT_SIZE(size));
 }
 
 void EVE_LINE_WIDTH(uint16_t width)
 {
-    HAL_Write32(EVE_ENC_LINE_WIDTH(width));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_LINE_WIDTH(width));
 }
 
 void EVE_CLEAR_COLOR_A(uint8_t alpha)
 {
-    HAL_Write32(EVE_ENC_CLEAR_COLOR_A(alpha));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR_COLOR_A(alpha));
 }
 
 void EVE_COLOR_A(uint8_t alpha)
 {
-    HAL_Write32(EVE_ENC_COLOR_A(alpha));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_COLOR_A(alpha));
 }
 
 void EVE_CLEAR_STENCIL(uint8_t s)
 {
-    HAL_Write32(EVE_ENC_CLEAR_STENCIL(s));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR_STENCIL(s));
 }
 
 void EVE_CLEAR_TAG(uint8_t s)
 {
-    HAL_Write32(EVE_ENC_CLEAR_TAG(s));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CLEAR_TAG(s));
 }
 
 void EVE_STENCIL_MASK(uint8_t mask)
 {
-    HAL_Write32(EVE_ENC_STENCIL_MASK(mask));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_STENCIL_MASK(mask));
 }
 
 void EVE_TAG_MASK(uint8_t mask)
 {
-    HAL_Write32(EVE_ENC_TAG_MASK(mask));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_TAG_MASK(mask));
 }
 
 void EVE_SCISSOR_XY(uint16_t x, uint16_t y)
 {
-    HAL_Write32(EVE_ENC_SCISSOR_XY(x, y));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_SCISSOR_XY(x, y));
 }
 
 void EVE_SCISSOR_SIZE(uint16_t width, uint16_t height)
 {
-    HAL_Write32(EVE_ENC_SCISSOR_SIZE(width, height));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_SCISSOR_SIZE(width, height));
 }
 
 void EVE_CALL(uint16_t dest)
 {
-    HAL_Write32(EVE_ENC_CALL(dest));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CALL(dest));
 }
 
 void EVE_JUMP(uint16_t dest)
 {
-    HAL_Write32(EVE_ENC_JUMP(dest));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_JUMP(dest));
 }
 
 void EVE_BEGIN(uint8_t prim)
 {
-    HAL_Write32(EVE_ENC_BEGIN(prim));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BEGIN(prim));
 }
 
 void EVE_COLOR_MASK(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    HAL_Write32(EVE_ENC_COLOR_MASK(r, g, b, a));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_COLOR_MASK(r, g, b, a));
 }
 
 void EVE_END(void)
 {
-    HAL_Write32(EVE_ENC_END());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_END());
 }
 
 void EVE_SAVE_CONTEXT(void)
 {
-    HAL_Write32(EVE_ENC_SAVE_CONTEXT());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_SAVE_CONTEXT());
 }
 
 void EVE_RESTORE_CONTEXT(void)
 {
-    HAL_Write32(EVE_ENC_RESTORE_CONTEXT());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_RESTORE_CONTEXT());
 }
 
 void EVE_RETURN(void)
 {
-    HAL_Write32(EVE_ENC_RETURN());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_RETURN());
 }
 
 void EVE_MACRO(uint8_t m)
 {
-    HAL_Write32(EVE_ENC_MACRO(m));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_MACRO(m));
 }
 
 void EVE_DISPLAY(void)
 {
-    HAL_Write32(EVE_ENC_DISPLAY());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_DISPLAY());
 }
 
 void EVE_BITMAP_TRANSFORM_A(long a)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_A(a)); //  ((21UL << 24) | (((a)&131071UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_A(a)); //  ((21UL << 24) | (((a)&131071UL)<<0))
 }
 
 void EVE_BITMAP_TRANSFORM_B(long b)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_B(b)); //  ((22UL << 24) | (((b)&131071UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_B(b)); //  ((22UL << 24) | (((b)&131071UL)<<0))
 }
 
 void EVE_BITMAP_TRANSFORM_C(long c)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_C(c)); //  ((23UL << 24) | (((c)&16777215UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_C(c)); //  ((23UL << 24) | (((c)&16777215UL)<<0))
 }
 
 void EVE_BITMAP_TRANSFORM_D(long d)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_D(d)); //   ((24UL << 24) | (((d)&131071UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_D(d)); //   ((24UL << 24) | (((d)&131071UL)<<0))
 }
 
 void EVE_BITMAP_TRANSFORM_E(long e)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_E(e)); //   ((25UL << 24) | (((e)&131071UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_E(e)); //   ((25UL << 24) | (((e)&131071UL)<<0))
 }
 
 void EVE_BITMAP_TRANSFORM_F(long f)
 {
-    HAL_Write32(EVE_ENC_BITMAP_TRANSFORM_F(f)); //  ((26UL << 24) | (((f)&16777215UL)<<0))
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_F(f)); //  ((26UL << 24) | (((f)&16777215UL)<<0))
 }
 
 #if IS_EVE_API(2, 3, 4, 5) // FT81x API change
 
 void EVE_VERTEX_FORMAT(uint8_t frac)
 {
-    HAL_Write32(EVE_ENC_VERTEX_FORMAT(frac));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_VERTEX_FORMAT(frac));
 }
 
 void EVE_BITMAP_LAYOUT_H(uint8_t linestride, uint8_t height)
 {
-    HAL_Write32(EVE_ENC_BITMAP_LAYOUT_H(linestride, height));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_LAYOUT_H(linestride, height));
 }
 
 void EVE_BITMAP_SIZE_H(uint8_t width, uint8_t height)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SIZE_H(width, height));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SIZE_H(width, height));
 }
 
 void EVE_PALETTE_SOURCE(uint32_t addr)
 {
-    HAL_Write32(EVE_ENC_PALETTE_SOURCE(addr));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_PALETTE_SOURCE(addr));
 }
 
 void EVE_VERTEX_TRANSLATE_X(uint32_t x)
 {
-    HAL_Write32(EVE_ENC_VERTEX_TRANSLATE_X(x));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_VERTEX_TRANSLATE_X(x));
 }
 
 void EVE_VERTEX_TRANSLATE_Y(uint32_t y)
 {
-    HAL_Write32(EVE_ENC_VERTEX_TRANSLATE_Y(y));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_VERTEX_TRANSLATE_Y(y));
 }
 
 void EVE_NOP(void)
 {
-    HAL_Write32(EVE_ENC_NOP());
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_NOP());
 }
 
 #endif
@@ -1171,14 +1122,12 @@ void EVE_NOP(void)
 
 void EVE_BITMAP_EXT_FORMAT(uint16_t fmt)
 {
-    HAL_Write32(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_EXT_FORMAT(fmt));
 }
 
 void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SWIZZLE(r, g, b, a));
 }
 
 #endif
@@ -1187,26 +1136,22 @@ void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 
 void EVE_BITMAP_SOURCE_H(uint8_t addr)
 {
-    HAL_Write32(EVE_ENC_BITMAP_SOURCE_H(addr));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_SOURCE_H(addr));
 }
 
 void EVE_BITMAP_ZORDER(uint8_t o)
 {
-    HAL_Write32(EVE_ENC_BITMAP_ZORDER(o));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_BITMAP_ZORDER(o));
 }
 
 void EVE_PALLETE_SOURCE_H(uint8_t addr)
 {
-    HAL_Write32(EVE_ENC_PALLETE_SOURCE_H(addr));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_PALLETE_SOURCE_H(addr));
 }
 
 void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 {
-    HAL_Write32(EVE_ENC_REGION(y, h, dest));
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_REGION(y, h, dest));
 }
 
 #endif
@@ -1218,387 +1163,341 @@ void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint
     uint16_t CommandSize;
     uint16_t StringLength;
 
-    HAL_Write32(EVE_ENC_CMD_KEYS);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (font & 0xffff));
+    HAL_WriteCmd(EVE_ENC_CMD_KEYS);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xffff));
     CommandSize = 16;
 
     StringLength = EVE_LIB_SendString(string);
     CommandSize = CommandSize + StringLength;
-
-    HAL_IncCmdPointer(CommandSize);
 }
 
 void EVE_CMD_NUMBER(int16_t x, int16_t y, int16_t font, uint16_t options, int32_t n)
 {
-    HAL_Write32(EVE_ENC_CMD_NUMBER);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (font & 0xffff));
-    HAL_Write32(n);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_NUMBER);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xffff));
+    HAL_WriteCmd(n);
 }
 
 void EVE_CMD_LOADIDENTITY(void)
 {
-    HAL_Write32(EVE_ENC_CMD_LOADIDENTITY);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_LOADIDENTITY);
 }
 
 /* Error handling for val is not done, so better to always use range of 65535 in order that needle is drawn within display region */
 void EVE_CMD_GAUGE(int16_t x, int16_t y, int16_t r, uint16_t options, uint16_t major, uint16_t minor, uint16_t val, uint16_t range)
 {
-    HAL_Write32(EVE_ENC_CMD_GAUGE);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (r & 0xffff));
-    HAL_Write32(((uint32_t)minor << 16) | (major & 0xffff));
-    HAL_Write32(((uint32_t)range << 16) | (val & 0xffff));
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_GAUGE);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (r & 0xffff));
+    HAL_WriteCmd(((uint32_t)minor << 16) | (major & 0xffff));
+    HAL_WriteCmd(((uint32_t)range << 16) | (val & 0xffff));
 }
 
 void EVE_CMD_REGREAD(uint32_t ptr, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_REGREAD);
-    HAL_Write32(ptr);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_REGREAD);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_GETPROPS(uint32_t ptr, uint32_t w, uint32_t h)
 {
-    HAL_Write32(EVE_ENC_CMD_GETPROPS);
-    HAL_Write32(ptr);
-    HAL_Write32(w);
-    HAL_Write32(h);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_GETPROPS);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(w);
+    HAL_WriteCmd(h);
 }
 
 void EVE_CMD_MEMCPY(uint32_t dest, uint32_t src, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_MEMCPY);
-    HAL_Write32(dest);
-    HAL_Write32(src);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_MEMCPY);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(src);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_SPINNER(int16_t x, int16_t y, uint16_t style, uint16_t scale)
 {
-    HAL_Write32(EVE_ENC_CMD_SPINNER);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)scale << 16) | (style & 0xffff));
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_SPINNER);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)scale << 16) | (style & 0xffff));
 }
 
 void EVE_CMD_BGCOLOR(uint32_t c)
 {
-    HAL_Write32(EVE_ENC_CMD_BGCOLOR);
-    HAL_Write32(c);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_BGCOLOR);
+    HAL_WriteCmd(c);
 }
 
 void EVE_CMD_SWAP(void)
 {
-    HAL_Write32(EVE_ENC_CMD_SWAP);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_SWAP);
 }
 
 void EVE_CMD_TRANSLATE(int32_t tx, int32_t ty)
 {
-    HAL_Write32(EVE_ENC_CMD_TRANSLATE);
-    HAL_Write32(tx);
-    HAL_Write32(ty);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_TRANSLATE);
+    HAL_WriteCmd(tx);
+    HAL_WriteCmd(ty);
 }
 
 void EVE_CMD_STOP(void)
 {
-    HAL_Write32(EVE_ENC_CMD_STOP);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_STOP);
 }
 
 void EVE_CMD_SLIDER(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t range)
 {
-    HAL_Write32(EVE_ENC_CMD_SLIDER);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)val << 16) | (options & 0xffff));
-    HAL_Write32(range);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_SLIDER);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)val << 16) | (options & 0xffff));
+    HAL_WriteCmd(range);
 }
 
 void EVE_CMD_INTERRUPT(uint32_t ms)
 {
-    HAL_Write32(EVE_ENC_CMD_INTERRUPT);
-    HAL_Write32(ms);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_INTERRUPT);
+    HAL_WriteCmd(ms);
 }
 
 void EVE_CMD_FGCOLOR(uint32_t c)
 {
-    HAL_Write32(EVE_ENC_CMD_FGCOLOR);
-    HAL_Write32(c);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FGCOLOR);
+    HAL_WriteCmd(c);
 }
 
 void EVE_CMD_ROTATE(int32_t a)
 {
-    HAL_Write32(EVE_ENC_CMD_ROTATE);
-    HAL_Write32(a);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_ROTATE);
+    HAL_WriteCmd(a);
 }
 
 void EVE_CMD_MEMWRITE(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_MEMWRITE);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_MEMWRITE);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_SCROLLBAR(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t size, uint16_t range)
 {
-    HAL_Write32(EVE_ENC_CMD_SCROLLBAR);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)val << 16) | (options & 0xffff));
-    HAL_Write32(((uint32_t)range << 16) | (size & 0xffff));
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_SCROLLBAR);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)val << 16) | (options & 0xffff));
+    HAL_WriteCmd(((uint32_t)range << 16) | (size & 0xffff));
 }
 
 void EVE_CMD_GETMATRIX(int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f)
 {
-    HAL_Write32(EVE_ENC_CMD_GETMATRIX);
-    HAL_Write32(a);
-    HAL_Write32(b);
-    HAL_Write32(c);
-    HAL_Write32(d);
-    HAL_Write32(e);
-    HAL_Write32(f);
-    HAL_IncCmdPointer(28);
+    HAL_WriteCmd(EVE_ENC_CMD_GETMATRIX);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(b);
+    HAL_WriteCmd(c);
+    HAL_WriteCmd(d);
+    HAL_WriteCmd(e);
+    HAL_WriteCmd(f);
 }
 
 void EVE_CMD_SKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format)
 {
-    HAL_Write32(EVE_ENC_CMD_SKETCH);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(ptr);
-    HAL_Write32(format);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_SKETCH);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(format);
 }
 
 void EVE_CMD_MEMSET(uint32_t ptr, uint32_t value, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_MEMSET);
-    HAL_Write32(ptr);
-    HAL_Write32(value);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_MEMSET);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(value);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_GRADCOLOR(uint32_t c)
 {
-    HAL_Write32(EVE_ENC_CMD_GRADCOLOR);
-    HAL_Write32(c);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_GRADCOLOR);
+    HAL_WriteCmd(c);
 }
 
 void EVE_CMD_BITMAP_TRANSFORM(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2, uint16_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_BITMAP_TRANSFORM);
-    HAL_Write32(x0);
-    HAL_Write32(y0);
-    HAL_Write32(x1);
-    HAL_Write32(y1);
-    HAL_Write32(x2);
-    HAL_Write32(y2);
-    HAL_Write32(tx0);
-    HAL_Write32(ty0);
-    HAL_Write32(tx1);
-    HAL_Write32(ty1);
-    HAL_Write32(tx2);
-    HAL_Write32(ty2);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(56);
+    HAL_WriteCmd(EVE_ENC_CMD_BITMAP_TRANSFORM);
+    HAL_WriteCmd(x0);
+    HAL_WriteCmd(y0);
+    HAL_WriteCmd(x1);
+    HAL_WriteCmd(y1);
+    HAL_WriteCmd(x2);
+    HAL_WriteCmd(y2);
+    HAL_WriteCmd(tx0);
+    HAL_WriteCmd(ty0);
+    HAL_WriteCmd(tx1);
+    HAL_WriteCmd(ty1);
+    HAL_WriteCmd(tx2);
+    HAL_WriteCmd(ty2);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_CALIBRATE(uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_CALIBRATE);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_CALIBRATE);
+    HAL_WriteCmd(result);
 }
 
 #if IS_EVE_API(1, 2, 3, 4) // FT82x API change
 
 void EVE_CMD_INFLATE(uint32_t ptr)
 {
-    HAL_Write32(EVE_ENC_CMD_INFLATE);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_INFLATE);
+    HAL_WriteCmd(ptr);
 }
 
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr)
 {
-    HAL_Write32(EVE_ENC_CMD_SETFONT);
-    HAL_Write32(font);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_SETFONT);
+    HAL_WriteCmd(font);
+    HAL_WriteCmd(ptr);
 }
 
 #elif IS_EVE_API(5) // FT81x API change
 
 void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_INFLATE);
-    HAL_Write32(ptr);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_INFLATE);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
-    HAL_Write32(EVE_ENC_CMD_SETFONT);
-    HAL_Write32(font);
-    HAL_Write32(ptr);
-    HAL_Write32(firstchar);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_SETFONT);
+    HAL_WriteCmd(font);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(firstchar);
 }
 
 #endif
 
 void EVE_CMD_LOGO(void)
 {
-    HAL_Write32(EVE_ENC_CMD_LOGO);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_LOGO);
 }
 
 void EVE_CMD_APPEND(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_APPEND);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_APPEND);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_MEMZERO(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_MEMZERO);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_MEMZERO);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_SCALE(int32_t sx, int32_t sy)
 {
-    HAL_Write32(EVE_ENC_CMD_SCALE);
-    HAL_Write32(sx);
-    HAL_Write32(sy);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_SCALE);
+    HAL_WriteCmd(sx);
+    HAL_WriteCmd(sy);
 }
 
 void EVE_CMD_CLOCK(int16_t x, int16_t y, int16_t r, uint16_t options, uint16_t h, uint16_t m, uint16_t s, uint16_t ms)
 {
-    HAL_Write32(EVE_ENC_CMD_CLOCK);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (r & 0xffff));
-    HAL_Write32(((uint32_t)m << 16) | (h & 0xffff));
-    HAL_Write32(((uint32_t)ms << 16) | (s & 0xffff));
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_CLOCK);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (r & 0xffff));
+    HAL_WriteCmd(((uint32_t)m << 16) | (h & 0xffff));
+    HAL_WriteCmd(((uint32_t)ms << 16) | (s & 0xffff));
 }
 
 void EVE_CMD_GRADIENT(int16_t x0, int16_t y0, uint32_t rgb0, int16_t x1, int16_t y1, uint32_t rgb1)
 {
-    HAL_Write32(EVE_ENC_CMD_GRADIENT);
-    HAL_Write32(((uint32_t)y0 << 16) | (x0 & 0xffff));
-    HAL_Write32(rgb0);
-    HAL_Write32(((uint32_t)y1 << 16) | (x1 & 0xffff));
-    HAL_Write32(rgb1);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_GRADIENT);
+    HAL_WriteCmd(((uint32_t)y0 << 16) | (x0 & 0xffff));
+    HAL_WriteCmd(rgb0);
+    HAL_WriteCmd(((uint32_t)y1 << 16) | (x1 & 0xffff));
+    HAL_WriteCmd(rgb1);
 }
 
 void EVE_CMD_SETMATRIX(void)
 {
-    HAL_Write32(EVE_ENC_CMD_SETMATRIX);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_SETMATRIX);
 }
 
 void EVE_CMD_TRACK(int16_t x, int16_t y, int16_t w, int16_t h, int16_t tag)
 {
-    HAL_Write32(EVE_ENC_CMD_TRACK);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(tag);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_TRACK);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(tag);
 }
 
 void EVE_CMD_GETPTR(uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_GETPTR);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_GETPTR);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_PROGRESS(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options, uint16_t val, uint16_t range)
 {
-    HAL_Write32(EVE_ENC_CMD_PROGRESS);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)val << 16) | (options & 0xffff));
-    HAL_Write32(range);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_PROGRESS);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)val << 16) | (options & 0xffff));
+    HAL_WriteCmd(range);
 }
 
 void EVE_CMD_COLDSTART(void)
 {
-    HAL_Write32(EVE_ENC_CMD_COLDSTART);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_COLDSTART);
 }
 
 void EVE_CMD_DIAL(int16_t x, int16_t y, int16_t r, uint16_t options, uint16_t val)
 {
-    HAL_Write32(EVE_ENC_CMD_DIAL);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (r & 0xffff));
-    HAL_Write32(val);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_DIAL);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (r & 0xffff));
+    HAL_WriteCmd(val);
 }
 
 void EVE_CMD_LOADIMAGE(uint32_t ptr, uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_LOADIMAGE);
-    HAL_Write32(ptr);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_LOADIMAGE);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_DLSTART(void)
 {
-    HAL_Write32(EVE_ENC_CMD_DLSTART);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_DLSTART);
 }
 
 void EVE_CMD_SNAPSHOT(uint32_t ptr)
 {
-    HAL_Write32(EVE_ENC_CMD_SNAPSHOT);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_SNAPSHOT);
+    HAL_WriteCmd(ptr);
 }
 
 void EVE_CMD_SCREENSAVER(void)
 {
-    HAL_Write32(EVE_ENC_CMD_SCREENSAVER);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_SCREENSAVER);
 }
 
 void EVE_CMD_MEMCRC(uint32_t ptr, uint32_t num, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_MEMCRC);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_MEMCRC);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
+    HAL_WriteCmd(result);
 }
 
 uint8_t COUNT_ARGS(const char* string)
@@ -1622,7 +1521,6 @@ uint8_t COUNT_ARGS(const char* string)
 void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint16_t CommandSize;
     uint16_t StringLength;
     uint8_t i, num = 0;
 
@@ -1632,21 +1530,16 @@ void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const ch
     num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
 #endif
 
-    HAL_Write32(EVE_ENC_CMD_TEXT);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (font & 0xffff));
-    CommandSize = 12;
+    HAL_WriteCmd(EVE_ENC_CMD_TEXT);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xffff));
 
     StringLength = EVE_LIB_SendString(string);
 
     for (i = 0; i < num; i++)
     {
-        HAL_Write32((uint32_t)va_arg(args, uint32_t));
+        HAL_WriteCmd((uint32_t)va_arg(args, uint32_t));
     }
-
-    CommandSize = CommandSize + StringLength + (num * 4);
-
-    HAL_IncCmdPointer(CommandSize);
 
     va_end(args);
 }
@@ -1654,7 +1547,6 @@ void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const ch
 void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint16_t CommandSize;
     uint16_t StringLength;
     uint8_t i, num = 0;
 
@@ -1664,22 +1556,17 @@ void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, ui
     num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
 #endif
 
-    HAL_Write32(EVE_ENC_CMD_BUTTON);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)options << 16) | (font & 0xffff));
-    CommandSize = 16;
+    HAL_WriteCmd(EVE_ENC_CMD_BUTTON);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xffff));
 
     StringLength = EVE_LIB_SendString(string);
 
     for (i = 0; i < num; i++)
     {
-        HAL_Write32((uint32_t)va_arg(args, uint32_t));
+        HAL_WriteCmd((uint32_t)va_arg(args, uint32_t));
     }
-
-    CommandSize = CommandSize + StringLength + (num * 4);
-
-    HAL_IncCmdPointer(CommandSize);
 
     va_end(args);
 }
@@ -1687,7 +1574,6 @@ void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, ui
 void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t options, uint16_t state, const char* string, ...)
 {
     va_list args;
-    uint16_t CommandSize;
     uint16_t StringLength;
     uint8_t i, num = 0;
 
@@ -1697,22 +1583,17 @@ void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t opti
     num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
 #endif
 
-    HAL_Write32(EVE_ENC_CMD_TOGGLE);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)font << 16) | (w & 0xffff));
-    HAL_Write32(((uint32_t)state << 16) | options);
-    CommandSize = 16;
+    HAL_WriteCmd(EVE_ENC_CMD_TOGGLE);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)font << 16) | (w & 0xffff));
+    HAL_WriteCmd(((uint32_t)state << 16) | options);
 
     StringLength = EVE_LIB_SendString(string);
 
     for (i = 0; i < num; i++)
     {
-        HAL_Write32((uint32_t)va_arg(args, uint32_t));
+        HAL_WriteCmd((uint32_t)va_arg(args, uint32_t));
     }
-
-    CommandSize = CommandSize + StringLength + (num * 4);
-
-    HAL_IncCmdPointer(CommandSize);
 
     va_end(args);
 }
@@ -1720,12 +1601,11 @@ void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t opti
 #if IS_EVE_API(2)
 void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format, uint16_t freq)
 {
-    HAL_Write32(EVE_ENC_CMD_CSKETCH);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_Write32(ptr);
-    HAL_Write32(((uint32_t)freq << 16) | (format & 0xffff));
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_CSKETCH);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(((uint32_t)freq << 16) | (format & 0xffff));
 }
 #endif
 
@@ -1733,75 +1613,65 @@ void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr,
 
 void EVE_CMD_SETROTATE(uint32_t r)
 {
-    HAL_Write32(EVE_ENC_CMD_SETROTATE);
-    HAL_Write32(r);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_SETROTATE);
+    HAL_WriteCmd(r);
 }
 
 void EVE_CMD_MEDIAFIFO(uint32_t ptr, uint32_t size)
 {
-    HAL_Write32(EVE_ENC_CMD_MEDIAFIFO);
-    HAL_Write32(ptr);
-    HAL_Write32(size);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_MEDIAFIFO);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(size);
 }
 
 void EVE_CMD_SYNC(void)
 {
-    HAL_Write32(EVE_ENC_CMD_SYNC);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_SYNC);
 }
 
 void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot)
 {
-    HAL_Write32(EVE_ENC_CMD_ROMFONT);
-    HAL_Write32(font);
-    HAL_Write32(romslot);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_ROMFONT);
+    HAL_WriteCmd(font);
+    HAL_WriteCmd(romslot);
 }
 
 void EVE_CMD_PLAYVIDEO(uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_PLAYVIDEO);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_PLAYVIDEO);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_VIDEOFRAME(uint32_t dst, uint32_t ptr)
 {
-    HAL_Write32(EVE_ENC_CMD_VIDEOFRAME);
-    HAL_Write32(dst);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_VIDEOFRAME);
+    HAL_WriteCmd(dst);
+    HAL_WriteCmd(ptr);
 }
 
 void EVE_CMD_VIDEOSTART(void)
 {
-    HAL_Write32(EVE_ENC_CMD_VIDEOSTART);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_VIDEOSTART);
 }
 
 void EVE_CMD_SETBASE(uint32_t base)
 {
-    HAL_Write32(EVE_ENC_CMD_SETBASE);
-    HAL_Write32(base);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_SETBASE);
+    HAL_WriteCmd(base);
 }
 
 void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h)
 {
-    HAL_Write32(EVE_ENC_CMD_SETBITMAP);
-    HAL_Write32(source);
-    HAL_Write32(((uint32_t)w << 16) | (fmt & 0xffff));
-    HAL_Write32(h);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_SETBITMAP);
+    HAL_WriteCmd(source);
+    HAL_WriteCmd(((uint32_t)w << 16) | (fmt & 0xffff));
+    HAL_WriteCmd(h);
 }
 
 void EVE_CMD_SETSCRATCH(uint32_t handle)
 {
-    HAL_Write32(EVE_ENC_CMD_SETSCRATCH);
-    HAL_Write32(handle);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_SETSCRATCH);
+    HAL_WriteCmd(handle);
 }
 
 #endif
@@ -1810,21 +1680,19 @@ void EVE_CMD_SETSCRATCH(uint32_t handle)
 
 void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
-    HAL_Write32(EVE_ENC_CMD_SETFONT2);
-    HAL_Write32(font);
-    HAL_Write32(ptr);
-    HAL_Write32(firstchar);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_SETFONT2);
+    HAL_WriteCmd(font);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(firstchar);
 }
 
 void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t w, int16_t h)
 {
-    HAL_Write32(EVE_ENC_CMD_SNAPSHOT2);
-    HAL_Write32(fmt);
-    HAL_Write32(ptr);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xffff));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_SNAPSHOT2);
+    HAL_WriteCmd(fmt);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
 }
 
 #endif
@@ -1833,22 +1701,19 @@ void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t
 
 void EVE_CMD_INFLATE2(uint32_t ptr, uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_INFLATE2);
-    HAL_Write32(ptr);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_INFLATE2);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_CLEARCACHE()
 {
-    HAL_Write32(EVE_ENC_CMD_CLEARCACHE);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_CLEARCACHE);
 }
 
 void EVE_CMD_VIDEOSTARTF()
 {
-    HAL_Write32(EVE_ENC_CMD_VIDEOSTARTF);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_VIDEOSTARTF);
 }
 
 #endif
@@ -1857,50 +1722,44 @@ void EVE_CMD_VIDEOSTARTF()
 
 void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMSTART);
-    HAL_Write32(ch);
-    HAL_Write32(aoptr);
-    HAL_Write32(loop);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMSTART);
+    HAL_WriteCmd(ch);
+    HAL_WriteCmd(aoptr);
+    HAL_WriteCmd(loop);
 }
 
 void EVE_CMD_ANIMSTOP(int32_t ch)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMSTOP);
-    HAL_Write32(ch);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMSTOP);
+    HAL_WriteCmd(ch);
 }
 
 void EVE_CMD_ANIMXY(int32_t ch, int16_t x, int16_t y)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMXY);
-    HAL_Write32(ch);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMXY);
+    HAL_WriteCmd(ch);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
 }
 
 void EVE_CMD_ANIMDRAW(int32_t ch)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMDRAW);
-    HAL_Write32(ch);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMDRAW);
+    HAL_WriteCmd(ch);
 }
 
 void EVE_CMD_ANIMFRAME(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMFRAME);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(aoptr);
-    HAL_Write32(frame);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMFRAME);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(aoptr);
+    HAL_WriteCmd(frame);
 }
 
 void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_APPENDF);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_APPENDF);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 #endif
@@ -1909,61 +1768,54 @@ void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num)
 
 void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMFRAMERAM);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(aoptr);
-    HAL_Write32(frame);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMFRAMERAM);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(aoptr);
+    HAL_WriteCmd(frame);
 }
 
 void EVE_CMD_ANIMSTARTRAM(int32_t ch, uint32_t aoptr, uint32_t loop)
 {
-    HAL_Write32(EVE_ENC_CMD_ANIMSTARTRAM);
-    HAL_Write32(ch);
-    HAL_Write32(aoptr);
-    HAL_Write32(loop);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_ANIMSTARTRAM);
+    HAL_WriteCmd(ch);
+    HAL_WriteCmd(aoptr);
+    HAL_WriteCmd(loop);
 }
 
 void EVE_CMD_APILEVEL(uint32_t level)
 {
     //CMD_APILEVEL (0xFFFF FF63)
-    HAL_Write32(EVE_ENC_CMD_APILEVEL);
-    HAL_Write32(level);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_APILEVEL);
+    HAL_WriteCmd(level);
 }
 
 void EVE_CMD_FONTCACHE(uint32_t font, int32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FONTCACHE);
-    HAL_Write32(font);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_FONTCACHE);
+    HAL_WriteCmd(font);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_FONTCACHEQUERY(uint32_t total, int32_t used)
 {
-    HAL_Write32(EVE_ENC_CMD_FONTCACHEQUERY);
-    HAL_Write32(total);
-    HAL_Write32(used);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_FONTCACHEQUERY);
+    HAL_WriteCmd(total);
+    HAL_WriteCmd(used);
 }
 
 void EVE_CMD_HSF(uint32_t w)
 {
-    HAL_Write32(EVE_ENC_CMD_HSF);
-    HAL_Write32(w);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_HSF);
+    HAL_WriteCmd(w);
 }
 
 void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
 {
-    HAL_Write32(EVE_ENC_CMD_PCLKFREQ);
-    HAL_Write32(ftarget);
-    HAL_Write32(rounding);
-    HAL_Write32(factual);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_PCLKFREQ);
+    HAL_WriteCmd(ftarget);
+    HAL_WriteCmd(rounding);
+    HAL_WriteCmd(factual);
 }
 
 #endif
@@ -1972,49 +1824,42 @@ void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual)
 
 void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play)
 {
-    HAL_Write32(EVE_ENC_CMD_RUNANIM);
-    HAL_Write32(waitmask);
-    HAL_Write32(play);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_RUNANIM);
+    HAL_WriteCmd(waitmask);
+    HAL_WriteCmd(play);
 }
 
 void EVE_CMD_TESTCARD(void)
 {
-    HAL_Write32(EVE_ENC_CMD_TESTCARD);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_TESTCARD);
 }
 
 void EVE_CMD_WAIT(uint32_t us)
 {
-    HAL_Write32(EVE_ENC_CMD_WAIT);
-    HAL_Write32(us);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_WAIT);
+    HAL_WriteCmd(us);
 }
 
 void EVE_CMD_NEWLIST(uint32_t a)
 {
-    HAL_Write32(EVE_ENC_CMD_NEWLIST);
-    HAL_Write32(a);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_NEWLIST);
+    HAL_WriteCmd(a);
 }
 
 void EVE_CMD_ENDLIST(void)
 {
-    HAL_Write32(EVE_ENC_CMD_ENDLIST);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_ENDLIST);
 }
 
 void EVE_CMD_CALLLIST(uint32_t a)
 {
-    HAL_Write32(EVE_ENC_CMD_CALLLIST);
-    HAL_Write32(a);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_CALLLIST);
+    HAL_WriteCmd(a);
 }
 
 void EVE_CMD_RETURN(void)
 {
-    HAL_Write32(EVE_ENC_CMD_RETURN);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_RETURN);
 }
 
 #endif
@@ -2023,47 +1868,41 @@ void EVE_CMD_RETURN(void)
 
 void EVE_CMD_NOP(void)
 {
-    HAL_Write32(EVE_ENC_CMD_NOP);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_NOP);
 }
 
 void EVE_CMD_FILLWIDTH(uint32_t s)
 {
-    HAL_Write32(EVE_ENC_CMD_FILLWIDTH);
-    HAL_Write32(s);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FILLWIDTH);
+    HAL_WriteCmd(s);
 }
 
 void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s)
 {
-    HAL_Write32(EVE_ENC_CMD_ROTATEAROUND);
-    HAL_Write32(x);
-    HAL_Write32(y);
-    HAL_Write32(a);
-    HAL_Write32(s);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_ROTATEAROUND);
+    HAL_WriteCmd(x);
+    HAL_WriteCmd(y);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(s);
 }
 
 void EVE_CMD_RESETFONTS(void)
 {
-    HAL_Write32(EVE_ENC_CMD_RESETFONTS);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_RESETFONTS);
 }
 
 void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1)
 {
-    HAL_Write32(EVE_ENC_CMD_GRADIENTA);
-    HAL_Write32(((uint32_t)y0 << 16) | (x0 & 0xFFFF));
-    HAL_Write32(argb0);
-    HAL_Write32(((uint32_t)y1 << 16) | (x1 & 0xFFFF));
-    HAL_Write32(argb1);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_GRADIENTA);
+    HAL_WriteCmd(((uint32_t)y0 << 16) | (x0 & 0xFFFF));
+    HAL_WriteCmd(argb0);
+    HAL_WriteCmd(((uint32_t)y1 << 16) | (x1 & 0xFFFF));
+    HAL_WriteCmd(argb1);
 }
 
 void EVE_CMD_FLASHERASE(void)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHERASE);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHERASE);
 }
 
 /*
@@ -2075,9 +1914,9 @@ void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t* fdata)
 {
     uint32_t i, send_data32 = 0, totalnum = (num + 3) / 4;
 
-    HAL_Write32(EVE_ENC_CMD_FLASHWRITE);
-    HAL_Write32(dest);
-    HAL_Write32(num);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHWRITE);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(num);
     for (i = 0; i < num; i = i + 4)
     {
         /* Pack 4 bytes into a 32-bit data each sending package */
@@ -2085,17 +1924,15 @@ void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t* fdata)
         send_data32 |= (uint32_t)(*fdata++) << 8;
         send_data32 |= (uint32_t)(*fdata++) << 16;
         send_data32 |= (uint32_t)(*fdata++) << 24;
-        HAL_Write32(send_data32);
+        HAL_WriteCmd(send_data32);
     }
-    HAL_IncCmdPointer((4 * (3 + totalnum)) & 0xffff);
 }
 
 void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHWRITE);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHWRITE);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 /*
@@ -2105,11 +1942,10 @@ void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num)
  */
 void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHUPDATE);
-    HAL_Write32(dest);
-    HAL_Write32(src);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHUPDATE);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(src);
+    HAL_WriteCmd(num);
 }
 
 /*
@@ -2117,11 +1953,10 @@ void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num)
  */
 void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHREAD);
-    HAL_Write32(dest);
-    HAL_Write32(src);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHREAD);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(src);
+    HAL_WriteCmd(num);
 }
 
 /*
@@ -2129,58 +1964,50 @@ void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
  */
 void EVE_CMD_FLASHPROGRAM(uint32_t dest, uint32_t src, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHPROGRAM);
-    HAL_Write32(dest);
-    HAL_Write32(src);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHPROGRAM);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(src);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_FLASHSOURCE(uint32_t ptr)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHSOURCE);
-    HAL_Write32(ptr);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHSOURCE);
+    HAL_WriteCmd(ptr);
 }
 
 void EVE_CMD_FLASHSPITX(uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHSPITX);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHSPITX);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_FLASHFAST(uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHFAST);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHFAST);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHSPIRX);
-    HAL_Write32(ptr);
-    HAL_Write32(num);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHSPIRX);
+    HAL_WriteCmd(ptr);
+    HAL_WriteCmd(num);
 }
 
 void EVE_CMD_FLASHATTACH(void)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHATTACH);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHATTACH);
 }
 
 void EVE_CMD_FLASHDETATCH(void)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHDETACH);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHDETACH);
 }
 
 void EVE_CMD_FLASHSPIDESEL(void)
 {
-    HAL_Write32(EVE_ENC_CMD_FLASHSPIDESEL);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_FLASHSPIDESEL);
 }
 
 #endif
@@ -2189,22 +2016,20 @@ void EVE_CMD_FLASHSPIDESEL(void)
 
 void EVE_CMD_GETIMAGE(uint32_t source, uint32_t fmt, uint32_t w, uint32_t h, uint32_t palette)
 {
-    HAL_Write32(EVE_ENC_CMD_GETIMAGE);
-    HAL_Write32(source);
-    HAL_Write32(fmt);
-    HAL_Write32(w);
-    HAL_Write32(h);
-    HAL_Write32(palette);
-    HAL_IncCmdPointer(24);
+    HAL_WriteCmd(EVE_ENC_CMD_GETIMAGE);
+    HAL_WriteCmd(source);
+    HAL_WriteCmd(fmt);
+    HAL_WriteCmd(w);
+    HAL_WriteCmd(h);
+    HAL_WriteCmd(palette);
 }
 
 void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_CALIBRATESUB);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xFFFF));
-    HAL_Write32(result);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_CALIBRATESUB);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xFFFF));
+    HAL_WriteCmd(result);
 }
 
 #endif
@@ -2213,26 +2038,23 @@ void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32
 
 void EVE_CMD_COPYLIST(uint32_t dst)
 {
-    HAL_Write32(EVE_ENC_CMD_COPYLIST);
-    HAL_Write32(dst);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_COPYLIST);
+    HAL_WriteCmd(dst);
 }
 
 void EVE_CMD_CGRADIENT(uint32_t shape, int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb0, uint32_t rgb1)
 {
-    HAL_Write32(EVE_ENC_CMD_CGRADIENT);
-    HAL_Write32(shape);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xFFFF));
-    HAL_Write32(rgb0);
-    HAL_Write32(rgb1);
-    HAL_IncCmdPointer(24);
+    HAL_WriteCmd(EVE_ENC_CMD_CGRADIENT);
+    HAL_WriteCmd(shape);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xFFFF));
+    HAL_WriteCmd(rgb0);
+    HAL_WriteCmd(rgb1);
 }
 
 void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const char* string, ...)
 {
     va_list args;
-    uint16_t CommandSize;
     uint16_t StringLength;
     uint8_t i, num = 0;
 
@@ -2240,214 +2062,178 @@ void EVE_CMD_TEXTDIM(uint32_t dimensions, int16_t font, uint16_t options, const 
 
     num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
 
-    HAL_Write32(EVE_ENC_CMD_TEXTDIM);
-    HAL_Write32(dimensions);
-    HAL_Write32(((uint32_t)options << 16) | (font & 0xFFFF));
-    CommandSize = 8;
+    HAL_WriteCmd(EVE_ENC_CMD_TEXTDIM);
+    HAL_WriteCmd(dimensions);
+    HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xFFFF));
 
     StringLength = EVE_LIB_SendString(string);
 
     for (i = 0; i < num; i++)
     {
-        HAL_Write32((uint32_t)va_arg(args, uint32_t));
+        HAL_WriteCmd((uint32_t)va_arg(args, uint32_t));
     }
-
-    CommandSize = CommandSize + StringLength + (num * 4);
-
-    HAL_IncCmdPointer(CommandSize);
 
     va_end(args);
 }
 
 void EVE_CMD_ARC(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1)
 {
-    HAL_Write32(EVE_ENC_CMD_ARC);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(((uint32_t)r1 << 16) | (r0 & 0xFFFF));
-    HAL_Write32(((uint32_t)a1 << 16) | (a0 & 0xFFFF));
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_ARC);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(((uint32_t)r1 << 16) | (r0 & 0xFFFF));
+    HAL_WriteCmd(((uint32_t)a1 << 16) | (a0 & 0xFFFF));
 }
 
 void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h)
 {
-    HAL_Write32(EVE_ENC_CMD_RENDERTARGET);
-    HAL_Write32(dest);
-    HAL_Write32(fmt | ((uint32_t)w << 16));
-    HAL_Write32(h);
-    HAL_IncCmdPointer(16);
+    HAL_WriteCmd(EVE_ENC_CMD_RENDERTARGET);
+    HAL_WriteCmd(dest);
+    HAL_WriteCmd(fmt | ((uint32_t)w << 16));
+    HAL_WriteCmd(h);
 }
 
 void EVE_CMD_ENABLEREGION(uint32_t en)
 {
-    HAL_Write32(EVE_ENC_CMD_ENABLEREGION);
-    HAL_Write32(en);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_ENABLEREGION);
+    HAL_WriteCmd(en);
 }
 
 void EVE_CMD_FENCE(void)
 {
-    HAL_Write32(EVE_ENC_CMD_FENCE);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_FENCE);
 }
 
 void EVE_CMD_GRAPHICSFINISH(void)
 {
-    HAL_Write32(EVE_ENC_CMD_GRAPHICSFINISH);
-    HAL_IncCmdPointer(4);
+    HAL_WriteCmd(EVE_ENC_CMD_GRAPHICSFINISH);
 }
 
 void EVE_CMD_REGWRITE(uint32_t a, uint32_t b)
 {
-    HAL_Write32(EVE_ENC_CMD_REGWRITE);
-    HAL_Write32(a);
-    HAL_Write32(b);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_REGWRITE);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(b);
 }
 
 void EVE_CMD_APBWRITE(uint32_t a, uint32_t b)
 {
-    HAL_Write32(EVE_ENC_CMD_APBWRITE);
-    HAL_Write32(a);
-    HAL_Write32(b);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_APBWRITE);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(b);
 }
 
 void EVE_CMD_APBREAD(uint32_t a, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_APBREAD);
-    HAL_Write32(a);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_APBREAD);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_LOADWAV);
-    HAL_Write32(dst);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_LOADWAV);
+    HAL_WriteCmd(dst);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_LOADASSET(uint32_t dst, uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_LOADASSET);
-    HAL_Write32(dst);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_LOADASSET);
+    HAL_WriteCmd(dst);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_LOADPATCH(uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_LOADPATCH);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_LOADPATCH);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_GLOW(int16_t x, int16_t y, int16_t w, int16_t h)
 {
-    HAL_Write32(EVE_ENC_CMD_GLOW);
-    HAL_Write32(((uint32_t)y << 16) | (x & 0xFFFF));
-    HAL_Write32(((uint32_t)h << 16) | (w & 0xFFFF));
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_GLOW);
+    HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xFFFF));
+    HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xFFFF));
 }
 
 void EVE_CMD_SDATTACH(uint32_t options, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_SDATTACH);
-    HAL_Write32(options);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(12);
+    HAL_WriteCmd(EVE_ENC_CMD_SDATTACH);
+    HAL_WriteCmd(options);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_FSOPTIONS(uint32_t options)
 {
-    HAL_Write32(EVE_ENC_CMD_FSOPTIONS);
-    HAL_Write32(options);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_FSOPTIONS);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_FSREAD(uint32_t dst, const char* filename, uint32_t result)
 {
-    uint16_t StringLength;
-
-    HAL_Write32(EVE_ENC_CMD_FSREAD);
-    HAL_Write32(dst);
-    StringLength = EVE_LIB_SendString(filename);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(8 + StringLength);
+    HAL_WriteCmd(EVE_ENC_CMD_FSREAD);
+    HAL_WriteCmd(dst);
+    EVE_LIB_SendString(filename);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_FSSIZE(const char* filename, uint32_t size)
 {
-    uint16_t StringLength;
-
-    HAL_Write32(EVE_ENC_CMD_FSSIZE);
-    StringLength = EVE_LIB_SendString(filename);
-    HAL_Write32(size);
-    HAL_IncCmdPointer(8 + StringLength);
+    HAL_WriteCmd(EVE_ENC_CMD_FSSIZE);
+    EVE_LIB_SendString(filename);
+    HAL_WriteCmd(size);
 }
 
 void EVE_CMD_FSSOURCE(const char* filename, uint32_t result)
 {
-    uint16_t StringLength;
-
-    HAL_Write32(EVE_ENC_CMD_FSSOURCE);
-    StringLength = EVE_LIB_SendString(filename);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(8 + StringLength);
+    HAL_WriteCmd(EVE_ENC_CMD_FSSOURCE);
+    EVE_LIB_SendString(filename);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result)
 {
-    uint16_t StringLength;
-
-    HAL_Write32(EVE_ENC_CMD_FSDIR);
-    HAL_Write32(dst);
-    HAL_Write32(num);
-    StringLength = EVE_LIB_SendString(path);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(16 + StringLength);
+    HAL_WriteCmd(EVE_ENC_CMD_FSDIR);
+    HAL_WriteCmd(dst);
+    HAL_WriteCmd(num);
+    EVE_LIB_SendString(path);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result)
 {
-    HAL_Write32(EVE_ENC_CMD_FSDIR);
-    HAL_Write32(dst);
-    HAL_Write32(src);
-    HAL_Write32(count);
-    HAL_Write32(result);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_FSDIR);
+    HAL_WriteCmd(dst);
+    HAL_WriteCmd(src);
+    HAL_WriteCmd(count);
+    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_WAITCHANGE(uint32_t a)
 {
-    HAL_Write32(EVE_ENC_CMD_WAITCHANGE);
-    HAL_Write32(a);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_WAITCHANGE);
+    HAL_WriteCmd(a);
 }
 
 void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask)
 {
-    HAL_Write32(EVE_ENC_CMD_WAITCOND);
-    HAL_Write32(a);
-    HAL_Write32(func);
-    HAL_Write32(ref);
-    HAL_Write32(mask);
-    HAL_IncCmdPointer(20);
+    HAL_WriteCmd(EVE_ENC_CMD_WAITCOND);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(func);
+    HAL_WriteCmd(ref);
+    HAL_WriteCmd(mask);
 }
 
 void EVE_CMD_RESULT(uint32_t a)
 {
-    HAL_Write32(EVE_ENC_CMD_RESULT);
-    HAL_Write32(a);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_RESULT);
+    HAL_WriteCmd(a);
 }
 
 void EVE_CMD_I2SSTARTUP(uint32_t freq)
 {
-    HAL_Write32(EVE_ENC_CMD_I2SSTARTUP);
-    HAL_Write32(freq);
-    HAL_IncCmdPointer(8);
+    HAL_WriteCmd(EVE_ENC_CMD_I2SSTARTUP);
+    HAL_WriteCmd(freq);
 }
 
 #endif

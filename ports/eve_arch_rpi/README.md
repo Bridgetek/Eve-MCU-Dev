@@ -13,21 +13,26 @@ There are two separate ports for Raspberry Pi products:
 
 The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi pico Datasheet for more information.
 
-| RP2040 Pin| RP2040 Pin Name | pico Pin | EVE Signal |
-| --- | --- | --- | --- |
-| 13 | GPIO10 | 14 | SCK |
-| 14 | GPIO11 | 15 | MOSI |
-| 15 | GPIO12 | 16 | MISO |
-| 16 | GPIO13 | 17 | CS# |
-| 9 | GPIO07 | 10 | PD# |
-| - | - | 40 | 5V |
-| - | - | 13 | GND |
+| RP2040 Pin| RP2040 Pin Name | pico Pin | pico Pin Name | MM2040EV J1 Pin | EVE Signal |
+| --- | --- | --- | --- | --- | --- |
+| 4 | GPIO2 | 4 | GP2 | 1 | SCK |
+| 5 | GPIO3 | 5 | GP3 | 4 | MOSI |
+| 6 | GPIO4 | 6 | GP4 | 3 | MISO |
+| 7 | GPIO5 | 7 | GP5 | 2 | CS# |
+| 9 | GPIO7 | 10 | GP7 | 13 | PD# |
+| 8 | GPIO6 | 9 | GP6 | 14 | INT# _(1)_ |
+| - | - | 40 | - | 10 | 5V |
+| - | - | 8 | - | 11/12 | GND |
+
+- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 
 A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
 
 ![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
+
+**NOTE:** The INT# line is not shown connected.
 
 ## Files
 
@@ -76,8 +81,11 @@ The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However 
 | GPIO9(MISO) | 21 | MISO |
 | GPIO25 | 22 | CS# |
 | GPIO24 | 18 | PD# |
+| GPIO23 | 16 | INT# _(1)_ |
 | 5v Power | 2 | 5V |
 | Ground | 20 | GND |
+
+- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
 
 Ensure that the power supply from the Raspberry Pi SBC is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Raspberry Pi SBC and EVE modules common to both power sources.
 

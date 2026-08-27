@@ -357,10 +357,7 @@
     #if defined(EVE_USE_INTERRUPT_METHOD)
     #error interrupt method in play
     #endif
-#elif IS_EVE_API(5)
-    // Always define for EVE5
-    #define EVE_USE_CMDB_METHOD
-#else // IS_EVE_API(2,3,4)
+#else // IS_EVE_API(2,3,4,5)
     // Default setting for EVE2 onwards
     #define EVE_USE_CMDB_METHOD
     #if defined(COPROCESSOR_TRANSFER)

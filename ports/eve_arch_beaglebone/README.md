@@ -15,8 +15,11 @@ The Beaglebone Black port was developed using a Beaglebone Black. The Beaglebone
 | SPI0_D0 | P9 Pin 21 | MISO |
 | GPIO 51 | P9 Pin 16 | CS# |
 | GPIO 48 | P9 Pin 15 | PD# |
+| GPIO 50 | P9 Pin 14 | INT# _(1)_ |
 | - | VUSB | 5V |
 | - | GND | GND |
+
+- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
 
 Ensure that the power supply from the Beaglebone Black module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
 

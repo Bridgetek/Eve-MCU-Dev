@@ -108,7 +108,7 @@
 #define FT8XX_PD_N_PIN   GPIO_PORT0
 #define FT8XX_INT_N_PIN  GPIO_PORT2
 // GPIO0         , GPIO1      , GPIO2       , GPIO3         }
-static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTPUT };
+static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_INPUT, GPIO_INPUT, GPIO_INPUT };
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 

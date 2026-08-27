@@ -68,9 +68,11 @@
 	printf ("J8 Pin 23 - SCLK (SPI0_SCLK)\n");
 	printf ("J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin\n");
 	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
+	printf ("J8 Pin 16 - INT# (GPIO23) - Interrupt pin\n");
 */
 #define PIN_NUM_PD   24
 #define PIN_NUM_CS   25
+#define PIN_NUM_INT  23
 
 #define str(s) xstr(s)
 #define xstr(s) #s
@@ -93,6 +95,8 @@ unsigned int GPIO_pd_line_num = PIN_NUM_PD;  // GPIO pin number
 struct gpiod_line *gpio_pd_line = NULL;
 unsigned int GPIO_cs_line_num = PIN_NUM_CS;  // GPIO pin number
 struct gpiod_line *gpio_cs_line = NULL;
+unsigned int GPIO_int_line_num = PIN_NUM_INT;  // GPIO pin number
+struct gpiod_line *gpio_int_line = NULL;
 
 int Platform_Init(void)
 {
@@ -165,6 +169,20 @@ int Platform_Init(void)
         gpiod_chip_close(gpio_chip);
         exit(-1);
     }
+    gpio_int_line = gpiod_chip_get_line(gpio_chip, GPIO_int_line_num);
+    if (!gpio_int_line) 
+    {
+        fprintf(stderr, "Failed: gpiod_chip_get_line GPIO_int_line_num\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Request line as input
+    if (gpiod_line_request_input(gpio_int_line, "eve") < 0) 
+    {
+        fprintf(stderr, "Failed: gpiod_line_request_output\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
 
     return 0;
 }
@@ -231,6 +249,19 @@ void Platform_PDhigh(void)
         gpiod_chip_close(gpio_chip);
         return;
     }
+}
+
+// ------------------------ interrupt input ------------------------------------
+int Platform_Int(void)
+{
+    int val = gpiod_line_get_value(gpio_pd_line);
+    if (val < 0)
+    {
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return;
+    }
+    return val;
 }
 
 // ------------------------- Delay functions -----------------------------------

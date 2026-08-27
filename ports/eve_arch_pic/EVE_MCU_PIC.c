@@ -94,11 +94,12 @@ int MCU_Init(void)
     ANSELD = 0x00;
 
     // Port pin set-up
-    TRISCbits.TRISC7 = 0;      // CS
-    TRISCbits.TRISC6 = 0;      // PD pin
+    TRISCbits.TRISC7 = 0;      // CS# pin (output)
+    TRISCbits.TRISC6 = 0;      // PD# pin (output)
     TRISCbits.TRISC3 = 0;      // SCK
     TRISCbits.TRISC4 = 1;      // SDI (MISO)
     TRISCbits.TRISC5 = 0;      // SDO (MOSI)
+    TRISCbits.TRISC2 = 1;      // INT# pin (input)
 
     TRISDbits.TRISD7 = 1;      // RXD INPUT
     TRISDbits.TRISD6 = 0;      // TXD OUTPUT
@@ -182,6 +183,12 @@ void MCU_PDlow(void)
 void MCU_PDhigh(void)
 {
     LATCbits.LATC6 = 1;         // PD# line high
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void)
+{
+    return (int)LATCbits.LATC2;         // INT# line
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

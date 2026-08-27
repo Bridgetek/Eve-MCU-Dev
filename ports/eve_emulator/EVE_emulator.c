@@ -586,7 +586,7 @@ void MCU_PDhigh(void)
 int MCU_Int(void)
 {
     emulator_check();
-    return BT8XXEMU_hasInterrupt(Emulator);
+    return !BT8XXEMU_hasInterrupt(Emulator);
 }
 
 // ------------------------- Delay functions -----------------------------------
