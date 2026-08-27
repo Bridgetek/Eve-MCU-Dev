@@ -73,6 +73,7 @@
 extern GPIO_TypeDef *config_gpio;
 extern uint16_t config_pin_pd;
 extern uint16_t config_pin_cs;
+extern uint16_t config_pin_int;
 
 /* SPI handler declaration */
 extern SPI_HandleTypeDef hspi1;
@@ -146,10 +147,7 @@ inline void MCU_PDhigh(void)
 // ------------------------ interrupt input ------------------------------------
 int MCU_Int(void) 
 {
-#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error Interrupt input is not supported on STM32
-#endif
-    return 1;
+    return (int)HAL_GPIO_ReadPin(config_gpio, config_pin_int);
 }
 
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)

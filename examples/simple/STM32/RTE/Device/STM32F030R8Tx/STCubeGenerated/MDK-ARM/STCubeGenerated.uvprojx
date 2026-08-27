@@ -359,7 +359,7 @@
               <MiscControls />
               <Define>USE_HAL_DRIVER,STM32F030x8</Define>
               <Undefine />
-              <IncludePath>../Inc;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Inc;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/CMSIS/Device/ST/STM32F0xx/Include;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Inc;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/CMSIS/Device/ST/STM32F0xx/Include;C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -526,7 +526,7 @@
             <File>
               <FileName>stm32f0xx_hal_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_spi.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_spi.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -565,7 +565,7 @@
             <File>
               <FileName>stm32f0xx_hal_spi_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_spi_ex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_spi_ex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -604,7 +604,7 @@
             <File>
               <FileName>stm32f0xx_hal_rcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -643,7 +643,7 @@
             <File>
               <FileName>stm32f0xx_hal_rcc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -682,7 +682,7 @@
             <File>
               <FileName>stm32f0xx_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -721,7 +721,7 @@
             <File>
               <FileName>stm32f0xx_hal_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -760,7 +760,7 @@
             <File>
               <FileName>stm32f0xx_hal_i2c_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -799,7 +799,7 @@
             <File>
               <FileName>stm32f0xx_hal_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -838,7 +838,7 @@
             <File>
               <FileName>stm32f0xx_hal_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -877,7 +877,7 @@
             <File>
               <FileName>stm32f0xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -916,7 +916,7 @@
             <File>
               <FileName>stm32f0xx_hal_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -955,7 +955,7 @@
             <File>
               <FileName>stm32f0xx_hal_pwr_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -994,7 +994,7 @@
             <File>
               <FileName>stm32f0xx_hal_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1033,7 +1033,7 @@
             <File>
               <FileName>stm32f0xx_hal_flash_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1072,7 +1072,7 @@
             <File>
               <FileName>stm32f0xx_hal_exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.5/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c</FilePath>
+              <FilePath>C:/Users/gordon.mcnab/STM32Cube/Repository/STM32Cube_FW_F0_V1.11.6/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>

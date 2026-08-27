@@ -472,6 +472,51 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Header Files</GroupName>
+          <Files>
+            <File>
+              <FileName>EVE.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE.h</FilePath>
+            </File>
+            <File>
+              <FileName>EVE_commands.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE_commands.h</FilePath>
+            </File>
+            <File>
+              <FileName>EVE_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>EVE_debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE_debug.h</FilePath>
+            </File>
+            <File>
+              <FileName>EVE_defs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE_defs.h</FilePath>
+            </File>
+            <File>
+              <FileName>EVE_registers.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\EVE_registers.h</FilePath>
+            </File>
+            <File>
+              <FileName>HAL.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\HAL.h</FilePath>
+            </File>
+            <File>
+              <FileName>MCU.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\include\MCU.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
