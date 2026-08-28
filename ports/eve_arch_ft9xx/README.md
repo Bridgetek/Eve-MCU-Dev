@@ -15,6 +15,7 @@ The FT9XX port was developed using a board from the MM900EV1B series along with 
 | 30 | 35 | SPIM_MISO | J2 Pin 3 / CN12 Pin 6 | MISO |
 | 28 | 30 | SPIM_SS0 | J2 Pin 2 / CN12 Pin 8 | CS# |
 | 43 | 15 | PWD# | J2 Pin 13 / CN12 Pin 10 | PD# |
+| 42 | 14 | INT# | J2 Pin 14 / CN12 Pin 9 | INT# |
 | - | - | VDD_5V | J2 Pin 10 | 5V |
 | - | - | GND | J2 Pin 12 / CN12 Pin 11 | GND |
 
