@@ -72,8 +72,10 @@
 #define PIN_NUM_IO3  32
 #define PIN_NUM_CLK  27
 #define PIN_NUM_CS   28
-// Powerdown pin
+// EVE Powerdown# pin
 #define PIN_NUM_PD   43
+// EVE INT# pin
+#define PIN_NUM_INT  42
 
 #elif defined(__FT930__)
 
@@ -83,8 +85,10 @@
 #define PIN_NUM_IO3  38
 #define PIN_NUM_CLK  34
 #define PIN_NUM_CS   30
-// Powerdown pin
+// EVE Powerdown# pin
 #define PIN_NUM_PD   15
+// EVE INT# pin
+#define PIN_NUM_INT  14
 
 #endif //
 
@@ -108,10 +112,12 @@ int MCU_Init(void)
     gpio_function(PIN_NUM_CLK, pad_spim_sck); /* GPIO27 to SPIM_CLK */
 #if defined(__FT900__)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
-    gpio_function(PIN_NUM_PD, pad_gpio43);
+    gpio_function(PIN_NUM_PD, pad_gpio43); /* GPIO43 as PD */
+    gpio_function(PIN_NUM_INT, pad_gpio42); /* GPIO42 as INT */
 #elif defined(__FT930__)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO30 as CS */
-    gpio_function(PIN_NUM_PD, pad_gpio15);
+    gpio_function(PIN_NUM_PD, pad_gpio15); /* GPIO15 as PD */
+    gpio_function(PIN_NUM_INT, pad_gpio14); /* GPIO14 as INT */
 #endif
 
     gpio_function(PIN_NUM_MOSI, pad_spim_mosi); /* GPIO29 to SPIM_MOSI */
@@ -122,13 +128,14 @@ int MCU_Init(void)
     gpio_dir(PIN_NUM_MOSI, pad_dir_output);
     gpio_dir(PIN_NUM_MISO, pad_dir_input);
     gpio_dir(PIN_NUM_PD, pad_dir_output);
-#if (SPI_ENABLE == ENABLE_SPI_QUAD)
+    gpio_dir(PIN_NUM_INT, pad_dir_input);
+#if defined QUADSPI_ENABLE
     /* Initialize IO2 and IO3 pad/pin for quad settings */
     gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
     gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
     gpio_dir(PIN_NUM_IO2, pad_dir_output);
     gpio_dir(PIN_NUM_IO3, pad_dir_output);
-#endif
+#endif // QUADSPI_ENABLE
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
 
@@ -216,10 +223,10 @@ int MCU_Setup(void)
 }
 
 /**
- The interrupt handler for the timers.
-
- This will keep a count of how many times each interrupt has fired in a global
- variable
+ * @brief The interrupt handler for the timers.
+ *
+ * This will keep a count of how many times each interrupt has fired in a global
+ * variable.
 */
 static void timerISR(void)
 {
@@ -260,6 +267,12 @@ inline void MCU_PDlow(void)
 inline void MCU_PDhigh(void)
 {
     gpio_write(PIN_NUM_PD, 1);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void)
+{
+    return gpio_read(PIN_NUM_INT);  // EVE INT# line
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -313,12 +326,12 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-  spi_writen(SPIM, DataToWrite, length);
+    spi_writen(SPIM, DataToWrite, length);
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
-  spi_readn(SPIM, DataToRead, length);
+    spi_readn(SPIM, DataToRead, length);
 }
 
 void MCU_Delay_20ms(void)

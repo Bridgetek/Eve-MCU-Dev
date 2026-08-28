@@ -28,7 +28,7 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) _(3)_ | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
 | [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
 | [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
 | [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) _(3)_ | 
@@ -40,13 +40,13 @@ This example supports the following platforms:
 | [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) _(3)_ | 
 | [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) _(3)_ | 
-| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | | 
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/)  | 
+| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) _(3)_ | | 
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
 
 - (1) Hardware testing ongoing.
 - (2) Build environment incomplete.
-- (3) Using the INT# line for coprocessor completion is not supported.
+- (3) Using the EVE INT# line for coprocessor completion is not supported.
  
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
