@@ -20,7 +20,7 @@
 		}
 	],
 	"settings": {
-		"ft9xx.projectName": "ft900_simple",
+		"ft9xx.projectName": "simple_ft900",
 		"ft9xx.baudrate": "921600",
 		"ft9xx.buildMode": "Debug",
 		"ft9xx.chipset": "FT90x",
