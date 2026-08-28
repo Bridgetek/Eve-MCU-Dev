@@ -902,10 +902,9 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
  *      after a co-processor command to provide a string for the operation.
  *      The data will be added to the co-processor command list therefore the
  *      write will block on available space in this list.
- * @param ImgData - Pointer to start of data buffer.
- * @param DataSize - Number of bytes in buffer.
+ * @param string - String to be sent to the co-processor memory.
  */
-uint16_t EVE_LIB_SendString(const char* string);
+void EVE_LIB_SendString(const char* string);
 
 /**
  * @brief EVE API: Get properties of an CMD_LOADIMAGE operation
