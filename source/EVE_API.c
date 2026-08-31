@@ -708,13 +708,15 @@ uint8_t EVE_LIB_MemRead8(uint32_t address)
 #endif  // IS_EVE_API(1, 2, 3, 4)
 
 // Writes a string over SPI
-void EVE_LIB_SendString(const char* string)
+uint16_t EVE_LIB_SendString(const char* string)
 {
     uint16_t length;
+    uint16_t CommandSize;
 
     // Include the terminating null character in the string length.
     // Pad string length to a multiple of 4.
     length = ((strlen(string) + 1) + 3) & (~3);
+    CommandSize = length;
 
 #if MCU_UNALIGNED_ACCESSES 
     // Send string as 32 bit data.
@@ -737,6 +739,7 @@ void EVE_LIB_SendString(const char* string)
     }
 #endif
 
+    return CommandSize;
 }
 
 void EVE_LIB_GetProps(uint32_t* addr, uint32_t* width, uint32_t* height)

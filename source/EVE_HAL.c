@@ -669,7 +669,7 @@ void HAL_ResetProfilePointer(void)
 uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 {
     uint32_t readCmdPointer;
-    uint32_t starttime, curtime;
+    uint32_t starttime = 0, curtime = 0;
 
     if (timeout)
     {
