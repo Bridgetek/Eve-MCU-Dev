@@ -634,13 +634,22 @@
 /* =========================================================================
  * INTERRUPT FLAG BITS  (REG_INT_FLAGS / REG_INT_MASK)
  * ========================================================================= */
+// Interrupt mask bit to enable display list swap occurred interrupt.
 #define EVE_INT_SWAP                    0x1ul
+// Interrupt mask bit to enable touchscreen touch detected interrupt.
 #define EVE_INT_TOUCH                   0x2ul
+// Interrupt mask bit to enable touchscreen tag value REG_TOUCH_TAG change.
 #define EVE_INT_TAG                     0x4ul
+ // Interrupt mask bit to enable sound effect ended interrupt.
 #define EVE_INT_SOUND                   0x8ul
+// Interrupt mask bit to enable audio playback ended interrupt.
 #define EVE_INT_PLAYBACK                0x10ul
+// Interrupt mask bit to enable command FIFO empty interrupt.
 #define EVE_INT_CMDEMPTY                0x20ul
+// Interrupt mask bit to enable command FIFO flag interrupt. 
+// Use with CMD_INTERRUPT and CMD_WATCHDOG.
 #define EVE_INT_CMDFLAG                 0x40ul
+// Interrupt mask bit to enable touchscreen conversion complete interrupt.
 #define EVE_INT_CONVCOMPLETE            0x80ul
 
 /* =========================================================================

@@ -534,6 +534,8 @@ It is initilised using `EVE_LIB_BeginCoProProfile()` at the beginning of a list 
 
 This feature can be used in conjunction with `EVE_LIB_GetCoProSpace()` to predict the size of the co-processor fullness.
 
+Enabling the macro will add one 16-bit storage variable to the compiled project.
+
 #### Limitations in RAM_DL and RAM_CMD
 
 It is important to note that the overall limit of 8K for the generated RAM_DL list still applies, even if lists are sent in multiple sections. It is also important to bear in mind that the size of a co-processor command is not always the same as the size of the resulting RAM_DL instructions which the co-processor generates from the commands.
@@ -581,3 +583,20 @@ uint16_t EVE_LIB_SendString(const char* string)
 ```
 This function sends a string of characters and is used by commands such as CMD_TEXT, CMD_BUTTON and CMD_TOGGLE which all use text strings. This function takes care of the extra padding which is required as all EVE commands must be 32-bit aligned. Therefore, depending on the length of the string (plus the necessary null character to terminate it) then between one and three extra 00 bytes are added to pad the command to be a multiple of 4 bytes. The main application can therefore send strings without needing to consider the padding. 
 
+#### Handling Interrupts
+
+The interrupt register `REG_INT_FLAGS` is provided to allow an application to see if one of several interrupt events are flagged. These can be polled by reading the register. However, the register is automatically cleared on each read. 
+
+The API provides a method for accessing the register and preserving any tested flags for later testing. The `EVE_LIB_GetInterrupt()` function is provided to load and store the current bits set to keep a set of flags set in a global variable. There is a mask value as a parameter to the function which is used to test the set bits. Once the bits have been tested in the global variable they can be cleared.
+
+For example, if a key press was detected and the bit set in the register during the period the application was waiting for a command buffer empty event the API can be queried with `EVE_LIB_GetInterrupt(EVE_INT_CMD_EMPTY)`. The `EVE_INT_TOUCH` bit would be unaffected and the application could later independently test the command for that event.
+
+Enabling the macro will add one 8-bit storage variable to the compiled project.
+
+#### Accessing the INT# line
+
+The optional INT# line is provided for the EVE device to signal to the host MCU that an event has occurred. The `REG_INT_FLAGS` register holds a flag of all interrupts that are pending. If the corresponding bit in the `REG_INT_MASK` register is set then the EVE device will set the INT# line low (active). This signal can be used when single-channel SPI is in use. If Quad SPI is being used then this signal is used as a data line instead.
+
+This status can be accessed from the EVE API with the `EVE_LIB_Int()` function. A non-zero value indicates that the INT# line is asserted.
+
+**NOTE:** This function only available if the macro `QUADSPI_ENABLE` is undefined. Enabling Quad SPI with the `QUADSPI_ENABLE` setting will undefine that macro.

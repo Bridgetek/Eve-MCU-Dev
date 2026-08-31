@@ -460,6 +460,31 @@ uint16_t EVE_LIB_GetDlProfile(void)
 }
 #endif
 
+#if !defined (QUADSPI_ENABLE)
+// Get the status of the interrupt line from EVE
+int EVE_LIB_Int(void)
+{
+    return MCU_Int();
+}
+#endif // defined (QUADSPI_ENABLE)
+
+#if defined (EVE_MANANGE_INTERRUPTS)
+// Get the status of the interrupt flag register
+uint8_t EVE_LIB_GetInterrupt(uint8_t mask)
+{
+    static uint8_t curr = 0;
+    uint8_t val;
+    
+    curr |= HAL_MemRead32(EVE_REG_INT_FLAGS);
+    // Test mask of set bits
+    val = curr & mask;
+    // Consume tested bits
+    curr = curr & ~mask;
+
+    return val;
+}
+#endif // defined (EVE_MANANGE_INTERRUPTS)
+
 // Gets a result from the command buffer
 uint32_t EVE_LIB_GetResult(int offset)
 {

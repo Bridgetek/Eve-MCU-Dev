@@ -364,7 +364,7 @@
     #endif // defined(COPROCESSOR_TRANSFER)
 #endif
 
-#if defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
+#if defined(EVE_USE_CMD_METHOD) && !defined(QUADSPI_ENABLE)
     #if defined(COPROCESSOR_TRANSFER)
         #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
             #undef EVE_USE_CMDB_METHOD
@@ -372,6 +372,18 @@
         #endif // EVE_TRANSFER_INT
     #endif // defined(COPROCESSOR_TRANSFER)
 #endif // defined(EVE_USE_CMDB_METHOD)
+
+/** Interrupt management.
+ *
+ *   Define the macro to enable interrupt management of the REG_INT_FLAGS 
+ *   register. If this is enabled then all testing of the REG_INT_FLAGS 
+ *   register must be made through the EVE_LIB_GetInterrupt function.
+ *   If EVE_USE_INTERRUPT_METHOD is defined then the feature is enabled.
+ *   The function does not manage the INT# line (see EVE_LIB_Int function).
+ */
+#if defined(EVE_USE_INTERRUPT_METHOD) && !defined(EVE_MANANGE_INTERRUPTS)
+#define EVE_MANANGE_INTERRUPTS
+#endif
 
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
@@ -844,11 +856,42 @@ uint16_t EVE_LIB_GetCoProProfile(void);
 uint16_t EVE_LIB_GetDlProfile(void);
 #endif
 
+#if !defined (QUADSPI_ENABLE)
+/**
+ * @brief Test interrupt input line
+ * @details This function will check the interrupt input INT# from
+ *      the EVE device. If Quad SPI is enabled then the interrupt line
+ *      is used as a data line for SPI and therefore cannot be used for
+ *      an interrupt input.
+ *      To prevent any unintended reads of this when Quad SPI is enabled
+ *      the function is not compiled when Quad SPI is configured.
+ * @returns zero if there is no interrupt, non-zero if the EVE device is
+ *      asserting an interrupt.
+ */
+int EVE_LIB_Int(void);
+#endif // defined (QUADSPI_ENABLE)
+
+#if defined (EVE_MANANGE_INTERRUPTS)
+/**
+ * @brief EVE API: Test if an interrupt flag is set
+ * @details Will read the interrupt flag register and add any newly pending to
+ *      a status value. The flag register will clear any pending interrupt
+ *      when read so the cumulative flagged bits are kept until they are
+ *      cleared by the mask in this function.
+ * @param mask - Bit mask of interrupts to query (and clear).
+ * @returns 0 for no interrupts in the mask being set, if any interrupts are
+ *      set then the return value will contain bits set from the mask parameter.
+ */
+uint8_t EVE_LIB_GetInterrupt(uint8_t mask);
+#endif // defined (EVE_MANANGE_INTERRUPTS)
+
 /**
  * @brief EVE API: Returns a result from the co-processor command buffer
  * @details Will return a result value from "offset" words back in the command buffer.
  *      If the value of offset is 1 then the previous value from the co-processor
  *      command buffer is returned.
+ * @param offset - Number of 32-bit words to go back in the command buffer for
+ *      the result.
  * @returns result of a previous co-processor command.
  */
 uint32_t EVE_LIB_GetResult(int offset);
@@ -857,6 +900,7 @@ uint32_t EVE_LIB_GetResult(int offset);
 /**
  * @brief EVE API: Get co-processor exception description
  * @details Will query the co-processor exception description to a string.
+ * @param desc - Buffer to receive the text of the exception description.
  * @returns Co-processor exception description. This is a pointer to a string
  *      and must be sufficient to hold 128 characters.
  */

@@ -59,12 +59,13 @@
 
 /* EVE HAL */
 
-// Used to navigate command ring buffer on FT800
+// Used to navigate command ring buffer on FT800 and when EVE_USE_CMDB_METHOD
+// is not defined.
 #if !defined(EVE_USE_CMDB_METHOD)
 static uint16_t writeCmdPointer = 0x0000;
 #endif // defined(EVE_USE_CMDB_METHOD)
 
-// Used for co-processor list profiling
+// Used for co-processor list profiling. 
 #if defined(EVE_COPROC_PROFILE)
 static uint16_t profileCmdPointer = 0x0000;
 #endif
@@ -235,10 +236,12 @@ int HAL_EVE_Init(void)
     }
 
 #if defined(EVE_USE_INTERRUPT_METHOD)
-
-    // Enable only the INT_CMDEMPTY interrupt
-    HAL_MemWrite32(EVE_REG_INT_MASK, 0x20);
-    // Enable global interrupts
+#error
+    // Enable only the INT_CMDEMPTY interrupt. Other interrupt sources
+    // may be added later but this bit must be set to detect command
+    // buffer completion.
+    HAL_MemWrite32(EVE_REG_INT_MASK, EVE_INT_CMDEMPTY);
+    // Enable global interrupts.
     HAL_MemWrite32(EVE_REG_INT_EN, 1);
 
 #endif // defined(EVE_USE_INTERRUPT_METHOD)
@@ -643,7 +646,7 @@ void HAL_WriteCmdPointer(void)
 {
 #if defined(EVE_USE_INTERRUPT_METHOD)
     // Clear the interrupt flags register and reset the interrupt line
-    HAL_MemRead32(EVE_REG_INT_FLAGS);
+    EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY);
 #endif // defined(EVE_USE_INTERRUPT_METHOD)
 
     // and move write pointer to here
@@ -681,18 +684,20 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 
 #if defined(EVE_USE_INTERRUPT_METHOD)
 
-    while (MCU_Int())
+    do 
     {
-        // Detect a timeout
-        if (timeout)
+        while (MCU_Int())
         {
-            // Elapsed time since function call
-            curtime = MCU_Time_ms();
-            if ((curtime - starttime) > timeout) break;
+            // Detect a timeout
+            if (timeout)
+            {
+                // Elapsed time since function call
+                curtime = MCU_Time_ms();
+                if ((curtime - starttime) > timeout) break;
+            }
         }
-    }
-    // Dummy read of REG_INT_FLAGS to clear interrupt
-    HAL_MemRead32(EVE_REG_INT_FLAGS);
+        // Read of REG_INT_FLAGS to clear interrupt.
+    } while (!EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY));
 
     // Read the graphics processor read pointer (contains error flag)
     readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
