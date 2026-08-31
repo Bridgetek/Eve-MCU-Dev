@@ -107,8 +107,8 @@
  */
 #if IS_EVE_API(5)
 #if defined(PLATFORM_FT9XX) 
-/* FT9xx SPI Bus is set to 25 MHz by default */
-#define MCU_SPI_TIMEOUT 24
+/* FT9xx SPI Bus is set to 12.5 MHz by default */
+#define MCU_SPI_TIMEOUT 16
 
 #elif defined(PLATFORM_RASPBERRYPI) 
 /* Raspberry Pi SPI bus is set to 1 MHz by default */
