@@ -708,16 +708,13 @@ uint8_t EVE_LIB_MemRead8(uint32_t address)
 #endif  // IS_EVE_API(1, 2, 3, 4)
 
 // Writes a string over SPI
-uint16_t EVE_LIB_SendString(const char* string)
+void EVE_LIB_SendString(const char* string)
 {
     uint16_t length;
-    uint16_t CommandSize;
 
     // Include the terminating null character in the string length.
     // Pad string length to a multiple of 4.
     length = ((strlen(string) + 1) + 3) & (~3);
-    // Store command length to return.
-    CommandSize = length;
 
 #if MCU_UNALIGNED_ACCESSES 
     // Send string as 32 bit data.
@@ -740,7 +737,6 @@ uint16_t EVE_LIB_SendString(const char* string)
     }
 #endif
 
-    return CommandSize;
 }
 
 void EVE_LIB_GetProps(uint32_t* addr, uint32_t* width, uint32_t* height)
@@ -1160,17 +1156,13 @@ void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)
 
 void EVE_CMD_KEYS(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, uint16_t options, const char* string)
 {
-    uint16_t CommandSize;
-    uint16_t StringLength;
 
     HAL_WriteCmd(EVE_ENC_CMD_KEYS);
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
     HAL_WriteCmd(((uint32_t)options << 16) | (font & 0xffff));
-    CommandSize = 16;
 
-    StringLength = EVE_LIB_SendString(string);
-    CommandSize = CommandSize + StringLength;
+    EVE_LIB_SendString(string);
 }
 
 void EVE_CMD_NUMBER(int16_t x, int16_t y, int16_t font, uint16_t options, int32_t n)

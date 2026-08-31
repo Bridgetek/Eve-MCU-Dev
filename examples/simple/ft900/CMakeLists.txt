@@ -1,8 +1,5 @@
 # Standard CMakeLists.txt Template for FT9xx project compilation.
 
-# To build use the command line as follows:
-# cmake -G "Ninja" -S . -B build -DBUILD=Debug -DTARGET=ft90x
-
 # Project name. Default name is the name of the current directory.
 # On command line call cmake with the parameter "-DPROJECT=firmware" to override.
 
@@ -30,14 +27,14 @@ else()
     message(FATAL_ERROR "Make sure that the FT9XX is installed correctly. Can't find the 'toolchain_ft9xx.cmake' file")
 endif()
 
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
 # Set the project name to the current directory if it is not defined in the command line.
 if (NOT DEFINED ${PROJECT})
     get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
     get_filename_component(PARENT_NAME ${PARENT_DIR} NAME)
     get_filename_component(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-    string(REPLACE " " "_" PROJECT "${PROJECT_DIR}_${PARENT_NAME}")
+    string(REPLACE " " "_" PROJECT "${PARENT_NAME}_${PROJECT_DIR}")
     message(STATUS "Project name set to ${PROJECT}")
 endif()
 

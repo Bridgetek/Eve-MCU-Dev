@@ -1,5 +1,5 @@
 {
-    "ft9xx.projectName": "simple_ft9xx",
+    "ft9xx.projectName": "simple_ft900",
     "ft9xx.baudrate": "921600",
     "ft9xx.buildMode": "Debug",
     "ft9xx.chipset": "FT90x",
@@ -10,9 +10,5 @@
     "ft9xx.layeredDrivers": [],
     "ft9xx.d2xxType": "",
     "ft9xx.customDefinedFlags": [],
-    "ft9xx.customLinkerFlags": [],
-    "files.associations": {
-        "stdio.h": "c",
-        "string.h": "c"
-    }
+    "ft9xx.customLinkerFlags": []
 }

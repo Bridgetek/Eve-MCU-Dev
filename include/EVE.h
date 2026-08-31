@@ -364,14 +364,14 @@
     #endif // defined(COPROCESSOR_TRANSFER)
 #endif
 
-#if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
+#if defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
     #if defined(COPROCESSOR_TRANSFER)
         #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
+            #undef EVE_USE_CMDB_METHOD
             #define EVE_USE_INTERRUPT_METHOD
         #endif // EVE_TRANSFER_INT
     #endif // defined(COPROCESSOR_TRANSFER)
-#endif // !defined(EVE_USE_CMDB_METHOD)
-
+#endif // defined(EVE_USE_CMDB_METHOD)
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
 /**
@@ -899,10 +899,9 @@ void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize);
  *      after a co-processor command to provide a string for the operation.
  *      The data will be added to the co-processor command list therefore the
  *      write will block on available space in this list.
- * @param ImgData - Pointer to start of data buffer.
- * @param DataSize - Number of bytes in buffer.
+ * @param string - String to be sent to the co-processor memory.
  */
-uint16_t EVE_LIB_SendString(const char* string);
+void EVE_LIB_SendString(const char* string);
 
 /**
  * @brief EVE API: Get properties of an CMD_LOADIMAGE operation
