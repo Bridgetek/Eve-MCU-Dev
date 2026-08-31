@@ -339,24 +339,21 @@
  *
  *   EVE1 always writes directly to the co-processor ring buffer then
  *   REG_CMD_WRITE is updated.
- *   EVE2+ can write to the co-processor ring buffer via the REG_CMDB_WRITE
- *   register.
+ *   EVE2+ can write directly to the co-processor ring buffer via the
+ *   REG_CMDB_WRITE register.
  * 
- *   If this is undefined then EVE_TRANSFER_CMD_WRITE is used for EVE1
- *   and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
- *   If this is set for EVE_TRANSFER_CMDB_WRITE on EVE1 then the setting
- *   will be modified to EVE_TRANSFER_CMD_WRITE.
- *   The EVE_TRANSFER_INT can be used to modify the EVE_TRANSFER_CMD_WRITE
- *   method to use the hardware INT# line as well. This requires support
- *   from the port in the MCU layer. It is not compatible with QuadSPI
- *   as the INT# line is used as a data line.
+ *   If COPROCESSOR_TRANSFER is undefined then EVE_TRANSFER_CMD_WRITE is 
+ *   used for EVE1 and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
+ *   If COPROCESSOR_TRANSFER is set for EVE_TRANSFER_CMDB_WRITE on EVE1 
+ *   then the setting will be modified to EVE_TRANSFER_CMD_WRITE.
+ *   The EVE_TRANSFER_INT flag can be used to modify the 
+ *   EVE_TRANSFER_CMD_WRITE method to use the hardware INT# line as well.
+ *   This requires support from the port in the MCU layer. It is not 
+ *   compatible with QuadSPI as the INT# line is used as a data line.
  */
 #if IS_EVE_API(1)
     // Always undefined for EVE1
     #undef EVE_USE_CMDB_METHOD
-    #if defined(EVE_USE_INTERRUPT_METHOD)
-    #error interrupt method in play
-    #endif
 #else // IS_EVE_API(2,3,4,5)
     // Default setting for EVE2 onwards
     #define EVE_USE_CMDB_METHOD
