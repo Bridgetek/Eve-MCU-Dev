@@ -106,10 +106,13 @@ static volatile uint32_t ticks = 0;
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
 {
-    // Initialize SPIM HW
+    /* Initialize SPIM HW */
     sys_enable(sys_device_spi_master);
 
+    /* Set CLK pin */
     gpio_function(PIN_NUM_CLK, pad_spim_sck); /* GPIO27 to SPIM_CLK */
+
+    /* Set CS#, PD#, INT# pins */
 #if defined(__FT900__)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
     gpio_function(PIN_NUM_PD, pad_gpio43); /* GPIO43 as PD */
@@ -120,15 +123,18 @@ int MCU_Init(void)
     gpio_function(PIN_NUM_INT, pad_gpio14); /* GPIO14 as INT */
 #endif
 
+    /* Set MISO/MOSI pins */
     gpio_function(PIN_NUM_MOSI, pad_spim_mosi); /* GPIO29 to SPIM_MOSI */
     gpio_function(PIN_NUM_MISO, pad_spim_miso); /* GPIO30 to SPIM_MISO */
 
+    /* Set pin directions  */
     gpio_dir(PIN_NUM_CLK, pad_dir_output);
     gpio_dir(PIN_NUM_CS, pad_dir_output);
     gpio_dir(PIN_NUM_MOSI, pad_dir_output);
     gpio_dir(PIN_NUM_MISO, pad_dir_input);
     gpio_dir(PIN_NUM_PD, pad_dir_output);
     gpio_dir(PIN_NUM_INT, pad_dir_input);
+
 #if defined QUADSPI_ENABLE
     /* Initialize IO2 and IO3 pad/pin for quad settings */
     gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
@@ -136,8 +142,18 @@ int MCU_Init(void)
     gpio_dir(PIN_NUM_IO2, pad_dir_output);
     gpio_dir(PIN_NUM_IO3, pad_dir_output);
 #endif // QUADSPI_ENABLE
+
+    /* CS# & PD# pins write to high */
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
+
+    /* Start SPIM interface */
+    // Set SPI clock speed to 12.5 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Divide by 8 is 12.5 MHz
+    spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
+    spi_option(SPIM,spi_option_fifo_size,64);
+	spi_option(SPIM,spi_option_fifo,1);
+	spi_option(SPIM,spi_option_fifo_receive_trigger,1);
 
     /* Enable Timers... */
     sys_enable(sys_device_timer_wdt);
@@ -172,10 +188,6 @@ int MCU_Init(void)
 
     /* Start all the timers at the same time... */
     timer_start(timer_select_a);
-
-    // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-    // Divide by 8 is 25 MHz
-    spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
 
     return 0;
 }
