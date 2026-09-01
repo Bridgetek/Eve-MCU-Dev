@@ -627,7 +627,6 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
     uint32_t CurrentIndex = 0;
     uint32_t ChunkSize = 0;
     uint8_t IsLastChunk = 0;
-    uint32_t Freespace = 0;
 
     // Finish the current transaction.
     EVE_LIB_EndCoProList();
@@ -663,7 +662,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
 
 #if !defined(EVE_USE_INTERRUPT_METHOD)
         // Wait until there is space.
-        Freespace = 0;
+        uint32_t Freespace = 0;
         while (Freespace < HAL_MAX_CHUNK_SIZE)
         {
             Freespace = HAL_CheckCmdFreeSpace();

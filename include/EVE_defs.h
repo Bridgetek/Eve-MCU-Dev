@@ -214,8 +214,8 @@
 #define EVE_TRANSFER_CMDB_WRITE     0
 // Add to the co-processor circular buffer directly then update REG_CMD_WRITE.
 #define EVE_TRANSFER_CMD_WRITE      1
-// Modifier for EVE_TRANSFER_CMD_WRITE to use the INT# line when detecting
-// the co-processor reaching the end of the list.
-#define EVE_TRANSFER_INT            2
+// Use the INT# line when detecting the co-processor reaching the end of the list.
+// Implies the use of EVE_TRANSFER_CMD_WRITE.
+#define EVE_TRANSFER_INT            3
 //@}
 #endif /* _EVE_DEFS_H_ */

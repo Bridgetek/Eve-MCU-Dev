@@ -367,7 +367,6 @@
 #if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
     #if defined(COPROCESSOR_TRANSFER)
         #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
-            #undef EVE_USE_CMDB_METHOD
             #define EVE_USE_INTERRUPT_METHOD
         #endif // EVE_TRANSFER_INT
     #endif // defined(COPROCESSOR_TRANSFER)
