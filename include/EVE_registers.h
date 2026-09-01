@@ -62,8 +62,8 @@
  * ============================================================================
 */
 
-#ifndef _EVE_REGISTERS_H_
-#define _EVE_REGISTERS_H_
+#ifndef _EVE_REGISTERS_H
+#define _EVE_REGISTERS_H
 
 /* -------------------------------------------------------------------------
  * Prerequisite: This file must be included by EVE.h so that EVE_API is 
@@ -919,4 +919,4 @@
 /** @brief DDR DRAM type setting - EVE5 only */
 #define EVE_REG_DDR_TYPE       EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, EVE_REG_NOT_AVAILABLE, 0x7f800454ul)
 
-#endif /* _EVE_REGISTERS_H_ */
+#endif /* _EVE_REGISTERS_H */

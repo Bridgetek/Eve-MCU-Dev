@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _EVE_CONFIG_H_
-#define _EVE_CONFIG_H_
+#ifndef _EVE_CONFIG_H
+#define _EVE_CONFIG_H
 
 /**
  * @brief EVE device and screen configuration file.
@@ -176,9 +176,9 @@
   */
 //@{
 #ifndef EVE_COPRO_METHOD
-#define EVE_COPRO_METHOD EVE_COPRO_CMDB_WRITE
+#define EVE_COPRO_METHOD EVE_TRANSFER_CMDB_WRITE
 #endif
 //@}
 
 
-#endif /* _EVE_CONFIG_H_ */
+#endif /* _EVE_CONFIG_H */

@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_DIALOGS_H
-#define EVE_DIALOGS_H
+#ifndef _EVE_DIALOGS_H
+#define _EVE_DIALOGS_H
 
 #define EVE_OPT_MSGBGALPHA 255
 #define EVE_OPT_MSGTOP 512
@@ -48,4 +48,4 @@ void textsize(uint16_t font, uint16_t options, const char *message, uint16_t *w,
 void messagebox(int16_t font, uint16_t options, const char *message);
 void tooltip(int16_t x, int16_t y, int16_t font, uint16_t options, const char *message);
 
-#endif // EVE_DIALOGS_H
+#endif /* EVE_DIALOGS_H */

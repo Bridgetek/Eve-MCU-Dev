@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_FONTS_H
-#define EVE_FONTS_H
+#ifndef _EVE_FONTS_H
+#define _EVE_FONTS_H
 
  /**
  @brief Maximum number of characters to cache form a font.
@@ -76,4 +76,4 @@ uint16_t font_getheight(struct eve_font_cache *cache);
 uint16_t font_getwidth(struct eve_font_cache *cache);
 uint16_t font_getcharwidth(struct eve_font_cache *cache, uint8_t ch);
 
-#endif // EVE_FONTS_H
+#endif /* _EVE_FONTS_H */

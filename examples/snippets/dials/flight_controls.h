@@ -37,10 +37,10 @@
  * ============================================================================
  */
 
-#ifndef _FLIGHT_CONTROLS_H
-#define _FLIGHT_CONTROLS_H
+#ifndef _EVE_FLIGHT_CONTROLS_H
+#define _EVE_FLIGHT_CONTROLS_H
 
 void altwidget(int16_t x, int16_t y, uint16_t radius, int alt);
 void attwidget(int16_t x, int16_t y, uint16_t radius, int pitch, int climb, int roll);
 
-#endif /* _FLIGHT_CONTROLS_H */
+#endif /* _EVE_LIGHT_CONTROLS_H */

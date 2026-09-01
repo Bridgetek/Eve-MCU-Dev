@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_SOUNDS_H
-#define EVE_SOUNDS_H
+#ifndef _EVE_SOUNDS_H
+#define _EVE_SOUNDS_H
 
 #define SOUND_SILENCE 0x00 // Silence Y N        
 #define SOUND_SQUARE 0x01 // Square wave Y Y    
@@ -199,4 +199,4 @@ void sound_bell(uint8_t note);
 void sound_pip(uint8_t note);
 void sound_clack(void);
 
-#endif // EVE_SOUNDS_H
+#endif /* _EVE_SOUNDS_H */

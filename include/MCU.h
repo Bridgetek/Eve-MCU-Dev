@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef MCU_HEADER_H
-#define MCU_HEADER_H
+#ifndef _EVE_MCU_HEADER_H
+#define _EVE_MCU_HEADER_H
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <EVE.h> // for IS_EVE_API()
@@ -343,4 +343,4 @@ uint32_t MCU_le32toh(uint32_t h);
 
 /* EVE MCU END */
 
-#endif	/* MCU_HEADER_H */
+#endif	/* _EVE_MCU_HEADER_H */

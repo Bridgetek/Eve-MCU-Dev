@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_HEADER_H
-#define EVE_HEADER_H
+#ifndef _EVE_HEADER_H
+#define _EVE_HEADER_H
 
 #include <stdint.h>
 
@@ -1295,4 +1295,4 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq);
 #include <extensions/bt82x_patch.h>
 #endif
 
-#endif    /* EVE_HEADER_H */
+#endif  /* _EVE_HEADER_H */

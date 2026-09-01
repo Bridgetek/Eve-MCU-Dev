@@ -63,8 +63,8 @@
  * ============================================================================
  */
 
-#ifndef _EVE_COMMANDS_H_
-#define _EVE_COMMANDS_H_
+#ifndef _EVE_COMMANDS_H
+#define _EVE_COMMANDS_H
 
 /* -------------------------------------------------------------------------
  * Prerequisite: This file must be included by EVE.h so that EVE_API is 
@@ -740,4 +740,4 @@
 /** Compatibility alias used in some older examples. */
 #define FTPOINTS  EVE_BEGIN_POINTS
 
-#endif /* _EVE_COMMANDS_H_ */
+#endif /* _EVE_COMMANDS_H */

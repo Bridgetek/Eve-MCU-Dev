@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef PLATFORM_HEADER_H
-#define PLATFORM_HEADER_H
+#ifndef _EVE_PLATFORM_HEADER_H
+#define _EVE_PLATFORM_HEADER_H
 
 #ifndef __linux__
 #error This file is for Linux-based systems. It is not intended for use on Microcontrollers.
@@ -248,4 +248,4 @@ uint16_t Platform_le16toh(uint16_t h);
 uint32_t Platform_le32toh(uint32_t h);
 //@}
 
-#endif	/* XC_HEADER_H */
+#endif /* _EVE_PLATFORM_HEADER_H */

@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_TOUCH_H
-#define EVE_TOUCH_H
+#ifndef _EVE_TOUCH_H
+#define _EVE_TOUCH_H
 
 #include <stdint.h>
 
@@ -104,4 +104,4 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib);
 int8_t platform_calib_read(struct touchscreen_calibration *calib);
 //@}
 
-#endif /* EVE_TOUCH_H */
+#endif /* _EVE_TOUCH_H */

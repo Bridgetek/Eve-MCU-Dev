@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_TRIG_FURMAN_H
-#define EVE_TRIG_FURMAN_H
+#ifndef _EVE_TRIG_FURMAN_H
+#define _EVE_TRIG_FURMAN_H
 
 /* Note that EVE furman angles are 16.16 format and have integer furmans in the
  * upper 16-bits and fractional furmans in the lower 16-bits. */
@@ -90,4 +90,4 @@ int16_t sin_furman(uint16_t furman16);
  */
 int16_t cos_furman(uint16_t furman16);
 
-#endif // EVE_TRIG_FURMAN_H
+#endif /* _EVE_TRIG_FURMAN_H */
