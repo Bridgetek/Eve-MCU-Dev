@@ -26,7 +26,7 @@ The MSP430 port was developed using a MSP-EXP430G2 LaunchPad Development Kit. Th
 | J6 VCC | 5V |
 | J6 GND | GND |
 
-- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the MSP430 module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the MSP430 and EVE modules common to both power sources.
 

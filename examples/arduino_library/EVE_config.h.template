@@ -50,7 +50,7 @@
 #endif // EVE_API
 
 // Default resolution
-#define DISPLAY_RES ### EVE RES ###
+#define EVE_DISPLAY_RES ### EVE RES ###
 
 // Select the touchscreen automatically
 #undef EVE_TOUCH_ADDR
@@ -59,17 +59,22 @@
 
 #if IS_EVE_API(2,3,4)
 // Enable or Disable custom touch FW load
-#undef CUSTOM_TOUCH
+#undef EVE_CUSTOM_TOUCH
 #endif
 
 // Explicitly disable QuadSPI
-#ifdef QUADSPI_ENABLE
-#undef QUADSPI_ENABLE
+#ifdef EVE_QSPI_ENABLE
+#undef EVE_QSPI_ENABLE
+#endif
+
+// Set Co Pro Transfer method
+#ifndef EVE_COPRO_METHOD
+#define EVE_COPRO_METHOD EVE_TRANSFER_CMDB_WRITE
 #endif
 
 // Setup default parameters for various displays.
 // These can be overridden for different display modules.
-#define SET_PCLK_FREQ
+#define EVE_SET_PCLK_FREQ
 
 // Variables used for panel configuration.
 extern uint32_t EVE_DISP_WIDTH, EVE_DISP_HEIGHT;
@@ -84,8 +89,8 @@ extern uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
 extern uint32_t EVE_RAM_G_SIZE;
 #endif
 
-#undef PANEL_TYPE_NONE
-#define PANEL_TYPE_NONE 0x5a5a5a5a
-#define PANEL_TYPE PANEL_TYPE_NONE
+#undef EVE_NO_PANEL
+#define EVE_NO_PANEL 0x5a5a5a5a
+#define EVE_PANEL EVE_NO_PANEL
 
 #endif /* _EVE_CONFIG_H_ */

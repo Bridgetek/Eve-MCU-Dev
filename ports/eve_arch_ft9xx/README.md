@@ -19,7 +19,7 @@ The FT9XX port was developed using a board from the MM900EV1B series along with 
 | - | - | VDD_5V | J2 Pin 10 | 5V |
 | - | - | GND | J2 Pin 12 / CN12 Pin 11 | GND |
 
-- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the FT9XX module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the FT9XX and EVE modules common to both power sources.
 
