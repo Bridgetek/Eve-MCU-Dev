@@ -56,6 +56,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #include "ftd2xx.h"
 #include "libft4222.h"
@@ -557,6 +558,7 @@ int MCU_Int(void)
         EVE_DEBUG_ERROR("FT4222 MCU_Int read failed!\n");
         exit(-100);
     }
+
     return (int)val;
 }
 

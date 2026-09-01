@@ -49,6 +49,7 @@
 #ifndef _WIN32 // Windows is always little-endian (for now)
 #include <endian.h>
 #include <unistd.h>
+#include <time.h>
 #endif // _WIN32
 
 #include <EVE.h>
@@ -395,6 +396,12 @@ void MCU_PDhigh(void)
     printf("%s\n", get_state());
 }
 
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+    return 1;
+}
+
 // ------------------------- Delay functions -----------------------------------
 
 void MCU_Delay_20ms(void)
@@ -405,6 +412,20 @@ void MCU_Delay_20ms(void)
 void MCU_Delay_500ms(void)
 {
     printf("delay 500 ms\n");
+}
+
+uint32_t MCU_Time_ms(void)
+{
+#ifdef _WIN32
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+#else
+    // For MinGW synthesize a tick counter from clock_gettime. Resolution 1 ms.
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+#endif
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

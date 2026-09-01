@@ -56,6 +56,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)

@@ -347,11 +347,12 @@ void EVE_LIB_BeginCoProList(void)
 {
     // Begins SPI transaction
     HAL_ChipSelect(1);
+
 #if !defined(EVE_USE_CMDB_METHOD)
-    // Send address for writing as the next free location in the co-pro buffer
+    // Send address for writing as the next free location in the co-pro buffer.
     HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
 #else
-    // Send address for writing
+    // Send address for writing.
     HAL_SetWriteAddress(EVE_REG_CMDB_WRITE);
 #endif
 }
@@ -361,8 +362,9 @@ void EVE_LIB_EndCoProList(void)
 {
     // End SPI transaction
     HAL_ChipSelect(0);
-    // Update the ring buffer pointer to start decode
+
 #if !defined(EVE_USE_CMDB_METHOD)
+    // Update the ring buffer pointer to start decode.
     HAL_WriteCmdPointer();
 #endif
 }
@@ -370,7 +372,7 @@ void EVE_LIB_EndCoProList(void)
 // Waits for the read and write pointers to become equal
 int EVE_LIB_AwaitCoProEmpty(void)
 {
-    // Await completion of processing
+    // Await completion of processing.
     return HAL_WaitCmdFifoEmpty(0);
 }
 
@@ -627,7 +629,8 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
     uint8_t IsLastChunk = 0;
     uint32_t Freespace = 0;
 
-    HAL_ChipSelect(0);
+    // Finish the current transaction.
+    EVE_LIB_EndCoProList();
 
     // This code works by sending the data in a series of one or more bursts.
     // If the data is more than HAL_MAX_CHUNK_SIZE bytes, it is sent as a series of
@@ -641,62 +644,59 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
     // While not all data is sent
     while (CurrentIndex < DataSize)
     {
-        // If more than ChunkSize bytes to send
+        // If more than ChunkSize bytes to send.
         if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
         {
-            // ... then add ChunkSize to the current target index to make new target
+            // ... then add ChunkSize to the current target index to make new target.
             ChunkSize = HAL_MAX_CHUNK_SIZE;
-            // ... and this is not the last chunk
+            // ... and this is not the last chunk.
             IsLastChunk = 0;
         }
-        // or if all remaining bytes can fit in one chunk
+        // Or if all remaining bytes can fit in one chunk.
         else
         {
-            // ... then add the amount of data to the current target
+            // ... then add the amount of data to the current target.
             ChunkSize = DataSize - CurrentIndex;
-            // .. and this is the last chunk
+            // .. and this is the last chunk.
             IsLastChunk = 1;
         }
 
-        // Wait until there is space
+#if !defined(EVE_USE_INTERRUPT_METHOD)
+        // Wait until there is space.
         Freespace = 0;
         while (Freespace < HAL_MAX_CHUNK_SIZE)
         {
             Freespace = HAL_CheckCmdFreeSpace();
         }
+#endif // !defined(EVE_USE_INTERRUPT_METHOD)
 
-        // Begin an SPI burst write
-        HAL_ChipSelect(1);
+        // Begin an SPI burst write to the next location in the FIFO.
+        EVE_LIB_BeginCoProList();
 
-        // to the next location in the FIFO
 #if !defined(EVE_USE_CMDB_METHOD)
-        HAL_SetWriteAddress(EVE_RAM_CMD + HAL_GetCmdPointer());
         uint32_t c;
         for (c = 0; c < ChunkSize; c+=4)
         {
             HAL_WriteCmd(*(uint32_t *)(ImgData + c));
         }
 #else
-        HAL_SetWriteAddress(EVE_REG_CMDB_WRITE);
         HAL_Write(ImgData, ChunkSize);
 #endif
         ImgData += ChunkSize;
         CurrentIndex += ChunkSize;
 
-        // End the SPI burst
-        HAL_ChipSelect(0);
-
-        // Calculate where end of data lies
-        // Note ChunkSize limited to HAL_MAX_CHUNK_SIZE
-#if !defined(EVE_USE_CMDB_METHOD)
-        HAL_WriteCmdPointer();
-#endif
-
-        // If this is the last chunk of the data,
+        // If this is the last chunk of the data break.
         if (IsLastChunk)
         {
             break;
         }
+
+        // End the SPI burst.
+        EVE_LIB_EndCoProList();
+#if defined(EVE_USE_INTERRUPT_METHOD)
+        if (EVE_LIB_AwaitCoProEmpty()) return;
+#endif // !defined(EVE_USE_INTERRUPT_METHOD)
+
     }
 }
 
@@ -710,7 +710,7 @@ uint32_t EVE_LIB_MemRead32(uint32_t address)
     return HAL_MemRead32(address);
 }
 
-#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x
+#if IS_EVE_API(1, 2, 3, 4) // Not supported on BT82x.
 void EVE_LIB_MemWrite16(uint32_t addr, uint16_t value)
 {
     HAL_MemWrite16(addr, value);
@@ -732,7 +732,7 @@ uint8_t EVE_LIB_MemRead8(uint32_t address)
 }
 #endif  // IS_EVE_API(1, 2, 3, 4)
 
-// Writes a string over SPI
+// Writes a string over SPI.
 uint16_t EVE_LIB_SendString(const char* string)
 {
     uint16_t length;
@@ -1075,35 +1075,35 @@ void EVE_DISPLAY(void)
 
 void EVE_BITMAP_TRANSFORM_A(long a)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_A(a)); //  ((21UL << 24) | (((a)&131071UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_A(a));
 }
 
 void EVE_BITMAP_TRANSFORM_B(long b)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_B(b)); //  ((22UL << 24) | (((b)&131071UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_B(b));
 }
 
 void EVE_BITMAP_TRANSFORM_C(long c)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_C(c)); //  ((23UL << 24) | (((c)&16777215UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_C(c));
 }
 
 void EVE_BITMAP_TRANSFORM_D(long d)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_D(d)); //   ((24UL << 24) | (((d)&131071UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_D(d));
 }
 
 void EVE_BITMAP_TRANSFORM_E(long e)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_E(e)); //   ((25UL << 24) | (((e)&131071UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_E(e));
 }
 
 void EVE_BITMAP_TRANSFORM_F(long f)
 {
-    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_F(f)); //  ((26UL << 24) | (((f)&16777215UL)<<0))
+    HAL_WriteCmd(EVE_ENC_BITMAP_TRANSFORM_F(f));
 }
 
-#if IS_EVE_API(2, 3, 4, 5) // FT81x API change
+#if IS_EVE_API(2, 3, 4, 5)
 
 void EVE_VERTEX_FORMAT(uint8_t frac)
 {
@@ -1156,7 +1156,7 @@ void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 
 #endif
 
-#if IS_EVE_API(5) // BT82x extensions
+#if IS_EVE_API(5) // BT82x extensions.
 
 void EVE_BITMAP_SOURCE_H(uint8_t addr)
 {
@@ -1546,7 +1546,8 @@ void EVE_CMD_TEXT(int16_t x, int16_t y, int16_t font, uint16_t options, const ch
     va_start(args, string);
 
 #if IS_EVE_API(3, 4, 5)
-    num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
+    // Only check % characters if option OPT_FORMAT is set.
+    num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0);
 #endif
 
     HAL_WriteCmd(EVE_ENC_CMD_TEXT);
@@ -1571,7 +1572,8 @@ void EVE_CMD_BUTTON(int16_t x, int16_t y, int16_t w, int16_t h, int16_t font, ui
     va_start(args, string);
 
 #if IS_EVE_API(3, 4, 5)
-    num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); //Only check % characters if option OPT_FORMAT is set
+    // Only check % characters if option OPT_FORMAT is set.
+    num = (options & EVE_OPT_FORMAT) ? (COUNT_ARGS(string)) : (0); 
 #endif
 
     HAL_WriteCmd(EVE_ENC_CMD_BUTTON);
@@ -1966,7 +1968,7 @@ void EVE_CMD_FLASHUPDATE(uint32_t dest, uint32_t src, uint32_t num)
 }
 
 /*
- *  Read data from flash into main memory
+ *  Read data from flash into main memory.
  */
 void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
 {
@@ -1977,7 +1979,7 @@ void EVE_CMD_FLASHREAD(uint32_t dest, uint32_t src, uint32_t num)
 }
 
 /*
- *  Program data to flash
+ *  Program data to flash.
  */
 void EVE_CMD_FLASHPROGRAM(uint32_t dest, uint32_t src, uint32_t num)
 {

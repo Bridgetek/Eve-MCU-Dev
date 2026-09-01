@@ -57,6 +57,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <gpiod.h>
