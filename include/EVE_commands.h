@@ -698,6 +698,13 @@
 #define EVE_FLASH_STATUS_FULL           0x3ul
 
 /* =========================================================================
+ * AWAITCOPROEMPTY STATUS
+ * ========================================================================= */
+#define EVE_COPRO_STATUS_SUCCESS        0x00u
+#define EVE_COPRO_STATUS_TIMEOUT        0xfeu
+#define EVE_COPRO_STATUS_EXCEPTION      0xffu
+
+/* =========================================================================
  * ROM FONT TABLES
  * Provides pixel widths, heights and bitmap formats of built-in ROM fonts.
  * EVE5 extends the table to 34 entries (adds fonts 32, 33, 34).

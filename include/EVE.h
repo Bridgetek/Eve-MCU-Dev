@@ -364,7 +364,7 @@
     #endif // defined(COPROCESSOR_TRANSFER)
 #endif
 
-#if defined(EVE_USE_CMD_METHOD) && !defined(QUADSPI_ENABLE)
+#if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
     #if defined(COPROCESSOR_TRANSFER)
         #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
             #undef EVE_USE_CMDB_METHOD

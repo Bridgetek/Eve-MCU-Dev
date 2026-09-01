@@ -236,7 +236,6 @@ int HAL_EVE_Init(void)
     }
 
 #if defined(EVE_USE_INTERRUPT_METHOD)
-#error
     // Enable only the INT_CMDEMPTY interrupt. Other interrupt sources
     // may be added later but this bit must be set to detect command
     // buffer completion.
@@ -741,7 +740,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 
     if(readCmdPointer & 1)
     {
-        // Return 0xFF if an error occurred
+        // Return 0xFF (EVE_COPRO_STATUS_EXCEPTION) if an error occurred
 #if DEBUG_LEVEL > 0
 #if IS_EVE_API(3,4,5)
         char message[256];
@@ -754,7 +753,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 #endif // IS_EVE_API(3,4,5)
 #endif // DEBUG_LEVEL
         
-        return 0xFF;
+        return EVE_COPRO_STATUS_EXCEPTION;
     }
     else if (timeout)
     {
@@ -763,12 +762,12 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 #if DEBUG_LEVEL > 0
             EVE_DEBUG_ERROR("Co-processor timeout\n");
 #endif // DEBUG_LEVEL
-            return 0xFE;
+            return EVE_COPRO_STATUS_TIMEOUT;
         }
     }
 
     // Return 0 if pointers became equal successfully
-    return 0;
+    return EVE_COPRO_STATUS_SUCCESS;
 }
 
 // Check how much free space is available in CMD FIFO
