@@ -390,38 +390,38 @@ int MCU_Init(void)
     EVE_DEBUG_PRINTF("\n\n");
 
     // Map the configured EVE device type to the corresponding emulator device.
-#if (FT8XX_TYPE == FT800)
+#if (EVE_DEVICE == EVE_FT800)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT800
-#elif (FT8XX_TYPE == FT801)
+#elif (EVE_DEVICE == EVE_FT801)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT801
-#elif (FT8XX_TYPE == FT810)
+#elif (EVE_DEVICE == EVE_FT810)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT810
-#elif (FT8XX_TYPE == FT811)
+#elif (EVE_DEVICE == EVE_FT811)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT811
-#elif (FT8XX_TYPE == FT812)
+#elif (EVE_DEVICE == EVE_FT812)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT812
-#elif (FT8XX_TYPE == FT813)
+#elif (EVE_DEVICE == EVE_FT813)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT813
-#elif (FT8XX_TYPE == BT880)
+#elif (EVE_DEVICE == EVE_BT880)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT880
-#elif (FT8XX_TYPE == BT881)
+#elif (EVE_DEVICE == EVE_BT881)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT881
-#elif (FT8XX_TYPE == BT882)
+#elif (EVE_DEVICE == EVE_BT882)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT882
-#elif (FT8XX_TYPE == BT883)
+#elif (EVE_DEVICE == EVE_BT883)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT883
-#elif (FT8XX_TYPE == BT815)
+#elif (EVE_DEVICE == EVE_BT815)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT815
-#elif (FT8XX_TYPE == BT816)
+#elif (EVE_DEVICE == EVE_BT816)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT816
-#elif (FT8XX_TYPE == BT817)
+#elif (EVE_DEVICE == EVE_BT817)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT817
-#elif (FT8XX_TYPE == BT818)
+#elif (EVE_DEVICE == EVE_BT818)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT818
-#elif (FT8XX_TYPE == BT820)
+#elif (EVE_DEVICE == EVE_BT820)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
 #else
-#error Unsupported FT8XX_TYPE for EVE Emulator
+#error Unsupported EVE_DEVICE for EVE Emulator
 #endif
 
     // Allocate and initialize the emulator configuration.

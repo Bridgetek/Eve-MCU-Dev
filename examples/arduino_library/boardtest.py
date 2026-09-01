@@ -15,7 +15,7 @@ Arduino UNO                         arduino:avr:uno
 
 > arduino-cli sketch new -f simple_EVE5
 
-> arduino-cli compile -b arduino:avr:uno --build-property compiler.cpp.extra_flags="-DFT8XX_TYPE=BT820 -DDISPLAY_RES=WXUGA"
+> arduino-cli compile -b arduino:avr:uno --build-property compiler.cpp.extra_flags="-DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=EVE_WXUGA"
 
 The following boards have successfully compiled the simple example:
 

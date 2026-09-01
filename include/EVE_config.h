@@ -43,7 +43,7 @@
 /**
  * @brief EVE device and screen configuration file.
  * @note IMPORTANT This header file must be included by EVE.h.
- * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) 
+ * @details The macro EVE_DEVICE and the panel display settings (EVE_DISP_*) 
  *      must be configured in this file. 
  *      For BT82x the EVE_RAM_G_CONFIG_SIZE macro must also be configured.
  *      Values from the macros defined in this file can be used in code 
@@ -57,14 +57,14 @@
 
 /** 
  * @brief Module selection.
- *      If this is set to a valid module type then the FT8XX_TYPE and DISPLAY_RES 
+ *      If this is set to a valid module type then the EVE_DEVICE and EVE_DISPLAY_RES 
  *      values will be set accordingly.
- *      This selection will override any PANEL_TYPE, FT8XX_TYPE and DISPLAY_RES
+ *      This selection will override any EVE_PANEL, EVE_DEVICE and EVE_DISPLAY_RES
  *      settings.
  */
 //@{
-#ifndef MODULE_TYPE
-#define MODULE_TYPE MODULE_TYPE_NONE
+#ifndef EVE_MODULE
+#define EVE_MODULE EVE_NO_MODULE
 #endif
 //@}
 
@@ -77,8 +77,8 @@
  *      EVE_SUB_API macro as required. 
  */
 //@{
-#ifndef FT8XX_TYPE
-#define FT8XX_TYPE BT817
+#ifndef EVE_DEVICE
+#define EVE_DEVICE EVE_BT817
 #endif
 //@}
 
@@ -86,12 +86,12 @@
  * @brief Select the EVE panel type.
  * @details Setting the EVE panel type to a valid value will lead to the 
  *      selection of the EVE panel which in turn will select a valid 
- *      DISPLAY_RES setting.
- *      This setting will override the DISPLAY_RES setting.
+ *      EVE_DISPLAY_RES setting.
+ *      This setting will override the EVE_DISPLAY_RES setting.
  */
 //@{
-#ifndef PANEL_TYPE
-#define PANEL_TYPE PANEL_TYPE_NONE
+#ifndef EVE_PANEL
+#define EVE_PANEL EVE_NO_PANEL
 #endif
 //@}
 
@@ -100,8 +100,8 @@
  * @details The distribution default is WVGA (800x480).
  */
 //@{
-#ifndef DISPLAY_RES
-#define DISPLAY_RES WVGA
+#ifndef EVE_DISPLAY_RES
+#define EVE_DISPLAY_RES EVE_WVGA
 #endif
 //@}
 
@@ -110,15 +110,15 @@
  * @details If the macro is set then the platform port may only enable QSPI
  *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
  *
- *      QUADSPI_ENABLE may be defined externally to enable QSPI, otherwise it
+ *      EVE_QSPI_ENABLE may be defined externally to enable QSPI, otherwise it
  *      remains undefined.
  * 
  * NOTE: QSPI is only supported on devices from EVE API 2 onwards. It is not
  *      supported on FT80x devices. For default set this to disabled.
  */
 //@{
-#ifndef QUADSPI_ENABLE
-#undef QUADSPI_ENABLE
+#ifndef EVE_QSPI_ENABLE
+#undef EVE_QSPI_ENABLE
 #endif
 //@}
 
@@ -147,17 +147,17 @@
   *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
   *			  Applicable for FT81X/BT88X/BT81X devices only.
   *
-  *       CUSTOM_TOUCH may be defined externally to enable custom touch.
+  *       EVE_CUSTOM_TOUCH may be defined externally to enable custom touch.
   *       It is also enabled automatically for panels which require it.
   *       Otherwise it remains undefined.
   *
-  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using CUSTOM_TOUCH.
+  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using EVE_CUSTOM_TOUCH.
   * NOTE: Custom touch for the BT82X series is implemented in extension patches.
   *
   */
 //@{
-#ifndef CUSTOM_TOUCH
-#undef CUSTOM_TOUCH
+#ifndef EVE_CUSTOM_TOUCH
+#undef EVE_CUSTOM_TOUCH
 #endif
 //@}
 
@@ -165,18 +165,18 @@
   * @brief Specify method to write to the co-processor circular buffer.
   * @details If the macro is set then the appropriate method of writing to
   *   the co-processor is used.
-  *   If this is undefined then EVE_TRANSFER_CMD_WRITE is used for EVE1
-  *   and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
-  *   If this is set for EVE_TRANSFER_CMDB_WRITE on EVE1 then the setting
-  *   will be modified to EVE_TRANSFER_CMD_WRITE.
-  *   The EVE_TRANSFER_INT can be used to modify the EVE_TRANSFER_CMD_WRITE
+  *   If this is undefined then EVE_COPRO_CMD_WRITE is used for EVE1
+  *   and EVE_COPRO_CMDB_WRITE is used for EVE2 onwards.
+  *   If this is set for EVE_COPRO_CMDB_WRITE on EVE1 then the setting
+  *   will be modified to EVE_COPRO_CMD_WRITE.
+  *   The EVE_COPRO_INT can be used to modify the EVE_COPRO_CMD_WRITE
   *   method to use the hardware INT# line as well. This requires support
   *   from the port in the MCU layer. It will be ignored if QuadSPI is
   *   enabled as this uses the INT# line as a data line.
   */
 //@{
-#ifndef COPROCESSOR_TRANSFER
-#define COPROCESSOR_TRANSFER EVE_TRANSFER_CMDB_WRITE
+#ifndef EVE_COPRO_METHOD
+#define EVE_COPRO_METHOD EVE_COPRO_CMDB_WRITE
 #endif
 //@}
 

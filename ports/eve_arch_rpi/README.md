@@ -24,7 +24,7 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 | - | - | 40 | - | 10 | 5V |
 | - | - | 8 | - | 11/12 | GND |
 
-- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 
@@ -46,8 +46,8 @@ The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a B
 
 The settings required in `EVE_config.h` are:
 ```
-#define FT8XX_TYPE BT817
-#define DISPLAY_RES IDM20407A
+#define EVE_DEVICE EVE_BT817
+#define EVE_DISPLAY_RES IDM20407A
 ```
 
 ### IDM2040-43A Module
@@ -56,8 +56,8 @@ The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a 
 
 The settings required in `EVE_config.h` are:
 ```
-#define FT8XX_TYPE BT883
-#define DISPLAY_RES IDM204043A
+#define EVE_DEVICE EVE_BT883
+#define EVE_DISPLAY_RES IDM204043A
 ```
 
 ### IDM2040-21R Module
@@ -66,8 +66,8 @@ The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 pico and a 
 
 The settings required in `EVE_config.h` are:
 ```
-#define FT8XX_TYPE FT800
-#define DISPLAY_RES IDM204021R
+#define EVE_DEVICE EVE_FT800
+#define EVE_DISPLAY_RES IDM204021R
 ```
 
 ## Hardware Raspberry Pi
@@ -85,7 +85,7 @@ The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However 
 | 5v Power | 2 | 5V |
 | Ground | 20 | GND |
 
-- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_CMD_WRITE|EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
 
 Ensure that the power supply from the Raspberry Pi SBC is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Raspberry Pi SBC and EVE modules common to both power sources.
 

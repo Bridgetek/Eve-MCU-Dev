@@ -42,7 +42,7 @@
 
 /**
  * @note IMPORTANT This header file must be included before EVE.h.
- * @details The macro FT8XX_TYPE and the panel display settings (EVE_DISP_*) must 
+ * @details The macro EVE_DEVICE and the panel display settings (EVE_DISP_*) must 
  *      be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
  *      also be configured.
  *      Values from the macros defined in this file can be used in code based on this library. 
@@ -52,27 +52,27 @@
 
 /**
  * @brief Definitions used for target device selection.
- * @details The following options are defined for the FT8XX_TYPE macro.
+ * @details The following options are defined for the EVE_DEVICE macro.
  */
-#define FT800 800
-#define FT801 801
-#define FT810 810
-#define FT811 811
-#define FT812 812
-#define FT813 813
-#define BT880 880
-#define BT881 881
-#define BT882 882
-#define BT883 883
-#define BT815 815
-#define BT816 816
-#define BT817 817
-#define BT818 818
-#define BT820 820
+#define EVE_FT800 800
+#define EVE_FT801 801
+#define EVE_FT810 810
+#define EVE_FT811 811
+#define EVE_FT812 812
+#define EVE_FT813 813
+#define EVE_BT880 880
+#define EVE_BT881 881
+#define EVE_BT882 882
+#define EVE_BT883 883
+#define EVE_BT815 815
+#define EVE_BT816 816
+#define EVE_BT817 817
+#define EVE_BT818 818
+#define EVE_BT820 820
 
 /**
  * @brief Select Bridgetek EVE Module or Development Kit Types.
- * @details The following options are defined for the MODULE_TYPE macro:
+ * @details The following options are defined for the EVE_MODULE macro:
  *      VM800B           - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
  *      VM800C35A        - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
  *      VM800C43A        - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
@@ -93,55 +93,55 @@
  *      IDK_BT817_101A   - BT817 IC Development Kit with 10.1 inch display (BT817 with DP-1011-02A)
  *      IDK_BT820_101A   - BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
  * 
- * Setting MODULE_TYPE will select the correct FT8XX_TYPE, PANEL_TYPE and DISPLAY_RES.
+ * Setting EVE_MODULE will select the correct EVE_DEVICE, EVE_PANEL and EVE_DISPLAY_RES.
  */
 //@{
-#define VM800B          800     // VM800B35A-BK 
-#define VM800C35A       835     // VM800C35A-D 
-#define VM800C43A       843     // VM800C43A-D 
-#define VM800C50A       850     // VM800C50A-D 
-#define VM810C          810     // VM810C50A-D 
-#define ME812A          812     // ME812A-WH50R, ME812AU-WH50R 
-#define ME813A          813     // ME813A-WH50C 
-#define VM816C          816     // VM816C50A-D, VM816CU50A-D 
-#define VM880C          880     // VM880C 
-#define IDM204021R      204021  // IDM2040-21R 
-#define IDM204043A      204043  // IDM2040-43A 
-#define IDM20407A       20407   // IDM2040-7A 
-#define VM820B10A       82010   // VM820B10A 
-#define VM820B15A       82015   // VM820B15A 
-#define IDK_FT810_43A   81043   // IDK-FT810-43A 
-#define IDK_BT816_50A   81650   // IDK-BT816-50A 
-#define IDK_BT817_70A   81770   // IDK-BT817-70A 
-#define IDK_BT817_101A  817101  // IDK-BT817-101A  
-#define IDK_BT820_101A  820101  // IDK-BT820-101A
-#define MODULE_TYPE_NONE        0
+#define EVE_VM800B          800     // VM800B35A-BK 
+#define EVE_VM800C35A       835     // VM800C35A-D 
+#define EVE_VM800C43A       843     // VM800C43A-D 
+#define EVE_VM800C50A       850     // VM800C50A-D 
+#define EVE_VM810C          810     // VM810C50A-D 
+#define EVE_ME812A          812     // ME812A-WH50R, ME812AU-WH50R 
+#define EVE_ME813A          813     // ME813A-WH50C 
+#define EVE_VM816C          816     // VM816C50A-D, VM816CU50A-D 
+#define EVE_VM880C          880     // VM880C 
+#define EVE_IDM204021R      204021  // IDM2040-21R 
+#define EVE_IDM204043A      204043  // IDM2040-43A 
+#define EVE_IDM20407A       20407   // IDM2040-7A 
+#define EVE_VM820B10A       82010   // VM820B10A 
+#define EVE_VM820B15A       82015   // VM820B15A 
+#define EVE_IDK_FT810_43A   81043   // IDK-FT810-43A 
+#define EVE_IDK_BT816_50A   81650   // IDK-BT816-50A 
+#define EVE_IDK_BT817_70A   81770   // IDK-BT817-70A 
+#define EVE_IDK_BT817_101A  817101  // IDK-BT817-101A  
+#define EVE_IDK_BT820_101A  820101  // IDK-BT820-101A
+#define EVE_NO_MODULE       0
 //@}
 
 /**
  * @brief Define Bridgetek Panel Types
- * @details The following options are defined for the PANEL_TYPE macro.
+ * @details The following options are defined for the EVE_PANEL macro.
  */
 //@{
-#define DP_0351_11A 0351    // DP-0351-11A QVGA (Resistive)
-#define DP_0431_11A 0431    // DP-0431-11A WQVGA (Resistive)
-#define DP_0501_01A 050101  // DP-0501-01A WVGA (Capacitive)
-#define DP_0501_11A 050111  // DP-0501-11A WVGA (Resistive)
-#define DP_0502_11A 0502    // DP-0502-11A WQVGA (Resistive)
-#define DP_0701_01A 0701    // DP-0701-11A WVGA (Capacitive)
-#define DP_1011_01A 10111   // DP-1011-01A WXGA (Capacitive)
-#define DP_1011_02A 10112   // DP-1011-02A WXGA_NG (Capacitive)
-#define DP_1012_01A 1012    // DP-1012-01A WUXGA (Capacitive)
-#define DP_1561_01A 156101  // DP-1561-01A FullHD (Capacitive)
-#define DP_1561_02A 156102  // DP-1561-02A FullHD (Capacitive)
-#define DP_IDM43A   43      // IDM204043A (Capacitive)
-#define DP_IDM21R   21      // IDM204021R (Capacitive)
-#define PANEL_TYPE_NONE     0
+#define EVE_DP_0351_11A 0351    // DP-0351-11A QVGA (Resistive)
+#define EVE_DP_0431_11A 0431    // DP-0431-11A WQVGA (Resistive)
+#define EVE_DP_0501_01A 050101  // DP-0501-01A WVGA (Capacitive)
+#define EVE_DP_0501_11A 050111  // DP-0501-11A WVGA (Resistive)
+#define EVE_DP_0502_11A 0502    // DP-0502-11A WQVGA (Resistive)
+#define EVE_DP_0701_01A 0701    // DP-0701-11A WVGA (Capacitive)
+#define EVE_DP_1011_01A 10111   // DP-1011-01A WXGA (Capacitive)
+#define EVE_DP_1011_02A 10112   // DP-1011-02A WXGA_NG (Capacitive)
+#define EVE_DP_1012_01A 1012    // DP-1012-01A WUXGA (Capacitive)
+#define EVE_DP_1561_01A 156101  // DP-1561-01A FullHD (Capacitive)
+#define EVE_DP_1561_02A 156102  // DP-1561-02A FullHD (Capacitive)
+#define EVE_DP_IDM43A   43      // IDM204043A (Capacitive)
+#define EVE_DP_IDM21R   21      // IDM204021R (Capacitive)
+#define EVE_NO_PANEL    0
 //@}
 
 /** 
  * @brief Select Display Resolutions for Common Panels
- * @details The following options are defined for the DISPLAY_RES macro:
+ * @details The following options are defined for the EVE_DISPLAY_RES macro:
  *      QVGA      - 320x240   e.g. DP-0351-11A
  *      WQVGA     - 480x272   e.g. DP-0431-11A, DP-0502-11A
  *      WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
@@ -153,15 +153,15 @@
  *      WUXGA     - 1920x1200 e.g. DP-1012-01A
  */
 //@{
-#define QVGA    320        // 320x240   e.g. DP-0351-11A
-#define WQVGA   480        // 480x272   e.g. DP-0431-11A, DP-0502-11A
-#define WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
-#define WVGA    800        // 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
-#define WSVGA   1024       // 1024x600  e.g. BT817 with 7 inch display
-#define WXGA    12801      // 1280x800  e.g. DP-1011-01A
-#define WXGA_NG 12802      // 1280x800  e.g. DP-1011-02A
-#define FULLHD  1920       // 1920x1080 e.g. DP-1561-01A, DP-1561-02A
-#define WUXGA   19201200   // 1920x1200 e.g. DP-1012-01A
+#define EVE_QVGA    320        // 320x240   e.g. DP-0351-11A
+#define EVE_WQVGA   480        // 480x272   e.g. DP-0431-11A, DP-0502-11A
+#define EVE_WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
+#define EVE_WVGA    800        // 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
+#define EVE_WSVGA   1024       // 1024x600  e.g. BT817 with 7 inch display
+#define EVE_WXGA    12801      // 1280x800  e.g. DP-1011-01A
+#define EVE_WXGA_NG 12802      // 1280x800  e.g. DP-1011-02A
+#define EVE_FULLHD  1920       // 1920x1080 e.g. DP-1561-01A, DP-1561-02A
+#define EVE_WUXGA   19201200   // 1920x1200 e.g. DP-1012-01A
 //@}
 
 /**
@@ -205,17 +205,17 @@
  *      is being used. See the "Command FIFO" section in the Programming
  *      Guides for details of the differences. The "Interrupts" section
  *      in the Data Sheets explains the use of the INT# line.
- *      The EVE_TRANSFER_INT option is not permissible with the
+ *      The EVE_COPRO_INT option is not permissible with the
  *      EVE_CMDB_WRITE setting and will be ignored.
  */
 //@{
 // Add to the co-processor circular buffer through REG_CMDB_WRITE if it
 // is supported.
-#define EVE_TRANSFER_CMDB_WRITE     0
+#define EVE_COPRO_CMDB_WRITE     0
 // Add to the co-processor circular buffer directly then update REG_CMD_WRITE.
-#define EVE_TRANSFER_CMD_WRITE      1
-// Modifier for EVE_TRANSFER_CMD_WRITE to use the INT# line when detecting
-// the co-processor reaching the end of the list.
-#define EVE_TRANSFER_INT            2
+#define EVE_COPRO_CMD_WRITE      1
+// Use the INT# line when detecting the co-processor reaching the end of the list.
+// Implies the use of EVE_COPRO_CMD_WRITE.
+#define EVE_COPRO_INT            3
 //@}
 #endif /* _EVE_DEFS_H_ */

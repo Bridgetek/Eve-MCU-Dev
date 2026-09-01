@@ -84,7 +84,7 @@
 // This is the STM32 platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
 
-#if defined(QUADSPI_ENABLE)
+#if defined(EVE_QSPI_ENABLE)
 #pragma message ("SPI Mode: Quad channel")
 #if IS_EVE_API(1)
 #error Quad SPI is not supported on EVE API 1 (FT80x)
@@ -164,7 +164,7 @@ int MCU_Setup(void)
      * on FT81x, BT88x, BT81x. */
     MX_QUADSPI_Init();
 
-#if defined QUADSPI_ENABLE
+#if defined EVE_QSPI_ENABLE
 #if IS_EVE_API(2,3,4,5)
     /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
@@ -172,7 +172,7 @@ int MCU_Setup(void)
 #else // IS_EVE_API(2,3,4,5)
     ftIsQuad = 0;
 #endif
-#endif // QUADSPI_ENABLE
+#endif // EVE_QSPI_ENABLE
 
     return 0;
 }

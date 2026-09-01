@@ -58,7 +58,7 @@
 #endif
 
 #if IS_EVE_API(2,3,4)
-#if defined(CUSTOM_TOUCH)
+#if defined(EVE_CUSTOM_TOUCH)
 #include <extensions/custom_touch_fw.h>
 #endif
 #endif
@@ -149,14 +149,14 @@ int EVE_Init(void)
 
 #if IS_EVE_API(2,3,4)
     // load custom touch FW (only supported on FT81X/BT88X/BT81X)
-#if defined(CUSTOM_TOUCH)
+#if defined(EVE_CUSTOM_TOUCH)
     if (eve_loadcustomtouch() != 0) // send custom touch FW data to co-processor
     {
         EVE_DEBUG_ERROR("ERROR: Failed to load custom touch FW.\n");
         return -1;
     }
     EVE_DEBUG_PRINTF("[Custom Touch FW Loaded]\n");
-#endif  // defined(CUSTOM_TOUCH)
+#endif  // defined(EVE_CUSTOM_TOUCH)
 #endif  // IS_EVE_API(2,3,4)
 
     /* Write first display list */
@@ -179,18 +179,18 @@ int EVE_Init(void)
     // Write the PCLK or PCLK_FREQ register
     // If setting PCLK_FREQ then also set REG_PCLK to 1 to enable extsync mode
 #if IS_EVE_API(4) 
-#if defined (SET_PCLK_FREQ)
+#if defined (EVE_SET_PCLK_FREQ)
     // Write REG_PLCK_FREQ register
     HAL_MemWrite16(EVE_REG_PCLK_FREQ, (uint16_t)EVE_DISP_PCLK_FREQ);
     HAL_MemWrite8(EVE_REG_PCLK, 1);
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint8_t)EVE_DISP_PCLK);
-#endif // defined (SET_PCLK_FREQ)
+#endif // defined (EVE_SET_PCLK_FREQ)
 #if defined(EVE_DISP_PLCK_2X)
     // NOTE: See BT81x Programmers Guide for requirements when using this register   
     HAL_MemWrite8(EVE_REG_PCLK_2X, (uint8_t)EVE_DISP_PLCK_2X);
-#endif // defined (SET_PCLK_FREQ)
+#endif // defined (EVE_SET_PCLK_FREQ)
 #else
     // Now start clocking data to the LCD panel
     HAL_MemWrite8(EVE_REG_PCLK, (uint16_t)EVE_DISP_PCLK);
@@ -462,13 +462,13 @@ uint16_t EVE_LIB_GetDlProfile(void)
 }
 #endif
 
-#if !defined (QUADSPI_ENABLE)
+#if !defined (EVE_QSPI_ENABLE)
 // Get the status of the interrupt line from EVE
 int EVE_LIB_Int(void)
 {
     return MCU_Int();
 }
-#endif // defined (QUADSPI_ENABLE)
+#endif // defined (EVE_QSPI_ENABLE)
 
 #if defined (EVE_MANANGE_INTERRUPTS)
 // Get the status of the interrupt flag register

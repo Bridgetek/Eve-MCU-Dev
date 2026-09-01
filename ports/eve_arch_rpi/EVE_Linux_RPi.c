@@ -199,9 +199,9 @@ int Platform_Deinit(void)
 int Platform_Setup(void)
 {
 
-#if defined QUADSPI_ENABLE
-#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RasberryPi
-#endif // QUADSPI_ENABLE
+#if defined EVE_QSPI_ENABLE
+#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RasberryPi
+#endif // EVE_QSPI_ENABLE
 
     return 0;
 }

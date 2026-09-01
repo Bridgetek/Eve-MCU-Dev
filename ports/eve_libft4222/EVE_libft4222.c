@@ -88,7 +88,7 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#if defined(QUADSPI_ENABLE)
+#if defined(EVE_QSPI_ENABLE)
 #if IS_EVE_API(1)
 #error Quad SPI is not supported on EVE API 1 (FT80x)
 #endif
@@ -336,7 +336,7 @@ int MCU_Setup(void)
     // Increase SPI speed to 20 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
     // Clock is 80 MHz / 4 = 20 MHz
-#if defined QUADSPI_ENABLE
+#if defined EVE_QSPI_ENABLE
 #if IS_EVE_API(2,3,4,5)
     /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
@@ -346,10 +346,10 @@ int MCU_Setup(void)
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
     ftIsQuad = FALSE;
 #endif
-#else // QUADSPI_ENABLE
+#else // EVE_QSPI_ENABLE
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
     ftIsQuad = FALSE;
-#endif // QUADSPI_ENABLE
+#endif // EVE_QSPI_ENABLE
 
     return 0;
 }

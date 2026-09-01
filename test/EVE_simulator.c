@@ -197,39 +197,39 @@ uint32_t get_response()
 int MCU_Init(void)
 {
     printf("EVE device: %s\n", 
-#if (FT8XX_TYPE == FT800)
+#if (EVE_DEVICE == EVE_FT800)
         "FT800"
-#elif (FT8XX_TYPE == FT801)
+#elif (EVE_DEVICE == EVE_FT801)
         "FT801"
-#elif (FT8XX_TYPE == FT810)
+#elif (EVE_DEVICE == EVE_FT810)
         "FT810"
-#elif (FT8XX_TYPE == FT811)
+#elif (EVE_DEVICE == EVE_FT811)
         "FT811"
-#elif (FT8XX_TYPE == FT812)
+#elif (EVE_DEVICE == EVE_FT812)
         "FT812"
-#elif (FT8XX_TYPE == FT813)
+#elif (EVE_DEVICE == EVE_FT813)
         "FT813"
-#elif (FT8XX_TYPE == BT880)
+#elif (EVE_DEVICE == EVE_BT880)
         "BT880"
-#elif (FT8XX_TYPE == BT881)
+#elif (EVE_DEVICE == EVE_BT881)
         "BT881"
-#elif (FT8XX_TYPE == BT882)
+#elif (EVE_DEVICE == EVE_BT882)
         "BT882"
-#elif (FT8XX_TYPE == BT883)
+#elif (EVE_DEVICE == EVE_BT883)
         "BT883"
-#elif (FT8XX_TYPE == BT815)
+#elif (EVE_DEVICE == EVE_BT815)
         "BT815"
-#elif (FT8XX_TYPE == BT816)
+#elif (EVE_DEVICE == EVE_BT816)
         "BT816"
-#elif (FT8XX_TYPE == BT817)
+#elif (EVE_DEVICE == EVE_BT817)
         "BT817"
-#elif (FT8XX_TYPE == BT818)
+#elif (EVE_DEVICE == EVE_BT818)
         "BT818"
-#elif (FT8XX_TYPE == BT820)
+#elif (EVE_DEVICE == EVE_BT820)
         "BT820"
 #else
-        "FT8XX_TYPE definition not recognised"
-#endif // FT8XX_TYPE
+        "EVE_DEVICE definition not recognised"
+#endif // EVE_DEVICE
     );
 
     printf("EVE_API: %d\n", EVE_API);
@@ -237,86 +237,86 @@ int MCU_Init(void)
     printf("EVE_SUB_API: %d\n", EVE_SUB_API);
 #endif
 
-#ifdef MODULE_TYPE
-#if MODULE_TYPE != MODULE_TYPE_NONE
+#ifdef EVE_MODULE
+#if EVE_MODULE != EVE_NO_MODULE
     printf("EVE Module Name: %s\n", 
-#if MODULE_TYPE == VM800B
+#if EVE_MODULE == EVE_VM800B
         "VM800B35A-BK"
-#elif MODULE_TYPE == VM800C35A
+#elif EVE_MODULE == EVE_VM800C35A
         "VM800C35A-D"
-#elif MODULE_TYPE == VM800C43A
+#elif EVE_MODULE == EVE_VM800C43A
         "VM800C43A-D"
-#elif MODULE_TYPE == VM800C50A
+#elif EVE_MODULE == EVE_VM800C50A
         "VM800C50A-D"
-#elif MODULE_TYPE == VM810C
+#elif EVE_MODULE == EVE_VM810C
         "VM810C50A-D"
-#elif MODULE_TYPE == ME812A
+#elif EVE_MODULE == EVE_ME812A
         "ME812A-WH50R, ME812AU-WH50R"
-#elif MODULE_TYPE == ME813A
+#elif EVE_MODULE == EVE_ME813A
         "ME813A-WH50C"
-#elif MODULE_TYPE == VM816C
+#elif EVE_MODULE == EVE_VM816C
         "VM816C50A-D, VM816CU50A-D"
-#elif MODULE_TYPE == IDM204021R
+#elif EVE_MODULE == EVE_IDM204021R
         "IDM2040-21R"
-#elif MODULE_TYPE == IDM204043A
+#elif EVE_MODULE == EVE_IDM204043A
         "IDM2040-43A"
-#elif MODULE_TYPE == IDM20407A
+#elif EVE_MODULE == EVE_IDM20407A
         "IDM2040-7A"
-#endif // MODULE_TYPE
+#endif // EVE_MODULE
     );
-#endif // MODULE_TYPE != MODULE_TYPE_NONE
-#endif // defined(MODULE_TYPE)
+#endif // EVE_MODULE != EVE_NO_MODULE
+#endif // defined(EVE_MODULE)
 
-#ifdef PANEL_TYPE
-#if PANEL_TYPE != PANEL_TYPE_NONE
+#ifdef EVE_PANEL
+#if EVE_PANEL != EVE_NO_PANEL
     printf("EVE Panel Type: %s\n", 
-#if PANEL_TYPE == DP_0351_11A
+#if EVE_PANEL == EVE_DP_0351_11A
         "DP-0351-11A QVGA (Resistive)"
-#elif PANEL_TYPE == DP_0431_11A
+#elif EVE_PANEL == EVE_DP_0431_11A
         "DP-0431-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0501_01A
+#elif EVE_PANEL == EVE_DP_0501_01A
         "DP-0501-01A WVGA (Capacitive)"
-#elif PANEL_TYPE == DP_0501_11A
+#elif EVE_PANEL == EVE_DP_0501_11A
         "DP-0351-11A WVGA (Resistive)"
-#elif PANEL_TYPE == DP_0502_11A
+#elif EVE_PANEL == EVE_DP_0502_11A
         "DP-0502-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0701_01A
+#elif EVE_PANEL == EVE_DP_0701_01A
         "DP-0701-11A WVGA (Capacitive)"
-#elif PANEL_TYPE == DP_1012_01A
+#elif EVE_PANEL == EVE_DP_1012_01A
         "DP-1012-01A WUXGA (Capacitive)"
-#elif PANEL_TYPE == DP_1561_01A
+#elif EVE_PANEL == EVE_DP_1561_01A
         "DP-1561-01A FullHD (Capacitive)"
-#elif PANEL_TYPE == DP_IDM43A
+#elif EVE_PANEL == EVE_DP_IDM43A
         "IDM204043A (Capacitive)"
-#elif PANEL_TYPE == DP_IDM21R
+#elif EVE_PANEL == EVE_DP_IDM21R
         "IDM204021R (Capacitive)"
 #else
         "Other"
-#endif // PANEL_TYPE
+#endif // EVE_PANEL
     );
-#endif // PANEL_TYPE != PANEL_TYPE_NONE
-#endif // defined(PANEL_TYPE)
+#endif // EVE_PANEL != EVE_NO_PANEL
+#endif // defined(EVE_PANEL)
 
     printf("EVE display panel resolution: %s\n", 
-#if (DISPLAY_RES == QVGA)
+#if (EVE_DISPLAY_RES == EVE_QVGA)
         "QVGA 320x240"
-#elif (DISPLAY_RES == WQVGA)
+#elif (EVE_DISPLAY_RES == EVE_WQVGA)
         "WQVGA 480x272"
-#elif (DISPLAY_RES == WQVGAR)
+#elif (EVE_DISPLAY_RES == EVE_WQVGAR)
         "WQVGAR 480x480"
-#elif (DISPLAY_RES == WVGA)
+#elif (EVE_DISPLAY_RES == EVE_WVGA)
         "WVGA 800x480"
-#elif (DISPLAY_RES == WSVGA)
+#elif (EVE_DISPLAY_RES == EVE_WSVGA)
         "WSVGA 1024x600"
-#elif (DISPLAY_RES == WXGA)
+#elif (EVE_DISPLAY_RES == EVE_WXGA)
         "WXGA 1280x800"
-#elif (DISPLAY_RES == FULLHD)
+#elif (EVE_DISPLAY_RES == EVE_FULLHD)
         "FULLHD 1920x1080"
-#elif (DISPLAY_RES == WUXGA)
+#elif (EVE_DISPLAY_RES == EVE_WUXGA)
         "WUXGA 1920x1200"
 #else
-        "DISPLAY_RES definition not recognised"
-#endif // DISPLAY_RES
+        "EVE_DISPLAY_RES definition not recognised"
+#endif // EVE_DISPLAY_RES
     );
 
     state = state_end;

@@ -56,7 +56,7 @@
 
 #if !defined(IS_ARDUINO_LIB) /* Do not perform check in Arduino library */
 
-#if !((DISPLAY_RES == WUXGA) || (DISPLAY_RES == FULLHD))
+#if !((EVE_DISPLAY_RES == EVE_WUXGA) || (EVE_DISPLAY_RES == EVE_FULLHD))
 #error This project requires a screen of at least 1920x1024 pixels.
 #endif
 

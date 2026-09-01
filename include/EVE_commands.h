@@ -4,7 +4,7 @@
  * @details Provides a single unified set of EVE_ display list commands and
  *      EVE_CMD_ co-processor commands that correct command codes for the selected 
  *      generation at compile time.
- *      The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+ *      The EVE generation is dependent by EVE_DEVICE which is set in EVE_config.h
  *      and converted to the EVE generation in EVE.h. The generation is set in
  *      EVE_API to 1-5 and EVE_SUB_API if required.
  *  

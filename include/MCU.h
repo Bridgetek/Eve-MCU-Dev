@@ -132,7 +132,7 @@
 
 #elif defined (PLATFORM_STM32_CUBE)
 /* STM32 SPI bus is set to 60 MHz by default */
-#if defined(QUADSPI_ENABLE)
+#if defined(EVE_QSPI_ENABLE)
 #define MCU_SPI_TIMEOUT 56
 #else
 #define MCU_SPI_TIMEOUT 16

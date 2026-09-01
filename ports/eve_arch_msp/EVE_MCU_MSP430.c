@@ -181,9 +181,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-#ifdef QUADSPI_ENABLE
+#ifdef EVE_QSPI_ENABLE
 #error QPSI interfaces to EVE are currently not supported on this port
-#endif // QUADSPI_ENABLE
+#endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */
 

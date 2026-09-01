@@ -196,9 +196,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-#ifdef QUADSPI_ENABLE
-#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on NXPK64
-#endif // QUADSPI_ENABLE
+#ifdef EVE_QSPI_ENABLE
+#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on NXPK64
+#endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */
 

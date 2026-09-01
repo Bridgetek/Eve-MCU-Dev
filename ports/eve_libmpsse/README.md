@@ -46,7 +46,7 @@ The VA800A-SPI has a 10-way connector and can be connected directly to the "VM" 
 
 Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
 
-- (1) Please note that the INT# line is not supported in the libmpsse port. Therefore there will be a build error for libmpsse when `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+- (1) Please note that the INT# line is not supported in the libmpsse port. Therefore there will be a build error for libmpsse when `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
 ## Windows
 

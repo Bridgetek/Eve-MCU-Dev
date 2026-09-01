@@ -125,12 +125,12 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-#if defined QUADSPI_ENABLE
-#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RP2040
+#if defined EVE_QSPI_ENABLE
+#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RP2040
 #if IS_EVE_API(2,3,4,5)
     /* Initialize IO2 and IO3 pad/pin for quad settings */
 #endif
-#endif // QUADSPI_ENABLE
+#endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete

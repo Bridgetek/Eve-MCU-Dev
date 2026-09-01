@@ -65,7 +65,7 @@ extern QSPI_HandleTypeDef hqspi;
 ```
 The handle is defined in the generated HAL code and drivers.
 
-If the QUADSPI channel is to be used as a quad channel interface then the `QUADSPI_ENABLE` macro must be defined, otherwise the interface will be used in single channel mode.
+If the QUADSPI channel is to be used as a quad channel interface then the `EVE_QSPI_ENABLE` macro must be defined, otherwise the interface will be used in single channel mode.
 
 The chip select (called NSS on STM32, CS# on EVE) pin is controlled by the QUADSPI hardware interface.
 

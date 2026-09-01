@@ -3,7 +3,7 @@
  * @brief Cross-generation EVE register address map.
  * @details Provides a single unified set of EVE_REG_* macros that resolve to
  *      the correct hardware address for the selected generation at compile time.
- *      The EVE generation is dependent by FT8XX_TYPE which is set in EVE_config.h
+ *      The EVE generation is dependent by EVE_DEVICE which is set in EVE_config.h
  *      and converted to the EVE generation in EVE.h. The generation is set in
  *      EVE_API to 1-5 and EVE_SUB_API if required.
  *  

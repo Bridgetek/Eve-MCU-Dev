@@ -165,7 +165,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 if apirefactor:
                     # Add in eve.setup before eve.Init
                     line = re.sub(r'^(\s*)if\s*\(\s*EVE_Init\s*\(\s*\)\s*!=\s*0\s*\)\s*$', r'\g<1>// Setup the EVE display (' + defres + ')\n' \
-                                                      r'\g<1>' 'eve.setup(DISPLAY_RES);\n\n' \
+                                                      r'\g<1>' 'eve.setup(EVE_DISPLAY_RES);\n\n' \
                                                       r'\g<1>' '// Initialise the EVE library\n' \
                                                       r'\g<1>' 'if(eve.Init() != 0)' \
                         , line)

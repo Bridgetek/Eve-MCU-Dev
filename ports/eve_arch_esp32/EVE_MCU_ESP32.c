@@ -159,9 +159,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI configuration */
-#if defined QUADSPI_ENABLE
-#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on ESP32
-#endif // QUADSPI_ENABLE
+#if defined EVE_QSPI_ENABLE
+#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on ESP32
+#endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete

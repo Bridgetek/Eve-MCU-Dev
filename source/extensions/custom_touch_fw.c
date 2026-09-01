@@ -54,7 +54,7 @@
 #if IS_EVE_API(2,3,4)
 
 /* CUSTOM TOUCH */
-#if defined(CUSTOM_TOUCH)
+#if defined(EVE_CUSTOM_TOUCH)
 
 /* INCLUDES ************************************************************************/
 
@@ -148,7 +148,7 @@ int eve_loadcustomtouch(void)
     return EVE_LIB_AwaitCoProEmpty();
 }
 
-#endif // defined(CUSTOM_TOUCH)
+#endif // defined(EVE_CUSTOM_TOUCH)
 #endif // IS_EVE_API(2,3,4)
 
 /* CUSTOM TOUCH END */

@@ -29,7 +29,7 @@ Note: Necessary DLLs are copied into the `build\Debug` directory to enable the e
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
 ```
-cmake --fresh  -G "MinGW Makefiles" -B build -DFT8XX_TYPE=FT810 -DDISPLAY_RES=WVGA -S .
+cmake --fresh  -G "MinGW Makefiles" -B build -DEVE_DEVICE=EVE_FT810 -DEVE_DISPLAY_RES=EVE_WVGA -S .
 ```
 
 ## Visual Studio Code

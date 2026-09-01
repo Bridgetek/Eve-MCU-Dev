@@ -135,7 +135,7 @@ Extension-specific functionality is separated from the common EVE API source and
 
 * `\source\extensions\bt82x_patch.c` Implementation of the BT82x base patch loader and the additional API commands provided by the base patch for EVE API level 5 devices.
 * `\include\extensions\bt82x_patch.h` Definitions and function declarations for the BT82x base patch functionality.
-* `\source\extensions\custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `CUSTOM_TOUCH` define is enabled.
+* `\source\extensions\custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `EVE_CUSTOM_TOUCH` define is enabled.
 * `\include\extensions\custom_touch_fw.h` Function declarations for the custom touch firmware extension.
 
 The extension source files are included in the build only where required for the selected EVE API or configuration. Extension headers are referenced through the main `\include` directory, for example `#include <extensions//t82x_patch.h>`.
@@ -159,112 +159,112 @@ The library __must__ be compiled for the correct EVE device and panel type. The 
 It is recommended that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
 
 There are three methods of configuring the EVE device and panel type. 
-- The `FT8XX_TYPE` macro and `DISPLAY_RES` macro.
-  This is the simplest method if a configuration is fixed. The `MODULE_TYPE` and `PANEL_TYPE` macros may be removed or be set to `MODULE_TYPE_NONE` and `PANEL_TYPE_NONE` respectively.
-- The `FT8XX_TYPE` macro and `PANEL_TYPE` macro.
-  This sets the `DISPLAY_RES` for a panel. The `MODULE_TYPE` macros may be removed or be set to `MODULE_TYPE_NONE`.
+- The `EVE_DEVICE` macro and `EVE_DISPLAY_RES` macro. (Formerly the `FT8XX_TYPE` macro and `DISPLAY_RES` macro)
+  This is the simplest method if a configuration is fixed. The `EVE_MODULE` and `EVE_PANEL` macros may be removed or be set to `EVE_NO_MODULE` and `PANEL_TYPE_NONE` respectively.
+- The `EVE_DEVICE` macro and `EVE_PANEL` macro.
+  This sets the `EVE_DISPLAY_RES` for a panel. The `EVE_MODULE` macros may be removed or be set to `EVE_NO_MODULE`.
 - A Bridgetek module type may be set. 
-  This will configure the `FT8XX_TYPE` and `PANEL_TYPE` macros. 
-  The `PANEL_TYPE` macro will be further expanded into a `DISPLAY_RES` macro.
+  This will configure the `EVE_DEVICE` and `EVE_PANEL` macros. 
+  The `EVE_PANEL` macro will be further expanded into a `EVE_DISPLAY_RES` macro.
   
-In all cases the `DISPLAY_RES` macro will lead to the `EVE_DISP_*` macros being set for configuring the registers on in on the EVE device. 
+In all cases the `EVE_DISPLAY_RES` macro will lead to the `EVE_DISP_*` macros being set for configuring the registers on in on the EVE device. 
 
-The `DISPLAY_RES` macro is not used in the library.
+The `EVE_DISPLAY_RES` macro is not used in the library.
 
-The `PANEL_TYPE` macro is not used in the library, however it is optionally used in the `examples\snippets\touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
+The `EVE_PANEL` macro is not used in the library, however it is optionally used in the `examples\snippets\touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
 
 #### Device and Panel Options
 
 The following options are supported in [include/EVE_config.h](include/EVE_config.h):
 
-- `FT8XX_TYPE` specifies the EVE device type. The following device types are supported:
+- `EVE_DEVICE` specifies the EVE device type. The following device types are supported:
 
   | Device Type | Relevant Product |
   | --- | --- | 
-  | **FT800** | [FT800Q](https://brtchip.com/product/ft800/) |
-  | **FT801** | [FT801Q](https://brtchip.com/product/ft801/) |
-  | **FT810** | [FT810Q](https://brtchip.com/product/ft810q-2/) | 
-  | **FT811** | [FT811Q](https://brtchip.com/product/ft811/) |
-  | **FT812** | [FT812Q](https://brtchip.com/product/ft812/) |
-  | **FT813** | [FT813Q](https://brtchip.com/product/ft813/) |
-  | **BT880** | [BT880Q](https://brtchip.com/product/bt880/) |
-  | **BT881** | [BT881Q](https://brtchip.com/product/bt881/) | 
-  | **BT882** | [BT882Q](https://brtchip.com/product/bt882/) | 
-  | **BT883** | [BT883Q](https://brtchip.com/product/bt883/) | 
-  | **BT815** | [BT815Q](https://brtchip.com/product/bt815/) | 
-  | **BT816** | [BT816Q](https://brtchip.com/product/bt816/) | 
-  | **BT817** | [BT817Q](https://brtchip.com/product/bt817q/), [BT817AQ](https://brtchip.com/product/bt817aq/) | 
-  | **BT818** | [BT818Q](https://brtchip.com/product/bt818/) |
-  | **BT820** | [BT820B](https://brtchip.com/product/bt820b/) |
+  | **EVE_FT800** | [FT800Q](https://brtchip.com/product/ft800/) |
+  | **EVE_FT801** | [FT801Q](https://brtchip.com/product/ft801/) |
+  | **EVE_FT810** | [FT810Q](https://brtchip.com/product/ft810q-2/) | 
+  | **EVE_FT811** | [FT811Q](https://brtchip.com/product/ft811/) |
+  | **EVE_FT812** | [FT812Q](https://brtchip.com/product/ft812/) |
+  | **EVE_FT813** | [FT813Q](https://brtchip.com/product/ft813/) |
+  | **EVE_BT880** | [BT880Q](https://brtchip.com/product/bt880/) |
+  | **EVE_BT881** | [BT881Q](https://brtchip.com/product/bt881/) | 
+  | **EVE_BT882** | [BT882Q](https://brtchip.com/product/bt882/) | 
+  | **EVE_BT883** | [BT883Q](https://brtchip.com/product/bt883/) | 
+  | **EVE_BT815** | [BT815Q](https://brtchip.com/product/bt815/) | 
+  | **EVE_BT816** | [BT816Q](https://brtchip.com/product/bt816/) | 
+  | **EVE_BT817** | [BT817Q](https://brtchip.com/product/bt817q/), [BT817AQ](https://brtchip.com/product/bt817aq/) | 
+  | **EVE_BT818** | [BT818Q](https://brtchip.com/product/bt818/) |
+  | **EVE_BT820** | [BT820B](https://brtchip.com/product/bt820b/) |
 
-- `DISPLAY_RES` The resolution of the display panel.
+- `EVE_DISPLAY_RES` The resolution of the display panel.
   The following resolutions are defined:
   | Resolution Name | Size | Example |
   | ----- | ----- | ----- |
-  | **QVGA**    | 320 x 240   | [DP-0351-11A](https://brtchip.com/product/dp-0351-11a/) | 
-  | **WQVGA**   | 320 x 240   | [DP-0431-11A](https://brtchip.com/product/dp-0431-11a/), [DP-0502-11A](https://brtchip.com/product/dp-0502-11a/) |
-  | **WQVGAR**  | 480 x 480   | [IDM2040-21R](https://brtchip.com/product/idm2040-21r/) with 2.1 inch round display |
-  | **WVGA**    | 800 x 480   | [DP-0501-01A](https://brtchip.com/product/dp-0501-01a/), [DP-0501-11A](https://brtchip.com/product/dp-0501-11a/), [DP-0701-11A](https://brtchip.com/product/dp-0701-01a/) |
-  | **WSVGA**   | 1024 x 600  | [ME817EV](https://brtchip.com/product/me817ev/) with 7 inch display |
-  | **WXGA**    | 1280 x 800  | [DP-1011-01A](https://brtchip.com/product/dp-1011-01a/) |
-  | **WXGA_NG** | 1280 x 800  | [DP-1011-02A](https://brtchip.com/product/dp-1011-02a/) |
-  | **FULLHD**  | 1920 x 1080 | [DP-1561-01A](https://brtchip.com/product/dp-1561-01a/), [DP-1561-02A](https://brtchip.com/product/dp-1561-02a/) |
-  | **WUXGA**   | 1920 x 1200 | [DP-1012-01A](https://brtchip.com/product/dp-1012-01a/) |
+  | **EVE_RES_QVGA**    | 320 x 240   | [DP-0351-11A](https://brtchip.com/product/dp-0351-11a/) | 
+  | **EVE_RES_WQVGA**   | 320 x 240   | [DP-0431-11A](https://brtchip.com/product/dp-0431-11a/), [DP-0502-11A](https://brtchip.com/product/dp-0502-11a/) |
+  | **EVE_RES_WQVGAR**  | 480 x 480   | [IDM2040-21R](https://brtchip.com/product/idm2040-21r/) with 2.1 inch round display |
+  | **EVE_RES_WVGA**    | 800 x 480   | [DP-0501-01A](https://brtchip.com/product/dp-0501-01a/), [DP-0501-11A](https://brtchip.com/product/dp-0501-11a/), [DP-0701-11A](https://brtchip.com/product/dp-0701-01a/) |
+  | **EVE_RES_WSVGA**   | 1024 x 600  | [ME817EV](https://brtchip.com/product/me817ev/) with 7 inch display |
+  | **EVE_RES_WXGA**    | 1280 x 800  | [DP-1011-01A](https://brtchip.com/product/dp-1011-01a/) |
+  | **EVE_RES_WXGA_NG** | 1280 x 800  | [DP-1011-02A](https://brtchip.com/product/dp-1011-02a/) |
+  | **EVE_RES_FULLHD**  | 1920 x 1080 | [DP-1561-01A](https://brtchip.com/product/dp-1561-01a/), [DP-1561-02A](https://brtchip.com/product/dp-1561-02a/) |
+  | **EVE_RES_WUXGA**   | 1920 x 1200 | [DP-1012-01A](https://brtchip.com/product/dp-1012-01a/) |
   
 
-- `PANEL_TYPE` The Bridgetek panel type of the display panel.
+- `EVE_PANEL` The Bridgetek panel type of the display panel.
   The following panels are defined:
   | Panel Name | Description | Touch Type |
   | ----- | ----- | ----- |
-  | **DP_0351_11A** | 3.5 inch display panel (**QVGA**) |  Resistive | 
-  | **DP_0431_11A** | 4.3 inch display panel (**WQVGA**) | Resistive  |
-  | **DP_0501_01A** | 5 inch display panel (**WVGA**) | Capacitive  |
-  | **DP_0501_11A** | 5 inch display panel (**WVGA**) | Resistive |
-  | **DP_0502_11A** | 5 inch display panel (**WQVGA**) |  Resistive |
-  | **DP_0701_01A** | 7 inch display panel (**WVGA**) | Capacitive |
-  | **DP_1011_01A** | 10.1 inch display panel (**WXGA**) | Capacitive |
-  | **DP_1011_02A** | 10.1 inch display panel (**WXGA_NG**) | Capacitive |
-  | **DP_1012_01A** | 10.1 inch  display panel (**WUXGA**) |  Capacitive |
-  | **DP_1561_01A** | 15.6 inch display panel (**FullHD**) | Capacitive |
-  | **DP_1561_02A** | 15.6 inch display panel (**FullHD**) | Capacitive |
-  | **DP_IDM43A**   | 4.3 inch display panel (**WQVGA**) | Capacitive |
-  | **DP_IDM21R**   | 2.1 inch display panel (**WQVGAR**) | Capacitive |
+  | **EVE_DP_0351_11A** | 3.5 inch display panel (**QVGA**) |  Resistive | 
+  | **EVE_DP_0431_11A** | 4.3 inch display panel (**WQVGA**) | Resistive  |
+  | **EVE_DP_0501_01A** | 5 inch display panel (**WVGA**) | Capacitive  |
+  | **EVE_DP_0501_11A** | 5 inch display panel (**WVGA**) | Resistive |
+  | **EVE_DP_0502_11A** | 5 inch display panel (**WQVGA**) |  Resistive |
+  | **EVE_DP_0701_01A** | 7 inch display panel (**WVGA**) | Capacitive |
+  | **EVE_DP_1011_01A** | 10.1 inch display panel (**WXGA**) | Capacitive |
+  | **EVE_DP_1011_02A** | 10.1 inch display panel (**WXGA_NG**) | Capacitive |
+  | **EVE_DP_1012_01A** | 10.1 inch  display panel (**WUXGA**) |  Capacitive |
+  | **EVE_DP_1561_01A** | 15.6 inch display panel (**FullHD**) | Capacitive |
+  | **EVE_DP_1561_02A** | 15.6 inch display panel (**FullHD**) | Capacitive |
+  | **EVE_DP_IDM43A**   | 4.3 inch display panel (**WQVGA**) | Capacitive |
+  | **EVE_DP_IDM21R**   | 2.1 inch display panel (**WQVGAR**) | Capacitive |
 
-- `MODULE_TYPE` The Bridgetek module or development kit type for EVE device and display panel. The following options are defined:
+- `EVE_MODULE` The Bridgetek module or development kit type for EVE device and display panel. The following options are defined:
   | Module or Kit Name | Description |
   | ----- | ----- |
-  | **VM800B**      | [VM800B35A-BK](https://brtchip.com/product/vm800b35a-bk/) with 3.5 inch display. (**FT800** with **DP-0351-11A**) |
-  | **VM800C35A**   | [VM800C35A-D](https://brtchip.com/product/vm800c35a-d/) with 3.5 inch display. (**FT800** with **DP-0351-11A**) |
-  | **VM800C43A**   | [VM800C43A-D](https://brtchip.com/product/vm800c43a-d/) with 4.3 inch display. (**FT800** with **DP-0431-11A**) |
-  | **VM800C50A**   | [VM800C50A-D]() with 5 inch display. (**FT800** with **DP-0502-11A**) |
-  | **VM810C**      | [VM810C50A-D](https://brtchip.com/product/vm810c50a-d/) with 5 inch display. (**FT810** with **DP-0501-11A**) |
-  | **ME812A**      | [ME812A-WH50R](https://brtchip.com/product/me812a-wh50r/), [ME812AU-WH50R](https://brtchip.com/product/me812au-wh50r/) with 5 inch display. (**FT812** with **DP-0501-11A**) |
-  | **ME813A**      | [ME813A-WH50C](https://brtchip.com/product/me813a-wh50c/) with 5 inch display. (**FT813** with **DP-0501-01A**) |
-  | **VM816C**      | [VM816C50A-D](https://brtchip.com/product/vm816c50a-d/), [VM816CU50A-D](https://brtchip.com/product/vm816cu50a-d/) with 5 inch display. (**BT816** with **DP-0501-11A**) |
-  | **VM880C**      | [VM880C](https://brtchip.com/product/vm880c/) with assumed 4.3 inch display. (**BT880** with **DP-0431-11A**) |
-  | **IDM204021R**  | [IDM2040-21R](https://brtchip.com/product/idm2040-21r/) (**FT800** with 2.1 inch display) |
-  | **IDM204043A**  | [IDM2040-43A](https://brtchip.com/product/idm2040-43a/) (**BT883** with **DP-0431-11A**) |
-  | **IDM20407A**   | [IDM2040-7A](https://brtchip.com/product/idm2040-7a/) (**BT817** with **DP-0701-01A**) |
-  | **VM820B10A**   | [VM820B10A](https://brtchip.com/product/vm820b10a/) with 10.1 inch display. (**BT820** with **DP-1011-02A**) |
-  | **VM820B15A**   | [VM820B15A](https://brtchip.com/product/vm820b15a/) with 15.6 inch display. (**BT820** with **DP-1561-02A**) |
-  | **IDK_FT810_43A**   | [FT810 IC Development Kit](https://brtchip.com/product/idk-ft810-43a/) with 4.3-inch display. (**FT810** with **DP-0431-11A**) |
-  | **IDK_BT816_50A**   | [BT816 IC Development Kit](https://brtchip.com/product/idk-bt816-50a/) with 5.0-inch display. (**BT816** with **DP-0501-11A**) |
-  | **IDK_BT817_70A**   | [BT817 IC Development Kit](https://brtchip.com/product/idk-bt817-70a/) with 7.0-inch display. (**BT817** with **DP-0701-01A**) |
-  | **IDK_BT817_101A**   | [BT817 IC Development Kit](https://brtchip.com/product/idk-bt817-101a/) with 10.1-inch display. (**BT817** with **DP-1011-02A**) |
-  | **IDK_BT820_101A**   | [BT820 IC Development Kit](https://brtchip.com/product/idk-bt820-101a/) with 10.1-inch display. (**BT820** with **DP-1012-01A**) | 
+  | **EVE_VM800B**      | [VM800B35A-BK](https://brtchip.com/product/vm800b35a-bk/) with 3.5 inch display. (**FT800** with **DP-0351-11A**) |
+  | **EVE_VM800C35A**   | [VM800C35A-D](https://brtchip.com/product/vm800c35a-d/) with 3.5 inch display. (**FT800** with **DP-0351-11A**) |
+  | **EVE_VM800C43A**   | [VM800C43A-D](https://brtchip.com/product/vm800c43a-d/) with 4.3 inch display. (**FT800** with **DP-0431-11A**) |
+  | **EVE_VM800C50A**   | [VM800C50A-D]() with 5 inch display. (**FT800** with **DP-0502-11A**) |
+  | **EVE_VM810C**      | [VM810C50A-D](https://brtchip.com/product/vm810c50a-d/) with 5 inch display. (**FT810** with **DP-0501-11A**) |
+  | **EVE_ME812A**      | [ME812A-WH50R](https://brtchip.com/product/me812a-wh50r/), [ME812AU-WH50R](https://brtchip.com/product/me812au-wh50r/) with 5 inch display. (**FT812** with **DP-0501-11A**) |
+  | **EVE_ME813A**      | [ME813A-WH50C](https://brtchip.com/product/me813a-wh50c/) with 5 inch display. (**FT813** with **DP-0501-01A**) |
+  | **EVE_VM816C**      | [VM816C50A-D](https://brtchip.com/product/vm816c50a-d/), [VM816CU50A-D](https://brtchip.com/product/vm816cu50a-d/) with 5 inch display. (**BT816** with **DP-0501-11A**) |
+  | **EVE_VM880C**      | [VM880C](https://brtchip.com/product/vm880c/) with assumed 4.3 inch display. (**BT880** with **DP-0431-11A**) |
+  | **EVE_IDM204021R**  | [IDM2040-21R](https://brtchip.com/product/idm2040-21r/) (**FT800** with 2.1 inch display) |
+  | **EVE_IDM204043A**  | [IDM2040-43A](https://brtchip.com/product/idm2040-43a/) (**BT883** with **DP-0431-11A**) |
+  | **EVE_IDM20407A**   | [IDM2040-7A](https://brtchip.com/product/idm2040-7a/) (**BT817** with **DP-0701-01A**) |
+  | **EVE_VM820B10A**   | [VM820B10A](https://brtchip.com/product/vm820b10a/) with 10.1 inch display. (**BT820** with **DP-1011-02A**) |
+  | **EVE_VM820B15A**   | [VM820B15A](https://brtchip.com/product/vm820b15a/) with 15.6 inch display. (**BT820** with **DP-1561-02A**) |
+  | **EVE_IDK_FT810_43A**   | [FT810 IC Development Kit](https://brtchip.com/product/idk-ft810-43a/) with 4.3-inch display. (**FT810** with **DP-0431-11A**) |
+  | **EVE_IDK_BT816_50A**   | [BT816 IC Development Kit](https://brtchip.com/product/idk-bt816-50a/) with 5.0-inch display. (**BT816** with **DP-0501-11A**) |
+  | **EVE_IDK_BT817_70A**   | [BT817 IC Development Kit](https://brtchip.com/product/idk-bt817-70a/) with 7.0-inch display. (**BT817** with **DP-0701-01A**) |
+  | **EVE_IDK_BT817_101A**   | [BT817 IC Development Kit](https://brtchip.com/product/idk-bt817-101a/) with 10.1-inch display. (**BT817** with **DP-1011-02A**) |
+  | **EVE_IDK_BT820_101A**   | [BT820 IC Development Kit](https://brtchip.com/product/idk-bt820-101a/) with 10.1-inch display. (**BT820** with **DP-1012-01A**) | 
 
 
 #### Device Selection
 
-The EVE device to target is set in the file `EVE_config.h`. The macro `FT8XX_TYPE` or `EVE_API`/`EVE_SUB_API` is set to choose the device or the API respectively. One or other of these macros **must** be set correctly for the device being used.
+The EVE device to target is set in the file `EVE_config.h`. The macro `EVE_DEVICE` or `EVE_API`/`EVE_SUB_API` is set to choose the device or the API respectively. One or other of these macros **must** be set correctly for the device being used.
 
-There are predefined settings mapping of device names for `FT8XX_TYPE` to `EVE_API`/`EVE_SUB_API` in the EVE API in the library. The [device API table](#device-api-support) can be used to select the correct value of `FT8XX_TYPE`.
+There are predefined settings mapping of device names for `EVE_DEVICE` to `EVE_API`/`EVE_SUB_API` in the EVE API in the library. The [device API table](#device-api-support) can be used to select the correct value of `EVE_DEVICE`.
 
-If the `FT8XX_TYPE` macro is used then the "FT" or "BT" part number, above, of the device is set. This line will set a BT820 device and EVE API 5 will be selected automatically.
+If the `EVE_DEVICE` macro is used then the "FT" or "BT" part number, above, of the device is set. This line will set a BT820 device and EVE API 5 will be selected automatically.
 ```c
-#define FT8XX_TYPE BT820
+#define EVE_DEVICE EVE_BT820
 ```
-If `EVE_API` is used this will override any `FT8XX_TYPE` values and a number from 1 to 5 is used. For EVE API 2 a subtype of the API is set in the `EVE_SUB_API` macro. So for an FT813 device the following can be used:
+If `EVE_API` is used this will override any `EVE_DEVICE` values and a number from 1 to 5 is used. For EVE API 2 a subtype of the API is set in the `EVE_SUB_API` macro. So for an FT813 device the following can be used:
 ```c
 #define EVE_API 2
 #define EVE_SUB_API 1
@@ -275,9 +275,9 @@ Note that the example programs will take the `EVE_config.h` file from the `inclu
 
 #### Display Panel Selection
 
-The display panel dimensions to use are set in the file `EVE_config.h` using the `DISPLAY_RES` or `PANEL_TYPE` macros.
+The display panel dimensions to use are set in the file `EVE_config.h` using the `EVE_DISPLAY_RES` or `EVE_PANEL` macros.
 
-The macro `DISPLAY_RES` will enable one of the pre-defined panel settings to be configured with the register values needed for that panel type. The registers are calculated for the standard Bridgetek panels in the resolution indicated by the `DISPLAY_RES` macro. Other panels may require different register settings. If a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
+The macro `EVE_DISPLAY_RES` will enable one of the pre-defined panel settings to be configured with the register values needed for that panel type. The registers are calculated for the standard Bridgetek panels in the resolution indicated by the `EVE_DISPLAY_RES` macro. Other panels may require different register settings. If a new panel is needed then the settings can be derived from the panel specifications or contact Bridgetek Support for advice.
 
 The display panel settings **must** be correct for the panel in used otherwise it is unlikely that there will be any output visible.
 
@@ -285,9 +285,9 @@ The display panel settings **must** be correct for the panel in used otherwise i
 
 #### Setting Device and Panel in Build Configuration
 
-The `MODULE_TYPE`, `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
+The `EVE_MODULE`, `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
 
-The `MODULE_TYPE` macro is parsed first. Setting this to `MODULE_TYPE_NONE` will allow one or all of the `FT8XX_TYPE`, `PANEL_TYPE` and `DISPLAY_RES` macros to be picked up from the build file C definitions. 
+The `EVE_MODULE` macro is parsed first. Setting this to `EVE_NO_MODULE` will allow one or all of the `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros to be picked up from the build file C definitions. 
 
 Note that the preprocessor may complain if it is asked to change the value of one of the macros. 
 
@@ -599,4 +599,4 @@ The optional INT# line is provided for the EVE device to signal to the host MCU 
 
 This status can be accessed from the EVE API with the `EVE_LIB_Int()` function. A non-zero value indicates that the INT# line is asserted.
 
-**NOTE:** This function only available if the macro `QUADSPI_ENABLE` is undefined. Enabling Quad SPI with the `QUADSPI_ENABLE` setting will undefine that macro.
+**NOTE:** This function only available if the macro `EVE_QSPI_ENABLE` is undefined. Enabling Quad SPI with the `EVE_QSPI_ENABLE` setting will undefine that macro.

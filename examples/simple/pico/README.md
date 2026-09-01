@@ -35,7 +35,7 @@ This will configure the compilation to take place in the `build` directory. It m
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
 ```console
-cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQVGA -S .
+cmake --fresh  -G "Unix Makefiles" -B build -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_WQVGA -S .
 ```
 
 ### Compiling the Simple Raspberry Pi pico Example Manually

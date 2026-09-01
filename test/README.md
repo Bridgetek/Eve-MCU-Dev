@@ -32,7 +32,7 @@ Default builds are compiled with debugging enabled.
 
 The device and panel selection can be made in the command line to override the values in `EVE_Config.h`. This is done by adding the definitions to the CMake configuration command with the `-D` option.
 ```
-cmake --fresh -B build -S . -DFT8XX_TYPE=BT881
+cmake --fresh -B build -S . -DEVE_DEVICE=BT881
 ```
 
 ### Running the Boot Tester
@@ -46,7 +46,7 @@ To run this file simple call the executable from the command line.
 
 For a boot tester compiled as follows:
 ```
-EVE-MCU-Dev\test\boottester> cmake --fresh -B build -S . -DMODULE_TYPE=IDM20407A
+EVE-MCU-Dev\test\boottester> cmake --fresh -B build -S . -DEVE_MODULE=IDM20407A
 EVE-MCU-Dev\test\boottester> cmake --build build
 ```
 

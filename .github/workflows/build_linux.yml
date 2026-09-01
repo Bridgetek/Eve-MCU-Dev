@@ -42,15 +42,15 @@ jobs:
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
         eve: [ 
-          {DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
-          {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {EVE_DISPLAY_RES: EVE_QVGA, EVE_DEVICE: EVE_FT800, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
+          {EVE_DISPLAY_RES: EVE_NO_RES, EVE_DEVICE: EVE_FT813, EVE_PANEL: EVE_DP_0431_11A , EVE_MODULE: EVE_NO_MODULE }, 
+          {EVE_DISPLAY_RES: EVE_WVGA, EVE_DEVICE: EVE_BT815, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
+          {EVE_DISPLAY_RES: EVE_NO_RES, EVE_DEVICE: EVE_NO_DEVICE, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_IDM20407A }, 
+          {EVE_DISPLAY_RES: EVE_WUXGA, EVE_DEVICE: EVE_BT820, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
         ]
     
     # Set the name of the job to include the important information
-    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.EVE_DEVICE }} ${{ matrix.eve.EVE_MODULE }} ${{ matrix.eve.EVE_PANEL }} ${{ matrix.eve.EVE_DISPLAY_RES }}
 
     steps:
     - uses: actions/checkout@v6
@@ -76,7 +76,7 @@ jobs:
      
     # Test using matrix
     - name: Configure CMake
-      run: cmake -B build -S . -G Ninja -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B build -S . -G Ninja -DEVE_MODULE=${{ matrix.eve.EVE_MODULE }} -DEVE_PANEL=${{ matrix.eve.EVE_PANEL }} -DEVE_DEVICE=${{ matrix.eve.EVE_DEVICE }} -DEVE_DISPLAY_RES=${{ matrix.eve.EVE_DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
     - name: Build

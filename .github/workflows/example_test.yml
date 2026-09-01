@@ -34,17 +34,17 @@ jobs:
       max-parallel: 1
       matrix:
         eve: [ 
-          {EXAMPLE: simple, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: b2tf, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: cruise, ASSETS: 0, EVE1: false, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: flightdeck, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: WUXGA }, 
-          {EXAMPLE: gyminterval, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: FULLHD, EVE4: FULLHD, EVE5: WUXGA }, 
-          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: submarine, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: touchscreentest, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: simple, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: b2tf, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: cruise, ASSETS: 0, EVE1: false, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: flightdeck, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: gyminterval, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: EVE_FULLHD, EVE4: EVE_FULLHD, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: submarine, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: touchscreentest, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
         ]
     
     # Set the name of the job to include the important information
@@ -56,7 +56,7 @@ jobs:
     # Test using matrix
     - name: Configure CMake EVE5
       if: ${{ matrix.eve.EVE5 }}
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT820 -DDISPLAY_RES=${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE5
@@ -66,7 +66,7 @@ jobs:
 
     - name: Configure CMake EVE4
       if: ${{ matrix.eve.EVE4 }}
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT818 -DDISPLAY_RES=${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT818 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE4
@@ -76,7 +76,7 @@ jobs:
 
     - name: Configure CMake EVE3
       if: ${{ matrix.eve.EVE3 }}
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=BT815 -DDISPLAY_RES=${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT815 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE3
@@ -86,7 +86,7 @@ jobs:
 
     - name: Configure CMake EVE2
       if: ${{ matrix.eve.EVE2 }}
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT812 -DDISPLAY_RES=${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT812 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE2
@@ -96,7 +96,7 @@ jobs:
 
     - name: Configure CMake EVE1
       if: ${{ matrix.eve.EVE1 }}
-      run: cmake -B build -S . -G Ninja -DFT8XX_TYPE=FT800 -DDISPLAY_RES=${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE1

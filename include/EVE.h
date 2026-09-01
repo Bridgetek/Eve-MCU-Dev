@@ -118,121 +118,121 @@
  *      the level of the EVE device support. 
  *      Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro 
  *      as required. 
- *      The FT8XX_TYPE and the display settings must be configured before calling EVE.h.
- *      "#define FT8XX_TYPE BT817" is equivalent to having "#define EVE_API 4".
+ *      The EVE_DEVICE and the display settings must be configured before calling EVE.h.
+ *      "#define EVE_DEVICE EVE_EVE_BT817" is equivalent to having "#define EVE_API 4".
  *      Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
- *      The FT8XX_TYPE macro and PANEL_TYPE macro must not be expanded until their
- *      allowable values are defined (FT8XX_TYPE in EVE.h).
+ *      The EVE_DEVICE macro and EVE_PANEL macro must not be expanded until their
+ *      allowable values are defined (EVE_DEVICE in EVE.h).
  */
 //@{
-#if defined(MODULE_TYPE) && (MODULE_TYPE != MODULE_TYPE_NONE)
-#undef FT8XX_TYPE
-#undef PANEL_TYPE
+#if defined(EVE_MODULE) && (EVE_MODULE != EVE_NO_MODULE)
+#undef EVE_DEVICE
+#undef EVE_PANEL
 
 /** 
  * @brief Predefined Bridgetek module displays
  */
-#if MODULE_TYPE == VM800B
+#if EVE_MODULE == EVE_VM800B
 // VM800B35A-BK with 3.5 inch display
-#define FT8XX_TYPE FT800
-#define PANEL_TYPE DP_0351_11A
+#define EVE_DEVICE EVE_FT800
+#define EVE_PANEL EVE_DP_0351_11A
 
-#elif MODULE_TYPE == VM800C35A
+#elif EVE_MODULE == EVE_VM800C35A
 // VM800C35A-D with 3.5 inch display
-#define FT8XX_TYPE FT800
-#define PANEL_TYPE DP_0351_11A
+#define EVE_DEVICE EVE_FT800
+#define EVE_PANEL EVE_DP_0351_11A
 
-#elif MODULE_TYPE == VM800C43A
+#elif EVE_MODULE == EVE_VM800C43A
 // VM800C43A-D with 4.3 inch display
-#define FT8XX_TYPE FT800
-#define PANEL_TYPE DP_0431_11A
+#define EVE_DEVICE EVE_FT800
+#define EVE_PANEL EVE_DP_0431_11A
 
-#elif MODULE_TYPE == VM800C50A
+#elif EVE_MODULE == EVE_VM800C50A
 // VM800C50A-D with 5 inch display
-#define FT8XX_TYPE FT800
-#define PANEL_TYPE DP_0502_11A
+#define EVE_DEVICE EVE_FT800
+#define EVE_PANEL EVE_DP_0502_11A
 
-#elif MODULE_TYPE == VM810C
+#elif EVE_MODULE == EVE_VM810C
 // VM810C50A-D with 5 inch display
-#define FT8XX_TYPE FT810
-#define PANEL_TYPE DP_0501_11A
+#define EVE_DEVICE EVE_FT810
+#define EVE_PANEL EVE_DP_0501_11A
 
-#elif MODULE_TYPE == ME812A
+#elif EVE_MODULE == EVE_ME812A
 // ME812A-WH50R, ME812AU-WH50R with 5 inch display
-#define FT8XX_TYPE FT812
-#define PANEL_TYPE DP_0501_11A
+#define EVE_DEVICE EVE_FT812
+#define EVE_PANEL EVE_DP_0501_11A
 
-#elif MODULE_TYPE == ME813A
+#elif EVE_MODULE == EVE_ME813A
 // ME813A-WH50C with 5 inch display
-#define FT8XX_TYPE FT813
-#define PANEL_TYPE DP_0501_01A
+#define EVE_DEVICE EVE_FT813
+#define EVE_PANEL EVE_DP_0501_01A
 
-#elif MODULE_TYPE == VM816C
+#elif EVE_MODULE == EVE_VM816C
 // VM816C50A-D, VM816CU50A-D with 5 inch display
-#define FT8XX_TYPE BT816
-#define PANEL_TYPE DP_0501_11A
+#define EVE_DEVICE EVE_BT816
+#define EVE_PANEL EVE_DP_0501_11A
 
-#elif MODULE_TYPE == VM880C
+#elif EVE_MODULE == EVE_VM880C
 // VM880C with 4.3 inch display
-#define FT8XX_TYPE BT880
-#define PANEL_TYPE DP_0431_11A
+#define EVE_DEVICE EVE_BT880
+#define EVE_PANEL EVE_DP_0431_11A
 
-#elif MODULE_TYPE == IDM204021R
+#elif EVE_MODULE == EVE_IDM204021R
 // IDM2040-21R
-#define FT8XX_TYPE FT800
-#define PANEL_TYPE DP_IDM21R
+#define EVE_DEVICE EVE_FT800
+#define EVE_PANEL EVE_DP_IDM21R
 
-#elif MODULE_TYPE == IDM204043A
+#elif EVE_MODULE == EVE_IDM204043A
 // IDM2040-43A
-#define FT8XX_TYPE BT883
-#define PANEL_TYPE DP_IDM43A
+#define EVE_DEVICE EVE_BT883
+#define EVE_PANEL EVE_DP_IDM43A
 
-#elif MODULE_TYPE == IDM20407A
+#elif EVE_MODULE == EVE_IDM20407A
 // IDM2040-7A
-#define FT8XX_TYPE BT817
-#define PANEL_TYPE DP_0701_01A
+#define EVE_DEVICE EVE_BT817
+#define EVE_PANEL EVE_DP_0701_01A
 
-#elif MODULE_TYPE == VM820B10A
+#elif EVE_MODULE == EVE_VM820B10A
 // VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
-#define FT8XX_TYPE BT820
-#define PANEL_TYPE DP_1011_02A
+#define EVE_DEVICE EVE_BT820
+#define EVE_PANEL EVE_DP_1011_02A
 
-#elif MODULE_TYPE == VM820B15A
+#elif EVE_MODULE == EVE_VM820B15A
 // VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
-#define FT8XX_TYPE BT820
-#define PANEL_TYPE DP_1561_02A
+#define EVE_DEVICE EVE_BT820
+#define EVE_PANEL EVE_DP_1561_02A
 
-#elif MODULE_TYPE == IDK_FT810_43A
+#elif EVE_MODULE == EVE_IDK_FT810_43A
 // FT810 IC Development Kit with 4.3 - inch display (FT810 with DP-0431-11A)
-#define FT8XX_TYPE FT810
-#define PANEL_TYPE DP_0431_11A
+#define EVE_DEVICE EVE_FT810
+#define EVE_PANEL EVE_DP_0431_11A
 
-#elif MODULE_TYPE == IDK_BT816_50A
+#elif EVE_MODULE == EVE_IDK_BT816_50A
 // BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
-#define FT8XX_TYPE BT816
-#define PANEL_TYPE DP_0501_11A
+#define EVE_DEVICE EVE_BT816
+#define EVE_PANEL EVE_DP_0501_11A
 
-#elif MODULE_TYPE == IDK_BT817_70A
+#elif EVE_MODULE == EVE_IDK_BT817_70A
 // BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
-#define FT8XX_TYPE BT817
-#define PANEL_TYPE DP_0701_01A
+#define EVE_DEVICE EVE_BT817
+#define EVE_PANEL EVE_DP_0701_01A
 
-#elif MODULE_TYPE == IDK_BT817_101A
+#elif EVE_MODULE == EVE_IDK_BT817_101A
 // BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
-#define FT8XX_TYPE BT817
-#define PANEL_TYPE DP_1011_02A
+#define EVE_DEVICE EVE_BT817
+#define EVE_PANEL EVE_DP_1011_02A
 
-#elif MODULE_TYPE == IDK_BT820_101A
+#elif EVE_MODULE == EVE_IDK_BT820_101A
 // BT820B IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
-#define FT8XX_TYPE BT820
-#define PANEL_TYPE DP_1012_01A
+#define EVE_DEVICE EVE_BT820
+#define EVE_PANEL EVE_DP_1012_01A
 
 #else
 
-#error MODULE_TYPE must be configured.
+#error EVE_MODULE must be configured.
 
-#endif // MODULE_TYPE
-#endif // defined(MODULE_TYPE)
+#endif // EVE_MODULE
+#endif // defined(EVE_MODULE)
 //@}
 
 #endif // !defined(IS_ARDUINO_LIB) 
@@ -240,62 +240,62 @@
 #ifndef EVE_API
 #undef EVE_SUB_API
 
-#if (FT8XX_TYPE == FT800)
+#if (EVE_DEVICE == EVE_FT800)
 #define EVE_API 1
 
-#elif (FT8XX_TYPE == FT801)
+#elif (EVE_DEVICE == EVE_FT801)
 #define EVE_API 1
 
-#elif (FT8XX_TYPE == FT810)
+#elif (EVE_DEVICE == EVE_FT810)
 #define EVE_API 2
 #define EVE_SUB_API 1
 
-#elif (FT8XX_TYPE == FT811)
+#elif (EVE_DEVICE == EVE_FT811)
 #define EVE_API 2
 #define EVE_SUB_API 1
 
-#elif (FT8XX_TYPE == FT812)
+#elif (EVE_DEVICE == EVE_FT812)
 #define EVE_API 2
 #define EVE_SUB_API 1
 
-#elif (FT8XX_TYPE == FT813)
+#elif (EVE_DEVICE == EVE_FT813)
 #define EVE_API 2
 #define EVE_SUB_API 1
 
-#elif (FT8XX_TYPE == BT880)
+#elif (EVE_DEVICE == EVE_BT880)
 #define EVE_API 2
 #define EVE_SUB_API 2
 
-#elif (FT8XX_TYPE == BT881)
+#elif (EVE_DEVICE == EVE_BT881)
 #define EVE_API 2
 #define EVE_SUB_API 2
 
-#elif (FT8XX_TYPE == BT882)
+#elif (EVE_DEVICE == EVE_BT882)
 #define EVE_API 2
 #define EVE_SUB_API 2
 
-#elif (FT8XX_TYPE == BT883)
+#elif (EVE_DEVICE == EVE_BT883)
 #define EVE_API 2
 #define EVE_SUB_API 2
 
-#elif (FT8XX_TYPE == BT815)
+#elif (EVE_DEVICE == EVE_BT815)
 #define EVE_API 3
 
-#elif (FT8XX_TYPE == BT816)
+#elif (EVE_DEVICE == EVE_BT816)
 #define EVE_API 3
 
-#elif (FT8XX_TYPE == BT817)
+#elif (EVE_DEVICE == EVE_BT817)
 #define EVE_API 4
 
-#elif (FT8XX_TYPE == BT818)
+#elif (EVE_DEVICE == EVE_BT818)
 #define EVE_API 4
 
-#elif (FT8XX_TYPE == BT820)
+#elif (EVE_DEVICE == EVE_BT820)
 #define EVE_API 5
 
 #else
 #ifndef EVE_API
-#error FT8XX_TYPE definition not recognised.
+#error EVE_DEVICE definition not recognised.
 #endif
 #endif
 
@@ -342,12 +342,12 @@
  *   EVE2+ can write directly to the co-processor ring buffer via the
  *   REG_CMDB_WRITE register.
  * 
- *   If COPROCESSOR_TRANSFER is undefined then EVE_TRANSFER_CMD_WRITE is 
- *   used for EVE1 and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
- *   If COPROCESSOR_TRANSFER is set for EVE_TRANSFER_CMDB_WRITE on EVE1 
- *   then the setting will be modified to EVE_TRANSFER_CMD_WRITE.
- *   The EVE_TRANSFER_INT flag can be used to modify the 
- *   EVE_TRANSFER_CMD_WRITE method to use the hardware INT# line as well.
+ *   If EVE_COPRO_METHOD is undefined then EVE_COPRO_CMD_WRITE is 
+ *   used for EVE1 and EVE_COPRO_CMDB_WRITE is used for EVE2 onwards.
+ *   If EVE_COPRO_METHOD is set for EVE_COPRO_CMDB_WRITE on EVE1 
+ *   then the setting will be modified to EVE_COPRO_CMD_WRITE.
+ *   The EVE_COPRO_INT flag can be used to modify the 
+ *   EVE_COPRO_CMD_WRITE method to use the hardware INT# line as well.
  *   This requires support from the port in the MCU layer. It is not 
  *   compatible with QuadSPI as the INT# line is used as a data line.
  */
@@ -357,20 +357,19 @@
 #else // IS_EVE_API(2,3,4,5)
     // Default setting for EVE2 onwards
     #define EVE_USE_CMDB_METHOD
-    #if defined(COPROCESSOR_TRANSFER)
-        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_CMD_WRITE)
+    #if defined(EVE_COPRO_METHOD)
+        #if (EVE_COPRO_METHOD & EVE_COPRO_CMD_WRITE)
             #undef EVE_USE_CMDB_METHOD
-        #endif // EVE_TRANSFER_CMD_WRITE
-    #endif // defined(COPROCESSOR_TRANSFER)
+        #endif // EVE_COPRO_CMD_WRITE
+    #endif // defined(EVE_COPRO_METHOD)
 #endif
 
-#if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
-    #if defined(COPROCESSOR_TRANSFER)
-        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
-            #undef EVE_USE_CMDB_METHOD
+#if !defined(EVE_USE_CMDB_METHOD) && !defined(EVE_QSPI_ENABLE)
+    #if defined(EVE_COPRO_METHOD)
+        #if (EVE_COPRO_METHOD & EVE_COPRO_INT)
             #define EVE_USE_INTERRUPT_METHOD
-        #endif // EVE_TRANSFER_INT
-    #endif // defined(COPROCESSOR_TRANSFER)
+        #endif // EVE_COPRO_INT
+    #endif // defined(EVE_COPRO_METHOD)
 #endif // defined(EVE_USE_CMDB_METHOD)
 
 /** Interrupt management.
@@ -391,78 +390,78 @@
  * @brief Match display resolution to panel type
  */
 //@{
-#if defined(PANEL_TYPE) && (PANEL_TYPE != PANEL_TYPE_NONE)
-#undef DISPLAY_RES
+#if defined(EVE_PANEL) && (EVE_PANEL != EVE_NO_PANEL)
+#undef EVE_DISPLAY_RES
 
 /** 
- * @brief Predefined selection of DISPLAY_RES by panel type.
+ * @brief Predefined selection of EVE_DISPLAY_RES by panel type.
  */
-#if PANEL_TYPE == DP_0351_11A
+#if EVE_PANEL == EVE_DP_0351_11A
 // DP-0351-11A QVGA (Resistive)
-#define DISPLAY_RES QVGA
+#define EVE_DISPLAY_RES EVE_QVGA
 
-#elif PANEL_TYPE == DP_0431_11A
+#elif EVE_PANEL == EVE_DP_0431_11A
 // DP-0431-11A WQVGA (Resistive)
-#define DISPLAY_RES WQVGA   
+#define EVE_DISPLAY_RES EVE_WQVGA   
 
-#elif PANEL_TYPE == DP_0501_01A
+#elif EVE_PANEL == EVE_DP_0501_01A
 // DP-0501-01A WVGA (Capacitive)
-#define DISPLAY_RES WVGA    
+#define EVE_DISPLAY_RES EVE_WVGA    
 
-#elif PANEL_TYPE == DP_0501_11A
+#elif EVE_PANEL == EVE_DP_0501_11A
 // DP-0351-11A WVGA (Resistive)
-#define DISPLAY_RES WVGA    
+#define EVE_DISPLAY_RES EVE_WVGA    
 
-#elif PANEL_TYPE == DP_0502_11A
+#elif EVE_PANEL == EVE_DP_0502_11A
 // DP-0502-11A WQVGA (Resistive)
-#define DISPLAY_RES WQVGA   
+#define EVE_DISPLAY_RES EVE_WQVGA   
 
-#elif PANEL_TYPE == DP_0701_01A
+#elif EVE_PANEL == EVE_DP_0701_01A
 // DP-0701-11A WVGA (Capacitive)
-#define DISPLAY_RES WVGA
+#define EVE_DISPLAY_RES EVE_WVGA
 
-#elif PANEL_TYPE == DP_1011_01A
+#elif EVE_PANEL == EVE_DP_1011_01A
 // DP-1011-01A WXGA (Capacitive)
-#define DISPLAY_RES WXGA
+#define EVE_DISPLAY_RES EVE_WXGA
 
-#elif PANEL_TYPE == DP_1011_02A
+#elif EVE_PANEL == EVE_DP_1011_02A
 // DP-1011-02A WXGA_NG (Capacitive)
-#define DISPLAY_RES WXGA_NG
+#define EVE_DISPLAY_RES EVE_WXGA_NG
 
-// Enable CUSTOM_TOUCH by default for this panel
-#ifndef CUSTOM_TOUCH
-#define CUSTOM_TOUCH
+// Enable EVE_CUSTOM_TOUCH by default for this panel
+#ifndef EVE_CUSTOM_TOUCH
+#define EVE_CUSTOM_TOUCH
 #endif
 
-#elif PANEL_TYPE == DP_1012_01A
+#elif EVE_PANEL == EVE_DP_1012_01A
 // DP-1012-01A WUXGA (Capacitive)
-#define DISPLAY_RES WUXGA
+#define EVE_DISPLAY_RES EVE_WUXGA
 
-#elif PANEL_TYPE == DP_1561_01A
+#elif EVE_PANEL == EVE_DP_1561_01A
 // DP-1561-01A FullHD (Capacitive)
-#define DISPLAY_RES FULLHD
+#define EVE_DISPLAY_RES EVE_FULLHD
 
-#elif PANEL_TYPE == DP_1561_02A
+#elif EVE_PANEL == EVE_DP_1561_02A
 // DP-1561-02A FullHD (Capacitive)
-#define DISPLAY_RES FULLHD
+#define EVE_DISPLAY_RES EVE_FULLHD
 
-#elif PANEL_TYPE == DP_IDM43A
+#elif EVE_PANEL == EVE_DP_IDM43A
 // IDM204043A (Capacitive)
-#define DISPLAY_RES WQVGA
+#define EVE_DISPLAY_RES EVE_WQVGA
 
-#elif PANEL_TYPE == DP_IDM21R
+#elif EVE_PANEL == EVE_DP_IDM21R
 // IDM204021R (Capacitive)
-#define DISPLAY_RES WQVGAR  
+#define EVE_DISPLAY_RES EVE_WQVGAR  
 
 #else
 
-#error PANEL_TYPE must be configured.
+#error EVE_PANEL must be configured.
 
-#endif // PANEL_TYPE
+#endif // EVE_PANEL
 #else
-#undef PANEL_TYPE
-#define PANEL_TYPE PANEL_TYPE_NONE
-#endif // defined(PANEL_TYPE)
+#undef EVE_PANEL
+#define EVE_PANEL EVE_NO_PANEL
+#endif // defined(EVE_PANEL)
 //@}
 
 /**
@@ -470,9 +469,9 @@
  * @details These can be overridden for different display modules.
  */
 //@{
-#undef SET_PCLK_FREQ
+#undef EVE_SET_PCLK_FREQ
 
-#if DISPLAY_RES == QVGA
+#if EVE_DISPLAY_RES == EVE_QVGA
 
 #define EVE_DISP_WIDTH 320 // Active width of LCD display
 #define EVE_DISP_HEIGHT 240 // Active height of LCD display
@@ -493,7 +492,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WQVGA
+#elif EVE_DISPLAY_RES == EVE_WQVGA
 
 #define EVE_DISP_WIDTH 480 // Active width of LCD display
 #define EVE_DISP_HEIGHT 272 // Active height of LCD display
@@ -514,7 +513,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WVGA
+#elif EVE_DISPLAY_RES == EVE_WVGA
 
 #define EVE_DISP_WIDTH 800 // Active width of LCD display
 #define EVE_DISP_HEIGHT 480 // Active height of LCD display
@@ -535,7 +534,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WSVGA
+#elif EVE_DISPLAY_RES == EVE_WSVGA
 
 #define EVE_DISP_WIDTH 1024 // Active width of LCD display
 #define EVE_DISP_HEIGHT 600 // Active height of LCD display
@@ -553,13 +552,13 @@
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
-#define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WXGA
+#elif EVE_DISPLAY_RES == EVE_WXGA
 
 #define EVE_DISP_WIDTH 1280 // Active width of LCD display
 #define EVE_DISP_HEIGHT 800 // Active height of LCD display
@@ -577,13 +576,13 @@
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 0
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
-#define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WXGA_NG
+#elif EVE_DISPLAY_RES == EVE_WXGA_NG
 
 #define EVE_DISP_WIDTH 1280 // Active width of LCD display
 #define EVE_DISP_HEIGHT 800 // Active height of LCD display
@@ -601,13 +600,13 @@
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 0
 // Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
-#define SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define SET_PCLK_FREQ in line above to use this)
+#define EVE_SET_PCLK_FREQ
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == FULLHD
+#elif EVE_DISPLAY_RES == EVE_FULLHD
 
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
 #define EVE_DISP_HEIGHT 1080 // Active height of LCD display
@@ -628,7 +627,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WUXGA
+#elif EVE_DISPLAY_RES == EVE_WUXGA
 
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
 #define EVE_DISP_HEIGHT 1200 // Active height of LCD display
@@ -649,7 +648,7 @@
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
 
-#elif DISPLAY_RES == WQVGAR
+#elif EVE_DISPLAY_RES == EVE_WQVGAR
 
 #define EVE_DISP_WIDTH 480 // Active width of LCD display
 #define EVE_DISP_HEIGHT 480 // Active height of LCD display
@@ -669,9 +668,9 @@
 
 #else
 
-#error DISPLAY_RES must be configured.
+#error EVE_DISPLAY_RES must be configured.
 
-#endif // DISPLAY_RES
+#endif // EVE_DISPLAY_RES
 //@}
 
 #endif // !defined(IS_ARDUINO_LIB)
@@ -857,7 +856,7 @@ uint16_t EVE_LIB_GetCoProProfile(void);
 uint16_t EVE_LIB_GetDlProfile(void);
 #endif
 
-#if !defined (QUADSPI_ENABLE)
+#if !defined (EVE_QSPI_ENABLE)
 /**
  * @brief Test interrupt input line
  * @details This function will check the interrupt input INT# from
@@ -870,7 +869,7 @@ uint16_t EVE_LIB_GetDlProfile(void);
  *      asserting an interrupt.
  */
 int EVE_LIB_Int(void);
-#endif // defined (QUADSPI_ENABLE)
+#endif // defined (EVE_QSPI_ENABLE)
 
 #if defined (EVE_MANANGE_INTERRUPTS)
 /**
