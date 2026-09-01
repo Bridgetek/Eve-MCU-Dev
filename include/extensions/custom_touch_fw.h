@@ -37,11 +37,11 @@
   * ============================================================================
   */
 
-#ifndef EVE_CUSTOM_TOUCH_H
-#define EVE_CUSTOM_TOUCH_H
+#ifndef _EVE_CUSTOM_TOUCH_H
+#define _EVE_CUSTOM_TOUCH_H
 
 /* CUSTOM TOUCH */
 
 int eve_loadcustomtouch(void);
 
-#endif /* EVE_CUSTOM_TOUCH_H */
+#endif /* _EVE_CUSTOM_TOUCH_H */

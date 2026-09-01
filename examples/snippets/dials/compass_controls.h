@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _COMPASS_CONTROLS_H
-#define _COMPASS_CONTROLS_H
+#ifndef _EVE_COMPASS_CONTROLS_H
+#define _EVE_COMPASS_CONTROLS_H
 
 // Draw the bezel on the compass widgets
 #define OPT_COMPASS_BEZEL               1
@@ -52,4 +52,4 @@
 void compass_binnacle(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
 void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
 
-#endif /* _COMPASS_CONTROLS_H */
+#endif /* _EVE_COMPASS_CONTROLS_H */

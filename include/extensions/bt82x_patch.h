@@ -2,8 +2,8 @@
 /* This file can be included in an EVE-MCU-Dev project */
 /* See https://github.com/Bridgetek/Eve-MCU-Dev/ */
 
-#ifndef EVE_BT82X_PATCH_H
-#define EVE_BT82X_PATCH_H
+#ifndef _EVE_BT82X_PATCH_H
+#define _EVE_BT82X_PATCH_H
 
 #include <stdint.h>
 #include <stdarg.h>
@@ -20,4 +20,4 @@ void EVE_CMD_ENDTOUCHOFFSET(void);
 
 /* EVE PATCH END */
 
-#endif
+#endif /* _EVE_BT82X_PATCH_H */

@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_HEADER_H
-#define EVE_HEADER_H
+#ifndef _EVE_HEADER_H
+#define _EVE_HEADER_H
 
 #include <stdint.h>
 
@@ -342,9 +342,9 @@
  *   EVE2+ can write directly to the co-processor ring buffer via the
  *   REG_CMDB_WRITE register.
  * 
- *   If COPROCESSOR_TRANSFER is undefined then EVE_TRANSFER_CMD_WRITE is 
+ *   If EVE_COPRO_METHOD is undefined then EVE_TRANSFER_CMD_WRITE is 
  *   used for EVE1 and EVE_TRANSFER_CMDB_WRITE is used for EVE2 onwards.
- *   If COPROCESSOR_TRANSFER is set for EVE_TRANSFER_CMDB_WRITE on EVE1 
+ *   If EVE_COPRO_METHOD is set for EVE_TRANSFER_CMDB_WRITE on EVE1 
  *   then the setting will be modified to EVE_TRANSFER_CMD_WRITE.
  *   The EVE_TRANSFER_INT flag can be used to modify the 
  *   EVE_TRANSFER_CMD_WRITE method to use the hardware INT# line as well.
@@ -357,19 +357,19 @@
 #else // IS_EVE_API(2,3,4,5)
     // Default setting for EVE2 onwards
     #define EVE_USE_CMDB_METHOD
-    #if defined(COPROCESSOR_TRANSFER)
-        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_CMD_WRITE)
+    #if defined(EVE_COPRO_METHOD)
+        #if (EVE_COPRO_METHOD & EVE_TRANSFER_CMD_WRITE)
             #undef EVE_USE_CMDB_METHOD
         #endif // EVE_TRANSFER_CMD_WRITE
-    #endif // defined(COPROCESSOR_TRANSFER)
+    #endif // defined(EVE_COPRO_METHOD)
 #endif
 
 #if !defined(EVE_USE_CMDB_METHOD) && !defined(QUADSPI_ENABLE)
-    #if defined(COPROCESSOR_TRANSFER)
-        #if (COPROCESSOR_TRANSFER & EVE_TRANSFER_INT)
+    #if defined(EVE_COPRO_METHOD)
+        #if (EVE_COPRO_METHOD & EVE_TRANSFER_INT)
             #define EVE_USE_INTERRUPT_METHOD
         #endif // EVE_TRANSFER_INT
-    #endif // defined(COPROCESSOR_TRANSFER)
+    #endif // defined(EVE_COPRO_METHOD)
 #endif // defined(EVE_USE_CMDB_METHOD)
 
 /** Interrupt management.
@@ -428,9 +428,9 @@
 // DP-1011-02A WXGA_NG (Capacitive)
 #define DISPLAY_RES WXGA_NG
 
-// Enable CUSTOM_TOUCH by default for this panel
-#ifndef CUSTOM_TOUCH
-#define CUSTOM_TOUCH
+// Enable EVE_CUSTOM_TOUCH by default for this panel
+#ifndef EVE_CUSTOM_TOUCH
+#define EVE_CUSTOM_TOUCH
 #endif
 
 #elif PANEL_TYPE == DP_1012_01A
@@ -1295,4 +1295,4 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq);
 #include <extensions/bt82x_patch.h>
 #endif
 
-#endif    /* EVE_HEADER_H */
+#endif  /* _EVE_HEADER_H */

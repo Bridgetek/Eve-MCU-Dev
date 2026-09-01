@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef HAL_HEADER_H
-#define HAL_HEADER_H
+#ifndef _EVE_HAL_HEADER_H
+#define _EVE_HAL_HEADER_H
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
@@ -373,4 +373,4 @@ void HAL_SetSPIMode(uint32_t mode);
  */
 #define HAL_MAX_CHUNK_SIZE (1024 - sizeof(uint32_t))
 
-#endif /* HAL_HEADER_H */
+#endif /* _EVE_HAL_HEADER_H */

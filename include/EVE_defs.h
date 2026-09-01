@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _EVE_DEFS_H_
-#define _EVE_DEFS_H_
+#ifndef _EVE_DEFS_H
+#define _EVE_DEFS_H
 
 /**
  * @note IMPORTANT This header file must be included before EVE.h.
@@ -218,4 +218,4 @@
 // Implies the use of EVE_TRANSFER_CMD_WRITE.
 #define EVE_TRANSFER_INT            3
 //@}
-#endif /* _EVE_DEFS_H_ */
+#endif /* _EVE_DEFS_H */

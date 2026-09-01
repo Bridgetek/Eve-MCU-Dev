@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _SUB_CONTROLS_H
-#define _SUB_CONTROLS_H
+#ifndef _EVE_SUB_CONTROLS_H
+#define _EVE_SUB_CONTROLS_H
 
 // Draw the bezel on the submarine widgets
 #define OPT_SUB_BEZEL               1
@@ -50,4 +50,4 @@
 
 void sub_depth(int32_t x, int32_t y, uint16_t width, uint16_t height, uint16_t options, int16_t depth, int16_t visible);
 
-#endif /* _SUB_CONTROLS_H */
+#endif /* _EVE_SUB_CONTROLS_H */

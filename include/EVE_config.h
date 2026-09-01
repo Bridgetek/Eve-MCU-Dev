@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _EVE_CONFIG_H_
-#define _EVE_CONFIG_H_
+#ifndef _EVE_CONFIG_H
+#define _EVE_CONFIG_H
 
 /**
  * @brief EVE device and screen configuration file.
@@ -147,17 +147,17 @@
   *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
   *			  Applicable for FT81X/BT88X/BT81X devices only.
   *
-  *       CUSTOM_TOUCH may be defined externally to enable custom touch.
+  *       EVE_CUSTOM_TOUCH may be defined externally to enable custom touch.
   *       It is also enabled automatically for panels which require it.
   *       Otherwise it remains undefined.
   *
-  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using CUSTOM_TOUCH.
+  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using EVE_CUSTOM_TOUCH.
   * NOTE: Custom touch for the BT82X series is implemented in extension patches.
   *
   */
 //@{
-#ifndef CUSTOM_TOUCH
-#undef CUSTOM_TOUCH
+#ifndef EVE_CUSTOM_TOUCH
+#undef EVE_CUSTOM_TOUCH
 #endif
 //@}
 
@@ -175,10 +175,10 @@
   *   enabled as this uses the INT# line as a data line.
   */
 //@{
-#ifndef COPROCESSOR_TRANSFER
-#define COPROCESSOR_TRANSFER EVE_TRANSFER_CMDB_WRITE
+#ifndef EVE_COPRO_METHOD
+#define EVE_COPRO_METHOD EVE_TRANSFER_CMDB_WRITE
 #endif
 //@}
 
 
-#endif /* _EVE_CONFIG_H_ */
+#endif /* _EVE_CONFIG_H */

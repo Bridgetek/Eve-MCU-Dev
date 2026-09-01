@@ -38,8 +38,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_DEBUG_H_
-#define EVE_DEBUG_H_
+#ifndef _EVE_DEBUG_H
+#define _EVE_DEBUG_H
 
 /* EVE DEBUG */
 
@@ -166,4 +166,4 @@
 
 /* EVE DEBUG END */
 
-#endif /* EVE_DEBUG_H_ */
+#endif /* _EVE_DEBUG_H */

@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_ARCS_H
-#define EVE_ARCS_H
+#ifndef _EVE_ARCS_H
+#define _EVE_ARCS_H
 
 #include "maths/trig_furman.h"
 
@@ -84,4 +84,4 @@ void arc_simple_gauge(int16_t x, int16_t y,
     uint16_t val
 );
 
-#endif // EVE_ARCS_H
+#endif /* _EVE_ARCS_H */
