@@ -24,7 +24,7 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 | - | - | 40 | - | 10 | 5V |
 | - | - | 8 | - | 11/12 | GND |
 
-- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_CMD_WRITE|EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+- (1) The INT# line is not required for operation unless `COPROCESSOR_TRANSFER` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 

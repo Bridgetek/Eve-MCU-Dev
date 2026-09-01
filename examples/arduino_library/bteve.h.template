@@ -58,7 +58,6 @@
  * Include EVE.h (which is the API as a C++ file which is part of this class.
  * Include HAL and MCU files as "C" files.
  */
-//@{
 extern "C" {
 #include <EVE.h>
 #include <HAL.h>
