@@ -32,7 +32,7 @@ src_extensions_include = os.path.normpath("../../../include/extensions")
 src_flatten_dirs = ["maths", "controls"]
 
 # Collate files needed for sketch
-dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h"]))
+dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h", "eve_fonts.c", "eve_images.c"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
 dist_source_files.extend(add_files(os.path.join(src_snippets, "maths"), sketch, ["trig_furman.c", "trig_furman.h"]))
 dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketch, ["arcs.c", "arcs.h", "fonts.c", "fonts.h", "sound.c", "sound.h"]))
