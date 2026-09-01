@@ -463,6 +463,7 @@
 #undef PANEL_TYPE
 #define PANEL_TYPE PANEL_TYPE_NONE
 #endif // defined(PANEL_TYPE)
+//@}
 
 /**
  * @brief Setup default parameters for various displays.
