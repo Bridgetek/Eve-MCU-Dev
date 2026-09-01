@@ -22,6 +22,7 @@ The MSP430 port was developed using a MSP-EXP430G2 LaunchPad Development Kit. Th
 | J1 p1.1 | MISO |
 | J1 p1.5 | CS# |
 | J1 p1.3 | PD# |
+| J2 p1.6 | INT# |
 | J6 VCC | 5V |
 | J6 GND | GND |
 

@@ -63,7 +63,7 @@
 #define PD              BIT3                // P1.3 is Power Down, active low
 #define SCLK            BIT4                // P1.4 is SPI clock
 #define CS              BIT5                // P1.5 is Chip Select, active lwo
-#define INT             BIT6                // P1.6 is EVE interrupt, active low
+#define INT             BIT6                // P1.7 is EVE interrupt, active low
 
 #define DCO_FREQUENCY_HZ 8000000UL
 
@@ -93,13 +93,12 @@ static void initClock(void)
 void initGpio(){
 
     /*
-     * Configure INT (P1.7) as an active-low GPIO input
+     * Configure INT (P1.6) as an active-low GPIO input
      * with the internal pull-up resistor enabled.
      */
     P1SEL  &= ~INT;
     P1SEL2 &= ~INT;
     P1DIR  &= ~INT;
-
     P1REN  |= INT;
     P1OUT  |= INT;   // Select pull-up resistor
 
@@ -183,7 +182,7 @@ int MCU_Setup(void)
 {
     /* QSPI Configuration */
 #ifdef QUADSPI_ENABLE
-#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on MSP430
+#error QPSI interfaces to EVE are currently not supported on this port
 #endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
@@ -376,19 +375,13 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 // ########################### GPIO CONTROL #############################
 
 // ------------------------ interrupt input ------------------------------------
-
-static uint8_t MCU_ReadInt(void)
-{
-    if (P1IN & INT)
-    {
-        return 1U;   // INT HIGH
-    }
-
-    return 0U;       // INT LOW
-}
-
 int MCU_Int(void){
-    return (MCU_ReadInt() != 0U);
+    
+    uint8_t pinState;
+
+    pinState = ((P1IN & INT) != 0U);
+
+    return pinState;
 }
 
 // --------------------- Chip Select line low ---------------------------
