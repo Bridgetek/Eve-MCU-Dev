@@ -58,13 +58,14 @@
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
-#define Nop() __no_operation()
 #define MISO            BIT1                // P1.1 is SPI MISO
 #define MOSI            BIT2                // P1.2 is SPI MOSI
-#define PD              BIT3                // P1.3 is Power Down
+#define PD              BIT3                // P1.3 is Power Down, active low
 #define SCLK            BIT4                // P1.4 is SPI clock
-#define CS              BIT5                // P1.5 is Chip Select
-#define CPU_FREQ        1000                // for use in delay function
+#define CS              BIT5                // P1.5 is Chip Select, active lwo
+#define INT             BIT6                // P1.6 is EVE interrupt, active low
+
+#define DCO_FREQUENCY_HZ 8000000UL
 
 /* EVE MCU HEADER END */
 
@@ -73,18 +74,52 @@
 // This is the MSP430 platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
 
-void initClock()
+static void initClock(void)
 {
-    DCOCTL = 0;                                 // Select lowest DCOx and MODx settings
-    BCSCTL1 = CALBC1_1MHZ;                      // Set DCO for 1MHz (1/8/12/16 available)
-    DCOCTL = CALDCO_1MHZ;
+    /* Select the lowest DCO and modulation settings first. */
+    DCOCTL = 0U;
+
+    /* Configure the DCO for its calibrated 8 MHz frequency. */
+    BCSCTL1 = CALBC1_8MHZ;
+    DCOCTL = CALDCO_8MHZ;
+
+    /*
+     * MCLK  = DCOCLK / 1 = 8 MHz
+     * SMCLK = DCOCLK / 1 = 8 MHz
+     */
+    BCSCTL2 = 0U;
+}
+
+void initGpio(){
+
+    /*
+     * Configure INT (P1.7) as an active-low GPIO input
+     * with the internal pull-up resistor enabled.
+     */
+    P1SEL  &= ~INT;
+    P1SEL2 &= ~INT;
+    P1DIR  &= ~INT;
+
+    P1REN  |= INT;
+    P1OUT  |= INT;   // Select pull-up resistor
+
+    /*
+     * Configure CS (P1.5) and PD (P1.3) as active-low
+     * GPIO outputs, initially inactive (HIGH).
+     *
+     * Set P1OUT before P1DIR to avoid briefly driving
+     * either signal LOW during initialisation.
+     */
+    P1SEL  &= ~(CS | PD);
+    P1SEL2 &= ~(CS | PD);
+
+    P1OUT |= (CS | PD);  // Inactive HIGH
+    P1DIR |= (CS | PD);  // Configure as outputs
+
 }
 
 void initSPI()
 {
-    /* set pins to be used for CS# and PD# */
-    P1OUT |= CS + PD;                       //p1.5 - #CS, p1.3 - #PD
-    P1DIR |= CS + PD;
 
     /* set SPI pins in both P1SEL and P1SEL2 as to work with Universal Serial Communication Interface*/
     P1SEL = MISO | MOSI | SCLK;             // p1.1 MISO, p1.2 MOSI, P1.4 SCLK
@@ -92,29 +127,36 @@ void initSPI()
 
     /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
 
-    /* configure UCA0 for SPI */
-    UCA0CTL1 = UCSWRST;
-    UCA0CTL0 |= UCCKPH + UCMSB + UCMST + UCSYNC;     // 3-pin, 8-bit SPI master (mode 0)
-    UCA0CTL1 |= UCSSEL_2;                   // USCI clock source = SMCLK
-    UCA0BR0 |= 0x02;                        // divide SMCLK by 2 in baud rate control register
-    UCA0BR1 = 0;                            // = 0.5 mhz spi
-    UCA0MCTL = 0;                           // No modulation
+    /* configure UCA0 for SPI */;
+    UCA0CTL0 = UCCKPH | UCMSB | UCMST | UCSYNC;     // 3-pin, 8-bit SPI master (mode 0)
+    UCA0CTL1 |= UCSSEL_2;                   // USCI source = 8 MHz SMCLK
+    UCA0BR0 = 8U;                           // divide SMCLK by 8 in baud rate control register
+    UCA0BR1 = 0U;                           // = 1 mhz spi
+    UCA0MCTL = 0U;                          // No modulation
     UCA0CTL1 &= ~UCSWRST;                   // **Initialise USCI state machine** - restart module
 
-    IE2 |= UCA0RXIE;                        // Enable USCI0 RX interrupt
+    IE2 |= UCA0RXIE;                        // Enable USCI0 RX 
+    
+    UCA0CTL1 &= ~UCSWRST;
 }
 
 void initTimer()
 {
-    // The ACLK runs at 12 kHz
-    // Enable Timer Interrupts
-    TACCTL0 |= CCIE; 
-    // Set timer counter to 1 ms
-    TACCR0 = (12000 / 1000); 
-    // Use ACLK (low-power clock)
-    TACTL |= TASSEL_1;
-    // Count up continuous
-    TACTL |= MC_1; 
+    /* Stop and clear Timer_A before configuring it. */
+    TACTL = MC_0 | TACLR;
+
+    /* Disable and clear the CCR0 control register. */
+    TACCTL0 = 0U;
+
+    /* SMCLK = 8 MHz, Timer_A divider = 8, Timer_A clock = 1 MHz
+     * 1 ms requires 1000 timer counts. Up mode counts from 0 through TACCR0, inclusive. */
+    TACCR0 = 999U;
+
+    /* Enable the Timer_A CCR0 interrupt. */
+    TACCTL0 = CCIE;
+
+    /*  TASSEL_2 = SMCLK, ID_3     = divide by 8, MC_1 = up mode */
+    TACTL = TASSEL_2 | ID_3 | MC_1 | TACLR;
 }
 
 /* configure MCU, SPI and PD pins */
@@ -123,6 +165,7 @@ int MCU_Init(void){
     WDTCTL = WDTPW | WDTHOLD;               // stop watch dog timer
 
     initClock();                            // set Clocks
+    initGpio();                             // vonfigure GPIO (CS#,PD#,INT#)
     initSPI();                              // configure SPI
     initTimer();                            // configure timer
 
@@ -139,8 +182,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-//#ifdef QUADSPI_ENABLE
-//#endif // QUADSPI_ENABLE
+#ifdef QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on MSP430
+#endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
 
@@ -149,11 +193,11 @@ int MCU_Setup(void)
 
 
 // ########################### SPI Send and Receive ####################################
-// --------------------- Global variables for SPI data ----------------------------------
+// ----------------- Global variables for SPI data ---------------------
 static volatile uint8_t DataRead;
 static volatile uint8_t SpiRxComplete;
 
-// --------------------- SPI RX ISR ----------------------------------
+// ----------------------- SPI RX ISR ----------------------------------
 
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI_SPIRX_ISR(void)
@@ -168,7 +212,7 @@ __interrupt void USCI_SPIRX_ISR(void)
     }
 }
 
-// --------------------- SPI Read/Write 8 bits ----------------------------------
+// ---------------------- SPI Read/Write 8 bits -------------------------
 uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
     uint8_t timerWasEnabled;
@@ -210,7 +254,7 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
     return DataRead;
 }
 
-// --------------------- SPI Read/Write 16 bits ----------------------------------
+// --------------------- SPI Read/Write 16 bits -------------------------
 uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
 {
     uint16_t DataRead = 0;
@@ -220,7 +264,7 @@ uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite)
     return DataRead;
 }
 
-// --------------------- SPI Read/Write 24 bits ----------------------------------
+// -------------------- SPI Read/Write 24 bits --------------------------
 uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
 {
     uint32_t DataRead = 0;
@@ -236,7 +280,7 @@ uint32_t MCU_SPIReadWrite24(uint32_t DataToWrite)
     return DataRead;
 }
 
-// --------------------- SPI Read/Write 32 bits ----------------------------------
+// ------------------- SPI Read/Write 32 bits --------------------------
 uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 {
     uint32_t DataRead = 0;
@@ -252,7 +296,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
     return DataRead;
 }
 
-// --------------------- SPI Read 8 bits ----------------------------------
+// --------------------- SPI Read 8 bits -------------------------------
 uint8_t MCU_SPIRead8(void)
 {
     uint8_t DataRead = 0;
@@ -262,13 +306,13 @@ uint8_t MCU_SPIRead8(void)
     return DataRead;
 }
 
-// --------------------- SPI Write 8 bits ----------------------------------
+// --------------------- SPI Write 8 bits -------------------------------
 void MCU_SPIWrite8(uint8_t DataToWrite)
 {
     MCU_SPIReadWrite8(DataToWrite);
 }
 
-// --------------------- SPI Read 16 bits ----------------------------------
+// --------------------- SPI Read 16 bits -------------------------------
 uint16_t MCU_SPIRead16(void)
 {
     uint16_t DataRead = 0;
@@ -278,13 +322,13 @@ uint16_t MCU_SPIRead16(void)
     return DataRead;
 }
 
-// --------------------- SPI Write 16 bits ----------------------------------
+// --------------------- SPI Write 16 bits ------------------------------
 void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     MCU_SPIReadWrite16(DataToWrite);
 }
 
-// --------------------- SPI Write 24 bits ----------------------------------
+// --------------------- SPI Write 24 bits ------------------------------
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     MCU_SPIReadWrite24(DataToWrite);
@@ -299,13 +343,13 @@ uint32_t MCU_SPIRead32(void)
     return DataRead;
 }
 
-// --------------------- SPI Read/Write 32 bits ----------------------------------
+// --------------------- SPI Read/Write 32 bits -------------------------
 void MCU_SPIWrite32(uint32_t DataToWrite)
 {
     MCU_SPIReadWrite32(DataToWrite);
 }
 
-// --------------------- SPI burst write ----------------------------------
+// --------------------- SPI burst write --------------------------------
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
     uint16_t DataPointer = 0;
@@ -317,7 +361,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
     }
 }
 
-// --------------------- SPI burst read -----------------------------------
+// --------------------- SPI burst read ---------------------------------
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
     uint16_t DataPointer = 0;
@@ -329,56 +373,51 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     }
 }
 
-// ########################### GPIO CONTROL ####################################
+// ########################### GPIO CONTROL #############################
 
-// --------------------- Chip Select line low ----------------------------------
+// ------------------------ interrupt input ------------------------------------
+
+static uint8_t MCU_ReadInt(void)
+{
+    if (P1IN & INT)
+    {
+        return 1U;   // INT HIGH
+    }
+
+    return 0U;       // INT LOW
+}
+
+int MCU_Int(void){
+    return (MCU_ReadInt() != 0U);
+}
+
+// --------------------- Chip Select line low ---------------------------
 inline void MCU_CSlow(void)
 {
     P1OUT &= (~CS);                       // CS# line low
-    __delay_cycles(10);
+    __delay_cycles(80);
 }
 
-// --------------------- Chip Select line high ---------------------------------
+// --------------------- Chip Select line high --------------------------
 inline void MCU_CShigh(void)
 {
-    __delay_cycles(10);
+    __delay_cycles(80);
     P1OUT |= (CS);                        // CS# line high
 }
 
-// -------------------------- PD line low --------------------------------------
+// -------------------------- PD line low -------------------------------
 inline void MCU_PDlow(void)
 {
     P1OUT &= (~PD);                       // PD# line low
 }
 
-// ------------------------- PD line high --------------------------------------
+// ------------------------- PD line high -------------------------------
 inline void MCU_PDhigh(void)
 {
     P1OUT |= (PD);                        // PD# line high
 }
 
-// ------------------- msec delay based on MCLK (CPU_FREQ) ----------------------
-void delay(int msec){
-    //could use a timer here
-    while(msec)
-    {
-        __delay_cycles(CPU_FREQ);
-        msec--;
-    }
-}
-// ----------------------------- 20ms delay --------------------------------------
-void MCU_Delay_20ms(void)
-{
-    delay(20);
-}
-
-// ----------------------------- 500ms delay -------------------------------------
-void MCU_Delay_500ms(void)
-{
-    delay(500);
-}
-
-// --------------------------- msec delay based on timer -------------------------
+// --------------------------- msec based on timer ----------------------
 static volatile uint32_t ticks = 0;
 
 #pragma vector=TIMER0_A0_VECTOR
@@ -387,12 +426,60 @@ __interrupt void Timer_A0(void)
     ticks++;
 }
 
-uint32_t MCU_Time_ms(void)
+static uint32_t readTicks(void)
 {
-    return ticks;
+    uint16_t gieState;
+    uint32_t value;
+
+    /* Remember whether interrupts were initially enabled. */
+    gieState = __get_SR_register() & GIE;
+
+    /*
+     * Prevent Timer_A from changing the 32-bit value between
+     * the two 16-bit reads required by the MSP430.
+     */
+    __disable_interrupt();
+
+    value = ticks;
+
+    /* Restore the previous interrupt state. */
+    if (gieState != 0U)
+    {
+        __enable_interrupt();
+    }
+
+    return value;
 }
 
-// ########################### ENDIAN CONVERSION ####################################
+uint32_t MCU_Time_ms(void)
+{
+    return readTicks();
+}
+
+// ------------------------- msec delay based tick -----------------------
+void delay(uint32_t msec)
+{
+    uint32_t start = readTicks();
+
+    while ((uint32_t)(readTicks() - start) < msec)
+    {
+        /* Busy wait. */
+    }
+}
+
+// ----------------------------- 20ms delay ------------------------------
+void MCU_Delay_20ms(void)
+{
+    delay(20U);
+}
+
+// ----------------------------- 500ms delay ----------------------------
+void MCU_Delay_500ms(void)
+{
+    delay(500U);
+}
+
+// ########################### ENDIAN CONVERSION ########################
 
 uint32_t bswap32(uint32_t x)
 {
@@ -427,13 +514,13 @@ uint32_t MCU_htobe32 (uint32_t h)
 uint16_t MCU_htole16 (uint16_t h)
 {
 
-        return bswap16(h);
+    return bswap16(h);
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
 
-        return bswap32(h);
+    return bswap32(h);
 }
 
 uint16_t MCU_be16toh (uint16_t h)
@@ -442,18 +529,18 @@ uint16_t MCU_be16toh (uint16_t h)
 }
 uint32_t MCU_be32toh (uint32_t h)
 {
-     return h;
+    return h;
 }
 
 uint16_t MCU_le16toh (uint16_t h)
 {
 
-        return bswap16(h);
+    return bswap16(h);
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 
 }
 

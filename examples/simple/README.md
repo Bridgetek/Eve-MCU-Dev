@@ -32,7 +32,7 @@ This example supports the following platforms:
 | [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
 | [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
 | [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) _(3)_ | 
-| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) _(3)_ |
+| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
 | [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) _(1)_ _(3)_ | 
 | [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) _(2)_ | 
 | [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) _(2)_ _(3)_ | 

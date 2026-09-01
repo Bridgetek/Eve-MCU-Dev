@@ -59,9 +59,6 @@
 #include <hardware/spi.h>
 #include <pico/time.h>
 
-// This is not yet supported
-#undef QUADSPI_ENABLE
-
 // Pins to match Bridgetek IDM2040-7A board.
 const uint pd_pin = 7;
 const uint cs_pin = 5;
@@ -129,11 +126,10 @@ int MCU_Setup(void)
 {
     /* QSPI Configuration */
 #if defined QUADSPI_ENABLE
-
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RP2040
 #if IS_EVE_API(2,3,4,5)
     /* Initialize IO2 and IO3 pad/pin for quad settings */
 #endif
-
 #endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */

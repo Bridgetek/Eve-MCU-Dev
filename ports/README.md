@@ -12,7 +12,7 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 | Beaglebone | `PLATFORM_BEAGLEBONE` | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | Beaglebone Black | Under Test |
 | Expressif ESP32 | `PLATFORM_ESP32`  _(4)_  | [eve_arch_esp32](eve_arch_esp32/README.md) | SparkFun ESP32 Thing | Pass |
 | Bridgetek FT9xx | `PLATFORM_FT9XX` | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | FT90X and FT93X | Pass |
-| TI MSP430 | `PLATFORM_MSP430` _(4)_ | [eve_arch_msp](eve_arch_msp/README.md) | MSP430G2553 | Pass |
+| TI MSP430 | `PLATFORM_MSP430` | [eve_arch_msp](eve_arch_msp/README.md) | MSP430G2553 | Pass |
 | TI MSPM0 | `PLATFORM_MSPM0` _(4)_ | [eve_arch_msp](eve_arch_msp/README.md) | MSPM0G3519 | Under Test |
 | Microchip PIC18F | `PLATFORM_PIC` | [eve_arch_pic](eve_arch_pic/README.md) | N/A | Under Test |
 | NXP K64 | `PLATFORM_NXPK64` _(4)_  | [eve_arch_nxpk64](eve_arch_nxpk64/README.md) | N/A | Under Test |

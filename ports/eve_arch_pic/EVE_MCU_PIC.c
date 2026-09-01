@@ -149,8 +149,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-//#ifdef QUADSPI_ENABLE
-//#endif // QUADSPI_ENABLE
+#ifdef QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on PIC18
+#endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
 
@@ -393,7 +394,7 @@ uint16_t MCU_le16toh (uint16_t h)
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-     return h;
+    return h;
 }
 
 /* EVE MCU END */

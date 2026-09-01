@@ -102,7 +102,7 @@ inline void MCU_PDhigh(void)
 int MCU_Int(void) 
 {
 #if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error Interrupt input is not supported on STM32CUBE
+#error EVE_USE_INTERRUPT_METHOD EVE Interrupt pin is not supported on STM32CUBE
 #endif
     return 1;
 }

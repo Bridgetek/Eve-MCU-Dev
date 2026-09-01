@@ -224,6 +224,10 @@ int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
 
+#if defined QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on libmpsse
+#endif // QUADSPI_ENABLE
+
     SPI_CloseChannel(ftHandle);
 
     // Increase SPI speed to 15 MHz after initialisation is complete
@@ -316,7 +320,7 @@ void MCU_PDhigh(void)
 int MCU_Int(void) 
 {
 #if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error Interrupt input is not supported on libmpsse
+#error EVE_USE_INTERRUPT_METHOD EVE Interrupt pin is not supported on libmpsse
 #endif
     return 1;
 }

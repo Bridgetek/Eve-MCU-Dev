@@ -159,8 +159,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI configuration */
-//#if defined QUADSPI_ENABLE
-//#endif // QUADSPI_ENABLE
+#if defined QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on ESP32
+#endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
@@ -196,6 +197,15 @@ inline void MCU_PDlow(void)
 inline void MCU_PDhigh(void)
 {
     gpio_set_level(PIN_NUM_PD, 1);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
+#error EVE_USE_INTERRUPT_METHOD (EVE Interrupt pin) is not supported on ESP32
+#endif
+    return 1;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

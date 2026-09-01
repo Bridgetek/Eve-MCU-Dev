@@ -96,8 +96,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* QSPI Configuration */
-//#ifdef QUADSPI_ENABLE
-//#endif // QUADSPI_ENABLE
+#ifdef QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on MSPM0
+#endif // QUADSPI_ENABLE
 
     /* Additional SPI Configuration */
     return 0;
@@ -335,6 +336,15 @@ inline void MCU_PDhigh(void)
     DL_GPIO_setPins(GPIO_GRP_0_PORT, GPIO_GRP_0_PD_PIN);  // PD# line high
 }
 
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
+#error EVE_USE_INTERRUPT_METHOD (EVE Interrupt pin) is not supported on MSPM0
+#endif
+    return 1;
+}
+
 // ------------------- msec delay based on MCLK (CPU_FREQ) ----------------------
 void delay(int msec){
     //could use a timer here
@@ -397,13 +407,13 @@ uint32_t MCU_htobe32 (uint32_t h)
 uint16_t MCU_htole16 (uint16_t h)
 {
 
-        return bswap16(h);
+    return bswap16(h);
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
 
-        return bswap32(h);
+    return bswap32(h);
 }
 
 uint16_t MCU_be16toh (uint16_t h)
@@ -412,18 +422,18 @@ uint16_t MCU_be16toh (uint16_t h)
 }
 uint32_t MCU_be32toh (uint32_t h)
 {
-     return h;
+    return h;
 }
 
 uint16_t MCU_le16toh (uint16_t h)
 {
 
-        return bswap16(h);
+    return bswap16(h);
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 
 }
 

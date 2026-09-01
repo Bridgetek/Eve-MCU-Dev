@@ -202,8 +202,12 @@ int Platform_Deinit(void)
 
 int Platform_Setup(void)
 {
-    // Do nothing here
-    return 0;
+
+#if defined QUADSPI_ENABLE
+#error QUADSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on beaglebone
+#endif // QUADSPI_ENABLE
+    
+return 0;
 }
 
 int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)
