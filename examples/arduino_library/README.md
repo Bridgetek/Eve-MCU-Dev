@@ -262,6 +262,7 @@ The Arduino module can be connected via short wires to the corresponding signals
 | COPI | ISCP 4 | MOSI |
 | CIPO | ISCP 1 | MISO |
 | D10 | PB6 | CS# |
+| D9 | PB5 | PD# |
 | D8 | - | INT# _(1)_ |
 | - | ISCP 2 | 5V |
 | - | ISCP 6 / GND | GND |

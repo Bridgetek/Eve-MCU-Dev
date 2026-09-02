@@ -83,28 +83,28 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
     if api == 1:
         apidev = "FT800/FT801"
         apilib = "FT800 and FT801"
-        defres = "WQVGA" # 480 x 272
+        defres = "EVE_WQVGA" # 480 x 272
     elif api == 2:
         if subapi != 2:
             apidev = "FT810/FT811/FT812/FT813"
             apilib = "FT810 FT811 FT812 and FT813"
-            defres = "WVGA" # 800 x 480
+            defres = "EVE_WVGA" # 800 x 480
         else:
             apidev = "BT880/BT881/BT882/BT883"
             apilib = "BT880 BT881 BT882 and BT883"
-            defres = "WQVGA" # 480 x 272
+            defres = "EVE_WQVGA" # 480 x 272
     elif api == 3:
         apidev = "BT815/BT816"
         apilib = "BT815 and BT816"
-        defres = "WVGA" # 800 x 480
+        defres = "EVE_WVGA" # 800 x 480
     elif api == 4:
         apidev = "BT817/BT818"
         apilib = "BT817 and BT818"
-        defres = "WSVGA" # 1024 x 600
+        defres = "EVE_WSVGA" # 1024 x 600
     elif api == 5:
         apidev = "BT820"
         apilib = "BT820"
-        defres = "WUXGA" # 1920 x 1200
+        defres = "EVE_WUXGA" # 1920 x 1200
 
     progmem_header = [
             "#include <string.h>",
@@ -297,6 +297,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                         elif match_ifardulib:
                             print(match_ifardulib)
                             cov = []
+                            pos = []
                             for addapi in range(eve_max_api): pos.append(addapi + 1)
                             if match_ifardulib.group(1) == "!":
                                 print("EXCLUDING")
