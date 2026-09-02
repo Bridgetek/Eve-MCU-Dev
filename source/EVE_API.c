@@ -222,7 +222,7 @@ int EVE_Init(void)
 #endif // IS_EVE_API(4) 
 
     // turn on LCD backlight
-    HAL_MemWrite8(EVE_REG_PWM_DUTY, 127u);
+    HAL_MemWrite8(EVE_REG_PWM_DUTY, 0x80);
 
     /* Setup Audio settings */ 
 
