@@ -207,7 +207,7 @@ int HAL_EVE_Init(void)
 
         HAL_ChipSelect(1);
         // Write 4 zeros.
-        HAL_Write(bb, 4);
+        HAL_Write32(0);
         // Read 128 bytes response.
         HAL_Read(bb, sizeof(bb));
         HAL_ChipSelect(0);
@@ -490,10 +490,10 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
     // values as this is an SPI write only. Data must be the correct endianess
     // for the SPI bus.
     struct spi_ioc_transfer xfer[1];
+    memset(xfer, 0, sizeof(xfer));
     dbg_printf("%s: %d \n", __FUNCTION__, length);
 
 #if IS_EVE_API(1, 2, 3, 4)
-    memset(xfer, 0, sizeof(xfer));
 
     xfer[0].tx_buf = (uintptr_t)NULL;
     xfer[0].rx_buf = (uintptr_t)buffer;

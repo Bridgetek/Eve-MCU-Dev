@@ -69,7 +69,7 @@
 
 // Set Co Pro Transfer method
 #ifndef EVE_COPRO_METHOD
-#define EVE_COPRO_METHOD EVE_TRANSFER_CMDB_WRITE
+#define EVE_COPRO_METHOD EVE_COPRO_CMDB_WRITE
 #endif
 
 // Setup default parameters for various displays.
