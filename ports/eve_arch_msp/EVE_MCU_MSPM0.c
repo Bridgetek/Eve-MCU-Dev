@@ -90,6 +90,37 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Wait for any current SPI transaction to complete. */
+    while (DL_SPI_isBusy(SPI_0_INST))
+    {
+    }
+
+    /* Disable SPI interrupt sources. */
+    DL_SPI_disableInterrupt(
+        SPI_0_INST,
+        DL_SPI_INTERRUPT_RX | DL_SPI_INTERRUPT_TX);
+
+    /* Disable the SPI interrupt at the NVIC. */
+    NVIC_DisableIRQ(SPI_0_INST_INT_IRQN);
+
+    /* Clear any pending NVIC interrupt. */
+    NVIC_ClearPendingIRQ(SPI_0_INST_INT_IRQN);
+
+    /* Clear pending SPI interrupt status. */
+    DL_SPI_clearInterruptStatus(
+        SPI_0_INST,
+        DL_SPI_INTERRUPT_RX | DL_SPI_INTERRUPT_TX);
+
+    /* Reset the software SPI state machine. */
+    gControllerMode = IDLE_MODE;
+
+    /* Disable the SPI peripheral. */
+    DL_SPI_disable(SPI_0_INST);
+
     return 0;
 }
 

@@ -194,10 +194,14 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    // Shut down the SPI Master
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Shut down the SPI master. */
     spi_uninit(SPIM);
     sys_disable(sys_device_spi_master);
-
+    
     return 0;
 }
 

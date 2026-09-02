@@ -89,7 +89,7 @@ static spi_device_handle_t spi;
 // This is the ESP32 platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
 
-void mcu_setup_spi(int speed)
+static void mcu_setup_spi(int speed)
 {
     esp_err_t ret;
 
@@ -116,6 +116,12 @@ void mcu_setup_spi(int speed)
     //Attach the SPI bus
     ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
     assert(ret==ESP_OK);
+}
+
+static void mcu_deinit_spi(void)
+{
+    spi_bus_remove_device(spi);
+    spi_bus_free(HSPI_HOST);
 }
 
 // ------------------- MCU specific initialisation  ----------------------------
@@ -149,9 +155,12 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    // Shut down the SPI Master
-    spi_bus_remove_device(spi);
-    spi_bus_free(HSPI_HOST);
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Shut down the SPI master. */
+    mcu_deinit_spi();
 
     return 0;
 }
@@ -166,7 +175,7 @@ int MCU_Setup(void)
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-    MCU_Deinit();
+    mcu_deinit_spi();
     MCU_Delay_20ms();
     mcu_setup_spi(25000000);
 

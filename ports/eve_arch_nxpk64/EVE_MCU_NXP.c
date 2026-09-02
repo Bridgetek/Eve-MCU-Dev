@@ -187,7 +187,11 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    // Shut down the SPI Master
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Halt SPI controller. */
     SPI1_MCR |= SPI_MCR_HALT_MASK;
 
     return 0;
