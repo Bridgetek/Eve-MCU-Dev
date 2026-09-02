@@ -38,7 +38,7 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_RP2040)
 
 #pragma message "Compiling " __FILE__ " for Raspberry Pi pico RP2040"
