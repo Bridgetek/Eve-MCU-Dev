@@ -102,10 +102,10 @@ int HAL_EVE_Init(void)
         return -1;
     }
 
-#if IS_EVE_API(1, 2, 3, 4)
     // Set Chip Select OFF.
     HAL_ChipSelect(0);
 
+#if IS_EVE_API(1, 2, 3, 4)
     // Reset the display
     Platform_Delay_20ms();
     HAL_PowerDown(1);
@@ -208,8 +208,19 @@ int HAL_EVE_Init(void)
         HAL_ChipSelect(1);
         // Write 4 zeros.
         HAL_Write32(0);
-        // Read 128 bytes response.
-        HAL_Read(bb, sizeof(bb));
+        // Read 128 bytes response. Raw read from SPI bus.
+        struct spi_ioc_transfer xfer[1];
+
+        xfer[0].tx_buf = (uintptr_t)NULL;
+        xfer[0].rx_buf = (uintptr_t)bb;
+        xfer[0].len = sizeof(bb);
+        xfer[0].cs_change = 0;
+
+        if (Platform_SPI_transfer(xfer, 1) < 0)
+        {
+            err_printf("HAL_Read: Transfer Failed \n");
+            return -1;
+        }
         HAL_ChipSelect(0);
 
         for (i = 0; i < sizeof(bb); i++)

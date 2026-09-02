@@ -287,7 +287,7 @@ uint32_t Platform_Time_ms(void)
     struct timespec spec;
 
     clock_gettime(CLOCK_MONOTONIC, &spec);
-    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000000));
 }
 
 // Use toolchain defined functions.
