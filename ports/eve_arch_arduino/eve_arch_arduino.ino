@@ -159,7 +159,7 @@ void MCU_PDhigh(void) {
 
 // ------------------------ interrupt input ------------------------------------
 int MCU_Int(void) {
-  digitalRead(PIN_INTERRUPT);
+  return digitalRead(PIN_INTERRUPT);
 }
 
 // Exchange a single byte on the SPI bus
