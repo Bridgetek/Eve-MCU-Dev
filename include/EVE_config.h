@@ -57,11 +57,13 @@
 
 /** 
  * @brief Module selection.
- *      If this is set to a valid module type then the EVE_DEVICE and EVE_DISPLAY_RES 
- *      values will be set accordingly.
+ * @details  If this is set to a valid module type then the EVE_DEVICE and 
+ *      EVE_DISPLAY_RES values will be set accordingly.
  *      This selection will override any EVE_PANEL, EVE_DEVICE and EVE_DISPLAY_RES
  *      settings.
- */
+  * @note The MODULE_TYPE macro has been deprecated in favour of EVE_MODULE.
+ *      Please update references accordingly.
+*/
 //@{
 #ifndef EVE_MODULE
 #define EVE_MODULE EVE_NO_MODULE
@@ -74,7 +76,9 @@
  *      the EVE Programming support methods via macros "EVE_API" where the 
  *      value depends on the level of the EVE device support. 
  *      Alternatively, to override this directly set the EVE_API and 
- *      EVE_SUB_API macro as required. 
+ *      EVE_SUB_API macro as required.
+ * @note The FT8XX_TYPE macro has been deprecated in favour of EVE_DEVICE.
+ *      Please update references accordingly.
  */
 //@{
 #ifndef EVE_DEVICE
@@ -88,6 +92,8 @@
  *      selection of the EVE panel which in turn will select a valid 
  *      EVE_DISPLAY_RES setting.
  *      This setting will override the EVE_DISPLAY_RES setting.
+ * @note The PANEL_TYPE macro has been deprecated in favour of EVE_PANEL.
+ *      Please update references accordingly.
  */
 //@{
 #ifndef EVE_PANEL
@@ -98,6 +104,8 @@
 /**
  * @brief Match display resolution to panel type.
  * @details The distribution default is WVGA (800x480).
+ * @note The DISPLAY_RES macro has been deprecated in favour of EVE_DISPLAY_RES.
+ *      Please update references accordingly.
  */
 //@{
 #ifndef EVE_DISPLAY_RES
@@ -109,12 +117,12 @@
  * @brief Enable or Disable QuadSPI.
  * @details If the macro is set then the platform port may only enable QSPI
  *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
- *
  *      EVE_QSPI_ENABLE may be defined externally to enable QSPI, otherwise it
  *      remains undefined.
- * 
- * NOTE: QSPI is only supported on devices from EVE API 2 onwards. It is not
+ * @note QSPI is only supported on devices from EVE API 2 onwards. It is not
  *      supported on FT80x devices. For default set this to disabled.
+ * @note The QUADSPI_ENABLE macro has been deprecated in favour of EVE_QSPI_ENABLE.
+ *      Please update references accordingly.
  */
 //@{
 #ifndef EVE_QSPI_ENABLE

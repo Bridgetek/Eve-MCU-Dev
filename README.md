@@ -333,7 +333,7 @@ This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly
 | 13 | MOSI | 14 | MISO |
 | 15 | CS# | 16 | SCK |
 
-The 2x8 header can be connected as in the following picture.
+The 2x8 header can be connected as in the following picture. **NOTE:** The INT# line is not shown connected.
 
 ![Wiring for 2x8 Header](docs/header2x8.png)
 
@@ -354,7 +354,7 @@ This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly
 | 9 | GND |
 | 10 | GND |
 
-The 1x10 header can be connected as in the following picture.
+The 1x10 header can be connected as in the following picture. **NOTE:** The INT# line is not shown connected.
 
 ![Wiring for 1x10 Header](docs/header1x10.png)
 

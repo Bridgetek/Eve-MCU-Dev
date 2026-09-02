@@ -67,6 +67,31 @@
 
 /* EVE API */
 
+/*
+ * Include the EVE configuration to select the EVE API.
+ */
+#include <EVE_config.h>
+
+/*
+ * Report deprecated config items.
+ * This is done here since it will only occur once.
+ */
+#if defined(FT8XX_TYPE)
+#pragma message ("Warning: Configuration setting FT8XX_TYPE deprecated in favour of EVE_DEVICE.")
+#endif // defined(FT8XX_TYPE)
+#if defined(DISPLAY_RES)
+#pragma message ("Warning: Configuration setting DISPLAY_RES deprecated in favour of EVE_DISPLAY_RES.")
+#endif // defined(DISPLAY_RES)
+#if defined(MODULE_TYPE)
+#pragma message ("Warning: Configuration setting MODULE_TYPE deprecated in favour of EVE_MODULE.")
+#endif // defined(MODULE_TYPE)
+#if defined(PANEL_TYPE)
+#pragma message ("Warning: Configuration setting PANEL_TYPE deprecated in favour of EVE_PANEL.")
+#endif // defined(PANEL_TYPE)
+#if defined(QUADSPI_ENABLE)
+#pragma message ("Warning: Configuration setting QUADSPI_ENABLE deprecated in favour of EVE_QSPI_ENABLE.")
+#endif // defined(QUADSPI_ENABLE)
+
 /* EVE API Library functions */
 
 /* Report the API (and SUB API) for this build. */
