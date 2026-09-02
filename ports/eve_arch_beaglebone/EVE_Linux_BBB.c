@@ -205,7 +205,7 @@ int Platform_Setup(void)
 {
 
 #if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on beaglebone
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on beaglebone
 #endif // EVE_QSPI_ENABLE
     
 return 0;

@@ -169,7 +169,7 @@ int MCU_Setup(void)
 {
     /* QSPI configuration */
 #if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on ESP32
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on ESP32
 #endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */
