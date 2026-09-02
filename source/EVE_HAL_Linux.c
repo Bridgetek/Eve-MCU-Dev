@@ -547,7 +547,6 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
                 {
                     nn = MCU_SPI_TRANSFER;
                 }
-                MCU_SPIRead(buffer, nn);
                 xfer[0].tx_buf = (uintptr_t)NULL;
                 xfer[0].rx_buf = (uintptr_t)buffer;
                 xfer[0].len = nn;

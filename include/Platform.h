@@ -58,6 +58,52 @@
 //@}
 
 /**
+ * @brief Platform allows large SPI transfers.
+ * @details Set to maximum size of SPI transfers allowed, e.g. on
+ *      microcontrollers. This has been added to support enhanced SPI
+ *      access on BT82x.
+ *      Do not make this larger than required as on BT82x (EVE API 5) 
+ *      there will be a stack buffer allocated in HAL_Read of this 
+ *      size plus a small number of bytes for protocol.
+ *      A larger buffer is only needed if fast reads of large blocks 
+ *      of data are required from the device. Normal operation can be
+ *      acheived with 32-bit reads with good performance.
+ */
+#if IS_EVE_API(5)
+#if defined(PLATFORM_RASPBERRYPI) 
+#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#elif defined(PLATFORM_BEAGLEBONE) 
+#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#endif
+#endif
+
+/**
+ * @brief Platform SPI bus speed.
+ * @details In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
+ *      Timeout for a read is a maximum of 7uS for BT82x.
+ *      The timeout value here must be adjusted for the host system SPI clock speed.
+ *      The SPI clock speed is set in the Platform_Init(void) function for a port.
+ *      Values here match the default values set in the ports.
+ *      At 1 MHz SPI bus the timeout is approximately 8 clock cycles (1 byte).
+ *      At 20 MHz SPI bus the timeout is approximately 140 clock cycles (17.5 bytes).
+ *      At 25 MHz SPI bus the timeout is approximately 175 clock cycles (24 bytes).
+ *      At 60 MHz SPI bus the timeout is approximately 420 clock cycles (52 bytes).
+ *      The minimum timeout allowed is 8 bytes.
+ */
+#if IS_EVE_API(5)
+#if defined(PLATFORM_RASPBERRYPI) 
+/* Raspberry Pi SPI bus is set to 1 MHz by default */
+#define MCU_SPI_TIMEOUT 8
+#elif defined(PLATFORM_BEAGLEBONE) 
+/* The default SPI on Beaglebone to 1 MHz */
+#define MCU_SPI_TIMEOUT 8
+#else
+/* Linux systems SPI busses are set to 1 MHz by default */
+#define MCU_SPI_TIMEOUT 8
+#endif
+#endif
+
+/**
  * @brief Platform specific initialisation
  * @details Must contain any platform-specific initialisation. This will typically be
  *    setting up the SPI bus, GPIOs and operating environment requirements.

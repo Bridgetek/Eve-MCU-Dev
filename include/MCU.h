@@ -66,7 +66,7 @@
 /**
  * @brief MCU allows large SPI transfers.
  * @details Set to maximum size of SPI transfers allowed, e.g. on
- *      microcontrolles. This has been added to support enhanced SPI
+ *      microcontrollers. This has been added to support enhanced SPI
  *      access on BT82x.
  *      Do not make this larger than required as on BT82x (EVE API 5) 
  *      there will be a stack buffer allocated in HAL_Read of this 
@@ -79,8 +79,7 @@
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
     || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
-    || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
-    || defined(PLATFORM_RASPBERRYPI) || defined(PLATFORM_RP2040) \
+    || defined(PLATFORM_ESP32) || defined(PLATFORM_RP2040) \
     || defined(PLATFORM_MSPM0)
 #define MCU_SPI_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
@@ -110,10 +109,6 @@
 /* FT9xx SPI Bus is set to 12.5 MHz by default */
 #define MCU_SPI_TIMEOUT 16
 
-#elif defined(PLATFORM_RASPBERRYPI) 
-/* Raspberry Pi SPI bus is set to 1 MHz by default */
-#define MCU_SPI_TIMEOUT 8
-
 #elif defined(PLATFORM_RP2040)
 /* RP2040 SPI bus is set to 10 MHz by default */
 #define MCU_SPI_TIMEOUT 16
@@ -126,10 +121,6 @@
 /* libMPSSE and libft4222 generate a 20 MHz SPI bus - 16 bytes is sufficient. */
 #define MCU_SPI_TIMEOUT 16
 
-#elif defined(USE_LINUX_SPI_DEV)
-/* Linux systems SPI busses are set to 1 MHz by default */
-#define MCU_SPI_TIMEOUT 8
-
 #elif defined (PLATFORM_STM32_CUBE)
 /* STM32 SPI bus is set to 60 MHz by default */
 #if defined(EVE_QSPI_ENABLE)
@@ -140,8 +131,7 @@
 
 #elif  defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
-    || defined(PLATFORM_ESP32) || defined(PLATFORM_BEAGLEBONE) \
-    || defined(PLATFORM_MSPM0)
+    || defined(PLATFORM_ESP32)|| defined(PLATFORM_MSPM0)
 /* The default SPI bus for embedded MCUs to 1 MHz */
 #define MCU_SPI_TIMEOUT 8
 
