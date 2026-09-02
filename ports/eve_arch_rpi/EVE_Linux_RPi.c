@@ -265,7 +265,7 @@ int Platform_Int(void)
     {
         perror("gpiod_line_set_value");
         gpiod_chip_close(gpio_chip);
-        return;
+        return -1;
     }
     return val;
 }

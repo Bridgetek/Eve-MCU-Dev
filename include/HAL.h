@@ -363,6 +363,15 @@ typedef enum EVE_SPI_CHANNELS_T
  */
 void HAL_SetSPIMode(uint32_t mode);
 
+/**
+ * @brief Test interrupt input line
+ * @details This function will check the interrupt input INT# from
+ *      the EVE device using the MCU layer.
+ * @returns zero if there is no interrupt, non-zero if the EVE device is
+ *      asserting an interrupt.
+ */
+int HAL_Int(void);
+
 /* EVE HAL END */
 
 /**

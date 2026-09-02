@@ -838,6 +838,11 @@ void HAL_SetSPIMode(uint32_t mode)
 #endif 
 }
 
+int HAL_Int(void)
+{
+    return MCU_Int();
+}
+
 /* EVE HAL END */
 
 #endif // __linux__

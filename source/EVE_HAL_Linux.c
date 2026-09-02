@@ -914,6 +914,11 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 #endif // defined(EVE_USE_CMDB_METHOD)
 }
 
+int HAL_Int(void)
+{
+    return Platform_Int();
+}
+
 /* EVE HAL END */
 
 #endif // __linux__

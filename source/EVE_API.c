@@ -491,7 +491,7 @@ uint16_t EVE_LIB_GetDlProfile(void)
 // Get the status of the interrupt line from EVE
 int EVE_LIB_Int(void)
 {
-    return MCU_Int();
+    return HAL_Int();
 }
 #endif // defined (EVE_QSPI_ENABLE)
 
