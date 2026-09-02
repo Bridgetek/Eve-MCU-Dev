@@ -210,7 +210,8 @@ int HAL_EVE_Init(void)
         HAL_Write32(0);
         // Read 128 bytes response. Raw read from SPI bus.
         struct spi_ioc_transfer xfer[1];
-
+        memset(xfer, 0, sizeof(xfer));
+        
         xfer[0].tx_buf = (uintptr_t)NULL;
         xfer[0].rx_buf = (uintptr_t)bb;
         xfer[0].len = sizeof(bb);
