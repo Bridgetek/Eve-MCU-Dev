@@ -19,8 +19,8 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 | 5 | GPIO3 | 5 | GP3 | 4 | MOSI |
 | 6 | GPIO4 | 6 | GP4 | 3 | MISO |
 | 7 | GPIO5 | 7 | GP5 | 2 | CS# |
-| 9 | GPIO7 | 10 | GP7 | 13 | PD# |
 | 8 | GPIO6 | 9 | GP6 | 14 | INT# _(1)_ |
+| 9 | GPIO7 | 10 | GP7 | 13 | PD# |
 | - | - | 40 | - | 10 | 5V |
 | - | - | 8 | - | 11/12 | GND |
 

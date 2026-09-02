@@ -82,7 +82,7 @@ int HAL_EVE_Init(void)
         return -1;
     }
 
-#if IS_EVE_API(1, 2, 3, 4) 
+#if IS_EVE_API(1, 2, 3, 4)
     // Set Chip Select OFF.
     HAL_ChipSelect(0);
 
@@ -118,7 +118,7 @@ int HAL_EVE_Init(void)
 #if IS_EVE_API(1, 2, 3, 4)
     // Set active.
     HAL_HostCmdWrite(0, 0x00);
-    
+
     // Read REG_ID register (0x302000) until reads 0x7C.
     EVE_DEBUG_PRINTF("[Waiting for REG_ID...]\n");
     uint8_t val;
@@ -144,7 +144,7 @@ int HAL_EVE_Init(void)
  
 #endif  //IS_EVE_API(1, 2, 3, 4)
 
-#if IS_EVE_API(5) 
+#if IS_EVE_API(5)
 
     while (1)
     {
@@ -343,7 +343,7 @@ void HAL_WriteCmd(uint32_t val32)
 
 // Send a 32-bit data value.
 void HAL_Write32(uint32_t val32)
-{    
+{
     // Send four bytes of data after previously sending address. Ignore return
     // values as this is an SPI write only.
     MCU_SPIWrite32(MCU_htole32(val32));
@@ -422,7 +422,7 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
 
 // Read a 32-bit data value.
 uint32_t HAL_Read32(void)
-{    
+{
     // Read 4 bytes from a previously setup address. Send dummy
     // 00 bytes as only the incoming value is important.
     uint32_t val32 = 0;
@@ -761,7 +761,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
 
 #endif // defined(EVE_USE_CMDB_METHOD)
 
-    if(readCmdPointer & 1)
+    if (readCmdPointer & 1)
     {
         // Return 0xFF (EVE_COPRO_STATUS_EXCEPTION) if an error occurred.
 #if DEBUG_LEVEL > 0
@@ -803,7 +803,7 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 
     // Check the graphics processor read pointer.
     readCmdPointer = (uint16_t)HAL_MemRead32(EVE_REG_CMD_READ);
-    // Fullness is difference between MCUs current write pointer 
+    // Fullness is difference between current write pointer 
     // value and value of the REG_CMD_READ.
     Fullness = ((writeCmdPointer - readCmdPointer) & (EVE_RAM_CMD_SIZE - 1));
     // Free Space is 4K - 4 - Fullness (-4 avoids buffer wrapping round).
@@ -845,4 +845,4 @@ int HAL_Int(void)
 
 /* EVE HAL END */
 
-#endif // __linux__
+#endif // !defined(USE_LINUX_SPI_DEV)
