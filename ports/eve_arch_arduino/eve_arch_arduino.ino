@@ -110,6 +110,11 @@ int MCU_Deinit(void) {
 
 int MCU_Setup(void) {
 
+  /* QSPI Configuration */
+#ifdef EVE_QSPI_ENABLE
+#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on NXPK64
+#endif // EVE_QSPI_ENABLE
+
   /* Additional SPI Configuration */
   SPI.endTransaction();
 
