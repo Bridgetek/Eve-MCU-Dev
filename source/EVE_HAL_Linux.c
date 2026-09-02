@@ -709,7 +709,7 @@ void HAL_MemWrite8(uint32_t address, uint8_t val8)
 uint32_t HAL_MemRead32(uint32_t address)
 {
     uint32_t val32;
-    dbg_printf("%s: 0x%x -> 0x%x \n", __FUNCTION__, address, addr);
+    dbg_printf("%s: 0x%x \n", __FUNCTION__, address);
 
     // CS low begins the SPI transfer.
     HAL_ChipSelect(1);
@@ -730,7 +730,7 @@ uint32_t HAL_MemRead32(uint32_t address)
 uint16_t HAL_MemRead16(uint32_t address)
 {
     uint16_t val16;
-    dbg_printf("%s: 0x%x -> 0x%x \n", __FUNCTION__, address, addr);
+    dbg_printf("%s: 0x%x \n", __FUNCTION__, address);
 
     // CS low begins the SPI transfer.
     HAL_ChipSelect(1);
@@ -752,7 +752,7 @@ uint16_t HAL_MemRead16(uint32_t address)
 uint8_t HAL_MemRead8(uint32_t address)
 {
     uint8_t val8;
-    dbg_printf("%s: 0x%x -> 0x%x \n", __FUNCTION__, address, addr);
+    dbg_printf("%s: 0x%x \n", __FUNCTION__, address);
 
     // CS low begins the SPI transfer.
     HAL_ChipSelect(1);
