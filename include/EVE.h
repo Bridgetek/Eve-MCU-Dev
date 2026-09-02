@@ -398,7 +398,7 @@
 
 #if !defined(EVE_USE_CMDB_METHOD) && !defined(EVE_QSPI_ENABLE)
     #if defined(EVE_COPRO_METHOD)
-        #if (EVE_COPRO_METHOD & EVE_COPRO_INT)
+        #if (EVE_COPRO_METHOD == EVE_COPRO_INT)
             #define EVE_USE_INTERRUPT_METHOD
         #endif // EVE_COPRO_INT
     #endif // defined(EVE_COPRO_METHOD)

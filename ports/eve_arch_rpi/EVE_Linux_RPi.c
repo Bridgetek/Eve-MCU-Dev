@@ -260,7 +260,7 @@ void Platform_PDhigh(void)
 // ------------------------ interrupt input ------------------------------------
 int Platform_Int(void)
 {
-    int val = gpiod_line_get_value(gpio_pd_line);
+    int val = gpiod_line_get_value(gpio_int_line);
     if (val < 0)
     {
         perror("gpiod_line_set_value");
