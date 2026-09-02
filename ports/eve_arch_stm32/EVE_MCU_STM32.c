@@ -99,7 +99,15 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    HAL_SPI_DeInit(&hspi1);
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Disable SPI peripheral. */
+    if (HAL_SPI_DeInit(&hspi1) != HAL_OK)
+    {
+        return -1;
+    }
 
     return 0;
 }

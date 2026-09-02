@@ -103,6 +103,11 @@ int MCU_Init(void) {
 }
 
 int MCU_Deinit(void) {
+  /* Leave EVE control signals in a safe state. */
+  digitalWrite(PIN_CHIPSELECT, HIGH);
+  digitalWrite(PIN_POWERDOWN, LOW);
+
+  /* Shut down SPI. */
   SPI.endTransaction();
   SPI.end();
   return 0;

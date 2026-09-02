@@ -141,8 +141,13 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    SSP1CON1bits.SSPEN  = 0;     // Disable SPI1
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
 
+    /* Disable SPI1. */
+    SSP1CON1bits.SSPEN = 0;
+    
     return 0;
 }
 

@@ -175,7 +175,25 @@ int MCU_Init(void){
 
 int MCU_Deinit(void)
 {
-    return 0;
+    /* Deselect EVE and assert power-down. */
+    P1OUT |= CS;
+    P1OUT &= ~PD;
+
+    /* Disable SPI interrupts and hold USCI A0 in reset. */
+    IE2 &= ~(UCA0RXIE | UCA0TXIE);
+    UCA0CTL1 |= UCSWRST;
+
+    /* Return SPI pins to GPIO inputs. */
+    P1SEL  &= ~(MISO | MOSI | SCLK);
+    P1SEL2 &= ~(MISO | MOSI | SCLK);
+    P1DIR  &= ~(MISO | MOSI | SCLK);
+
+    /* Leave INT as a pulled-up GPIO input. */
+    P1SEL  &= ~INT;
+    P1SEL2 &= ~INT;
+    P1DIR  &= ~INT;
+    P1REN  |= INT;
+    P1OUT  |= INT;
 }
 
 int MCU_Setup(void)
