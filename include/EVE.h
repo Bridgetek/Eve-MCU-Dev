@@ -53,6 +53,11 @@
 #include <EVE_config.h>
 
 /*
+ * Include the EVE debug-output macros.
+ */
+#include <EVE_debug.h>
+
+/*
  * Support deprecated config items by overriding the replacement
  * macros with the deprecated values.
  * The presence of the deprecated macros is reported in EVE_API.c.
@@ -83,11 +88,6 @@
 #if defined(QUADSPI_ENABLE)
 #define EVE_QSPI_ENABLE
 #endif // defined(QUADSPI_ENABLE)
-
-/*
- * Include the EVE debug-output macros.
- */
-#include <EVE_debug.h>
 
 /** Macros to allow us to select which API a command applies to.
  * For APIs supported use the following:
@@ -139,6 +139,7 @@
                                             : (a5))
 #endif
 
+
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
 /**
@@ -189,6 +190,11 @@
 #define EVE_DEVICE EVE_FT810
 #define EVE_PANEL EVE_DP_0501_11A
 
+#if defined(EVE_QSPI_ENABLE)
+// disable QSPI for this module (pins not available)
+#undef EVE_QSPI_ENABLE
+#endif // EVE_QPSI_ENABLE
+
 #elif EVE_MODULE == EVE_ME812A
 // ME812A-WH50R, ME812AU-WH50R with 5 inch display
 #define EVE_DEVICE EVE_FT812
@@ -208,6 +214,11 @@
 // VM880C with 4.3 inch display
 #define EVE_DEVICE EVE_BT880
 #define EVE_PANEL EVE_DP_0431_11A
+
+#if defined(EVE_QSPI_ENABLE)
+// disable QSPI for this module (pins not available)
+#undef EVE_QSPI_ENABLE
+#endif // EVE_QPSI_ENABLE
 
 #elif EVE_MODULE == EVE_IDM204021R
 // IDM2040-21R
@@ -380,29 +391,37 @@
  *   then the setting will be modified to EVE_COPRO_CMD_WRITE.
  *   The EVE_COPRO_INT flag can be used to modify the 
  *   EVE_COPRO_CMD_WRITE method to use the hardware INT# line as well.
- *   This requires support from the port in the MCU layer. It is not 
- *   compatible with QuadSPI as the INT# line is used as a data line.
+ *   This requires support from the port in the MCU layer.
  */
-#if IS_EVE_API(1)
-    // Always undefined for EVE1
-    #undef EVE_USE_CMDB_METHOD
-#else // IS_EVE_API(2,3,4,5)
-    // Default setting for EVE2 onwards
-    #define EVE_USE_CMDB_METHOD
-    #if defined(EVE_COPRO_METHOD)
-        #if (EVE_COPRO_METHOD & EVE_COPRO_CMD_WRITE)
-            #undef EVE_USE_CMDB_METHOD
-        #endif // EVE_COPRO_CMD_WRITE
-    #endif // defined(EVE_COPRO_METHOD)
-#endif
+#if defined(EVE_COPRO_METHOD)
+    // Validate the selected co-processor transfer method
+    #if (EVE_COPRO_METHOD != EVE_COPRO_CMDB_WRITE) && \
+            (EVE_COPRO_METHOD != EVE_COPRO_CMD_WRITE)  && \
+            (EVE_COPRO_METHOD != EVE_COPRO_INT)
+        #error "Invalid EVE_COPRO_METHOD value"
+    #endif
 
-#if !defined(EVE_USE_CMDB_METHOD) && !defined(EVE_QSPI_ENABLE)
-    #if defined(EVE_COPRO_METHOD)
-        #if (EVE_COPRO_METHOD == EVE_COPRO_INT)
-            #define EVE_USE_INTERRUPT_METHOD
-        #endif // EVE_COPRO_INT
-    #endif // defined(EVE_COPRO_METHOD)
-#endif // defined(EVE_USE_CMDB_METHOD)
+    // CMDB is only supported on EVE2 onwards. 
+    #if IS_EVE_API(1)
+        #if (EVE_COPRO_METHOD == EVE_COPRO_CMDB_WRITE)
+            #error "EVE_COPRO_CMDB_WRITE is not supported on EVE API 1"
+        #endif
+    #endif // IS_EVE_API(1)
+
+    // Select the requested method.
+    #if (EVE_COPRO_METHOD == EVE_COPRO_CMDB_WRITE)
+        #define EVE_USE_CMDB_METHOD
+    #elif (EVE_COPRO_METHOD == EVE_COPRO_INT)
+        // INT implies use of the CMD write method.
+        #define EVE_USE_INTERRUPT_METHOD
+    #endif
+#else // else defined(EVE_COPRO_METHOD)
+    // Default to CMD on EVE1 and CMDB on EVE2 onwards.
+    #if IS_EVE_API(2,3,4,5)
+        #define EVE_USE_CMDB_METHOD
+    #endif // IS_EVE_API(2,3,4,5)
+#endif // defined(EVE_COPRO_METHOD)
+
 
 /** Interrupt management.
  *
@@ -415,6 +434,13 @@
 #if defined(EVE_USE_INTERRUPT_METHOD) && !defined(EVE_MANANGE_INTERRUPTS)
 #define EVE_MANANGE_INTERRUPTS
 #endif
+
+/** EVE1 does not support QSPI, disable this if it has been defined */
+#if IS_EVE_API(1)
+    #if defined(EVE_QSPI_ENABLE)
+        #undef EVE_QSPI_ENABLE
+    #endif // EVE_QSPI_ENABLE
+#endif // IS_EVE_API(2,3,4,5)
 
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
