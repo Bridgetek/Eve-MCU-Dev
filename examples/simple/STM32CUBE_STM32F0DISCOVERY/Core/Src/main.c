@@ -52,6 +52,7 @@ SPI_HandleTypeDef hspi1;
 GPIO_TypeDef *config_gpio;
 uint16_t config_pin_pd;
 uint16_t config_pin_cs;
+uint16_t config_pin_int;
 
 /* USER CODE END PV */
 
@@ -270,6 +271,7 @@ static void MX_GPIO_Init(void)
     config_gpio = GPIOB;
     config_pin_cs = EVE_CS__Pin;
     config_pin_pd = EVE_PD__Pin;
+    config_pin_int = EVE_INT__Pin;
     
   /* USER CODE END MX_GPIO_Init_2 */
 }

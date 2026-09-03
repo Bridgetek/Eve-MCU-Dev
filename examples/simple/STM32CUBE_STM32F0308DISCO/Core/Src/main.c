@@ -52,6 +52,7 @@ SPI_HandleTypeDef hspi1;
 GPIO_TypeDef *config_gpio;
 uint16_t config_pin_pd;
 uint16_t config_pin_cs;
+uint16_t config_pin_int;
 
 /* USER CODE END PV */
 
@@ -203,7 +204,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -256,6 +257,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : EVE_INT__Pin */
+  GPIO_InitStruct.Pin = EVE_INT__Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(EVE_INT__GPIO_Port, &GPIO_InitStruct);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
     /* Must match above. If this has been changed by STM32CubeMX then update. */
@@ -263,6 +270,8 @@ static void MX_GPIO_Init(void)
     config_gpio = GPIOB;
     config_pin_cs = EVE_CS__Pin;
     config_pin_pd = EVE_PD__Pin;
+    config_pin_int = EVE_INT__Pin;
+
     
   /* USER CODE END MX_GPIO_Init_2 */
 }

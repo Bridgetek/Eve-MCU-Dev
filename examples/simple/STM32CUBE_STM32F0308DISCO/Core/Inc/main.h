@@ -77,6 +77,8 @@ void Error_Handler(void);
 #define EVE_CS__GPIO_Port GPIOB
 #define EVE_PD__Pin GPIO_PIN_7
 #define EVE_PD__GPIO_Port GPIOB
+#define EVE_INT__Pin GPIO_PIN_8
+#define EVE_INT__GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

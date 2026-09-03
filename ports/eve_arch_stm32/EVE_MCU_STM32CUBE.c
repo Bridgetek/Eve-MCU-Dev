@@ -81,6 +81,11 @@ void MCU_Delay_500ms(void)
     }
 }
 
+uint32_t MCU_Time_ms(void)
+{
+    return HAL_GetTick();
+}
+
 /* EVE_PD__Pin and EVE_PD__GPIO_Port are defined by STM32CubMX.
  * The "User Label" for the PD pin is set to "EVE PD#" in the
  * GPIO Mode and Configuration section.
