@@ -128,7 +128,7 @@ int MCU_Setup(void)
 {
     /* QSPI Configuration */
 #ifdef EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported on MSPM0
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSPM0
 #endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */

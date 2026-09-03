@@ -142,7 +142,7 @@ int MCU_Setup(void)
 {
     /* QSPI Configuration */
 #if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QPSI interfaces to EVE) is currently not supported RP2040
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported RP2040
 #if IS_EVE_API(2,3,4,5)
     /* Initialize IO2 and IO3 pad/pin for quad settings */
 #endif

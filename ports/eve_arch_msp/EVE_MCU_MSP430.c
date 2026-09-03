@@ -200,7 +200,7 @@ int MCU_Setup(void)
 {
     /* QSPI Configuration */
 #ifdef EVE_QSPI_ENABLE
-#error QPSI interfaces to EVE are currently not supported on this port
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSP430
 #endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */

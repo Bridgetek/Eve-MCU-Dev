@@ -61,9 +61,9 @@
  *      EVE_DISPLAY_RES values will be set accordingly.
  *      This selection will override any EVE_PANEL, EVE_DEVICE and EVE_DISPLAY_RES
  *      settings.
-  * @note The MODULE_TYPE macro has been deprecated in favour of EVE_MODULE.
+ * @note The MODULE_TYPE macro has been deprecated in favour of EVE_MODULE.
  *      Please update references accordingly.
-*/
+ */
 //@{
 #ifndef EVE_MODULE
 #define EVE_MODULE EVE_NO_MODULE
@@ -130,9 +130,9 @@
 #endif
 //@}
 
- /**
-  * @brief Setup RAM_G size for BT82X only
-  */
+/**
+ * @brief Setup RAM_G size for BT82X only
+ */
 //@{
 #ifndef EVE_RAM_G_CONFIG_SIZE
 #define EVE_RAM_G_CONFIG_SIZE EVE_RAM_G_1_GBIT
@@ -150,19 +150,19 @@
 //@}
 
 /**
-  * @brief Enable or Disable custom couch FW load.
-  * @details If the macro is set then custom touch FW will be loaded during IC
-  *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
-  *			  Applicable for FT81X/BT88X/BT81X devices only.
-  *
-  *       EVE_CUSTOM_TOUCH may be defined externally to enable custom touch.
-  *       It is also enabled automatically for panels which require it.
-  *       Otherwise it remains undefined.
-  *
-  * NOTE: EVE_TOUCH_ADDR settings will be overridden when using EVE_CUSTOM_TOUCH.
-  * NOTE: Custom touch for the BT82X series is implemented in extension patches.
-  *
-  */
+ * @brief Enable or Disable custom couch FW load.
+ * @details If the macro is set then custom touch FW will be loaded during IC
+ *			  initialisation from the binary data array in the "custom_touch_fw.c" file.
+ *			  Applicable for FT81X/BT88X/BT81X devices only.
+ *
+ *       EVE_CUSTOM_TOUCH may be defined externally to enable custom touch.
+ *       It is also enabled automatically for panels which require it.
+ *       Otherwise it remains undefined.
+ *
+ * NOTE: EVE_TOUCH_ADDR settings will be overridden when using EVE_CUSTOM_TOUCH.
+ * NOTE: Custom touch for the BT82X series is implemented in extension patches.
+ *
+ */
 //@{
 #ifndef EVE_CUSTOM_TOUCH
 #undef EVE_CUSTOM_TOUCH

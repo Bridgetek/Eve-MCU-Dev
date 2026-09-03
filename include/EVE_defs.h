@@ -209,13 +209,13 @@
  *      EVE_CMDB_WRITE setting and will be ignored.
  */
 //@{
-// Add to the co-processor circular buffer through REG_CMDB_WRITE if it
-// is supported.
+// Use REG_CMDB_WRITE to add data to the co-processor command buffer.
+// Supported on EVE2 onwards.
 #define EVE_COPRO_CMDB_WRITE     0
-// Add to the co-processor circular buffer directly then update REG_CMD_WRITE.
+// Write directly to the co-processor circular buffer and update REG_CMD_WRITE.
 #define EVE_COPRO_CMD_WRITE      1
-// Use the INT# line when detecting the co-processor reaching the end of the list.
-// Implies the use of EVE_COPRO_CMD_WRITE.
+// Use the INT# line to detect completion of the co-processor command list.
+// Uses the EVE_COPRO_CMD_WRITE method.
 #define EVE_COPRO_INT            3
 //@}
 #endif /* _EVE_DEFS_H */
