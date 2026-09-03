@@ -484,13 +484,11 @@ uint16_t EVE_LIB_GetDlProfile(void)
 }
 #endif
 
-#if !defined (EVE_QSPI_ENABLE)
 // Get the status of the interrupt line from EVE
 int EVE_LIB_Int(void)
 {
     return HAL_Int();
 }
-#endif // defined (EVE_QSPI_ENABLE)
 
 #if defined (EVE_MANANGE_INTERRUPTS)
 // Get the status of the interrupt flag register

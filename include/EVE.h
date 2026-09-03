@@ -888,7 +888,6 @@ uint16_t EVE_LIB_GetCoProProfile(void);
 uint16_t EVE_LIB_GetDlProfile(void);
 #endif
 
-#if !defined (EVE_QSPI_ENABLE)
 /**
  * @brief Test interrupt input line
  * @details This function will check the interrupt input INT# from
@@ -901,7 +900,6 @@ uint16_t EVE_LIB_GetDlProfile(void);
  *      asserting an interrupt.
  */
 int EVE_LIB_Int(void);
-#endif // defined (EVE_QSPI_ENABLE)
 
 #if defined (EVE_MANANGE_INTERRUPTS)
 /**
