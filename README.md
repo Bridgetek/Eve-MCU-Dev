@@ -42,7 +42,7 @@ This library is designed to facilitate interfacing to an EVE graphics controller
 
 It is based around a common set of layers provided as C and Header files which have been arranged to ease portability. Each MCU also has its own source file which includes any MCU-specific items. This allows developers to easily port the code to their chosen MCU type. Full code projects are provided for a range of MCUs and additional types of MCU can be targeted using the same principles explained here.
 
-In addition to the example library framework, the code also includes a simple demo application which uses touch, custom fonts, and an image.
+In addition to the library framework, the code also includes the "simple" demo application for each supported MCU and platform. The "simple" example demonstrates touch, custom fonts, and loading a JPG image. Other example applications are included showing different techniques and methods for using the EVE library.
 
 ### History
 
@@ -74,6 +74,7 @@ This code can be used on a wide range of MCUs. Key requirements for compatible M
 - SPI signals for SCK and MOSI/MISO (or four bi-directional lines for Quad SPI)
 - GPIO line or controllable Chip Select signal for device control
 - GPIO line for Power Down control
+- An optional GPIO input for an interrupt signal from the EVE device.
 
 The SPI host routines must support transfers of *at least one byte* for EVE API levels 1-4 and at least one 32-bit word for EVE API level 5.
 
@@ -105,46 +106,60 @@ The software consists of several layers which are shown below. The different lay
 - Main Application
 - EVE API Layer
 - EVE HAL Layer
-- MCU Specific Layer
+- MCU Specific or Platform Specific Layer
 
 The library structure is designed to provide a format where multiple examples with support for multiple platforms can be presented.
 
 ### Folder Structure
 
-The library is organised into a number of top-level directories. The `include` directory contains the public header files for the EVE API, EVE HAL, and MCU-specific interface, while the `source` directory contains the common EVE API and EVE HAL implementations. Platform-specific MCU implementations are located under the `ports` directory and are selected through the build configuration or platform-specific macros. Device- and feature-specific functionality that is not part of the common API implementation is separated into matching `include/extensions` and `source/extensions` directories, containing the public extension interfaces and their corresponding source implementations.
+The library is organised into a number of top-level directories. 
+
+- The `include` directory contains the header files for the EVE API, EVE HAL, and MCU-specific interface.
+- The `source` directory contains the common EVE API and EVE HAL implementations.
+- Platform-specific MCU implementations are located under the `ports` directory and are selected through the build configuration or platform-specific macros.
+- Device- and feature-specific functionality that is not part of the common API implementation is separated into `extensions` subdirectories in the `include` and `source` directories, containing the public extension interfaces and their corresponding source implementations.
+- Example applications are published in the `examples` folder.
+- Code for simulation and test are placed in the `test` folder.
 
 #### Common Library Files
 
-- **`\source\EVE_API.c`** The programming interface to the library.
-- `\source\EVE_HAL.c` The abstraction layer between the programming interface and the MCU specific layer.
-- `\source\EVE_HAL_Linux.c` The abstraction layer between the programming interface and the Linux SPI character device.
-- **`\include\EVE.h`** Header file to include to access all required programming interface entry points and definitions.
-- `\include\EVE_commands.h` Header file which provides cross-generation EVE command and option definitions.
-- **`\include\EVE_config.h`** Overridable configuration file for target application.
-- `\include\EVE_debug.h` Header file which provides platform specific macro definitions for debug messaging.
-- `\include\EVE_registers.h` Header file which provides cross-generation EVE register address map.
-- `\include\HAL.h` Definitions for accessing the abstraction layer from the API layer.
-- `\include\MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
-- `\include\Platform.h` Linux header file for access to the MCU layer from the abstraction layer.
-
-  
-**Bold** files are the files with the recommended access points for a program into the library.
-
-
-Extension-specific functionality is separated from the common EVE API source and header files. Extension header files are located in `\include\extensions`, with their corresponding implementations located in `\source\extensions`. These files provide functionality which is required only for specific EVE device generations or configurations and can be excluded from projects if the are not required.
-
-* `\source\extensions\bt82x_patch.c` Implementation of the BT82x base patch loader and the additional API commands provided by the base patch for EVE API level 5 devices.
-* `\include\extensions\bt82x_patch.h` Definitions and function declarations for the BT82x base patch functionality.
-* `\source\extensions\custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `EVE_CUSTOM_TOUCH` define is enabled.
-* `\include\extensions\custom_touch_fw.h` Function declarations for the custom touch firmware extension.
-
-The extension source files are included in the build only where required for the selected EVE API or configuration. Extension headers are referenced through the main `\include` directory, for example `#include <extensions//t82x_patch.h>`.
+The library common files for the EVE API and EVE HAL are in the source directory. There are separate files for an MCU implementation and for a _Linux-like_ SPI character device implementation. The HAL abstracts the calls from the API layer selecting the lower MCU or Platform layer for interfacing with the hardware.
 
 The file `EVE_HAL.c` is intended for MCU platforms, the file `EVE_HAL_Linux.c` is for _Linux-like_ platforms such as BeagleBone and RPi platforms. Code which uses the MPSSE and FT4222H interfaces will use the simpler `EVE_HAL.c` code.
 
+Contents of the `source` directory:
+
+- **`EVE_API.c`** The programming interface to the library.
+- `EVE_HAL.c` The abstraction layer between the programming interface and the MCU specific layer.
+- `EVE_HAL_Linux.c` The abstraction layer between the programming interface and the Linux SPI character device.
+
+Include files show the layers inherent in the library. The main API can be accessed with just the `EVE.h` header file which will include all the required header files to compile using the EVE API. The configuration for the display panel and other relvant configurable settings is modified in the `EVE_config.h` file. For most applications this is the only file in the library that will need modification.
+
+Contents of the `include` directory:
+
+- **`EVE.h`** Header file to include to access all required programming interface entry points and definitions.
+- **`EVE_config.h`** Overridable configuration file for target application.
+- `EVE_commands.h` Header file which provides cross-generation EVE command and option definitions.
+- `EVE_debug.h` Header file which provides platform specific macro definitions for debug messaging.
+- `EVE_registers.h` Header file which provides cross-generation EVE register address map.
+- `HAL.h` Definitions for accessing the abstraction layer from the API layer.
+- `MCU.h` Embedded header file for access to the MCU layer from the abstraction layer.
+- `Platform.h` _Linux-like_ header file for access to the MCU layer from the abstraction layer.
+
+**Bold** files are the files with the recommended access points for a program into the library.
+
+Extension-specific functionality is separated from the common EVE API source and header files. Extension header files are located in `include/extensions`, with their corresponding implementations located in `source/extensions`. These files provide functionality which is required only for specific EVE device generations or configurations and can be excluded from projects if the are not required.
+
+* `/source/extensions/bt82x_patch.c` Implementation of the BT82x base patch loader and the additional API commands provided by the base patch for EVE API level 5 devices.
+* `/include/extensions/bt82x_patch.h` Definitions and function declarations for the BT82x base patch functionality.
+* `/source/extensions/custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `EVE_CUSTOM_TOUCH` define is enabled.
+* `/include/extensions/custom_touch_fw.h` Function declarations for the custom touch firmware extension.
+
+The extension source files are included in the build only where required for the selected EVE API or configuration. Extension headers are referenced through the main `include` directory, for example `#include <extensions/bt82x_patch.h>`.
+
 #### Port Files
 
-The ports directory has folder for each platform supported. These will contain a file that implements the interface described in `\include\MCU.h` or `\include\Platform.h`. This will deal with any byte-order changing required and all access to the GPIO and SPI interfaces. 
+The ports directory has folder for each platform supported. These will contain a file that implements the interface described in `MCU.h` or `Platform.h` files in the `include` directory. This will deal with any byte-order changing required and all access to the GPIO and SPI interfaces. 
 
 It is further discussed in the [Ports](#ports) section.
 
@@ -154,9 +169,9 @@ The examples directory contains all the examples provided. There are more detail
 
 ### Device and Panel Selection
 
-The library __must__ be compiled for the correct EVE device and panel type. The target EVE device and panel type are defined in the file [include/EVE_config.h](include/EVE_config.h).
+The library __must__ be compiled for the correct EVE device and panel type. The target EVE device and panel type are defined in the file `EVE_config.h`.
 
-It is recommended that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
+It is **recommended** that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
 
 There are three methods of configuring the EVE device and panel type. 
 - The `EVE_DEVICE` macro and `EVE_DISPLAY_RES` macro. (Formerly the `FT8XX_TYPE` macro and `DISPLAY_RES` macro)
@@ -171,11 +186,11 @@ In all cases the `EVE_DISPLAY_RES` macro will lead to the `EVE_DISP_*` macros be
 
 The `EVE_DISPLAY_RES` macro is not used in the library.
 
-The `EVE_PANEL` macro is not used in the library, however it is optionally used in the `examples\snippets\touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
+The `EVE_PANEL` macro is not used in the library, however it is optionally used in the `examples/snippets/touch.c` examples snippet code to set predefined touchscreen configuration values to bypass calibration.
 
 #### Device and Panel Options
 
-The following options are supported in [include/EVE_config.h](include/EVE_config.h):
+The following options are supported in `EVE_config.h`:
 
 - `EVE_DEVICE` specifies the EVE device type. The following device types are supported:
 
@@ -253,7 +268,6 @@ The following options are supported in [include/EVE_config.h](include/EVE_config
   | **EVE_IDK_BT817_101A**   | [BT817 IC Development Kit](https://brtchip.com/product/idk-bt817-101a/) with 10.1-inch display. (**BT817** with **DP-1011-02A**) |
   | **EVE_IDK_BT820_101A**   | [BT820 IC Development Kit](https://brtchip.com/product/idk-bt820-101a/) with 10.1-inch display. (**BT820** with **DP-1012-01A**) | 
 
-
 #### Device Selection
 
 The EVE device to target is set in the file `EVE_config.h`. The macro `EVE_DEVICE` or `EVE_API`/`EVE_SUB_API` is set to choose the device or the API respectively. One or other of these macros **must** be set correctly for the device being used.
@@ -301,7 +315,7 @@ The source code for each platform is stored in the [ports](ports) directory. Eac
 
 There are example projects for many each supported platform. The [examples/README.md](examples/README.md) file has details on each of the included examples.
 
-The [simple](examples/simple) example has build environments for all platforms and forms the basis of other examples that are provided. Build instructions are included in the simple example directory in the file [simple/README.md](examples/simple/README.md).
+The ["simple"](examples/simple/README.md) example has build environments for all platforms and forms the basis of other examples that are provided. Build instructions are included in the ["simple" example directory.](examples/simple/README.md).
 
 ## Module Connections
 
@@ -317,6 +331,7 @@ The connectors can be interfaced with a host MCU using jumper wires. The wiring 
 | Orange | CS# |
 | Red | PD# |
 | Brown | GND |
+| Not shown | INT# |
 
 ### Through-Board 2x8 Pins
 
@@ -325,7 +340,7 @@ This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly
 | Pin | EVE Signal | Pin | EVE Signal |
 | --- | --- | --- | --- |
 | 1 | N/C | 2 | N/C |
-| 3 | N/C | 4 | PD# |
+| 3 | INT# | 4 | PD# |
 | 5 | GND | 6 | N/C |
 | 7 | 5V | 8 | N/C |
 | 9 | N/C | 10 | N/C |
@@ -387,6 +402,14 @@ The file contains several types of helper function including:
 
 ### Initialising EVE
 
+#### EVE_Init
+
+Initialise EVE API.
+
+**Detailed description:**
+
+Initialise the EVE API layer, HAL layer and MCU-specific hardware layer.
+
 Before using the library to send instructions to the EVE device the `EVE_Init()` function **must** be called.
 
 This function will initialise the GPIO and SPI interface through the port file for the target MCU specific library. It will also write the display settings registers to the values defined in `EVE_config.h`. Note that these **must** be adjusted to suit your display. It then sets up the GPIO and other registers such as PWM (for the backlight) and sound on the EVE device.
@@ -395,25 +418,230 @@ A short co-processor list is used to clear the screen.
 
 One additional step performed in `EVE_API.c` is to clear the bitmap handle properties (including BITMAP_LAYOUT_H and BITMAP_SIZE_H). It is important that this code is executed after the GPU is running and rendering the screen and therefore after the REG_PCLK has been set to the required value.
 
+**Returns:**
+
+0 for success or -1 for failure (device not found or unsupported).
+
+**Format:**
+
+`int EVE_Init(void)`
+
+#### EVE_Deinit
+
+De-Initialise EVE API.
+
+**Detailed description:**
+
+This will call the HAL layer and MCU-specific de-initialisation routines.
+
+**Returns:**
+
+0 for success or -1 for failure (device not found or unsupported).
+
+**Format:**
+
+`int EVE_Deinit(void)`
+
 ### Co-Processor Helpers
 
 These functions perform the necessary tasks to begin and execute co-processor lists.
 
+#### EVE_LIB_BeginCoProList
+
+Begin co-processor list.
+
+**Detailed description:**
+
+Starts a co-processor list. Initialises the API and HAL ready to start
+transmitting a co-processor list to the EVE.
+This will typically assert chip select to allow the SPI interface to
+send data to the EVE.
+
+**Format:**
+
 `void EVE_LIB_BeginCoProList(void)`
 
-Puts Chip Select low and sends the starting address of the RAM_CMD location where the commands will be written. Chip Select remains low.
+#### EVE_LIB_EndCoProList
+
+End co-processor list.
+ 
+**Detailed Description:** 
+
+Ends a co-processor list. This will perform any operations in the API
+and HAL to finish a co-processor list. 
+This will typically deasserts chip select after updating any registers
+on the EVE device that will signal the end of the co-processor list.
+
+**Format:**
 
 `void EVE_LIB_EndCoProList(void)`
 
-Brings Chip Select high to end the burst and ensures that the co-processor will execute the newly added commands.
+#### EVE_LIB_AwaitCoProEmpty
+
+Waits for co-processor list to end.
+
+**Detailed Description:**
+
+Will poll the co-processor command list until it has been completed.
+If configured then it will wait for an interrupt signal on the INT# line before testing for correct completion.
+
+**Returns:** 
+
+- 0 for successful completion.
+- 0xff for co-processor exception.
+
+**Format:**
 
 `int EVE_LIB_AwaitCoProEmpty(void)`
 
 Waits for the completion of the current commands sent to the co-processor.
 
-`uint16_t EVE_LIB_GetCoProSpace(void)`
+#### EVE_LIB_AwaitCoProEmptyTimeout
+
+Waits for co-processor list to end with a millisecond timeout.
+
+**Detailed Description:**
+
+Will poll the co-processor command list until it has been completed or a timeout has occurred.
+If configured then it will wait for an interrupt signal on the INT# line before testing for correct completion.
+
+**Returns:** 
+
+- 0 for successful completion.
+- 0xfe for a timeout error.
+- 0xff for co-processor exception.
+
+**Format:**
+
+`int EVE_LIB_AwaitCoProEmptyTimeout(uint32_t timeout)`
+
+**Parameters:**
+
+- *timeout* - milliseconds to wait until the function returns with a timeout error.
+
+#### EVE_LIB_RecoverCoPro
+
+Recovers the co-processor in the event of an exception.
+
+**Detailed Description:**
+
+Will reset the co-processor after an exception is reported by EVE_LIB_AwaitCoProEmpty.
+
+**Format:** 
+
+`void EVE_LIB_RecoverCoPro(void)`
+
+#### EVE_LIB_GetCoProSpace
 
 Returns the sapce remaining for further commands to be sent to the co-processor.
+
+**Detailed Description:**
+
+Obtains the free space in the co-processor circular buffer. 
+This operation may have an effect on the performance of the device.
+
+**Returns:**
+
+The number of free bytes in the co-processor circular buffer.
+
+**Format:** 
+
+`uint16_t EVE_LIB_GetCoProSpace(void)`
+
+#### EVE_LIB_Int
+
+Test interrupt input line.
+
+ **Detailed Description:**
+ 
+ This function will check the interrupt input INT# from
+ the EVE device. If Quad SPI is enabled then the interrupt line
+ is used as a data line for SPI and therefore cannot be used for
+ an interrupt input.
+ 
+**Returns:**
+
+- zero if there is no interrupt.
+- >0 if the EVE device is asserting an interrupt.
+- -1 if the MCU or Platform does not support reading the interrupt line.
+
+**Format:** 
+
+`int EVE_LIB_Int(void)`
+
+#### EVE_LIB_GetInterrupt
+
+Test if an interrupt flag is set.
+ 
+**NOTE:** This is only compiled if the co-processor method is set to `EVE_COPROC_INT`.
+
+**Detailed Description:**
+
+Will read the interrupt flag register and add any newly pending to
+a status value. The flag register will clear any pending interrupt
+when read so the cumulative flagged bits are kept until they are
+cleared by the mask in this function.
+
+**Returns:**
+
+- 0 for no interrupts in the mask being set.
+- if any interrupts are set then the return value will contain bits set from the mask parameter.
+
+**Format:** 
+
+`uint8_t EVE_LIB_GetInterrupt(uint8_t mask)`
+
+**Parameters:**
+
+- *mask* - bit mask of interrupts to test. Unmasked interrupts are not modified.
+
+#### EVE_LIB_GetResult
+
+Returns a result from the co-processor command buffer.
+
+**Detailed Description:**
+
+Will return a result value from "offset" words back in the command buffer.
+If the value of offset is 1 then the previous value from the co-processor
+command buffer is returned.
+
+**Returns:**
+
+Result of a previous co-processor command.
+
+**Format:** 
+
+`uint32_t EVE_LIB_GetResult(int offset)`
+
+**Parameters:**
+
+- *offset* - number of 32-bit words to go back in the command buffer for the result.
+
+#### EVE_LIB_GetCoProException
+
+Get co-processor exception description.
+
+**NOTE:** This is only available on EVE APIs 3, 4 and 5.
+
+**Detailed Description:**
+
+Will query the co-processor exception description to a string.
+
+**Returns:**
+
+Co-processor exception description. This is a pointer to a string
+and must be sufficient to hold 128 characters.
+
+**Format:** 
+
+`void EVE_LIB_GetCoProException(char *desc)`
+
+**Parameters:**
+
+- *desc* - buffer to receive the text of the exception description.
+
+#### Continue with EVE_LIB_* API commands
+
 
 ### Creating screens and executing commands
 

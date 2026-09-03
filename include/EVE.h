@@ -844,14 +844,19 @@ int EVE_Deinit(void);
 
 /**
  * @brief EVE API: Begin co-processor list
- * @details Starts a co-processor list. Waits for the co-processor to be idle
- *      before asserting chip select.
+ * @details Starts a co-processor list. Initialises the API and HAL ready to start
+ *      transmitting a co-processor list to the EVE.
+ *      This will typically assert chip select to allow the SPI interface to
+ *      send data to the EVE.
  */
 void EVE_LIB_BeginCoProList(void);
 
 /**
  * @brief EVE API: End co-processor list
- * @details Ends a co-processor list. Deasserts chip select.
+ * @details Ends a co-processor list. This will perform any operations in the API
+ *      and HAL to finish a co-processor list. 
+ *      This will typically deasserts chip select after updating any registers
+ *      on the EVE device that will signal the end of the co-processor list.
  */
 void EVE_LIB_EndCoProList(void);
 
@@ -917,8 +922,6 @@ uint16_t EVE_LIB_GetDlProfile(void);
  *      the EVE device. If Quad SPI is enabled then the interrupt line
  *      is used as a data line for SPI and therefore cannot be used for
  *      an interrupt input.
- *      To prevent any unintended reads of this when Quad SPI is enabled
- *      the function is not compiled when Quad SPI is configured.
  * @returns zero if there is no interrupt, non-zero if the EVE device is
  *      asserting an interrupt.
  */
