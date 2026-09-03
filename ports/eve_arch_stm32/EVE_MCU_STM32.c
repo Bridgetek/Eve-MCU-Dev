@@ -152,7 +152,6 @@ inline void MCU_PDhigh(void)
     HAL_GPIO_WritePin(config_gpio, config_pin_pd, GPIO_PIN_SET);
 }
 
-// ------------------------ interrupt input ------------------------------------
 int MCU_Int(void) 
 {
     return (int)HAL_GPIO_ReadPin(config_gpio, config_pin_int);

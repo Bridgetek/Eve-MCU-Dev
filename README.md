@@ -598,5 +598,3 @@ Enabling the macro will add one 8-bit storage variable to the compiled project.
 The optional INT# line is provided for the EVE device to signal to the host MCU that an event has occurred. The `REG_INT_FLAGS` register holds a flag of all interrupts that are pending. If the corresponding bit in the `REG_INT_MASK` register is set then the EVE device will set the INT# line low (active). This signal can be used when single-channel SPI is in use. If Quad SPI is being used then this signal is used as a data line instead.
 
 This status can be accessed from the EVE API with the `EVE_LIB_Int()` function. A non-zero value indicates that the INT# line is asserted.
-
-**NOTE:** This function only available if the macro `EVE_QSPI_ENABLE` is undefined. Enabling Quad SPI with the `EVE_QSPI_ENABLE` setting will undefine that macro.

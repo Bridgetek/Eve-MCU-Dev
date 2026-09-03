@@ -167,6 +167,7 @@ Both STM32F0 Discovery modules can be connected via short wires to the correspon
 | PB5 | P2 9 | MOSI |
 | PB4 | P2 10 | MISO |
 | PB6 | P2 8 | CS# |
+| PB8 | P2 4 | INT# |
 | PB7 | P2 7 | PD# |
 | 5V | P2 1 | 5V |
 | GND | P2 2 | GND |

@@ -179,8 +179,7 @@
   *   will be modified to EVE_COPRO_CMD_WRITE.
   *   The EVE_COPRO_INT can be used to modify the EVE_COPRO_CMD_WRITE
   *   method to use the hardware INT# line as well. This requires support
-  *   from the port in the MCU layer. It will be ignored if QuadSPI is
-  *   enabled as this uses the INT# line as a data line.
+  *   from the port in the MCU layer.
   */
 //@{
 #ifndef EVE_COPRO_METHOD

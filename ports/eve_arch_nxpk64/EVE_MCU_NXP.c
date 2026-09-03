@@ -266,7 +266,8 @@ int MCU_Int(void)
 #if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
 #error EVE_USE_INTERRUPT_METHOD (EVE Interrupt pin) is not supported on NXPK64
 #endif
-    return 1;
+    // Do not support the interrupt line.
+    return -1;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

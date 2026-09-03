@@ -113,7 +113,7 @@ static void Error_Handler(void);
 #endif
 
 /* Default QuadSPI off. */
-static int ftIsQuad = 0;
+static int isQuadSPI = 0;
 
 int MCU_Init(void)
 {
@@ -177,9 +177,9 @@ int MCU_Setup(void)
 #if IS_EVE_API(2,3,4,5)
     /* Select QSPI after initialisation complete. */
     HAL_SetSPIMode(2);
-    ftIsQuad = 1;
+    isQuadSPI = 1;
 #else // IS_EVE_API(2,3,4,5)
-    ftIsQuad = 0;
+    isQuadSPI = 0;
 #endif
 #endif // EVE_QSPI_ENABLE
 
@@ -204,7 +204,7 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         sCommand.InstructionMode   = QSPI_INSTRUCTION_NONE;
         sCommand.AddressMode       = QSPI_ADDRESS_NONE;
         sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
-        if (ftIsQuad == 0)
+        if (isQuadSPI == 0)
         {
             sCommand.DataMode          = QSPI_DATA_1_LINE;
         }
@@ -248,7 +248,7 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
         sCommand.Address           = addr;
 
-        if (ftIsQuad == 0)
+        if (isQuadSPI == 0)
         {
             sCommand.AddressMode       = QSPI_ADDRESS_1_LINE;
             sCommand.DataMode          = QSPI_DATA_1_LINE;

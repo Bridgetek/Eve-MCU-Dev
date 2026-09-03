@@ -368,7 +368,8 @@ void HAL_SetSPIMode(uint32_t mode);
  * @details This function will check the interrupt input INT# from
  *      the EVE device using the MCU layer.
  * @returns zero if there is no interrupt, non-zero if the EVE device is
- *      asserting an interrupt.
+ *      asserting an interrupt. A negative value will be returned if
+ *      the method is not supported on the MCU or platform.
  */
 int HAL_Int(void);
 

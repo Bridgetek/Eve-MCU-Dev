@@ -98,6 +98,9 @@
 static void timerISR(void);
 static volatile uint32_t ticks = 0;
 
+/* Default QuadSPI off. */
+static int isQuadSPI = FALSE;
+
 /* EVE MCU */
 
 // This is the FT9xx platform specific section and contains the functions which
@@ -229,6 +232,9 @@ int MCU_Setup(void)
     // Turn on FT9xx quad-SPI.
     spi_option(SPIM, spi_option_bus_width, 4);
 #endif // IS_EVE_API(2,3,4,5)
+    
+    isQuadSPI = TRUE;
+
 #endif // EVE_QSPI_ENABLE
 
     /* Additional SPI Configuration */

@@ -552,6 +552,7 @@ void MCU_PDhigh(void)
 int MCU_Int(void) 
 {
     unsigned int val;
+
     // INT# read, connect GPIO2 of FT4222 to INT# of FT8xx/BT8xx board
     if (FT4222_OK != (FT4222_GPIO_Read(ftHandleGPIO, (GPIO_Port)FT8XX_INT_N_PIN, &val)))
     {

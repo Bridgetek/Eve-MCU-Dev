@@ -98,13 +98,10 @@ inline void MCU_PDhigh(void)
     HAL_GPIO_WritePin(EVE_PD__GPIO_Port, EVE_PD__Pin, GPIO_PIN_SET);
 }
 
-// ------------------------ interrupt input ------------------------------------
-int MCU_Int(void) 
+int MCU_Int(void)
 {
-#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error EVE_USE_INTERRUPT_METHOD EVE Interrupt pin is not supported on STM32CUBE
-#endif
-    return 1;
+    // INT# line
+    return HAL_GPIO_ReadPin(EVE_INT__GPIO_Port, EVE_INT__Pin);
 }
 
 // STM32 is Little Endian. There is no sys/endian.h.
