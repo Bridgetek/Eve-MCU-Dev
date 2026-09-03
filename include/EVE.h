@@ -401,27 +401,24 @@
         #error "Invalid EVE_COPRO_METHOD value"
     #endif
 
-    // CMDB is only supported on EVE2 onwards. 
-    #if IS_EVE_API(1)
-        #if (EVE_COPRO_METHOD == EVE_COPRO_CMDB_WRITE)
-            #error "EVE_COPRO_CMDB_WRITE is not supported on EVE API 1"
-        #endif
-    #endif // IS_EVE_API(1)
-
     // Select the requested method.
     #if (EVE_COPRO_METHOD == EVE_COPRO_CMDB_WRITE)
-        #define EVE_USE_CMDB_METHOD
+        #if IS_EVE_API(1)
+            // CMDB write method is only supported on EVE2 onwards, undef to use CMD 
+            #undef EVE_USE_CMDB_METHOD
+        #else
+            #define EVE_USE_CMDB_METHOD
+        #endif // IS_EVE_API(1)
     #elif (EVE_COPRO_METHOD == EVE_COPRO_INT)
         // INT implies use of the CMD write method.
         #define EVE_USE_INTERRUPT_METHOD
     #endif
 #else // else defined(EVE_COPRO_METHOD)
-    // Default to CMD on EVE1 and CMDB on EVE2 onwards.
     #if IS_EVE_API(2,3,4,5)
+        // Default to CMDB on EVE2 onwards.
         #define EVE_USE_CMDB_METHOD
     #endif // IS_EVE_API(2,3,4,5)
 #endif // defined(EVE_COPRO_METHOD)
-
 
 /** Interrupt management.
  *
