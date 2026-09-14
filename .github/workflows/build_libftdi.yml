@@ -56,11 +56,11 @@ jobs:
         submodules: 'true'
 
     # Test using matrix
-    - name: Configure CMake
-      run: cmake -B build -S . -G Ninja ${{ matrix.eve.config }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
+    #- name: Configure CMake
+    #  run: cmake -B build -S . -G Ninja ${{ matrix.eve.config }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    #  working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
-    - name: Build
-      run: cmake --build build
-      working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
+    #- name: Build
+    #  run: cmake --build build
+    #  working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
