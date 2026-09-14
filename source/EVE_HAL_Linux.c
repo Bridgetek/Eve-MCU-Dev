@@ -919,7 +919,7 @@ void HAL_WriteCmdPointer(void)
     EVE_DEBUG_INFO("%s 0x%x\n", __FUNCTION__, writeCmdPointer);
 #if defined(EVE_USE_INTERRUPT_METHOD)
     // Clear the interrupt flags register and reset the interrupt line.
-    EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY);
+    HAL_GetInterrupt(EVE_INT_CMDEMPTY);
 #endif // defined(EVE_USE_INTERRUPT_METHOD)
 
     // Do nothing if no commands have been added.
@@ -981,7 +981,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
             // Timeout break from interrupt test.
             if ((curtime - starttime) > timeout) break;
             // Read of REG_INT_FLAGS to clear interrupt.
-        } while (!EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY));
+        } while (!HAL_GetInterrupt(EVE_INT_CMDEMPTY));
 
         // Read the graphics processor read pointer (contains error flag).
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
@@ -1106,6 +1106,23 @@ int HAL_Int(void)
 {
     return Platform_Int();
 }
+
+#if defined(EVE_MANAGE_INTERRUPTS)
+// Get the status of the interrupt flag register
+uint8_t HAL_GetInterrupt(uint8_t mask)
+{
+    static uint8_t curr = 0;
+    uint8_t val;
+    
+    curr |= HAL_MemRead32(EVE_REG_INT_FLAGS);
+    // Test mask of set bits
+    val = curr & mask;
+    // Consume tested bits
+    curr = curr & ~mask;
+
+    return val;
+}
+#endif // defined(EVE_MANAGE_INTERRUPTS)
 
 /* EVE HAL END */
 

@@ -287,13 +287,14 @@ int EVE_LIB_Int(void);
 
 #if defined(EVE_MANAGE_INTERRUPTS)
 /**
- * @brief EVE API: Test if an interrupt flag is set
- * @details Will read the interrupt flag register and add any newly pending
- *      interrupt flags to a status value. The flag register will clear any
- *      pending interrupt when read so the cumulative flagged bits are kept 
- *      until they are cleared by the mask in this function.
+ * @brief EVE API: Test whether one or more interrupt flags are set.
+ * @details Reads the EVE interrupt flag register and accumulates any newly
+ *      pending interrupt flags in a software status value. Reading the
+ *      interrupt flag register clears the hardware flags, so pending bits are
+ *      retained in software until they are consumed by the mask supplied to
+ *      this function.
  *      This function cannot be used within a co-processor list.
- * @param mask - Bit mask of interrupts to query (and clear).
+ * @param mask Bit mask of interrupts to query and consume.
  * @returns 0 for no interrupts in the mask being set, if any interrupts are
  *      set then the return value will contain bits set from the mask parameter.
  */

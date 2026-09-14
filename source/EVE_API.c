@@ -512,16 +512,7 @@ int EVE_LIB_Int(void)
 // Get the status of the interrupt flag register
 uint8_t EVE_LIB_GetInterrupt(uint8_t mask)
 {
-    static uint8_t curr = 0;
-    uint8_t val;
-    
-    curr |= HAL_MemRead32(EVE_REG_INT_FLAGS);
-    // Test mask of set bits
-    val = curr & mask;
-    // Consume tested bits
-    curr = curr & ~mask;
-
-    return val;
+    return HAL_GetInterrupt(mask);
 }
 #endif // defined (EVE_MANAGE_INTERRUPTS)
 

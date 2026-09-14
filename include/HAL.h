@@ -402,6 +402,21 @@ int HAL_SetSPIMode(uint8_t mode);
  */
 int HAL_Int(void);
 
+#if defined(EVE_MANAGE_INTERRUPTS)
+/**
+ * @brief Test if an EVE interrupt flag is set
+ * @details Reads the EVE interrupt flag register and adds any newly pending
+ *      interrupt flags to an internally stored status value. Reading the
+ *      interrupt flag register clears the pending hardware flags, so the
+ *      accumulated flags are retained until consumed by the supplied mask.
+ * @param mask - Bit mask of interrupts to query and clear.
+ * @returns 0 if no interrupts in the mask are set. If any interrupts are
+ *      set then the return value will contain the corresponding bits from
+ *      the mask parameter.
+ */
+uint8_t HAL_GetInterrupt(uint8_t mask);
+#endif //defined(EVE_MANAGE_INTERRUPTS)
+
 /* EVE HAL END */
 
 #endif /* _EVE_HAL_HEADER_H */
