@@ -184,7 +184,7 @@ of the application to set the screen orientation) then the following can be used
 
 ### Library API
 
-This functions in this library provide an API for sending commands to the device and receiving results and 
+The functions in this library provide an API for sending commands to the device and receiving results and 
 status from a sketch. 
 
 API calls in a sketch to this library call an equivalent function in the [EVE-MCU-Dev](https://github.com/Bridgetek/Eve-MCU-Dev) API. 
