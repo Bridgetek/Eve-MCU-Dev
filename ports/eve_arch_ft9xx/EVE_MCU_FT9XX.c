@@ -210,7 +210,7 @@ int MCU_SetSPIMode(uint8_t mode)
     if (mode == EVE_SPI_SINGLE_CHANNEL)
     {
         /* SPI Configuration */
-        if (spi_option(SPIM, spim_option_bus_width, 1) != 0)
+        if (spi_option(SPIM, spi_option_bus_width, 1) != 0)
         {
             return -1;
         }
@@ -224,7 +224,7 @@ int MCU_SetSPIMode(uint8_t mode)
         gpio_dir(PIN_NUM_IO3, pad_dir_output);
         
         /* QSPI Configuration */
-        if (spi_option(SPIM, spim_option_bus_width, 4) != 0)
+        if (spi_option(SPIM, spi_option_bus_width, 4) != 0)
         {
             return -1;
         }
