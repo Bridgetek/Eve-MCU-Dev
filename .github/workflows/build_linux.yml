@@ -41,15 +41,15 @@ jobs:
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
         eve: [ 
-          {EVE_DISPLAY_RES: EVE_QVGA, EVE_DEVICE: EVE_FT800, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
-          {EVE_DISPLAY_RES: EVE_NO_RES, EVE_DEVICE: EVE_FT813, EVE_PANEL: EVE_DP_0431_11A , EVE_MODULE: EVE_NO_MODULE }, 
-          {EVE_DISPLAY_RES: EVE_WVGA, EVE_DEVICE: EVE_BT815, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
-          {EVE_DISPLAY_RES: EVE_NO_RES, EVE_DEVICE: EVE_NO_DEVICE, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_IDM20407A }, 
-          {EVE_DISPLAY_RES: EVE_WUXGA, EVE_DEVICE: EVE_BT820, EVE_PANEL: EVE_NO_PANEL , EVE_MODULE: EVE_NO_MODULE }, 
+          {name: "FT800/QVGA", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800" }, 
+          {name: "FT813/WQVGA", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813" }, 
+          {name: "BT815/WVGA", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815" }, 
+          {name: "BT817(IDM2040-7A)", config: "-DEVE_MODULE=IDM20407A" }, 
+          {name: "BT820/WUXGA", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820" }, 
         ]
     
     # Set the name of the job to include the important information
-    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.EVE_DEVICE }} ${{ matrix.eve.EVE_MODULE }} ${{ matrix.eve.EVE_PANEL }} ${{ matrix.eve.EVE_DISPLAY_RES }}
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.name }}
 
     steps:
     - uses: actions/checkout@v6
@@ -77,7 +77,7 @@ jobs:
      
     # Test using matrix
     - name: Configure CMake
-      run: cmake -B build -S . -G Ninja -DEVE_MODULE=${{ matrix.eve.EVE_MODULE }} -DEVE_PANEL=${{ matrix.eve.EVE_PANEL }} -DEVE_DEVICE=${{ matrix.eve.EVE_DEVICE }} -DEVE_DISPLAY_RES=${{ matrix.eve.EVE_DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B build -S . -G Ninja ${{ matrix.eve.config }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
     - name: Build
