@@ -53,8 +53,6 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -124,7 +122,7 @@ void initSPI()
     P1SEL = MISO | MOSI | SCLK;             // p1.1 MISO, p1.2 MOSI, P1.4 SCLK
     P1SEL2 = MISO | MOSI | SCLK;
 
-    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
 
     /* configure UCA0 for SPI */;
     UCA0CTL0 = UCCKPH | UCMSB | UCMST | UCSYNC;     // 3-pin, 8-bit SPI master (mode 0)
@@ -200,16 +198,19 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* QSPI Configuration */
-#ifdef EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSP430
-#endif // EVE_QSPI_ENABLE
-
     /* Additional SPI Configuration */
-
     return 0;
 }
 
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSP430
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // ########################### SPI Send and Receive ####################################
 // ----------------- Global variables for SPI data ---------------------

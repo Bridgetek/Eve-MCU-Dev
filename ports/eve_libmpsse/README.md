@@ -77,7 +77,7 @@ Once the library is installed then the build will search the standard locations 
 
 The LibMPSSE-SPI library calls the FTDI D2XX driver. The version of FTDI D2XX driver for Linux may be important on certain Linux distributions. Version v1.4.33 has been tested on Ubuntu and is compiled for glibc version "GLIBC\_2.31".  Later versions require a system supporting "GLIBC\_2.34". If the glibc version is not supported then a message such as this will be reported.
 
-```
+```console
  sudo ./build/simple_libmpsse
 dlopen failed: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by /usr/local/lib/libftd2xx.so)
 source/ftdi_infra.c:254:Init_libMPSSE(): NULL expression encountered

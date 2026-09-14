@@ -70,10 +70,12 @@
 #include "EVE_Emulator/include/bt8xxemu_inttypes.h"
 #include "EVE_Emulator/include/bt8xxemu.h"
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
+/* Include the EVE register definitions */
+#include "EVE_registers.h"
 
 /* EVE MCU HEADER END */
 
@@ -153,7 +155,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
     {
         // Print the absolute path.
         // EVE_Debug.h does not provide a wprintf macro.
-#if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
         wprintf(L"Path: %ls\n", path);
 #endif
 
@@ -187,7 +189,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
 
     // Print the path relative to the executable.
     // EVE_Debug.h does not provide a wprintf macro..
-#if (defined(DEBUG_LEVEL) && (DEBUG_LEVEL > 0)) 
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0) 
     wprintf(L"Path from executable: %ls\n", path);
 #endif
 
@@ -535,6 +537,14 @@ int MCU_Setup(void)
     /* No Additional "SPI" Configuration */
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* No Additional "SPI" Configuration */
+    return 0;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 static void emulator_check(void)
 {

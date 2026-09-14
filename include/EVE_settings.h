@@ -41,19 +41,57 @@
 #ifndef _EVE_SETTINGS_H
 #define _EVE_SETTINGS_H
 
-/* -------------------------------------------------------------------------
- * Prerequisite: This file must be included by EVE.h.
- * ------------------------------------------------------------------------- */
+/*
+ * Include the user-supplied EVE configuration from the configured
+ * include path to select the EVE API and library options.
+ * EVE_config.h includes EVE_defs.h from the same include search path,
+ * so a compatible pair of headers must be provided.
+ */
+#include <EVE_config.h>
 
- /* EVE SETTINGS */
+/*
+ * Support deprecated config items by overriding the replacement
+ * macros with the deprecated values.
+ * The presence of the deprecated macros is reported in EVE_API.c.
+ */
+#define EVEIFY(y) EVE_ ## y
+#define EVEUPDATE(y) EVEIFY(y)
+
+#if defined(FT8XX_TYPE)
+#undef EVE_DEVICE
+#define EVE_DEVICE EVEUPDATE(FT8XX_TYPE)
+#endif // defined(FT8XX_TYPE)
+
+#if defined(DISPLAY_RES)
+#undef EVE_DISPLAY_RES
+#define EVE_DISPLAY_RES EVEUPDATE(DISPLAY_RES)
+#endif // defined(DISPLAY_RES)
+
+#if defined(MODULE_TYPE)
+#undef EVE_MODULE
+#define EVE_MODULE EVEUPDATE(MODULE_TYPE)
+#endif // defined(MODULE_TYPE)
+
+#if defined(PANEL_TYPE)
+#undef EVE_PANEL
+#define EVE_PANEL EVEUPDATE(PANEL_TYPE)
+#endif // defined(PANEL_TYPE)
+
+#if defined(QUADSPI_ENABLE)
+#define EVE_QSPI_ENABLE
+#endif // defined(QUADSPI_ENABLE)
+
+/* EVE SETTINGS */
 
 /**
- * @details The macro EVE_DEVICE and the panel display settings (EVE_DISP_*) must 
- *      be configured in this file. For BT82x the EVE_RAM_G_CONFIG_SIZE macro must
- *      also be configured.
- *      Values from the macros defined in this file can be used in code based on this library. 
- *      To make a custom configuration file, edit this file as required as long as the macros
- *      listed above are correctly defined.
+ * @brief EVE library settings derived from the target configuration.
+ * @details The settings and macros in this file are derived from the
+ *      configuration supplied by EVE_config.h. This includes EVE API
+ *      selection, module and panel settings, display parameters and
+ *      device-specific feature support.
+ *
+ *      Application-specific configuration should be made in EVE_config.h
+ *      rather than directly in this file.
  */
 
 /** Macros to allow us to select which API a command applies to.
@@ -118,10 +156,10 @@
  *      Alternatively, to override this directly set the EVE_API and EVE_SUB_API macro
  *      as required.
  *      The EVE_DEVICE and the display settings must be configured before calling EVE.h.
- *      "#define EVE_DEVICE EVE_EVE_BT817" is equivalent to having "#define EVE_API 4".
+ *      "#define EVE_DEVICE EVE_BT817" is equivalent to having "#define EVE_API 4".
  *      Note the use of EVEx_ENABLE is deprecated but the macro is still defined.
- *      The EVE_DEVICE macro and EVE_PANEL macro must not be expanded until their
- *      allowable values are defined (EVE_DEVICE in EVE.h).
+ *      The EVE_DEVICE and EVE_PANEL macros must not be expanded until their
+ *      allowable values from EVE_defs.h are available.
  */
 //@{
 #if defined(EVE_MODULE) && (EVE_MODULE != EVE_NO_MODULE)
@@ -395,16 +433,17 @@
  *   If EVE_USE_INTERRUPT_METHOD is defined then the feature is enabled.
  *   The function does not manage the INT# line (see EVE_LIB_Int function).
  */
-#if defined(EVE_USE_INTERRUPT_METHOD) && !defined(EVE_MANANGE_INTERRUPTS)
-#define EVE_MANANGE_INTERRUPTS
+#if defined(EVE_USE_INTERRUPT_METHOD) && !defined(EVE_MANAGE_INTERRUPTS)
+#define EVE_MANAGE_INTERRUPTS
 #endif
 
- /** EVE1 does not support QSPI, disable this if it has been defined */
+/** EVE1 does not support QSPI, disable this if it has been defined */
 #if IS_EVE_API(1)
     #if defined(EVE_QSPI_ENABLE)
         #undef EVE_QSPI_ENABLE
     #endif // EVE_QSPI_ENABLE
 #endif // IS_EVE_API(2,3,4,5)
+
 
 /** Custom touch firmware is supported by EVE API 2-4.
  *
@@ -420,6 +459,8 @@
 #if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R)
 #define EVE_SUPPORT_CUSTOM_TOUCH
 #endif
+
+
 
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
@@ -454,7 +495,7 @@
 #define EVE_DISPLAY_RES EVE_WQVGA   
 
 #elif EVE_PANEL == EVE_DP_0701_01A
-// DP-0701-11A WVGA (Capacitive)
+// DP-0701-01A WVGA (Capacitive)
 #define EVE_DISPLAY_RES EVE_WVGA
 
 #elif EVE_PANEL == EVE_DP_1011_01A

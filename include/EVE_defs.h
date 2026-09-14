@@ -70,24 +70,24 @@
 /**
  * @brief Select Bridgetek EVE Module or Development Kit Types.
  * @details The following options are defined for the EVE_MODULE macro:
- *      VM800B           - VM800B35A-BK with 3.5 inch display (FT800 with DP-0351-11A)
- *      VM800C35A        - VM800C35A-D with 3.5 inch display (FT800 with DP-0351-11A)
- *      VM800C43A        - VM800C43A-D with 4.3 inch display (FT800 with DP-0431-11A)
- *      VM800C50A        - VM800C50A-D with 5 inch display (FT800 with DP-0502-11A)
- *      VM810C           - VM810C50A-D with 5 inch display (FT810 with DP-0501-11A)
- *      ME812A           - ME812A-WH50R, ME812AU-WH50R with 5 inch display (FT812 with DP-0501-11A)
- *      ME813A           - ME813A-WH50C with 5 inch display (FT813 with DP-0501-01A)
- *      VM816C           - VM816C50A-D, VM816CU50A-D with 5 inch display (BT816 with DP-0501-11A)
- *      VM880C           - VM880C with assumed 4.3 inch display (BT880 with DP-0431-11A)
- *      IDM204021R       - IDM2040-21R (FT800 with 2.1 inch display)
- *      IM204043A        - IDM2040-43A (BT883 with DP-0431-11A)
+ *      VM800B           - VM800B35A-BK with 3.5-inch display (FT800 with DP-0351-11A)
+ *      VM800C35A        - VM800C35A-D with 3.5-inch display (FT800 with DP-0351-11A)
+ *      VM800C43A        - VM800C43A-D with 4.3-inch display (FT800 with DP-0431-11A)
+ *      VM800C50A        - VM800C50A-D with 5-inch display (FT800 with DP-0502-11A)
+ *      VM810C           - VM810C50A-D with 5-inch display (FT810 with DP-0501-11A)
+ *      ME812A           - ME812A-WH50R, ME812AU-WH50R with 5-inch display (FT812 with DP-0501-11A)
+ *      ME813A           - ME813A-WH50C with 5-inch display (FT813 with DP-0501-01A)
+ *      VM816C           - VM816C50A-D, VM816CU50A-D with 5-inch display (BT816 with DP-0501-11A)
+ *      VM880C           - VM880C with assumed 4.3-inch display (BT880 with DP-0431-11A)
+ *      IDM204021R       - IDM2040-21R (FT800 with 2.1-inch display)
+ *      IDM204043A       - IDM2040-43A (BT883 with DP-0431-11A)
  *      IDM20407A        - IDM2040-7A (BT817 with DP-0701-01A)
- *      VM820B10A        - VM820B10A with 10.1 inch display (BT820 with DP-1011-02A)
- *      VM820B15A        - VM820B15A with 15.6 inch display (BT820 with DP-1561-02A)
+ *      VM820B10A        - VM820B10A with 10.1-inch display (BT820 with DP-1011-02A)
+ *      VM820B15A        - VM820B15A with 15.6-inch display (BT820 with DP-1561-02A)
  *      IDK_FT810_43A    - FT810 IC Development Kit with 4.3-inch display (FT810 with DP-0431-11A)
  *      IDK_BT816_50A    - BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
  *      IDK_BT817_70A    - BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
- *      IDK_BT817_101A   - BT817 IC Development Kit with 10.1 inch display (BT817 with DP-1011-02A)
+ *      IDK_BT817_101A   - BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
  *      IDK_BT820_101A   - BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
  * 
  * Setting EVE_MODULE will select the correct EVE_DEVICE, EVE_PANEL and EVE_DISPLAY_RES.
@@ -125,7 +125,7 @@
 #define EVE_DP_0501_01A 050101  // DP-0501-01A WVGA (Capacitive)
 #define EVE_DP_0501_11A 050111  // DP-0501-11A WVGA (Resistive)
 #define EVE_DP_0502_11A 0502    // DP-0502-11A WQVGA (Resistive)
-#define EVE_DP_0701_01A 0701    // DP-0701-11A WVGA (Capacitive)
+#define EVE_DP_0701_01A 0701    // DP-0701-01A WVGA (Capacitive)
 #define EVE_DP_1011_01A 10111   // DP-1011-01A WXGA (Capacitive)
 #define EVE_DP_1011_02A 10112   // DP-1011-02A WXGA_NG (Capacitive)
 #define EVE_DP_1012_01A 1012    // DP-1012-01A WUXGA (Capacitive)
@@ -141,9 +141,9 @@
  * @details The following options are defined for the EVE_DISPLAY_RES macro:
  *      QVGA      - 320x240   e.g. DP-0351-11A
  *      WQVGA     - 480x272   e.g. DP-0431-11A, DP-0502-11A
- *      WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1 inch round display
- *      WVGA      - 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
- *      WSVGA     - 1024x600  e.g. BT817 with 7 inch display
+ *      WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1-inch round display
+ *      WVGA      - 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-01A
+ *      WSVGA     - 1024x600  e.g. BT817 with 7-inch display
  *      WXGA      - 1280x800  e.g. DP-1011-01A
  *      WXGA_NG   - 1280x800  e.g. DP-1011-02A
  *      FULLHD    - 1920x1080 e.g. DP-1561-01A, DP-1561-02A
@@ -152,9 +152,9 @@
 //@{
 #define EVE_QVGA    320        // 320x240   e.g. DP-0351-11A
 #define EVE_WQVGA   480        // 480x272   e.g. DP-0431-11A, DP-0502-11A
-#define EVE_WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1 inch round display
-#define EVE_WVGA    800        // 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-11A
-#define EVE_WSVGA   1024       // 1024x600  e.g. BT817 with 7 inch display
+#define EVE_WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1-inch round display
+#define EVE_WVGA    800        // 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-01A
+#define EVE_WSVGA   1024       // 1024x600  e.g. BT817 with 7-inch display
 #define EVE_WXGA    12801      // 1280x800  e.g. DP-1011-01A
 #define EVE_WXGA_NG 12802      // 1280x800  e.g. DP-1011-02A
 #define EVE_FULLHD  1920       // 1920x1080 e.g. DP-1561-01A, DP-1561-02A
@@ -178,9 +178,9 @@
 //@}
 
 /**
- * @brief Definitions used for capacitive touch controller i2c address and type (type is BT82X only).
+ * @brief Definitions for capacitive touch controller I2C addresses and types.(type is BT82X only).
  *
- * @note For FT81X/BT88X/BT81X only TOUCH_ADDR_FOCALTECH & TOUCH_ADDR_GOODIX are applicale.
+ * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
  */
 //@{
 #define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
@@ -196,14 +196,14 @@
 //@}
 
 /**
- * @brief Defintions for transfer methods for co-processor lists.
+ * @brief Definitions for transfer methods for co-processor lists.
  * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
  *      or enable the INT# line to be used when REG_CMD_WRITE method
  *      is being used. See the "Command FIFO" section in the Programming
  *      Guides for details of the differences. The "Interrupts" section
  *      in the Data Sheets explains the use of the INT# line.
  *      The EVE_COPRO_INT option is not permissible with the
- *      EVE_CMDB_WRITE setting and will be ignored.
+ *      EVE_COPRO_CMDB_WRITE setting and will be ignored.
  */
 //@{
 // Use REG_CMDB_WRITE to add data to the co-processor command buffer.
@@ -215,4 +215,18 @@
 // Uses the EVE_COPRO_CMD_WRITE method.
 #define EVE_COPRO_INT            3
 //@}
+
+/**
+ * @brief SPI interface width definitions.
+ * @details Defines the supported EVE SPI bus widths used when configuring
+ *      the host and EVE interfaces. Single and quad channel modes are used
+ *      by the library. Dual channel mode is defined for completeness but is
+ *      not currently used by the library.
+ */
+//@{
+#define EVE_SPI_SINGLE_CHANNEL    0x00
+#define EVE_SPI_DUAL_CHANNEL      0x01
+#define EVE_SPI_QUAD_CHANNEL      0x02
+//@}
+
 #endif /* _EVE_DEFS_H */

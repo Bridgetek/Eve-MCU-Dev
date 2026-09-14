@@ -60,10 +60,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -73,7 +69,20 @@
  * and must be below 11 MHz. The fastest speed is usually in the order of
  * 120 to 240 MHz. So a prescalar of 64 will be safely within that limit.
  * The speed will be set to the full speed after initialisation. */
-#define QSPI_CLK_DIV (64 - 1)
+#define QSPI_INIT_CLK_DIV (64 - 1)
+
+/*
+ * Runtime QSPI prescaler selected according to the EVE API level.
+ *
+ * Current STM32H7 simple examples use a 120 MHz QSPI kernel clock:
+ * API 2-4: 120 MHz / (4 + 1) = 24 MHz
+ * API 5:   120 MHz / (1 + 1) = 60 MHz
+ */
+#if IS_EVE_API(5)
+#define QSPI_RUN_CLK_DIV 1
+#else 
+#define QSPI_RUN_CLK_DIV 4
+#endif
 
 /* EVE MCU HEADER END */
 
@@ -92,16 +101,19 @@
 #endif
 
 /* SPI handler declaration */
+
 /* There is only one QUADSPI channel available. */
 extern QSPI_HandleTypeDef hqspi;
 
-/* Transfers are "chunked" to the EVE by the HAL.
- * This buffer is large enough to receive one chunk of
- * data and transmit it in one go. If it cannot be
- * sent in one go then the write address may not be
- * valid on subsequent packets.
+/*
+ * Size of the local SPI transfer buffer.
+ *
+ * EVE data transfers are chunked by the HAL. This buffer is sized to hold
+ * a complete HAL transfer chunk so that it can be sent to EVE in a single
+ * SPI transaction. Splitting a chunk across multiple transactions may
+ * invalidate the write address used by subsequent transfers.
  */
-#define MCU_BUFFER_SIZE (HAL_MAX_CHUNK_SIZE)
+#define MCU_BUFFER_SIZE 1024
 static uint8_t *MCU_buffer;
 static uint16_t MCU_bufferLen;
 
@@ -118,7 +130,6 @@ int MCU_Init(void)
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        EVE_DEBUG_ERROR("QSPI Setup malloc failed\n");
         return -1;
     }
 
@@ -129,7 +140,7 @@ int MCU_Init(void)
      * Use the "safe" prescaler to get a safe clock for SPI
      * during initialisation.
      */
-    hqspi.Init.ClockPrescaler = QSPI_CLK_DIV;
+    hqspi.Init.ClockPrescaler = QSPI_INIT_CLK_DIV;
     if (HAL_QSPI_Init(&hqspi) != HAL_OK)
     {
       Error_Handler();
@@ -162,27 +173,37 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* QSPI Configuration */
-    /* Increase SPI speed after initialisation is complete.
-     * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-     * This will set the QUADSPI to maximum speed configured
-     * in STM32CubeMX.
-     * This can be a maximum of 60 MHz for BT820, or 25 MHz
-     * on FT81x, BT88x, BT81x. */
-    MX_QUADSPI_Init();
+    /* Additional QSPI Configuration */
+    /* Increase the QSPI clock after EVE initialisation is complete. */
+    hqspi.Init.ClockPrescaler = QSPI_RUN_CLK_DIV;
 
-#if defined EVE_QSPI_ENABLE
-#if IS_EVE_API(2,3,4,5)
-    /* Select QSPI after initialisation complete. */
-    HAL_SetSPIMode(2);
-    isQuadSPI = 1;
-#else // IS_EVE_API(2,3,4,5)
-    isQuadSPI = 0;
-#endif
-#endif // EVE_QSPI_ENABLE
+    if (HAL_QSPI_Init(&hqspi) != HAL_OK)
+    {
+        return -1;
+    }
+    
+    return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        isQuadSPI= 0;
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        isQuadSPI = 1;
+    }
+    else
+    {
+        return -1;
+    }
 
     return 0;
 }
+#endif /* defined(EVE_QSPI_ENABLE) */
 
 /* Send data in the write buffer and read in bytes from the QSPI. */
 static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
@@ -219,7 +240,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         status = HAL_QSPI_Command(&hqspi, &sCommand, HAL_MAX_DELAY);
         if (status != HAL_OK)
         {
-            EVE_DEBUG_PRINTF("QSPI command sending error in QSPI_Transmit...\n");
             return status;
         }
         else
@@ -227,7 +247,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
 			status = HAL_QSPI_Transmit(&hqspi, MCU_buffer, HAL_MAX_DELAY);
 			if (status != HAL_OK)
 			{
-				EVE_DEBUG_PRINTF("QSPI Transmit error in QSPI_Transmit...\n");
 				return status;
 			}
 		}
@@ -265,7 +284,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         status = HAL_QSPI_Command(&hqspi, &sCommand, HAL_MAX_DELAY);
         if (status != HAL_OK)
         {
-            EVE_DEBUG_PRINTF("QSPI command sending error in rdBuffer...\n");
             return status;
         }
         else
@@ -273,7 +291,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
 			status = HAL_QSPI_Receive(&hqspi, DataToRead, HAL_MAX_DELAY);
 			if (status != HAL_OK)
 			{
-				EVE_DEBUG_PRINTF("QSPI receive error in rdBuffer...\n");
 				return status;
 			}
         }
@@ -370,8 +387,7 @@ uint8_t MCU_SPIRead8(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 1, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        EVE_DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
  
@@ -391,8 +407,7 @@ uint16_t MCU_SPIRead16(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 2, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        EVE_DEBUG_ERROR("MCU_SPIRead16 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
 
@@ -417,8 +432,7 @@ uint32_t MCU_SPIRead32(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 4, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        EVE_DEBUG_ERROR("MCU_SPIRead32 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
 
@@ -435,16 +449,15 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     HAL_StatusTypeDef status;
 
     status = MCU_receive_buffer((uint8_t *)DataToRead, length, 0);
-    if (HAL_OK != status)
-    {
-         // QUADSPI master read failed
-        EVE_DEBUG_ERROR("MCU_SPIRead failed %d\n", status);
-    }
+    (void)status;
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-    MCU_append_buffer(DataToWrite, length, 0);
+    HAL_StatusTypeDef status;
+    
+    status = MCU_append_buffer(DataToWrite, length, 0);
+    (void)status;
 }
 
 /* EVE MCU END */

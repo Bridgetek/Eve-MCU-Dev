@@ -53,10 +53,6 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -137,20 +133,12 @@ int MCU_Init(void)
     gpio_dir(PIN_NUM_PD, pad_dir_output);
     gpio_dir(PIN_NUM_INT, pad_dir_input);
 
-#if defined EVE_QSPI_ENABLE
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
-    gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
-    gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
-    gpio_dir(PIN_NUM_IO2, pad_dir_output);
-    gpio_dir(PIN_NUM_IO3, pad_dir_output);
-#endif // EVE_QSPI_ENABLE
-
     /* CS# & PD# pins write to high */
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
 
     /* Start SPIM interface */
-    // Set SPI clock speed to 12.5 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Set SPI clock speed to 12.5 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     // Divide by 8 is 12.5 MHz
     spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
     spi_option(SPIM,spi_option_fifo_size,64);
@@ -209,22 +197,46 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* QSPI configuration */
-#if defined EVE_QSPI_ENABLE
-#if IS_EVE_API(2,3,4,5)
-    /* Select QSPI after initialisation complete. */
-    HAL_SetSPIMode(2);
-    // Turn on FT9xx quad-SPI.
-    spi_option(SPIM, spi_option_bus_width, 4);
-#endif // IS_EVE_API(2,3,4,5)
-#endif // EVE_QSPI_ENABLE
-
     /* Additional SPI Configuration */
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        /* SPI Configuration */
+        if (spi_option(SPIM, spi_option_bus_width, 1) != 0)
+        {
+            return -1;
+        }
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        /* Initialize IO2 and IO3 pad/pin for quad settings */
+        gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
+        gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
+        gpio_dir(PIN_NUM_IO2, pad_dir_output);
+        gpio_dir(PIN_NUM_IO3, pad_dir_output);
+        
+        /* QSPI Configuration */
+        if (spi_option(SPIM, spi_option_bus_width, 4) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
+#endif /* defined(EVE_QSPI_ENABLE) */
 
 /**
  * @brief The interrupt handler for the timers.

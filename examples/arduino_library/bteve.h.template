@@ -52,18 +52,17 @@
 #define EVE_API ### EVE API ###
 #define EVE_SUB_API ### EVE SUB API ###
 
+```c
 //@{
-/** @brief Library Includes
- * It will be possible to make a library with these files.
- * Include EVE.h (which is the API as a C++ file which is part of this class.
- * Include HAL and MCU files as "C" files.
+/** @brief Library includes
+ * @details Includes the public EVE API used by the Arduino C++ wrapper.
+ *      The C API is exposed to the wrapper using C linkage.
  */
 extern "C" {
 #include <EVE.h>
-#include <HAL.h>
-#include <MCU.h>
 }
 //@}
+```
 
 class ### EVE CLASS ###
 {

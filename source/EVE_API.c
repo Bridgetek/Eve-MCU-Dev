@@ -49,6 +49,8 @@
 #include <EVE.h> 
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
 #include <HAL.h> 
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 #if IS_EVE_API(5)
 #include <extensions/bt82x_patch.h>
@@ -381,7 +383,6 @@ void EVE_LIB_EndCoProList(void)
     HAL_WriteCmdPointer();
 #endif
 }
-
 static int EVE_API_WaitCmdFifoEmpty(uint32_t timeout)
 {
     int status;
@@ -390,23 +391,19 @@ static int EVE_API_WaitCmdFifoEmpty(uint32_t timeout)
 
     if (status == EVE_COPRO_STATUS_EXCEPTION)
     {
-#if DEBUG_LEVEL > 0
-#if IS_EVE_API(3,4,5)
+#if IS_EVE_API(3, 4, 5)
         char message[256];
 
         memset(message, 0, sizeof(message));
         EVE_LIB_GetCoProException(message);
         EVE_DEBUG_ERROR("Co-processor exception: %s\n", message);
-#else // IS_EVE_API(3,4,5)
+#else
         EVE_DEBUG_ERROR("Co-processor exception\n");
-#endif // IS_EVE_API(3,4,5)
-#endif // DEBUG_LEVEL
+#endif
     }
     else if (status == EVE_COPRO_STATUS_TIMEOUT)
     {
-#if DEBUG_LEVEL > 0
-            EVE_DEBUG_ERROR("Co-processor timeout\n");
-#endif // DEBUG_LEVEL
+        EVE_DEBUG_ERROR("Co-processor timeout\n");
     }
 
     return status;
@@ -511,22 +508,13 @@ int EVE_LIB_Int(void)
     return HAL_Int();
 }
 
-#if defined (EVE_MANANGE_INTERRUPTS)
+#if defined (EVE_MANAGE_INTERRUPTS)
 // Get the status of the interrupt flag register
 uint8_t EVE_LIB_GetInterrupt(uint8_t mask)
 {
-    static uint8_t curr = 0;
-    uint8_t val;
-    
-    curr |= HAL_MemRead32(EVE_REG_INT_FLAGS);
-    // Test mask of set bits
-    val = curr & mask;
-    // Consume tested bits
-    curr = curr & ~mask;
-
-    return val;
+    return HAL_GetInterrupt(mask);
 }
-#endif // defined (EVE_MANANGE_INTERRUPTS)
+#endif // defined (EVE_MANAGE_INTERRUPTS)
 
 // Gets a result from the command buffer
 uint32_t EVE_LIB_GetResult(int offset)
@@ -583,10 +571,10 @@ void EVE_LIB_WriteDataToRAMG(const uint8_t* ImgData, uint32_t DataSize, uint32_t
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send
-        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
+        if ((DataSize - CurrentIndex) > EVE_HAL_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = HAL_MAX_CHUNK_SIZE;
+            ChunkSize = EVE_HAL_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -628,10 +616,10 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t* ImgData, uint32_t DataSize, uint32_t SrcA
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to receive
-        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
+        if ((DataSize - CurrentIndex) > EVE_HAL_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target
-            ChunkSize = HAL_MAX_CHUNK_SIZE;
+            ChunkSize = EVE_HAL_CHUNK_SIZE;
             // ... and this is not the last chunk
             IsLastChunk = 0;
         }
@@ -673,8 +661,8 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
     EVE_LIB_EndCoProList();
 
     // This code works by sending the data in a series of one or more bursts.
-    // If the data is more than HAL_MAX_CHUNK_SIZE bytes, it is sent as a series of
-    // one or more bursts and then the remainder. HAL_MAX_CHUNK_SIZE is a size which
+    // If the data is more than EVE_HAL_CHUNK_SIZE bytes, it is sent as a series of
+    // one or more bursts and then the remainder. EVE_HAL_CHUNK_SIZE is a size which
     // is smaller than the command buffer on the EVE and small enough to gain
     // maximum buffering effect from the MCU SPI hardware.
 
@@ -685,10 +673,10 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
     while (CurrentIndex < DataSize)
     {
         // If more than ChunkSize bytes to send.
-        if ((DataSize - CurrentIndex) > HAL_MAX_CHUNK_SIZE)
+        if ((DataSize - CurrentIndex) > EVE_HAL_CHUNK_SIZE)
         {
             // ... then add ChunkSize to the current target index to make new target.
-            ChunkSize = HAL_MAX_CHUNK_SIZE;
+            ChunkSize = EVE_HAL_CHUNK_SIZE;
             // ... and this is not the last chunk.
             IsLastChunk = 0;
         }
@@ -704,7 +692,7 @@ void EVE_LIB_WriteDataToCMD(const uint8_t* ImgData, uint32_t DataSize)
 #if !defined(EVE_USE_INTERRUPT_METHOD)
         // Wait until there is space.
         uint32_t Freespace = 0;
-        while (Freespace < HAL_MAX_CHUNK_SIZE)
+        while (Freespace < EVE_HAL_CHUNK_SIZE)
         {
             Freespace = HAL_CheckCmdFreeSpace();
         }
@@ -1198,9 +1186,9 @@ void EVE_BITMAP_ZORDER(uint8_t o)
     HAL_WriteCmd(EVE_ENC_BITMAP_ZORDER(o));
 }
 
-void EVE_PALLETE_SOURCE_H(uint8_t addr)
+void EVE_PALETTE_SOURCE_H(uint8_t addr)
 {
-    HAL_WriteCmd(EVE_ENC_PALLETE_SOURCE_H(addr));
+    HAL_WriteCmd(EVE_ENC_PALETTE_SOURCE_H(addr));
 }
 
 void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest)

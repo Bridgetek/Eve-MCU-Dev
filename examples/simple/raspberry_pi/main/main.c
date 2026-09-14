@@ -1,5 +1,6 @@
 /**
  * @file main.c
+ * @brief Example source file for a new Raspberry Pi project.
  */
 /*
  * ============================================================================
@@ -111,7 +112,7 @@ int main(void)
 
 void setup(void)
 {
-#if DEBUG_LEVEL > 0
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
@@ -126,6 +127,6 @@ void setup(void)
 	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
 	printf ("J8 Pin 2 - 5v supply for FT8xx/BT8xx\n");
 	printf ("J8 Pin 25 - signal GND for SPI\n");
-#endif
+#endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }
 

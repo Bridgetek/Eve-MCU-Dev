@@ -126,12 +126,12 @@ Once configured they should resemble the following screenshot from STM32CubeMX.
 
 The above configuration will result in the `Core\Inc\main.h` file being generated with the following macros. Note that the pins are named `EVE CS#` and `EVE PD#` in the STM32CubeMX configuration.
 
-```
+```c
 #define EVE_PD__Pin GPIO_PIN_7
 #define EVE_PD__GPIO_Port GPIOB
 ```
 The macros can then be used directly in `HAL_GPIO_WritePin` calls in the C code for the port. For example:
-```
+```c
 HAL_GPIO_WritePin(EVE_PD__GPIO_Port, EVE_PD__Pin, GPIO_PIN_RESET);
 ```
 

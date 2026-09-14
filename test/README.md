@@ -59,7 +59,7 @@ Welcome to EVE-MCU-Dev Tester Program
 EVE device: BT817
 EVE_API: 4
 EVE Module Name: IDM2040-7A
-EVE Panel Type: DP-0701-11A WVGA (Capacitive)
+EVE Panel Type: DP-0701-01A WVGA (Capacitive)
 EVE display panel resolution: WVGA 800x480
 
 delay 20 ms

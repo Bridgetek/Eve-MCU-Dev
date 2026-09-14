@@ -79,10 +79,11 @@
 #include <ftd2xx.h>
 #include <libmpsse_spi.h>
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
+
 
 /* EVE MCU HEADER END */
 
@@ -93,6 +94,13 @@
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
+/*
+ * Size of the local buffered-write staging area.
+ *
+ * Writes larger than this buffer are automatically split into multiple
+ * SPI transfers by the port implementation. This value therefore does not
+ * represent the maximum transfer size accepted from the HAL.
+ */
 #define MCU_BUFFER_SIZE 512
 uint8_t *MCU_buffer;
 uint16_t MCU_bufferLen;
@@ -119,7 +127,7 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     FT_STATUS ftStatus;
     ChannelConfig channelConf;
 
-    /* Set SPI clock speed to 15 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock speed to 15 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     memset(&channelConf, 0, sizeof(ChannelConfig));
     channelConf.ClockRate = speed;
     channelConf.LatencyTimer = 10;
@@ -224,19 +232,24 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
-
-#if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on libmpsse
-#endif // EVE_QSPI_ENABLE
-
     SPI_CloseChannel(ftHandle);
 
     // Increase SPI speed to 15 MHz after initialisation is complete
-    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     cmd_open_channel(openChannel, 15000000);
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on libmpsse
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // ------------------------- Output buffering ----------------------------------
 

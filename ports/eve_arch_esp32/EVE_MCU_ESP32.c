@@ -63,8 +63,6 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -167,20 +165,25 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* QSPI configuration */
-#if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on ESP32
-#endif // EVE_QSPI_ENABLE
-
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
-    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     mcu_deinit_spi();
     MCU_Delay_20ms();
     mcu_setup_spi(25000000);
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on ESP32
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // ########################### GPIO CONTROL ####################################
 

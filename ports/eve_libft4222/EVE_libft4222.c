@@ -61,12 +61,10 @@
 #include <ftd2xx.h>
 #include <LibFT4222.h>
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
 
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
@@ -111,11 +109,13 @@ static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_INPUT, GPIO_INPUT, GPIO_INPUT
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
-/* Transfers are "chunked" to the EVE by the HAL.
- * This buffer is large enough to receive one chunk of
- * data and transmit it in one go. If it cannot be
- * sent in one go then the write address may not be
- * valid on subsequent packets.
+/*
+ * Size of the local SPI transfer buffer.
+ *
+ * EVE data transfers are chunked by the HAL. This buffer is sized to hold
+ * a complete HAL transfer chunk so that it can be sent to EVE in a single
+ * SPI transaction. Splitting a chunk across multiple transactions may
+ * invalidate the write address used by subsequent transfers.
  */
 #define MCU_BUFFER_SIZE (64 * 1024)
 static uint8_t *MCU_buffer;
@@ -149,7 +149,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
         exit(ftStatus);
     }
 
-    /* Set SPI clock speed to 20 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock speed to 20 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, div, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
     if (FT_OK != ftStatus)
     {
@@ -332,25 +332,36 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     // Increase SPI speed to 20 MHz after initialisation is complete
-    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     // Clock is 80 MHz / 4 = 20 MHz
-#if defined EVE_QSPI_ENABLE
-#if IS_EVE_API(2,3,4,5)
-    /* Select QSPI after initialisation complete. */
-    HAL_SetSPIMode(2);
-    mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
-    ftIsQuad = TRUE;
-#else // IS_EVE_API(2,3,4,5)
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
-    ftIsQuad = FALSE;
-#endif
-#else // EVE_QSPI_ENABLE
-    mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
-    ftIsQuad = FALSE;
-#endif // EVE_QSPI_ENABLE
+    
+    return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        /* SPI Configuration */
+        mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+        ftIsQuad = FALSE;
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        /* QSPI Configuration */
+        mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
+        ftIsQuad = TRUE;
+    }
+    else
+    {
+        return -1;
+    }
 
     return 0;
 }
+#endif /* defined(EVE_QSPI_ENABLE) */
 
 // ------------------------- Output buffering ----------------------------------
 
