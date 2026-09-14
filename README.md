@@ -395,6 +395,18 @@ Lower-level MCU and platform implementation files should not depend on higher-le
 
 Extension code under `include/extensions` and `source/extensions` should depend only on the functionality required by that feature and should remain isolated behind the relevant feature guards. Where required, an extension may contain MCU- or platform-specific implementation code for functionality that is not provided by the common library interfaces.
 
+#### Custom EVE Configuration Headers
+
+`EVE_config.h` includes `EVE_defs.h` using the compiler include search path:
+
+```c
+#include <EVE_defs.h>
+```
+
+This allows a custom `EVE_config.h` to be supplied from another include directory. When using a custom `EVE_config.h`, a compatible `EVE_defs.h` must also be available in the include search path.
+
+The custom configuration and definitions headers should therefore be treated as a matching pair when overriding the library defaults.
+
 ### Device and Panel Selection
 
 The library __must__ be compiled for the correct EVE device and panel type. The target EVE device and panel type are defined in the file `EVE_config.h`.

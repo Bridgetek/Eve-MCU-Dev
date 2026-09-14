@@ -44,6 +44,8 @@
 /*
  * Include the user-supplied EVE configuration from the configured
  * include path to select the EVE API and library options.
+ * EVE_config.h includes EVE_defs.h from the same include search path,
+ * so a compatible pair of headers must be provided.
  */
 #include <EVE_config.h>
 

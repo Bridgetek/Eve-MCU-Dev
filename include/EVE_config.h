@@ -42,9 +42,10 @@
 #define _EVE_CONFIG_H
 
 /*
- * Include the EVE configuration definitions.
+ * Include the EVE configuration definitions from the include search path.
+ * A custom EVE_config.h therefore requires a compatible EVE_defs.h.
  */
-#include "EVE_defs.h"
+#include <EVE_defs.h>
 
 /* EVE CONFIG */
 
@@ -60,8 +61,9 @@
  *      long as the macros listed above are correctly defined.
  *
  *      This file is included with angle brackets in EVE_settings.h and can
- *      therefore be copied to anywhere in the include file search path to
- *      override this copy.
+ *      therefore be provided from anywhere in the include search path to
+ *      override the library copy. A compatible EVE_defs.h must also be
+ *      available in the include search path.
  *
  * @note This header is included by EVE_settings.h and may also be included
  *      directly where access to the configured values is required.
