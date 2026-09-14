@@ -1,0 +1,70 @@
+name: Test Custom Config File
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+  push:
+    branches:
+      # Trigger script on push to 'development' branch
+      #- development
+      # Trigger script on push to 'main' branch
+      - 'main'
+    paths:
+      # Trigger if this workflow file changes
+      - '.github/workflows/config_test.yml'
+      # Trigger script on push to test directory
+      - 'test/**'
+      # Trigger script on push to API
+      - 'include/**'
+      - 'source/**'
+  # Add "Run workflow" button
+  workflow_dispatch:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        eve: [ 
+          {name: "FT800/QVGA", res: "EVE_QVGA", dev: "EVE_FT800", panel: "EVE_NO_PANEL", module: "EVE_NO_MODULE" }, 
+          {name: "FT813/WQVGA", res: "0", dev: "EVE_FT813", panel: "EVE_DP_0431_11A", module: "EVE_NO_MODULE" }, 
+          {name: "BT815/WVGA", res: "EVE_WVGA", dev: "EVE_BT815", panel: "EVE_NO_PANEL", module: "EVE_NO_MODULE" }, 
+          {name: "BT817(IDM2040-7A)", res: "0", dev: "0", panel: "EVE_NO_PANEL", module: "IDM20407A" }, 
+          {name: "BT820/WUXGA", res: "EVE_WUXGA", dev: "EVE_BT820", panel: "EVE_NO_PANEL", module: "EVE_NO_MODULE" }, 
+        ]
+    
+    # Set the name of the job to include the important information
+    name: test api - ${{ matrix.eve.name }}
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: 'false'
+
+    # Test using matrix
+    - name: Generate EVE_config.h
+      run: |
+        echo "#include <EVE_defs.h>" > EVE_config.h
+        echo "#define EVE_DEVICE ${{ matrix.eve.dev }}" >> EVE_config.h
+        echo "#define EVE_DISPLAY_RES ${{ matrix.eve.res }}" >> EVE_config.h
+        echo "#define EVE_PANEL ${{ matrix.eve.panel }}" >> EVE_config.h
+        echo "#define EVE_MODULE ${{ matrix.eve.module }}" >> EVE_config.h
+      working-directory: ${{github.workspace}}/test/boottester
+
+    - name: Configure CMake
+      run: cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      working-directory: ${{github.workspace}}/test/boottester
+
+    - name: Build
+      run: cmake --build build
+      working-directory: ${{github.workspace}}/test/boottester
+
+    - name: Run test 
+      run: ${{github.workspace}}/test/boottester/build/boottester
