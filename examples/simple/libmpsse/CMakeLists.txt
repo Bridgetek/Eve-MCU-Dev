@@ -104,48 +104,26 @@ target_include_directories(eve_library PUBLIC
 )
 
 # EVE library dependencies
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    find_library(MPSSE_LIBRARY
-        NAMES mpsse
-        )
-
-    find_library(FTD2XX_LIBRARY
-        NAMES ftd2xx
-        )
-
-    if (MPSSE_LIBRARY AND FTD2XX_LIBRARY)
-        message(STATUS "libmpsse found")
-    else()
-        message(FATAL_ERROR "libmpsse not found")
-    endif()
-    
-    if (FTD2XX_LIBRARY)
-        message(STATUS "libftd2xx found")
-    else()
-        message(FATAL_ERROR "libftd2xx not found")
-    endif()
-
-    #target_link_libraries(eve_library ${CMAKE_DL_LIBS})
-    target_link_libraries(eve_library
-        mpsse
-    )
+if(NOT EXISTS "${FTDI_SUBMODULE}/libMPSSE")
+    message(FATAL_ERROR "The ftdi_libraries submodule needs to be loaded. Follow the instructions in \"\\ports\\eve_libmpsse\\README.md\"")
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    if(NOT EXISTS "${FTDI_SUBMODULE}/libMPSSE")
-        message(FATAL_ERROR "The ftdi_libraries submodule needs to be loaded. Follow the instructions in \"\\ports\\eve_libmpsse\\README.md\"")
-    endif()
+target_include_directories(eve_library PUBLIC
+        ${FTDI_SUBMODULE}/libMPSSE/include
+        ${FTDI_SUBMODULE}/libFTD2XX/include
+)
 
-    target_include_directories(eve_library PUBLIC
-            ${FTDI_SUBMODULE}/libMPSSE/include
-            ${FTDI_SUBMODULE}/libFTD2XX/include
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    target_link_libraries(eve_library
+            ${FTDI_SUBMODULE}/libMPSSE/lib-linux-x86_64/libmpsse.a
+            # This is included in the MPSSE library: ${FTDI_SUBMODULE}/libFTD2XX/lib-linux-x86_64/libftd2xx.a
     )
-
+endif()
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(eve_library
             ${FTDI_SUBMODULE}/libMPSSE/lib-windows/libmpsse.lib
             ${FTDI_SUBMODULE}/libFTD2XX/lib-windows/libftd2xx.lib
     )
-
 endif()
 
 # Source for example code

@@ -1,4 +1,3 @@
-# This test is disabled as FTDI have implemented a cloudflare filter for these files.
 name: Build Simple Example for Linux 
 
 on:

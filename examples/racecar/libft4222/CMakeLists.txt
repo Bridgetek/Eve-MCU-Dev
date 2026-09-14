@@ -114,43 +114,24 @@ target_include_directories(eve_library PUBLIC
 )
 
 # EVE library dependencies
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    find_library(FT4222_LIBRARY
-        NAMES ft4222
-        )
-
-    find_library(FTD2XX_LIBRARY
-        NAMES ftd2xx
-        )
-
-    if (FT4222_LIBRARY AND FTD2XX_LIBRARY)
-        message(STATUS "libft4222 found")
-    else()
-        message(FATAL_ERROR "libft4222 not found")
-    endif()
-    
-    if (FTD2XX_LIBRARY)
-        message(STATUS "libftd2xx found")
-    else()
-        message(FATAL_ERROR "libftd2xx not found")
-    endif()
-
-    target_link_libraries(eve_library
-	ft4222
-	ftd2xx        
-    )
+if(NOT EXISTS "${FTDI_SUBMODULE}/libFT4222")
+    message(FATAL_ERROR "The ftdi_libraries submodule needs to be loaded. Follow the instructions in \"\\ports\\eve_libft4222\\README.md\"")
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    if(NOT EXISTS "${FTDI_SUBMODULE}/libFT4222")
-        message(FATAL_ERROR "The ftdi_libraries submodule needs to be loaded. Follow the instructions in \"\\ports\\eve_libft4222\\README.md\"")
-    endif()
+target_include_directories(eve_library PUBLIC
+        ${FTDI_SUBMODULE}/libFT4222/include
+        ${FTDI_SUBMODULE}/libFTD2XX/include
+)
 
-    target_include_directories(eve_library PUBLIC
-            ${FTDI_SUBMODULE}/libFT4222/include
-            ${FTDI_SUBMODULE}/libFTD2XX/include
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    ADD_DEFINITIONS(-DWINAPI=)
+    target_link_libraries(eve_library
+            ${FTDI_SUBMODULE}/libFT4222/lib-linux-x86_64/libft4222.a
+            # This is included in the FT4222 library: ${FTDI_SUBMODULE}/libFTD2XX/lib-linux-x86_64/libftd2xx.a
+            dl pthread rt stdc++
     )
-
+endif()
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(eve_library
             ${FTDI_SUBMODULE}/libFT4222/lib-windows/LibFT4222-64.lib
             ${FTDI_SUBMODULE}/libFTD2XX/lib-windows/libftd2xx.lib

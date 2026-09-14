@@ -76,8 +76,8 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#include "ftd2xx.h"
-#include "libmpsse_spi.h"
+#include <ftd2xx.h>
+#include <libmpsse_spi.h>
 
 /* Include EVE-MCU-Dev library */
 #include <EVE.h>

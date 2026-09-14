@@ -58,8 +58,8 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#include "ftd2xx.h"
-#include "libft4222.h"
+#include <ftd2xx.h>
+#include <LibFT4222.h>
 
 /* Include EVE-MCU-Dev library */
 #include <EVE.h>

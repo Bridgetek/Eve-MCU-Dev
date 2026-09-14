@@ -1,4 +1,3 @@
-# This test is disabled as FTDI have implemented a cloudflare filter for these files.
 name: Build Simple Example for MinGW on Windows (libFT4222 and libMPSSE)
 
 on:
@@ -60,50 +59,6 @@ jobs:
 
     - name: Setup path for MinGW
       run: set PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;%PATH%"
-
-    # Form a cache of tar files from FTDI to save downloading them each time
-    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      id: ftdicache
-      uses: actions/cache@v5
-      with:
-        path: |
-          ${{ runner.Workspace }}/lib/
-        key: ${{ runner.os }}-ftdilibs-windows-1
-        restore-keys: |
-          ${{ runner.os }}-ftdilibs-windows
-
-    # If the cache hit for the FTDI tar files fails then download them
-    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      if: steps.ftdicache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p ${{ runner.Workspace }}\lib
-        cd ${{ runner.Workspace }}\lib
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/06/LibFT4222-v1.4.8.zip"
-        unzip LibFT4222-v1.4.8.zip
-        del LibFT4222-v1.4.8.zip
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-windows-1.0.8.zip"
-        unzip libmpsse-windows-1.0.8.zip
-        del libmpsse-windows-1.0.8.zip
-        cd ..
-
-    - name: Get libFT4222 library
-      if: ${{ matrix.example.library == 'libft4222' }}
-      run: |
-          pushd ${{github.workspace}}\ports\eve_libft4222
-          dir ${{ runner.Workspace }}\lib\imports
-          install_libft4222.bat ${{ runner.Workspace }}\lib\imports
-          popd
-
-    - name: Get libMPSSE library
-      if: ${{ matrix.example.library == 'libmpsse' }}
-      run: |
-          pushd ${{github.workspace}}\ports\eve_libmpsse
-          call install_libmpsse.bat ${{ runner.Workspace }}\lib\release
-          echo Removing the "L" macro from LoadLibrary(L"ftd2xx.dll") in "ftdi_infra.c" line 246
-          sed -i -e "s|LoadLibrary(L|LoadLibrary(|" ftdi_infra.c
-          echo "Checking..."
-          findstr "LoadLibrary(" ftdi_infra.c
-          popd
 
     # Test using matrix
     - name: Configure CMake
