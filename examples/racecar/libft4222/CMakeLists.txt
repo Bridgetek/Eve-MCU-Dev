@@ -91,7 +91,7 @@ add_compile_definitions(USE_FT4222=0)
 add_compile_definitions(ASSETS=USE_FILES)
 
 # Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=1)
+add_compile_definitions(EVE_DEBUG_LEVEL=0)
 
 # Turn on profiling of co-processor lists
 add_compile_definitions(EVE_COPROC_PROFILE)

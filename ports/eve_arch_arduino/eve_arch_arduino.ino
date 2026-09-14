@@ -46,21 +46,13 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-/** @brief Library Includes
- * NOTE That all the file used in the example sketch must be in the same directory
- * as the sketch. Copy this file, the include files from the include directory,
- * the source files from the source directory of the library to the sketch 
- * location.
- * It will be possible to make a library with these files.
- * Include these files as "C" files.
+/** @brief Library includes
+ * @details Includes the EVE-MCU-Dev MCU interface implemented by this
+ *      Arduino port. The C interface is exposed to this C++ source using
+ *      C linkage.
  */
 //@{
 extern "C" {
-/* Include functions for EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-/* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
-#include <HAL.h> 
-/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 }
 //@}
@@ -115,19 +107,24 @@ int MCU_Deinit(void) {
 
 int MCU_Setup(void) {
 
-  /* QSPI Configuration */
-#ifdef EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
-#endif // EVE_QSPI_ENABLE
-
   /* Additional SPI Configuration */
   SPI.endTransaction();
 
   // Increase SPI speed to 8 MHz after initialisation is complete
-  // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+  // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
   return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // Simple endian alignment for tested Arduino devices
 #define bswap16(x) __builtin_bswap16(x)

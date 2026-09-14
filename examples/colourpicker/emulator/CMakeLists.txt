@@ -60,7 +60,7 @@ set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 
 # Print debugging information
-set(DEBUG_LEVEL 1)
+set(EVE_DEBUG_LEVEL 1)
 
 # Point to where to find the platform source file
 add_executable(${PROJECT_NAME}

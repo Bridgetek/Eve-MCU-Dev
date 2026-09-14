@@ -283,7 +283,7 @@ int MCU_Init(void)
 #elif EVE_PANEL == EVE_DP_0502_11A
         "DP-0502-11A WQVGA (Resistive)"
 #elif EVE_PANEL == EVE_DP_0701_01A
-        "DP-0701-11A WVGA (Capacitive)"
+        "DP-0701-01A WVGA (Capacitive)"
 #elif EVE_PANEL == EVE_DP_1012_01A
         "DP-1012-01A WUXGA (Capacitive)"
 #elif EVE_PANEL == EVE_DP_1561_01A

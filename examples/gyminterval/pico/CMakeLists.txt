@@ -114,7 +114,7 @@ include_directories(
 add_compile_definitions(PLATFORM_RP2040)
 
 # Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=0)
+add_compile_definitions(EVE_DEBUG_LEVEL=0)
 
 # Milliseconds to wait for stdio connection
 # (will also have stdio_usb_connected() call in main to wait for connection)

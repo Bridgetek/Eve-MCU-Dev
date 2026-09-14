@@ -56,8 +56,6 @@
 #include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
 // Note there is no endian.h for this platform.
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -113,7 +111,13 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    /* Increase SPI speed after initialisation is complete.
+     * See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
+     * This will set the SPI to maximum speed configured
+     * in STM32CubeMX.
+     * This can be a maximum of 60 MHz for BT820, or 30 MHz
+     * on FT81x, BT88x, BT81x. */
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
     if (HAL_SPI_Init(&hspi1) != HAL_OK)
     {
         /* Initialization Error */
@@ -123,6 +127,15 @@ int MCU_Setup(void)
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE is not supported by the PLATFORM_STM32 port
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 inline void MCU_CSlow(void)
 {

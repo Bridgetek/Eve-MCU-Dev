@@ -41,7 +41,7 @@
 // Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_BEAGLEBONE)
 
-#pragma message "Compiling " __FILE__ " for Beaglebone Black"
+#pragma message "Compiling " __FILE__ " for BeagleBone Black"
 
 /* EVE MCU HEADER */
 
@@ -110,7 +110,7 @@ int Platform_Init(void)
         return -1;
     }
 
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     uint32_t speed = 1000000;
     ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
 
@@ -203,15 +203,21 @@ int Platform_Deinit(void)
 
 int Platform_Setup(void)
 {
-
-#if defined EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on beaglebone
-#endif // EVE_QSPI_ENABLE
-    
-return 0;
+    /* Additional SPI Configuration */       
+    return 0;
 }
 
-int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)
+#if defined(EVE_QSPI_ENABLE)
+int Platform_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on BeagleBone
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+int Platform_SPITransfer(struct spi_ioc_transfer *xfer, int count)
 {
     return (ioctl(spiHandle, SPI_IOC_MESSAGE(count), xfer));
 }

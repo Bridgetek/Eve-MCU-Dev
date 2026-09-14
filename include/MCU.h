@@ -45,17 +45,33 @@
 #ifndef _EVE_MCU_HEADER_H
 #define _EVE_MCU_HEADER_H
 
+/* EVE MCU INCLUDES */
+
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* -------------------------------------------------------------------------
- * Prerequisite: This file must be included after EVE.h so that EVE_API is 
- * defined and the IS_EVE_API and EVE_API_SELECT macros are available.
- * ------------------------------------------------------------------------- */
-#if !(defined(EVE_API) && defined(IS_EVE_API) && defined(EVE_API_SELECT))
-#error "MCU.h requires to be included after EVE.h (defines EVE_API)."
-#endif
+/*
+ * EVE_settings.h is used only for derived build-time configuration.
+ * MCU implementations remain independent of the public EVE API
+ * and HAL implementation.
+ */
+#include "EVE_settings.h"
 
-/* EVE MCU */
+/*
+ * Support deprecated MCU SPI configuration macros.
+ * User-supplied deprecated values take precedence over the replacement
+ * macros and are retained for one release cycle.
+ */
+#if defined(MCU_SPI_TRANSFER)
+#undef EVE_SPI_MAX_TRANSFER
+#define EVE_SPI_MAX_TRANSFER MCU_SPI_TRANSFER
+#endif // defined(MCU_SPI_TRANSFER)
+
+#if defined(MCU_SPI_TIMEOUT)
+#undef EVE_SPI_TIMEOUT
+#define EVE_SPI_TIMEOUT MCU_SPI_TIMEOUT
+#endif // defined(MCU_SPI_TIMEOUT)
+
+/* EVE MCU DEFINITIONS */
 
 /**
  * @brief MCU allows large SPI transfers.
@@ -67,28 +83,33 @@
  *      size plus a small number of bytes for protocol.
  *      A larger buffer is only needed if fast reads of large blocks 
  *      of data are required from the device. Normal operation can be
- *      acheived with 32-bit reads with good performance.
+ *      achieved with 32-bit reads with good performance.
  */
 #if IS_EVE_API(5)
+
+#if !defined(EVE_SPI_MAX_TRANSFER)
+/* platform-specific default */
 #if defined (PLATFORM_STM32_CUBE) || defined(PLATFORM_FT9XX) \
     || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
     || defined(PLATFORM_ESP32) || defined(PLATFORM_RP2040) \
     || defined(PLATFORM_MSPM0)
-#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
-#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
 #elif defined (USE_MPSSE) || defined (USE_FT4222) || defined(PLATFORM_EMULATOR)
-#define MCU_SPI_TRANSFER 0x100
+#define EVE_SPI_MAX_TRANSFER 0x100
 #elif defined(USE_LINUX_SPI_DEV)
-#define MCU_SPI_TRANSFER sizeof(uint32_t)
+#define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
 #endif
-#endif
+#endif // !defined(EVE_SPI_MAX_TRANSFER)
+
+#endif // IS_EVE_API(5)
 
 /**
  * @brief MCU SPI bus speed.
  * @details In general, a port is responsible for ensuring timeout accuracy on the SPI bus.
- *      Timeout for a read is a maximum of 7uS for BT82x.
+ *      Timeout for a read is a maximum of 7 uS for BT82x.
  *      The timeout value here must be adjusted for the host system SPI clock speed.
  *      The SPI clock speed is set in the MCU_Init(void) function for a port.
  *      Values here match the default values set in the ports.
@@ -99,45 +120,49 @@
  *      The minimum timeout allowed is 8 bytes.
  */
 #if IS_EVE_API(5)
+
+#if !defined(EVE_SPI_TIMEOUT)
+/* MCU-specific default */
 #if defined(PLATFORM_FT9XX) 
 /* FT9xx SPI Bus is set to 12.5 MHz by default */
-#define MCU_SPI_TIMEOUT 16
+#define EVE_SPI_TIMEOUT 16
 
 #elif defined(PLATFORM_RP2040)
 /* RP2040 SPI bus is set to 10 MHz by default */
-#define MCU_SPI_TIMEOUT 16
+#define EVE_SPI_TIMEOUT 16
 
 #elif defined (USE_MPSSE) 
-/* libMPSSE and libft4222 generate a 15 MHz SPI bus - 16 bytes is sufficient. */
-#define MCU_SPI_TIMEOUT 16
+/* libMPSSE generates a 15 MHz SPI bus - 16 bytes is sufficient. */
+#define EVE_SPI_TIMEOUT 16
 
 #elif defined (USE_FT4222)
-/* libMPSSE and libft4222 generate a 20 MHz SPI bus - 16 bytes is sufficient. */
-#define MCU_SPI_TIMEOUT 16
+/* libft4222 generates a 20 MHz SPI bus - 16 bytes is sufficient. */
+#define EVE_SPI_TIMEOUT 16
 
 #elif defined (PLATFORM_STM32_CUBE)
-/* STM32 SPI bus is set to 60 MHz by default */
+/* STM32 SPI bus is set to 60 MHz by default for EVE 5 */
 #if defined(EVE_QSPI_ENABLE)
-#define MCU_SPI_TIMEOUT 56
+#define EVE_SPI_TIMEOUT 56
 #else
-#define MCU_SPI_TIMEOUT 16
-#endif
+#define EVE_SPI_TIMEOUT 16
+#endif // defined(EVE_QSPI_ENABLE)
 
 #elif  defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
-    || defined(PLATFORM_ESP32)|| defined(PLATFORM_MSPM0)
-/* The default SPI bus for embedded MCUs to 1 MHz */
-#define MCU_SPI_TIMEOUT 8
+    || defined(PLATFORM_ESP32) || defined(PLATFORM_MSPM0)
+/* The default SPI bus for embedded MCUs is set to 1 MHz */
+#define EVE_SPI_TIMEOUT 8
 
 #elif defined(ARDUINO)
 /* Arduino SPI bus is set to 1 MHz by default */
-#define MCU_SPI_TIMEOUT 8
+#define EVE_SPI_TIMEOUT 8
 
 #elif defined(PLATFORM_EMULATOR)
-#define MCU_SPI_TIMEOUT 8
-#endif
+#define EVE_SPI_TIMEOUT 8
+#endif // MCU selection
+#endif // !defined(EVE_SPI_TIMEOUT)
 
-#endif
+#endif // IS_EVE_API(5)
 
 /* EVE MCU */
 
@@ -158,12 +183,26 @@ int MCU_Init(void);
 int MCU_Deinit(void);
 
 /**
- * @brief MCU specific setup
- * @details Called after the EVE has been power cycled and started. Contains
- *      any MCU-specific configuration options for the EVE.
+ * @brief MCU specific post-initialisation setup
+ * @details Called after EVE has been power cycled and started. This may be
+ *      used to apply MCU-specific interface settings which are only suitable
+ *      after EVE has completed boot, such as increasing the SPI clock rate.
  * @returns 0 if successful, -1 if failed.
  */
 int MCU_Setup(void);
+
+#if defined(EVE_QSPI_ENABLE)
+/**
+ * @brief MCU specific SPI interface mode configuration
+ * @details Configures the MCU SPI peripheral and associated GPIOs for the
+ *      requested EVE SPI interface mode. This function only configures the
+ *      MCU side of the interface. Configuration of the EVE device SPI mode
+ *      is performed by the HAL layer.
+ * @param mode SPI interface mode to configure.
+ * @returns 0 if successful, -1 if failed.
+ */
+int MCU_SetSPIMode(uint8_t mode);
+#endif // defined(EVE_QSPI_ENABLE)
 
 /**
  * @brief MCU specific chip select enable
@@ -203,8 +242,7 @@ void MCU_PDhigh(void);
  * @brief MCU specific interrupt input
  * @details This function will check the interrupt input GPIO for an
  *      assertion of the interrupt line from the EVE device.
- *      The mechanism for detecting the input signal is platform
- *      specific.
+ *      The mechanism for detecting the input signal is MCU specific.
  * @returns zero if there is no interrupt, non-zero if the EVE device is
  *      asserting an interrupt.
  */
@@ -223,71 +261,71 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length);
  * @brief MCU specific SPI read
  * @details Performs an SPI read of the data block sending zeros as data
  *      to the device as dummy writes.
- * @param DataToWrite - pointer to buffer to read.
+ * @param DataToRead - pointer to buffer to read.
  * @param length - number of bytes to read.
  */
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length);
 
 /**
- * @brief MCU specific SPI 8 bit read
+ * @brief MCU specific SPI 8-bit read
  * @details Performs an SPI dummy write and returns the data received in response.
  * @returns Data received from EVE.
  */
 uint8_t MCU_SPIRead8(void);
 
 /**
- * @brief MCU specific SPI 8 bit write
- * @details Performs an SPI write and discards the data received inresponse.
- * @param Data to write to EVE.
+ * @brief MCU specific SPI 8-bit write
+ * @details Performs an SPI write and discards the data received in response.
+* @param DataToWrite - Data to write to EVE.
  */
 void MCU_SPIWrite8(uint8_t DataToWrite);
 
 /**
- * @brief MCU specific SPI 16 bit read
- * @details Performs an SPI dummy write and returns the data received in  response.
+ * @brief MCU specific SPI 16-bit read
+ * @details Performs an SPI dummy write and returns the data received in response.
  * @returns Data received from EVE.
  */
 uint16_t MCU_SPIRead16(void);
 
 /**
- * @brief MCU specific SPI 16 bit write
+ * @brief MCU specific SPI 16-bit write
  * @details Performs an SPI write and discards the data received in response.
- * @param Data to write to EVE.
+ * @param DataToWrite - Data to write to EVE.
  */
 void MCU_SPIWrite16(uint16_t DataToWrite);
 
 /**
- * @brief MCU specific SPI 24 bit read *** DEPRECATED ***
+ * @brief MCU specific SPI 24-bit read *** DEPRECATED ***
  * @details Performs an SPI dummy write and returns the data received in
- *      response. There is no use case for a 24 bit read on EVE.
+ *      response. There is no use case for a 24-bit read on EVE.
  * @returns Data received from EVE.
  */
 /* uint32_t MCU_SPIRead24(void); */
 
 /**
- * @brief MCU specific SPI 24 bit write
+ * @brief MCU specific SPI 24-bit write
  * @details Performs an SPI write and discards the data received in response.
- * @param Data to write to EVE.
+* @param DataToWrite - Data to write to EVE.
  */
 void MCU_SPIWrite24(uint32_t DataToWrite);
 
 /**
- * @brief MCU specific SPI 32 bit read
- * @details Performs an SPI dummy write and returns the data received inresponse.
+ * @brief MCU specific SPI 32-bit read
+ * @details Performs an SPI dummy write and returns the data received in response.
  * @returns Data received from EVE.
  */
 uint32_t MCU_SPIRead32(void);
 
 /**
- * @brief MCU specific SPI 32 bit write
+ * @brief MCU specific SPI 32-bit write
  * @details Performs an SPI write and discards the data received in response.
- * @param Data to write to EVE.
+ * @param DataToWrite - Data to write to EVE.
  */
 void MCU_SPIWrite32(uint32_t DataToWrite);
 
 /**
  * @brief MCU specific 20 ms delay
- * @details Cause the MCU to idle or otherwise delay for a minimum of
+ * @details Causes the MCU to idle or otherwise delay for a minimum of
  *      20 milliseconds. This is used during initialisation to perform a
  *      power down of the EVE for a controlled minimum period of time.
  */
@@ -295,14 +333,14 @@ void MCU_Delay_20ms(void);
 
 /**
  * @brief MCU specific 500 ms delay
- * @details Cause the MCU to idle or otherwise delay for a minimum of
+ * @details Causes the MCU to idle or otherwise delay for a minimum of
  *      500 milliseconds. This is used during initialisation to perform a
  *      power down of the EVE for a controlled minimum period of time.
  */
 void MCU_Delay_500ms(void);
 
 /**
- * @brief MCU specific ms clock counter
+ * @brief MCU specific millisecond clock counter
  * @details Get the current monotonic clock counter from the MCU for the
  *      purpose of making a useful timeout.
  */

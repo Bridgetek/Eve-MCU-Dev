@@ -172,12 +172,12 @@ void setup(void)
 	// UART initialisation
 	debug_uart_init();
 
-#if DEBUG_LEVEL > 0
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 	/* Print out a welcome message... */
 	printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
 	printf ("---------------------------------------------------------------- \r\n");
 	printf ("Welcome to EVE-MCU-Dev Simple Example for FT9xx\r\n");
-#endif
+#endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }
 
 /* Initializes the UART for the testing */
@@ -205,10 +205,10 @@ void debug_uart_init(void)
 			uart_parity_none,         /* Parity */
 			uart_stop_bits_1);        /* No. Stop Bits */
 
-#if DEBUG_LEVEL > 0
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 	uart_puts(UART0,
 			"\x1B[2J" /* ANSI/VT100 - Clear the Screen */
 			"\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
 	);
-#endif
+#endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }

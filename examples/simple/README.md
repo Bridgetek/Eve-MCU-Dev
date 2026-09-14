@@ -30,7 +30,7 @@ This example supports the following platforms:
 | --- | --- | 
 | [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
 | [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
-| [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
+| [BeagleBone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
 | [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) _(3)_ | 
 | [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
 | [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) _(1)_ _(3)_ | 

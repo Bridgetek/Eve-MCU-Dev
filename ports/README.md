@@ -9,7 +9,7 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 | Port Name | Platform Macro | Port Directory | Variant | Test Status _(1)_ |
 | --- | --- | --- | --- | --- |
 | Arduino | `ARDUINO` _(2)_ | [eve_arch_arduino](eve_arch_arduino/README.md) | Arduino Leonardo and Arduino Zero | Pass |
-| Beaglebone | `PLATFORM_BEAGLEBONE` | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | Beaglebone Black | Under Test |
+| BeagleBone | `PLATFORM_BEAGLEBONE` | [eve_arch_beaglebone](eve_arch_beaglebone/README.md) | BeagleBone Black | Under Test |
 | Expressif ESP32 | `PLATFORM_ESP32`  _(4)_  | [eve_arch_esp32](eve_arch_esp32/README.md) | SparkFun ESP32 Thing | Pass |
 | Bridgetek FT9xx | `PLATFORM_FT9XX` | [eve_arch_ft9xx](eve_arch_ft9xx/README.md) | FT90X and FT93X | Pass |
 | TI MSP430 | `PLATFORM_MSP430` | [eve_arch_msp](eve_arch_msp/README.md) | MSP430G2553 | Pass |

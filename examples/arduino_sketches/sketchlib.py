@@ -15,7 +15,9 @@ def add_files(src_dir, dest_dir, file_list):
                 dino = os.path.splitext(d)[0] + '.ino'
             added_files.append((os.path.join(src_dir,d), os.path.join(dest_dir,dino)))
     except:
-        raise Exception("The directory \"{src_dir}\" doesn't look correct")
+        raise Exception(f"The directory \"{src_dir}\" doesn't look correct")
+    return added_files
+
     return added_files
 
 # Copy and normalise file to be added to the sketch

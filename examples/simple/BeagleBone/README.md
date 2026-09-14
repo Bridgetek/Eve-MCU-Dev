@@ -1,8 +1,8 @@
-# EVE-MCU-Dev Simple Beaglebone Black Example
+# EVE-MCU-Dev Simple BeagleBone Black Example
 
 [Back](../README.md)
 
-## Compiling the Simple Beaglebone Black Example
+## Compiling the Simple BeagleBone Black Example
 
 The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be easily installed by the following command.
 
@@ -35,7 +35,7 @@ Default builds are compiled with debugging enabled.
 
 The executable file is `build/simple_BeagleBone`. This can be run from the command line. 
 
-## Running the Simple Beaglebone Black Example
+## Running the Simple BeagleBone Black Example
 
 The executable image is found in the file `simple_BeagleBone` in the current directory. To run this file simple call it from the command line.
 ```console

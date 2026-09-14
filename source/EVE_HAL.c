@@ -47,12 +47,16 @@
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library Hardware Abstraction layer */
 #include <HAL.h> 
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+/* Include EVE register definitions used by the HAL layer */
+#include "EVE_registers.h"
+/* Include the EVE command definitions used by the HAL layer */
+#include "EVE_commands.h"
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 // Used to run LCD initialisation where required 
 #if defined(EVE_LCD_INIT)
@@ -62,6 +66,20 @@
 /* EVE HAL INCLUDES END */
 
 /* EVE HAL */
+
+/*
+ * Report deprecated MCU SPI configuration items.
+ * This is done here since it will only occur once.
+ */
+#if defined(MCU_SPI_TRANSFER)
+#pragma message ("Warning: Configuration setting MCU_SPI_TRANSFER deprecated in favour of EVE_SPI_MAX_TRANSFER.")
+#endif // defined(MCU_SPI_TRANSFER)
+#if defined(MCU_SPI_TIMEOUT)
+#pragma message ("Warning: Configuration setting MCU_SPI_TIMEOUT deprecated in favour of EVE_SPI_TIMEOUT.")
+#endif // defined(MCU_SPI_TIMEOUT)
+#if defined(HAL_MAX_CHUNK_SIZE)
+#pragma message ("Warning: Configuration setting HAL_MAX_CHUNK_SIZE deprecated in favour of EVE_HAL_CHUNK_SIZE.")
+#endif // defined(HAL_MAX_CHUNK_SIZE)
 
 // Used to navigate command ring buffer on FT800 and when EVE_USE_CMDB_METHOD
 // is not defined.
@@ -156,7 +174,7 @@ int HAL_EVE_Init(void)
  
     EVE_DEBUG_PRINTF("[Boot complete]\n");
  
-#endif  //IS_EVE_API(1, 2, 3, 4)
+#endif //IS_EVE_API(1, 2, 3, 4)
 
 #if IS_EVE_API(5)
 
@@ -242,15 +260,23 @@ int HAL_EVE_Init(void)
 
     EVE_DEBUG_PRINTF("[Boot complete]\n");
 
-#endif  //IS_EVE_API(5)
-
-    // Perform any additional MCU functions. This is when the SPI interface
-    // could be switched to QuadSPI in the MCU code.
+#endif //IS_EVE_API(5)
+    
+    // Apply post-boot MCU configuration, such as increasing the SPI clock frequency.
     if (MCU_Setup() != 0)
     {
         EVE_DEBUG_ERROR("MCU_Setup() Failed.\n");
         return -1;
     }
+
+#if defined(EVE_QSPI_ENABLE)
+    // Switch both EVE and the MCU interface from single SPI to Quad SPI.
+    if (HAL_SetSPIMode(EVE_SPI_QUAD_CHANNEL) != 0)
+    {
+        EVE_DEBUG_ERROR("Unable to enable Quad SPI.\n");
+        return -1;
+    }
+#endif // defined(EVE_QSPI_ENABLE)
 
 #if defined(EVE_USE_INTERRUPT_METHOD)
     // Enable only the INT_CMDEMPTY interrupt. Other interrupt sources
@@ -392,19 +418,19 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
 #if IS_EVE_API(1, 2, 3, 4)
     MCU_SPIRead(buffer, length);
 #else
-    unsigned char bb[MCU_SPI_TIMEOUT];
+    unsigned char bb[EVE_SPI_TIMEOUT];
     uint32_t recvlen = 0;
     int i;
-    // Read MCU_SPI_TIMEOUT bytes before the "0x01" that signifies data ready.
-    MCU_SPIRead(bb, MCU_SPI_TIMEOUT);
-    for (i = 0; i < MCU_SPI_TIMEOUT; i++)
+    // Read EVE_SPI_TIMEOUT bytes before the "0x01" that signifies data ready.
+    MCU_SPIRead(bb, EVE_SPI_TIMEOUT);
+    for (i = 0; i < EVE_SPI_TIMEOUT; i++)
     {
         if (bb[i] == 1)
         {
             i++;
             // Number of bytes received that are valid.
-            recvlen = MCU_SPI_TIMEOUT - i;
-            // Number of valid bytes can range from 0 to MCU_SPI_TIMEOUT-1.
+            recvlen = EVE_SPI_TIMEOUT - i;
+            // Number of valid bytes can range from 0 to EVE_SPI_TIMEOUT-1.
             // Only take the requested length of data from the input buffer.
             if (length < recvlen)
             {
@@ -420,9 +446,9 @@ void HAL_Read(uint8_t *buffer, uint32_t length)
             while (length > 0)
             {
                 uint32_t nn = length;
-                if (nn > MCU_SPI_TRANSFER)
+                if (nn > EVE_SPI_MAX_TRANSFER)
                 {
-                    nn = MCU_SPI_TRANSFER;
+                    nn = EVE_SPI_MAX_TRANSFER;
                 }
                 MCU_SPIRead(buffer, nn);
                 length -= nn;
@@ -669,7 +695,7 @@ void HAL_WriteCmdPointer(void)
 {
 #if defined(EVE_USE_INTERRUPT_METHOD)
     // Clear the interrupt flags register and reset the interrupt line.
-    EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY);
+    HAL_GetInterrupt(EVE_INT_CMDEMPTY);
 #endif // defined(EVE_USE_INTERRUPT_METHOD)
 
     // Do nothing if no commands have been added.
@@ -731,7 +757,7 @@ uint8_t HAL_WaitCmdFifoEmpty(uint32_t timeout)
             // Timeout break from interrupt test.
             if ((curtime - starttime) > timeout) break;
             // Read of REG_INT_FLAGS to clear interrupt.
-        } while (!EVE_LIB_GetInterrupt(EVE_INT_CMDEMPTY));
+        } while (!HAL_GetInterrupt(EVE_INT_CMDEMPTY));
 
         // Read the graphics processor read pointer (contains error flag).
         readCmdPointer = HAL_MemRead32(EVE_REG_CMD_READ);
@@ -818,16 +844,26 @@ uint16_t HAL_CheckCmdFreeSpace(void)
 #endif // defined(EVE_USE_CMDB_METHOD)
 }
 
-void HAL_SetSPIMode(uint32_t mode)
+#if defined(EVE_QSPI_ENABLE)
+int HAL_SetSPIMode(uint8_t mode)
 {
+    // check the mode input is valid
+    if ((mode != EVE_SPI_SINGLE_CHANNEL) &&
+        (mode != EVE_SPI_DUAL_CHANNEL) &&
+        (mode != EVE_SPI_QUAD_CHANNEL))
+    {
+        return -1;
+    }
+
 #if IS_EVE_API(1)
-    // QuadSPI is not supported on FT80x.
+    // QuadSPI is not supported on FT80x
     (void)mode;
-#elif IS_EVE_API(2,3,4)
+    return -1;
+#elif IS_EVE_API(2, 3, 4) // EVE API 2-4
     // Turn on EVE quad-SPI for FT81x and BT81x devices.
     // Write EVE_REG_SPI_WIDTH and mask SPI_WIDTH.
-    HAL_MemWrite32(EVE_REG_SPI_WIDTH, ((uint32_t)mode) & 3);
-#elif IS_EVE_API(5)
+    HAL_MemWrite32(EVE_REG_SPI_WIDTH, ((uint32_t)mode) & 0x03UL);
+#elif IS_EVE_API(5) // EVE API 5
     // Turn on EVE quad-SPI for FT82x devices.
     // Read REG_SYS_CFG and mask SPI_WIDTH.
     uint32_t cfg;
@@ -835,12 +871,34 @@ void HAL_SetSPIMode(uint32_t mode)
     cfg = cfg | (((uint32_t)mode) << 8);
     HAL_MemWrite32(EVE_REG_SYS_CFG, cfg);
 #endif 
+    
+    // call the MCU layer SPI mode configuration implementation
+    // and return its result
+    return MCU_SetSPIMode(mode);
 }
+#endif // defined(EVE_QSPI_ENABLE)
 
 int HAL_Int(void)
 {
     return MCU_Int();
 }
+
+#if defined(EVE_MANAGE_INTERRUPTS)
+// Get the status of the interrupt flag register
+uint8_t HAL_GetInterrupt(uint8_t mask)
+{
+    static uint8_t curr = 0;
+    uint8_t val;
+    
+    curr |= HAL_MemRead32(EVE_REG_INT_FLAGS);
+    // Test mask of set bits
+    val = curr & mask;
+    // Consume tested bits
+    curr = curr & ~mask;
+
+    return val;
+}
+#endif // defined(EVE_MANAGE_INTERRUPTS)
 
 /* EVE HAL END */
 

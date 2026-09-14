@@ -41,11 +41,16 @@
 #ifndef _EVE_CONFIG_H
 #define _EVE_CONFIG_H
 
+/*
+ * Include the EVE configuration definitions from the include search path.
+ * A custom EVE_config.h therefore requires a compatible EVE_defs.h.
+ */
+#include <EVE_defs.h>
+
 /* EVE CONFIG */
 
 /**
  * @brief EVE device and screen configuration file.
- * @note IMPORTANT This header file must be included by EVE.h.
  * @details The macro EVE_DEVICE and the panel display settings (EVE_DISP_*) 
  *      must be configured in this file. 
  *      For BT82x the EVE_RAM_G_CONFIG_SIZE macro must also be configured.
@@ -54,9 +59,14 @@
  * 
  *      To make a custom configuration file, edit this file as required as 
  *      long as the macros listed above are correctly defined.
- *      This file is included with angle brackets in EVE.h and can therefore 
- *      be copied to anywhere in the include file search path to override this 
- *      copy.
+ *
+ *      This file is included with angle brackets in EVE_settings.h and can
+ *      therefore be provided from anywhere in the include search path to
+ *      override the library copy. A compatible EVE_defs.h must also be
+ *      available in the include search path.
+ *
+ * @note This header is included by EVE_settings.h and may also be included
+ *      directly where access to the configured values is required.
  */
 
 /** 
@@ -119,17 +129,18 @@
 #ifndef EVE_DISPLAY_RES
 #define EVE_DISPLAY_RES EVE_WVGA
 #endif
-//@}
+//@} 
 
 /**
  * @brief Enable or Disable QuadSPI.
- * @details If the macro is set then the platform port may only enable QSPI
- *      on the EVE device (using HAL_SetSPIMode) if  is supported by the platform.
+ * @details When enabled, the HAL configures the EVE device for the requested SPI
+ *      interface mode. The HAL then uses MCU_SetSPIMode() or Platform_SetSPIMode()
+ *      to configure the host SPI interface accordingly.
  *      EVE_QSPI_ENABLE may be defined externally to enable QSPI, otherwise it
  *      remains undefined.
  * 
  * @note QSPI is only supported on devices from EVE API 2 onwards. It is not
- *      supported on FT80x devices. For default set this to disabled.
+ *      supported on FT80x devices. By defualt, this is disabled.
  * @note The QUADSPI_ENABLE macro has been deprecated in favour of EVE_QSPI_ENABLE.
  *      Please update references accordingly.
  */
@@ -140,7 +151,7 @@
 //@}
 
 /**
- * @brief Setup RAM_G size for BT82X only
+ * @brief Set RAM_G size for BT82X only
  */
 //@{
 #ifndef EVE_RAM_G_CONFIG_SIZE
@@ -149,9 +160,9 @@
 //@}
 
 /**
- * @brief Select the touchscreen automatically for BT82X or use the EVE_REG_TOUCH_CONFIG.
- *      default for FT81X/BT88X/BT81X (#undef). Assign the desired i2c address or type (BT82X)
- *      by defining the value (#define). 
+ * @brief Select the touchscreen automatically for BT82X or use EVE_REG_TOUCH_CONFIG.
+ *      The default for FT81X/BT88X/BT81X is undefined (#undef). Assign the desired 
+ *      I2C address or type (BT82X) by defining the value (#define). 
  */
 //@{
 #undef EVE_TOUCH_ADDR
@@ -159,10 +170,10 @@
 //@}
 
 /**
- * @brief Enable or Disable custom couch FW load.
- * @details If the macro is set then custom touch FW will be loaded during IC
+ * @brief Enable or Disable custom touch FW load.
+ * @details If the macro is set, then custom touch FW will be loaded during EVE
  *      initialisation from the binary data array in the "custom_touch_fw.c" file.
- *			Applicable for FT81X/BT88X/BT81X devices only.
+ *		Applicable to FT81X/BT88X/BT81X devices only.
  *
  *      EVE_CUSTOM_TOUCH may be defined externally to enable custom touch.
  *      It is also enabled automatically for panels which require it.
@@ -185,9 +196,9 @@
  * 
  *      If this is undefined then EVE_COPRO_CMD_WRITE is used for EVE1
  *      and EVE_COPRO_CMDB_WRITE is used for EVE2 onwards.
- *      If this is set for EVE_COPRO_CMDB_WRITE on EVE1 then the setting
- *      will be modified to EVE_COPRO_CMD_WRITE.
- *      The EVE_COPRO_INT can be used to modify the EVE_COPRO_CMD_WRITE
+ *      If EVE_COPRO_CMDB_WRITE is selected on EVE1, the setting
+ *      will be changed to EVE_COPRO_CMD_WRITE.
+ *      EVE_COPRO_INT can be used to modify the EVE_COPRO_CMD_WRITE
  *      method to use the hardware INT# line as well. This requires support
  *      from the port in the MCU layer.
  */
@@ -204,7 +215,7 @@
  * 
  *      The LCD panel driver interface requires MCU-specific support
  *      and may use the SPI interface shared with EVE using a separate CS#
- *      signal, a separate SPI interface, or GPIO bit-banging.
+ *      signal, a separate SPI interface, or GPIO based bit-banging.
  *      If this macro is undefined then no LCD panel driver
  *      initialisation is performed.
  */

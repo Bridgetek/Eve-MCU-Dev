@@ -49,8 +49,6 @@
 #include "ti_msp_dl_config.h"
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -126,14 +124,18 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* QSPI Configuration */
-#ifdef EVE_QSPI_ENABLE
-#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSPM0
-#endif // EVE_QSPI_ENABLE
-
     /* Additional SPI Configuration */
     return 0;
 }
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on MSPM0
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 /* State machine to keep track of the current SPI Controller mode */
 typedef enum SPI_ControllerModeEnum {

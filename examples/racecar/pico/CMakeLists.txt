@@ -113,7 +113,7 @@ include_directories(
 add_compile_definitions(PLATFORM_RP2040)
 
 # Enable debug logging output to stdio
-add_compile_definitions(DEBUG_LEVEL=0)
+add_compile_definitions(EVE_DEBUG_LEVEL=0)
 
 # The pico port can only use the EVE Flash for storage of assets
 # Comment out this line to set the method in common/eve_example.h

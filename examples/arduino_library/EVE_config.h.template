@@ -41,6 +41,11 @@
 #ifndef _EVE_CONFIG_H_
 #define _EVE_CONFIG_H_
 
+#include <stdint.h>
+
+/* Include the EVE configuration definitions. */
+#include "EVE_defs.h"
+
 // Default platform selection
 #ifndef EVE_API
 #define EVE_API ### EVE API ###

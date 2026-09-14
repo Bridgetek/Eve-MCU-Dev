@@ -62,8 +62,6 @@
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include EVE-MCU-Dev library */
-#include <EVE.h>
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
@@ -131,7 +129,7 @@ int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
     /* Increase SPI speed after initialisation is complete.
-     * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+     * See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
      * This will set the SPI to maximum speed configured
      * in STM32CubeMX.
      * This can be a maximum of 60 MHz for BT820, or 30 MHz
@@ -145,6 +143,15 @@ int MCU_Setup(void)
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE set but SMT32 configuration is for Single SPI 
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 /* EVE_CS__GPIO_Port and EVE_CS__Pin are defined by STM32CubMX.
  * The "User Label" for the CS pin is set to "EVE CS#" in the

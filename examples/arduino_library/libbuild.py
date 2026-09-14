@@ -257,8 +257,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 if flag == 0:
                     # Simulate preprocessor by excluding/replacing code
                     # Exclude all non-matching lines for EVE_API and EVE_SUB_API
-                    match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\((.+)\)", line)
-                    match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\((.+)\)", line)
+                    match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\(([^)]+)\)", line)
+                    match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\(([^)]+)\)", line)
                     # Exclude all lines within IS_ARDUINO_LIB blocks
                     match_ifardulib = re.match(r"\s*#if\s+(!*)defined\s*\(IS_ARDUINO_LIB\)", line)
                     # Handle general if/elif/ifdef and ifndef blocks
@@ -547,10 +547,21 @@ cppcmd.append(dest_api)
 coderes = subprocess.run(cppcmd, stdout=subprocess.PIPE)
 
 # Command line to harvest all #defines from the source code
-cppcmd.insert(1, '-dM')
-defineres = subprocess.run(cppcmd, stdout=subprocess.PIPE)
+definecmd = cppcmd.copy()
+definecmd.insert(1, '-dM')
+defineres = subprocess.run(definecmd, stdout=subprocess.PIPE)
 
-if (coderes.returncode == 0) and (defineres.returncode == 0):
+# EVE_defs.h now contains configuration constants which are not guaranteed
+# to be retained by the EVE_API.c preprocessing path. Harvest these
+# definitions explicitly for the generated Arduino class API.
+defscmd = ['cpp', '-dM', f'-I{dest_lib}', f'-DARDUINO=1', f'-DEVE_API={eve_api}']
+if eve_sub_api > 0:
+    defscmd.append(f'-DEVE_SUB_API={eve_sub_api}')
+defscmd.append(os.path.join(dest_lib, "EVE_defs.h"))
+
+defsres = subprocess.run(defscmd, stdout=subprocess.PIPE)
+
+if (coderes.returncode == 0) and (defineres.returncode == 0) and (defsres.returncode == 0):
     cppoutput = coderes.stdout.decode('utf-8')
     cpplines = cppoutput.splitlines()
 
@@ -627,9 +638,23 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
         cppprotoline = f"{cdefl[1]} {cdefl[0]}({cppparamtext})"
         cppapiproto.append(cppprotoline)
 
-    cppdefouput = defineres.stdout.decode('utf-8')
-    definelines = cppdefouput.splitlines()
-    
+    cppdefoutput = defineres.stdout.decode('utf-8')
+    defsoutput = defsres.stdout.decode('utf-8')
+
+    definelines = defsoutput.splitlines()
+    definelines.extend(cppdefoutput.splitlines())
+
+    # Remove duplicate macro definitions by name. Definitions obtained from the
+    # complete EVE_API.c preprocessing pass take precedence over EVE_defs.h.
+    define_map = {}
+
+    for line in definelines:
+        match = re.match(r'^\s*#define\s+(EVE_\w+)', line)
+        if match:
+            define_map[match.group(1)] = line
+
+    definelines = list(define_map.values())
+
     defre = re.compile(r'^\s*\#define\s(EVE_\w*)\s*(.+)')
     cconstdefs = []
     for line in definelines:
@@ -660,9 +685,13 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                     pass
                 elif definep[0].startswith("API_SELECT"):
                     pass
-                elif definep[0].startswith("DEBUG_ERROR"):
+                elif definep[0].startswith("DEBUG_"):
                     pass
-                elif definep[0].startswith("DEBUG_PRINTF"):
+                elif definep[0].startswith("HAL_CHUNK_SIZE"):
+                    pass
+                elif definep[0].startswith("SPI_TIMEOUT"):
+                    pass
+                elif definep[0].startswith("SPI_MAX_TRANSFER"):
                     pass
                 else:
                     cppline = f"      {definep[0]} = {definep[1]},"

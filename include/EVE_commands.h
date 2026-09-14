@@ -69,13 +69,10 @@
 
 #include <stdint.h>
 
-/* -------------------------------------------------------------------------
- * Prerequisite: This file must be included by EVE.h so that EVE_API is 
- * defined and the IS_EVE_API and EVE_API_SELECT macros are available.
- * ------------------------------------------------------------------------- */
-#if !(defined(EVE_API) && defined(IS_EVE_API) && defined(EVE_API_SELECT))
-#error "EVE_commands.h requires to be included by EVE.h (defines EVE_API)."
-#endif
+/*
+ * Include the EVE macros and settings derived from the EVE configuration.
+ */
+#include "EVE_settings.h"
 
 /* EVE COMMANDS */
 
@@ -215,7 +212,7 @@
 /** Upper 8 bits of a > 24-bit bitmap source address. */
 #define EVE_ENC_BITMAP_SOURCE_H(addr)       ((0x31ul<<24)|((uint32_t)(addr)&0xfful))
 #define EVE_ENC_BITMAP_ZORDER(o)            ((0x33ul<<24)|(((o)&0xfful)<<0))
-#define EVE_ENC_PALLETE_SOURCE_H(addr)      ((0x32ul<<24)|((uint32_t)(addr)&0xfful))
+#define EVE_ENC_PALETTE_SOURCE_H(addr)      ((0x32ul<<24)|((uint32_t)(addr)&0xfful))
 #define EVE_ENC_REGION(y,h,dest)            ((0x34ul<<24)|(((y)&0x3ful)<<18)|(((h)&0x3ful)<<12)|(((dest)&0xffful)<<0))
 #endif /* IS_EVE_API(5) */
 
