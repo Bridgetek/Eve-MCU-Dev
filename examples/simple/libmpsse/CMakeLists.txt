@@ -121,7 +121,6 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif()
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(eve_library
-            ${FTDI_SUBMODULE}/libMPSSE/lib-windows/libmpsse.lib
             ${FTDI_SUBMODULE}/libFTD2XX/lib-windows/libftd2xx.lib
     )
 endif()
