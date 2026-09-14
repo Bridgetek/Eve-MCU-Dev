@@ -46,7 +46,7 @@ To run this file simple call the executable from the command line.
 
 For a boot tester compiled as follows:
 ```
-EVE-MCU-Dev\test\boottester> cmake --fresh -B build -S . -DEVE_MODULE=IDM20407A
+EVE-MCU-Dev\test\boottester> cmake --fresh -B build -S . -DEVE_MODULE=EVE_IDM20407A
 EVE-MCU-Dev\test\boottester> cmake --build build
 ```
 

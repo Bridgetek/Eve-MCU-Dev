@@ -47,7 +47,7 @@ The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a B
 The settings required in `EVE_config.h` are:
 ```c
 #define EVE_DEVICE EVE_BT817
-#define EVE_DISPLAY_RES IDM20407A
+#define EVE_DISPLAY_RES EVE_IDM20407A
 ```
 
 ### IDM2040-43A Module
@@ -57,7 +57,7 @@ The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a 
 The settings required in `EVE_config.h` are:
 ```c
 #define EVE_DEVICE EVE_BT883
-#define EVE_DISPLAY_RES IDM204043A
+#define EVE_DISPLAY_RES EVE_IDM204043A
 ```
 
 ### IDM2040-21R Module
