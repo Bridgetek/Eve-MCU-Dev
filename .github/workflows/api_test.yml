@@ -45,6 +45,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        submodules: 'false'
 
     # Test using matrix
     - name: Configure CMake

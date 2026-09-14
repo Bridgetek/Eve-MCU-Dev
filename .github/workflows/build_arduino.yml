@@ -50,6 +50,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        submodules: 'false'
 
     - name: Build sketch source
       run: python sketchbuild.py

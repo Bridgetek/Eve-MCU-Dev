@@ -53,6 +53,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        submodules: 'false'
 
     # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
     - name: Setup gcc-arm-none-eabi environment
