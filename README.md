@@ -261,117 +261,125 @@ shown alongside shared configuration, definition, extension, and utility headers
 
 The public EVE-MCU-Dev interface headers `EVE.h`, `HAL.h`, `MCU.h`, and `Platform.h` are included through the configured include path using angle brackets. Extension headers under `include/extensions` are also included through the configured include path, for example `<extensions/bt82x_patch.h>`.
 
-Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_debug.h` use quoted includes where they are consumed within the library or port implementations. `EVE_settings.h` and `EVE_defs.h` are likewise internal library headers. `EVE_config.h` is intentionally included using angle brackets so that applications may provide their own configuration header through the configured include path.
+Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_debug.h` use quoted includes where they are consumed within the library or port implementations. `EVE_settings.h` is likewise an internal library header. `EVE_config.h` and `EVE_defs.h` are intentionally included using angle brackets so that applications may provide a matching pair of configuration and definition headers through the configured include pat
 
 
 ```text
-+--------------------------------------------------------------+
-|                      Application Layer                       |
-|                                                              |
-|  Application source files                                    |
-|    +--> EVE.h                                                |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                              Application Layer                               |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  Application source files                                                    |
+|    +--> EVE.h                                                                |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                       EVE API Layer                          |
-|                                                              |
-|  EVE.h                                                       |
-|    +--> EVE_settings.h                                       |
-|    +--> EVE_commands.h                                       |
-|    +--> EVE_registers.h                                      |
-|                                                              |
-|  EVE_API.c                                                   |
-|    +--> EVE.h                                                |
-|    +--> HAL.h                                                |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                               EVE API Layer                                  |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  EVE.h                                                                       |
+|    +--> EVE_settings.h                                                       |
+|    +--> EVE_commands.h                                                       |
+|    +--> EVE_registers.h                                                      |
+|                                                                              |
+|  EVE_API.c                                                                   |
+|    +--> EVE.h                                                                |
+|    +--> HAL.h                                                                |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                 Shared Configuration Headers                 |
-|                                                              |
-|  EVE_settings.h                                              |
-|    +--> EVE_config.h                                         |
-|                                                              |
-|  EVE_config.h                                                |
-|    +--> EVE_defs.h                                           |
-|                                                              |
-|  EVE_defs.h                                                  |
-|    Common device, module, panel and option definitions.      |
-|                                                              |
-|  These headers provide shared compile-time configuration     |
-|  used by multiple library layers and interfaces.             |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                       Shared Configuration Headers                           |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  EVE_settings.h                                                              |
+|    +--> EVE_config.h                                                         |
+|                                                                              |
+|  EVE_config.h                                                                |
+|    +--> EVE_defs.h                                                           |
+|                                                                              |
+|  EVE_defs.h                                                                  |
+|    Common device, module, panel and option definitions.                      |
+|                                                                              |
+|  These headers provide shared compile-time configuration used by multiple    |
+|  library layers and interfaces.                                              |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|              EVE Command and Register Definitions            |
-|                                                              |
-|  EVE_commands.h                                              |
-|    +--> EVE_settings.h                                       |
-|                                                              |
-|  EVE_registers.h                                             |
-|    +--> EVE_settings.h                                       |
-|                                                              |
-|  Command encodings and register definitions used by the      |
-|  EVE API and HAL implementations.                            |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                    EVE Command and Register Definitions                      |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  EVE_commands.h                                                              |
+|    +--> EVE_settings.h                                                       |
+|                                                                              |
+|  EVE_registers.h                                                             |
+|    +--> EVE_settings.h                                                       |
+|                                                                              |
+|  Command encodings and register definitions used by the EVE API and HAL      |
+|  implementations.                                                            |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                          HAL Layer                           |
-|                                                              |
-|  HAL.h                                                       |
-|    +--> EVE_settings.h                                       |
-|                                                              |
-|  EVE_HAL.c                  |  EVE_HAL_Linux.c               |
-|    +--> HAL.h               |    +--> HAL.h                  |
-|    +--> MCU.h               |    +--> Platform.h             |
-|    +--> EVE_registers.h     |    +--> EVE_registers.h        |
-|    +--> EVE_commands.h      |    +--> EVE_commands.h         |
-|    +--> EVE_debug.h         |    +--> EVE_debug.h            |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                                  HAL Layer                                   |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  HAL.h                                                                       |
+|    +--> EVE_settings.h                                                       |
+|                                                                              |
+|  EVE_HAL.c                           |   EVE_HAL_Linux.c                     |
+|    +--> HAL.h                        |     +--> HAL.h                        |
+|    +--> MCU.h                        |     +--> Platform.h                   |
+|    +--> EVE_registers.h              |     +--> EVE_registers.h              |
+|    +--> EVE_commands.h               |     +--> EVE_commands.h               |
+|    +--> EVE_debug.h                  |     +--> EVE_debug.h                  |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                MCU / Platform Interface Layer                |
-|                                                              |
-|  MCU.h                      |  Platform.h                    |
-|    +--> EVE_settings.h      |    +--> EVE_settings.h         |
-|                                                              |
-|  HAL-facing interfaces with no dependency on EVE.h/HAL.h.    |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                      MCU / Platform Interface Layer                          |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  MCU.h                               |   Platform.h                          |
+|    +--> EVE_settings.h               |       +--> EVE_settings.h             |
+|                                                                              |
+|  HAL-facing interfaces with no dependency on EVE.h or HAL.h.                 |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                  Port Implementation Layer                   |
-|                                                              |
-|  ports/eve_*/EVE_*.c                                         |
-|    +--> MCU.h                                                |
-|    +--> EVE_debug.h [where debug output is required]         |
-|                                                              |
-|  Linux platform implementation sources                       |
-|                                                              |
-|  Used by EVE_HAL_Linux.c through the Platform.h interface.   |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                         Port Implementation Layer                            |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  ports/eve_*/EVE_*.c                                                         |
+|    +--> MCU.h                                                                |
+|    +--> EVE_debug.h [where debug output is required]                         |
+|                                                                              |
+|  Linux platform implementation sources                                       |
+|                                                                              |
+|  Used by EVE_HAL_Linux.c through the Platform.h interface.                   |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|              Feature and Device-Specific Extensions          |
-|                                                              |
-|  include/extensions/*.h                                      |
-|  source/extensions/*.c                                       |
-|                                                              |
-|  e.g. custom_touch_fw.*, lcd_panel_init.*                    |
-|                                                              |
-|  Feature- or device-specific code isolated behind its        |
-|  associated configuration or feature guard.                  |
-|                                                              |
-|  Extensions may use common EVE functionality and, where      |
-|  required, contain MCU- or platform-specific implementation  |
-|  code.                                                       |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                   Feature and Device-Specific Extensions                     |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  include/extensions/*.h                                                      |
+|  source/extensions/*.c                                                       |
+|                                                                              |
+|  e.g. custom_touch_fw.*, lcd_panel_init.*                                    |
+|                                                                              |
+|  Feature- or device-specific code isolated behind its associated             |
+|  configuration or feature guard.                                             |
+|                                                                              |
+|  Extensions may use common EVE functionality and, where required,            |
+|  contain MCU- or platform-specific implementation code.                      |
++------------------------------------------------------------------------------+
 
-+--------------------------------------------------------------+
-|                  Independent Debug Utility                   |
-|                                                              |
-|  EVE_debug.h                                                 |
-|                                                              |
-|  Shared debug macro interface with no dependency on EVE.h.   |
-+--------------------------------------------------------------+
++------------------------------------------------------------------------------+
+|                        Independent Debug Utility                             |
++------------------------------------------------------------------------------+
+|                                                                              |
+|  EVE_debug.h                                                                 |
+|                                                                              |
+|  Shared debug macro interface with no dependency on EVE.h.                   |
++------------------------------------------------------------------------------+
 ```
 
 
@@ -397,15 +405,16 @@ Extension code under `include/extensions` and `source/extensions` should depend 
 
 #### Custom EVE Configuration Headers
 
-`EVE_config.h` includes `EVE_defs.h` using the compiler include search path:
+`EVE_settings.h` includes `EVE_config.h`, and `EVE_config.h` includes `EVE_defs.h`, using the compiler include search path:
 
 ```c
+#include <EVE_config.h>
 #include <EVE_defs.h>
 ```
 
-This allows a custom `EVE_config.h` to be supplied from another include directory. When using a custom `EVE_config.h`, a compatible `EVE_defs.h` must also be available in the include search path.
+This allows an application to provide custom configuration and definition headers from another include directory. When overriding the library configuration, a compatible `EVE_config.h` and `EVE_defs.h` must both be available in the configured include path.
 
-The custom configuration and definitions headers should therefore be treated as a matching pair when overriding the library defaults.
+The two headers should therefore be treated as a matching pair when overriding the library defaults. This prevents a custom `EVE_config.h` from being combined unintentionally with an incompatible library-local `EVE_defs.h`.
 
 ### Device and Panel Selection
 
