@@ -45,7 +45,7 @@ A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM20
 The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT817Q. The screen resolution is 800x480.
 
 The settings required in `EVE_config.h` are:
-```
+```c
 #define EVE_DEVICE EVE_BT817
 #define EVE_DISPLAY_RES IDM20407A
 ```
@@ -55,7 +55,7 @@ The settings required in `EVE_config.h` are:
 The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT883. The screen resolution is 480x272.
 
 The settings required in `EVE_config.h` are:
-```
+```c
 #define EVE_DEVICE EVE_BT883
 #define EVE_DISPLAY_RES IDM204043A
 ```
@@ -65,7 +65,7 @@ The settings required in `EVE_config.h` are:
 The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 pico and a FT800Q. The screen resolution is 480x480.
 
 The settings required in `EVE_config.h` are:
-```
+```c
 #define EVE_DEVICE EVE_FT800
 #define EVE_DISPLAY_RES IDM204021R
 ```
@@ -121,6 +121,6 @@ Select "3" to configure the interfaces then enable the SPI interface in the next
 
 The `libgpiod` library will need to be installed on the Raspberry Pi to access the GPIO pins.
 
-```
+```console
 sudo apt install libgpiod-dev
 ```
