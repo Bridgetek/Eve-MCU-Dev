@@ -11,6 +11,7 @@ This library is intended to provide a **C** library for embedded designs.
   - [History](#history)
   - [Scope](#scope)
   - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
 - [Software Layers](#software-layers)
   - [Folder Structure](#folder-structure)
     - [Common Library Files](#common-library-files)
@@ -92,6 +93,10 @@ The host interface must also provide software control of the EVE chip-select sig
 Some of the provided ports require source code modification if the MCU uses a SPI API library which sends a complete buffer of bytes (such as via a DMA transfer) with automatic chip select control. This is out of the scope of this document and sample code. Most MCUs can however be programmed at a level which interacts directly with the SPI hardware registers and GPIO for chip select. 
 
 This library includes several example projects containing an example framework and sample main application for the following MCUs. However, the code can be ported to other MCUs.
+
+### Quick Start
+
+The [Quick Start Guide](QUICKSTART.md) will demonstrate running one of the example files on the EVE Emulator.
 
 ## Device API Support
 
@@ -263,136 +268,163 @@ The public EVE-MCU-Dev interface headers `EVE.h`, `HAL.h`, `MCU.h`, and `Platfor
 
 Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_debug.h` use quoted includes where they are consumed within the library or port implementations. `EVE_settings.h` is likewise an internal library header. `EVE_config.h` and `EVE_defs.h` are intentionally included using angle brackets so that applications may provide a matching pair of configuration and definition headers through the configured include path.
 
+#### Application Layer
 
-```text
-+------------------------------------------------------------------------------+
-|                              Application Layer                               |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  Application source files                                                    |
-|    +--> EVE.h                                                                |
-+------------------------------------------------------------------------------+
+```mermaid
+block
+  columns 3
+  A1["Application Source Code"] space B1["EVE.h"]
 
-+------------------------------------------------------------------------------+
-|                               EVE API Layer                                  |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  EVE.h                                                                       |
-|    +--> EVE_settings.h                                                       |
-|    +--> EVE_commands.h                                                       |
-|    +--> EVE_registers.h                                                      |
-|                                                                              |
-|  EVE_API.c                                                                   |
-|    +--> EVE.h                                                                |
-|    +--> HAL.h                                                                |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                       Shared Configuration Headers                           |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  EVE_settings.h                                                              |
-|    +--> EVE_config.h                                                         |
-|                                                                              |
-|  EVE_config.h                                                                |
-|    +--> EVE_defs.h                                                           |
-|                                                                              |
-|  EVE_defs.h                                                                  |
-|    Common device, module, panel and option definitions.                      |
-|                                                                              |
-|  These headers provide shared compile-time configuration used by multiple    |
-|  library layers and interfaces.                                              |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                    EVE Command and Register Definitions                      |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  EVE_commands.h                                                              |
-|    +--> EVE_settings.h                                                       |
-|                                                                              |
-|  EVE_registers.h                                                             |
-|    +--> EVE_settings.h                                                       |
-|                                                                              |
-|  Command encodings and register definitions used by the EVE API and HAL      |
-|  implementations.                                                            |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                                  HAL Layer                                   |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  HAL.h                                                                       |
-|    +--> EVE_settings.h                                                       |
-|                                                                              |
-|  EVE_HAL.c                           |   EVE_HAL_Linux.c                     |
-|    +--> HAL.h                        |     +--> HAL.h                        |
-|    +--> MCU.h                        |     +--> Platform.h                   |
-|    +--> EVE_registers.h              |     +--> EVE_registers.h              |
-|    +--> EVE_commands.h               |     +--> EVE_commands.h               |
-|    +--> EVE_debug.h                  |     +--> EVE_debug.h                  |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                      MCU / Platform Interface Layer                          |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  MCU.h                               |   Platform.h                          |
-|    +--> EVE_settings.h               |       +--> EVE_settings.h             |
-|                                                                              |
-|  HAL-facing interfaces with no dependency on EVE.h or HAL.h.                 |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                         Port Implementation Layer                            |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  ports/eve_*/EVE_*.c                                                         |
-|    +--> MCU.h                                                                |
-|    +--> EVE_debug.h [where debug output is required]                         |
-|                                                                              |
-|  Linux platform implementation sources                                       |
-|                                                                              |
-|  Used by EVE_HAL_Linux.c through the Platform.h interface.                   |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                   Feature and Device-Specific Extensions                     |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  include/extensions/*.h                                                      |
-|  source/extensions/*.c                                                       |
-|                                                                              |
-|  e.g. custom_touch_fw.*, lcd_panel_init.*                                    |
-|                                                                              |
-|  Feature- or device-specific code isolated behind its associated             |
-|  configuration or feature guard.                                             |
-|                                                                              |
-|  Extensions may use common EVE functionality and, where required,            |
-|  contain MCU- or platform-specific implementation code.                      |
-+------------------------------------------------------------------------------+
-
-+------------------------------------------------------------------------------+
-|                        Independent Debug Utility                             |
-+------------------------------------------------------------------------------+
-|                                                                              |
-|  EVE_debug.h                                                                 |
-|                                                                              |
-|  Shared debug macro interface with no dependency on EVE.h.                   |
-+------------------------------------------------------------------------------+
+  A1 --> B1
 ```
 
+#### EVE API Layer
+
+```mermaid
+block
+  columns 3
+  A1["EVE.h"] space B1["EVE_settings.h"]
+  space space B2["EVE_commands.h"]
+  space space B3["EVE_registers.h"]
+  space space space
+  A2["EVE_API.c"] space B4["EVE.h"]
+  space space B5["HAL.h"]
+
+  A1 --> B1
+  A1 --> B2
+  A1 --> B3
+  A2 --> B4
+  A2 --> B5
+```
+
+#### Shared Configuration Headers
+
+```mermaid
+block
+  columns 3
+  A1["EVE_settings.h"] space B1["EVE_config.h"]
+  A2["EVE_config.h"] space B2["EVE_defs.h"]
+  A3["EVE_defs.h"] space B3["Common device module,<br>panel and option<br>definitions"]
+
+  A1 --> B1
+  A2 --> B2
+  A3 --> B3
+```
+
+These headers provide shared compile-time configuration used by multiple library layers and interfaces.
+
+#### EVE Command and Register Definitions
+
+```mermaid
+block
+  columns 3
+  A1["EVE_commands.h"] space B1["EVE_settings.h"]
+  A2["EVE_registers.h"] space B2["EVE_settings.h"]
+
+  A1 --> B1
+  A2 --> B2
+```
+
+Command encodings and register definitions used by the EVE API and HAL implementations.
+
+#### HAL Layer
+
+```mermaid
+block
+  columns 7
+  A1["EVE.h"] space B1["EVE_settings.h"]  space  space space space 
+  space space space                       space  space space space 
+  A2["EVE_HAL.c"] space B2["HAL.h"]       space  A3["EVE_HAL_Linux.c"] space B7["Platform.h"]
+  space space B3["MCU.h"]                 space  space space B8["MCU.h"] 
+  space space B4["EVE_registers.h"]       space  space space B9["EVE_registers.h"]
+  space space B5["EVE_commands.h"]        space  space space B10["EVE_commands.h"]
+  space space B6["EVE_debug.h"]           space  space space B11["EVE_debug.h"]
+
+  A1 --> B1
+  A2 --> B2
+  A2 --> B3
+  A2 --> B4
+  A2 --> B5
+  A2 --> B6
+  A3 --> B7
+  A3 --> B8
+  A3 --> B9
+  A3 --> B10
+  A3 --> B11
+```
+
+#### MCU / Platform Interface Layer
+
+```mermaid
+block
+  columns 7
+  A1["MCU.h"] space B1["EVE_settings.h"]  space  A2["Platform.h"] space B2["EVE_settings.h"]
+
+  A1 --> B1
+  A2 --> B2
+```
+
+HAL-facing interfaces with no dependency on EVE.h or HAL.h.
+
+#### Port Implementation Layer
+
+```mermaid
+block
+  columns 3
+  A1["ports/eve_*/EVE_*.c"] space B1["MCU.h <i>(1)</i>"]
+  space space B2["Platform.h <i>(2)</i>"]
+  space space B3["EVE_debug.h"]
+
+  A1 --> B1
+  A1 --> B2
+  A1 --> B3
+```
+
+* _(1)_ Ports using `EVE_HAL.c` through the `MCU.h` interface.
+* _(2)_ Ports using `EVE_HAL_Linux.c` through the `Platform.h` interface.
+
+#### Feature and Device-Specific Extensions
+
+```mermaid
+block
+  columns 3
+  A1["source/extensions/*.c"] space B1["include/extensions/*.h"]
+  space space space
+  C1["custom_touch_fw.c"] space C2["custom_touch_fw.h"]
+  D1["lcd_panel_init.c"] space D2["lcd_panel_init.h"]
+
+  A1 --> C1
+  B1 --> C2
+```
+
+Feature- or device-specific code isolated behind its associated configuration or feature guard.
+
+Extensions may use common EVE functionality and, where required, contain MCU- or platform-specific implementation code.
+
+#### Independent Debug Utility
+
+```mermaid
+block
+  columns 3
+  A1["EVE_debug.h"] space space
+```
+
+Shared debug macro interface with no dependency on EVE.h.
+
+#### Configuration Headers
 
 The configuration headers provide a shared foundation:
 
-```text
-EVE_defs.h
-    |
-    v
-EVE_config.h
-    |
-    v
-EVE_settings.h
+```mermaid
+block
+  columns 1
+  A1["EVE_defs.h"]
+  space
+  A2["EVE_config.h"]
+  space
+  A3["EVE_settings.h"]
+  A1 --> A2
+  A2 --> A3
 ```
 
 `EVE_settings.h` is consumed by the API, HAL, MCU, platform, command, and register definition headers as required. This is a shared configuration dependency rather than a dependency on a higher-level software interface.
@@ -1195,7 +1227,7 @@ Obtains the transformation matrix from a CMD_CALIBRATE operation.
 
 This function cannot be used within a co-processor list.
 
-**Format:** 
+**Format:**
 
 `void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint32_t *e, uint32_t *f)`
 
@@ -1213,7 +1245,7 @@ This function cannot be used within a co-processor list.
 Calculate the CRC of a memory area.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
 **Detailed Description:**
@@ -1222,7 +1254,7 @@ Obtains the CRC of a memory area.
 
 This function cannot be used within a co-processor list.
 
-**Format:** 
+**Format:**
 
 `void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result)`
 
@@ -1237,7 +1269,7 @@ This function cannot be used within a co-processor list.
 Computes a bitmap transformation matrix.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | *No* | Yes  | Yes  | Yes  | Yes  |
 
 **Detailed Description:**
@@ -1246,7 +1278,7 @@ It computes the transform given three corresponding points in screen space and b
 
 This function cannot be used within a co-processor list.
 
-**Format:** 
+**Format:**
 
 `void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2, uint32_t *result )`
 
@@ -1265,7 +1297,7 @@ This function cannot be used within a co-processor list.
 Get image properties.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | *No* | *No* | *No* | Yes  | Yes  |
 
 **Detailed Description:**
@@ -1291,7 +1323,7 @@ This function cannot be used within a co-processor list.
 Read a register.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | *No* | *No* | *No* | *No* | Yes  |
 
 **Detailed Description:**
@@ -1314,7 +1346,7 @@ This function cannot be used within a co-processor list.
 Write an 8-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | *No* |
 
 **Detailed Description:**
@@ -1337,7 +1369,7 @@ This function cannot be used within a co-processor list.
 Write a 16-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | *No* |
 
 **Detailed Description:**
@@ -1360,7 +1392,7 @@ This function cannot be used within a co-processor list.
 Write a 32-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
 **NOTE:** EVE_LIB_MemWrite32 supports only 32-bit aligned writes on EVE5.
@@ -1385,7 +1417,7 @@ This function cannot be used within a co-processor list.
 Read an 8-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | *No* |
 
 **Detailed Description:**
@@ -1411,7 +1443,7 @@ This function cannot be used within a co-processor list.
 Read a 16-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | *No* |
 
 **Detailed Description:**
@@ -1438,7 +1470,7 @@ This function cannot be used within a co-processor list.
 Read a 32-bit memory location.
 
 | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| ---  | ---  | ---  | ---  | ---  |
+| ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
 **NOTE:** EVE_LIB_MemRead32 supports only 32-bit aligned reads on EVE5.
@@ -1482,215 +1514,215 @@ This function must be used within a co-processor list.
 
 ### EVE Display List Commands
 
-The EVE display list commands are available in the EVE API. 
-They are generally renamed with the prefix of `EVE_`. 
+The EVE display list commands are available in the EVE API.  
+They are generally renamed with the prefix of `EVE_`.
 
 Display list commands must be used within a co-processor list.
 
 The following table shows the display list commands which are supported by each generation of EVE with the API name and the "Command Name" used in the Programming Guide for the EVE device. The format and implementation of the commands are described only in the [Programming Guide](#programming-guides). This list is grouped alphabetically.
 
-| API Name | Command Name | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| --- | --- | ---  | ---  | ---  | ---  | ---  |
-| EVE_ALPHA_FUNC | ALPHA_FUNC | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BEGIN | CLEAR_COLOR_RGB | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_EXT_FORMAT | BITMAP_EXT_FORMAT | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_BITMAP_HANDLE | BITMAP_HANDLE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_LAYOUT | BITMAP_LAYOUT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_LAYOUT_H | BITMAP_LAYOUT_H | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_SIZE | BITMAP_SIZE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_SIZE_H | BITMAP_SIZE_H | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_SOURCE | BITMAP_SOURCE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_SOURCE2 | BITMAP_SOURCE2 | *No* | *No* | Yes  | Yes  | *No* |
-| EVE_BITMAP_SOURCE_H | BITMAP_SOURCE_H | *No* | *No* | *No* | *No* | Yes  |
-| EVE_BITMAP_SWIZZLE | BITMAP_SWIZZLE | *No* | *No* | Yes  | Yes  | Yes  |
+| API Name               | Command Name       | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
+| ---------------------- | ------------------ | ---- | ---- | ---- | ---- | ---- |
+| EVE_ALPHA_FUNC         | ALPHA_FUNC         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BEGIN              | CLEAR_COLOR_RGB    | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_EXT_FORMAT  | BITMAP_EXT_FORMAT  | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_BITMAP_HANDLE      | BITMAP_HANDLE      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_LAYOUT      | BITMAP_LAYOUT      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_LAYOUT_H    | BITMAP_LAYOUT_H    | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_SIZE        | BITMAP_SIZE        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_SIZE_H      | BITMAP_SIZE_H      | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_SOURCE      | BITMAP_SOURCE      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_SOURCE2     | BITMAP_SOURCE2     | *No* | *No* | Yes  | Yes  | *No* |
+| EVE_BITMAP_SOURCE_H    | BITMAP_SOURCE_H    | *No* | *No* | *No* | *No* | Yes  |
+| EVE_BITMAP_SWIZZLE     | BITMAP_SWIZZLE     | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_A | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_B | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_C | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_D | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_E | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_F | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_ZORDER | BITMAP_ZORDER | *No* | *No* | *No* | *No* | Yes  |
-| EVE_BLEND_FUNC | BLEND_FUNC | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CALL | CALL | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CELL | CELL | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR | CLEAR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR_COLOR | CLEAR_COLOR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR_COLOR_A | CLEAR_COLOR_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR_COLOR_RGB | CLEAR_COLOR_RGB | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR_STENCIL | CLEAR_STENCIL | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_COLOR | COLOR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_COLOR_A | COLOR_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_COLOR_MASK | COLOR_MASK | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_COLOR_RGB | COLOR_RGB | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CLEAR_TAG | CLEAR_TAG | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_DISPLAY | DISPLAY | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_END | END | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_JUMP | JUMP | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_LINE_WIDTH | LINE_WIDTH | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_MACRO | MACRO | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_NOP | NOP | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_PALETTE_SOURCE | PALETTE_SOURCE | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_PALLETE_SOURCE_H | PALLETE_SOURCE_H | *No* | *No* | *No* | *No* | Yes  |
-| EVE_POINT_SIZE | POINT_SIZE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_REGION | REGION | *No* | *No* | *No* | *No* | Yes  |
-| EVE_RESTORE_CONTEXT | RESTORE_CONTEXT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_RETURN | RETURN | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_SAVE_CONTEXT | SAVE_CONTEXT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_SCISSOR_SIZE | SCISSOR_SIZE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_SCISSOR_XY | SCISSOR_XY | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_STENCIL_FUNC | STENCIL_FUNC | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_STENCIL_MASK | STENCIL_MASK | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_STENCIL_OP | STENCIL_OP | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_TAG | TAG | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_TAG_MASK | TAG_MASK | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_VERTEX2F | VERTEX2F | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_VERTEX2II | VERTEX2II | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_VERTEX_FORMAT | VERTEX_FORMAT | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_ZORDER      | BITMAP_ZORDER      | *No* | *No* | *No* | *No* | Yes  |
+| EVE_BLEND_FUNC         | BLEND_FUNC         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CALL               | CALL               | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CELL               | CELL               | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR              | CLEAR              | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR_COLOR        | CLEAR_COLOR        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR_COLOR_A      | CLEAR_COLOR_A      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR_COLOR_RGB    | CLEAR_COLOR_RGB    | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR_STENCIL      | CLEAR_STENCIL      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_COLOR              | COLOR              | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_COLOR_A            | COLOR_A            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_COLOR_MASK         | COLOR_MASK         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_COLOR_RGB          | COLOR_RGB          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CLEAR_TAG          | CLEAR_TAG          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_DISPLAY            | DISPLAY            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_END                | END                | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_JUMP               | JUMP               | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_LINE_WIDTH         | LINE_WIDTH         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_MACRO              | MACRO              | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_NOP                | NOP                | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_PALETTE_SOURCE     | PALETTE_SOURCE     | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_PALLETE_SOURCE_H   | PALLETE_SOURCE_H   | *No* | *No* | *No* | *No* | Yes  |
+| EVE_POINT_SIZE         | POINT_SIZE         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_REGION             | REGION             | *No* | *No* | *No* | *No* | Yes  |
+| EVE_RESTORE_CONTEXT    | RESTORE_CONTEXT    | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_RETURN             | RETURN             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_SAVE_CONTEXT       | SAVE_CONTEXT       | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_SCISSOR_SIZE       | SCISSOR_SIZE       | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_SCISSOR_XY         | SCISSOR_XY         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_STENCIL_FUNC       | STENCIL_FUNC       | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_STENCIL_MASK       | STENCIL_MASK       | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_STENCIL_OP         | STENCIL_OP         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_TAG                | TAG                | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_TAG_MASK           | TAG_MASK           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_VERTEX2F           | VERTEX2F           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_VERTEX2II          | VERTEX2II          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_VERTEX_FORMAT      | VERTEX_FORMAT      | *No* | Yes  | Yes  | Yes  | Yes  |
 | EVE_VERTEX_TRANSLATE_X | VERTEX_TRANSLATE_X | *No* | Yes  | Yes  | Yes  | Yes  |
 | EVE_VERTEX_TRANSLATE_Y | VERTEX_TRANSLATE_Y | *No* | Yes  | Yes  | Yes  | Yes  |
 
 ### EVE Co-processor Commands
 
-The EVE co-processor commands are available in the EVE API. 
+The EVE co-processor commands are available in the EVE API.  
 Like the display list commands they are generally renamed with the prefix of `EVE_` and must be used within a co-processor list.
 
 The following table shows the co-processor commands which are supported by each generation of EVE with the API name and the "Command Name" used in the Programming Guide for the EVE device. The format and implementation of the commands are described only in the [Programming Guide](#programming-guides). This list is grouped by function and API support.
 
-| API Name | Command Name | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
-| --- | --- | ---  | ---  | ---  | ---  | ---  |
-| EVE_CMD_KEYS | CMD_KEYS | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_NUMBER | CMD_NUMBER | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_LOADIDENTITY | CMD_LOADIDENTITY | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GAUGE | CMD_GAUGE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_REGREAD | CMD_REGREAD | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GETPROPS | CMD_GETPROPS | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEMCPY | CMD_MEMCPY | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SPINNER | CMD_SPINNER | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_BGCOLOR | CMD_BGCOLOR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SWAP | CMD_SWAP | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_TRANSLATE | CMD_TRANSLATE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_STOP | CMD_STOP | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SLIDER | CMD_SLIDER | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_INTERRUPT | CMD_INTERRUPT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_FGCOLOR | CMD_FGCOLOR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_ROTATE | CMD_ROTATE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEMWRITE | CMD_MEMWRITE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SCROLLBAR | CMD_SCROLLBAR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GETMATRIX | CMD_GETMATRIX | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SKETCH | CMD_SKETCH | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEMSET | CMD_MEMSET | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GRADCOLOR | CMD_GRADCOLOR | Yes  | Yes  | Yes  | Yes  | Yes  |
+| API Name                 | Command Name         | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
+| ------------------------ | -------------------- | ---- | ---- | ---- | ---- | ---- |
+| EVE_CMD_KEYS             | CMD_KEYS             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_NUMBER           | CMD_NUMBER           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_LOADIDENTITY     | CMD_LOADIDENTITY     | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GAUGE            | CMD_GAUGE            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_REGREAD          | CMD_REGREAD          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GETPROPS         | CMD_GETPROPS         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEMCPY           | CMD_MEMCPY           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SPINNER          | CMD_SPINNER          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_BGCOLOR          | CMD_BGCOLOR          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SWAP             | CMD_SWAP             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_TRANSLATE        | CMD_TRANSLATE        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_STOP             | CMD_STOP             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SLIDER           | CMD_SLIDER           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_INTERRUPT        | CMD_INTERRUPT        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_FGCOLOR          | CMD_FGCOLOR          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_ROTATE           | CMD_ROTATE           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEMWRITE         | CMD_MEMWRITE         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SCROLLBAR        | CMD_SCROLLBAR        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GETMATRIX        | CMD_GETMATRIX        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SKETCH           | CMD_SKETCH           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEMSET           | CMD_MEMSET           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GRADCOLOR        | CMD_GRADCOLOR        | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_BITMAP_TRANSFORM | CMD_BITMAP_TRANSFORM | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_CALIBRATE | CMD_CALIBRATE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_INFLATE | CMD_INFLATE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETFONT | CMD_SETFONT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_LOGO | CMD_LOGO | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_APPEND | CMD_APPEND | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEMZERO | CMD_MEMZERO | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SCALE | CMD_SCALE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_CLOCK | CMD_CLOCK | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GRADIENT | CMD_GRADIENT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETMATRIX | CMD_SETMATRIX | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_TRACK | CMD_TRACK | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_GETPTR | CMD_GETPTR | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_PROGRESS | CMD_PROGRESS | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_COLDSTART | CMD_COLDSTART | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_DIAL | CMD_DIAL | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_LOADIMAGE | CMD_LOADIMAGE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_DLSTART | CMD_DLSTART | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SNAPSHOT | CMD_SNAPSHOT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SCREENSAVER | CMD_SCREENSAVER | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEMCRC | CMD_MEMCRC | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_TEXT | CMD_TEXT | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_BUTTON | CMD_BUTTON | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_TOGGLE | CMD_TOGGLE | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_CSKETCH | CMD_CSKETCH | *No* | Yes  | *No* | *No* | *No* |
-| EVE_CMD_SETROTATE | CMD_SETROTATE | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_MEDIAFIFO | CMD_MEDIAFIFO | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SYNC | CMD_SYNC | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_ROMFONT | CMD_ROMFONT | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_PLAYVIDEO | CMD_PLAYVIDEO | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_VIDEOFRAME | CMD_VIDEOFRAME | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_VIDEOSTART | CMD_VIDEOSTART | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETBASE | CMD_SETBASE | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETBITMAP | CMD_SETBITMAP | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETSCRATCH | CMD_SETSCRATCH | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_SETFONT2 | CMD_SETFONT2 | *No* | Yes  | Yes  | Yes  | *No* |
-| EVE_CMD_SNAPSHOT2 | CMD_SNAPSHOT2 | *No* | Yes  | Yes  | Yes  | *No* |
-| EVE_CMD_INFLATE2 | CMD_INFLATE2 | *No* | *No* | Yes  | Yes  | *No* |
-| EVE_CMD_CLEARCACHE | CMD_CLEARCACHE | *No* | *No* | Yes  | Yes  | *No* |
-| EVE_CMD_INTRAMSHARED | CMD_INTRAMSHARED | *No* | *No* | Yes  | Yes  | *No* |
-| EVE_CMD_VIDEOSTARTF | CMD_VIDEOSTARTF | *No* | *No* | Yes  | Yes  | *No* |
-| EVE_CMD_ANIMSTART | CMD_ANIMSTART | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ANIMSTOP | CMD_ANIMSTOP | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ANIMXY | CMD_ANIMXY | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ANIMDRAW | CMD_ANIMDRAW | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ANIMFRAME | CMD_ANIMFRAME | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_APPENDF | CMD_APPENDF | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ANIMFRAMERAM | CMD_ANIMFRAMERAM | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_ANIMSTARTRAM | CMD_ANIMSTARTRAM | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_APILEVEL | CMD_APILEVEL | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_FONTCACHE | CMD_FONTCACHE | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_FONTCACHEQUERY | CMD_FONTCACHEQUERY | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_HSF | CMD_HSF | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_PCLKFREQ | CMD_PCLKFREQ | *No* | *No* | *No* | Yes  | *No* |
-| EVE_CMD_RUNANIM | CMD_RUNANIM | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_TESTCARD | CMD_TESTCARD | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_WAIT | CMD_WAIT | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_NEWLIST | CMD_NEWLIST | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_ENDLIST | CMD_ENDLIST | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_CALLLIST | CMD_CALLLIST | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_RETURN | CMD_RETURN | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_NOP | CMD_NOP | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FILLWIDTH | CMD_FILLWIDTH | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_ROTATEAROUND | CMD_ROTATEAROUND | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_RESETFONTS | CMD_RESETFONTS | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_GRADIENTA | CMD_GRADIENTA | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHERASE | CMD_FLASHERASE | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHWRITEEXT | CMD_FLASHWRITEEXT | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHWRITE | CMD_FLASHWRITE | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHUPDATE | CMD_FLASHUPDATE | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHREAD | CMD_FLASHREAD | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHPROGRAM | CMD_FLASHPROGRAM | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHSOURCE | CMD_FLASHSOURCE | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHSPITX | CMD_FLASHSPITX | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHFAST | CMD_FLASHFAST | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHSPIRX | CMD_FLASHSPIRX | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHATTACH | CMD_FLASHATTACH | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHDETATCH | CMD_FLASHDETATCH | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHSPIDESEL | CMD_FLASHSPIDESEL | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_GETIMAGE | CMD_GETIMAGE | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_CALIBRATESUB | CMD_CALIBRATESUB | *No* | *No* | *No* | Yes  | Yes  |
-| EVE_CMD_COPYLIST | CMD_COPYLIST | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_CGRADIENT | CMD_CGRADIENT | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_TEXTDIM | CMD_TEXTDIM | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_ARC | CMD_ARC | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_RENDERTARGET | CMD_RENDERTARGET | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_ENABLEREGION | CMD_ENABLEREGION | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FENCE | CMD_FENCE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_GRAPHICSFINISH | CMD_GRAPHICSFINISH | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_REGWRITE | CMD_REGWRITE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_APBWRITE | CMD_APBWRITE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_APBREAD | CMD_APBREAD | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_LOADWAV | CMD_LOADWAV | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_LOADASSET | CMD_LOADASSET | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_LOADPATCH | CMD_LOADPATCH | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_GLOW | CMD_GLOW | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_SDATTACH | CMD_SDATTACH | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FSOPTIONS | CMD_FSOPTIONS | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FSREAD | CMD_FSREAD | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FSSIZE | CMD_FSSIZE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FSSOURCE | CMD_FSSOURCE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_FSDIR | CMD_FSDIR | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_SDBLOCKREAD | CMD_SDBLOCKREAD | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_WAITCHANGE | CMD_WAITCHANGE | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_WAITCOND | CMD_WAITCOND | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_RESULT | CMD_RESULT | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_I2SSTARTUP | CMD_I2SSTARTUP | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_CALIBRATE        | CMD_CALIBRATE        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_INFLATE          | CMD_INFLATE          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETFONT          | CMD_SETFONT          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_LOGO             | CMD_LOGO             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_APPEND           | CMD_APPEND           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEMZERO          | CMD_MEMZERO          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SCALE            | CMD_SCALE            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_CLOCK            | CMD_CLOCK            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GRADIENT         | CMD_GRADIENT         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETMATRIX        | CMD_SETMATRIX        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_TRACK            | CMD_TRACK            | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_GETPTR           | CMD_GETPTR           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_PROGRESS         | CMD_PROGRESS         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_COLDSTART        | CMD_COLDSTART        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_DIAL             | CMD_DIAL             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_LOADIMAGE        | CMD_LOADIMAGE        | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_DLSTART          | CMD_DLSTART          | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SNAPSHOT         | CMD_SNAPSHOT         | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SCREENSAVER      | CMD_SCREENSAVER      | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEMCRC           | CMD_MEMCRC           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_TEXT             | CMD_TEXT             | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_BUTTON           | CMD_BUTTON           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_TOGGLE           | CMD_TOGGLE           | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_CSKETCH          | CMD_CSKETCH          | *No* | Yes  | *No* | *No* | *No* |
+| EVE_CMD_SETROTATE        | CMD_SETROTATE        | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_MEDIAFIFO        | CMD_MEDIAFIFO        | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SYNC             | CMD_SYNC             | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_ROMFONT          | CMD_ROMFONT          | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_PLAYVIDEO        | CMD_PLAYVIDEO        | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_VIDEOFRAME       | CMD_VIDEOFRAME       | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_VIDEOSTART       | CMD_VIDEOSTART       | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETBASE          | CMD_SETBASE          | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETBITMAP        | CMD_SETBITMAP        | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETSCRATCH       | CMD_SETSCRATCH       | *No* | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_SETFONT2         | CMD_SETFONT2         | *No* | Yes  | Yes  | Yes  | *No* |
+| EVE_CMD_SNAPSHOT2        | CMD_SNAPSHOT2        | *No* | Yes  | Yes  | Yes  | *No* |
+| EVE_CMD_INFLATE2         | CMD_INFLATE2         | *No* | *No* | Yes  | Yes  | *No* |
+| EVE_CMD_CLEARCACHE       | CMD_CLEARCACHE       | *No* | *No* | Yes  | Yes  | *No* |
+| EVE_CMD_INTRAMSHARED     | CMD_INTRAMSHARED     | *No* | *No* | Yes  | Yes  | *No* |
+| EVE_CMD_VIDEOSTARTF      | CMD_VIDEOSTARTF      | *No* | *No* | Yes  | Yes  | *No* |
+| EVE_CMD_ANIMSTART        | CMD_ANIMSTART        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ANIMSTOP         | CMD_ANIMSTOP         | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ANIMXY           | CMD_ANIMXY           | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ANIMDRAW         | CMD_ANIMDRAW         | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ANIMFRAME        | CMD_ANIMFRAME        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_APPENDF          | CMD_APPENDF          | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ANIMFRAMERAM     | CMD_ANIMFRAMERAM     | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_ANIMSTARTRAM     | CMD_ANIMSTARTRAM     | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_APILEVEL         | CMD_APILEVEL         | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_FONTCACHE        | CMD_FONTCACHE        | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_FONTCACHEQUERY   | CMD_FONTCACHEQUERY   | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_HSF              | CMD_HSF              | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_PCLKFREQ         | CMD_PCLKFREQ         | *No* | *No* | *No* | Yes  | *No* |
+| EVE_CMD_RUNANIM          | CMD_RUNANIM          | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_TESTCARD         | CMD_TESTCARD         | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_WAIT             | CMD_WAIT             | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_NEWLIST          | CMD_NEWLIST          | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_ENDLIST          | CMD_ENDLIST          | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_CALLLIST         | CMD_CALLLIST         | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_RETURN           | CMD_RETURN           | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_NOP              | CMD_NOP              | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FILLWIDTH        | CMD_FILLWIDTH        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_ROTATEAROUND     | CMD_ROTATEAROUND     | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_RESETFONTS       | CMD_RESETFONTS       | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_GRADIENTA        | CMD_GRADIENTA        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHERASE       | CMD_FLASHERASE       | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHWRITEEXT    | CMD_FLASHWRITEEXT    | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHWRITE       | CMD_FLASHWRITE       | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHUPDATE      | CMD_FLASHUPDATE      | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHREAD        | CMD_FLASHREAD        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHPROGRAM     | CMD_FLASHPROGRAM     | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHSOURCE      | CMD_FLASHSOURCE      | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHSPITX       | CMD_FLASHSPITX       | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHFAST        | CMD_FLASHFAST        | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHSPIRX       | CMD_FLASHSPIRX       | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHATTACH      | CMD_FLASHATTACH      | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHDETATCH     | CMD_FLASHDETATCH     | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHSPIDESEL    | CMD_FLASHSPIDESEL    | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_GETIMAGE         | CMD_GETIMAGE         | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_CALIBRATESUB     | CMD_CALIBRATESUB     | *No* | *No* | *No* | Yes  | Yes  |
+| EVE_CMD_COPYLIST         | CMD_COPYLIST         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_CGRADIENT        | CMD_CGRADIENT        | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_TEXTDIM          | CMD_TEXTDIM          | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_ARC              | CMD_ARC              | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_RENDERTARGET     | CMD_RENDERTARGET     | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_ENABLEREGION     | CMD_ENABLEREGION     | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FENCE            | CMD_FENCE            | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_GRAPHICSFINISH   | CMD_GRAPHICSFINISH   | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_REGWRITE         | CMD_REGWRITE         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_APBWRITE         | CMD_APBWRITE         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_APBREAD          | CMD_APBREAD          | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_LOADWAV          | CMD_LOADWAV          | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_LOADASSET        | CMD_LOADASSET        | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_LOADPATCH        | CMD_LOADPATCH        | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_GLOW             | CMD_GLOW             | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_SDATTACH         | CMD_SDATTACH         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FSOPTIONS        | CMD_FSOPTIONS        | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FSREAD           | CMD_FSREAD           | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FSSIZE           | CMD_FSSIZE           | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FSSOURCE         | CMD_FSSOURCE         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_FSDIR            | CMD_FSDIR            | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_SDBLOCKREAD      | CMD_SDBLOCKREAD      | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_WAITCHANGE       | CMD_WAITCHANGE       | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_WAITCOND         | CMD_WAITCOND         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_RESULT           | CMD_RESULT           | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_I2SSTARTUP       | CMD_I2SSTARTUP       | *No* | *No* | *No* | *No* | Yes  |
 
 ### Creating screens and executing commands
 
-The API Layer provides functions to begin and end lists of co-processor commands. The co-processor commands must be preceded and followed by co-processor management functions. 
+The API Layer provides functions to begin and end lists of co-processor commands. The co-processor commands must be preceded and followed by co-processor management functions.
 
 #### Writing DL Instructions and Co-Processor Commands
 
@@ -1698,25 +1730,29 @@ Using EVE commands via the co-processor requires some data formatting to convert
 
 #### Beginning and Ending Co-Processor Lists
 
-All co-processor lists must begin with a call to `EVE_LIB_BeginCoProList`. 
+All co-processor lists must begin with a call to `EVE_LIB_BeginCoProList`.  
 If any display list items or co-processor commands which use the display list are to be added then a call to `EVE_CMD_DLSTART` is required immediately after this.
 
 For the avoidance of doubt, commands that only read or write registers, read or write memory, access flash or access the SD card do not require the `EVE_CMD_DLSTART` call.
 
 All co-processor lists displaying graphics would be preceded by:
+
 ```c
     EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
     EVE_CMD_DLSTART(); // When executed, EVE will begin a new DL
 ```
+
 And followed by:
+
 ```c
     EVE_LIB_EndCoProList(); // CS high
     EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
 ```
-A call to `EVE_LIB_AwaitCoProEmpty` is implied in the call to `EVE_LIB_BeginCoProList`. Therefore it is not necessary to wait at the end of the co-processor
+
+A call to `EVE_LIB_AwaitCoProEmpty` is implied in the call to `EVE_LIB_BeginCoProList`. Therefore it is not necessary to wait at the end of the co-processor  
 list for the completion of the commands allowing program to perform other tasks not related to programming the EVE device.
 
-The `EVE_LIB_AwaitCoProEmpty` function will return zero if the co-processor commands have run successfully. If there was an error with a co-processor command or data used by the co-processor then an exception can be raised which will require the application to handle. The Programming Guide for each generation details the actions required when this occurs. See the section called "Coprocessor Faults" or "Fault Scenarios". 
+The `EVE_LIB_AwaitCoProEmpty` function will return zero if the co-processor commands have run successfully. If there was an error with a co-processor command or data used by the co-processor then an exception can be raised which will require the application to handle. The Programming Guide for each generation details the actions required when this occurs. See the section called "Coprocessor Faults" or "Fault Scenarios".
 
 On EVE API 3, 4 and 5 there is a text message generated by the co-processor with a brief description of the fault. This message can be obtained with the `EVE_LIB_GetCoProException` function.
 
@@ -1762,7 +1798,7 @@ If there is no display list created for a set of co-processor commands then ther
 
 #### Large Co-Processor Lists
 
-On EVE1, EVE2, EVE3 and EVE4 there is 4 kB of co-processor list buffer space, on EVE5 there is 16 kB. A large co-processor list can use the whole buffer space many times over.
+On EVE1, EVE2, EVE3 and EVE4 there is 4 kB of co-processor list buffer space, on EVE5 there is 16 kB. A large co-processor list can use the whole buffer space many times over.  
 If an image is being decoded with `EVE_CMD_LOADIMAGE` then wrapping around the buffer space is a common occurrance.
 
 The simpler examples above are small and do not need to check how much space is remaining in the co-processor list buffer. Large lists that potentially wrap the buffer space need a better stategy.
@@ -1793,7 +1829,9 @@ This example below shows how to split a co-processor list to generate a display 
   EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be empty 
   // (commands executed) 
 ```
+
 The above sequence will create the same set of commands in RAM_DL as the code below.
+
 ```c
   EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD
   EVE_CMD_DLSTART(); // When executed, EVE will begin a new DL 
@@ -1807,7 +1845,8 @@ The above sequence will create the same set of commands in RAM_DL as the code be
   EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be empty 
   // (commands executed)
 ```
-The usage is fundamentally the same as the library and examples described in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) and BRT_AN_014 (FT81X Simple PIC Library Examples) and so these can be used as a reference when using this library. 
+
+The usage is fundamentally the same as the library and examples described in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) and BRT_AN_014 (FT81X Simple PIC Library Examples) and so these can be used as a reference when using this library.
 
 The API function `EVE_LIB_GetCoProSpace` can be used to check if there is sufficient space available in the co-processor for further commands to be sent. The command will not stop and restart the co-processor lists as in the example above but will pause the co-processor list to perform a register read before resuming another transfer without interrupting the program flow.
 
@@ -1827,7 +1866,7 @@ It is important to note that the overall limit of 8K for the generated RAM_DL li
 
 For example, the CMD_BUTTON uses 16 bytes of RAM_CMD plus the size of the string (plus any string arguments in BT81x) for the command, but the graphic operations in RAM_DL which the co-processor creates to render the button will be larger than this. The 8K RAM_DL limit does not therefore mean that 8K of co-processor commands can be used in one list.
 
-REG_CMD_DL indicates the next available location in RAM_DL and so after executing a list commands (but before the swap) this register can be used to check how full RAM_DL is. The value read will be between 0 and 8191 with 8191 indicating the RAM_DL is full. 
+REG_CMD_DL indicates the next available location in RAM_DL and so after executing a list commands (but before the swap) this register can be used to check how full RAM_DL is. The value read will be between 0 and 8191 with 8191 indicating the RAM_DL is full.
 
 The value of REG_CMD_DL is read after executing the commands above but before the swap is executed. The swap is sent using a separate transaction (beginning with `EVE_LIB_BeginCoProList` and ending with `EVE_LIB_EndCoProList` and `EVE_LIB_AwaitCoProEmpty` ) because a register read or write cannot take place whilst an existing SPI transaction (burst write or read) is in progress.  Note that in this example the `EVE_LIB_Read16` is used and will work on EVE APIs 1 to 4, on EVE 5 only 32-bit reads and writes are supported.
 
@@ -1857,20 +1896,25 @@ These functions allow burst writes to RAM_G and RAM_CMD. Individual bursts must 
 ```c
 void EVE_LIB_WriteDataToRAMG(const uint8_t *ImgData, uint32_t DataSize, uint32_t DestAddress)
 ```
+
 This function performs an SPI burst write to RAM_G. The starting address, as well as the source of the data and amount of data are specified. EVE can be written in a similar fashion to an SPI memory device. After asserting CS and sending the address, data can be written as a burst whilst keeping CS low. A similar function performs a read of the selected memory.
+
 ```c
 void EVE_LIB_WriteDataToCMD(const uint8_t *ImgData, uint32_t DataSize) 
 ```
-This function allows a block of data to be written to RAM_CMD which is needed when writing data to be inflated for example. This is more complex as the circular nature of the buffer must be handled in addition to splitting data into chunks since the buffer is only 4K in size. This function handles the entire process and so makes writing to RAM_CMD as simple as to RAM_G for the layers above. A flow chart can be found in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) for loading data via the co-processor buffer RAM_CMD.
+
+This function allows a block of data to be written to RAM_CMD which is needed when writing data to be inflated for example. This is more complex as the circular nature of the buffer must be handled in addition to splitting data into chunks since the buffer is only 4K in size. This function handles the entire process and so makes writing to RAM_CMD as simple as to RAM_G for the layers above. A flow chart can be found in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) for loading data via the co-processor buffer RAM_CMD.  
 Other helper functions are provided such as for writing strings and for retrieving co-processor results (as some commands such as CMD_GETPROPS return their result via RAM_CMD).
+
 ```c
 uint16_t EVE_LIB_SendString(const char* string)
 ```
-This function sends a string of characters and is used by commands such as CMD_TEXT, CMD_BUTTON and CMD_TOGGLE which all use text strings. This function takes care of the extra padding which is required as all EVE commands must be 32-bit aligned. Therefore, depending on the length of the string (plus the necessary null character to terminate it) then between one and three extra "\0" (NUL) bytes are added to pad the command to be a multiple of 4 bytes. The main application can therefore send strings without needing to consider the padding. 
+
+This function sends a string of characters and is used by commands such as CMD_TEXT, CMD_BUTTON and CMD_TOGGLE which all use text strings. This function takes care of the extra padding which is required as all EVE commands must be 32-bit aligned. Therefore, depending on the length of the string (plus the necessary null character to terminate it) then between one and three extra "\0" (NUL) bytes are added to pad the command to be a multiple of 4 bytes. The main application can therefore send strings without needing to consider the padding.
 
 #### Handling Interrupts
 
-The interrupt register `REG_INT_FLAGS` is provided to allow an application to see if one of several interrupt events are flagged. These can be polled by reading the register. However, the register is automatically cleared on each read. 
+The interrupt register `REG_INT_FLAGS` is provided to allow an application to see if one of several interrupt events are flagged. These can be polled by reading the register. However, the register is automatically cleared on each read.
 
 The API provides a method for accessing the register and preserving any tested flags for later testing. The `EVE_LIB_GetInterrupt` function is provided to load and store the current bits set to keep a set of flags set in a global variable. There is a mask value as a parameter to the function which is used to test the set bits. Once the bits have been tested in the global variable they can be cleared.
 
@@ -1880,7 +1924,7 @@ Enabling the macro will add one 8-bit storage variable to the compiled project.
 
 #### Accessing the INT# line
 
-The optional INT# line is provided for the EVE device to signal to the host MCU that an event has occurred. 
+The optional INT# line is provided for the EVE device to signal to the host MCU that an event has occurred.
 
 This status can be accessed from the EVE API with the `EVE_LIB_Int` function. A value greater than zero indicates that the INT# line is asserted. On MCUs and Platforms that do not support reading the INT# line the return value will be -1.
 
