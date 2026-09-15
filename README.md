@@ -363,7 +363,7 @@ columns 4
     A1 --> B1
   end 
 
-  block:MCU_LAYER[" "]:4
+  block:MCU_LAYER[" "]:2
     columns 3
     A2["EVE_HAL.c"] X2((" "))   B2["HAL.h"]             
     space           X3((" "))   B3["MCU.h"]             
@@ -382,7 +382,7 @@ columns 4
     X6 --> B6
   end
 
-  block:PLATFORM_LAYER[" "]:4
+  block:PLATFORM_LAYER[" "]:2
     columns 3
     A3["EVE_HAL_Linux.c"]  X7((" "))   B7["Platform.h"]
     space                  X8((" "))   B8["MCU.h"] 
@@ -409,11 +409,10 @@ Public HAL-facing interfaces with no dependency on `EVE.h` or `HAL.h`:
 
 ```mermaid
 block
-  columns 1
+  columns 2
 
-space
 
-  block:MCU_SIDE[" "]
+  block:MCU_SIDE[" "]:1
     columns 3
 
     A1["MCU.h"] space B1["EVE_settings.h"]
@@ -421,7 +420,7 @@ space
     A1 --> B1
   end
 
-  block:PLATFORM_SIDE[" "]
+  block:PLATFORM_SIDE[" "]:1
     columns 3
 
     A2["Platform.h"] space B2["EVE_settings.h"]
