@@ -273,12 +273,12 @@ Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_d
 #### Application Layer
 ```mermaid
 block
-  columns 3
-  block:APPLICATION[" "]:3
+  block:APPLICATION[" "]
     columns 3
-    A1["Application Source Code"] space B1["EVE.h"]
+    A1["Application <br>Source Code"] space B1["EVE.h"]
+    
+    A1 --> B1
   end
-  A1 --> B1
 ```
 
 #### EVE API Layer
@@ -303,10 +303,13 @@ block
     columns 3
     A2["EVE_API.c"]  X4((" "))    B4["EVE.h"]
     space            X5((" "))    B5["HAL.h"]
+    space            X6((" "))    B6["EVE_debug.h"]
     A2 --- X4
     X4 --- X5
+    X5 --- X6
     X4 --> B4
     X5 --> B5
+    X6 --> B6
   end
 ```
 
@@ -323,7 +326,7 @@ block
 
     A1["EVE_settings.h"]  space   B1["EVE_config.h"]
     A2["EVE_config.h"]    space   B2["EVE_defs.h"]
-    A3["EVE_defs.h <br> (Common device module, panel and<br> option definitions)"] 
+    A3["EVE_defs.h"] space space
 
     A1 --> B1
     A2 --> B2
@@ -352,13 +355,15 @@ Public HAL header and source implementations for MCU/host or Linux-based platfor
 
 ```mermaid
 block
-  columns 4
-  block:TOP_LAYER[" "]:4
+columns 4
+
+  block:HEADER[" "]:4
     columns 3
     A1["HAL.h"]     space       B1["EVE_settings.h"]
     A1 --> B1
   end 
-  block:MCU_LAYER[" "]:2
+
+  block:MCU_LAYER[" "]:4
     columns 3
     A2["EVE_HAL.c"] X2((" "))   B2["HAL.h"]             
     space           X3((" "))   B3["MCU.h"]             
@@ -376,7 +381,8 @@ block
     X5 --> B5
     X6 --> B6
   end
-  block:PLATFORM_LAYER[" "]:2
+
+  block:PLATFORM_LAYER[" "]:4
     columns 3
     A3["EVE_HAL_Linux.c"]  X7((" "))   B7["Platform.h"]
     space                  X8((" "))   B8["MCU.h"] 
@@ -394,6 +400,7 @@ block
     X10 --> B10
     X11 --> B11
   end
+  
 ```
 
 #### MCU / Platform Interface Layer
@@ -402,16 +409,19 @@ Public HAL-facing interfaces with no dependency on `EVE.h` or `HAL.h`:
 
 ```mermaid
 block
-  columns 2
+  columns 1
 
-  block:MCU_SIDE[" "]:1
+space
+
+  block:MCU_SIDE[" "]
     columns 3
 
     A1["MCU.h"] space B1["EVE_settings.h"]
 
     A1 --> B1
   end
-  block:PLATFORM_SIDE[" "]:1
+
+  block:PLATFORM_SIDE[" "]
     columns 3
 
     A2["Platform.h"] space B2["EVE_settings.h"]
@@ -427,11 +437,11 @@ Port-specific source implementations:
 block
   columns 3
   block:PORT[" "]:3
-    columns 4
+    columns 3
 
-    A1["ports/eve_*/EVE_*.c"] X1((" ")) space B1["MCU.h <i>(1)</i>"]
-    space                    X2((" ")) space B2["Platform.h <i>(2)</i>"]
-    space                    X3((" ")) space B3["EVE_debug.h <i>(3)</i>"]
+    A1["ports/eve_*/EVE_*.c"] X1((" ")) B1["MCU.h <i>(1)</i>"]
+    space                    X2((" ")) B2["Platform.h <i>(2)</i>"]
+    space                    X3((" ")) B3["EVE_debug.h <i>(3)</i>"]
 
     A1 --- X1
 
@@ -484,7 +494,7 @@ Shared debug macro interface with no dependency on `EVE.h`:
 ```mermaid
 block
     columns 1
-    A1["EVE_debug.h"]
+    A1["EVE_debug.h"]:20
 ```
 
 ### Configuration Headers
@@ -494,11 +504,12 @@ The configuration headers provide a shared foundation:
 ```mermaid
 block
   columns 1
-  A1["EVE_defs.h"]
+  A1["EVE_defs.h"]:20
   space
-  A2["EVE_config.h"]
+  A2["EVE_config.h"]:20
   space
-  A3["EVE_settings.h"]
+  A3["EVE_settings.h"]:20
+  
   A1 --> A2
   A2 --> A3
 ```
