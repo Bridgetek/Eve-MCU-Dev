@@ -345,7 +345,7 @@ block
 ```
 
 #### HAL Layer
-Public HAL Header and source implementations for MCU or Linux based platforms:
+Public HAL Header and source implementations for MCU/host or Linux based platforms:
 ```mermaid
 block
   columns 4
@@ -417,7 +417,7 @@ block
 ```
 
 #### Port Implementation 
-Port specfic source implementations:
+Port specific source implementations:
 
 ```mermaid
 block
