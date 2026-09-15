@@ -18,6 +18,8 @@ This library is intended to provide a **C** library for embedded designs.
     - [Port Files](#port-files)
     - [Example Files](#example-files)
   - [Header Dependency](#header-dependency)
+  - [Configuration Headers](#configuration-headers)
+    - [Custom EVE Configuration Headers](#custom-eve-configuration-headers)
   - [Device and Panel Selection](#device-and-panel-selection)
     - [Device Selection](#device-selection)
     - [Display Panel Selection](#display-panel-selection)
@@ -400,16 +402,16 @@ Public HAL-facing interfaces with no dependency on `EVE.h` or `HAL.h`:
 
 ```mermaid
 block
-  columns 3
+  columns 2
 
-  block:MCU_SIDE[" "]:3
+  block:MCU_SIDE[" "]:1
     columns 3
 
     A1["MCU.h"] space B1["EVE_settings.h"]
 
     A1 --> B1
   end
-  block:PLATFORM_SIDE[" "]:3
+  block:PLATFORM_SIDE[" "]:1
     columns 3
 
     A2["Platform.h"] space B2["EVE_settings.h"]
@@ -485,7 +487,7 @@ block
     A1["EVE_debug.h"]
 ```
 
-#### Configuration Headers
+### Configuration Headers
 
 The configuration headers provide a shared foundation:
 
@@ -509,7 +511,7 @@ Lower-level MCU and platform implementation files should not depend on higher-le
 
 Extension code under `include/extensions` and `source/extensions` should depend only on the functionality required by that feature and should remain isolated behind the relevant feature guards. Where required, an extension may contain MCU- or platform-specific implementation code for functionality that is not provided by the common library interfaces.
 
-#### Custom EVE Configuration Headers
+##### Custom EVE Configuration Headers
 
 `EVE_settings.h` includes `EVE_config.h`, and `EVE_config.h` includes `EVE_defs.h`, using the compiler include search path:
 
