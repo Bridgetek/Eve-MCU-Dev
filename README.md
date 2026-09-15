@@ -269,25 +269,26 @@ The public EVE-MCU-Dev interface headers `EVE.h`, `HAL.h`, `MCU.h`, and `Platfor
 Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_debug.h` use quoted includes where they are consumed within the library or port implementations. `EVE_settings.h` is likewise an internal library header. `EVE_config.h` and `EVE_defs.h` are intentionally included using angle brackets so that applications may provide a matching pair of configuration and definition headers through the configured include path.
 
 #### Application Layer
-
 ```mermaid
 block
   columns 3
-  A1["Application Source Code"] space B1["EVE.h"]
-
+  block:APPLICATION[" "]:3
+    columns 3
+    A1["Application Source Code"] space B1["EVE.h"]
+  end
   A1 --> B1
 ```
 
 #### EVE API Layer
-
+Public API Header and source implementation:
 ```mermaid
 block
-  columns 1
-  block:HEADER_LAYER[" "]
+  columns 3
+  block:HEADER_LAYER[" "]:3
     columns 3
-    A1["EVE.h"]     X1((" "))   B1["EVE_settings.h"]
-    space           X2((" "))   B2["EVE_commands.h"]
-    space           X3((" "))   B3["EVE_registers.h"]
+    A1["EVE.h"]      X1((" "))   B1["EVE_settings.h"]
+    space            X2((" "))  B2["EVE_commands.h"]
+    space            X3((" "))  B3["EVE_registers.h"]
     A1 --- X1
     X1 --- X2
     X2 --- X3
@@ -295,10 +296,10 @@ block
     X2 --> B2
     X3 --> B3
   end
-  block:SOURCE_LAYER[" "]
+  block:SOURCE_LAYER[" "]:3
     columns 3
-    A2["EVE_API.c"] X4((" "))   B4["EVE.h"]
-    space           X5((" "))   B5["HAL.h"]
+    A2["EVE_API.c"]  X4((" "))    B4["EVE.h"]
+    space            X5((" "))    B5["HAL.h"]
     A2 --- X4
     X4 --- X5
     X4 --> B4
@@ -308,47 +309,52 @@ block
 
 #### Shared Configuration Headers
 
+These headers provide shared compile-time configuration used by multiple library layers and interfaces:
+
 ```mermaid
 block
   columns 3
-  A1["EVE_settings.h"]  space   B1["EVE_config.h"]
-  A2["EVE_config.h"]    space   B2["EVE_defs.h"]
-  A3["EVE_defs.h"]      space   B3["Common device module,<br>panel and option<br>definitions"]
 
-  A1 --> B1
-  A2 --> B2
-  A3 --> B3
+  block:CONFIG_LAYER[" "]:3
+    columns 3
+
+    A1["EVE_settings.h"]  space   B1["EVE_config.h"]
+    A2["EVE_config.h"]    space   B2["EVE_defs.h"]
+    A3["EVE_defs.h <br> <br> (Common device module, panel and option definitions)"] 
+
+    A1 --> B1
+    A2 --> B2
+  end
 ```
-
-These headers provide shared compile-time configuration used by multiple library layers and interfaces.
 
 #### EVE Command and Register Definitions
+Command encodings and register definitions used by the EVE API and HAL implementations:
 
 ```mermaid
 block
   columns 3
-  A1["EVE_commands.h"]    space   B1["EVE_settings.h"]
-  A2["EVE_registers.h"]   space   B2["EVE_settings.h"]
+  block:COMMAND_REGISTER_LAYER[" "]:3
+    columns 3
 
-  A1 --> B1
-  A2 --> B2
+    A1["EVE_commands.h"]    space  B1["EVE_settings.h"]  
+    A2["EVE_registers.h"]   space  B2["EVE_settings.h"]
+
+    A1 --> B1
+    A2 --> B2
+  end
 ```
 
-Command encodings and register definitions used by the EVE API and HAL implementations.
-
 #### HAL Layer
-
+Public HAL Header and source implementations for MCU or Linux based platforms:
 ```mermaid
 block
-  columns 7
-  space space 
-  block:TOP_LAYER[" "]:3
+  columns 4
+  block:TOP_LAYER[" "]:4
     columns 3
-    A1["EVE.h"]     space       B1["EVE_settings.h"]
+    A1["HAL.h"]     space       B1["EVE_settings.h"]
     A1 --> B1
   end 
-  space space 
-  block:MCU_LAYER[" "]:3
+  block:MCU_LAYER[" "]:2
     columns 3
     A2["EVE_HAL.c"] X2((" "))   B2["HAL.h"]             
     space           X3((" "))   B3["MCU.h"]             
@@ -366,8 +372,7 @@ block
     X5 --> B5
     X6 --> B6
   end
-  space
-  block:PLATFORM_LAYER[" "]:3
+  block:PLATFORM_LAYER[" "]:2
     columns 3
     A3["EVE_HAL_Linux.c"]  X7((" "))   B7["Platform.h"]
     space                  X8((" "))   B8["MCU.h"] 
@@ -389,64 +394,99 @@ block
 
 #### MCU / Platform Interface Layer
 
-```mermaid
-block
-  columns 7
-  A1["MCU.h"] space B1["EVE_settings.h"]  space  A2["Platform.h"] space B2["EVE_settings.h"]
-
-  A1 --> B1
-  A2 --> B2
-```
-
-HAL-facing interfaces with no dependency on EVE.h or HAL.h.
-
-#### Port Implementation Layer
+Public HAL-facing interfaces with no dependency on EVE.h or HAL.h:
 
 ```mermaid
 block
   columns 3
-  A1["ports/eve_*/EVE_*.c"] X1((" "))   B1["MCU.h <i>(1)</i>"]
-  space                     X2((" "))   B2["Platform.h <i>(2)</i>"]
-  space                     X3((" "))   B3["EVE_debug.h"]
 
-  A1 --- X1
-  X1 --- X2
-  X2 --- X3
-  X1 --> B1
-  X2 --> B2
-  X3 --> B3
+  block:MCU_SIDE[" "]:3
+    columns 3
+
+    A1["MCU.h"] space B1["EVE_settings.h"]
+
+    A1 --> B1
+  end
+  block:PLATFORM_SIDE[" "]:3
+    columns 3
+
+    A2["Platform.h"] space B2["EVE_settings.h"]
+
+    A2 --> B2
+  end
+```
+
+#### Port Implementation 
+Port specfic source implementations:
+
+```mermaid
+block
+  columns 3
+  block:PORT[" "]:3
+    columns 4
+
+    A1["ports/eve_*/EVE_*.c"] X1((" ")) space B1["MCU.h <i>(1)</i>"]
+    space                    X2((" ")) space B2["Platform.h <i>(2)</i>"]
+    space                    X3((" ")) space B3["EVE_debug.h <i>(3)</i>"]
+
+    A1 --- X1
+
+    X1 --- X2
+    X2 --- X3
+
+    X1 --> B1
+    X2 --> B2
+    X3 --> B3
+
+  end  
+
+  style X1 fill:none,stroke:none
+  style X2 fill:none,stroke:none
+  style X3 fill:none,stroke:none
 ```
 
 * _(1)_ Ports using `EVE_HAL.c` through the `MCU.h` interface.
 * _(2)_ Ports using `EVE_HAL_Linux.c` through the `Platform.h` interface.
+* _(3)_ Where required for individual port implmentations. 
+
 
 #### Feature and Device-Specific Extensions
+
+Feature- or device-specific code isolated behind its associated configuration or feature guard.
+
+Extensions may use common EVE functionality and, where required, and may contain MCU- or platform-specific implementation code.
 
 ```mermaid
 block
   columns 3
-  A1["source/extensions/*.c"] space B1["include/extensions/*.h"]
-  space space space
-  C1["custom_touch_fw.c"] space C2["custom_touch_fw.h"]
-  D1["lcd_panel_init.c"] space D2["lcd_panel_init.h"]
 
-  A1 --> C1
-  B1 --> C2
+  block:EXTENSIONS[" "]:3
+    columns 3
+
+    A1["source/extensions/*.c"] space B1["include/extensions/*.h"]
+
+    EXAMPLES["<b>Examples</b>"]:3
+
+    C1["custom_touch_fw.c"] space C2["custom_touch_fw.h"]
+    D1["lcd_panel_init.c"]  space D2["lcd_panel_init.h"]
+    E1["bt82x_patch.c"]     space E2["bt82x_patch.h"]
+  end
+
+  style EXAMPLES fill:none,stroke:none
 ```
-
-Feature- or device-specific code isolated behind its associated configuration or feature guard.
-
-Extensions may use common EVE functionality and, where required, contain MCU- or platform-specific implementation code.
-
 #### Independent Debug Utility
+Shared debug macro interface with no dependency on EVE.h:
 
 ```mermaid
 block
-  columns 1
-  A1["EVE_debug.h"]
-```
+  columns 3
 
-Shared debug macro interface with no dependency on EVE.h.
+  block:DEBUG[" "]:3
+    columns 1
+
+    A1["EVE_debug.h"]
+  end 
+```
 
 #### Configuration Headers
 
