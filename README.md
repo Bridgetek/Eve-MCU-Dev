@@ -280,7 +280,8 @@ block
 ```
 
 #### EVE API Layer
-Public API Header and source implementation:
+Public API header and source implementation:
+
 ```mermaid
 block
   columns 3
@@ -320,7 +321,7 @@ block
 
     A1["EVE_settings.h"]  space   B1["EVE_config.h"]
     A2["EVE_config.h"]    space   B2["EVE_defs.h"]
-    A3["EVE_defs.h <br> <br> (Common device module, panel and option definitions)"] 
+    A3["EVE_defs.h <br> (Common device module, panel and<br> option definitions)"] 
 
     A1 --> B1
     A2 --> B2
@@ -345,7 +346,8 @@ block
 ```
 
 #### HAL Layer
-Public HAL Header and source implementations for MCU/host or Linux based platforms:
+Public HAL header and source implementations for MCU/host or Linux-based platforms:
+
 ```mermaid
 block
   columns 4
@@ -394,7 +396,7 @@ block
 
 #### MCU / Platform Interface Layer
 
-Public HAL-facing interfaces with no dependency on EVE.h or HAL.h:
+Public HAL-facing interfaces with no dependency on `EVE.h` or `HAL.h`:
 
 ```mermaid
 block
@@ -417,7 +419,7 @@ block
 ```
 
 #### Port Implementation 
-Port specific source implementations:
+Port-specific source implementations:
 
 ```mermaid
 block
@@ -447,14 +449,14 @@ block
 
 * _(1)_ Ports using `EVE_HAL.c` through the `MCU.h` interface.
 * _(2)_ Ports using `EVE_HAL_Linux.c` through the `Platform.h` interface.
-* _(3)_ Where required for individual port implmentations. 
+* _(3)_ Where required by individual port implementations. 
 
 
 #### Feature and Device-Specific Extensions
 
-Feature- or device-specific code isolated behind its associated configuration or feature guard.
+Feature- or device-specific code isolated behind the associated configuration or feature guard.
 
-Extensions may use common EVE functionality and, where required, and may contain MCU- or platform-specific implementation code.
+Extensions may use common EVE functionality and, where required, may contain MCU- or platform-specific implementation code.
 
 ```mermaid
 block
@@ -475,17 +477,12 @@ block
   style EXAMPLES fill:none,stroke:none
 ```
 #### Independent Debug Utility
-Shared debug macro interface with no dependency on EVE.h:
+Shared debug macro interface with no dependency on `EVE.h`:
 
 ```mermaid
 block
-  columns 3
-
-  block:DEBUG[" "]:3
     columns 1
-
     A1["EVE_debug.h"]
-  end 
 ```
 
 #### Configuration Headers
