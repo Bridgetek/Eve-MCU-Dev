@@ -29,9 +29,17 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
   - Under Test: Compiles with the latest toolchain but hardware testing is ongoing.
 - (2) The Arduino port uses the build-in `ARDUINO` macro from the Arduino IDE and toolchain.
 - (3) The macro must be set to a value rather than just be defined. This is the index of the FT4222H or MPSSE device to use when the USB is scanned.
-- (4) Using the EVE INT# line for coprocessor completion is not supported.
- 
+- (4) Using the EVE INT# line for coprocessor completion is not supported. 
 
 For most parts a generic variant of the device has been chosen. The specific device variant is shown in the table above.
 
 Note: The Raspberrry Pi and BeagleBone Black ports are based on Linux builds and are suitable for most embedded Linux platforms by modifying the GPIO pins and device names to match the CPU and board package.
+
+### External Libraries
+
+The `external` directory contains third-party libraries and dependencies required by specific ports.
+
+Where practical, these dependencies are included as Git submodules so that the required external source or library files can be obtained alongside EVE-MCU-Dev without being maintained directly within this repository.
+
+Currently, the `external/ftdi_libraries` submodule provides dependencies used by the `eve_libft4222` and `eve_libmpsse` ports.
+
