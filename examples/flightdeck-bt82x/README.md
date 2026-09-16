@@ -33,7 +33,6 @@ This example supports the following platforms:
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | Yes |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
