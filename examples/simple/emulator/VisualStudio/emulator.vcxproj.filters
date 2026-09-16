@@ -79,18 +79,34 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h">
-      <Filter>Library\ports\eve_emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h">
-      <Filter>Library\ports\eve_emulator</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\bin</Filter>
+    </None>
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\bin</Filter>
+    </None>
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\bin</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\lib\bt8xxemu.lib">
+      <Filter>Library\ports\eve_emulator\EVE_Emulator\lib</Filter>
+    </Library>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -122,6 +138,18 @@
     </Filter>
     <Filter Include="Library\include\extensions">
       <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\eve_emulator\EVE_Emulator">
+      <UniqueIdentifier>{e4e27b50-a5b2-4b39-a356-34fb22fa1692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\eve_emulator\EVE_Emulator\lib">
+      <UniqueIdentifier>{0646a985-4426-4d13-90cf-821d9e2a7fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\eve_emulator\EVE_Emulator\bin">
+      <UniqueIdentifier>{53b68a6f-a8df-433b-8c48-ac1f8c8884c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\eve_emulator\EVE_Emulator\include">
+      <UniqueIdentifier>{0f6cb0f8-41b0-4c36-a9cc-6d8fced2fb15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

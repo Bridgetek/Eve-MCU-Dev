@@ -131,6 +131,14 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
   <ItemGroup>
     <None Include="..\..\assets\Roboto-BoldCondensed_32_L4.raw" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll" />
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll" />
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\lib\bt8xxemu.lib" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
