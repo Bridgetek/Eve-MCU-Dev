@@ -521,7 +521,7 @@ Lower-level MCU and platform implementation files should not depend on higher-le
 
 Extension code under `include/extensions` and `source/extensions` should depend only on the functionality required by that feature and should remain isolated behind the relevant feature guards. Where required, an extension may contain MCU- or platform-specific implementation code for functionality that is not provided by the common library interfaces.
 
-##### Custom EVE Configuration Headers
+#### Custom EVE Configuration Headers
 
 `EVE_settings.h` includes `EVE_config.h`, and `EVE_config.h` includes `EVE_defs.h`, using the compiler include search path:
 

@@ -87,13 +87,13 @@ FILE *port_fopen(char const * _FileName, char const * _Mode)
 /** @brief Functions used to get platform time
  */
 //@{
+typedef struct timespec platform_time_t;
+
 #ifdef _MSC_VER
 // Code only needed for Windows MSVC compilations
 // This will make a glock_gettime function similar enough to POSIX.
 #include <windows.h>
 #include <winnt.h>
-
-typedef struct timespec platform_time_t;
 
 #define CLOCK_MONOTONIC 0
 #define MS_PER_SEC      1000ULL     // MS = milliseconds
