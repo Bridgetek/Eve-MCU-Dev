@@ -100,12 +100,25 @@
     <ClInclude Include="..\..\..\..\include\EVE_settings.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h">
-      <Filter>Library\ports\eve_libft4222</Filter>
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\include\LibFT4222.h">
+      <Filter>Library\ports\external\ftdi_libraries\libFT4222</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h">
-      <Filter>Library\ports\eve_libft4222</Filter>
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h">
+      <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll">
+      <Filter>Library\ports\external\ftdi_libraries\libFT4222</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.lib">
+      <Filter>Library\ports\external\ftdi_libraries\libFT4222</Filter>
+    </Library>
+    <Library Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\lib-windows\libftd2xx.lib">
+      <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
+    </Library>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -137,6 +150,18 @@
     </Filter>
     <Filter Include="Library\include\extensions">
       <UniqueIdentifier>{823da6a4-a341-42d0-9338-57deee70fc6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\external">
+      <UniqueIdentifier>{507ad1d0-4d8d-4dba-ac09-0fbe71180d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\external\ftdi_libraries">
+      <UniqueIdentifier>{aa3bcd83-6a6d-4e21-991e-86c62a4a2266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\external\ftdi_libraries\libFT4222">
+      <UniqueIdentifier>{9692de5a-ac4a-48ba-85d5-8f6627ea64a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ports\external\ftdi_libraries\libFTD2XX">
+      <UniqueIdentifier>{ee35db54-82ec-4936-bbeb-1dd0dde2a8dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

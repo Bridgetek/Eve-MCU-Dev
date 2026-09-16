@@ -43,13 +43,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\ports\external\ftdi_libraries\libFT4222\include;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libft4222;..\..\..\..\ports\external\ftdi_libraries\libFT4222\include;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -63,10 +63,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.lib;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\lib-windows\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll "$(OutDir)LibFT4222-64.dll" || exit /b 1</Command>
+      <Command>copy /Y ..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll "$(OutDir)LibFT4222-64.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,10 +83,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\..\..\..\ports\eve_libft4222\libft4222.lib;..\..\..\..\ports\eve_libft4222\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.lib;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\lib-windows\libftd2xx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y ..\..\..\..\ports\eve_libft4222\LibFT4222-64.dll "$(OutDir)LibFT4222-64.dll" || exit /b 1</Command>
+      <Command>copy /Y ..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll "$(OutDir)LibFT4222-64.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -136,12 +136,19 @@
     <ClInclude Include="..\..\..\snippets\widgets\dialogs.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\ftd2xx.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libft4222\libft4222.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
     <ClInclude Include="..\..\..\..\include\Platform.h" />
     <ClInclude Include="..\..\common\patch_medinfo.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\include\LibFT4222.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.lib" />
+    <Library Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\lib-windows\libftd2xx.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
