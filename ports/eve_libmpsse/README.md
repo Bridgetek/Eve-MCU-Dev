@@ -57,6 +57,11 @@ To compile this you will have to download the **libMPSSE** library for Windows. 
 https://github.com/Bridgetek/FTDI-SW-Release/
 
 This is used as a submodule for Windows compilations and is found in the directory `ports/external/ftdi_libraries`. Ensure that the repository has been cloned before compiling libmpsse builds.
+
+Windows builds compile the libMPSSE source files provided by the FTDI software release directly into the application.
+
+The FTDI D2XX runtime is still required. The libMPSSE implementation loads `ftd2xx.dll` dynamically when `Init_libMPSSE()` is called, so the appropriate FTDI D2XX driver must be installed and `ftd2xx.dll` must be available to the application at runtime.
+
 ## Linux
 
 Important Information about Linux builds.

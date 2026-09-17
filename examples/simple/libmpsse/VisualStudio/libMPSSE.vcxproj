@@ -43,12 +43,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\external\ftdi_libraries\libMPSSE\include;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\ports\eve_libmpsse;..\..\..\..\ports\external\ftdi_libraries\libMPSSE\include;..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
@@ -58,7 +58,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
-      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_LIB;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_MPSSE=0;FTDIMPSSE_STATIC;FT_VER_MAJOR=1;FT_VER_MINOR=0;FT_VER_BUILD=9;WIN32;_CONSOLE;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,17 +84,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c" />
+    <ClCompile Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_infra.c" />
+    <ClCompile Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_mid.c" />
+    <ClCompile Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_spi.c" />
     <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c" />
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.c" />
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.c" />
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\ftdi_spi.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\common\eve_fonts.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_images.c" />
-    <ClCompile Include="..\..\..\..\ports\eve_libmpsse\EVE_libmpsse.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\main\main.c" />
@@ -109,10 +109,10 @@
     <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
     <ClInclude Include="..\..\..\..\include\extensions\lcd_panel_init.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftd2xx.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_infra.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\ftdi_mid.h" />
-    <ClInclude Include="..\..\..\..\ports\eve_libmpsse\libmpsse_spi.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\include\libmpsse_spi.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_infra.h" />
+    <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_mid.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />

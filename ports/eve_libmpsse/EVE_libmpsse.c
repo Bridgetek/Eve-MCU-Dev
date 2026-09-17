@@ -127,7 +127,7 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     FT_STATUS ftStatus;
     ChannelConfig channelConf;
 
-    /* Set SPI clock speed to 15 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock to speed */
     memset(&channelConf, 0, sizeof(ChannelConfig));
     channelConf.ClockRate = speed;
     channelConf.LatencyTimer = 10;
@@ -163,6 +163,14 @@ int MCU_Init(void)
     Init_libMPSSE();
 
     ftStatus = SPI_GetNumChannels(&channels);
+    if (ftStatus != FT_OK)
+    {
+        EVE_DEBUG_ERROR("SPI_GetNumChannels failed with status %u. \nCheck that the D2XX driver and ftd2xx.dll are available.\n", (unsigned int)ftStatus);
+        
+        Cleanup_libMPSSE();
+        return -1;
+    }
+
     for (channel = 0; channel < channels; channel++)
     {
         ftStatus = SPI_GetChannelInfo(channel, &devList);
@@ -234,8 +242,7 @@ int MCU_Setup(void)
     /* Additional SPI Configuration */
     SPI_CloseChannel(ftHandle);
 
-    // Increase SPI speed to 15 MHz after initialisation is complete
-    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
+    /* Set SPI clock speed to 15 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     cmd_open_channel(openChannel, 15000000);
 
     return 0;
