@@ -45,9 +45,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -103,7 +101,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */
@@ -112,7 +110,6 @@ int main(void)
 
 void setup(void)
 {
-#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
@@ -127,6 +124,5 @@ void setup(void)
 	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
 	printf ("J8 Pin 2 - 5v supply for FT8xx/BT8xx\n");
 	printf ("J8 Pin 25 - signal GND for SPI\n");
-#endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }
 

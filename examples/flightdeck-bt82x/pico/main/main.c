@@ -52,7 +52,7 @@
 
 /* Include the EVE debug-output macros. */
 #include "EVE_debug.h"
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -113,7 +113,7 @@ uint32_t platform_get_time(void)
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */

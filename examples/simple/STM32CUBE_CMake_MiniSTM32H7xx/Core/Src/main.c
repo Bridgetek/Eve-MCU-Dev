@@ -28,6 +28,7 @@
 
 #include "quadspi.h"
 
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* USER CODE END Includes */
@@ -125,6 +126,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MX_QUADSPI_Init();
 
+  /* Start example code */
   eve_example();
 
   /* USER CODE END 2 */

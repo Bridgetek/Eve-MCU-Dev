@@ -43,9 +43,7 @@
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/

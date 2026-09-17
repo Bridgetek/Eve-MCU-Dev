@@ -44,13 +44,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#ifndef _WIN32
-#include <sys/time.h>
-#endif
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -192,7 +187,7 @@ uint32_t platform_get_time(void)
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */
@@ -204,6 +199,6 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev DataVisualiser Example for the EVE Emulator\r\n");
+    printf ("Welcome to EVE-MCU-Dev Data Visualiser Example for the EVE Emulator\r\n");
     printf ("\n");
 }

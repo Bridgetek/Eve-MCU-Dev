@@ -1,7 +1,6 @@
 #include <SPI.h>
 
 extern "C" {
-#include "EVE.h"
 #include "eve_example.h"
 }
 
@@ -35,5 +34,6 @@ void loop() {
   // Initialise the display
   Serial.print("Starting EVE...\n");
   
+  /* Start example code */
   eve_example();
 }

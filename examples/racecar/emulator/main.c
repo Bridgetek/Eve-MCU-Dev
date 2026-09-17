@@ -44,15 +44,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#ifndef _WIN32
-#include <sys/time.h>
-#endif
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
 /* Include the EVE debug-output macros */
 #include "EVE_debug.h"
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -157,7 +152,7 @@ int main(int argc, char **argv)
 {
     char *assets = NULL;
 
-    /* Setup UART */
+    /* Setup */
     setup();
 
 #if (ASSETS == USE_FLASH)

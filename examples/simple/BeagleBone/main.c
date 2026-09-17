@@ -45,9 +45,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -160,7 +158,7 @@ void platform_write_ram_from_pm(const uint8_t *ImgData, uint32_t length, uint32_
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */

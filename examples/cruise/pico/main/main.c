@@ -52,7 +52,7 @@
 
 /* Include the EVE debug-output macros. */
 #include "EVE_debug.h"
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -143,7 +143,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to the EVE-MCU-Dev Cruise Control Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Cruise Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
 	printf ("Pin configuration for example:\n");
 	printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

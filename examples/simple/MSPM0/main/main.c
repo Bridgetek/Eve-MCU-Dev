@@ -45,9 +45,7 @@
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-/* Include functions for EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
@@ -83,10 +81,13 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
+    /* Initialise the MSPM0 system configuration. */
     SYSCFG_DL_init();
-
+    
+    /* Start example code */
     eve_example();
     
+    // function never returns
     while (1) {
     }
 }

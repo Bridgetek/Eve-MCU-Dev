@@ -54,9 +54,7 @@
 #include "driver/gpio.h"
 #include "soc/rtc.h"
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -138,7 +136,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 void main_thread(void *p)
 {
     ESP_LOGI(__FUNCTION__, "setup starting");
-    /* Setup UART */
+    /* Setup */
     setup();
 
     ESP_LOGI(__FUNCTION__, "example starting");

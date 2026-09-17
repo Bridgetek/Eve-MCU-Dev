@@ -44,9 +44,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -119,7 +117,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */
@@ -131,6 +129,6 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev FontMagic Example for the EVE Emulator\r\n");
+    printf ("Welcome to EVE-MCU-Dev Font Magic Example for the EVE Emulator\r\n");
     printf ("\n");
 }

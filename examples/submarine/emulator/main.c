@@ -44,9 +44,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
@@ -124,7 +122,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */
