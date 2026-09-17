@@ -14,7 +14,7 @@ include(../../../ports/eve_emulator/emulator.cmake)
 
 # Add platform specific build files:
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/main/main.c
         )
 
 # Trig tables are used instead of maths functions

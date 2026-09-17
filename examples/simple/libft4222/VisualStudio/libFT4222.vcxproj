@@ -100,7 +100,7 @@
     <ClCompile Include="..\..\common\eve_images.c" />
     <ClCompile Include="..\..\..\..\source\EVE_API.c" />
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
-    <ClCompile Include="..\main.c" />
+    <ClCompile Include="..\main\main.c" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_commands.h" />
     <ClInclude Include="..\..\..\..\include\EVE_debug.h" />

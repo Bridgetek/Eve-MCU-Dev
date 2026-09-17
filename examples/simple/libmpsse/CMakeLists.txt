@@ -14,7 +14,8 @@ include(../../../ports/eve_libmpsse/libmpsse.cmake)
 
 # Add platform specific build files:
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+        ${CMAKE_CURRENT_SOURCE_DIR}/main/main.c
+        )
 
 # Build Final Executable:
 target_link_libraries(${EXAMPLE_PROJECT_NAME} 

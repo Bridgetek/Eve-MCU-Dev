@@ -119,7 +119,7 @@
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c" />
     <ClCompile Include="..\..\common\eve_tracedata.c" />
     <ClCompile Include="..\..\common\patch_medinfo.c" />
-    <ClCompile Include="..\main.c" />
+    <ClCompile Include="..\main\main.c" />
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
