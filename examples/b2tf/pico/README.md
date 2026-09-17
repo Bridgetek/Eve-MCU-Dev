@@ -1,4 +1,4 @@
-# EVE-MCU-Dev B2TF VRaspberry Pi pico VSCode Example
+# EVE-MCU-Dev B2TF Raspberry Pi pico VSCode Example
 
 [Back](../README.md)
 
