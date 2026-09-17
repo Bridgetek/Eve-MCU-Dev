@@ -50,7 +50,7 @@
 #include <ft900_memctl.h>
 
 /* Include the EVE debug-output macros */
-#include "EVE_debug.h"
+#include "eve_debug.h"
 /* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
@@ -88,16 +88,16 @@ void debug_uart_init(void);
 //@{
 int8_t platform_calib_init(void)
 {
-	const __flash__ struct touchscreen_calibration *pcalibpm = (const __flash__ struct touchscreen_calibration *)dlog_pm;
-
-	/* Check that there is an area set aside in the data section for calibration data. */
-	if ((pcalibpm->key != VALID_KEY_TOUCHSCREEN) && (pcalibpm->key != 0xFFFFFFFF))
+	/* The Flash destination must be aligned to a 256-byte page. */
+	if (((uint32_t)dlog_pm & 0xFFU) != 0)
 	{
-		if (((uint32_t)pcalibpm & 255) != 0)
-		{
-			/* An aligned 256 byte Flash sector not has been correctly setup for calibration data. */
-			return -1;
-		}
+		return -1;
+	}
+
+	/* Calibration data must fit within the Flash page. */
+	if (sizeof(struct touchscreen_calibration) > 256)
+	{
+		return -1;
 	}
 
 	return 0;
@@ -105,50 +105,45 @@ int8_t platform_calib_init(void)
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
-	uint8_t	dlog_flash[260] __attribute__((aligned(4)));
-	struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
+	uint8_t	dlog_flash[256] __attribute__((aligned(4)));
 
-	/* Read calibration data from Flash to a properly aligned array. */
+	/* Read the existing Flash page into a properly aligned array. */
 	CRITICAL_SECTION_BEGIN
-	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
+	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, sizeof(dlog_flash));
 	CRITICAL_SECTION_END
 
-	/* Check that the Flash blank, so it is possible to write to this sector in Flash. */
-	if (pcalibflash->key == 0xFFFFFFFF)
+	/* The Flash page must be blank before it can be programmed. */
+	for (uint32_t i = 0; i < sizeof(dlog_flash); i++)
 	{
-		/* Copy calibration data into a properly aligned array. */
-		calib->key = VALID_KEY_TOUCHSCREEN;
-		memset(dlog_flash, 0xff, sizeof(dlog_flash));
-		memcpy(dlog_flash, calib, sizeof(struct touchscreen_calibration));
-
-		CRITICAL_SECTION_BEGIN
-		/* This are must be set to 0xff for Flash programming to work. */
-		memcpy_dat2flash ((uint32_t)dlog_pm, dlog_flash, 256);
-		CRITICAL_SECTION_END;
-
-		return 0;
+		if (dlog_flash[i] != 0xFF)
+		{
+			return -1;
+		}
 	}
 
-	return -1;
+	/* Copy calibration data into a properly aligned array. */
+	memset(dlog_flash, 0xff, sizeof(dlog_flash));
+	memcpy(dlog_flash, calib, sizeof(struct touchscreen_calibration));
+
+	CRITICAL_SECTION_BEGIN
+	/* This are must be set to 0xff for Flash programming to work. */
+	memcpy_dat2flash((uint32_t)dlog_pm, dlog_flash, sizeof(dlog_flash));
+	CRITICAL_SECTION_END
+
+	return 0;
+
 }
 
 int8_t platform_calib_read(struct touchscreen_calibration *calib)
 {
 	uint8_t dlog_flash[256] __attribute__((aligned(4)));
-	struct touchscreen_calibration *pcalibflash = (struct touchscreen_calibration *)dlog_flash;
 
 	/* Read calibration data from Flash to a properly aligned array. */
 	CRITICAL_SECTION_BEGIN
-	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, 256);
+	memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, sizeof(dlog_flash));
 	CRITICAL_SECTION_END
 
-	/* Flash blank, program memory blank: flash calibration data blank. */
-	if (pcalibflash->key != VALID_KEY_TOUCHSCREEN)
-	{
-		return -2;
-	}
-
-	/* Calibration data is valid. */
+	/* Return the stored data */
 	memcpy(calib, dlog_flash, sizeof(struct touchscreen_calibration));
 
 	return 0;
