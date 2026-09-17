@@ -131,7 +131,33 @@ flowchart
     FINISH
 ```
 
-Therefore the command line `cmake -B build -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
-This is equivalent to a command line of `cmake -B build -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
+Therefore the command line `cmake -B build -S . -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
+This is equivalent to a command line of `cmake -B build -S . -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
 
 The `EVE_COPRO_METHOD` or `EVE_RAM_G_CONFIG_SIZE` selections, if set, are always passed onto the compilation.
+
+### Visual Studio Build Options
+
+Some projects are supplied with Visual Studio solutions.
+
+### Build Option Support
+
+The following platforms generally support the following build methods:
+
+| Port Name | CMake | Visual Studio | STM32CubeIDE | Arduino IDE |
+| --- | --- |
+| Arduino | No |
+| BeagleBone | Yes |
+| Expressif ESP32 | No |
+| Bridgetek FT9xx | Yes |
+| TI MSP430 | No |
+| TI MSPM0 | No |
+| Microchip PIC18F | No |
+| NXP K64 | No |
+| Raspberry Pi | Yes |
+| Raspberry Pi Pico | Yes |
+| ST STM32 (Keil) | No |
+| ST STM32Cube | Yes |
+| Generic using libMPSSE | Yes |
+| Generic using libFT4222 | Yes |
+| Generic using EVE Emulator | Yes |

@@ -64,6 +64,16 @@ IF(EVE_COPRO_METHOD)
     message(EVE_COPRO_METHOD="${EVE_COPRO_METHOD}")
 ENDIF(EVE_COPRO_METHOD)
 
+# Set RAM_G size for BT82X only
+option(EVE_RAM_G_CONFIG_SIZE "Set BT82x RAM_G size")
+IF(EVE_RAM_G_CONFIG_SIZE)
+    ADD_DEFINITIONS(-DEVE_RAM_G_CONFIG_SIZE=${EVE_RAM_G_CONFIG_SIZE})
+    message(EVE_RAM_G_CONFIG_SIZE="${EVE_RAM_G_CONFIG_SIZE}")
+ENDIF(EVE_RAM_G_CONFIG_SIZE)
+
+# Define the project name for the build and file types
+project(${EXAMPLE_PROJECT_NAME} C CXX)
+
 # Source code for EVE library
 add_library(eve_library # EVE library name
         # Source code for EVE library

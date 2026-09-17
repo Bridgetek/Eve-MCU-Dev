@@ -58,9 +58,12 @@
 
 #include "esp_system.h"
 #include "driver/spi_master.h"
+#include "driver/spi_common.h"
+#include "hal/spi_types.h"
 #include "soc/gpio_struct.h"
 #include "rom/gpio.h"
 #include "driver/gpio.h"
+#include "soc/gpio_num.h"
 #include "esp_log.h"
 
 /* Include functions for EVE-MCU-Dev library MCU layer */
@@ -79,6 +82,9 @@ static spi_device_handle_t spi;
 
 // Status LED
 #define PIN_NUM_BLUE_LED 5
+
+#undef HSPI_HOST
+#define HSPI_HOST SPI2_HOST
 
 /* EVE MCU HEADER END */
 
@@ -133,7 +139,7 @@ int MCU_Init(void)
     mcu_setup_spi(1000000);
 
     //disable interrupt
-    io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
+    io_conf.intr_type = GPIO_MODE_DISABLE;
     //set as output mode
     io_conf.mode = GPIO_MODE_OUTPUT;
     //bit mask of the Chip Select and Power Down pins

@@ -1,15 +1,96 @@
 menu "EVE Configuration"
 
-config FT8XX_TYPE
-    string "EVE Device"
-	default "FT812"
+config EVE_MODULE
+	string "EVE Module"
+	default "EVE_NO_MODULE"
 	help
-		Choose from FT811, FT812.
+		Choose from:
+		EVE_VM800B           - VM800B35A-BK with 3.5-inch display (FT800 with DP-0351-11A)
+		EVE_VM800C35A        - VM800C35A-D with 3.5-inch display (FT800 with DP-0351-11A)
+		EVE_VM800C43A        - VM800C43A-D with 4.3-inch display (FT800 with DP-0431-11A)
+		EVE_VM800C50A        - VM800C50A-D with 5-inch display (FT800 with DP-0502-11A)
+		EVE_VM810C           - VM810C50A-D with 5-inch display (FT810 with DP-0501-11A)
+		EVE_ME812A           - ME812A-WH50R, ME812AU-WH50R with 5-inch display (FT812 with DP-0501-11A)
+		EVE_ME813A           - ME813A-WH50C with 5-inch display (FT813 with DP-0501-01A)
+		EVE_VM816C           - VM816C50A-D, VM816CU50A-D with 5-inch display (BT816 with DP-0501-11A)
+		EVE_VM880C           - VM880C with assumed 4.3-inch display (BT880 with DP-0431-11A)
+		EVE_IDM204021R       - IDM2040-21R (FT800 with 2.1-inch display)
+		EVE_IDM204043A       - IDM2040-43A (BT883 with DP-0431-11A)
+		EVE_IDM20407A        - IDM2040-7A (BT817 with DP-0701-01A)
+		EVE_VM820B10A        - VM820B10A with 10.1-inch display (BT820 with DP-1011-02A)
+		EVE_VM820B15A        - VM820B15A with 15.6-inch display (BT820 with DP-1561-02A)
+		EVE_IDK_FT810_43A    - FT810 IC Development Kit with 4.3-inch display (FT810 with DP-0431-11A)
+		EVE_IDK_BT816_50A    - BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
+		EVE_IDK_BT817_70A    - BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
+		EVE_IDK_BT817_101A   - BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
+		EVE_IDK_BT820_101A   - BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
 
-config FT8XX_DISPLAY
-    string "EVE Display Size"
-	default "WVGA"
+config EVE_DEVICE
+    string "EVE Device"
+	default "EVE_BT817"
 	help
-		Choose from WVGA (800x480)
+		Choose from:
+		EVE_FT800, EVE_FT801, EVE_FT810, EVE_FT811, EVE_FT812, EVE_FT813,
+		EVE_BT880, EVE_BT881, EVE_BT882, EVE_BT883, EVE_BT815, EVE_BT816,
+		EVE_BT817, EVE_BT818, EVE_BT820.
+
+config EVE_PANEL
+	string "EVE Panel"
+	default "EVE_NO_PANEL"
+	help
+		Choose from:
+		EVE_DP_0351_11A - DP-0351-11A QVGA (Resistive)
+		EVE_DP_0431_11A - DP-0431-11A WQVGA (Resistive)
+		EVE_DP_0501_01A - DP-0501-01A WVGA (Capacitive)
+		EVE_DP_0501_11A - DP-0501-11A WVGA (Resistive)
+		EVE_DP_0502_11A - DP-0502-11A WQVGA (Resistive)
+		EVE_DP_0701_01A - DP-0701-01A WVGA (Capacitive)
+		EVE_DP_1011_01A - DP-1011-01A WXGA (Capacitive)
+		EVE_DP_1011_02A - DP-1011-02A WXGA_NG (Capacitive)
+		EVE_DP_1012_01A - DP-1012-01A WUXGA (Capacitive)
+		EVE_DP_1561_01A - DP-1561-01A FullHD (Capacitive)
+		EVE_DP_1561_02A - DP-1561-02A FullHD (Capacitive)
+		EVE_DP_IDM43A   - IDM204043A (Capacitive)
+		EVE_DP_IDM21R   - IDM204021R (Capacitive)
+		EVE_NO_PANEL    
+
+config EVE_DISPLAY_RES
+    string "EVE Display Size"
+	default "EVE_WVGA"
+	help
+		Choose from:
+		EVE_QVGA (320x240)
+		EVE_WQVGA (480x272)
+		EVE_WQVGAR  (480x480)
+		EVE_WVGA (800x480)
+		EVE_WSVGA (1024x600)
+		EVE_WXGA (1280x800)
+		EVE_WXGA_NG (1280x800)
+		EVE_FULLHD (1920x1080)
+		EVE_WUXGA (1920x1280)
+
+config EVE_COPRO_METHOD
+    string "EVE Co-processor Method Selection"
+	default "EVE_COPRO_CMDB_WRITE"
+	help
+		Choose from:
+		EVE_COPRO_CMDB_WRITE - Use the `REG_CMDB_WRITE` register to address the command buffer.
+		EVE_COPRO_CMD_WRITE  - Use `REG_CMD_WRITE` and `REG_CMD_READ` to control the command buffer.
+		EVE_COPRO_INT        - Use `REG_CMD_WRITE`, `REG_CMD_READ` and the INT# line to control the command buffer.
+
+config EVE_RAM_G_1_GBIT
+    string "EVE BT82x RAM_G Size Selection"
+	default "EVE_RAM_G_1_GBIT"
+	help
+		Choose from:
+		EVE_RAM_G_32_MBIT - 0.03Gb
+		EVE_RAM_G_64_MBIT - 0.06Gb
+		EVE_RAM_G_128_MBIT - 0.12Gb
+		EVE_RAM_G_256_MBIT - 0.25Gb
+		EVE_RAM_G_512_MBIT - 0.5Gb
+		EVE_RAM_G_1_GBIT - 1Gb
+		EVE_RAM_G_2_GBIT - 2Gb
+		EVE_RAM_G_4_GBIT - 4Gb
+		EVE_RAM_G_8_GBIT - 8Gb
 
 endmenu

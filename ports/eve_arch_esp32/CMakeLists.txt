@@ -15,4 +15,6 @@ idf_component_register(SRCS
                         # Only applicable LCD panels that require driver initialisation
                         "../../source/extensions/lcd_panel_init.c"
                        INCLUDE_DIRS "../../include"
-                       REQUIRES driver soc)
+                       REQUIRES driver esp_driver_spi soc
+                       PRIV_REQUIRES esp_driver_gpio
+)

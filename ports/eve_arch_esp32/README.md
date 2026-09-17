@@ -25,3 +25,5 @@ An ESP32 Thing board can be connected to an EVE board as in the following pictur
 ![ESP32 Thing Wiring Picture](../../docs/esp32thing.png)
 
 __NOTE:__ The ESP32 Thing has a (deprecated) 26 MHz crystal. If this device is used then the default monitor baud rate is 74880 baud rather than 115200 baud with an ESP32 with the currently supported 40 MHz crystal.
+
+__NOTE:__ Other ESP32 variations will required different pin numbers and SPI busses to be used. These settings are for the ESP32 (Tensilica LX6 microprocessor). If other variants of the ESP32 are to be used then the differences can be added in the top of the `EVE_MCU_ESP32.c` file or additional files for different types created.
