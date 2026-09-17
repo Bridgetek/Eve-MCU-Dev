@@ -49,9 +49,9 @@
 #include <ft900_dlog.h>
 #include <ft900_memctl.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
+/* Include the example interface and associated function prototypes. */
 #include "eve_example.h"
 
 #if defined(__FT900__)
@@ -157,7 +157,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 int main(void)
 {
-/* Setup UART */
+	/* Setup */
 	setup();
 
 	/* Start example code */
@@ -199,11 +199,11 @@ void debug_uart_init(void)
 
 	// Open the UART using the coding required.
 	uart_open(UART0,                    /* Device */
-			1,                        /* Prescaler = 1 */
-			UART_DIVIDER_115200_BAUD,  /* Divider = 1302 */
-			uart_data_bits_8,         /* No. buffer Bits */
-			uart_parity_none,         /* Parity */
-			uart_stop_bits_1);        /* No. Stop Bits */
+			1,                        	/* Prescaler = 1 */
+			UART_DIVIDER_115200_BAUD,  	/* Divider = 1302 */
+			uart_data_bits_8,         	/* No. buffer Bits */
+			uart_parity_none,         	/* Parity */
+			uart_stop_bits_1);        	/* No. Stop Bits */
 
 #if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 	uart_puts(UART0,
