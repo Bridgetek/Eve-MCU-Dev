@@ -76,7 +76,7 @@
     <ClInclude Include="..\..\..\..\include\HAL.h">
       <Filter>Library\include</Filter>
     </ClInclude>
-    <ClCompile Include="..\main.c">
+    <ClCompile Include="..\main\main.c">
       <Filter>Main</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\include\LibFT4222.h">

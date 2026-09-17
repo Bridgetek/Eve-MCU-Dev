@@ -53,7 +53,7 @@ include(../../../ports/eve_arch_rpi/pico.cmake)
 
 # Add platform specific build files:
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/main/main.c
         )
 
 # Enable debug logging output to stdio:
