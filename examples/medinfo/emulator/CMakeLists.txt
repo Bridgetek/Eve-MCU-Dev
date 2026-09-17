@@ -17,6 +17,9 @@ target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/main.c
         )
 
+# Trig tables are used instead of maths functions
+add_compile_definitions(USE_TRIG_TABLE)
+
 # BY DEFAULT: On emulator use the files in the "assets" directory
 # Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_C_ARRAYS)

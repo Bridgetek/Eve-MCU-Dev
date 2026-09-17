@@ -56,6 +56,9 @@ target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
         )
 
+# Enable debug logging output to stdio:
+add_compile_definitions(EVE_DEBUG_LEVEL=0)
+
 # Default name is the project name, version 0.1
 pico_set_program_name(${EXAMPLE_PROJECT_NAME} "touchscreentest")
 pico_set_program_version(${EXAMPLE_PROJECT_NAME} "0.1")

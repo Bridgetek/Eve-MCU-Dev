@@ -56,6 +56,15 @@ target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
         )
 
+# Enable debug logging output to stdio:
+add_compile_definitions(EVE_DEBUG_LEVEL=0)
+
+# Trig tables are used instead of maths functions
+add_compile_definitions(USE_TRIG_TABLE)
+
+# Turn on profiling of co-processor lists
+add_compile_definitions(EVE_COPROC_PROFILE)
+
 # The pico port can only use the EVE Flash for storage of assets
 # Comment out this line to set the method in common/eve_example.h
 add_compile_definitions(ASSETS=USE_FLASH)

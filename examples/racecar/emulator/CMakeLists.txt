@@ -16,6 +16,12 @@ include(../../../ports/eve_emulator/emulator.cmake)
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
 
+# Trig tables are used instead of maths functions
+add_compile_definitions(USE_TRIG_TABLE)
+
+# Turn on profiling of co-processor lists
+add_compile_definitions(EVE_COPROC_PROFILE)
+
 # BY DEFAULT: On emulator use the files in the "assets" directory
 add_compile_definitions(ASSETS=USE_C_ARRAYS)
 # Comment out this line to set the method in common/eve_example.h
