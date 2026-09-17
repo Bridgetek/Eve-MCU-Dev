@@ -52,7 +52,6 @@
 #define EVE_API ### EVE API ###
 #define EVE_SUB_API ### EVE SUB API ###
 
-```c
 //@{
 /** @brief Library includes
  * @details Includes the public EVE API used by the Arduino C++ wrapper.
@@ -62,7 +61,6 @@ extern "C" {
 #include <EVE.h>
 }
 //@}
-```
 
 class ### EVE CLASS ###
 {
