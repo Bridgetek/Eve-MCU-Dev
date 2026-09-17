@@ -4,7 +4,7 @@
 
 ## Compiling using the pico VSCode Extension
 
-The workspace file `racecar.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
+The workspace file `datavisualiser.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
 
 ### Setting Up the Data Visualiser Raspberry Pi pico VSCode Example
 
@@ -44,10 +44,4 @@ The following CMake command will build the code and place the resulting files in
     cmake --build build
 ```
 
-The UF2 file for programming onto the board is `racecar_pico.uf2` in the `build` directory.
-
-## Running the Example
-
-If the `ASSETS` macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The options for the image are found in the `eve3`/`eve4`/`eve5` subdirectory. If `USE_C_ARRAYS` then no additional action is needed. The `USE_FILES` or `USE_FLASHIMAGE` options are not possible on the pico platform as there is no file system built into the example.
-
-Note: the default setting for `ASSETS` on pico is `USE_FLASH` which is set in the `CMakeLists.txt` file. 
+The UF2 file for programming onto the board is `datavisualiser_pico.uf2` in the `build` directory.

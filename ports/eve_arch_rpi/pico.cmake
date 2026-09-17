@@ -1,8 +1,5 @@
 # Common CMake include file for all examples using pico/RP2040
 
-pico_set_program_name(${PROJECT_NAME} "simple")
-pico_set_program_version(${PROJECT_NAME} "0.1")
-
 # Tell EVE library to use RP2040 as base class:
 add_compile_definitions(PLATFORM_RP2040)
 

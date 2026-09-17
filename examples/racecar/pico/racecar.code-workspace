@@ -4,19 +4,16 @@
 			"path": "."
 		},
 		{
-			"path": "../../../include"
-		},
-		{
-			"path": "../../../source"
+			"path": "../common"
 		},
 		{
 			"path": "../assets"
 		},
 		{
-			"path": "../common"
+			"path": "../../../include"
 		},
 		{
-			"path": "../docs"
+			"path": "../../../source"
 		},		
 		{
 			"path": "../../snippets"

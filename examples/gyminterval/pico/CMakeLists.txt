@@ -38,153 +38,46 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(gyminterval C CXX ASM)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+include(../../examples.cmake)
 
-# Set the location of the EVE-MCU-Dev tree
-set(API_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../../")
+project(${EXAMPLE_PROJECT_NAME} C CXX)
 
-# Set name of project (as current working directory)
-get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
-get_filename_component(ProjectName ${PARENT_DIR} NAME)
-get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
-string(REPLACE " " "_" ProjectId ${ProjectId})
-project(${ProjectName}_${ProjectId} C CXX)
+# Include the common CMake recipie for this example:
+include(../common.cmake)
 
-message(API_DIRECTORY="${API_DIRECTORY}")
-message(ProjectId="${PROJECT_SOURCE_DIR}")
-message(PROJECT_NAME="${PROJECT_NAME}")
-message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
-message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
+# Include any port CMake additions for this example:
+include(../../../ports/eve_arch_rpi/pico.cmake)
 
-# Setup command line options for build - feeds into EVE_config.h
-# A module type implies both a panel and eve type
-# - panel type, display resolution and eve device type are ignored
-# A panel configures a display resolution
-# - display resolution is ignored
-option(EVE_MODULE "EVE Module Name" )
-option(EVE_DEVICE "EVE Device Type Name" )
-option(EVE_PANEL "EVE Panel Type" )
-option(EVE_DISPLAY_RES "Panel Display Resolution" )
+# Add platform specific build files:
+target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
+        )
 
-# Set a module type
-IF(EVE_MODULE)
-    ADD_DEFINITIONS(-DEVE_MODULE=${EVE_MODULE})
-    message(EVE_MODULE="${EVE_MODULE}")
-ELSE(EVE_MODULE)
-# Set the eve device type
-IF(EVE_DEVICE)
-    ADD_DEFINITIONS(-DEVE_DEVICE=${EVE_DEVICE})
-    message(EVE_DEVICE="${EVE_DEVICE}")
-ENDIF(EVE_DEVICE)
-# Set the panel type
-IF(EVE_PANEL)
-    ADD_DEFINITIONS(-DEVE_PANEL=${EVE_PANEL})
-    message(EVE_PANEL="${EVE_PANEL}")
-ELSE(EVE_PANEL)
-# Set the display resolution
-IF(EVE_DISPLAY_RES)
-    ADD_DEFINITIONS(-DEVE_DISPLAY_RES=${EVE_DISPLAY_RES})
-    message(EVE_DISPLAY_RES="${EVE_DISPLAY_RES}")
-ENDIF(EVE_DISPLAY_RES)
-ENDIF(EVE_PANEL)
-ENDIF(EVE_MODULE)
+# Default name is the project name, version 0.1
+pico_set_program_name(${EXAMPLE_PROJECT_NAME} "medinfo")
+pico_set_program_version(${EXAMPLE_PROJECT_NAME} "0.1")
 
-# Add environment for example code
-set(EXAMPLE_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../common")
-set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
-
-# Point to where to find the platform source file
-add_executable(${PROJECT_NAME}
-        main/main.c
-)
-pico_set_program_name(${PROJECT_NAME} "gyminterval")
-pico_set_program_version(${PROJECT_NAME} "0.1")
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${API_DIRECTORY}/include
-        ${EXAMPLE_COMMON}
-)
-
-# Tell EVE library to use RP2040 as base class
-add_compile_definitions(PLATFORM_RP2040)
-
-# Enable debug logging output to stdio
-add_compile_definitions(EVE_DEBUG_LEVEL=0)
-
-# Milliseconds to wait for stdio connection
-# (will also have stdio_usb_connected() call in main to wait for connection)
-add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=0)
-
-# Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
-pico_enable_stdio_usb(${PROJECT_NAME} 1)
-
-# Source code for EVE library (targetted at RP2040)
-add_library(eve_library # EVE library name
-        # Source code for EVE library
-        ${API_DIRECTORY}/source/EVE_API.c
-        ${API_DIRECTORY}/source/EVE_HAL.c
-        ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_MCU_RP2040.c
-        ${API_DIRECTORY}/source/extensions/bt82x_patch.c # Only applicable to BT82X
-        ${API_DIRECTORY}/source/extensions/custom_touch_fw.c # Only applicable to FT81x/BT88x/BT81x 
-        ${API_DIRECTORY}/source/extensions/lcd_panel_init.c # Only applicable LCD panels that require driver initialisation
-)
-# Header files used for EVE library
-target_include_directories(eve_library PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${API_DIRECTORY}/include
-)
-
-# Source for example code
-add_library(eve_example # Example code library name
-        # Source files for example code library
-        ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_SNIPPETS}/touch.c
-        ${EXAMPLE_SNIPPETS}/controls/arcs.c
-        ${EXAMPLE_SNIPPETS}/controls/fonts.c
-        ${EXAMPLE_SNIPPETS}/controls/sound.c
-        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
-)
-# Header files used for example code library
-target_include_directories(eve_example PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${API_DIRECTORY}/include # Headers for EVE library
-        ${EXAMPLE_COMMON}/ # Headers for example code
-        ${EXAMPLE_SNIPPETS}/ # Headers for snippets
-)
-# Example code dependencies
-target_link_libraries(eve_example
-        eve_library # Example code depends on EVE library
-)
-
-# Add the standard library to the build
-target_link_libraries(${PROJECT_NAME}
-        eve_example # Project depends on example code library
+# Build Final Executable:
+target_link_libraries(${EXAMPLE_PROJECT_NAME}
+        eve_example # Depends on example code library
+        eve_library # Depends on EVE library
         hardware_flash # For non-volatile storage
         hardware_sync # For non-volatile storage
-        pico_stdlib)
+        pico_stdlib # For standard library
+        )
 
 # Add the standard include files to the build
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${EXAMPLE_PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
-# Add any user requested libraries
-target_link_libraries(eve_library 
-        pico_stdlib
-        hardware_spi
-        pico_time
-        )
+pico_add_extra_outputs(${EXAMPLE_PROJECT_NAME})
 
-pico_add_extra_outputs(${PROJECT_NAME})
-
-add_custom_command(TARGET ${PROJECT_NAME}
+add_custom_command(TARGET ${EXAMPLE_PROJECT_NAME}
     POST_BUILD
-    COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf
+    COMMAND arm-none-eabi-size --format=berkeley ${EXAMPLE_PROJECT_NAME}.elf
     VERBATIM
 )

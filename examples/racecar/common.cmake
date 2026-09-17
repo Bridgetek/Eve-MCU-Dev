@@ -9,6 +9,12 @@ set(EXAMPLE_ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/../assets")
 add_executable(${EXAMPLE_PROJECT_NAME}
 )
 
+# Trig tables are used instead of maths functions
+add_compile_definitions(USE_TRIG_TABLE)
+
+# Turn on profiling of co-processor lists
+add_compile_definitions(EVE_COPROC_PROFILE)
+
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library

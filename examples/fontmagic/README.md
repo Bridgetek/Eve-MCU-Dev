@@ -42,8 +42,7 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | Supported |
 | --- | --- | --- |
-| [ST STM32 (Keil) ](STM32/README.md) | [STM32](STM32/) | Yes |
-| [ST STM32Cube ](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | Yes |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
 

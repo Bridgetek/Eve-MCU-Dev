@@ -38,12 +38,8 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(datavisualiser C CXX)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
-
-# Add executable. Default name is the project name, version 0.1
 
 include(../../examples.cmake)
 
@@ -57,7 +53,12 @@ include(../../../ports/eve_arch_rpi/pico.cmake)
 
 # Add platform specific build files:
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+        ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
+        )
+
+# Default name is the project name, version 0.1
+pico_set_program_name(${EXAMPLE_PROJECT_NAME} "datavisualiser")
+pico_set_program_version(${EXAMPLE_PROJECT_NAME} "0.1")
 
 # Build Final Executable:
 target_link_libraries(${EXAMPLE_PROJECT_NAME}

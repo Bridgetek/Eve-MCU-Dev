@@ -38,12 +38,8 @@ else ()
         include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 endif ()
 
-project(racecar C CXX)
-
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
-
-# Add executable. Default name is the project name, version 0.1
 
 include(../../examples.cmake)
 
@@ -57,7 +53,16 @@ include(../../../ports/eve_arch_rpi/pico.cmake)
 
 # Add platform specific build files:
 target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.c)
+        ${CMAKE_CURRENT_SOURCE_DIR}main/main.c
+        )
+
+# The pico port can only use the EVE Flash for storage of assets
+# Comment out this line to set the method in common/eve_example.h
+add_compile_definitions(ASSETS=USE_FLASH)
+
+# Default name is the project name, version 0.1
+pico_set_program_name(${EXAMPLE_PROJECT_NAME} "racecar")
+pico_set_program_version(${EXAMPLE_PROJECT_NAME} "0.1")
 
 # Build Final Executable:
 target_link_libraries(${EXAMPLE_PROJECT_NAME}
