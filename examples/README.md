@@ -131,7 +131,7 @@ flowchart
     FINISH
 ```
 
-Therefore the command line `cmake -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
-This is equivalent to a command line of `cmake -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
+Therefore the command line `cmake -B build -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
+This is equivalent to a command line of `cmake -B build -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
 
 The `EVE_COPRO_METHOD` or `EVE_RAM_G_CONFIG_SIZE` selections, if set, are always passed onto the compilation.
