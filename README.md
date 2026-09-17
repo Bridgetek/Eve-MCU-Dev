@@ -541,7 +541,7 @@ The library __must__ be compiled for the correct EVE device and panel type. The 
 It is **recommended** that the `EVE_config.h` file is modified in a user program by including the modified version before the library version in the search path for include files passed to the compiler.
 
 There are three methods of configuring the EVE device and panel type. 
-- The `EVE_DEVICE` macro and `EVE_DISPLAY_RES` macro. (Formerly the `FT8XX_TYPE` macro and `DISPLAY_RES` macro)
+- The `EVE_DEVICE` macro and `EVE_DISPLAY_RES` macro. (Formerly the `FT8XX_TYPE` macro and `DISPLAY_RES` macro).
   This is the simplest method if a configuration is fixed. The `EVE_MODULE` and `EVE_PANEL` macros may be removed or be set to `EVE_NO_MODULE` and `EVE_NO_PANEL` respectively.
 - The `EVE_DEVICE` macro and `EVE_PANEL` macro.
   This sets the `EVE_DISPLAY_RES` for a panel. The `EVE_MODULE` macros may be removed or be set to `EVE_NO_MODULE`.
@@ -558,6 +558,32 @@ Where `EVE_PANEL` is selected, it determines the corresponding `EVE_DISPLAY_RES`
 `EVE_DISPLAY_RES` is then used to derive the `EVE_DISP_*` timing macro settings used when initialising the EVE display interface.
 
 The `EVE_PANEL` setting is optionally used in the `examples/snippets/touch.c` example snippet to select predefined touchscreen configuration values and bypass calibration. The `EVE_MODULE` setting is also used by `source/extensions/lcd_panel_init.c` to select the appropriate LCD panel driver initialisation sequence where supported.
+
+The following flowchart describes the above heirarchy of options:
+
+```mermaid
+flowchart
+
+    MODULE{EVE_MODULE}
+    SD[Set EVE_DEVICE]
+    SP[Set EVE_PANEL]
+    MODULE --> |Yes| SD
+    MODULE -->|No| API
+    SD --> SP
+
+    API[Set API]
+
+    PANEL{EVE_PANEL}
+    SR[Set EVE_DIPLAY_RES]
+    PANEL -->|Yes| SR
+    PANEL -->|No| FINISH
+
+    API --> PANEL
+    FINISH[Setup display parameters]
+
+    SP --> API
+    SR --> FINISH
+```
 
 #### Device and Panel Options
 
@@ -668,11 +694,45 @@ The display panel settings **must** be correct for the panel in used otherwise i
 
 **The default in the distribution will be a WVGA panel**. This is the panel used in the [IDK-BT817-70A](https://brtchip.com/product/idk-bt817-70a/) modules.
 
-#### Setting Device and Panel in Build Configuration
+### Co-processor Method Selection
 
-The `EVE_MODULE`, `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
+The `EVE_COPRO_METHOD` selection allows selection over the method used to control the co-processor command buffer. There are three methods which can be used. Not all can be used on all devices and in all ports.
 
-The `EVE_MODULE` macro is parsed first. Setting this to `EVE_NO_MODULE` will allow one or all of the `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros to be picked up from the build file C definitions. 
+On EVE2 onwards the library can use `REG_CMDB_WRITE` for automatic control of the FIFO of the co-processor command buffer. EVE1 will use the `REG_CMD_WRITE` and `REG_CMD_READ` registers to address the co-processor buffer. See the "Command FIFO" section in the Programming Guides for details of the differences.
+
+If `REG_CMD_WRITE` and `REG_CMD_READ` are used to control the buffer then the INT# hardware line can be used to signal that the co-processor has completed all the commands in the buffer. The "Interrupts" section in the Data Sheets explains the use of the INT# line.
+
+| Co-processor Method | Description |
+| --- | --- | 
+| **EVE_COPRO_CMDB_WRITE** | Use the `REG_CMDB_WRITE` register to address the command buffer. |
+| **EVE_COPRO_CMD_WRITE** | Use `REG_CMD_WRITE` and `REG_CMD_READ` to control the command buffer. |
+| **EVE_COPRO_INT** | Use `REG_CMD_WRITE`, `REG_CMD_READ` and the INT# line to control the command buffer. |
+
+### QuadSPI Selection
+
+The `EVE_QSPI_ENABLE` flag will enable QuadSPI on platforms which support it.
+
+### RAM_G Size for BT82x
+
+On BT82x the size of the RAM_G can be changed depending on the DRAM device used. The `EVE_RAM_G_CONFIG_SIZE` settingcan be used to change this from the default of 1 Gbit (`EVE_RAM_G_1_GBIT`).
+
+| RAM_G Config Size | Description |
+| --- | --- | 
+| **EVE_RAM_G_32_MBIT** | 0.03Gb |
+| **EVE_RAM_G_64_MBIT** | 0.06Gb |
+| **EVE_RAM_G_128_MBIT** | 0.12Gb | 
+| **EVE_RAM_G_256_MBIT** | 0.25Gb | 
+| **EVE_RAM_G_512_MBIT** | 0.5Gb | 
+| **EVE_RAM_G_1_GBIT** | 1Gb | 
+| **EVE_RAM_G_2_GBIT** | 2Gb | 
+| **EVE_RAM_G_4_GBIT** | 4Gb | 
+| **EVE_RAM_G_8_GBIT** | 8Gb | 
+
+### Setting Options in Build Configuration
+
+The `EVE_MODULE`, `EVE_DEVICE`, `EVE_PANEL`, `EVE_DISPLAY_RES`, and `EVE_COPRO_METHOD` macros can be set in a build file as a C define. This can be used to change the configuration without editing or changing the `EVE_config.h` file. 
+
+The `EVE_MODULE` macro is parsed first. Setting this to `EVE_NO_MODULE` will allow one or all of the `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros to be picked up from the build file C definitions. The `EVE_COPRO_METHOD` is always parsed but ignored if the device type does not support the method.
 
 Note that the preprocessor may complain if it is asked to change the value of one of the macros. 
 

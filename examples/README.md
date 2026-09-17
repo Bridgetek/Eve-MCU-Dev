@@ -76,3 +76,62 @@ In addition to runable demo code there are libraries of widgets and utilities th
 
 Many of the examples load code or modules from this directory. 
 
+## Build Options
+
+There are various build options which control the compilation of the examples. These options can be set in the file `EVE_config.h`, either in the `include` directory or in the local compilation directory. 
+
+### CMake Build Options
+
+It is also possible to change the build settings in the CMake command line. The configuration step of CMake can be used to set the build options and override the `EVE_config.h` file settings.
+
+The following build options are supported in the CMake build files:
+
+| Build Option | Function |
+| ------------ | -------- |
+| `EVE_MODULE` | Sets the module to use. This includes the device and panel which is used in the module. |
+| `EVE_PANEL`  | Sets a panel to use. This will be used to set the display resolution with EVE_DISPLAY_RES. |
+| `EVE_DEVICE` | Sets the EVE device type to use. |
+| `EVE_DISPLAY_RES` | Sets the display resolution type of the display. |
+| `EVE_COPRO_METHOD` | Configures how the co-processor command buffer is handled. |
+| `EVE_RAM_G_CONFIG_SIZE` | Set RAM_G size for BT82X only. |
+
+#### CMake Option Selection
+
+The build options selected at the command line for CMake are parsed to remove any unused parameters. Since the `EVE_MODULE` overrides the `EVE_PANEL` and `EVE_DEVICE` settings and `EVE_PANEL` overrides `EVE_DISPLAY_RES` the following flowchart is used to see which options are passed onto the compilation stage.
+
+```mermaid
+flowchart
+    START
+    START --> MODULE
+    
+    MODULE{EVE_MODULE}
+    SM[Set EVE_MODULE]
+    MODULE --> |Yes| SM
+    MODULE -->|No| DEVICE
+    SM --> FINISH
+
+    DEVICE{EVE_DEVICE}
+    SD[Set EVE_DEVICE]
+    DEVICE --> |Yes| SD
+    DEVICE -->|No| PANEL
+    SD --> PANEL
+
+    PANEL{EVE_PANEL}
+    SP[Set EVE_PANEL]
+    PANEL -->|Yes| SP
+    PANEL -->|No| RES
+    SP --> FINISH
+
+    RES{EVE_DISPLAY_RES}
+    SR[Set EVE_DISPLAY_RES]
+    RES -->|Yes| SR
+    RES -->|No| FINISH
+    SR --> FINISH
+
+    FINISH
+```
+
+Therefore the command line `cmake -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
+This is equivalent to a command line of `cmake -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
+
+The `EVE_COPRO_METHOD` or `EVE_RAM_G_CONFIG_SIZE` selections, if set, are always passed onto the compilation.
