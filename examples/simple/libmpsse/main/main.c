@@ -135,14 +135,15 @@ void setup(void)
 	printf ("Cable colours are as used for FTDI MPSSE cables. MPSSE Bus \n");
     printf ("numbers refer to the MPSSE interface signals.\n");
     printf ("Pin configuration for example:\n");
-	printf ("Use MPSSE SPI connections as per Application Note AN_188:\n\n");
-	printf ("Bus     Cable           Name\n");
-	printf ("---     -----           ----\n");
-	printf ("MPSSE0  SK (Orange)     SCLK\n");
-	printf ("MPSSE1  DO (Yellow)     MOSI - Master Out Slave In\n");
-	printf ("MPSSE2  DI (Green)      MISO - Master In Slave Out\n");
-	printf ("MPSSE3  CS (Brown)      CS - Serial Chip Select pin\n");
-	printf ("MPSSE7  GPIO L3 (Blue)  PD# - Powerdown pin\n");
-	printf ("N/A     VBUS (Red)      5v supply for FT8xx/BT8xx\n");
-	printf ("N/A     GND (Black)     Signal GND for SPI\n");
+	printf ("Use MPSSE SPI connections as per FTDI Application Note AN_188:\n\n");
+	printf ("Bus     Cable              Name\n");
+	printf ("---     -----              ----\n");
+	printf ("MPSSE0  SK (Orange)        SCLK\n");
+	printf ("MPSSE1  DO (Yellow)        MOSI - Master Out Slave In\n");
+	printf ("MPSSE2  DI (Green)         MISO - Master In Slave Out\n");
+	printf ("MPSSE3  CS (Brown)         CS# - Serial Chip Select pin\n");
+    printf ("MPSSE5  GPIO L1 (Purple)   INT# - EVE Interrupt pin\n");
+	printf ("MPSSE7  GPIO L3 (Blue)     PD# - Powerdown pin\n");
+	printf ("N/A     VBUS (Red)         5v supply for FT8xx/BT8xx\n");
+	printf ("N/A     GND (Black)        Signal GND for SPI\n");
 }

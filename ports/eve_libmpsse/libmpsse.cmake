@@ -19,30 +19,23 @@ if(NOT EXISTS "${FTDI_SUBMODULE}/libMPSSE")
 endif()
 
 target_include_directories(eve_library PUBLIC
-        ${FTDI_SUBMODULE}/libMPSSE/include
-        ${FTDI_SUBMODULE}/libFTD2XX/include
+    ${FTDI_SUBMODULE}/libMPSSE/include
+    ${FTDI_SUBMODULE}/libFTD2XX/include
 )
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+# Build libMPSSE directly from source.
+target_sources(eve_library PRIVATE
+    ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_infra.c
+    ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_spi.c
+    ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_mid.c
+)
 
-    # Build libMPSSE directly from source.
-    target_sources(eve_library PRIVATE
-        ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_infra.c
-        ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_spi.c
-        ${FTDI_SUBMODULE}/libMPSSE/source/ftdi_mid.c
-    )
-
-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
-
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries(eve_library PRIVATE
-        ${FTDI_SUBMODULE}/libMPSSE/lib-linux-x86_64/libmpsse.a
-        # This is included in the MPSSE library: ${FTDI_SUBMODULE}/libFTD2XX/lib-linux-x86_64/libftd2xx.a
+        ${CMAKE_DL_LIBS}
     )
-
 endif()
 
-# Source code for EVE library (targetted at FT4222):
 target_sources(eve_library PUBLIC
-        # Source code for EVE library
-        ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
+    ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
 )

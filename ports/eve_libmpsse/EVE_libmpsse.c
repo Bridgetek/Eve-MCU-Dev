@@ -106,18 +106,20 @@ uint8_t *MCU_buffer;
 uint16_t MCU_bufferLen;
 
 /*
-    MPSSE pin connections:
+ * MPSSE pin connections:
+ *
+ * BD0 - SCK
+ * BD1 - MOSI
+ * BD2 - MISO
+ * BD3 - SS#   (SPI_CONFIG_OPTION_CS_DBUS3)
+ * BD5 - INT#  (GPIO input)
+ * BD7 - PD#   (controlled using SPI_ChangeCS / SPI_ToggleCS)
+ *
+ * DBUS5 remains an input so that the EVE INT# signal can be read.
+ * DBUS7 is configured as an output when selected by SPI_ChangeCS().
+ */
 
-    BD0 - SCK
-    BD1 - MOSI
-    BD2 - MISO
-    BD3 - SS#	(SPI_CONFIG_OPTION_CS_DBUS3)
-    BD7 - PD#	(SPI_CONFIG_OPTION_CS_DBUS7)
-    BD5 - INT#	(SPI_CONFIG_OPTION_CS_DBUS5)
-
-    Direction (1 =Output, 0 =Inputs) 1xxx 1011
-*/
-// ------------------ Platform specific initialisation  ------------------------
+ // ------------------ Platform specific initialisation -------------------------
 
 FT_HANDLE ftHandle;
 DWORD openChannel = -1;
@@ -127,29 +129,38 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     FT_STATUS ftStatus;
     ChannelConfig channelConf;
 
-    /* Set SPI clock to speed */
+    /* Configure the MPSSE SPI interface. */
     memset(&channelConf, 0, sizeof(ChannelConfig));
+
     channelConf.ClockRate = speed;
     channelConf.LatencyTimer = 10;
     channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW;
 
-    // Open the channel specified by the USE_MPSSE macro.
-    // This must be defined to get this far.
+
+    /*
+     * Leave the additional low-byte pins as inputs initially.
+     * DBUS5 is used for EVE INT#.
+     * DBUS7 will be configured as an output when used for EVE PD#.
+     */
+    channelConf.Pin = 0;
+
+    /* Open the MPSSE channel selected by USE_MPSSE. */
     channel = USE_MPSSE;
 
     ftStatus = SPI_OpenChannel(channel, &ftHandle);
     if (ftStatus != FT_OK)
     {
         EVE_DEBUG_ERROR("Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
-        exit (-2);
+        exit(-2);
     }
+
     ftStatus = SPI_InitChannel(ftHandle, &channelConf);
     if (ftStatus != FT_OK)
     {
         EVE_DEBUG_ERROR("Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
-        exit (-3);
+        exit(-3);
     }
-    
+
     openChannel = channel;
 }
 
@@ -160,6 +171,7 @@ int MCU_Init(void)
     DWORD channels;
     FT_STATUS ftStatus;
 
+    /* Initialise libMPSSE */
     Init_libMPSSE();
 
     ftStatus = SPI_GetNumChannels(&channels);
@@ -267,8 +279,8 @@ void MCU_transmit_buffer(void)
 
     ftStatus = SPI_Write(ftHandle, (uint8_t *)MCU_buffer, MCU_bufferLen, &transferred, 0);
      if (FT_OK != ftStatus)
-     {
-         // spi master write failed
+    {
+        // spi master write failed
         EVE_DEBUG_ERROR("MCU_transmit_buffer failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
@@ -338,12 +350,20 @@ void MCU_PDhigh(void)
 }
 
 // ------------------------ interrupt input ------------------------------------
-int MCU_Int(void) 
+int MCU_Int(void)
 {
-#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error EVE_USE_INTERRUPT_METHOD EVE Interrupt pin is not supported on libmpsse
-#endif
-    return 1;
+    uint8_t gpioState = 0;
+    FT_STATUS ftStatus;
+
+    ftStatus = FT_ReadGPIO(ftHandle, 1, &gpioState);
+    if (ftStatus != FT_OK)
+    {
+        EVE_DEBUG_ERROR("MCU_Int failed %d\n", (int)ftStatus);
+        exit(ftStatus);
+    }
+
+    /* Check bit 5, which corresponds to EVE INT# on ADBUS5 or BDBUS5. */
+    return (gpioState & (1U << 5)) ? 1 : 0;
 }
 
 // ------------------------- Delay functions -----------------------------------
@@ -390,8 +410,8 @@ uint8_t MCU_SPIRead8(void)
 
     MCU_transmit_buffer();
     ftStatus = SPI_Read(ftHandle, &DataRead, 1, &transferred, 0);
-     if (FT_OK != ftStatus)
-     {
+    if (FT_OK != ftStatus)
+    {
         // spi master read failed
         EVE_DEBUG_ERROR("MCU_SPIRead8 failed %d\n", (int)ftStatus);
         exit(ftStatus);
