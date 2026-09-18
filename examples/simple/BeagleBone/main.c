@@ -180,8 +180,9 @@ void setup(void)
     printf ("P9 Pin 18 - MOSI (SPI0_D1)\n");
     printf ("P9 Pin 21 - MISO (SPI0_D0)\n");
     printf ("P9 Pin 22 - SCLK (SPI0_SCLK)\n");
-    printf ("P9 Pin 16 - CS (GPIO 51) - Note this is not the SPI0_CS0 pin\n");
-    printf ("P9 Pin 15 - PD# (GPIO 48) - Powerdown pin\n");
+    printf ("P9 Pin 16 - CS# (GPIO 51)  - Note this is not the SPI0_CS0 pin\n");
+    printf ("P9 Pin 15 - PD# (GPIO 48)  - Powerdown pin\n");
+    printf ("P9 Pin 14 - INT# (GPIO 50) - EVE Interrupt pin\n");
     printf ("P9 Pin 1 or 2 - GND for power and signal for FT8xx/BT8xx\n");
     printf ("P9 Pin 5 or 6 - 5v supply for FT8xx/BT8xx\n");
 }
