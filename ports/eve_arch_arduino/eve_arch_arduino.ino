@@ -77,8 +77,10 @@ extern "C" {
 
 int MCU_Init(void) {
 
+  /* Initialise SPI. */
   SPI.begin();
 
+  /* Set CS#, PD#, INT# pin directions. */
   pinMode(PIN_CHIPSELECT, OUTPUT);
   pinMode(PIN_POWERDOWN, OUTPUT);
   pinMode(PIN_INTERRUPT, INPUT);
@@ -95,6 +97,7 @@ int MCU_Init(void) {
 }
 
 int MCU_Deinit(void) {
+
   /* Leave EVE control signals in a safe state. */
   digitalWrite(PIN_CHIPSELECT, HIGH);
   digitalWrite(PIN_POWERDOWN, LOW);
@@ -119,10 +122,10 @@ int MCU_Setup(void) {
 #if defined(EVE_QSPI_ENABLE)
 int MCU_SetSPIMode(uint8_t mode)
 {
-    /* QSPI Configuration */
-    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
-    return -1;
+  /* QSPI Configuration */
+  #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
+  /* Initialize IO2 and IO3 pad/pin for quad settings */
+  return -1;
 }
 #endif // defined(EVE_QSPI_ENABLE)
 
@@ -134,7 +137,7 @@ int MCU_SetSPIMode(uint8_t mode)
 
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void) {
-  digitalWrite(PIN_CHIPSELECT, LOW);  // disable CS#
+  digitalWrite(PIN_CHIPSELECT, LOW);  
   delayMicroseconds(10);
 }
 
@@ -203,7 +206,7 @@ void MCU_Delay_500ms(void) {
 
 uint32_t MCU_Time_ms(void)
 {
-    return millis();
+  return millis();
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
