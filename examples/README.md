@@ -145,7 +145,7 @@ Some projects are supplied with Visual Studio solutions.
 The following platforms generally support the following build methods:
 
 | Port Name | CMake | Visual Studio | STM32CubeIDE | Arduino IDE |
-| --- | --- |
+| --- | --- | --- | --- | --- |
 | Arduino | No |
 | BeagleBone | Yes |
 | Expressif ESP32 | No |

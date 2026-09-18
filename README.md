@@ -750,7 +750,7 @@ The ["simple"](examples/simple/README.md) example provides build environments fo
 
 ## Module Connections
 
-There are 2 standard connectors for EVE modules used by BridgeTek. Alternatively, an MPSSE cable can be used to interface with a host PC via USB.
+There are 2 standard connectors for EVE modules used by BridgeTek. Alternatively, an MPSSE cable or FT4222 based module can be used to interface with a host PC via USB.
 
 The connectors can be interfaced with a host MCU using jumper wires. The wiring colours in photographs in this section for each connection are defined in the following table.
 
@@ -761,6 +761,7 @@ The connectors can be interfaced with a host MCU using jumper wires. The wiring 
 | Yellow | MISO |
 | Orange | CS# |
 | Red | PD# |
+| Purple | INT# |
 | Brown | GND |
 | Not shown | INT# |
 
@@ -785,7 +786,7 @@ The 2x8 header can be connected as in the following picture. **NOTE:** The INT# 
 
 ### Header 1x10 Pins
 
-This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the VA800A-SPI board. 
+This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the [MM4222-QSPI](https://brtchip.com/product/mm4222-qspi/) board or VA800A-SPI. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
 
 | Pin | EVE Signal |
 | --- | --- |
@@ -817,6 +818,7 @@ These cables have wire-ends colour coded as follows.
 | Green | MISO |
 | Brown | CS# |
 | Blue | PD# |
+| Purple | INT# |
 | Red | 5V |
 | Black | GND |
 

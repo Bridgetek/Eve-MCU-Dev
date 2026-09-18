@@ -23,7 +23,7 @@ If the version of the cable is used which has the 3.3V power output (or if using
 | Green | MISO |
 | Brown | CS# |
 | Blue | PD# |
-| Purple | INT# |
+| Purple | INT# _(1)_ |
 | Red | 5V |
 | Black | GND |
 
@@ -37,7 +37,7 @@ The `VA800A-SPI` has a 10-way connector and can be connected directly to the "VM
 | CN1-2 | MOSI |
 | CN1-3 | MISO |
 | CN1-4 | CS# |
-| CN1-5 | INT# |
+| CN1-5 | INT# _(1)_ |
 | CN1-6 | PD# |
 | CN1-7 | 5V |
 | CN1-8 | N/C |
@@ -46,7 +46,7 @@ The `VA800A-SPI` has a 10-way connector and can be connected directly to the "VM
 
 Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the `VA800A-SPI` and the separate power source common together to EVE. 
 
-The `INT#` signal is connected to the `ADBUS5` pin on the `FT232H` and is read using the low-byte GPIO functionality provided by the modified libMPSSE source used by this port. This allows the EVE interrupt-based co-processor completion method `EVE_COPRO_INT` to be used with the libMPSSE port via the `EVE_COPRO_METHOD` define in `EVE_config.h`.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. The `INT#` signal is connected to the `ADBUS5` pin on the `FT232H` and is read using the low-byte GPIO functionality provided by the modified libMPSSE source used by this port. This allows the EVE interrupt-based co-processor completion method to be used.
 
 ## FTDI Software Dependencies
 
