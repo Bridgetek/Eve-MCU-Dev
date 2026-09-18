@@ -240,11 +240,11 @@ void MCU_PDhigh(void);
 
 /**
  * @brief MCU specific interrupt input
- * @details This function will check the interrupt input GPIO for an
- *      assertion of the interrupt line from the EVE device.
- *      The mechanism for detecting the input signal is MCU specific.
- * @returns zero if there is no interrupt, non-zero if the EVE device is
- *      asserting an interrupt.
+ * @details This function reads the interrupt input GPIO from the EVE device.
+ *      The EVE INT# signal is active low. The mechanism for reading the input
+ *      signal is MCU specific.
+ * @returns Zero when INT# is asserted (logic low), non-zero when INT# is
+ *      deasserted (logic high).
  */
 int MCU_Int(void);
 

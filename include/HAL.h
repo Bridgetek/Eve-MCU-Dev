@@ -394,11 +394,10 @@ int HAL_SetSPIMode(uint8_t mode);
 
 /**
  * @brief Test interrupt input line
- * @details This function will check the interrupt input INT# from
- *      the EVE device using the MCU layer.
- * @returns zero if there is no interrupt, non-zero if the EVE device is
- *      asserting an interrupt. A negative value will be returned if
- *      the method is not supported on the MCU or platform.
+ * @details This function reads the EVE INT# input using the MCU or platform
+ *      layer. The EVE INT# signal is active low.
+ * @returns Zero when INT# is asserted (logic low), non-zero when INT# is
+ *      deasserted (logic high).
  */
 int HAL_Int(void);
 
