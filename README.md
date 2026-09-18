@@ -100,6 +100,10 @@ This library includes several example projects containing an example framework a
 
 The [Quick Start Guide](QUICKSTART.md) will demonstrate running one of the example files on the EVE Emulator.
 
+### Porting
+
+The [Porting Guide](PORTING.md) describes the steps required to add support for a new MCU or host platform to the EVE-MCU-Dev library.
+
 ## Device API Support
 
 There are multiple generations of EVE devices, these are referred by their API (and for some devices their SUB API) number from the following table:
