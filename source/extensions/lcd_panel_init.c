@@ -7,11 +7,11 @@
  *      MCU-specific functionality is required to implement the interface
  *      between the host MCU and the LCD panel driver.
  *
- *      The LCD driver may share the SPI interface used by EVE, provided
+ *      The LCD panel driver may share the SPI interface used by EVE, provided
  *      that a separate chip-select (CS#) signal is used. Alternatively, a 
  *      separate SPI interface may be used where implemented by the target hardware.
  *
- *      LCD driver commands may also be sent by bit-banging the required
+ *      LCD panel driver commands may also be sent by bit-banging the required
  *      GPIO signals instead of using a hardware SPI peripheral.
  *
  * @note This file includes an example implementation for the ST7701S LCD 
@@ -56,6 +56,8 @@
 
 /* Include the EVE macros and settings derived from the EVE configuration */
 #include "EVE_settings.h"
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 #if defined(EVE_LCD_INIT)
 
@@ -69,10 +71,10 @@
 
 /* FUNCTIONS ***********************************************************************/
 
-#if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) /* IDM2040-21R LCD panel initialisation */
+#if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) /* IDM2040-21R LCD panel driver initialisation */
 
 #if !defined(PLATFORM_RP2040)
-#error "IDM2040-21R LCD panel configuration is only supported in Pico projects."
+#error "IDM2040-21R LCD panel driver configuration is only supported in Pico projects."
 #endif /* defined(PLATFORM_RP2040) */
 
 #include "pico/stdlib.h"
@@ -258,7 +260,7 @@ static inline void ST7701S_init(void)
  * Configures the GPIO used by the ST7701S serial interface, resets the
  * display driver, and loads the panel configuration.
  */
-static inline void IDM204021R_LCD_Init(void)
+static inline int IDM204021R_LCD_Init(void)
 {
     /* Configure the ST7701S serial interface pins as GPIO outputs.
      *
@@ -294,6 +296,8 @@ static inline void IDM204021R_LCD_Init(void)
 
     /* Program the ST7701S with the IDM2040-21R panel configuration. */
     ST7701S_init();
+
+    return 0;
 }
 
 #endif /* defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) */
@@ -305,9 +309,10 @@ int lcd_driver_init(void)
 {
 
 #if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R)
-    // run the IDM2040-21R LCD init if the module is defined.
+    EVE_DEBUG_PRINTF("Initialising LCD panel driver...\n"); 
+    /* Initialise the LCD panel driver on the IDM2040-21R module. */
     IDM204021R_LCD_Init();
-#endif /* defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) */
+#endif /* defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) */ 
 
     return 0;
 }

@@ -6,6 +6,8 @@
 
 /* Include functions for EVE-MCU-Dev library API layer */
 #include <EVE.h>
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 /* EVE-MCU-Dev macro to limit compilation to EVE API 5 (BT82x) */
 #if IS_EVE_API(5)
@@ -229,6 +231,7 @@ int eve_loadpatch(void)
 	const char *expected = "patch_base;1.5;touch-1.1;";
 	int i;
 
+    EVE_DEBUG_PRINTF("Loading BT82x base patch...\n"); 
 	// Load extension code to BT82x
 	EVE_LIB_BeginCoProList();
 	EVE_CMD_LOADPATCH(0);
