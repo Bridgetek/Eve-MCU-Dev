@@ -131,7 +131,6 @@
 #define EVE_DP_1012_01A 1012    // DP-1012-01A WUXGA (Capacitive)
 #define EVE_DP_1561_01A 156101  // DP-1561-01A FullHD (Capacitive)
 #define EVE_DP_1561_02A 156102  // DP-1561-02A FullHD (Capacitive)
-#define EVE_DP_IDM43A   43      // IDM204043A (Capacitive)
 #define EVE_DP_IDM21R   21      // IDM204021R (Capacitive)
 #define EVE_NO_PANEL    0
 //@}

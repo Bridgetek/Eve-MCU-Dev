@@ -288,8 +288,6 @@ int MCU_Init(void)
         "DP-1012-01A WUXGA (Capacitive)"
 #elif EVE_PANEL == EVE_DP_1561_01A
         "DP-1561-01A FullHD (Capacitive)"
-#elif EVE_PANEL == EVE_DP_IDM43A
-        "IDM204043A (Capacitive)"
 #elif EVE_PANEL == EVE_DP_IDM21R
         "IDM204021R (Capacitive)"
 #else

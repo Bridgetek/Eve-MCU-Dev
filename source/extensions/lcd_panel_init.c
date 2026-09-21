@@ -71,6 +71,10 @@
 
 #if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R) /* IDM2040-21R LCD panel initialisation */
 
+#if !defined(PLATFORM_RP2040)
+#error "IDM2040-21R LCD panel configuration is only supported in Pico projects."
+#endif /* defined(PLATFORM_RP2040) */
+
 #include "pico/stdlib.h"
 #include <stdbool.h>
 
