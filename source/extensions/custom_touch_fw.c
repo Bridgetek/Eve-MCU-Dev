@@ -54,6 +54,8 @@
 
 /* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 #if defined(EVE_SUPPORT_CUSTOM_TOUCH) && defined(EVE_CUSTOM_TOUCH)
 /* CUSTOM TOUCH */
@@ -260,6 +262,7 @@ static const uint8_t custom_touch_fw_data[] = {
   */
 int eve_loadcustomtouch(void)
 {
+    EVE_DEBUG_PRINTF("Loading Custom Touch FW Binary...\n"); 
     /* Load custom touch FW into co-processor */
     EVE_LIB_BeginCoProList();
     EVE_LIB_WriteDataToCMD(custom_touch_fw_data, sizeof(custom_touch_fw_data));

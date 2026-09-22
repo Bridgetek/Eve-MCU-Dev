@@ -242,7 +242,7 @@
 #elif EVE_MODULE == EVE_IDM204043A
 // IDM2040-43A
 #define EVE_DEVICE EVE_BT883
-#define EVE_PANEL EVE_DP_IDM43A
+#define EVE_PANEL EVE_DP_0431_11A
 
 #elif EVE_MODULE == EVE_IDM20407A
 // IDM2040-7A
@@ -461,7 +461,6 @@
 #endif
 
 
-
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
 /**
@@ -522,10 +521,6 @@
 #elif EVE_PANEL == EVE_DP_1561_02A
 // DP-1561-02A FullHD (Capacitive)
 #define EVE_DISPLAY_RES EVE_FULLHD
-
-#elif EVE_PANEL == EVE_DP_IDM43A
-// IDM204043A (Capacitive)
-#define EVE_DISPLAY_RES EVE_WQVGA
 
 #elif EVE_PANEL == EVE_DP_IDM21R
 // IDM204021R (Capacitive)

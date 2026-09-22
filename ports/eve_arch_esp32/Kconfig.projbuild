@@ -50,7 +50,6 @@ config EVE_PANEL
 		EVE_DP_1012_01A - DP-1012-01A WUXGA (Capacitive)
 		EVE_DP_1561_01A - DP-1561-01A FullHD (Capacitive)
 		EVE_DP_1561_02A - DP-1561-02A FullHD (Capacitive)
-		EVE_DP_IDM43A   - IDM204043A (Capacitive)
 		EVE_DP_IDM21R   - IDM204021R (Capacitive)
 		EVE_NO_PANEL    
 
