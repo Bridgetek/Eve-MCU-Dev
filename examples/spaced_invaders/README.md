@@ -6,7 +6,7 @@
 
 The `spaced_invaders` example demonstrates drawing sprites, scaling images, accessing fonts, timing displayed frames, accessing touchscreen presses.
 
-The example code uses `touch` and`fonts` from the [snippets](../snippets) directory to access the touchscreen.
+The example code uses `touch` and `fonts` from the [snippets](../snippets) directory to access the touchscreen.
 
 The example is intended to show a simple implementation of an invaders game in the style of a classic 8-bit game.
 

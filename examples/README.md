@@ -12,6 +12,9 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\common` **Required** Common files for the example.
 - `\examples\<demo>\docs` Common documentation files for the `README.md` file.
 - `\examples\<demo>\assets` Common assets which may be used in the example.
+- `\examples\<demo>\arduino` MCU specific files for Arduino.
+- `\examples\<demo>\BeagleBone` Platform specific files for the BeagleBone.
+- `\examples\<demo>\emulator` MCU specific files for the EVE_Emulator.
 - `\examples\<demo>\ESP32` MCU specific files for the ESP32.
 - `\examples\<demo>\ft900` MCU specific files for the Bridgetek FT9xx.
 - `\examples\<demo>\libft4222` MCU specific files for FT4222H interface.
@@ -20,11 +23,10 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\MSPM0` MCU specific files for the Ti MSPM0.
 - `\examples\<demo>\NXP_K64` MCU specific files for the NXP K64.
 - `\examples\<demo>\PIC18F` MCU specific files for the PIC18F.
-- `\examples\<demo>\raspberry_pi` MCU specific files for the Raspberry Pi.
+- `\examples\<demo>\pico` MCU specific files for the Raspberry Pi pico.
+- `\examples\<demo>\raspberry_pi` Platform specific files for the Raspberry Pi.
 - `\examples\<demo>\STM32` MCU specific files for the STM32 using Keil.
 - `\examples\<demo>\STM32CUBE` MCU specific files for the STM32 using STM32CUBE.
-- `\examples\<demo>\pico` MCU specific files for the Raspberry Pi pico.
-- `\examples\<demo>\emulator` MCU specific files for the EVE_Emulator.
 
 ### Common Folder
 
@@ -64,6 +66,7 @@ The following example code is available:
 | [medinfo](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
 | [racecar](racecar/README.md) | A simulated dashboard for a racing car. |
 | [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
+| [spaced_invaders](spaced_invaders/README.md) | Simulating spaced invaders (8-bit classic game). |
 | [touchscreentest](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
 
 ## Widgets and Utilities
@@ -152,12 +155,12 @@ The following platforms generally support the following build methods:
 | Bridgetek FT9xx | Yes |
 | TI MSP430 | No |
 | TI MSPM0 | No |
-| Microchip PIC18F | No |
 | NXP K64 | No |
+| Microchip PIC18F | No |
 | Raspberry Pi | Yes |
-| Raspberry Pi Pico | Yes |
+| Raspberry Pi Pico | Yes | VS Code |
 | ST STM32 (Keil) | No |
 | ST STM32Cube | Yes |
-| Generic using libMPSSE | Yes |
-| Generic using libFT4222 | Yes |
-| Generic using EVE Emulator | Yes |
+| Generic using libMPSSE | Yes | Yes |
+| Generic using libFT4222 | Yes | Yes |
+| Generic using EVE Emulator | Yes | Yes |
