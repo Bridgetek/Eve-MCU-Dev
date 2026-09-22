@@ -1040,7 +1040,7 @@ void verticalBarGauge(uint32_t scale, int16_t input_x, int16_t input_y, uint32_t
     //----------------------------------------
     //outline shapes (lines)
 
-    //set vertex fomrat we want to use
+    //set vertex format we want to use
     EVE_VERTEX_FORMAT(0);
     scaledTranslate(scale, input_x * 16, input_y * 16);
 
