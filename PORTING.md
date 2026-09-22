@@ -522,7 +522,7 @@ In addition to the core MCU functionality, a new port may need to provide suppor
 | `MCU_SetSPIMode(uint8_t mode)`  | When Quad SPI support is enabled with `EVE_QSPI_ENABLE`, configure the MCU-side interface for the requested SPI mode and return a failure for unsupported modes. EVE-side interface configuration remains the responsibility of the HAL. |
 | `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()` | Provide application or platform-specific storage for touch calibration data when using the `touch.c` example snippet. These functions are not part of `MCU.h`; temporary implementations are provided in [Section 7](#7-connect-the-application-entry-point).  |
 | Debug output  | Provide a suitable output mapping when library diagnostics are required. Support for a new MCU platform can be added to `EVE_debug.h`, or an independent platform-specific debug mechanism may be used. |
-| LCD panel initialisation  | Provide any board-specific GPIO, SPI or timing support required by the selected LCD panel extension. This is only required for LCD panels that need additional initialisation and is enabled through defining `EVE_LCD_INIT` in `EVE_config.h`. Any resources required before `MCU_Init()` must be available at the appropriate point in the startup sequence. |
+| LCD panel initialisation | Provide any board-specific GPIO, SPI or timing support required by the selected LCD panel extension. Some LCD panel drivers may require additional MCU GPIOs for signals such as a dedicated panel reset or chip-select. This is only required for LCD panels that need additional initialisation and is enabled through defining `EVE_LCD_INIT` in `EVE_config.h`. Any resources required before `MCU_Init()` must be available at the appropriate point in the startup sequence. |
 
 Keep these responsibilities within their existing interfaces and support layers rather than adding platform-specific behaviour to the generic SPI transfer functions.
 
@@ -1096,7 +1096,7 @@ Do not disable custom touch support simply to obtain a successful build where th
 
 ### LCD panel initialisation
 
-Some EVE-based modules require an external LCD panel controller to be configured in addition to the normal EVE initialisation sequence. When supporting such a module on a new port, the MCU must provide any GPIO, SPI and timing functionality required by the panel initialisation routine.
+Some EVE-based modules require an external LCD panel controller to be configured in addition to the normal EVE initialisation sequence. When supporting such a module on a new port, the MCU must provide any GPIO, SPI and timing functionality required by the panel initialisation routine. Some LCD panel controllers also require dedicated control signals, such as a hardware reset or chip-select, which may require additional GPIOs from the host MCU beyond those used for the normal EVE interface.
 
 When `EVE_LCD_INIT` is enabled in `EVE_config.h` or selected automatically by the module or panel configuration derived in `EVE_settings.h`, the `lcd_panel_init.c` extension performs this step through `lcd_driver_init()`. The supplied implementation targets a specific supported panel controller and should not be treated as a generic driver for arbitrary LCD controllers.
 

@@ -242,7 +242,7 @@ Extension-specific functionality is separated from the common EVE API source and
 * `/include/extensions/bt82x_patch.h` Definitions and function declarations for the BT82x base patch functionality.
 * `/source/extensions/custom_touch_fw.c` Implementation for loading custom touch firmware into supported EVE devices when the `EVE_CUSTOM_TOUCH` define is enabled.
 * `/include/extensions/custom_touch_fw.h` Function declarations for the custom touch firmware extension.
-* `/source/extensions/lcd_panel_init.c` Implementation for optional LCD panel driver initialisation when the `EVE_LCD_INIT` define is enabled. MCU-specific functionality is required to provide the interface to the LCD panel driver.
+* `/source/extensions/lcd_panel_init.c` Implementation for optional LCD panel driver initialisation when the `EVE_LCD_INIT` define is enabled. MCU-specific GPIO, SPI and timing functionality may be required to provide the interface to the LCD panel driver. Some panel controllers may also require additional MCU GPIOs for signals such as a dedicated reset or chip-select.
 * `/include/extensions/lcd_panel_init.h` Function declarations for the LCD panel initialisation extension.
 
 The extension source files are included in the build only where required for the selected EVE API or configuration. Extension headers are referenced through the main `include` directory, for example `#include <extensions/bt82x_patch.h>`.
@@ -561,7 +561,7 @@ Where `EVE_PANEL` is selected, it determines the corresponding `EVE_DISPLAY_RES`
 
 `EVE_DISPLAY_RES` is then used to derive the `EVE_DISP_*` timing macro settings used when initialising the EVE display interface.
 
-The `EVE_PANEL` setting is optionally used in the `examples/snippets/touch.c` example snippet to select predefined touchscreen configuration values and bypass calibration. The `EVE_MODULE` setting is also used by `source/extensions/lcd_panel_init.c` to select the appropriate LCD panel driver initialisation sequence where supported.
+The `EVE_PANEL` setting is optionally used in the `examples/snippets/touch.c` example snippet to select predefined touchscreen configuration values and bypass calibration. The `EVE_MODULE` setting is also used by `source/extensions/lcd_panel_init.c` to select the appropriate LCD panel driver initialisation sequence where supported. 
 
 The following flowchart describes the above heirarchy of options:
 

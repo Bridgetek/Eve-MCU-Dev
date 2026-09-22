@@ -10,6 +10,10 @@
  *      The LCD panel driver may share the SPI interface used by EVE, provided
  *      that a separate chip-select (CS#) signal is used. Alternatively, a 
  *      separate SPI interface may be used where implemented by the target hardware.
+ * 
+ *      Some LCD panel drivers may also require a dedicated hardware reset signal.
+ *      Where required, this must be controlled by an additional GPIO from the
+ *      host MCU and handled as part of the LCD panel initialisation sequence.
  *
  *      LCD panel driver commands may also be sent by bit-banging the required
  *      GPIO signals instead of using a hardware SPI peripheral.
