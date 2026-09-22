@@ -110,7 +110,7 @@ Choose an existing port with a similar SDK or peripheral interface as a referenc
 
 ### Keep the implementation boundaries clear
 
-The normal call path for MCU specific ports is:
+The normal call path for a MCU specific ports is:
 
 ```mermaid
 flowchart TD
@@ -121,18 +121,24 @@ flowchart TD
         direction LR
         API_H["EVE.h"]
         API_C["source/EVE_API.c"]
+
+        API_H ~~~ API_C
     end
 
     subgraph HAL["<b>EVE HAL</b>"]
         direction LR
         HAL_H["HAL.h"]
         HAL_C["source/EVE_HAL.c"]
+
+        HAL_H ~~~ HAL_C
     end
 
     subgraph MCU["<b>MCU Interface</b>"]
         direction LR
         MCU_H["MCU.h"]
         MCU_C["New MCU Implementation"]
+
+        MCU_H ~~~ MCU_C
     end
 
     subgraph SDK["<b>Vendor SDK / Hardware</b>"]
