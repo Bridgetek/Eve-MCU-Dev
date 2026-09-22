@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\..\snippets\controls\fonts.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\common\invaders_data.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -157,10 +160,5 @@
     <Filter Include="Library\ports\eve_emulator\EVE_Emulator\include">
       <UniqueIdentifier>{0f6cb0f8-41b0-4c36-a9cc-6d8fced2fb15}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
-      <Filter>Example\snippets</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

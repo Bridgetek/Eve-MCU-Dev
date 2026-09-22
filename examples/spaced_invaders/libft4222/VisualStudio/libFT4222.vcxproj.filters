@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\..\snippets\controls\fonts.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\common\invaders_data.c">
       <Filter>Example</Filter>
     </ClCompile>
@@ -157,10 +160,5 @@
     <Filter Include="Library\ports\external\ftdi_libraries\libFTD2XX">
       <UniqueIdentifier>{ee35db54-82ec-4936-bbeb-1dd0dde2a8dd}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\snippets\controls\fonts.h">
-      <Filter>Example\snippets</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

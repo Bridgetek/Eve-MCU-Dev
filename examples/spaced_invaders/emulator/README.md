@@ -22,7 +22,7 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is normally `build\Debug\submarine_emulator.exe` or  `build\submarine_emulator.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\spaced_invaders_emulator.exe` or  `build\spaced_invaders_emulator.exe`. This can be run from the command line. 
 
 Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 

@@ -4,7 +4,7 @@
 
 ## Compiling using the pico VSCode Extension
 
-The workspace file `submarine.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
+The workspace file `spaced-invaders.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.
 
 ### Setting Up the SubmaSpaced Invadersrine Raspberry Pi pico VSCode Example
 
@@ -42,4 +42,4 @@ The following CMake command will build the code and place the resulting files in
     cmake --build build
 ```
 
-The UF2 file for programming onto the board is `submarine_pico.uf2` in the `build` directory.
+The UF2 file for programming onto the board is `spaced_invaders_pico.uf2` in the `build` directory.

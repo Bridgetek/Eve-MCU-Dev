@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{7D332E93-5951-4F09-8C22-10BE438ABE3A}</ProjectGuid>
+    <ProjectGuid>{EB5AE0C1-C982-4DBB-991A-8D40009CC5E9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>submarine</RootNamespace>
     <ProjectName>spaced_invaders</ProjectName>
