@@ -126,6 +126,8 @@ This file has the logic required to control the game in progress.
 
 The demo screen is shown before and after the invaders game has been played. It demonstrates timed animation with a simple state machine.
 
+![Invaders Demo](docs/demo.png)
+
 ### `scaling.c`
 
 Provides helper functions for scaling vertex commands, bitmaps, fonts, and graphics primitives such as points and lines.
@@ -139,5 +141,3 @@ The platform specific functions in `main.c` are called from this routine to stor
 ### `fonts.c`
 
 To scale a ROM font it is necessary to get certain information about the font from ROM and map the font to another bitmap handle. This snippet provides the structure needed to complete that task. Font 16 (fixed width 8x8) is used and this is scaled to provide authentic 8-bit style text.
-
-![Invaders Demo](docs/demo.png)
