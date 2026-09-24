@@ -12,6 +12,7 @@ This library is intended to provide a **C** library for embedded designs.
   - [Scope](#scope)
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
+  - [Porting Guide](#porting)
 - [Software Layers](#software-layers)
   - [Folder Structure](#folder-structure)
     - [Common Library Files](#common-library-files)
