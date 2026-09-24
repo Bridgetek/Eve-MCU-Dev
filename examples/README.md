@@ -42,7 +42,7 @@ Examples may or may not have all platform support directories. The contents of t
 
 The source file containing the `main()` function is not in the example code but is in the MCU specific part of example code. 
 
-The MCU specific files including the entry point function (the `main()` function), build files (CMake, Makefile), IDE files (Eclipse, Visual Studio, Visual Studio Code, Arduino IDE, STMCube IDE, Keil, MPLab, Ti CCS).
+The MCU specific files including the entry point function (the `main()` function), build files (CMake, Makefile), IDE files (Eclipse, Visual Studio, Visual Studio Code, Arduino IDE, STM32Cube IDE, Keil uVision, MPLab, Ti CCS).
 
 ## Runnable Examples
 
@@ -65,8 +65,8 @@ The following example code is available:
 | [gyminterval](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
 | [medinfo](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
 | [racecar](racecar/README.md) | A simulated dashboard for a racing car. |
-| [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
 | [spaced_invaders](spaced_invaders/README.md) | Simulating spaced invaders (8-bit classic game). |
+| [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
 | [touchscreentest](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
 
 ## Widgets and Utilities
@@ -145,22 +145,27 @@ Some projects are supplied with Visual Studio solutions.
 
 ### Build Option Support
 
-The following platforms generally support the following build methods:
+The following platforms support the following build methods:
 
-| Port Name | CMake | Visual Studio | STM32CubeIDE | Arduino IDE |
-| --- | --- | --- | --- | --- |
-| Arduino | No |
-| BeagleBone | Yes |
-| Expressif ESP32 | No |
-| Bridgetek FT9xx | Yes |
-| TI MSP430 | No |
-| TI MSPM0 | No |
-| NXP K64 | No |
-| Microchip PIC18F | No |
-| Raspberry Pi | Yes |
-| Raspberry Pi Pico | Yes | VS Code |
-| ST STM32 (Keil) | No |
-| ST STM32Cube | Yes |
-| Generic using libMPSSE | Yes | Yes |
-| Generic using libFT4222 | Yes | Yes |
-| Generic using EVE Emulator | Yes | Yes |
+| Port Name                  | CMake    | VS Code   | Visual Studio | STM32CubeIDE  | uVision | Ti CCS | Arduino IDE   |
+| ---                        | ---      | ---       | ---           | ---           | ---     | ---    | ---           |
+| Arduino                    | No       | No        | No            | No            | No      | No     | Yes           |
+| BeagleBone                 | Yes      | Yes _2_   | No _2_        | No            | No      | No     | No            |
+| Expressif ESP32            | Yes      | Yes       | No            | No            | No      | No     | No            |
+| Bridgetek FT9xx            | Yes      | Yes       | No            | No            | No      | No     | No            |
+| TI MSP430                  | No       | No        | No            | No            | No      | Yes    | No            |
+| TI MSPM0                   | No       | No        | No            | No            | No      | Yes    | No            |
+| Microchip PIC18F           | No       | Yes       | No            | No            | No      | No     | No            |
+| NXP K64                    | No       | Yes _1_   | No            | No            | No      | No     | No            |
+| Raspberry Pi               | Yes      | Yes _2_   | No _2_        | No            | No      | No     | No            |
+| **Raspberry Pi Pico**          | Yes      | Yes       | No            | No            | No      | No     | No            |
+| ST STM32 (Keil)            | No       | No        | No            | No            | Yes     | No     | No            |
+| ST STM32Cube               | Yes      | Yes       | No            | Yes           | No      | No     | No            |
+| Generic using libMPSSE     | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
+| **Generic using libFT4222**    | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
+| **Generic using EVE Emulator** | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
+
+* _1_ - The MCUXpresso for VS Code extension needs to be installed. The workspace file is not included for examples in this library.
+* _2_ - Support is generic CMake file support in VS Code and Visual Studio.
+
+Port names in **bold** indicate ports for which build files for all examples are provided. Only the [simple](simple/README.md) example has build environments for all platforms.

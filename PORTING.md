@@ -1,61 +1,73 @@
 # EVE-MCU-Dev Porting Guide
 
-This porting guide describes the steps required to add support for a new MCU or host platform to the `EVE-MCU-Dev` library.
+This porting guide describes the steps required to add support for a new MCU target or host platform to the `EVE-MCU-Dev` library.
 
 ## Introduction
 
-The objective of an MCU port is to connect the common EVE-MCU-Dev library to the target platforms SPI, GPIO and timing facilities, while keeping EVE API commands and register handling in the existing library layers. The guide begins with a basic, blocking, single-SPI implementation and a known display configuration. Adding performance improvements and optional features where desired only after communication and display output have been verified.
+The objective of a port is to connect the common EVE-MCU-Dev library to the target platforms SPI, GPIO and timing facilities, while keeping EVE API commands and register handling in the existing library layers. The guide begins with a basic, blocking, single-SPI implementation and a known display configuration. Adding performance improvements and optional features where desired only after communication and display output have been verified.
 
 This guide adapts the staged approach in [BRT_AN_062: Porting BRT_AN_025 to NXP MCU][an062]: namely establishing the development environment, testing the low-level interface, integration of the common EVE-MCU-Dev library, and running an example. Function names, source files and build instructions below are based on the current repository rather than the older version of the library utilised in BRT_AN_062.
+
+If the port device is a bare-metal target MCU without an RTOS to handle SPI transfers then the "MCU" port method is preferred.
+
+If the device contains an operating system (Windows, Linux, RTOS etc) then the "Platform" port method is preferred.
 
 **Note:** The [NXP Port][nxp-c] is available as a supported platform in EVE-MCU-Dev and can be referenced during the porting process.
 
 ### Scope
 
-The instructions primarily cover MCU ports implementing [`include/MCU.h`][mcu-h] and using [`source/EVE_HAL.c`][hal-c]. Linux SPI-device based ports will utilise `Platform.h` and `EVE_HAL_Linux.c` instead and are not a drop-in variation of the MCU implementation described here in relation to function names, though the described porting process remains the same. See the [repository overview][readme] for the wider EVE-MCU-Dev library architecture.
+The instructions primarily cover MCU ports implementing [`include/MCU.h`][mcu-h] and using [`source/EVE_HAL.c`][hal-c]. 
 
-This guide does not replace the target MCU's SDK documentation, the selected EVE device's documentation, or the display module's schematic. Adding an unsupported display panel, touch controller or EVE device is separate from adding MCU support to the library. The templates are starting points: SDK-specific code must be supplied and validated on the target hardware.
+Platform ports based on environments where an operating system (Windows, Linux, RTOS etc) is present should utilise [`include/Platform.h`][platform-h] and [`source/EVE_HAL_Linux.c`][hallinux-c] instead. Platform ports are **not** a drop-in variation of the MCU port implementation described here. Although the porting processes is the same, to discriminate between the methods the function names differ. See the [repository overview][readme] for the wider EVE-MCU-Dev library architecture.
+
+This guide does not cover the following documentation which will need to be obtained and understood separately:
+* the target MCU SDK documentation.
+* the selected EVE device's documentation.
+* the display module's schematic. 
+
+Adding an unsupported display panel, touch controller or EVE device is separate from adding MCU or Platform support to the library. The templates used here are starting points, target specific code must be supplied and validated on the target hardware.
 
 ## Contents
 
 * [Introduction](#introduction)
   * [Scope](#scope)
-* [1. Establish the starting point](#1-establish-the-starting-point)
+* [Establish the starting point](#establish-the-starting-point)
   * [Start with a clean checkout](#start-with-a-clean-checkout)
   * [Start from a working board project](#start-from-a-working-board-project)
-* [2. Define the port and hardware interface](#2-define-the-port-and-hardware-interface)
+* [Define the port and hardware interface](#define-the-port-and-hardware-interface)
   * [Keep the implementation boundaries clear](#keep-the-implementation-boundaries-clear)
   * [Establish the connections](#establish-the-connections)
   * [Independent chip-select control](#independent-chip-select-control)
-* [3. Prove the MCU SPI and GPIO operations](#3-prove-the-mcu-spi-and-gpio-operations)
-* [4. Implement the MCU interface](#4-implement-the-mcu-interface)
+* [Prove the MCU SPI and GPIO operations](#prove-the-mcu-spi-and-gpio-operations)
+* [Implement the MCU interface](#implement-the-mcu-interface)
+  * [Define a Platform Macro](#define-a-platform-macro)
   * [Required function groups](#required-function-groups)
   * [Initialisation, setup and shutdown](#initialisation-setup-and-shutdown)
   * [Chip-select and power-down control](#chip-select-and-power-down-control)
   * [Blocking transfers and chip-select ownership](#blocking-transfers-and-chip-select-ownership)
-  * [Scalar transfers and byte order](#scalar-transfers-and-byte-order)
+  * [SPI Transfers](#spi-transfers)
+  * [Byte Order](#byte-order)
   * [Timing](#timing)
   * [EVE Interrupt input](#eve-interrupt-input)
   * [Other implementation responsibilities](#other-implementation-responsibilities)
-* [5. Select the EVE device and display configuration](#5-select-the-eve-device-and-display-configuration)
+* [Select the EVE device and display configuration](#select-the-eve-device-and-display-configuration)
   * [Application-local configuration](#application-local-configuration)
   * [Quad SPI selection](#quad-spi-selection)
-  * [Display timing selection](#display-timing-selection)
-  * [BT82x platforms](#bt82x-platforms)
-* [6. Integrate the source files and build configuration](#6-integrate-the-source-files-and-build-configuration)
+  * [Display setup selection](#display-setup-selection)
+* [Integrate the source files and build configuration](#integrate-the-source-files-and-build-configuration)
   * [Vendor IDE or manually maintained build](#vendor-ide-or-manually-maintained-build)
   * [Reuse the current CMake structure](#reuse-the-current-cmake-structure)
-* [7. Integrate the EVE startup sequence](#7-integrate-the-eve-startup-sequence)
+* [Integrate the EVE startup sequence](#integrate-the-eve-startup-sequence)
   * [Preserve the library's initialisation sequence](#preserve-the-librarys-initialisation-sequence)
     * [LCD panel initialisation ordering](#lcd-panel-initialisation-ordering)
   * [Supply the calibration-storage hooks](#supply-the-calibration-storage-hooks)
   * [Make failures observable](#make-failures-observable)
-* [8. Bring up the display in stages](#8-bring-up-the-display-in-stages)
+* [Bring up the display in stages](bring-up-the-display-in-stages)
   * [Stage A: Confirm EVE boot](#stage-a-confirm-eve-boot)
   * [Stage B: Display a message without touch or asset loading](#stage-b-display-a-message-without-touch-or-asset-loading)
   * [Stage C: Check memory transfers](#stage-c-check-memory-transfers)
   * [Stage D: Run the complete simple example](#stage-d-run-the-complete-simple-example)
-* [9. Add optional features](#9-add-optional-features)
+* [Add optional features](-add-optional-features)
   * [Increase SPI speed, DMA and shared-bus operation](#increase-spi-speed-dma-and-shared-bus-operation)
     * [Increase SPI speed](#increase-spi-speed)
     * [DMA and queued transfers](#dma-and-queued-transfers)
@@ -67,15 +79,15 @@ This guide does not replace the target MCU's SDK documentation, the selected EVE
   * [LCD panel initialisation](#lcd-panel-initialisation)
   * [INT# and interrupt-based co-processor completion](#int-and-interrupt-based-co-processor-completion)
   * [Advanced chip-select implementations](#advanced-chip-select-implementations)
-* [10. Troubleshooting](#10-troubleshooting)
-* [11. Validate and document the completed port](#11-validate-and-document-the-completed-port)
+* [Troubleshooting](#troubleshooting)
+* [Validate and document the completed port](#validate-and-document-the-completed-port)
 * [Source reference index](#source-reference-index)
 
-## 1. Establish the starting point
+## Establish the starting point
 
 ### Start with a clean checkout
 
-It is advised to work from the latest revision of the EVE-MCU-Dev library. **Do not** combine older revisions of the source files such as `MCU.h` with the current library source, BRT_AN_062 application-note source or HAL implementations.
+It is advised to work from the latest revision of the EVE-MCU-Dev library. **Do not** combine older revisions of the library files, BRT_AN_062 application-note source code or HAL implementations.
 
 ```sh
 git clone --branch main --recurse-submodules https://github.com/Bridgetek/Eve-MCU-Dev.git
@@ -91,26 +103,37 @@ git submodule update --init --recursive
 
 **Note:** EVE-MCU-Dev currently utilises submodules for USB based host implementations with external driver dependencies; [FT4222][4222-c], [MPSSE][mpsse-c]. A submodule is also utilised for the [EVE_Emulator][emulator-c] port to obtain the required dependencies.
 
-It is recommended to record the repository commit, compiler, SDK, IDE or CMake versions being utilised, MCU developemt board revision and EVE display module. 
-
-External dependencies are port-dependent; inspect the [ports documentation][ports-readme] rather than assuming every MCU needs the same host libraries.
+It is recommended to record the repository commit reference, compiler version, target hardware SDK version, IDE or CMake versions being utilised, target developemt board revision and EVE display module type used. This should be documented for future reference in the case when component changes break the known working configuration.
 
 ### Start from a working board project
 
-Install the IDE for the chosen MCU, connect the MCU development baord to the host PC, and create or import a vendor-supported project for the target board. Download, build, and run a simple LED or serial-output test before introducing EVE-MCU-Dev.
-Confirm that the debugger, system clock, GPIO configuration and a usable time base work before attempting to integrate the library.
+Install the IDE for the chosen target, connect the target development board to the host PC, and create or import a vendor-supported project for the target board.
 
-Retain any necessary startup code, linker scripts, clock configuration and SDK initialisation from the example project. Replacing a generated `main.c` with a donor example from one of the other supported ports can accidentally remove these prerequisites.
+Download, build, and run a simple test program before introducing EVE-MCU-Dev. This could be a LED or serial-output test program.
 
-Choose an existing port with a similar SDK or peripheral interface as a reference. The [RP2040 implementation][rp2040-c] demonstrates a direct blocking SPI implementation; the [STM32 CUBE SPI implementation][stm32-spi-c] demonstrates another SDK integration. Copy the organisation and required interface, not the donor's pins, clock frequencies or flash addresses. The current [simple-example README][simple-readme] marks completed build environments, these can be referenced for a verified current build recipe.
+Confirm that the debugger, system clock, GPIO configuration and a usable internal clock work before attempting to integrate the EVE-MCU-Dev library.
+
+Retain any necessary startup code, linker scripts, clock configuration and SDK initialisation from the example project. Replacing a generated `main.c` with a may remove these prerequisites.
+
+Choose an existing EVE-MCU-Dev port with a similar SDK or peripheral interface as a reference. The following ports are good starting points:
+
+* The [RP2040 "pico" implementation][rp2040-c] demonstrates a direct blocking SPI implementation using a hardware SDK in an MCU port.
+* The [STM32Cube SPI implementation][stm32-spi-c] demonstrates another SDK integration in an MCU port. **Remove??**
+* The [Emulator][emulator-c] demonstrates MCU port using a third party DLL.
+* The [libFT4222][libft4222-c] demonstrates SPI buffering an MCU port using a third party DLL.
+* The [Raspberry Pi][rpi-c] demonstrated using a Linux character device in a Platform port.
+
+ From the existing port, copy and rename appropriately, the directory layout in the ports directory. In the new port directory identify the sections where the is platform-specific code. For example, interface initialisation and implementation for GPIO pins, clock frequencies or flash addresses. 
+ 
+ The current [simple-example README][simple-readme] lists completed build environments for each supported port. These can be referenced for a verified working starting point.
 
 **_Checkpoint:_** A standalone MCU development board project that runs reliably, and whose library revision is recorded.
 
-## 2. Define the port and hardware interface
+## Define the port and hardware interface
 
 ### Keep the implementation boundaries clear
 
-The normal call path for a MCU specific ports is:
+The normal call path for an MCU ports is:
 
 ```mermaid
 flowchart TD
@@ -159,9 +182,11 @@ flowchart TD
     MCU --> SDK
 ```
 
-This is a runtime/interface overview, and does not constitue a header-include diagram, which can be found int eh [repository overview][readme].
+**NOTE:** On Platform ports the file `source/EVE_HAL.c` is replaced by `source/EVE_HAL_Linux.c` and `MCU.h` is replaced by `Platform.h`.
 
-The MCU implementation layer supplies transport and host operations. It is not responsible for generating display lists to render items on EVE based displays, interpret EVE registers, or call back into the EVE API to perform a transfer. `MCU.h` includes `EVE_settings.h` for derived build-time configurations which may be required for the port; an ordinary MCU transport implementation **does not need** access to the API or HAL layers through `EVE.h` or `HAL.h`.
+This is the runtime interface overview, and does not constitue a header-include diagram, which can be found in the [repository overview][readme].
+
+The MCU and Platform implementation layers supply transport and host operations. They are not responsible for generating display lists to render items on EVE based displays, interpret EVE registers, or call back into the EVE API to perform a transfer. `MCU.h` and `Platform.h` include `EVE_settings.h` for derived build-time configurations which may be required for the port; an ordinary port implementation **does not need** access to the API or HAL layers through `EVE.h` or `HAL.h`.
 
 **References:** [Software Layers][readme], [MCU interface][mcu-h].
 
@@ -184,11 +209,11 @@ examples/
         board_support.h
 ```
 
-`newmcu`, `PLATFORM_NEWMCU` and `board_support.*` are placeholders introduced by this guide, not existing repository interfaces. Use a distinct platform macro consistently in the build and the new MCU port source file. **Do not** define another MCU's in a new port macro merely to make its code compile.
+`newmcu` and `board_support.*` are placeholders introduced by this guide for the new port being created. 
 
 ### Establish the connections
 
-Create a pin-assignment table for the actual MCU development board/module before writing the port source code.
+Create a pin-assignment table for the actual development board/module before writing the port source code.
 
 | EVE connection | MCU-side requirement |
 | --- | --- |
@@ -198,7 +223,7 @@ Create a pin-assignment table for the actual MCU development board/module before
 | IO2 and IO3 | Additional bidirectional data connections when Quad SPI is used. |
 | CS# | Active-low chip select controlled independently of the SPI peripheral, normally using a separate GPIO output. **Do not use** automatic SPI peripheral/SDK chip-select control for the conventional blocking SPI implementation. |
 | PD# | Active-low power-down/reset control, normally a GPIO output. |
-| INT# | **Optional** input for interrupt-based completion or application EVE interrupt handling. **Do not** configure it as an MCU output. |
+| INT# | **Optional** input for interrupt-based completion or application EVE interrupt handling. **Do not** configure it as an GPIO output. |
 | Supply and ground | Correct module supply, adequate current capability for the application hardware and a common signal ground. |
 
 Check the module's schematic and electrical limits. A module powered from **5V** does not necessarily accept **5V** on its SPI or control inputs. Generally EVE based display modules will utilise **3V3** signals on the SPI interface and GPIOS. 
@@ -207,7 +232,7 @@ Verify required pull-ups, level translation, power sequencing and the treatment 
 
 **Reference:** [Hardware approach in BRT_AN_062][an062].
 
-For the new MCU port implementation, choose SPI master mode, SPI Mode 0, 8-bit transfers and MSB-first bit order. A conservative initial clock such as 1 MHz is a useful starting point, as demonstrated by the [RP2040 port][rp2040-c]. Do not assume that its later operating speed is suitable for another board or EVE device.
+For the new port implementation, choose SPI master mode, SPI Mode 0, 8-bit transfers and MSB-first bit order. A conservative initial clock such as 1 MHz is a useful starting point, as demonstrated by the [RP2040 port][rp2040-c]. Do not assume that its later operating speed is suitable for another board or EVE device.
 
 ### Independent chip-select control
 
@@ -223,7 +248,7 @@ Using a buffer-based SDK SPI API is acceptable; direct register access and byte-
 
 **_Checkpoint:_** Every signal has a documented pin, direction, voltage and initial state, and CS# is independently controlled.
 
-## 3. Prove the MCU SPI and GPIO operations
+## Prove the MCU SPI and GPIO operations
 
 It is recommended to test the vendor SPI and GPIO routines before debugging the full EVE initialisation sequence in `EVE_HAL.c`. This preserves the useful separation between peripheral testing and library integration used in [BRT_AN_062][an062].
 
@@ -237,49 +262,57 @@ Also check that a read generates the correct clock pulses, that unused received 
 
 **_Checkpoint:_** The MCU can clock bytes in both directions while preserving a manually controlled transaction boundary.
 
-## 4. Implement the MCU interface
+## Implement the MCU interface
 
-Use the declarations in the library checkout's [`include/MCU.h`][mcu-h] as the interface checklist.
+The examples below describe a conventional, blocking, GPIO-controlled SPI port. Names beginning with `board_` and `BOARD_EVE_` are illustrative project-specific helpers and pin identifiers, not EVE-MCU-Dev interfaces. Declare and implement them in the board-support files using the target SDK (if required). Include `MCU.h` or `Platform.h` and the board-support header (if required) in the MCU implementation.
 
-**Note:** The [BRT_AN_062][an062] application note's combined `MCU_SPIReadWrite8()` is not a replacement for the current public read and write functions and should not be implemented. 
+### Define a Platform Macro
 
-The examples below describe a conventional, blocking, GPIO-controlled SPI port. Names beginning with `board_` and `BOARD_EVE_` are illustrative project-specific helpers and pin identifiers, not EVE-MCU-Dev interfaces. Declare and implement them in the board-support files using the target SDK (if required). Include `MCU.h` and the board-support header (if required) in the MCU implementation.
+Define a distinct Platform Macro for this port. The macro should have a prefix of `PLATFORM_` followed by a descriptive and unique identifier.
+
+It will be used in the build and the new port source file. **Do not** reuse another Platform Macro in a new port macro.
+
+This example uses the Platform Macro `PLATFORM_NEWMCU`.
 
 ### Required function groups
 
-| Group | Functions to implement | Responsibility |
-| --- | --- | --- |
-| Lifecycle | `int MCU_Init(void)`, `int MCU_Setup(void)`, `int MCU_Deinit(void)` | Configure, adjust and release the host interface. Return `0` on success and `-1` on failure. |
-| Control pins | `MCU_CSlow()`, `MCU_CShigh()`, `MCU_PDlow()`, `MCU_PDhigh()` | Control CS# independently of the SPI peripheral and PD#. Apply the named physical levels. |
-| Interrupt input | `int MCU_Int(void)` | Return `0` for EVE INT# pin assertion (logic low) and non-zero for deassertion (logic high). Explicitly reject unsupported EVE interrupt use; see [Section 9](#int-and-interrupt-based-co-processor-completion). |
-| Block transfers | `MCU_SPIWrite(const uint8_t *, uint32_t)`, `MCU_SPIRead(uint8_t *, uint32_t)` | Transfer the requested bytes without changing CS# or adding protocol framing. |
-| Scalar transfers | `MCU_SPIWrite8()`, `MCU_SPIWrite16()`, `MCU_SPIWrite24()`, `MCU_SPIWrite32()`, `MCU_SPIRead8()`, `MCU_SPIRead16()`, `MCU_SPIRead32()` | Supply the fixed-size SPI transfer operations used by the HAL. |
-| Timing | `MCU_Delay_20ms()`, `MCU_Delay_500ms()`, `uint32_t MCU_Time_ms(void)` | Supply minimum delays fuctions and an advancing millisecond count. |
-| Host to wire byte order | `MCU_htobe16()`, `MCU_htobe32()`, `MCU_htole16()`, `MCU_htole32()` | Convert host values to the specified byte order. |
-| Wire to host byte order | `MCU_be16toh()`, `MCU_be32toh()`, `MCU_le16toh()`, `MCU_le32toh()` | Convert the specified byte order to host values. |
-| Optional interface width | `int MCU_SetSPIMode(uint8_t mode)` | Configure the host SPI width when `EVE_QSPI_ENABLE` is defined. |
+Use the [`include/MCU.h`][mcu-h] file function declarations in the library as the interface checklist.
 
-There is no active `MCU_SPIRead24()` requirement. Implement the baseline interface rather than relying on the first selected example to exercise every function. Keep function names, parameter types and return types consistent with the current `MCU.h` header. 
+**Note:** The [BRT_AN_062][an062] application note's combined `MCU_SPIReadWrite8()` is not to be used as a public read or write function and should not be implemented. A combined read and write function is allowed to be used as the implementation of the public read and write functions.
 
-**Reference:** [MCU.h function declarations][mcu-h].
+| Group | MCU Ports | Platform Ports | Responsibility |
+| --- | --- | --- | --- |
+| Lifecycle | `int MCU_Init(void)`, `int MCU_Setup(void)`, `int MCU_Deinit(void)` | `int Platform_Init(void)`, `int Platform_Setup(void)`, `int Platform_Deinit(void)` | Configure, adjust and release the host interface. Return `0` on success and `-1` on failure. |
+| Control pins | `MCU_CSlow()`, `MCU_CShigh()`, `MCU_PDlow()`, `MCU_PDhigh()` | `Platform_CSlow()`, `Platform_CShigh()`, `Platform_PDlow()`, `Platform_PDhigh()` | Control CS# independently of the SPI peripheral and PD#. Apply the named physical levels. |
+| Interrupt input | `int MCU_Int(void)` | `int Platform_Int(void)` | Return `0` for EVE INT# pin assertion (logic low) and non-zero for deassertion (logic high). |
+| Block transfers | `MCU_SPIWrite(const uint8_t *, uint32_t)`, `MCU_SPIRead(uint8_t *, uint32_t)` | `Platform_SPIWrite(const uint8_t *, uint32_t)`, `Platform_SPIRead(uint8_t *, uint32_t)` | Transfer the requested bytes without changing CS# or adding protocol framing. |
+| Scalar transfers | `MCU_SPIWrite8()`, `MCU_SPIWrite16()`, `MCU_SPIWrite24()`, `MCU_SPIWrite32()`, `MCU_SPIRead8()`, `MCU_SPIRead16()`, `MCU_SPIRead32()` | `Platform_SPIWrite8()`, `Platform_SPIWrite16()`, `Platform_SPIWrite24()`, `Platform_SPIWrite32()`, `Platform_SPIRead8()`, `Platform_SPIRead16()`, `Platform_SPIRead32()` | Supply the fixed-size SPI transfer operations used by the HAL. |
+| Timing | `MCU_Delay_20ms()`, `MCU_Delay_500ms()`, `uint32_t MCU_Time_ms(void)` | `Platform_Delay_20ms()`, `Platform_Delay_500ms()`, `uint32_t Platform_Time_ms(void)` | Supply minimum delays fuctions and an advancing millisecond count. |
+| Host to wire byte order | `MCU_htobe16()`, `MCU_htobe32()`, `MCU_htole16()`, `MCU_htole32()` | `Platform_htobe16()`, `Platform_htobe32()`, `Platform_htole16()`, `Platform_htole32()` | Convert host values to the specified byte order. |
+| Wire to host byte order | `MCU_be16toh()`, `MCU_be32toh()`, `MCU_le16toh()`, `MCU_le32toh()` |  `Platform_be16toh()`, `Platform_be32toh()`, `Platform_le16toh()`, `Platform_le32toh()` | Convert the specified byte order to host values. |
+| Optional SPI transfer width | `int MCU_SetSPIMode(uint8_t mode)` | `int Platform_SetSPIMode(uint8_t mode)` | Select QuadSPI transfer width when `EVE_QSPI_ENABLE` is defined. |
+
+There is no active `MCU_SPIRead24()`/`Platform_SPIRead24()` requirement. Implement the baseline interface rather than relying on the first selected example to exercise every function. Keep function names, parameter types and return types consistent with the current `MCU.h` and `Platform.h` header file.
+
+**Reference:** [MCU.h function declarations][mcu-h], [Platform.h function declarations][platform-h].
 
 ### Initialisation, setup and shutdown
 
-| Function | Implementation requirements |
-| --- | --- |
-| `MCU_Init()` | Establish the SPI and GPIO resources needed for EVE communication. For initial single-SPI operation, configure SPI master mode 0, eight-bit transfers and MSB-first bit order. **Do not use** an automatic hardware CS#. Set CS# and PD# inactive (logic high), configure a connected INT# as an input (if desired), and select a conservative SPI frequency such as 1 MHz. |
-| `MCU_Setup()` | Apply MCU-side interface settings appropriate after EVE has booted, such as increasing the SPI clock. Preserve independent GPIO control of CS#. Returning `0` without changing any settings is sufficient. |
-| `MCU_Deinit()` | Complete outstanding activity, leave CS# inactive (logic high), apply the intended PD# shutdown state (logic low) and release resources owned by the port. Do not shut down or reset a shared SPI peripheral without accounting for its other users. |
+| MCU Ports | Platform Ports | Implementation requirements |
+| --- | --- | --- |
+| `MCU_Init()` |  `Platform_Init()` | Establish the SPI and GPIO resources needed for EVE communication. For initial single-SPI operation, configure SPI master mode 0, eight-bit transfers and MSB-first bit order. **Do not use** an automatic hardware CS#. Set CS# and PD# inactive (logic high), configure a connected INT# as an input (if desired), and select a conservative SPI frequency such as 1 MHz. |
+| `MCU_Setup()` | `Platform_Setup()` | Apply MCU-side interface settings appropriate after EVE has booted, such as increasing the SPI clock. Preserve independent GPIO control of CS#. Returning `0` without changing any settings is sufficient. |
+| `MCU_Deinit()` | `Platform_Deinit()` | Complete outstanding activity, leave CS# inactive (logic high), apply the intended PD# shutdown state (logic low) and release resources owned by the port. Do not shut down or reset a shared SPI peripheral without accounting for its other users. |
 
-These functions return `0` on success and `-1` on failure. The [RP2040 implementation][rp2040-c] provides examples of initial configuration, post-boot speed adjustment and shutdown; the [MCU interface][mcu-h] defines the lifecycle entry points.
+These functions return `0` on success and `-1` (or non-zero) on failure. The [RP2040 implementation][rp2040-c] provides examples of initial configuration, post-boot speed adjustment and shutdown; the [MCU interface][mcu-h] defines the lifecycle entry points.
 
-Where the MCU permits it, preload inactive output levels before enabling the GPIO output drivers to avoid unwanted CS# or PD# pulses. Configure the connected INT# signal as an input (if required); **do not** drive it high from the MCU as though it were an output. Select any required input pull-up from the module schematic and electrical requirements.
+Where the target permits it, preload inactive output levels before enabling the GPIO output drivers to avoid unwanted CS# or PD# pulses. Configure the connected INT# signal as an input (if required); **do not** drive it high as though it were an output. Select any required input pull-up from the module schematic and electrical requirements.
 
-Preserve the generated MCU development board setup. A vendor-generated project may already configure clocks, pin multiplexing, GPIOs or an SPI handle before the library starts. Define which setup belongs to the board project and which belongs to `MCU_Init()`; do not initialise the same resources twice without checking the SDK's requirements. For example, the [STM32 CUBE SPI implementation][stm32-spi-c] uses a handle supplied by the generated project.
+Preserve the generated target development board setup. A vendor-generated project may already configure clocks, pin multiplexing, GPIOs or an SPI handle before the library starts. Define which setup belongs to the board project and which belongs to `MCU_Init()`; do not initialise the same resources twice without checking the SDK's requirements. For example, the [STM32 CUBE SPI implementation][stm32-spi-c] uses a handle supplied by the generated project.
 
-Keep the MCU-side configuration separate from EVE configuration. **Do not** duplicate EVE host commands, reset timing, register programming or display setup in these functions. The normal library startup calls `MCU_Init()` and later `MCU_Setup()`; preserve that sequence. The optional LCD-panel extension is run before `MCU_Init()`, so its prerequisites may require earlier board setup, as described in [Section 7](#7-connect-the-application-entry-point).
+Keep the port side configuration separate from EVE configuration. **Do not** duplicate EVE host commands, reset timing, register programming or display setup in these functions. The normal library startup calls `MCU_Init()`/`Platform_Init()` and later `MCU_Setup()`/`Platform_Setup()`; preserve that sequence. The optional LCD-panel extension is run before `MCU_Init()`/`Platform_Init()`, so its prerequisites may require earlier board setup, as described in [Section 7](connect-the-application-entry-point).
     
-**Reference:** [HAL startup sequence][hal-c].
+**Reference:** [MCU.h function declarations][mcu-h], [Platform.h function declarations][platform-h].
 
 Check any SDK return values when necessary, if initialisation fails leave the SPI interface in a safe state and release partially acquired resources where appropriate. **Do not** report successful initialisation after a failed peripheral configuration.
 
@@ -304,12 +337,12 @@ Place any source-level platform guard before vendor-specific includes:
 
 For the conventional GPIO-controlled implementation in the library, the control functions apply the named physical output levels:
 
-| Function | Output action |
-| --- | --- |
-| `MCU_CSlow()` | Assert CS# by driving it low. |
-| `MCU_CShigh()` | Deassert CS# by driving it high. |
-| `MCU_PDlow()` | Assert PD# by driving it low. |
-| `MCU_PDhigh()` | Release PD# by driving it high. |
+| MCU Ports | Platform Ports | Output action |
+| --- | --- | --- |
+| `MCU_CSlow()` | `Platform_CSlow()` | Assert CS# by driving it low. |
+| `MCU_CShigh()` | `Platform_CShigh()` | Deassert CS# by driving it high. |
+| `MCU_PDlow()` | `Platform_PDlow()` | Assert PD# by driving it low. |
+| `MCU_PDhigh()` | `Platform_PDhigh()` | Release PD# by driving it high. |
 
 The SPI transfer related functions must not call the chip-select functions themselves. The library determines when a transaction starts and ends in the HAL layer. Similarly to the chip-select funtions the power-down functions change the output level of the pin only; **do not** implement EVE reset sequencing or its delays in the new MCU port. 
 
@@ -341,7 +374,7 @@ void MCU_PDhigh(void)
 }
 ```
 
-Establish the GPIO directions, pin multiplexing and initial levels during board/MCU initialisation or in `MCU_Init()`, not on every pin transition.
+Establish the GPIO directions, pin multiplexing and initial levels during board/MCU initialisation or in `MCU_Init()`/`Platform_Init()`, not on every pin transition.
 
 **Note:**  A SPI driver that only queues bytes or fills a transmit FIFO is not necessarily finished transmitting. Either make the SPI functions wait for actual completion, as assumed above, or provide the completion handling required by a deliberately designed advanced transport before CS# rises.
 
@@ -351,10 +384,10 @@ The simplest implementation completes a SPI transfer before returning. Neither `
 
 **References:** [HAL transfer implementation][hal-c], [RP2040 transfers][rp2040-c].
 
-| Function | Required behaviour for the basic blocking port |
-| --- | --- |
-| `MCU_SPIWrite(const uint8_t *data, uint32_t length)` | Transmit exactly `length` bytes in buffer order. Consume or discard received data as required by the peripheral. Do not change CS#, add an address or insert protocol bytes. |
-| `MCU_SPIRead(uint8_t *data, uint32_t length)` | Generate the clocks needed to receive exactly `length` bytes. During ordinary single-SPI reads, transmit zero-valued bytes and store the received bytes in buffer order. Do not change CS# or add transaction framing. |
+| MCU Ports | Platform Ports | Required behaviour for the basic blocking port |
+| --- | --- | --- |
+| `MCU_SPIWrite(const uint8_t *data, uint32_t length)` | `Platform_SPIWrite(const uint8_t *data, uint32_t length)` | Transmit exactly `length` bytes in buffer order. Consume or discard received data as required by the peripheral. Do not change CS#, add an address or insert protocol bytes. |
+| `MCU_SPIRead(uint8_t *data, uint32_t length)` | `Platform_SPIRead(uint8_t *data, uint32_t length)` | Generate the clocks needed to receive exactly `length` bytes. During ordinary single-SPI reads, transmit zero-valued bytes and store the received bytes in buffer order. Do not change CS# or add transaction framing. |
 
 The MCU interface specifies zero-valued transmit data during reads and discarding received data during writes.
 
@@ -394,9 +427,9 @@ The transfer functions do not return an error status. Decide how SDK failures ar
 
 A peripheral that cannot expose independent CS# control is not a direct substitute for this implementation. See [Advanced chip-select implementations](#advanced-chip-select-implementations) for the additional obligations of a buffered or hardware-managed transport.
 
-### Scalar transfers and byte order
+### SPI transfers
 
-The suffixes in `MCU_SPIWrite16()`, `MCU_SPIWrite24()` and `MCU_SPIWrite32()` describe the number of data bits transferred by the library operation. They do not require 16-, 24- or 32-bit hardware frames. Keep the initial SPI peripheral configuration at eight bits and implement these operations through the block-transfer functions.
+The suffixes in `MCU_SPIWrite16()`, `MCU_SPIWrite24()` and `MCU_SPIWrite32()` (and the `Platform_SPIWrite16()`, `Platform_SPIWrite24()` and `Platform_SPIWrite32()` versions in Platform ports) describe the number of data bits transferred by the library operation. They do not require 16-, 24- or 32-bit hardware frames. Keep the initial SPI peripheral configuration at eight bits and implement these operations through the block-transfer functions.
 
 **Note:** MSB-first SPI bit order is not the same as byte order within a multi-byte value. The HAL layer prepares the protocol representation; scalar helpers preserve the resulting object bytes rather than adding an unconditional swap.
 
@@ -450,9 +483,11 @@ uint32_t MCU_SPIRead32(void)
 }
 ```
 
-`MCU_SPIWrite24()` must preserve the HAL's prepared three-byte address representation. **Do not** simply shift out the numeric low 24 bits or apply another byte swap.
+`MCU_SPIWrite24()`/`Platform_SPIWrite24()` must preserve the HAL's prepared three-byte address representation. **Do not** simply shift out the numeric low 24 bits or apply another byte swap.
 
-Implement all eight conversion functions with the correct behaviour for the target platform:
+### Byte Order
+
+Implement all conversion functions with the correct behaviour for the target platform:
 
 | Host representation | Host <-> little-endian | Host <-> big-endian |
 | --- | --- | --- |
@@ -470,13 +505,15 @@ The following mock-transport test vectors can be used to verify this byte-order 
 
 Also test the read direction: receiving `78 56 34 12` into `MCU_SPIRead32()` and applying `MCU_le32toh()` should produce `0x12345678u` on either host byte order.
 
+**Reference:** [Byte Ordering][mcu-h], [Byte Ordering][platform-h].
+
 ### Timing
 
 Make `MCU_Delay_20ms()` and `MCU_Delay_500ms()` wait for at least their stated durations.
 
 It is recommended to implement `MCU_Time_ms()` from a running time source, not a variable incremented only when the application calls a delay.
 
-**Reference:** [Timing interface][mcu-h].
+**Reference:** [Timing interface][mcu-h], [Timing interface][platform-h].
 
 ```c
 /* Project-specific helpers:
@@ -505,11 +542,11 @@ It is recommended ensure that the time base is available during startup and rema
 
 ### EVE Interrupt input
 
-`MCU_Int()` should return the physical level of the MCU input connected to EVE INT#. Return `0` when INT# is asserted (logic low) and a non-zero value when it is deasserted (logic high). The function should only sample the input pin; it should not change CS#, perform SPI transfers, clear EVE interrupt flags, or wait for INT# to become active.
+`MCU_Int()`/`Platform_Int()` should return the physical level of the GPIO input connected to EVE INT#. Return `0` when INT# is asserted (logic low) and a non-zero value when it is deasserted (logic high). The function should only sample the input pin; it should not change CS#, perform SPI transfers, clear EVE interrupt flags, or wait for INT# to become active.
 
 **Note:** The INT# pin implementation is optional and is only required when `EVE_COPRO_METHOD` is set to `EVE_COPRO_INT` in `EVE_config.h`.
 
-**References:** [MCU input contract][mcu-h], [RP2040 GPIO input example][rp2040-c].
+**References:** [MCU input contract][mcu-h], [Platform input contract][platform-h], [RP2040 GPIO input example][rp2040-c].
 
 Examples for both a wired INT# input and an unsupported-input implementation are provided in [Section 9](#int-and-interrupt-based-co-processor-completion). Use the implementation appropriate to the target hardware, and verify the returned low and high pin levels before enabling interrupt-based co-processor completion.
 
@@ -517,22 +554,25 @@ Examples for both a wired INT# input and an unsupported-input implementation are
 
 In addition to the core MCU functionality, a new port may need to provide support for several optional or platform-specific features.
 
+| MCU Ports | Platform Ports  | Port responsibility   |
+| --- |---- |---- |
+| `MCU_SetSPIMode(uint8_t mode)` | `MCU_SetSPIMode(uint8_t mode)` | When Quad SPI support is enabled with `EVE_QSPI_ENABLE`, configure the MCU-side interface for the requested SPI mode and return a failure for unsupported modes. EVE-side interface configuration remains the responsibility of the HAL. |
+
 | Interface or feature  | Port responsibility   |
 | --- |---- |
-| `MCU_SetSPIMode(uint8_t mode)`  | When Quad SPI support is enabled with `EVE_QSPI_ENABLE`, configure the MCU-side interface for the requested SPI mode and return a failure for unsupported modes. EVE-side interface configuration remains the responsibility of the HAL. |
-| `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()` | Provide application or platform-specific storage for touch calibration data when using the `touch.c` example snippet. These functions are not part of `MCU.h`; temporary implementations are provided in [Section 7](#7-connect-the-application-entry-point).  |
+| `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()` | Provide application or platform-specific storage for touch calibration data when using the `touch.c` example snippet. These functions are not part of `MCU.h`; temporary implementations are provided in [Section 7](#connect-the-application-entry-point).  |
 | Debug output  | Provide a suitable output mapping when library diagnostics are required. Support for a new MCU platform can be added to `EVE_debug.h`, or an independent platform-specific debug mechanism may be used. |
-| LCD panel initialisation | Provide any board-specific GPIO, SPI or timing support required by the selected LCD panel extension. Some LCD panel drivers may require additional MCU GPIOs for signals such as a dedicated panel reset or chip-select. This is only required for LCD panels that need additional initialisation and is enabled through defining `EVE_LCD_INIT` in `EVE_config.h`. Any resources required before `MCU_Init()` must be available at the appropriate point in the startup sequence. |
+| LCD panel initialisation | Provide any board-specific GPIO, SPI or timing support required by the selected LCD panel extension. Some LCD panel drivers may require additional MCU GPIOs for signals such as a dedicated panel reset or chip-select. This is only required for LCD panels that need additional initialisation and is enabled through defining `EVE_LCD_INIT` in `EVE_config.h`. Any resources required before `MCU_Init()`/`Platform_Init()` must be available at the appropriate point in the startup sequence. |
 
 Keep these responsibilities within their existing interfaces and support layers rather than adding platform-specific behaviour to the generic SPI transfer functions.
 
 **References:** [MCU interface][mcu-h], [touch calibration callbacks][touch-h], [debug mappings][debug-h], [LCD panel initialisation][lcd-h].
 
-***Checkpoint:*** All required MCU functions build without dependencies on a donor platform, and SPI transfers, GPIO levels and timing behaviour have been verified independently. CS# remains under the transaction control defined by the library rather than being controlled automatically by individual SPI driver calls.
+***Checkpoint:*** All required MCU functions build without dependencies on the target platform, and SPI transfers, GPIO levels and timing behaviour have been verified independently. CS# remains under the transaction control defined by the library rather than being controlled automatically by individual SPI driver calls.
 
-## 5. Select the EVE device and display configuration
+## Select the EVE device and display configuration
 
-Begin with a supported EVE module or a known device and display configuration. Avoid introducing an unverified display timing configuration at the same time as a new MCU transport, as this makes bring-up faults more difficult to isolate.
+Begin with a supported EVE module or a known device and display configuration. Avoid introducing an unverified display timing configuration at the same time as a new port, as this makes bring-up faults more difficult to isolate.
 
 The main configuration selections are `EVE_MODULE`, `EVE_DEVICE`, `EVE_PANEL`, `EVE_DISPLAY_RES` and `EVE_COPRO_METHOD`. [`EVE_settings.h`][settings-h] uses these values to derive the effective device, display and feature configuration.
 
@@ -551,7 +591,9 @@ For initial bring-up without a predefined module or panel, a configuration may t
 /* Leave EVE_QSPI_ENABLE undefined for initial single-SPI operation. */
 ```
 
-These values are illustrative only and must be replaced with selections appropriate to the target hardware. The example uses command-FIFO polling so that initial bring-up does not depend on the EVE INT# signal. Other co-processor completion methods can be enabled once the basic interface is working.
+These values are illustrative only and must be replaced with selections appropriate to the target hardware. 
+
+This example uses command-FIFO polling by setting the `EVE_COPRO_METHOD` to `EVE_COPRO_CMD_WRITE` so that initial bring-up does not depend on the EVE INT# signal. Other co-processor completion methods can be enabled once the basic interface is working.
 
 Do not manually define derived API or device-selection macros to force an unsupported configuration. Use the selections provided by `EVE_defs.h` and select these in `EVE_config.h`, allowing `EVE_settings.h` to derive the corresponding library configuration.
 
@@ -559,9 +601,9 @@ Do not manually define derived API or device-selection macros to force an unsupp
 
 ### Application-local configuration
 
-Where an example requires its own EVE configuration, copy the **current** `include/EVE_config.h` and `include/EVE_defs.h` from the same library revision into the example platform directory. Modify the required selections in the local `EVE_config.h` while keeping `EVE_defs.h` consistent with that revision.
+Where an example requires its own EVE configuration, copy the **current** `include/EVE_config.h` from the library [`include/`][include-d] directory into the example platform directory. Modify the required selections in the local `EVE_config.h`.
 
-Ensure that the local configuration directory appears before the repository `include/` directory for all library and application translation units. This ensures that the same configuration is used throughout the build rather than only by `main.c`.
+Ensure that the local configuration directory appears before the repository [`include/`][include-d] directory for all library and application translation units. This ensures that the same configuration is used throughout the build rather than only by `main.c`.
 
 **Note:** Avoid adding a second set of conflicting configuration definitions elsewhere in the project.
 
@@ -575,35 +617,42 @@ Ensure that the local configuration directory appears before the repository `inc
 #define EVE_QSPI_ENABLE 0
 ```
 
-Therefore, leave `EVE_QSPI_ENABLE` undefined during single-SPI bring-up. This differs from the shared CMake option `-DEVE_QSPI_ENABLE=OFF`, where the build system omits the corresponding C preprocessor definition.
+Therefore, leave `EVE_QSPI_ENABLE` undefined during single-SPI bring-up. When using CMake build files this differs from the shared CMake option `-DEVE_QSPI_ENABLE=OFF`, where the build system omits the corresponding C preprocessor definition.
 
 Enable Quad SPI only after the basic single-SPI port is working and the required MCU-side support described in [Section 9](#quad-spi) has been implemented.
 
 **References:** [configuration header][config-h], [shared CMake options][examples-cmake].
 
-### Display timing selection
+### Display setup selection
 
-The display timing values used by the library are derived from the selected panel or display resolution through `EVE_settings.h`. A genuinely new panel timing therefore requires deliberate configuration support rather than assuming that independently defining `EVE_DISP_*` values will override the existing selection logic.
+The display setup values used by the library are derived from the selected panel or display resolution through `EVE_settings.h`. A genuinely new panel timing therefore requires deliberate configuration support rather than assuming that independently defining `EVE_DISP_*` values will override the existing selection logic.
 
 Where possible, begin port validation with a known supported panel or resolution before adding a new display timing configuration.
 
 **Reference:** [derived configuration][settings-h].
 
-### BT82x platforms
-
-A new platform macro is not automatically included in the existing BT82x transport defaults. When targeting a BT82x device, add and validate the platform-specific transport parameters described under [BT82x transport parameters](#bt82x-transport-parameters) before completing the port.
-
 ***Checkpoint:*** All translation units use the same EVE device, module, panel, resolution, co-processor method and optional feature configuration.
 
-## 6. Integrate the source files and build configuration
+## Integrate the source files and build configuration
 
 ### Vendor IDE or manually maintained build
 
-For an MCU-based build, add the common EVE-MCU-Dev implementation files together with the source file or files for the new MCU port:
+For an MCU Port build, add the common EVE-MCU-Dev implementation files together with the source file or files for the new MCU port:
 
 ```text
 source/EVE_API.c
 source/EVE_HAL.c
+source/extensions/bt82x_patch.c         # Only applicable to BT82x
+source/extensions/custom_touch_fw.c     # Only applicable where custom touch support is required
+source/extensions/lcd_panel_init.c      # Only applicable to LCD panels requiring driver initialisation
+ports/eve_arch_newmcu/EVE_MCU_NEWMCU.c
+```
+
+For a Platform Port build, add the correct HAL layer file:
+
+```text
+source/EVE_API.c
+source/EVE_HAL_Linux.c
 source/extensions/bt82x_patch.c         # Only applicable to BT82x
 source/extensions/custom_touch_fw.c     # Only applicable where custom touch support is required
 source/extensions/lcd_panel_init.c      # Only applicable to LCD panels requiring driver initialisation
@@ -639,7 +688,7 @@ examples/simple/newmcu/board/
 <vendor SDK and generated board include directories>
 ```
 
-Define `PLATFORM_NEWMCU` consistently for all relevant targets and build configurations so that the correct MCU implementation is selected. Do not compile a donor MCU implementation alongside the new port. For a manually assembled MCU project, use `EVE_HAL.c` rather than the Linux SPI-device HAL, and leave `USE_LINUX_SPI_DEV` undefined.
+Define `PLATFORM_NEWMCU` consistently for all relevant targets and build configurations so that the correct MCU implementation is selected. For an MCU Port project leave `USE_LINUX_SPI_DEV` undefined, always define it for a Platform Port project.
 
 Some existing ports divide the MCU interface across several source files. For example, the STM32 CUBE port uses [`EVE_MCU_STM32CUBE_SPI.c`][stm32-spi-c] for the conventional SPI transport and [`EVE_MCU_STM32CUBE.c`][stm32-common-c] for timing, PD#, INT# and byte-order support. When using an existing port as a reference, make sure all source files required to implement the complete MCU interface are included.
 
@@ -655,7 +704,7 @@ The current library example structure separates three concerns:
 | [`examples/simple/common.cmake`][simple-cmake] | Creates the example executable and the `eve_example` library containing the common simple-example sources. |
 | Platform `CMakeLists.txt` and port `.cmake` file | Integrate the toolchain/SDK, add the selected MCU implementation and application entry point, and supply target-specific linking/output settings. |
 
-Do not add another `add_library(eve_library ...)` or another executable with the generated name. Unlike the manual MCU-only source list, the shared recipe lists both HAL source files; their platform guards select the applicable implementation. The existing [Pico top-level file][pico-cmake] and [Pico port recipe][pico-port-cmake] show this arrangement.
+Do not add another `add_library(eve_library ...)` or another executable with the generated name. Unlike the manual source file list above, the shared recipe lists both HAL source files; their platform guards select the applicable implementation. The existing [Pico top-level file][pico-cmake] and [Pico port recipe][pico-port-cmake] show this arrangement.
 
 The following is an integration template, not a complete vendor SDK project:
 
@@ -734,7 +783,7 @@ When using the shared `examples.cmake` command-line options, however, avoid pass
 
 **_Checkpoint:_** The new target links with exactly one MCU implementation and the intended effective configuration.
 
-## 7. Integrate the EVE startup sequence
+## Integrate the EVE startup sequence
 
 ### Preserve the library's initialisation sequence
 
@@ -758,15 +807,15 @@ main / vendor application task
        -> eve_display()
 ```
 
-The application should preserve this sequence rather than duplicating MCU or EVE initialisation in `main()`. In the normal startup path, `EVE_Init()` ultimately calls `MCU_Init()` and later `MCU_Setup()`, so an additional unconditional call to `MCU_Init()` is not required.
+The application should preserve this sequence rather than duplicating HAL or EVE initialisation in `main()`. In the normal startup path, `EVE_Init()` ultimately calls `MCU_Init()`/`Platform_Init()` and later `MCU_Setup()`/`Platform_Setup()`, so an additional unconditional call to `MCU_Init()`/`Platform_Init()` is not required.
 
 **References:** [simple example][simple-c], [EVE initialisation implementation][api-c], [HAL initialisation][hal-c].
 
 #### LCD panel initialisation ordering
 
-When `EVE_LCD_INIT` is enabled, `HAL_EVE_Init()` calls `lcd_driver_init()` **before** `MCU_Init()`. The implementation is provided by `lcd_panel_init.c`.
+When `EVE_LCD_INIT` is enabled, `HAL_EVE_Init()` calls `lcd_driver_init()` **before** `MCU_Init()`/`Platform_Init()`. The implementation is provided by `lcd_panel_init.c`.
 
-Any clocks, GPIO access, SPI resources or timing facilities required by the LCD panel driver must therefore be available before `MCU_Init()` is reached. These prerequisites should be established by the application's early board setup or, where appropriate, by the panel-driver implementation itself.
+Any clocks, GPIO access, SPI resources or timing facilities required by the LCD panel driver must therefore be available before `MCU_Init()`/`Platform_Init()` is reached. These prerequisites should be established by the application's early board setup or, where appropriate, by the panel-driver implementation itself.
 
 **References:** [LCD extension declaration][lcd-h], [HAL startup][hal-c].
 
@@ -785,18 +834,13 @@ int main(void)
      */
     if (board_initialise() != 0)
     {
-        for (;;)
-        {
-            /* Report or retain the board-initialisation fault. */
-        }
+        for (;;) {} /* Report or retain the board-initialisation fault. */
     }
 
     eve_example();
 
     /*The normal demo runs continuously. Reaching here should be diagnosed. */
-    for (;;)
-    {
-    }
+    for (;;) {}
 }
 ```
 
@@ -835,7 +879,7 @@ Provide all three callbacks even when persistent storage is not implemented. In 
 
 These temporary callbacks allow the example to perform interactive calibration without reporting uninitialised storage as valid calibration data. Where a selected module or panel provides predefined touch-transform values, the interactive calibration stage may be bypassed.
 
-Persistent calibration storage can be added later using storage appropriate to the target MCU, as described in [Section 9](#persistent-calibration-storage).
+Persistent calibration storage can be added later using storage appropriate to the target, as described in [Section 9](#persistent-calibration-storage).
 
 **References:** [callback declarations][touch-h], [calibration control flow][touch-c].
 
@@ -849,13 +893,13 @@ Where library diagnostics are required, add an appropriate debug-output mapping 
 
 ***Checkpoint:*** The application reaches the EVE startup path once, and any failure can be located using a debugger or diagnostic output rather than inferred from a blank display.
 
-## 8. Bring up the display in stages
+## Bring up the display in stages
 
 ### Stage A: Confirm EVE boot
 
-It is recommended to use breakpoints, GPIO milestones or other diagnostics around `MCU_Init()`, the HAL's device-identification checks and `MCU_Setup()` to confirm how far the startup sequence progresses.
+It is recommended to use breakpoints, GPIO milestones or other diagnostics around `MCU_Init()`/`Platform_Init()`, the HAL's device-identification checks and `MCU_Setup()`/`Platform_Setup()` to confirm how far the startup sequence progresses.
 
-If `MCU_Init()` completes but execution never reaches `MCU_Setup()`, concentrate on the early hardware interface and EVE boot sequence. Check power, PD# behaviour, SPI mode and framing, CS# timing, pin assignments and the selected EVE device before changing display-list or application code.
+If `MCU_Init()`/`Platform_Init()` completes but execution never reaches `MCU_Setup()`/`Platform_Setup()`, concentrate on the early hardware interface and EVE boot sequence. Check power, PD# behaviour, SPI mode and framing, CS# timing, pin assignments and the selected EVE device before changing display-list or application code.
 
 During startup, the HAL reads `REG_ID` and expects the EVE identification value `0x7C`. The exact register definitions and boot/read sequence depend on the selected EVE generation, with different handling for EVE API 1-4 and EVE API 5.
 
@@ -945,7 +989,7 @@ If the minimal diagnostic display works but the complete example does not, conce
 
 ***Checkpoint:*** Cold boot, visible display output, RAM_G read/write transfers and the complete simple example all operate reliably at the conservative bring-up SPI frequency.
 
-## 9. Add optional features
+## Add optional features
 
 Once the basic port has been verified, optional features and performance improvements can be introduced as required by the target hardware and application. Add one feature at a time and repeat the relevant bring-up and validation tests after each change so that any regression can be isolated easily.
 
@@ -957,7 +1001,7 @@ These changes should preserve the transaction ordering, timing and buffer-lifeti
 
 #### Increase SPI speed
 
-Use a conservative SPI clock during initial bring-up. Once EVE communication, display initialisation and memory transfers are working reliably, `MCU_Setup()` can be used to increase the SPI frequency to the intended operating rate.
+Use a conservative SPI clock during initial bring-up. Once EVE communication, display initialisation and memory transfers are working reliably, `MCU_Setup()`/`Platform_Setup()` can be used to increase the SPI frequency to the intended operating rate.
 
 When increasing the SPI speed, verify:
 
@@ -974,13 +1018,13 @@ Increase the clock in stages rather than moving directly to the maximum value. I
 
 #### DMA and queued transfers
 
-DMA or queued SPI transfers can be used to improve throughput, but they must preserve the behaviour expected by the `MCU_*` interface.
+DMA or queued SPI transfers can be used to improve throughput, but they must preserve the behaviour expected by the `MCU_*` or `Platform_*` interfaces.
 
 Transfer ordering must remain unchanged, and any source or destination buffer must remain valid until the associated transfer has completed. This is especially important for the scalar MCU helpers, which may pass the address of a local variable to the block-transfer functions. An asynchronous implementation must not continue using that pointer after the calling function has returned.
 
 Where DMA or queued transfers are used, either:
 
-* complete the transfer before returning from the `MCU_*` function; or
+* complete the transfer before returning from the `MCU_*` or `Platform_*` function; or
 * copy the required data into storage owned by the MCU port and retain it until the transfer has completed.
 
 The same principle applies to receive buffers: data required by the caller must be valid before the corresponding MCU read function returns.
@@ -998,7 +1042,7 @@ The protected region should include:
 * all associated read and write data transfers; and
 * CS# deassertion.
 
-Protecting individual `MCU_SPIRead()` or `MCU_SPIWrite()` calls is not sufficient, as another task or device could otherwise access the shared peripheral before the current EVE transaction has completed.
+Protecting individual `MCU_SPIRead()`/`Platform_SPIRead()` or `MCU_SPIWrite()`/`Platform_SPIWrite()` calls is not sufficient, as another task or device could otherwise access the shared peripheral before the current EVE transaction has completed.
 
 For initial port development, use a single task or execution context as the owner of the EVE API wherever possible. Concurrent access from multiple tasks, re-entrant EVE calls or EVE operations initiated from interrupt service routines require additional application-level synchronisation beyond the basic MCU port.
 
@@ -1010,22 +1054,22 @@ Add shared-bus or concurrency support only after the basic blocking SPI implemen
 
 Quad SPI support should be added only after the basic single-SPI port has been verified. In addition to the required hardware connections, the MCU port must support switching the host-side interface between the modes requested by the library.
 
-Enable `EVE_QSPI_ENABLE` in `EVE_config.h` only when the selected EVE device supports Quad SPI and the MCU implementation provides the required multi-line transfer support. When this option is enabled, the port must implement `MCU_SetSPIMode(uint8_t mode)` behind the same feature guard.
+Enable `EVE_QSPI_ENABLE` in [`EVE_config.h`][config-h] only when the selected EVE device supports Quad SPI and the MCU implementation provides the required multi-line transfer support. When this option is enabled, the port must implement `MCU_SetSPIMode(uint8_t mode)`/`Platform_SetSPIMode(uint8_t mode)` behind the same feature guard.
 
-`MCU_SetSPIMode()` is responsible for configuring the MCU-side interface to match the mode requested by the HAL. Depending on the target MCU, this may involve reconfiguring the SPI peripheral, changing pin functions or directions, and switching between single- and quad-line operation.
+`MCU_SetSPIMode()`/`Platform_SetSPIMode()` is responsible for configuring the MCU-side interface to match the mode requested by the HAL. Depending on the target MCU, this may involve reconfiguring the SPI peripheral, changing pin functions or directions, and switching between single- and quad-line operation.
 
-The HAL remains responsible for configuring the EVE device itself. `MCU_SetSPIMode()` should therefore only modify the MCU peripheral and associated pins; it should not write EVE registers or call back into the HAL to change the EVE interface mode.
+The HAL remains responsible for configuring the EVE device itself. `MCU_SetSPIMode()`/`Platform_SetSPIMode()` should therefore only modify the MCU peripheral and associated pins; it should not write EVE registers or call back into the HAL to change the EVE interface mode.
 
 When adding Quad SPI support, verify that:
 
 * the selected MCU peripheral supports the required single- and quad-line modes;
 * IO0 to IO3 are connected correctly and can be configured for the required directions;
-* `MCU_SetSPIMode()` handles every interface mode requested by the library;
+* `MCU_SetSPIMode()`/`Platform_SetSPIMode()` handles every interface mode requested by the library;
 * read and write operations use the correct number and direction of data lines;
 * CS# continues to follow the transaction boundaries defined by the library; and
 * changing interface width does not introduce unintended CS# transitions or corrupt an active transaction.
 
-If the MCU peripheral cannot support a requested mode, `MCU_SetSPIMode()` should return a failure rather than continue with an incorrect configuration.
+If the MCU peripheral cannot support a requested mode, `MCU_SetSPIMode()`/`Platform_SetSPIMode()` should return a failure rather than continue with an incorrect configuration.
 
 Do not assume that an MCU peripheral or SDK designed for serial flash devices will automatically meet EVE's Quad SPI requirements. Verify the resulting transfer framing, data-line direction and transaction behaviour against the selected EVE device and the requirements of the library.
 
@@ -1062,7 +1106,7 @@ For an initial **1 MHz single-SPI** implementation, the following values may be 
 
 These values are illustrative and should be reviewed when the SPI frequency or interface width changes.
 
-`EVE_SPI_TIMEOUT` represents a **byte count used by the BT82x read protocol**, not a time in milliseconds. Validate this value against the actual SPI frequency and interface width, including any higher operating speed selected later by `MCU_Setup()`.
+`EVE_SPI_TIMEOUT` represents a **byte count used by the BT82x read protocol**, not a time in milliseconds. Validate this value against the actual SPI frequency and interface width, including any higher operating speed selected later by `MCU_Setup()`/`Platform_Setup()`.
 
 `EVE_SPI_MAX_TRANSFER` controls the relevant HAL read chunking, but it does not guarantee that every transfer passed to the MCU implementation will be limited to that size. For example, the BT82x boot sequence may still request a larger block transfer.
 
@@ -1113,7 +1157,7 @@ The panel controller may share the same SPI peripheral as EVE provided that it u
 
 When sharing an SPI peripheral, keep both devices deselected while changing the peripheral configuration, then restore the settings required by EVE before accessing it again. The panel chip select must remain independent of the EVE CS# signal.
 
-The initialisation order is important. When `EVE_LCD_INIT` is enabled, `lcd_driver_init()` is called **before** `MCU_Init()`. Any clocks, GPIO access, timing services or other resources required by the panel driver must therefore already be available, either through earlier board initialisation or within the panel-driver implementation itself.
+The initialisation order is important. When `EVE_LCD_INIT` is enabled, `lcd_driver_init()` is called **before** `MCU_Init()`/`Platform_Init()`. Any clocks, GPIO access, timing services or other resources required by the panel driver must therefore already be available, either through earlier board initialisation or within the panel-driver implementation itself.
 
 If a new module uses a different LCD controller, additional panel-specific command data and, where necessary, MCU-specific support may need to be added to the extension. Keep these changes within the LCD panel initialisation path rather than introducing panel-specific behaviour into the generic EVE transport layer.
 
@@ -1125,22 +1169,22 @@ Test LCD panel initialisation independently before enabling further optional fea
 
 To use the EVE INT# signal for co-processor completion, connect INT# to an MCU input and set `EVE_COPRO_METHOD` to `EVE_COPRO_INT` in `EVE_config.h`. The derived configuration then enables the library's interrupt-based completion path.
 
-An MCU interrupt service routine is not required for this functionality. The current HAL layer polls the physical INT# pin level through `MCU_Int()` while waiting for the co-processor to complete.
+An MCU interrupt service routine is not required for this functionality. The current HAL layer polls the physical INT# pin level through `MCU_Int()`/`Platform_Int()` while waiting for the co-processor to complete.
 
 **References:** [method selection][settings-h], [HAL completion wait][hal-c].
 
 `MCU_Int()` reports the **physical level of the active-low INT# input**, not a Boolean "interrupt pending" value. For a supported input, use the following return values:
 
-| INT# pin level | Interrupt state | `MCU_Int()` return value |
+| INT# pin level | Interrupt state | `MCU_Int()`/`Platform_Int()` return value |
 | --- | --- | --- |
 | Low | Asserted | `0` |
 | High | Deasserted | Non-zero, normally `1` |
 
-This contract is documented in [`MCU.h`][mcu-h] and [`HAL.h`][hal-h]. `HAL_WaitCmdFifoEmpty()` waits while `MCU_Int()` is non-zero, then checks the interrupt flags for `EVE_INT_CMDEMPTY`.
+This contract is documented in [`MCU.h`][mcu-h]/[`Platform.h`][platform-h] and [`HAL.h`][hal-h]. `HAL_WaitCmdFifoEmpty()` waits while `MCU_Int()`/`Platform_Int()` is non-zero, then checks the interrupt flags for `EVE_INT_CMDEMPTY`.
 
 **Reference:** [HAL completion logic][hal-c].
 
-For a port with a connected INT# signal, `MCU_Int()` should return the physical level of the corresponding MCU input. For example, if the target SDK provides a GPIO read function that returns `0` for a low input and `1` for a high input:
+For a port with a connected INT# signal, `MCU_Int()`/`Platform_Int()` should return the physical level of the corresponding MCU input. For example, if the target SDK provides a GPIO read function that returns `0` for a low input and `1` for a high input:
 
 ```c
 int MCU_Int(void)
@@ -1152,7 +1196,7 @@ int MCU_Int(void)
 
 `gpio_read()` is an illustrative placeholder for the GPIO input function provided by the target MCU SDK. Replace it with the appropriate platform-specific operation while preserving the physical INT# level expected by `MCU_Int()`.
 
-Do not invert a raw GPIO reading. If the SDK instead reports a logical "interrupt asserted" state, convert that result so that `MCU_Int()` still returns `0` when INT# is low and a non-zero value when it is high.
+Do not invert a raw GPIO reading. If the SDK instead reports a logical "interrupt asserted" state, convert that result so that `MCU_Int()`/`Platform_Int()` still returns `0` when INT# is low and a non-zero value when it is high.
 
 If the port does not provide a usable INT# input, return the documented unsupported value and prevent the interrupt-based co-processor method from being selected:
 
@@ -1181,7 +1225,7 @@ Then repeat a co-processor completion test using a finite diagnostic timeout, fo
 EVE_LIB_AwaitCoProEmptyTimeout(1000u);
 ```
 
-`MCU_Int()` should do no more than sample the host input. It should not change CS#, perform EVE SPI transactions, clear interrupt flags or wait for INT# to become asserted.
+`MCU_Int()`/`Platform_Int()` should do no more than sample the host input. It should not change CS#, perform EVE SPI transactions, clear interrupt flags or wait for INT# to become asserted.
 
 Close the submitted co-processor list before waiting for completion. When EVE interrupt management is enabled, also avoid arbitrary diagnostic reads of clear-on-read interrupt registers, as these may consume pending events before the library handles them.
 
@@ -1191,7 +1235,7 @@ Close the submitted co-processor list before waiting for completion. When EVE in
 
 The standard `EVE-MCU-Dev` MCU interface assumes that CS# is controlled independently of the SPI peripheral. For a conventional MCU port, CS# should therefore be assigned to a GPIO output and controlled explicitly through `MCU_CSlow()` and `MCU_CShigh()`.
 
-A single EVE transaction may contain several calls to `MCU_SPIWrite()`, `MCU_SPIRead()` or the scalar SPI helper functions. CS# must remain asserted across these calls until the library ends the transaction.
+A single EVE transaction may contain several calls to `MCU_SPIWrite()`, `MCU_SPIRead()` or the other SPI helper functions. CS# must remain asserted across these calls until the library ends the transaction.
 
 A peripheral or SDK that automatically deasserts CS# after each byte, word or buffer transfer therefore cannot be mapped directly onto the standard MCU SPI functions, as this would divide one EVE transaction into several hardware transactions.
 
@@ -1219,7 +1263,7 @@ The [STM32 CUBE Quad SPI implementation][stm32-qspi-c] provides an example of a 
 **Hardware-managed CS# is considerably more complex than the conventional GPIO-controlled approach and should only be used where the MCU peripheral or driver architecture requires it.**
 For a new port, independently controlled GPIO chip select remains the recommended starting point.
 
-## 10. Troubleshooting
+## Troubleshooting
 
 Use the last successful checkpoint or known working stage to narrow the investigation. Avoid changing several parts of the port at once, as this can make the original fault more difficult to identify. The checks below are diagnostic suggestions; several different faults can produce the same visible symptom.
 
@@ -1229,22 +1273,22 @@ Use the last successful checkpoint or known working stage to narrow the investig
 | Duplicate symbols  | Check for multiple MCU implementations being linked, more than one `main()` function, or common sources being added both directly and through an existing library target. |
 | Wrong EVE configuration appears to be used | Confirm that all translation units see the intended `EVE_config.h`, `EVE_defs.h` and derived settings. Check include-directory ordering, module or panel selections that may override individual settings, and stale build or CMake cache data. |
 | Missing calibration callbacks | Provide all three `platform_calib_*` functions declared in `touch.h`, either as the temporary bring-up implementations or using the target's persistent calibration storage. |
-| `EVE_Init()` does not progress to `MCU_Setup()` | If `EVE_LCD_INIT` is enabled, first confirm that `lcd_driver_init()` succeeds. Then verify that `MCU_Init()` succeeds and check EVE power, PD#, SPI mode and clock, physical pin mapping, CS# framing and the selected EVE device. `MCU_Setup()` is not reached until the EVE boot sequence has completed successfully. |
+| `EVE_Init()` does not progress to `MCU_Setup()`/`Platform_Setup()` | If `EVE_LCD_INIT` is enabled, first confirm that `lcd_driver_init()` succeeds. Then verify that `MCU_Init()`/`Platform_Init()` succeeds and check EVE power, PD#, SPI mode and clock, physical pin mapping, CS# framing and the selected EVE device. `MCU_Setup()`/`Platform_Setup()` is not reached until the EVE boot sequence has completed successfully. |
 | EVE identification does not reach the expected `REG_ID` value  | Check read framing, MISO direction and continuity, SPI mode, CS# timing and the selected EVE device configuration. Verify the signals with a logic analyser before modifying higher-level EVE code. |
 | Reads are consistently all zeros or all ones  | Check MISO pin configuration and continuity, EVE power and reset state, generated read clocks and CS# assertion. Verify the applicable EVE read protocol rather than adding arbitrary dummy bytes in the MCU layer. |
-| CS# pulses between address and data, or after every byte or buffer | Configure CS# as an independent GPIO and disable automatic peripheral or SDK chip-select control. For a conventional port, `MCU_CSlow()` and `MCU_CShigh()` define the EVE transaction boundary. |
+| CS# pulses between address and data, or after every byte or buffer | Configure CS# as an independent GPIO and disable automatic peripheral or SDK chip-select control. For a conventional port, `MCU_CSlow()`/`Platform_CSlow()` and `MCU_CShigh()`/`Platform_CShigh()` define the EVE transaction boundary. |
 | Data is shifted or corrupted  | Check for unintended CS# transitions, extra or missing protocol bytes, incorrect scalar byte order, RX overrun, transfer-length truncation or an incorrect SPI frame width. Run the mock-transport byte-order tests described earlier in this guide. |
-| Final bytes are missing or unreliable  | Confirm that transmission has completed on the physical SPI interface before `MCU_CShigh()` raises CS#. An empty software queue, FIFO write completion or DMA-complete indication does not necessarily mean that the final SPI bit has left the peripheral. |
-| Communication works at the initial SPI speed but fails after `MCU_Setup()` | Reduce the SPI frequency and verify the actual clock with test equipment. Check EVE device limits, MCU peripheral timing, wiring and signal integrity. For BT82x, also verify any speed-dependent `EVE_SPI_TIMEOUT` setting. |
+| Final bytes are missing or unreliable  | Confirm that transmission has completed on the physical SPI interface before `MCU_CShigh()`/`Platform_CShigh()` raises CS#. An empty software queue, FIFO write completion or DMA-complete indication does not necessarily mean that the final SPI bit has left the peripheral. |
+| Communication works at the initial SPI speed but fails after `MCU_Setup()`/`Platform_Setup()` | Reduce the SPI frequency and verify the actual clock with test equipment. Check EVE device limits, MCU peripheral timing, wiring and signal integrity. For BT82x, also verify any speed-dependent `EVE_SPI_TIMEOUT` setting. |
 | Small transfers work but image or font loading fails | Test transfer lengths around MCU or SDK limits. Check internal buffer splitting, count-type truncation, pointer lifetime, stack or buffer use, DMA restrictions and whether CS# remains asserted when a transfer is divided internally. |
-| First initialisation works but subsequent shutdown or re-initialisation fails | Where the de-initialisation path is used, check the states left by `MCU_Deinit()`, including CS#, PD# and the SPI peripheral. Also verify whether the MCU SDK permits the relevant SPI and GPIO resources to be initialised repeatedly. |
+| First initialisation works but subsequent shutdown or re-initialisation fails | Where the de-initialisation path is used, check the states left by `MCU_Deinit()`/`Platform_Deinit()`, including CS#, PD# and the SPI peripheral. Also verify whether the MCU SDK permits the relevant SPI and GPIO resources to be initialised repeatedly. |
 | Registers respond but the screen remains blank | Verify the selected module, panel and display timing configuration, panel power and backlight control, and any required external LCD-controller initialisation. Confirm that the configuration matches the actual display hardware. |
 | Display works but touch does not respond | Check the selected module or panel touch configuration, touch-controller wiring, required custom touch firmware and calibration path. Confirm that required custom touch support has not been disabled. |
 | Touch calibration appears to hang | Verify that valid touch coordinates are being reported, that the touch controller is correctly configured and that the display orientation matches the calibration configuration. Confirm basic display operation before debugging touch-dependent behaviour. |
 | Counter in the simple example does not change | The example increments the counter only when the expected touch tag is detected. Confirm that touch input and tag reporting work before treating a static counter as an SPI transport failure. |
 | Single SPI works but Quad SPI fails | Check IO0-IO3 wiring and direction, `MCU_SetSPIMode()` behaviour and the point at which the interface width changes. Confirm that the MCU and EVE use the same interface mode and that changing width does not alter the required CS# transaction boundaries. |
 | Polling works but INT# completion hangs  | Check INT# wiring, GPIO direction and the selected `EVE_COPRO_METHOD`. Verify that `MCU_Int()` returns `0` for asserted/low and non-zero for deasserted/high, and ensure that an unsupported-input implementation is not being used with `EVE_COPRO_INT`. |
-| LCD panel initialisation fails while normal EVE SPI works | Check that the GPIO, timing and SPI resources required by `lcd_driver_init()` are available before `MCU_Init()`. If the panel and EVE share an SPI peripheral, verify that they use independent chip-select signals and that the EVE SPI configuration is restored before EVE communication begins. |
+| LCD panel initialisation fails while normal EVE SPI works | Check that the GPIO, timing and SPI resources required by `lcd_driver_init()` are available before `MCU_Init()`/`Platform_Init()`. If the panel and EVE share an SPI peripheral, verify that they use independent chip-select signals and that the EVE SPI configuration is restored before EVE communication begins. |
 | BT82x build lacks transport parameters, or reads fail after changing SPI speed | Define suitable `EVE_SPI_MAX_TRANSFER` and `EVE_SPI_TIMEOUT` values for the new platform. Validate them against the actual SPI frequency and interface width, and keep them distinct from the general `EVE_HAL_CHUNK_SIZE` setting. |
 | DMA or RTOS operation introduces intermittent corruption | Check transfer completion, cache maintenance, buffer alignment and lifetime. Ensure that synchronisation protects the complete EVE transaction, from CS# assertion through CS# deassertion, rather than only individual `MCU_SPIRead()` or `MCU_SPIWrite()` calls. |
 | No EVE debug output | Verify the MCU's serial or debug output independently and confirm that `EVE_DEBUG_LEVEL` is set to the intended level. Check that `EVE_debug.h` provides an output mapping for the new platform; on an unsupported platform the debug macros resolve to no-op expressions. |
@@ -1253,7 +1297,7 @@ Implementation references for these checks include the [MCU interface][mcu-h], [
 
 **When debugging a new port, return to the lowest-level failing test first. If the underlying SPI, GPIO or timing behaviour is incorrect, changing display lists, touch configuration or application code is unlikely to resolve the fault.**
 
-## 11. Validate and document the completed port
+## Validate and document the completed port
 
 Before treating a new port as complete, verify the following on the actual target hardware.
 
@@ -1268,7 +1312,7 @@ Before treating a new port as complete, verify the following on the actual targe
 ### MCU and hardware interface
 
 * [ ] Cold power-up and MCU reset produce predictable CS#, PD# and SPI pin states.
-* [ ] `MCU_Init()`, `MCU_Setup()` and `MCU_Deinit()` perform their intended operations and report failure correctly where applicable.
+* [ ] `MCU_Init()`/`Platform_Init()`, `MCU_Setup()`/`Platform_Setup()` and `MCU_Deinit()`/`Platform_Deinit()` perform their intended operations and report failure correctly where applicable.
 * [ ] PD# produces the expected EVE reset/power-down behaviour.
 * [ ] When INT# is used, it is configured as an input and its asserted and deasserted levels have been verified on the hardware.
 * [ ] Repeated initialisation or shutdown/reinitialisation works correctly where the application requires it.
@@ -1279,15 +1323,15 @@ Before treating a new port as complete, verify the following on the actual targe
 * [ ] CS# remains asserted across separate address, data and write-to-read operations that form one EVE transaction.
 * [ ] CS# is not deasserted until the final SPI bit has completed.
 * [ ] SDK buffer splitting or internal transfer limits do not introduce additional CS# transitions.
-* [ ] `MCU_SPIWrite()` and `MCU_SPIRead()` transfer the requested number of bytes without adding protocol framing.
+* [ ] `MCU_SPIWrite()`/`Platform_SPIWrite()` and `MCU_SPIRead()`/`Platform_SPIRead()` transfer the requested number of bytes without adding protocol framing.
 * [ ] Zero-length transfers are harmless.
-* [ ] Scalar transfer and byte-order tests, including the three-byte address representation, produce the expected byte streams.
+* [ ] SPI transfer and byte-order tests, including the three-byte address representation, produce the expected byte streams.
 * [ ] Read and write transfers work correctly over a range of sizes, including lengths around any MCU or SDK transfer limits.
 * [ ] The basic display, RAM_G read-back tests and complete simple example operate at both the initial and selected final SPI frequencies.
 
 ### Timing and stability
 
-* [ ] `MCU_Delay_20ms()` and `MCU_Delay_500ms()` provide at least the required delays.
+* [ ] `MCU_Delay_20ms()`/`Platform_Delay_20ms()` and `MCU_Delay_500ms()`/`Platform_Delay_500ms()` provide at least the required delays.
 * [ ] `MCU_Time_ms()` advances correctly and remains valid after any MCU clock-frequency changes.
 * [ ] Repeated cold starts and extended operation do not introduce intermittent SPI or display failures.
 * [ ] Operation remains reliable at the selected final SPI frequency rather than only at the initial conservative frequency.
@@ -1300,7 +1344,7 @@ Only validate features which are supported by the new port, but each enabled fea
 * [ ] Persistent touch calibration can be written, read back and rejected correctly when invalid.
 * [ ] Custom touch firmware loads successfully where required by the selected module or panel.
 * [ ] Quad SPI correctly switches between the interface modes requested by the HAL and transfers data reliably.
-* [ ] INT# co-processor completion works using the documented `MCU_Int()` return convention.
+* [ ] INT# co-processor completion works using the documented `MCU_Int()`/`Platform_Int()` return convention.
 * [ ] LCD panel initialisation completes correctly and leaves the EVE SPI interface in the expected state.
 * [ ] BT82x-specific transport parameters have been validated at the selected SPI frequency and interface width.
 * [ ] Shared-bus or RTOS access cannot interleave separate EVE transactions.
@@ -1350,7 +1394,9 @@ Additional source-specific references are provided alongside the relevant sectio
 
 [mcu-h]: include/MCU.h
 [hal-h]: include/HAL.h
+[platform-h]: include/Platform.h
 [hal-c]: source/EVE_HAL.c
+[hallinux-c]: source/EVE_HAL_Linux.c
 [eve-h]: include/EVE.h
 [api-c]: source/EVE_API.c
 
