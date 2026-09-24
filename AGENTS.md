@@ -122,7 +122,7 @@ To include snippets in a program add only the top-level of the snippets director
 
 ## Testing
 
-There is a "Simulator" port file in the [`test`][test-d] directory. This is a port file that is used for testing and performs no communication to an EVE device, it doesn't have an SPI bus or use GPIO.
+There is a "Simulator" port file in the [`test`][tests-d] directory. This is a port file that is used for testing and performs no communication to an EVE device, it doesn't have an SPI bus or use GPIO.
 
 There are `yml` files for testing in the [`workflows`][workflow-d] directory.
 
