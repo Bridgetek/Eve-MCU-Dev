@@ -140,7 +140,7 @@ Use the Simulator port to test new programs as shown in these workflow files.
 [include-d]: include/
 [ports-d]: ports/
 [source-d]: source/
-[test-d]: test/
+[tests-d]: test/
 [snippets-d]: examples/snippets/
 [simple-d]: examples/simple/
 [workflow-d]: .github/workflows/
