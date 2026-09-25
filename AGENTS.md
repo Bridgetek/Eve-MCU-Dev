@@ -43,7 +43,7 @@ To include the EVE library a program must:
 * Include all files in the [`source`][source-d] directory must be compiled into the program.
 * Set a compile definition for the "Platform Macro" is required to be set for all library files. The allowable Platform Macros can be found in the [`ports/README.md`][ports-readme] file.
 * Include all files in the subdirectory of the [`ports`][ports-d] directory which match the "Platform Macro" above.
-* Have a configuration file [`EVE_config.h`][config-h] in a location that the compiler will find in it's include search path.
+* Have a configuration file [`EVE_config.h`][config-h] in a location that the compiler will find in its include search path.
 * Optionally include code in the [`examples/snippets`][snippets-d] directory to add prewritten functions to the program.
 
 The ["simple" example][simple-d] is the template for new programs using the library. This has ports for all supported platforms is used for new projects.
@@ -62,13 +62,13 @@ The platform macro to select the port used in the program must be set as a compi
 
 ## Ports
 
-The objective of an port is to connect the common EVE-MCU-Dev library to the target platforms SPI, GPIO and timing facilities, without modifying the API or HAL layers. 
+The objective of a port is to connect the common EVE-MCU-Dev library to the target platforms SPI, GPIO and timing facilities, without modifying the API or HAL layers. 
 
 The required features are:
 
-* Blocking SPI reads and writes. These can be in units of 8-bits or a block of up to 16 kB. Mulitple smaller blocks can be used to make a larger block.
+* Blocking SPI reads and writes. These can be in units of 8-bits or a block of up to 16 kB. Multiple smaller blocks can be used to make a larger block.
 * Predictable control over the chip select (CS#) signal to the SPI. 
-  * For Do not use the SPI peripheral automatic chip select function unless the whole block can be buffered before sending.
+  * Do not use the SPI peripheral automatic chip select function unless the whole block can be buffered before sending.
 * Two GPIO output lines:
   * One for controlling chip select (CS#) on the SPI bus.
   * Another for setting the power down (PD#) pin to reset the EVE device.
@@ -96,7 +96,7 @@ A port must provide functions as described in the following table. Note the diff
 | Interrupt input | `int MCU_Int(void)` | `int Platform_Int(void)` | Return `0` for EVE INT# pin assertion (logic low) and non-zero for deassertion (logic high). |
 | Block transfers | `MCU_SPIWrite(const uint8_t *, uint32_t)`, `MCU_SPIRead(uint8_t *, uint32_t)` | `Platform_SPIWrite(const uint8_t *, uint32_t)`, `Platform_SPIRead(uint8_t *, uint32_t)` | Transfer the requested bytes without changing CS# or adding protocol framing. |
 | Scalar transfers | `MCU_SPIWrite8()`, `MCU_SPIWrite16()`, `MCU_SPIWrite24()`, `MCU_SPIWrite32()`, `MCU_SPIRead8()`, `MCU_SPIRead16()`, `MCU_SPIRead32()` | `Platform_SPIWrite8()`, `Platform_SPIWrite16()`, `Platform_SPIWrite24()`, `Platform_SPIWrite32()`, `Platform_SPIRead8()`, `Platform_SPIRead16()`, `Platform_SPIRead32()` | Supply the fixed-size SPI transfer operations used by the HAL. |
-| Timing | `MCU_Delay_20ms()`, `MCU_Delay_500ms()`, `uint32_t MCU_Time_ms(void)` | `Platform_Delay_20ms()`, `Platform_Delay_500ms()`, `uint32_t Platform_Time_ms(void)` | Supply minimum delays fuctions and an advancing millisecond count. |
+| Timing | `MCU_Delay_20ms()`, `MCU_Delay_500ms()`, `uint32_t MCU_Time_ms(void)` | `Platform_Delay_20ms()`, `Platform_Delay_500ms()`, `uint32_t Platform_Time_ms(void)` | Supply minimum delays functions and an advancing millisecond count. |
 | Host to wire byte order | `MCU_htobe16()`, `MCU_htobe32()`, `MCU_htole16()`, `MCU_htole32()` | `Platform_htobe16()`, `Platform_htobe32()`, `Platform_htole16()`, `Platform_htole32()` | Convert host values to the specified byte order. |
 | Wire to host byte order | `MCU_be16toh()`, `MCU_be32toh()`, `MCU_le16toh()`, `MCU_le32toh()` |  `Platform_be16toh()`, `Platform_be32toh()`, `Platform_le16toh()`, `Platform_le32toh()` | Convert the specified byte order to host values. |
 | Optional SPI transfer width | `int MCU_SetSPIMode(uint8_t mode)` | `int Platform_SetSPIMode(uint8_t mode)` | Select QuadSPI transfer width when `EVE_QSPI_ENABLE` is defined. |
@@ -104,19 +104,19 @@ A port must provide functions as described in the following table. Note the diff
 ## Snippets
 
 There are prewritten snippet code examples in the `examples/snippets` directory. These can be used for common functions or making widgets.
-For example, the `touch.c` and it's header file `touch.h` are commonly used and recommended to handle touchscreen calibration and touch detection.
+For example, the `touch.c` and its header file `touch.h` are commonly used and recommended to handle touchscreen calibration and touch detection.
 
 Common functions are:
 * Maths functions [`examples/snippets/maths`](examples/snippets/maths/):
-  * Furnam trigonometry `furman.h`/`furman.c`.
+  * Furman trigonometry `furman.h`/`furman.c`.
 * Low-level controls and features [`examples/snippets/controls`](examples/snippets/controls/):
   * Font helper functions to access font sizes, spacing and bitmap pointers `fonts.h`/`fonts.c`.
-  * Arc drawing function `arcs.h`/`arcs.h`.
-  * Sound function `sound.h`/`sound.h`.
+  * Arc drawing function `arcs.h`/`arcs.c`.
+  * Sound function `sound.h`/`sound.c`.
 * Dials functions with complete code to show certain dials like aeroplane altitude, attitude and submarine depth dials [`examples/snippets/dials`](examples/snippets/dials/).
 * Widget functions with dialog boxes and seven segment LED displays [`examples/snippets/widgets`](examples/snippets/widgets/).
 
-To add to snippets they must be classified an placed in an appropriate directory with similar snippets.
+To add to snippets they must be classified and placed in an appropriate directory with similar snippets.
 
 To include snippets in a program add only the top-level of the snippets directory to the include search path in the compiler. The include file is added from the top of the snippets directory. For example for furman maths add `#include <maths/trig_furman.c>`.
 
