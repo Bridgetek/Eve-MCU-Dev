@@ -36,18 +36,20 @@ This library is intended to provide a **C** library for embedded designs.
   - [Co-Processor Helpers](#co-processor-helpers)
   - [EVE Display List Commands](#eve-display-list-commands)
   - [EVE Co-processor Commands](#eve-co-processor-commands)
-  - [Creating screens and executing commands](#creating-screens-and-executing-commands)
-    - [Writing DL Instructions and Co-Processor Commands](#writing-dl-instructions-and-co-processor-commands)
-    - [Beginning and Ending Co-Processor Lists](#beginning-and-ending-co-processor-lists)
-    - [Simple Co-Processor List](#simple-co-processor-list)
-    - [Executing a Single Co-Processor Command](#executing-a-single-co-processor-command)
-    - [Large Co-Processor Lists](#large-co-processor-lists)
-    - [Profiling the Co-processor List](#profiling-the-co-processor-list)
-    - [Limitations in RAM_DL and RAM_CMD](#limitations-in-ram_dl-and-ram_cmd)
-    - [Writing RAM_G and RAM_CMD](#writing-ram_g-and-ram_cmd)
-    - [Handling Interrupts](#handling-interrupts)
-    - [Accessing the INT# line](#accessing-the-int-line)
-- [Programming Guides](#programming-guides)
+- [Creating screens and executing commands](#creating-screens-and-executing-commands)
+  - [Writing DL Instructions and Co-Processor Commands](#writing-dl-instructions-and-co-processor-commands)
+    -[Writing the RAM_CMD Directly](#writing-the-ram_cmd-directly)
+    -[CMDB Method for Writing RAM_CMD](#cmdb-method-for-writing-ram_cmd)
+  - [Beginning and Ending Co-Processor Lists](#beginning-and-ending-co-processor-lists)
+  - [Simple Co-Processor List](#simple-co-processor-list)
+  - [Executing a Single Co-Processor Command](#executing-a-single-co-processor-command)
+  - [Large Co-Processor Lists](#large-co-processor-lists)
+  - [Profiling the Co-processor List](#profiling-the-co-processor-list)
+  - [Limitations in RAM_DL and RAM_CMD](#limitations-in-ram_dl-and-ram_cmd)
+  - [Writing RAM_G and RAM_CMD](#writing-ram_g-and-ram_cmd)
+  - [Handling Interrupts](#handling-interrupts)
+  - [Accessing the INT# line](#accessing-the-int-line)
+- [Documentation Reference](#documentation-reference)
 
 ## Overview
 
@@ -276,6 +278,7 @@ The public EVE-MCU-Dev interface headers `EVE.h`, `HAL.h`, `MCU.h`, and `Platfor
 Internal support headers such as `EVE_registers.h`, `EVE_commands.h`, and `EVE_debug.h` use quoted includes where they are consumed within the library or port implementations. `EVE_settings.h` is likewise an internal library header. `EVE_config.h` and `EVE_defs.h` are intentionally included using angle brackets so that applications may provide a matching pair of configuration and definition headers through the configured include path.
 
 #### Application Layer
+
 ```mermaid
 block
   block:APPLICATION[" "]
@@ -287,6 +290,7 @@ block
 ```
 
 #### EVE API Layer
+
 Public API header and source implementation:
 
 ```mermaid
@@ -339,6 +343,7 @@ block
 ```
 
 #### EVE Command and Register Definitions
+
 Command encodings and register definitions used by the EVE API and HAL implementations:
 
 ```mermaid
@@ -356,6 +361,7 @@ block
 ```
 
 #### HAL Layer
+
 Public HAL header and source implementations for MCU/host or Linux-based platforms:
 
 ```mermaid
@@ -493,6 +499,7 @@ block
   style EXAMPLES fill:none,stroke:none
 ```
 #### Independent Debug Utility
+
 Shared debug macro interface with no dependency on `EVE.h`:
 
 ```mermaid
@@ -834,7 +841,7 @@ Its purpose is to allow the program to use the same syntax as the EVE Programmer
 
 The file contains several types of helper function including: 
 - Functions which are used to begin, finish and check execution of co-processor lists. 
-- Functions for writing data to RAM_G and RAM_CMD.
+- Functions for writing data to `RAM_G` and `RAM_CMD`.
 - A function for calling each Display List instruction and each Co-Processor command from the EVE programmers guide.
 
 ### Initialising EVE
@@ -1872,20 +1879,131 @@ The following table shows the co-processor commands which are supported by each 
 | EVE_CMD_RESULT           | CMD_RESULT           | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_I2SSTARTUP       | CMD_I2SSTARTUP       | *No* | *No* | *No* | *No* | Yes  |
 
-### Creating screens and executing commands
+## Creating screens and executing commands
 
-The API Layer provides functions to begin and end lists of co-processor commands. The co-processor commands must be preceded and followed by co-processor management functions.
+The API Layer provides functions to begin and end lists of co-processor commands. 
+The co-processor commands must be preceded and followed by co-processor management functions.
 
-#### Writing DL Instructions and Co-Processor Commands
+Please refer to the following memory areas in the programming guide for the EVE device in
+use. Both are memory mapped in the address space and can be accessed from the SPI.
+- `RAM_DL` is the memory mapped area of the EVE device where the display list is accessed.
+- `RAM_CMD` is the co-processor FIFO buffer.
 
-Using EVE commands via the co-processor requires some data formatting to convert the parameters of the command into the correct hex values to be sent as well as keeping track of the number of bytes sent to update the write pointer correctly. Some commands also require padding to make their total size including parameters a multiple of 4 bytes. The functions in EVE_API hide this from the main application.
+The Co-Processor does not directly render screen content but instead acts as an assistant to
+creating screen content within the `RAM_DL`. One of the main uses of the co-processor is to take
+more complex items such as widgets which the GPU cannot process directly and create display list
+entries in `RAM_DL` that the GPU can use. For example, a button command is turned into a series of
+primitive shapes which the GPU can understand.
 
-#### Beginning and Ending Co-Processor Lists
+The Co-Processor also performs tasks which involve processing such as running calibration, taking
+a compressed image and inflating it into an area of RAM_G in a form which the GPU can reference
+from a display list. The co-processor can also access registers (for example, a `CMD_SWAP` can be
+used which results in `REG_SWAP` being written).
+
+The co-processor can accept both commands (e.g. CMD_BUTTON which must be used via the coprocessor), 
+and GPU primitives (e.g. COLOR_RGB() which could have been written directly to the `RAM_DL`).
+
+In the latter case, it passes these GPU instructions directly through to the created display list. 
+This allows an entire screen to be created via the co-processor FIFO rather than mixing writes to
+`RAM_DL` and `RAM_CMD` which requires very careful memory management.
+
+### Writing DL Instructions and Co-Processor Commands
+
+Using EVE commands via the co-processor requires some data formatting to convert the parameters 
+of the command into the correct binary values to be sent as well as keeping track of the number 
+of bytes sent to update the write pointer correctly. Some commands also require padding to make 
+their total size including parameters a multiple of 4 bytes. The functions in EVE_API hide this 
+from the main application.
+
+The co-processor is fed commands via a circular FIFO (called `RAM_CMD`). The application must 
+note the following:
+
+- Always treat the FIFO as a true circular buffer with read and write pointers and must not
+begin every new command or set of commands at `RAM_CMD + 0`. The application should
+check for free space and then determine the current value of `REG_CMD_WRITE` and use
+this as the starting point for the next command or set of commands.
+- Always write multiples of four bytes as each command must begin at an offset with
+multiple of 4. Some commands such as buttons, text and sliders have parameters which
+may make the overall length of command plus parameters non-multiple of 4. In these
+cases, dummy 0x00 bytes should be sent at the end of the last parameter to pad it to a
+multiple of 4 bytes.
+- The co-processor indicates a fault condition by setting the low bits of `REG_CMD_READ`
+resulting in an odd number being read back.
+This could occur for example where invalid image data is supplied after `CMD_INFLATE` or
+`CMD_LOADIMAGE`, or if an attempt is made to load more than the maximum number of instructions 
+into `RAM_DL` via the co-processor. The programmers guide will have further information on
+this.
+- For widgets, the resulting number of display list instructions to create the shapes may be
+significantly more than the number of bytes in the co-processor command for that widget.
+Therefore, it cannot be assumed that _n_ co-processor commands will make only _n_
+display list entries. `REG_CMD_DL` can be checked to keep track of the number of DL entries.
+See [Profiling the Co-processor List](#profiling-the-co-processor-list) for helper functions
+for this.
+
+It is not recommended to write directly to `RAM_DL` as there is little advantage to write
+display lists directly compared to using the management functions in the co-processor.
+
+#### Writing the RAM_CMD Directly
+
+Co-processor commands can be written directly to `RAM_CMD` on all EVE generations.
+The co-processor buffer is managed by the `REG_CMD_WRITE` and `REG_CMD_READ` registers.
+
+The free space remaining in the circular buffer is calculated by the difference between 
+the values in the `REG_CMD_READ` and `REG_CMD_WRITE` registers. If the sum is negative
+then bitwise AND with the size of the circular buffer will modify the result to an
+integer within the bounds of the buffer size.
+
+_FreeSpace_ = ( _WritePointer_ - _ReadPointer_ ) & ( _CircularBufferSize_ - 1)
+
+When the amount of data to send is less than the free space in the circular buffer 
+the process is as follows:
+
+* Perform an SPI read from the `REG_CMD_WRITE` register. 
+Set this as the starting _START_ pointer within the circular buffer.
+Copy the value into another _WRITE_ pointer to preserve the starting address.
+This provides the memory location at which the co-processor buffer will be written.
+* Start an SPI write transfer to the address stored in the _WRITE_ pointer.
+This initiates a write operation to the `RAM_CMD` memory directly. 
+The co-processor does not action the commands send at this time.
+  * Continue writing and incrementing the _WRITE_ pointer until the end of the 
+  `RAM_CMD` memory area is reached _OR_ all the data has been sent.
+  * Finish the SPI write transfer.
+  * If there is data remaining then set the _WRITE_ pointer to the start of the
+  `RAM_CMD` area and repeat.
+* Perform an SPI write to the `REG_CMD_READ` register with the original value of
+the circular buffer write pointer in the _START_ pointer.
+  * At this point the co-processor will begin working on the data in the circular 
+  buffer.
+
+#### CMDB Method for Writing RAM_CMD
+
+EVE generations 2 onward have an additional Bulk writing feature.
+The co-processor will manage the circular buffer automatically when data to add
+to `RAM_CMD` is written directly to the `REG_CMDB_WRITE` register.
+
+The `REG_CMDB_SPACE` register indicates the amount of free space in the buffer. 
+This can be used instead of awaiting the read and write pointers becoming equal. 
+
+When the amount of data to send is less than the free space in the circular buffer 
+the process is as follows:
+
+* Perform an SPI read from the `REG_CMDB_SPACE` register. 
+Ensure that there is space in the circular buffer for the transfer.
+The code can wait until there is space if it is working on previous actions.
+* Start an SPI write transfer to the `REG_CMDB_WRITE` register.
+This initiates a write operation to the `RAM_CMD` memory directly by the co-processor.
+  * Write the data continuously until all the data has been sent.
+  The co-processor may action the command in the circular buffer at this time.
+  * Finish the SPI write transfer.
+
+### Beginning and Ending Co-Processor Lists
 
 All co-processor lists must begin with a call to `EVE_LIB_BeginCoProList`.  
-If any display list items or co-processor commands which use the display list are to be added then a call to `EVE_CMD_DLSTART` is required immediately after this.
+If any display list items or co-processor commands which use the display list are to be 
+added then a call to `EVE_CMD_DLSTART` is required immediately after this.
 
-For the avoidance of doubt, commands that only read or write registers, read or write memory, access flash or access the SD card do not require the `EVE_CMD_DLSTART` call.
+For the avoidance of doubt, commands that only read or write registers, read or write 
+memory, access flash or access the SD card do not require the `EVE_CMD_DLSTART` call.
 
 All co-processor lists displaying graphics would be preceded by:
 
@@ -1901,14 +2019,21 @@ And followed by:
     EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
 ```
 
-A call to `EVE_LIB_AwaitCoProEmpty` is implied in the call to `EVE_LIB_BeginCoProList`. Therefore it is not necessary to wait at the end of the co-processor  
-list for the completion of the commands allowing program to perform other tasks not related to programming the EVE device.
+A call to `EVE_LIB_AwaitCoProEmpty` is implied in the call to `EVE_LIB_BeginCoProList`. 
+Therefore it is not necessary to wait at the end of the co-processor  
+list for the completion of the commands allowing program to perform other 
+tasks not related to programming the EVE device.
 
-The `EVE_LIB_AwaitCoProEmpty` function will return zero if the co-processor commands have run successfully. If there was an error with a co-processor command or data used by the co-processor then an exception can be raised which will require the application to handle. The Programming Guide for each generation details the actions required when this occurs. See the section called "Coprocessor Faults" or "Fault Scenarios".
+The `EVE_LIB_AwaitCoProEmpty` function will return zero if the co-processor commands have run successfully. 
+If there was an error with a co-processor command or data used by the co-processor 
+then an exception can be raised which will require the application to handle. 
+The Programming Guide for each generation details the actions required when this occurs. 
+See the section called "Coprocessor Faults" or "Fault Scenarios".
 
-On EVE API 3, 4 and 5 there is a text message generated by the co-processor with a brief description of the fault. This message can be obtained with the `EVE_LIB_GetCoProException` function.
+On EVE API 3, 4 and 5 there is a text message generated by the co-processor with a brief description of the fault. 
+This message can be obtained with the `EVE_LIB_GetCoProException` function.
 
-#### Simple Co-Processor List
+### Simple Co-Processor List
 
 The following is a simple list to write text on the screen in white letters:
 
@@ -1929,13 +2054,16 @@ The following is a simple list to write text on the screen in white letters:
     // (commands executed) 
 ```
 
-To send a display list to the screen the commands `EVE_CMD_DLSTART` is required at the beginning of a co-processor list before any display list items are added.
+To send a display list to the screen the commands `EVE_CMD_DLSTART` is required at 
+the beginning of a co-processor list before any display list items are added.
 
-To finish the `EVE_DISPLAY` command is sent to the display list then the `EVE_CMD_SWAP` co-processor command is used to effect the change of display list being rendered on the screen.
+To finish the `EVE_DISPLAY` command is sent to the display list then the `EVE_CMD_SWAP` 
+co-processor command is used to effect the change of display list being rendered on the screen.
 
-#### Executing a Single Co-Processor Command
+### Executing a Single Co-Processor Command
 
-When just executing a co-processor command (for example calling CMD_SETROTATE during set-up of the application to set the screen orientation) then the following can be used:
+When just executing a co-processor command (for example calling CMD_SETROTATE during set-up 
+of the application to set the screen orientation) then the following can be used:
 
 ```c
     EVE_LIB_BeginCoProList(); // CS low and send address in RAM_CMD 
@@ -1946,18 +2074,25 @@ When just executing a co-processor command (for example calling CMD_SETROTATE du
     EVE_LIB_AwaitCoProEmpty(); // Wait for FIFO to be finish
 ```
 
-If there is no display list created for a set of co-processor commands then there is no need for the `EVE_CMD_DLSTART`, `EVE_DISPLAY` or `EVE_CMD_SWAP`.
+If there is no display list created for a set of co-processor commands then there is no 
+need for the `EVE_CMD_DLSTART`, `EVE_DISPLAY` or `EVE_CMD_SWAP`.
 
-#### Large Co-Processor Lists
+### Large Co-Processor Lists
 
-On EVE1, EVE2, EVE3 and EVE4 there is 4 kB of co-processor list buffer space, on EVE5 there is 16 kB. A large co-processor list can use the whole buffer space many times over.  
+On EVE1, EVE2, EVE3 and EVE4 there is 4 kB of co-processor list buffer space, on EVE5 there is 16 kB. 
+A large co-processor list can use the whole buffer space many times over.
 If an image is being decoded with `EVE_CMD_LOADIMAGE` then wrapping around the buffer space is a common occurrance.
 
-The simpler examples above are small and do not need to check how much space is remaining in the co-processor list buffer. Large lists that potentially wrap the buffer space need a better stategy.
+The simpler examples above are small and do not need to check how much space is remaining in the co-processor list buffer. 
+Large lists that potentially wrap the buffer space need a better stategy.
 
-Register reads are not allowed within a co-processor list. However, a co-processor list can be created in more than one section as shown below. For tasks sending long lists, the data can be divided into smaller chunks and sent with the program waiting for sufficient buffer space before continuing with the next chunk.
+Register reads are not allowed within a co-processor list. The following methods can be used to safely manage the list.
 
-The `EVE_LIB_WriteDataToCMD` implements an efficient strategy to do this.
+#### Splitting Co-Processor Lists
+
+A co-processor list can be created in more than one section, as shown below, to create the same display list. 
+
+For tasks sending long display lists, the data can be divided into smaller chunks and sent with the program waiting for sufficient buffer space before continuing with the next chunk.
 
 This example below shows how to split a co-processor list to generate a display list correctly. Note the position of the `EVE_CMD_DLSTART`, `EVE_DISPLAY` or `EVE_CMD_SWAP` commands.
 
@@ -1998,11 +2133,63 @@ The above sequence will create the same set of commands in RAM_DL as the code be
   // (commands executed)
 ```
 
-The usage is fundamentally the same as the library and examples described in BRT_AN_008 (FT81x Creating a Simple Library For PIC MCU) and BRT_AN_014 (FT81X Simple PIC Library Examples) and so these can be used as a reference when using this library.
+The API function `EVE_LIB_GetCoProSpace` can be used to check if there is sufficient space 
+available in the co-processor for further commands to be sent. 
+The command will not stop and restart the co-processor lists as in the example above but 
+will pause the co-processor list to perform a register read before resuming another 
+transfer without interrupting the program flow.
 
-The API function `EVE_LIB_GetCoProSpace` can be used to check if there is sufficient space available in the co-processor for further commands to be sent. The command will not stop and restart the co-processor lists as in the example above but will pause the co-processor list to perform a register read before resuming another transfer without interrupting the program flow.
+#### Writing Co-Processor Lists in Chunks
 
-#### Profiling the Co-processor List
+The `EVE_LIB_WriteDataToCMD` implements an efficient strategy to write large amounts of data to 
+the co-processor buffer, where a block of data may be larger than the size of the `RAM_CMD` memory.
+The block is divided into smaller chunks of data which are smaller than the `RAM_CMD` area.
+
+The following flowchart describes the process. 
+The _FreeSpace_ value used is either the difference between `REG_CMD_READ` and `REG_CMD_WRITE` or the value from `REG_CMDB_SPACE`;
+_DataRemaining_ is the number of bytes to send in total; _ChunkSize_ is the number of bytes to send in each chunk.
+The "Write ChunkSize bytes" block is specific to whether the `REG_CMDB_WRITE` method is being used.
+
+```mermaid
+flowchart
+    START
+    START --> COND1
+    
+    COND1{DataRemaining \n> ChunkSize}
+
+    T1Y[LastChunk = FALSE]
+
+    COND1 --> |Yes| T1Y
+
+    T1N[ChunkSize = DataRemaining]
+    T2N[LastChunk = TRUE]
+    COND1 -->|No| T1N
+    T1N --> T2N
+
+    T2N --> COND2
+    T2Y --> COND2
+    
+    COND2{FreeSpace \n> ChunkSize}
+    COND2 -->|No| COND2
+    COND2 -->|Yes| W1Y
+
+    W1Y[Write ChunkSize \nbytes]
+    W1Y --> COND3
+
+    COND3{LastChunk}
+    COND3 -->|No| COND1
+    COND3 -->|Yes| WSP
+
+    WSP[Write Padding \nZeros]
+    WSP --> FINISH
+
+    FINISH
+```
+
+Checking free space instead of awaiting the FIFO empty is especially useful if writing 
+the compressed data to the FIFO following a `CMD_INFLATE` for example.
+
+### Profiling the Co-processor List
 
 Setting the `EVE_COPROC_PROFILE` macro will enable code that can count the number of bytes sent to the co-processor. This is useful to find out the size of each co-processor list.
 
@@ -2012,7 +2199,7 @@ This feature can be used in conjunction with `EVE_LIB_GetCoProSpace` to predict 
 
 Enabling the macro will add one 16-bit storage variable to the compiled project.
 
-#### Limitations in RAM_DL and RAM_CMD
+### Limitations in RAM_DL and RAM_CMD
 
 It is important to note that the overall limit of 8K for the generated RAM_DL list still applies, even if lists are sent in multiple sections. It is also important to bear in mind that the size of a co-processor command is not always the same as the size of the resulting RAM_DL instructions which the co-processor generates from the commands.
 
@@ -2041,7 +2228,7 @@ The value of REG_CMD_DL is read after executing the commands above but before th
   // (commands executed)
 ```
 
-#### Writing RAM_G and RAM_CMD
+### Writing RAM_G and RAM_CMD
 
 These functions allow burst writes to RAM_G and RAM_CMD. Individual bursts must not exceed 65535 bytes; larger transfers must be split into smaller sections. The HAL further divides transfers into chunks of up to `EVE_HAL_CHUNK_SIZE` bytes, while the underlying MCU or Platform implementation may apply additional host-interface-specific transfer limits.
 
@@ -2064,7 +2251,7 @@ uint16_t EVE_LIB_SendString(const char* string)
 
 This function sends a string of characters and is used by commands such as CMD_TEXT, CMD_BUTTON and CMD_TOGGLE which all use text strings. This function takes care of the extra padding which is required as all EVE commands must be 32-bit aligned. Therefore, depending on the length of the string (plus the necessary null character to terminate it) then between one and three extra "\0" (NUL) bytes are added to pad the command to be a multiple of 4 bytes. The main application can therefore send strings without needing to consider the padding.
 
-#### Handling Interrupts
+### Handling Interrupts
 
 The interrupt register `REG_INT_FLAGS` is provided to allow an application to see if one of several interrupt events are flagged. These can be polled by reading the register. However, the register is automatically cleared on each read.
 
@@ -2074,12 +2261,21 @@ For example, if a key press was detected and the bit set in the register during 
 
 Enabling the macro will add one 8-bit storage variable to the compiled project.
 
-#### Accessing the INT# line
+### Accessing the INT# line
 
 The optional INT# line is provided for the EVE device to signal to the host MCU that an event has occurred.
 
 This status can be accessed from the EVE API with the `EVE_LIB_Int` function. A value greater than zero indicates that the INT# line is asserted. On MCUs and Platforms that do not support reading the INT# line the return value will be -1.
 
-## Programming Guides
+## Documentation Reference
 
 The Programming Guides for each generation of EVE device is found in the [Bridgetek Programming and User Guides](https://brtchip.com/document/programming-guides/).
+
+Application notes upon which this repository is based are the [Bridgetek EVE Examples](https://brtchip.com/software-examples/eve-examples-2/) page:
+
+* [BRT_AN_006 FT81x Simple PIC Example Introduction](https://brtchip.com/wp-content/uploads/Support/Documentation/Application_Notes/ICs/EVE/BRT-AN-006-FT81x-Simple-PIC-Example.pdf)
+* [BRT_AN_008 FT81x Creating a Simple Library For PIC MCU](https://brtchip.com/wp-content/uploads/Support/Documentation/Application_Notes/ICs/EVE/BRT_AN_008_FT81x_Creating_a_Simple_Library_For_PIC_MCU.pdf)
+* [BRT_AN_014 FT81X Simple PIC Library Examples](https://brtchip.com/wp-content/uploads/Support/Documentation/Application_Notes/ICs/EVE/BRT_AN_014_FT81X_Simple_PIC_Library_Examples.pdf)
+* [BRT_AN_025 Portable EVE Library](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_025_EVE_Portable_MCU_Example-R.pdf)
+* [BRT_AN_062 Porting Guide](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_062_Porting_BRT_AN_025_to_NXP_MCU.pdf)
+* [BRT_AN_074 EVE Colour Picker Example](https://brtchip.com/wp-content/uploads/2024/04/BRT_AN_074__BT81x_Simple_Colour_Picker_with_PWM_LED_Control.pdf)
