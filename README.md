@@ -2165,9 +2165,8 @@ flowchart
     T2N[LastChunk = TRUE]
     COND1 -->|No| T1N
     T1N --> T2N
-
     T2N --> COND2
-    T2Y --> COND2
+    T1Y --> COND2
     
     COND2{FreeSpace \n> ChunkSize}
     COND2 -->|No| COND2
