@@ -1900,8 +1900,8 @@ a compressed image and inflating it into an area of RAM_G in a form which the GP
 from a display list. The co-processor can also access registers (for example, a `CMD_SWAP` can be
 used which results in `REG_SWAP` being written).
 
-The co-processor can accept both commands (e.g. CMD_BUTTON which must be used via the coprocessor), 
-and GPU primitives (e.g. COLOR_RGB() which could have been written directly to the `RAM_DL`).
+The co-processor can accept both commands (e.g. `CMD_BUTTON` which must be used via the coprocessor), 
+and GPU primitives (e.g. `COLOR_RGB()` which could have been written directly to the `RAM_DL`).
 
 In the latter case, it passes these GPU instructions directly through to the created display list. 
 This allows an entire screen to be created via the co-processor FIFO rather than mixing writes to
@@ -1942,6 +1942,47 @@ for this.
 
 It is not recommended to write directly to `RAM_DL` as there is little advantage to write
 display lists directly compared to using the management functions in the co-processor.
+
+The circular buffer can be visualised by the following steps. 
+The circular buffer pointers can be controlled directly by the application or,
+on EVE2 onwards, automatically by the co-processor.
+
+![Circular Buffer Starting Point](docs/circular_buffer_1.png)
+
+**Step 1:** The read and write pointers are initially equal and so the FIFO is empty. 
+The current value of the `REG_CMD_WRITE` (starting offset) pointer is used as 
+the first location of the next co-processor list. 
+
+![Circular Buffer With List Added](docs/circular_buffer_2.png)
+
+**Step 2:** The application writes the new commands to the FIFO. 
+The current write address pointer increments for each 32-bit command written.
+This has to take account of the rollover at the end of the `RAM_CMD` buffer.
+
+![Circular Buffer Ready to Process](docs/circular_buffer_3.png)
+
+**Step 3:** The `REG_CMD_WRITE` register is updated to prime the co-processor to process the list.
+Since the write pointer is greater than the read pointer the co-processor will start working
+through the commands in the list.
+
+![Circular Buffer Complete](docs/circular_buffer_4.png)
+
+**Step 4:** The co-processor will now consume and execute each command in turn and will 
+update `REG_CMD_READ` as it does until the pointers become equal. 
+The display list will be generated in `RAM_DL` as the co-processor works through the
+commands and the swap will be carried out. The display list now appears as shown below:
+
+| Address | Instruction |
+| --- | --- |
+| RAM_DL | CLEAR_COLOR_RGB(0,0,0) |
+| RAM_DL + 4 | CLEAR(1,1,1) |
+| RAM_DL + 8 | COLOR_RGB(0,0,255) |
+| RAM_DL + 12 | POINT_SIZE(20) |
+| RAM_DL + 16 | BEGIN(POINTS) |
+| RAM_DL + 20 | VERTEX2F(0,0) |
+| RAM_DL + 24 | END() |
+| RAM_DL + 28 | DISPLAY |
+
 
 #### Writing the RAM_CMD Directly
 
