@@ -186,7 +186,7 @@ If the co-processor method is set to `EVE_COPROC_INT` then it will wait for an i
 
 **Parameters:**
 
-- *timeout* - milliseconds to wait until the function returns with a timeout error.
+- `timeout` - milliseconds to wait until the function returns with a timeout error.
 
 ### EVE_LIB_RecoverCoPro
 
@@ -382,7 +382,7 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *mask* - bit mask of interrupts to test. Unmasked interrupts are not modified.
+- `mask` - bit mask of interrupts to test. Unmasked interrupts are not modified.
 
 ### EVE_LIB_GetResult
 
@@ -410,7 +410,7 @@ Result of a previous co-processor command.
 
 **Parameters:**
 
-- *offset* - number of 32-bit words to go back in the command buffer for the result.
+- `offset` - number of 32-bit words to go back in the command buffer for the result.
 
 ### EVE_LIB_GetCoProException
 
@@ -437,7 +437,7 @@ and must be sufficient to hold 128 characters.
 
 **Parameters:**
 
-- *desc* - buffer to receive the text of the exception description.
+- `desc` - buffer to receive the text of the exception description.
 
 ### EVE_LIB_WriteDataToRAMG
 
@@ -459,9 +459,9 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *ImgData* - pointer to start of data buffer.
-- *DataSize* - number of bytes in buffer.
-- *DestAddress* - 24-bit/32-bit memory mapped address on EVE.
+- `ImgData` - pointer to start of data buffer.
+- `DataSize` - number of bytes in buffer.
+- `DestAddress` - 24-bit/32-bit memory mapped address on EVE.
 
 ### EVE_LIB_ReadDataFromRAMG
 
@@ -483,9 +483,9 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *ImgData* - pointer to start of receive data buffer.
-- *DataSize* - number of bytes to read (rounded up to be 32-bit aligned).
-- *DestAddress* - 24-bit/32-bit memory mapped address on EVE.
+- `ImgData` - pointer to start of receive data buffer.
+- `DataSize` - number of bytes to read (rounded up to be 32-bit aligned).
+- `DestAddress` - 24-bit/32-bit memory mapped address on EVE.
 
 ### EVE_LIB_WriteDataToCMD
 
@@ -510,8 +510,8 @@ write will block on available space in this list.
 
 **Parameters:**
 
-- *ImgData* - pointer to start of data buffer.
-- *DataSize* - number of bytes in buffer.
+- `ImgData` - pointer to start of data buffer.
+- `DataSize` - number of bytes in buffer.
 
 ### EVE_LIB_SendString
 
@@ -541,7 +541,7 @@ This is rounded up to the next 32-bit boundary.
 
 **Parameters:**
 
-- *string* - string to be sent to the co-processor memory.
+- `string` - string to be sent to the co-processor memory.
 
 ### EVE_LIB_GetProps
 
@@ -565,9 +565,9 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - pointer to variable to receive the image start address.
-- *width* - pointer to variable to receive the image width.
-- *height* - pointer to variable to receive the image height.
+- `addr` - pointer to variable to receive the image start address.
+- `width` - pointer to variable to receive the image width.
+- `height` - pointer to variable to receive the image height.
 
 ### EVE_LIB_GetPtr
 
@@ -590,7 +590,7 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - last allocation address rounded up to the next 32-bit 
+- `addr` - last allocation address rounded up to the next 32-bit 
 boundary.
 
 ### EVE_LIB_GetMatrix
@@ -613,12 +613,12 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *a* -  pointer of variable to receive matrix a.
-- *b* -  pointer of variable to receive matrix b.
-- *c* -  pointer of variable to receive matrix c.
-- *d* -  pointer of variable to receive matrix d.
-- *e* -  pointer of variable to receive matrix e.
-- *f* -  pointer of variable to receive matrix f.
+- `a` -  pointer of variable to receive matrix a.
+- `b` -  pointer of variable to receive matrix b.
+- `c` -  pointer of variable to receive matrix c.
+- `d` -  pointer of variable to receive matrix d.
+- `e` -  pointer of variable to receive matrix e.
+- `f` -  pointer of variable to receive matrix f.
 
 ### EVE_LIB_MemCrc
 
@@ -640,9 +640,9 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *ptr* - start of memory area.
-- *num* - number of bytes to CRC.
-- *result* - pointer to receive the CRC.
+- `ptr` - start of memory area.
+- `num` - number of bytes to CRC.
+- `result` - pointer to receive the CRC.
 
 ### EVE_LIB_BitmapTransform
 
@@ -664,13 +664,13 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *x0, y0* - point 0 screen coordinate, in pixels.
-- *x1, y1* - point 1 screen coordinate, in pixels.
-- *x2, y2* - point 2 screen coordinate, in pixels.
-- *tx0, ty0* - point 0 bitmap coordinate, in pixels.
-- *tx1, ty1* - point 1 bitmap coordinate, in pixels.
-- *tx2, ty2* - point 2 bitmap coordinate, in pixels.
-- *result* - set to -1 on success, or 0 if it is not possible to find the solution matrix
+- `x0`, `y0` - point 0 screen coordinate, in pixels.
+- `x1`, `y1` - point 1 screen coordinate, in pixels.
+- `x2`, `y2` - point 2 screen coordinate, in pixels.
+- `tx0`, `ty0` - point 0 bitmap coordinate, in pixels.
+- `tx1`, `ty1` - point 1 bitmap coordinate, in pixels.
+- `tx2`, `ty2` - point 2 bitmap coordinate, in pixels.
+- `result` - set to -1 on success, or 0 if it is not possible to find the solution matrix
 
 ### EVE_LIB_GetImage
 
@@ -692,11 +692,11 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - pointer to variable to receive the address the image was loaded to.
-- *fmt* - pointer to variable to receive the format of the loaded image.
-- *width* - pointer to variable to receive the width of the loaded image.
-- *height* - pointer to variable to receive the height of the loaded image.
-- *palette* - pointer to variable to receive the palette of the loaded image.
+- `addr` - pointer to variable to receive the address the image was loaded to.
+- `fmt` - pointer to variable to receive the format of the loaded image.
+- `width` - pointer to variable to receive the width of the loaded image.
+- `height` - pointer to variable to receive the height of the loaded image.
+- `palette` - pointer to variable to receive the palette of the loaded image.
 
 ### EVE_LIB_RegRead
 
@@ -718,8 +718,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of register to read.
-- *value* - pointer to receive the contents of the register.
+- `addr` - address of register to read.
+- `value` - pointer to receive the contents of the register.
 
 ### EVE_LIB_MemWrite8
 
@@ -741,8 +741,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to write.
-- *value* - value to write to memory.
+- `addr` - address of memory location to write.
+- `value` - value to write to memory.
 
 ### EVE_LIB_MemWrite16
 
@@ -764,8 +764,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to write.
-- *value* - value to write to memory.
+- `addr` - address of memory location to write.
+- `value` - value to write to memory.
 
 ### EVE_LIB_MemWrite32
 
@@ -789,8 +789,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to write.
-- *value* - value to write to memory.
+- `addr` - address of memory location to write.
+- `value` - value to write to memory.
 
 ### EVE_LIB_MemRead8
 
@@ -808,7 +808,7 @@ This function cannot be used within a co-processor list.
 
 **Returns:**
 
-- *value* - value read from memory.
+- `value` - value read from memory.
 
 **Format:**
 
@@ -816,7 +816,7 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to read.
+- `addr` - address of memory location to read.
 
 ### EVE_LIB_MemRead16
 
@@ -834,7 +834,7 @@ This function cannot be used within a co-processor list.
 
 **Returns:**
 
-- *value* - value read from memory.
+- `value` - value read from memory.
 
 **Format:**
 
@@ -842,8 +842,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to read.
-- *value* - pointer to receive the contents of the register.
+- `addr` - address of memory location to read.
+- `value` - pointer to receive the contents of the register.
 
 ### EVE_LIB_MemRead32
 
@@ -863,7 +863,7 @@ This function cannot be used within a co-processor list.
 
 **Returns:**
 
-- *value* - value read from memory.
+- `value` - value read from memory.
 
 **Format:**
 
@@ -871,8 +871,8 @@ This function cannot be used within a co-processor list.
 
 **Parameters:**
 
-- *addr* - address of memory location to read.
-- *value* - pointer to receive the contents of the register.
+- `addr` - address of memory location to read.
+- `value` - pointer to receive the contents of the register.
 
 ### EVE_CMD
 
