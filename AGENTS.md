@@ -46,6 +46,8 @@ To include the EVE library a program must:
 * Have a configuration file [`EVE_config.h`][config-h] in a location that the compiler will find in its include search path.
 * Optionally include code in the [`examples/snippets`][snippets-d] directory to add prewritten functions to the program.
 
+The callable API is described in the file [API Reference](API.md).
+
 The ["simple" example][simple-d] is the template for new programs using the library. This has ports for all supported platforms is used for new projects.
 
 ### EVE_config.h
