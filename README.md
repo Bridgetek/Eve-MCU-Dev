@@ -902,7 +902,7 @@ block
                 BG(["BG"]):1
                 FG(["FG"]):1
                 dltitle("<b>RAM_DL</b>"):2
-                BG <---> FG
+                BG ---> FG
             end
             ram_g["<b>RAM_G</b>"]
             block:registers[" "]
@@ -1084,7 +1084,7 @@ style lcd stroke:#30b8cf,stroke-width:2px
 style lcdtitle fill:none, stroke:none
 style dltitle stroke:none
 style BG stroke:#9730cf,stroke-width:1px
-style FG stroke:#9730cf,stroke-width:1px
+style FG stroke:#30b8cf,stroke-width:1px
 style flashtitle stroke:#9730cf,stroke-width:1px
 style reg stroke:#9730cf,stroke-width:1px
 
