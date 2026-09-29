@@ -867,7 +867,7 @@ block
     block:HOST_LAYER[" "]:1
         columns 1
         space
-        HOST["MCU<br>or<br>Host"]
+        HOST["<b>MCU<br>or<br>Host</b>"]
         space
     end
     block:EVE["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><b>Embedded Video Engine "]:9
@@ -883,13 +883,13 @@ block
         end
         block:CONN2
             columns 1
-            X16((" ")) space:2 X19((" ")) X20((" ")) space X22((" ")) space X24((" ")) space X26((" ")) X27((" ")) space:3
+            space X17((" ")) space X19((" ")) X20((" ")) space X22((" ")) space X24((" ")) space X26((" ")) space:4
         end
         block:CONN3
             columns 3
-            X31((" ")) space:6 X38((" ")) space X40((" ")) X41((" ")) space:4
-            space:3 X49((" ")) X50((" ")) space:2 X53((" ")) space X55((" ")) space:5
-            X61((" ")) space:2 X64((" ")) space:2 X67((" ")) space:5 X73((" ")) space:2
+            space:4 X35((" ")) space:2 X38((" ")) space X40((" ")) X41((" ")) space:4
+            space:4 X50((" ")) space:2 X53((" ")) space:2 X56((" ")) space:4
+            space X62((" ")) space X64((" ")) X65((" ")) space:2 X68((" ")) space:4 X73((" ")) space:2
         end
         block:INTERNALS
             columns 1
@@ -902,33 +902,33 @@ block
                 BG(["BG"]):1
                 FG(["FG"]):1
                 dltitle("<b>RAM_DL</b>"):2
-                BG ---> FG
+                BG ===> FG
             end
             ram_g["<b>RAM_G</b>"]
             block:registers[" "]
             columns 1
-                reg[["<b>Registers"]]
+                reg[["<b>Registers</b>"]]
             end
         end
         block:CONN4
             columns 3
-            X76((" ")) space:6  X83((" ")) space:2 X86((" ")) space:3 X90((" "))
-            space:7 X98((" ")) space:2 X101((" ")) space:3 X105((" "))
-            space X107((" ")) space:2 X110((" ")) space:2 X113((" ")) space:2 X116((" ")) space:2 X119((" ")) space
+            space:5 X81((" ")) space X83((" ")) space:5 X89((" ")) space
+            space:2 X93((" ")) space X95((" ")) space:5 X101((" ")) space:3 X105((" "))
+            space:2 X108((" ")) space:2 X111((" ")) space:2 X114((" ")) space:2 X117((" ")) space:2 X120((" "))
         end
         block:CONN5
             columns 3
-            space X122((" ")) space:5  X128((" ")) space:2 X131((" ")) space:3 X135((" "))
-            space:11 X147((" ")) space:3
+            space:4 X125((" ")) space:2  X128((" ")) space:2 X131((" ")) space:2 X134((" ")) space
+            space:10 X146((" ")) space:4
             space X152((" ")) space:5 X158((" ")) space:2 X161((" "))space:2 X164((" ")) space
         end
         block:ENGINES
             columns 1
-            gpu["GPU"]
+            gpu["<b>GPU</b>"]
             space
-            touch["Touch<br>Engine"]
+            touch["<b>Touch<br>Engine</b>"]
             space
-            audio["Audio<br>Engine"]
+            audio["<b>Audio<br>Engine</b>"]
         end
     end
     block:CONN6:1
@@ -940,35 +940,39 @@ block
         block:LCDPANEL[" "]
             columns 1
             lcd("Display Driver")
-            lcdtitle ("LCD Panel")
+            lcdtitle("<b>LCD Panel</b>")
             touchout("Touch Controller")
         end
         space
-        SPEAKER["Amplifier<br>and<br>Speaker"]
+        block:AUDIOCOMPONENTS[" "]
+            columns 1
+            amp("Amplifier")
+            space 
+            speak("Speaker")
+        end
     end
 
 %% copro connections
 %% copro to flash
 coproc --- X20
-X20 --- X16
-X31 ---> flash
-X16-- "Commands<br>and Data" --- X31
+X20 --- X17
+X35 ---> flash
+X17-- "Commands<br>and Data" --- X35
 %% copro to ram_dl
 coproc === X22
 X50 ===> ram_dl
-X50 ===  X49
-X22 <== "Create Display<br>List Entries" === X49
+X22 <== "Create Display<br>List Entries" === X50
 
 %%copro to ram_g
 coproc --- X24
-X55 ---> ram_g
-X24 <-- "Inflate data<br>to RAM_G" --- X55
+X56 ---> ram_g
+X24 <-- "Inflate data<br>to RAM_G" --- X56
 
 %%copro to registers
 coproc --- X26
-X67 ---> registers
-X67 --- X61
-X26 <-- "Read/Write<br>registers" --- X61
+X68 ---> registers
+X68 --- X62
+X26 <-- "Read/Write registers" --- X62
 
 %% host connections
 %% host to COPRO/common
@@ -976,9 +980,9 @@ HOST <== "SPI/QSPI" === X8
 X8 ===> coproc
 X8 === X12
 %%host to RAM_CMD
-X27 --- X64
-X64 ---> ram_g
-X12 <-- "Write raw image<br>or font data" --- X27
+X64 --- X65
+X65 ---> ram_g
+X12 <-- "Write raw image/font data" --- X64
 %% host to ram_dl
 X8 === X4
 X19 === X40
@@ -993,52 +997,52 @@ X73 ==> registers
 %% engines connections
 
 %% flash
-%%flash top gpu
-X76 === flash
-X122 ===> gpu
-X76 <=="Data referenced<br>by Display List"=== X122
+%%flash to gpu
+X81 === flash
+X125 ===> gpu
+X81 <=="Data referenced<br>by Display List"=== X125
 %%ram_dl
-ram_dl --- X86
+ram_dl --- X89
 X83 ---> flash
-X86 --"Data<br>lookup"--- X83
+X89 --"Data<br>lookup"--- X83
 %%ram_dl to gpu
-ram_dl === X90
-X90 === X128
+ram_dl === X93
+X93 =="Display List"=== X128
 X128 ===> gpu
 %%ram_dl to ram_g
-ram_dl --- X98
+ram_dl --- X95
 X101 ---> ram_g
-X98 --"Data<br>lookup"--- X101
+X95 --"Data<br>lookup"--- X101
 
 %%ram_g connections
 ram_g === X105
 X105 <=="Data referenced<br>by Display List"===  X131
 X131 ===> gpu
 %%ram_g to audio
-ram_g --- X107
-X107--- X113
-X113 -- "Audio data"--- X158
+ram_g --- X108
+X108--- X114
+X114 -- "Audio data"--- X158
 X158 ---> audio
 
 %% regsiters 
 %% reg to touch
-registers <--- X116
+registers <--- X117
 X161 --- X152
 touch <--- X152
-X116 --"Touch Registers"--- X161
+X117 --"Touch Registers"--- X161
 %%reg to audio
-registers <--- X119
+registers <--- X120
 X164 ---> audio
-X119 --"Audio Registers"--- X164
+X120 --"Audio Registers"--- X164
 %%reg to gpu
-registers === X110
-X110 <=="Display<br>settings"=== X147
-X147 === X135
-X135 ===> gpu
+registers === X111
+X111 <=="Display settings"=== X146
+X146 === X134
+X134 ===> gpu
 
 %%flash to ram_g
 flash --- X38
-X38 --"Copy data"--- X53
+X38 --"Copy<br>data"--- X53
 X53 ---> ram_g
 
 %% output connections
@@ -1048,10 +1052,11 @@ gpu =="Pixel Data"==> lcd
 %% touch to LCD
 touch <--- X166
 X165 --- touchout 
-X166 --"Touch<br>Inputs"--- X165
+X166 --"Touch Inputs"--- X165
 
 %% audio to speaker
-audio --"Audio Output"--> SPEAKER
+audio --"Audio Output"--> amp
+amp ---> speak
 
 %% styling
 %% layers
@@ -1072,15 +1077,17 @@ style HOST stroke:#cf4730,stroke-width:8px
 style LCDPANEL stroke:#1f4488,stroke-width:8px
 style gpu stroke:#30b8cf,stroke-width:4px
 style touch stroke:#cf9730,stroke-width:4px
-style SPEAKER stroke:#13501c,stroke-width:8px
+style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px
 style audio stroke:#68cf30,stroke-width:4px
+style amp stroke:#68cf30,stroke-width:3px
+style speak stroke:#68cf30,stroke-width:3px
 style coproc stroke:#9730cf,stroke-width:4px
 style flash stroke:#9730cf,stroke-width:4px
 style ram_dl stroke:#9730cf,stroke-width:4px
 style ram_g stroke:#9730cf,stroke-width:4px
 style registers stroke:#9730cf,stroke-width:4px
-style touchout stroke:#cf9730,stroke-width:2px
-style lcd stroke:#30b8cf,stroke-width:2px
+style touchout stroke:#cf9730,stroke-width:3px
+style lcd stroke:#30b8cf,stroke-width:3px
 style lcdtitle fill:none, stroke:none
 style dltitle stroke:none
 style BG stroke:#9730cf,stroke-width:1px
@@ -1089,53 +1096,52 @@ style flashtitle stroke:#9730cf,stroke-width:1px
 style reg stroke:#9730cf,stroke-width:1px
 
 %%connections
-style X4 fill:#cf4730
-style X8 fill:#cf4730
-style X12 fill:#cf4730
-style X15 fill:#cf4730
-style X16 fill:#9730cf
-style X20 fill:#9730cf
-style X22 fill:#9730cf
-style X24 fill:#9730cf
-style X26 fill:#9730cf
-style X27 fill:#cf4730
-style X31 fill:#9730cf
-style X38 fill:#9730cf
-style X40 fill:#cf4730
-style X49 fill:#9730cf
-style X53 fill:#9730cf
-style X55 fill:#9730cf
-style X61 fill:#9730cf
-style X67 fill:#9730cf
-style X73 fill:#cf4730
-style X76 fill:#30b8cf
-style X83 fill:#9730cf
-style X86 fill:#9730cf
-style X90 fill:#30b8cf
-style X98 fill:#9730cf
-style X101 fill:#9730cf
-style X105 fill:#30b8cf
-style X107 fill:#68cf30
-style X113 fill:#68cf30
-style X116 fill:#cf9730
-style X119 fill:#68cf30
-style X122 fill:#30b8cf
-style X128 fill:#30b8cf
-style X131 fill:#30b8cf
-style X135 fill:#30b8cf
-style X147 fill:#30b8cf
-style X152 fill:#cf9730
-style X161 fill:#cf9730
-style X164 fill:#68cf30
-style X165 fill:#cf9730
-style X166 fill:#cf9730
+style X4 fill:#cf4730,stroke:#cf4730
+style X8 fill:#cf4730,stroke:#cf4730
+style X12 fill:#cf4730,stroke:#cf4730
+style X15 fill:#cf4730,stroke:#cf4730
+style X17 fill:#9730cf,stroke:#9730cf
+style X20 fill:#9730cf,stroke:#9730cf
+style X22 fill:#9730cf,stroke:#9730cf
+style X24 fill:#9730cf,stroke:#9730cf
+style X26 fill:#9730cf,stroke:#9730cf
+style X35 fill:#9730cf,stroke:#9730cf
+style X38 fill:#9730cf,stroke:#9730cf
+style X40 fill:#cf4730,stroke:#cf4730
+style X53 fill:#9730cf,stroke:#9730cf
+style X56 fill:#9730cf,stroke:#9730cf
+style X62 fill:#9730cf,stroke:#9730cf
+style X64 fill:#cf4730,stroke:#cf4730
+style X68 fill:#9730cf,stroke:#9730cf
+style X73 fill:#cf4730,stroke:#cf4730
+style X81 fill:#30b8cf,stroke:#30b8cf
+style X83 fill:#9730cf,stroke:#9730cf
+style X89 fill:#9730cf,stroke:#9730cf
+style X93 fill:#30b8cf,stroke:#30b8cf
+style X95 fill:#9730cf,stroke:#9730cf
+style X101 fill:#9730cf,stroke:#9730cf
+style X105 fill:#30b8cf,stroke:#30b8cf
+style X108 fill:#68cf30,stroke:#68cf30
+style X114 fill:#68cf30,stroke:#68cf30
+style X117 fill:#cf9730,stroke:#cf9730
+style X120 fill:#68cf30,stroke:#68cf30
+style X125 fill:#30b8cf,stroke:#30b8cf
+style X128 fill:#30b8cf,stroke:#30b8cf
+style X131 fill:#30b8cf,stroke:#30b8cf
+style X134 fill:#30b8cf,stroke:#30b8cf
+style X146 fill:#30b8cf,stroke:#30b8cf
+style X152 fill:#cf9730,stroke:#cf9730
+style X161 fill:#cf9730,stroke:#cf9730
+style X164 fill:#68cf30,stroke:#68cf30
+style X165 fill:#cf9730,stroke:#cf9730
+style X166 fill:#cf9730,stroke:#cf9730
 
 %% blank connections
 style X19 fill:none,stroke:none
 style X41 fill:none,stroke:none
 style X50 fill:none,stroke:none
-style X64 fill:none,stroke:none
-style X110 fill:none,stroke:none
+style X65 fill:none,stroke:none
+style X111 fill:none,stroke:none
 style X158 fill:none,stroke:none
 
 ```
