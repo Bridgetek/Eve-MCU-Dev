@@ -870,7 +870,7 @@ block
         HOST["<b>MCU<br>or<br>Host</b>"]
         space
     end
-    block:EVE["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><b>Embedded Video Engine "]:9
+    block:EVE["<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embedded Video Engine</b>"]:9
         block:CONN1
             columns 1
             space:3 X4((" ")) space:3 X8((" ")) space:3 X12((" ")) space:2 X15((" "))
@@ -897,6 +897,7 @@ block
             columns 1
                 flashtitle[("<b>FLASH</b><br>(EVE 3/4/5)")]
             end
+            space
             block:ram_dl(" ")
             columns 2
                 BG(["BG"]):1
@@ -904,7 +905,9 @@ block
                 dltitle("<b>RAM_DL</b>"):2
                 BG ===> FG
             end
+            space
             ram_g["<b>RAM_G</b>"]
+            space
             block:registers[" "]
             columns 1
                 reg[["<b>Registers</b>"]]
@@ -957,7 +960,7 @@ block
 coproc --- X20
 X20 --- X17
 X35 ---> flash
-X17-- "Commands<br>and Data" --- X35
+X17-- "Commands and Data" --- X35
 %% copro to ram_dl
 coproc === X22
 X50 ===> ram_dl
@@ -1060,89 +1063,90 @@ amp ---> speak
 
 %% styling
 %% layers
-style HOST_LAYER fill:none,stroke:none
-style CONN1 fill:none,stroke:none
-style COPRO fill:none,stroke:none
-style CONN2 fill:none,stroke:none
-style CONN3 fill:none,stroke:none
-style INTERNALS fill:none,stroke:none
-style CONN4 fill:none,stroke:none
-style CONN5 fill:none,stroke:none
-style ENGINES fill:none,stroke:none
-style CONN6 fill:none,stroke:none
-style OUTPUT_LAYER fill:none,stroke:none
+style HOST_LAYER fill:none,stroke:none;
+style CONN1 fill:none,stroke:none;
+style COPRO fill:none,stroke:none;
+style CONN2 fill:none,stroke:none;
+style CONN3 fill:none,stroke:none;
+style INTERNALS fill:none,stroke:none;
+style CONN4 fill:none,stroke:none;
+style CONN5 fill:none,stroke:none;
+style ENGINES fill:none,stroke:none;
+style CONN6 fill:none,stroke:none;
+style OUTPUT_LAYER fill:none,stroke:none;
 
 %% boxes
-style HOST stroke:#cf4730,stroke-width:8px
-style LCDPANEL stroke:#1f4488,stroke-width:8px
-style gpu stroke:#30b8cf,stroke-width:4px
-style touch stroke:#cf9730,stroke-width:4px
-style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px
-style audio stroke:#68cf30,stroke-width:4px
-style amp stroke:#68cf30,stroke-width:3px
-style speak stroke:#68cf30,stroke-width:3px
-style coproc stroke:#9730cf,stroke-width:4px
-style flash stroke:#9730cf,stroke-width:4px
-style ram_dl stroke:#9730cf,stroke-width:4px
-style ram_g stroke:#9730cf,stroke-width:4px
-style registers stroke:#9730cf,stroke-width:4px
-style touchout stroke:#cf9730,stroke-width:3px
-style lcd stroke:#30b8cf,stroke-width:3px
-style lcdtitle fill:none, stroke:none
-style dltitle stroke:none
-style BG stroke:#9730cf,stroke-width:1px
-style FG stroke:#30b8cf,stroke-width:1px
-style flashtitle stroke:#9730cf,stroke-width:1px
-style reg stroke:#9730cf,stroke-width:1px
+style HOST stroke:#cf4730,stroke-width:8px,font-size:25px;
+style EVE stroke:#000,stroke-width:2px,stroke-dasharray:6;
+style LCDPANEL stroke:#1f4488,stroke-width:8px;
+style gpu stroke:#30b8cf,stroke-width:4px;
+style touch stroke:#cf9730,stroke-width:4px;
+style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px;
+style audio stroke:#68cf30,stroke-width:4px;
+style amp stroke:#68cf30,stroke-width:3px;
+style speak stroke:#68cf30,stroke-width:3px;
+style coproc stroke:#9730cf,stroke-width:4px;
+style flash stroke:#9730cf,stroke-width:4px;
+style ram_dl stroke:#9730cf,stroke-width:4px;
+style ram_g stroke:#9730cf,stroke-width:4px;
+style registers stroke:#9730cf,stroke-width:4px;
+style touchout stroke:#cf9730,stroke-width:3px;
+style lcd stroke:#30b8cf,stroke-width:3px;
+style lcdtitle fill:none, stroke:none,font-size:25px;
+style dltitle stroke:none;
+style BG stroke:#9730cf,stroke-width:2px;
+style FG stroke:#30b8cf,stroke-width:2px;
+style flashtitle stroke:#9730cf,stroke-width:2px;
+style reg stroke:#9730cf,stroke-width:2px;
 
 %%connections
-style X4 fill:#cf4730,stroke:#cf4730
-style X8 fill:#cf4730,stroke:#cf4730
-style X12 fill:#cf4730,stroke:#cf4730
-style X15 fill:#cf4730,stroke:#cf4730
-style X17 fill:#9730cf,stroke:#9730cf
-style X20 fill:#9730cf,stroke:#9730cf
-style X22 fill:#9730cf,stroke:#9730cf
-style X24 fill:#9730cf,stroke:#9730cf
-style X26 fill:#9730cf,stroke:#9730cf
-style X35 fill:#9730cf,stroke:#9730cf
-style X38 fill:#9730cf,stroke:#9730cf
-style X40 fill:#cf4730,stroke:#cf4730
-style X53 fill:#9730cf,stroke:#9730cf
-style X56 fill:#9730cf,stroke:#9730cf
-style X62 fill:#9730cf,stroke:#9730cf
-style X64 fill:#cf4730,stroke:#cf4730
-style X68 fill:#9730cf,stroke:#9730cf
-style X73 fill:#cf4730,stroke:#cf4730
-style X81 fill:#30b8cf,stroke:#30b8cf
-style X83 fill:#9730cf,stroke:#9730cf
-style X89 fill:#9730cf,stroke:#9730cf
-style X93 fill:#30b8cf,stroke:#30b8cf
-style X95 fill:#9730cf,stroke:#9730cf
-style X101 fill:#9730cf,stroke:#9730cf
-style X105 fill:#30b8cf,stroke:#30b8cf
-style X108 fill:#68cf30,stroke:#68cf30
-style X114 fill:#68cf30,stroke:#68cf30
-style X117 fill:#cf9730,stroke:#cf9730
-style X120 fill:#68cf30,stroke:#68cf30
-style X125 fill:#30b8cf,stroke:#30b8cf
-style X128 fill:#30b8cf,stroke:#30b8cf
-style X131 fill:#30b8cf,stroke:#30b8cf
-style X134 fill:#30b8cf,stroke:#30b8cf
-style X146 fill:#30b8cf,stroke:#30b8cf
-style X152 fill:#cf9730,stroke:#cf9730
-style X161 fill:#cf9730,stroke:#cf9730
-style X164 fill:#68cf30,stroke:#68cf30
-style X165 fill:#cf9730,stroke:#cf9730
-style X166 fill:#cf9730,stroke:#cf9730
+style X4 fill:#cf4730,stroke:#cf4730;
+style X8 fill:#cf4730,stroke:#cf4730;
+style X12 fill:#cf4730,stroke:#cf4730;
+style X15 fill:#cf4730,stroke:#cf4730;
+style X17 fill:#9730cf,stroke:#9730cf;
+style X20 fill:#9730cf,stroke:#9730cf;
+style X22 fill:#9730cf,stroke:#9730cf;
+style X24 fill:#9730cf,stroke:#9730cf;
+style X26 fill:#9730cf,stroke:#9730cf;
+style X35 fill:#9730cf,stroke:#9730cf;
+style X38 fill:#9730cf,stroke:#9730cf;
+style X40 fill:#cf4730,stroke:#cf4730;
+style X53 fill:#9730cf,stroke:#9730cf;
+style X56 fill:#9730cf,stroke:#9730cf;
+style X62 fill:#9730cf,stroke:#9730cf;
+style X64 fill:#cf4730,stroke:#cf4730;
+style X68 fill:#9730cf,stroke:#9730cf;
+style X73 fill:#cf4730,stroke:#cf4730;
+style X81 fill:#30b8cf,stroke:#30b8cf;
+style X83 fill:#9730cf,stroke:#9730cf;
+style X89 fill:#9730cf,stroke:#9730cf;
+style X93 fill:#30b8cf,stroke:#30b8cf;
+style X95 fill:#9730cf,stroke:#9730cf;
+style X101 fill:#9730cf,stroke:#9730cf;
+style X105 fill:#30b8cf,stroke:#30b8cf;
+style X108 fill:#68cf30,stroke:#68cf30;
+style X114 fill:#68cf30,stroke:#68cf30;
+style X117 fill:#cf9730,stroke:#cf9730;
+style X120 fill:#68cf30,stroke:#68cf30;
+style X125 fill:#30b8cf,stroke:#30b8cf;
+style X128 fill:#30b8cf,stroke:#30b8cf;
+style X131 fill:#30b8cf,stroke:#30b8cf;
+style X134 fill:#30b8cf,stroke:#30b8cf;
+style X146 fill:#30b8cf,stroke:#30b8cf;
+style X152 fill:#cf9730,stroke:#cf9730;
+style X161 fill:#cf9730,stroke:#cf9730;
+style X164 fill:#68cf30,stroke:#68cf30;
+style X165 fill:#cf9730,stroke:#cf9730;
+style X166 fill:#cf9730,stroke:#cf9730;
 
 %% blank connections
-style X19 fill:none,stroke:none
-style X41 fill:none,stroke:none
-style X50 fill:none,stroke:none
-style X65 fill:none,stroke:none
-style X111 fill:none,stroke:none
-style X158 fill:none,stroke:none
+style X19 fill:none,stroke:none;
+style X41 fill:none,stroke:none;
+style X50 fill:none,stroke:none;
+style X65 fill:none,stroke:none;
+style X111 fill:none,stroke:none;
+style X158 fill:none,stroke:none;
 
 ```
 
