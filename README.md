@@ -863,14 +863,14 @@ Each EVE memory area and interface has its own addressing, transfer and manageme
 
 ```mermaid
 block
-  columns 11
+  columns 12
     block:HOST_LAYER[" "]:1
         columns 1
         space
         HOST["MCU<br>or<br>Host"]
         space
     end
-    block:EVE["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><b>Embedded Video Engine "]:8
+    block:EVE["<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><b>Embedded Video Engine "]:9
         block:CONN1
             columns 1
             space:3 X4((" ")) space:3 X8((" ")) space:3 X12((" ")) space:2 X15((" "))
@@ -878,7 +878,7 @@ block
         block:COPRO
             columns 1
             space
-            coproc("Co-Processor<br><b>RAM_CMD</b>")
+            coproc["Co-Processor<br><b>RAM_CMD</b>"]
             space  
         end
         block:CONN2
@@ -893,13 +893,22 @@ block
         end
         block:INTERNALS
             columns 1
-            flash("<b>FLASH</b><br>(EVE 3/4/5)")
-            space
-            ram_dl("<b>RAM_DL</b>")
-            space
-            ram_g("<b>RAM_G</b>")
-            space
-            registers("<b>Registers</b>")
+            block:flash[" "]
+            columns 1
+                flashtitle[("<b>FLASH</b><br>(EVE 3/4/5)")]
+            end
+            block:ram_dl(" ")
+            columns 2
+                BG(["BG"]):1
+                FG(["FG"]):1
+                dltitle("<b>RAM_DL</b>"):2
+                BG <---> FG
+            end
+            ram_g["<b>RAM_G</b>"]
+            block:registers[" "]
+            columns 1
+                reg[["<b>Registers"]]
+            end
         end
         block:CONN4
             columns 3
@@ -915,22 +924,27 @@ block
         end
         block:ENGINES
             columns 1
-            gpu("GPU")
+            gpu["GPU"]
             space
-            touch("Touch<br>Engine")
+            touch["Touch<br>Engine"]
             space
-            audio("Audio<br>Engine")
+            audio["Audio<br>Engine"]
         end
     end
     block:CONN6:1
         columns 1
-        space:4 X165((" ")) space X166((" ")) space:8
+        space:5 X165((" ")) space X166((" ")) space:7
     end
     block:OUTPUT_LAYER[" "]:1
         columns 1
-        LCD ("LCD<br>Panel")
+        block:LCDPANEL[" "]
+            columns 1
+            lcd("Display Driver")
+            lcdtitle ("LCD Panel")
+            touchout("Touch Controller")
+        end
         space
-        SPEAKER ("Amplifer<br>and speaker")
+        SPEAKER["Amplifier<br>and<br>Speaker"]
     end
 
 %% copro connections
@@ -1029,11 +1043,11 @@ X53 ---> ram_g
 
 %% output connections
 %%gpu to LCD
-gpu =="Pixel Data"==> LCD
+gpu =="Pixel Data"==> lcd
 
 %% touch to LCD
 touch <--- X166
-X165 --- LCD 
+X165 --- touchout 
 X166 --"Touch<br>Inputs"--- X165
 
 %% audio to speaker
@@ -1055,16 +1069,24 @@ style OUTPUT_LAYER fill:none,stroke:none
 
 %% boxes
 style HOST stroke:#cf4730,stroke-width:8px
-style LCD stroke:#30b8cf,stroke-width:8px
+style LCDPANEL stroke:#1f4488,stroke-width:8px
 style gpu stroke:#30b8cf,stroke-width:4px
 style touch stroke:#cf9730,stroke-width:4px
-style SPEAKER stroke:#68cf30,stroke-width:8px
+style SPEAKER stroke:#13501c,stroke-width:8px
 style audio stroke:#68cf30,stroke-width:4px
 style coproc stroke:#9730cf,stroke-width:4px
 style flash stroke:#9730cf,stroke-width:4px
 style ram_dl stroke:#9730cf,stroke-width:4px
 style ram_g stroke:#9730cf,stroke-width:4px
 style registers stroke:#9730cf,stroke-width:4px
+style touchout stroke:#cf9730,stroke-width:2px
+style lcd stroke:#30b8cf,stroke-width:2px
+style lcdtitle fill:none, stroke:none
+style dltitle stroke:none
+style BG stroke:#9730cf,stroke-width:1px
+style FG stroke:#9730cf,stroke-width:1px
+style flashtitle stroke:#9730cf,stroke-width:1px
+style reg stroke:#9730cf,stroke-width:1px
 
 %%connections
 style X4 fill:#cf4730
