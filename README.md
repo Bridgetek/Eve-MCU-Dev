@@ -862,7 +862,6 @@ These different data paths allow an application to select the most appropriate m
 Each EVE memory area and interface has its own addressing, transfer and management requirements. The EVE API and HAL layers abstract these details from the main application, including the EVE communications protocol and the handling required for areas such as `RAM_CMD`. This allows application code to use a consistent set of library functions while keeping the lower-level communication and data-management details within the library.
 
 ```mermaid
-%%{init: {'theme': 'defualt', 'themeVariables': { 'fontSize': '25px'}}}%%
 block
   columns 13
     block:HOST_LAYER[" "]:1
@@ -878,9 +877,9 @@ block
         end
         block:COPRO
             columns 1
-            space
-            coproc["<br>Co-Processor<br><b>RAM_CMD<br><br></b>"]
-            space
+            space:2
+            coproc["Co-Processor<br><b>RAM_CMD</b>"]
+            space:2
         end
         block:CONN2
             columns 1
@@ -941,14 +940,14 @@ block
     end
     block:CONN6[" "]:1
         columns 1
-        space:5 X165(("&nbsp;")) space X166(("&nbsp;")) space:7
+        space:5 X171(("&nbsp;")) space X173(("&nbsp;")) space:7
     end
     block:OUTPUT_LAYER[" "]:1
         columns 1
         block:LCDPANEL[" "]
             columns 1
-            lcd("Display<br>Driver")
-            lcdtitle("<b>LCD Panel</b>")
+            lcd("Display Driver")
+            lcdtitle("<b><br>LCD Panel<br><br></b>")
             touchout("Touch Controller")
         end
         space
@@ -1059,9 +1058,9 @@ X53 ---> ram_g
 gpu =="Pixel Data"==> lcd
 
 %% touch to LCD
-touch <--- X166
-X165 --- touchout 
-X166 --"Touch Inputs"--- X165
+touch <--- X173
+X171 --- touchout 
+X173 --"Touch Inputs"--- X171
 
 %% audio to speaker
 audio --"Audio Output"--> amp
@@ -1081,29 +1080,29 @@ style CONN6 fill:none,stroke:none;
 style OUTPUT_LAYER fill:none,stroke:none;
 
 %% boxes
-style HOST stroke:#cf4730,stroke-width:8px,font-size:30px;
+style HOST stroke:#cf4730,stroke-width:8px;
 style EVE stroke-width:6px,stroke-dasharray:10;
 style LCDPANEL stroke:#1f4488,stroke-width:8px;
-style gpu stroke:#30b8cf,stroke-width:6px,font-size:30px;
-style touch stroke:#cf9730,stroke-width:6px,font-size:30px;
+style gpu stroke:#30b8cf,stroke-width:6px;
+style touch stroke:#cf9730,stroke-width:6px;
 style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px;
-style audio stroke:#68cf30,stroke-width:6px,font-size:30px;
+style audio stroke:#68cf30,stroke-width:6px;
 style amp stroke:#68cf30,stroke-width:3px;
 style speak stroke:#68cf30,stroke-width:3px;
-style coproc stroke:#9730cf,stroke-width:6px,font-size:30px;
+style coproc stroke:#9730cf,stroke-width:6px;
 style flash stroke:#9730cf,stroke-width:6px;
 style ram_dl stroke:#9730cf,stroke-width:6px;
-style ram_g stroke:#9730cf,stroke-width:6px,font-size:30px;
+style ram_g stroke:#9730cf,stroke-width:6px;
 style registers stroke:#9730cf,stroke-width:6px;
 style touchout stroke:#cf9730,stroke-width:3px;
 style lcd stroke:#30b8cf,stroke-width:3px;
-style lcdtitle fill:none,stroke:none,font-size:30px;
-style dltitle stroke:none,font-size:30px;
+style lcdtitle fill:none,stroke:none;
+style dltitle stroke:none;
 style buffers stroke:none;
 style BG stroke:#9730cf,stroke-width:3px;
 style FG stroke:#30b8cf,stroke-width:3px;
-style flashtitle stroke:#9730cf,stroke-width:3px,font-size:30px;
-style reg stroke:#9730cf,stroke-width:3px,font-size:30px;
+style flashtitle stroke:#9730cf,stroke-width:3px;
+style reg stroke:#9730cf,stroke-width:3px;
 
 %%connections
 style X4 fill:#cf4730,stroke:#cf4730;
@@ -1143,8 +1142,8 @@ style X146 fill:#30b8cf,stroke:#30b8cf;
 style X152 fill:#cf9730,stroke:#cf9730;
 style X161 fill:#cf9730,stroke:#cf9730;
 style X164 fill:#68cf30,stroke:#68cf30;
-style X165 fill:#cf9730,stroke:#cf9730;
-style X166 fill:#cf9730,stroke:#cf9730;
+style X171 fill:#cf9730,stroke:#cf9730;
+style X173 fill:#cf9730,stroke:#cf9730;
 
 %% blank connections
 style X19 fill:none,stroke:none;
