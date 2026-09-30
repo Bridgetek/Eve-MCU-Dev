@@ -28,8 +28,9 @@ This library is intended to provide a **C** library for embedded designs.
   - [Through-Board 2x8 Pins](#through-board-2x8-pins)
   - [Header 1x10 Pins](#header-1x10-pins)
 - [Creating screens and executing commands](#creating-screens-and-executing-commands)
+  - [EVE Data Paths](#eve-data-paths)
   - [Writing DL Instructions and Co-Processor Commands](#writing-dl-instructions-and-co-processor-commands)
-    -[Writing the RAM_CMD Directly](#writing-the-ram_cmd-directly)
+    -[Writing RAM_CMD Directly](#writing-ram_cmd-directly)
     -[CMDB Method for Writing RAM_CMD](#cmdb-method-for-writing-ram_cmd)
   - [Beginning and Ending Co-Processor Lists](#beginning-and-ending-co-processor-lists)
   - [Simple Co-Processor List](#simple-co-processor-list)
@@ -850,6 +851,305 @@ In the latter case, it passes these GPU instructions directly through to the cre
 This allows an entire screen to be created via the co-processor FIFO rather than mixing writes to
 `RAM_DL` and `RAM_CMD` which requires very careful memory management.
 
+### EVE Data Paths
+
+The diagram below provides a simplified overview of the main data paths used when an MCU or host communicates with EVE.
+
+The application can interact with EVE in several ways, including sending commands through the co-processor command buffer `RAM_CMD`, writing display-list instructions directly to `RAM_DL`, transferring graphics data such as bitmaps and fonts to `RAM_G`, and reading or writing EVE registers. Depending on the EVE device, graphics assets may also be stored in external `flash` and referenced or transferred for use by the graphics engine.
+
+These different data paths allow an application to select the most appropriate method for creating and managing display content. For example, display lists may be generated through the co-processor or written directly, while graphics resources can be stored in `RAM_G` or `flash` (where applicable) and referenced by the display list.
+
+Each EVE memory area and interface has its own addressing, transfer and management requirements. The EVE API and HAL layers abstract these details from the main application, including the EVE communications protocol and the handling required for areas such as `RAM_CMD`. This allows application code to use a consistent set of library functions while keeping the lower-level communication and data-management details within the library.
+
+```mermaid
+block
+  columns 12
+    block:HOST_LAYER[" "]:1
+        columns 1
+        space
+        HOST["<b>MCU<br>or<br>Host</b>"]
+        space
+    end
+    block:EVE["<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embedded Video Engine</b>"]:9
+        block:CONN1
+            columns 1
+            space:3 X4((" ")) space:3 X8((" ")) space:3 X12((" ")) space:2 X15((" "))
+        end
+        block:COPRO
+            columns 1
+            space
+            coproc["Co-Processor<br><b>RAM_CMD</b>"]
+            space  
+        end
+        block:CONN2
+            columns 1
+            space X17((" ")) space X19((" ")) X20((" ")) space X22((" ")) space X24((" ")) space X26((" ")) space:4
+        end
+        block:CONN3
+            columns 3
+            space:4 X35((" ")) space:2 X38((" ")) space X40((" ")) X41((" ")) space:4
+            space:4 X50((" ")) space:2 X53((" ")) space:2 X56((" ")) space:4
+            space X62((" ")) space X64((" ")) X65((" ")) space:2 X68((" ")) space:4 X73((" ")) space:2
+        end
+        block:INTERNALS
+            columns 1
+            block:flash[" "]
+            columns 1
+                flashtitle[("<b>FLASH</b><br>(EVE 3/4/5)")]
+            end
+            space
+            block:ram_dl(" ")
+            columns 2
+                BG(["BG"]):1
+                FG(["FG"]):1
+                dltitle("<b>RAM_DL</b>"):2
+                BG ===> FG
+            end
+            space
+            ram_g["<b>RAM_G</b>"]
+            space
+            block:registers[" "]
+            columns 1
+                reg[["<b>Registers</b>"]]
+            end
+        end
+        block:CONN4
+            columns 3
+            space:5 X81((" ")) space X83((" ")) space:5 X89((" ")) space
+            space:2 X93((" ")) space X95((" ")) space:5 X101((" ")) space:3 X105((" "))
+            space:2 X108((" ")) space:2 X111((" ")) space:2 X114((" ")) space:2 X117((" ")) space:2 X120((" "))
+        end
+        block:CONN5
+            columns 3
+            space:4 X125((" ")) space:2  X128((" ")) space:2 X131((" ")) space:2 X134((" ")) space
+            space:10 X146((" ")) space:4
+            space X152((" ")) space:5 X158((" ")) space:2 X161((" "))space:2 X164((" ")) space
+        end
+        block:ENGINES
+            columns 1
+            gpu["<b>GPU</b>"]
+            space
+            touch["<b>Touch<br>Engine</b>"]
+            space
+            audio["<b>Audio<br>Engine</b>"]
+        end
+    end
+    block:CONN6:1
+        columns 1
+        space:5 X165((" ")) space X166((" ")) space:7
+    end
+    block:OUTPUT_LAYER[" "]:1
+        columns 1
+        block:LCDPANEL[" "]
+            columns 1
+            lcd("Display Driver")
+            lcdtitle("<b>LCD Panel</b>")
+            touchout("Touch Controller")
+        end
+        space
+        block:AUDIOCOMPONENTS[" "]
+            columns 1
+            amp("Amplifier")
+            space 
+            speak("Speaker")
+        end
+    end
+
+%% copro connections
+%% copro to flash
+coproc --- X20
+X20 --- X17
+X35 ---> flash
+X17-- "Commands and Data" --- X35
+%% copro to ram_dl
+coproc === X22
+X50 ===> ram_dl
+X22 <== "Create Display<br>List Entries" === X50
+
+%%copro to ram_g
+coproc --- X24
+X56 ---> ram_g
+X24 <-- "Inflate data<br>to RAM_G" --- X56
+
+%%copro to registers
+coproc --- X26
+X68 ---> registers
+X68 --- X62
+X26 <-- "Read/Write registers" --- X62
+
+%% host connections
+%% host to COPRO/common
+HOST <== "SPI/QSPI" === X8
+X8 ===> coproc
+X8 === X12
+%%host to RAM_CMD
+X64 --- X65
+X65 ---> ram_g
+X12 <-- "Write raw image/font data" --- X64
+%% host to ram_dl
+X8 === X4
+X19 === X40
+X41 === X40
+X41 ===> ram_dl
+X4 <== "Write RAM_DL directly" === X19
+%% host to registers
+X12 === X15
+X15 <== "Read/Write registers" === X73
+X73 ==> registers
+
+%% engines connections
+
+%% flash
+%%flash to gpu
+X81 === flash
+X125 ===> gpu
+X81 <=="Data referenced<br>by Display List"=== X125
+%%ram_dl
+ram_dl --- X89
+X83 ---> flash
+X89 --"Data<br>lookup"--- X83
+%%ram_dl to gpu
+ram_dl === X93
+X93 =="Display List"=== X128
+X128 ===> gpu
+%%ram_dl to ram_g
+ram_dl --- X95
+X101 ---> ram_g
+X95 --"Data<br>lookup"--- X101
+
+%%ram_g connections
+ram_g === X105
+X105 <=="Data referenced<br>by Display List"===  X131
+X131 ===> gpu
+%%ram_g to audio
+ram_g --- X108
+X108--- X114
+X114 -- "Audio data"--- X158
+X158 ---> audio
+
+%% regsiters 
+%% reg to touch
+registers <--- X117
+X161 --- X152
+touch <--- X152
+X117 --"Touch Registers"--- X161
+%%reg to audio
+registers <--- X120
+X164 ---> audio
+X120 --"Audio Registers"--- X164
+%%reg to gpu
+registers === X111
+X111 <=="Display settings"=== X146
+X146 === X134
+X134 ===> gpu
+
+%%flash to ram_g
+flash --- X38
+X38 --"Copy<br>data"--- X53
+X53 ---> ram_g
+
+%% output connections
+%%gpu to LCD
+gpu =="Pixel Data"==> lcd
+
+%% touch to LCD
+touch <--- X166
+X165 --- touchout 
+X166 --"Touch Inputs"--- X165
+
+%% audio to speaker
+audio --"Audio Output"--> amp
+amp ---> speak
+
+%% styling
+%% layers
+style HOST_LAYER fill:none,stroke:none;
+style CONN1 fill:none,stroke:none;
+style COPRO fill:none,stroke:none;
+style CONN2 fill:none,stroke:none;
+style CONN3 fill:none,stroke:none;
+style INTERNALS fill:none,stroke:none;
+style CONN4 fill:none,stroke:none;
+style CONN5 fill:none,stroke:none;
+style ENGINES fill:none,stroke:none;
+style CONN6 fill:none,stroke:none;
+style OUTPUT_LAYER fill:none,stroke:none;
+
+%% boxes
+style HOST stroke:#cf4730,stroke-width:8px,font-size:25px;
+style EVE stroke:#000,stroke-width:2px,stroke-dasharray:6;
+style LCDPANEL stroke:#1f4488,stroke-width:8px;
+style gpu stroke:#30b8cf,stroke-width:4px;
+style touch stroke:#cf9730,stroke-width:4px;
+style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px;
+style audio stroke:#68cf30,stroke-width:4px;
+style amp stroke:#68cf30,stroke-width:3px;
+style speak stroke:#68cf30,stroke-width:3px;
+style coproc stroke:#9730cf,stroke-width:4px;
+style flash stroke:#9730cf,stroke-width:4px;
+style ram_dl stroke:#9730cf,stroke-width:4px;
+style ram_g stroke:#9730cf,stroke-width:4px;
+style registers stroke:#9730cf,stroke-width:4px;
+style touchout stroke:#cf9730,stroke-width:3px;
+style lcd stroke:#30b8cf,stroke-width:3px;
+style lcdtitle fill:none, stroke:none,font-size:25px;
+style dltitle stroke:none;
+style BG stroke:#9730cf,stroke-width:2px;
+style FG stroke:#30b8cf,stroke-width:2px;
+style flashtitle stroke:#9730cf,stroke-width:2px;
+style reg stroke:#9730cf,stroke-width:2px;
+
+%%connections
+style X4 fill:#cf4730,stroke:#cf4730;
+style X8 fill:#cf4730,stroke:#cf4730;
+style X12 fill:#cf4730,stroke:#cf4730;
+style X15 fill:#cf4730,stroke:#cf4730;
+style X17 fill:#9730cf,stroke:#9730cf;
+style X20 fill:#9730cf,stroke:#9730cf;
+style X22 fill:#9730cf,stroke:#9730cf;
+style X24 fill:#9730cf,stroke:#9730cf;
+style X26 fill:#9730cf,stroke:#9730cf;
+style X35 fill:#9730cf,stroke:#9730cf;
+style X38 fill:#9730cf,stroke:#9730cf;
+style X40 fill:#cf4730,stroke:#cf4730;
+style X53 fill:#9730cf,stroke:#9730cf;
+style X56 fill:#9730cf,stroke:#9730cf;
+style X62 fill:#9730cf,stroke:#9730cf;
+style X64 fill:#cf4730,stroke:#cf4730;
+style X68 fill:#9730cf,stroke:#9730cf;
+style X73 fill:#cf4730,stroke:#cf4730;
+style X81 fill:#30b8cf,stroke:#30b8cf;
+style X83 fill:#9730cf,stroke:#9730cf;
+style X89 fill:#9730cf,stroke:#9730cf;
+style X93 fill:#30b8cf,stroke:#30b8cf;
+style X95 fill:#9730cf,stroke:#9730cf;
+style X101 fill:#9730cf,stroke:#9730cf;
+style X105 fill:#30b8cf,stroke:#30b8cf;
+style X108 fill:#68cf30,stroke:#68cf30;
+style X114 fill:#68cf30,stroke:#68cf30;
+style X117 fill:#cf9730,stroke:#cf9730;
+style X120 fill:#68cf30,stroke:#68cf30;
+style X125 fill:#30b8cf,stroke:#30b8cf;
+style X128 fill:#30b8cf,stroke:#30b8cf;
+style X131 fill:#30b8cf,stroke:#30b8cf;
+style X134 fill:#30b8cf,stroke:#30b8cf;
+style X146 fill:#30b8cf,stroke:#30b8cf;
+style X152 fill:#cf9730,stroke:#cf9730;
+style X161 fill:#cf9730,stroke:#cf9730;
+style X164 fill:#68cf30,stroke:#68cf30;
+style X165 fill:#cf9730,stroke:#cf9730;
+style X166 fill:#cf9730,stroke:#cf9730;
+
+%% blank connections
+style X19 fill:none,stroke:none;
+style X41 fill:none,stroke:none;
+style X50 fill:none,stroke:none;
+style X65 fill:none,stroke:none;
+style X111 fill:none,stroke:none;
+style X158 fill:none,stroke:none;
+
+```
+
 ### Writing DL Instructions and Co-Processor Commands
 
 Using EVE commands via the co-processor requires some data formatting to convert the parameters 
@@ -927,7 +1227,7 @@ commands and the swap will be carried out. The display list now appears as shown
 | RAM_DL + 28 | DISPLAY |
 
 
-#### Writing the RAM_CMD Directly
+#### Writing RAM_CMD Directly
 
 Co-processor commands can be written directly to `RAM_CMD` on all EVE generations.
 The co-processor buffer is managed by the `REG_CMD_WRITE` and `REG_CMD_READ` registers.
