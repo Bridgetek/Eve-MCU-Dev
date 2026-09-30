@@ -31,7 +31,7 @@ The python script `libbuild.py` is run with the following options:
 
 ```console
 > libbuild.py --help
-usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB]
+usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB] --ver VERSION
 
 Library Builder for EVE
 
@@ -41,6 +41,7 @@ options:
   --dest DEST      destination directory for Arduino library
   --api API        EVE API to build library for
   --apisub APISUB  EVE SUB API to build library for
+  --ver VERSION    Arduino library version assigned to this build
 ```
 The `--src` option tells the script where the root directory of the EVE-MCU-Dev code is located. This is the folder that contains the `source`, `include`, `ports`, and `examples` directories. The script will take files that it needs from the EVE-MCU-Dev libraries. The default is `../..` since this the relative path to the code from the normal location of this script.
 
@@ -74,6 +75,8 @@ The available EVE device APIs and SUB APIs are:
   - BT820 
 
 The name of the library will be generated from the EVE API and SUB API. If there is a SUB API greater than "1" then this is appended to the EVE API to make the "full" API version. So, for example, the API for a BT820 will be "5", FT81x will be "2", and for a BT88x will be "2_2".
+
+A `--ver` parameter is required to make a version number for this build.
 
 ### Files copied to the Arduino Library
 

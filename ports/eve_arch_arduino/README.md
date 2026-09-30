@@ -2,11 +2,14 @@
 
 [Back](../README.md)
 
-The port for Arduino comprises a sketch to implement the MCU layer connecting to the EVE device via the SPI bus. The Arduino device manages the EVE device SPI bus. 
+The port for Arduino comprises a sketch to implement the MCU layer connecting to the EVE device via the SPI bus. 
+The Arduino device manages the EVE device SPI bus. 
 
-## Hardware
+## Arduino Hardware
 
-The Arduino port was developed using an Arduino Zero and Arduino Leonardo. The Arduino module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Arduino Datasheet for more information.
+The Arduino port was developed using Arduino UNO, Arduino Zero and Arduino Leonardo modules. 
+The Arduino module can be connected via short wires to the corresponding signals of an EVE module. 
+Please reference the Arduino Datasheet for more information.
 
 | Arduino Name | Arduino Pin | EVE Signal |
 | --- | --- | --- |
@@ -32,3 +35,5 @@ An Arduino board can be connected to an EVE board as in the following picture (t
 ## Software
 
 Please refer to the [Arduino Simple example](../../examples/simple/arduino/README.md) for instructions on using the hardware sketch in an EVE-MCU-Dev project.
+
+Reference [Arduino Project](https://www.arduino.cc/)

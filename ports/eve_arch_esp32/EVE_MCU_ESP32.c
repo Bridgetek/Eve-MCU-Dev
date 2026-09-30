@@ -76,6 +76,8 @@
 #define PIN_NUM_CS   GPIO_NUM_22
 /* Powerdown pin */
 #define PIN_NUM_PD   GPIO_NUM_15
+/* Interrupt pin */
+#define PIN_NUM_INT  GPIO_NUM_2
 
 // SPI device
 static spi_device_handle_t spi;
@@ -138,18 +140,21 @@ int MCU_Init(void)
     // After initialisation the SPI speed can be increased in the MCU_Setup()
     mcu_setup_spi(1000000);
 
-    //disable interrupt
+    // Disable interrupt
     io_conf.intr_type = GPIO_MODE_DISABLE;
-    //set as output mode
+    // Set gpio_config as output mode
     io_conf.mode = GPIO_MODE_OUTPUT;
-    //bit mask of the Chip Select and Power Down pins
+    // Bit mask of the Chip Select and Power Down output pins
     io_conf.pin_bit_mask = BIT(PIN_NUM_PD) | BIT(PIN_NUM_CS) | BIT(PIN_NUM_BLUE_LED);
-    //disable pull-down mode
+    // Disable pull-down mode
     io_conf.pull_down_en = 0;
-    //disable pull-up mode
+    // Disable pull-up mode
     io_conf.pull_up_en = 0;
-    //configure GPIO with the given settings
+    // Configure GPIO with the given settings
     gpio_config(&io_conf);
+
+    // Interrupt input (no pull-up or -down)
+    gpio_set_direction(PIN_NUM_INT, GPIO_MODE_OUTPUT);
 
     // Turn on the blue LED on the board to indication successful board initialisation
     gpio_set_level(PIN_NUM_BLUE_LED, 1);
@@ -220,10 +225,7 @@ inline void MCU_PDhigh(void)
 // ------------------------ interrupt input ------------------------------------
 int MCU_Int(void) 
 {
-#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
-#error EVE_USE_INTERRUPT_METHOD (EVE Interrupt pin) is not supported on ESP32
-#endif
-    return 1;
+    return gpio_get_level(PIN_NUM_INT);
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

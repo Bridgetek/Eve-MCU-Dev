@@ -41,6 +41,8 @@
 // Guard against being used for incorrect platform or architecture.
 #if defined(ARDUINO)
 
+#pragma message "Compiling " __FILE__ " for PlatformIO Arduino"
+
 /* EVE MCU HEADER */
 
 #include <Arduino.h>
@@ -61,30 +63,59 @@ extern "C" {
 
 /* EVE MCU */
 
-/** @brief Pin definitions
+/** @brief Pin definitions for standard Arduino platforms.
+ *  @details Set the standard **Arduino** SPI pinouts:
+ * - 10 (CS#), 11 (COPI), 12 (CIPO), 13 (SCK), 9 (PD#), 8 (INT#).
+ * These are suitable for Arduino UNO, Nano, Mega etc.
+ * Set the macro PIN_REDEFINE to override these defaults.
+ * If defaults are to be changed then the PIN_SPICLOCK, PIN_DATAOUT, 
+ * PIN_DATAIN, PIN_CHIPSELECT, PIN_POWERDOWN and PIN_INTERRUPT **must**
+ * all be defined in "platformio.ini".
+ * Support for overridding the defaults:
+ * - ARDUINO_ARCH_SAMD (SAMD) cannot override (fixed I/O pins).
+ * - ARDUINO_ARCH_MBED (ARM Cortex) can override.
+ * - ARDUINO_ARCH_ESP32 (ESP32) can override.
  */
 //@{
-/// Standard Arduino SPI pinouts 10 (CS), 11 (COPI), 12 (CIPO), 13 (SCK)
-/// For Arduino UNO, Nano, Mega etc, these cannot be changed.
-#define PIN_SPICLOCK    13  // SCK          (information only)
-#define PIN_DATAOUT     11  // MOSI (COPI)  (information only)
-#define PIN_DATAIN      12  // MISO (CIPO)  (information only)
+#if !defined(PIN_REDEFINE)
+#define PIN_SPICLOCK    13  // SCK
+#define PIN_DATAOUT     11  // MOSI (COPI)
+#define PIN_DATAIN      12  // MISO (CIPO)
 #define PIN_CHIPSELECT  10  // CS#
 /// Additional power down signal pin 9 (PD#)
 #define PIN_POWERDOWN   9   // PD#
 /// Additional interrupt signal pin 8 (INT#)
 #define PIN_INTERRUPT   8   // INT#
+#endif
+
+/** @brief Redefine SPI Pins if supported
+ */
+//@{
+#if defined(PIN_REDEFINE) && defined(ARDUINO_ARCH_MBED)
+#if !defined(ARDUINO_AS_MBED_LIBRARY)
+MbedSPI spi_device(PIN_DATAIN, PIN_DATAOUT, PIN_SPICLOCK);
+#else
+SPI spi_device(PIN_DATAOUT, PIN_DATAIN, PIN_SPICLOCK, NC);
+#endif // !defined(ARDUINO_AS_MBED_LIBRARY)
+#else
+#define spi_device SPI
+#endif // defined(PIN_REDEFINE) && defined(ARDUINO_RASPBERRY_PI_PICO)
 //@}
 
 int MCU_Init(void) 
 {
 #if defined(LED_BUILTIN)  
   /* Indicate we are running. */
+  /* NOTE: LED_BUILTIN works on Arduino and Raspberry Pi pico SDK. */
   digitalWrite(LED_BUILTIN, 1);
 #endif
 
   /* Initialise SPI. */
-  SPI.begin();
+#if defined(PIN_REDEFINE) && defined(ARDUINO_ARCH_ESP32)
+  spi_device.begin(PIN_SPICLOCK, PIN_DATAIN, PIN_DATAOUT, NC);
+#else
+  spi_device.begin();
+#endif
 
   /* Set CS#, PD#, INT# pin directions. */
   pinMode(PIN_CHIPSELECT, OUTPUT);
@@ -97,7 +128,7 @@ int MCU_Init(void)
   // Set SPI speed to 1 MHz 
   // 1 MHz allows all EVE devices to initialise correctly
   // After initialisation the SPI speed can be increased in the MCU_Setup()
-  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+  spi_device.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
 
   return 0;
 }
@@ -109,19 +140,19 @@ int MCU_Deinit(void) {
   digitalWrite(PIN_POWERDOWN, LOW);
 
   /* Shut down SPI. */
-  SPI.endTransaction();
-  SPI.end();
+  spi_device.endTransaction();
+  spi_device.end();
   return 0;
 }
 
 int MCU_Setup(void) {
 
   /* Additional SPI Configuration */
-  SPI.endTransaction();
+  spi_device.endTransaction();
 
   // Increase SPI speed to 8 MHz after initialisation is complete
   // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
-  SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+  spi_device.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
   return 0;
 }
 
@@ -170,7 +201,7 @@ int MCU_Int(void) {
 
 // Exchange a single byte on the SPI bus
 char MCU_SPIReadWrite8(uint8_t val) {
-  uint8_t v = SPI.transfer(val);
+  uint8_t v = spi_device.transfer(val);
   return v;
 }
 
@@ -260,7 +291,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite) {
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length) {
-  //TODO: replace with SPI.transfer(DataToWrite, length);
+  //TODO: replace with spi_device.transfer(DataToWrite, length);
   // Note that DataToWrite is overwritten.
   uint16_t DataPointer = 0;
 
@@ -271,7 +302,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length) {
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length) {
-  //TODO: replace with SPI.transfer(DataToRead, length);
+  //TODO: replace with spi_device.transfer(DataToRead, length);
   uint16_t DataPointer = 0;
 
   while (DataPointer < length) {
