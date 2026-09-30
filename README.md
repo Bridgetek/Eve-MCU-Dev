@@ -862,48 +862,53 @@ These different data paths allow an application to select the most appropriate m
 Each EVE memory area and interface has its own addressing, transfer and management requirements. The EVE API and HAL layers abstract these details from the main application, including the EVE communications protocol and the handling required for areas such as `RAM_CMD`. This allows application code to use a consistent set of library functions while keeping the lower-level communication and data-management details within the library.
 
 ```mermaid
+%%{init: {'theme': 'defualt', 'themeVariables': { 'fontSize': '25px'}}}%%
 block
-  columns 12
+  columns 13
     block:HOST_LAYER[" "]:1
         columns 1
-        space
-        HOST["<b>MCU<br>or<br>Host</b>"]
-        space
+        space:2
+        HOST["<b><br>MCU<br>or<br>Host<br><br></b>"]
+        space:2
     end
-    block:EVE["<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embedded Video Engine</b>"]:9
+    block:EVE["<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Embedded Video Engine</b>"]:10
         block:CONN1
             columns 1
-            space:3 X4((" ")) space:3 X8((" ")) space:3 X12((" ")) space:2 X15((" "))
+            space:3 X4(("&nbsp;")) space:3 X8(("&nbsp;")) space:3 X12(("&nbsp;")) space:2 X15(("&nbsp;"))
         end
         block:COPRO
             columns 1
             space
-            coproc["Co-Processor<br><b>RAM_CMD</b>"]
-            space  
+            coproc["<br>Co-Processor<br><b>RAM_CMD<br><br></b>"]
+            space
         end
         block:CONN2
             columns 1
-            space X17((" ")) space X19((" ")) X20((" ")) space X22((" ")) space X24((" ")) space X26((" ")) space:4
+            space X17(("&nbsp;")) space X19(("&nbsp;")) X20(("&nbsp;")) space X22(("&nbsp;")) space X24(("&nbsp;")) space X26(("&nbsp;")) space:4
         end
         block:CONN3
             columns 3
-            space:4 X35((" ")) space:2 X38((" ")) space X40((" ")) X41((" ")) space:4
-            space:4 X50((" ")) space:2 X53((" ")) space:2 X56((" ")) space:4
-            space X62((" ")) space X64((" ")) X65((" ")) space:2 X68((" ")) space:4 X73((" ")) space:2
+            space:4 X35(("&nbsp;")) space:2 X38(("&nbsp;")) space X40(("&nbsp;")) X41(("&nbsp;")) space:4
+            space:4 X50(("&nbsp;")) space:2 X53(("&nbsp;")) space:2 X56(("&nbsp;")) space:4
+            space X62(("&nbsp;")) space X64(("&nbsp;")) X65(("&nbsp;")) space:2 X68(("&nbsp;")) space:4 X73(("&nbsp;")) space:2
         end
         block:INTERNALS
             columns 1
             block:flash[" "]
-            columns 1
+                columns 1
                 flashtitle[("<b>FLASH</b><br>(EVE 3/4/5)")]
             end
             space
             block:ram_dl(" ")
-            columns 2
-                BG(["BG"]):1
-                FG(["FG"]):1
-                dltitle("<b>RAM_DL</b>"):2
-                BG ===> FG
+            columns 1
+                block:buffers["<br>buffers"]
+                    columns 3
+                    BG(("BG"))
+                    space
+                    FG(("FG"))
+                    BG ===> FG
+                end
+                dltitle("<b>RAM_DL</b>")
             end
             space
             ram_g["<b>RAM_G</b>"]
@@ -915,15 +920,15 @@ block
         end
         block:CONN4
             columns 3
-            space:5 X81((" ")) space X83((" ")) space:5 X89((" ")) space
-            space:2 X93((" ")) space X95((" ")) space:5 X101((" ")) space:3 X105((" "))
-            space:2 X108((" ")) space:2 X111((" ")) space:2 X114((" ")) space:2 X117((" ")) space:2 X120((" "))
+            space:5 X81(("&nbsp;")) space X83(("&nbsp;")) space:5 X89(("&nbsp;")) space
+            space:2 X93(("&nbsp;")) space X95(("&nbsp;")) space:5 X101(("&nbsp;")) space:3 X105(("&nbsp;"))
+            space:2 X108(("&nbsp;")) space:2 X111(("&nbsp;")) space:2 X114(("&nbsp;")) space:2 X117(("&nbsp;")) space:2 X120(("&nbsp;"))
         end
         block:CONN5
             columns 3
-            space:4 X125((" ")) space:2  X128((" ")) space:2 X131((" ")) space:2 X134((" ")) space
-            space:10 X146((" ")) space:4
-            space X152((" ")) space:5 X158((" ")) space:2 X161((" "))space:2 X164((" ")) space
+            space:4 X125(("&nbsp;")) space:2  X128(("&nbsp;")) space:2 X131(("&nbsp;")) space:2 X134(("&nbsp;")) space
+            space:10 X146(("&nbsp;")) space:4
+            space X152(("&nbsp;")) space:5 X158(("&nbsp;")) space:2 X161(("&nbsp;"))space:2 X164(("&nbsp;")) space
         end
         block:ENGINES
             columns 1
@@ -934,15 +939,15 @@ block
             audio["<b>Audio<br>Engine</b>"]
         end
     end
-    block:CONN6:1
+    block:CONN6[" "]:1
         columns 1
-        space:5 X165((" ")) space X166((" ")) space:7
+        space:5 X165(("&nbsp;")) space X166(("&nbsp;")) space:7
     end
     block:OUTPUT_LAYER[" "]:1
         columns 1
         block:LCDPANEL[" "]
             columns 1
-            lcd("Display Driver")
+            lcd("Display<br>Driver")
             lcdtitle("<b>LCD Panel</b>")
             touchout("Touch Controller")
         end
@@ -952,6 +957,7 @@ block
             amp("Amplifier")
             space 
             speak("Speaker")
+            amp ---> speak
         end
     end
 
@@ -1007,7 +1013,7 @@ X81 <=="Data referenced<br>by Display List"=== X125
 %%ram_dl
 ram_dl --- X89
 X83 ---> flash
-X89 --"Data<br>lookup"--- X83
+X89 --"Data lookup"--- X83
 %%ram_dl to gpu
 ram_dl === X93
 X93 =="Display List"=== X128
@@ -1015,7 +1021,7 @@ X128 ===> gpu
 %%ram_dl to ram_g
 ram_dl --- X95
 X101 ---> ram_g
-X95 --"Data<br>lookup"--- X101
+X95 --"Data lookup"--- X101
 
 %%ram_g connections
 ram_g === X105
@@ -1045,7 +1051,7 @@ X134 ===> gpu
 
 %%flash to ram_g
 flash --- X38
-X38 --"Copy<br>data"--- X53
+X38 --"Copy data"--- X53
 X53 ---> ram_g
 
 %% output connections
@@ -1059,7 +1065,6 @@ X166 --"Touch Inputs"--- X165
 
 %% audio to speaker
 audio --"Audio Output"--> amp
-amp ---> speak
 
 %% styling
 %% layers
@@ -1076,28 +1081,29 @@ style CONN6 fill:none,stroke:none;
 style OUTPUT_LAYER fill:none,stroke:none;
 
 %% boxes
-style HOST stroke:#cf4730,stroke-width:8px,font-size:25px;
-style EVE stroke:#000,stroke-width:2px,stroke-dasharray:6;
+style HOST stroke:#cf4730,stroke-width:8px,font-size:30px;
+style EVE stroke-width:6px,stroke-dasharray:10;
 style LCDPANEL stroke:#1f4488,stroke-width:8px;
-style gpu stroke:#30b8cf,stroke-width:4px;
-style touch stroke:#cf9730,stroke-width:4px;
+style gpu stroke:#30b8cf,stroke-width:6px,font-size:30px;
+style touch stroke:#cf9730,stroke-width:6px,font-size:30px;
 style AUDIOCOMPONENTS stroke:#1f890b,stroke-width:8px;
-style audio stroke:#68cf30,stroke-width:4px;
+style audio stroke:#68cf30,stroke-width:6px,font-size:30px;
 style amp stroke:#68cf30,stroke-width:3px;
 style speak stroke:#68cf30,stroke-width:3px;
-style coproc stroke:#9730cf,stroke-width:4px;
-style flash stroke:#9730cf,stroke-width:4px;
-style ram_dl stroke:#9730cf,stroke-width:4px;
-style ram_g stroke:#9730cf,stroke-width:4px;
-style registers stroke:#9730cf,stroke-width:4px;
+style coproc stroke:#9730cf,stroke-width:6px,font-size:30px;
+style flash stroke:#9730cf,stroke-width:6px;
+style ram_dl stroke:#9730cf,stroke-width:6px;
+style ram_g stroke:#9730cf,stroke-width:6px,font-size:30px;
+style registers stroke:#9730cf,stroke-width:6px;
 style touchout stroke:#cf9730,stroke-width:3px;
 style lcd stroke:#30b8cf,stroke-width:3px;
-style lcdtitle fill:none, stroke:none,font-size:25px;
-style dltitle stroke:none;
-style BG stroke:#9730cf,stroke-width:2px;
-style FG stroke:#30b8cf,stroke-width:2px;
-style flashtitle stroke:#9730cf,stroke-width:2px;
-style reg stroke:#9730cf,stroke-width:2px;
+style lcdtitle fill:none,stroke:none,font-size:30px;
+style dltitle stroke:none,font-size:30px;
+style buffers stroke:none;
+style BG stroke:#9730cf,stroke-width:3px;
+style FG stroke:#30b8cf,stroke-width:3px;
+style flashtitle stroke:#9730cf,stroke-width:3px,font-size:30px;
+style reg stroke:#9730cf,stroke-width:3px,font-size:30px;
 
 %%connections
 style X4 fill:#cf4730,stroke:#cf4730;
