@@ -1,4 +1,4 @@
-# EVE-MCU-Dev MedInfo Example for the PlatformIO Arduino
+# EVE-MCU-Dev Flightdeck-BT82x Example for the PlatformIO Arduino
 
 Please check the pin configuration for the module being used. Instructions are available in [EVE-MCU-Dev Ports for the PlatformIO](../../../ports/eve_arch_platformio/README.md).
 
@@ -6,13 +6,13 @@ Please check the pin configuration for the module being used. Instructions are a
 
 Ensure that the "PlatformIO VSCode Extension" is installed on Visual Studio Code (VS Code).
 
-The workspace file `medinfo.code-workspace` can be loaded directly in VS Code to load the project as a workspace.
+The workspace file `flightdeck-bt82x.code-workspace` can be loaded directly in VS Code to load the project as a workspace.
 
-### Setting Up the MedInfo PlatformIO VSCode Example
+### Setting Up the Flightdeck-BT82x PlatformIO VSCode Example
 
 The build environment depends on the presence of the PlatformIO VSCode Extension. This can be setup following instructions in the [PlatformIO IDE for VSCode](https://docs.platformio.org/en/latest/integration/ide/vscode.html) document on the PlatformIO website.
 
-### Compiling the MedInfo PlatformIO VSCode Example
+### Compiling the Flightdeck-BT82x PlatformIO VSCode Example
 
 The instructions for compiling and programming with PlatformIO can be followed from the PlatformIO IDE for VSCode document.
 
@@ -20,7 +20,7 @@ The instructions for compiling and programming with PlatformIO can be followed f
 
 The PlatformIO toolchain is also available from the command line. It can be used from the command line if the PlatformIO VSCode Extension is loaded or the PlatformIO Core is configured manually.
 
-### Compiling the MedInfo PlatformIO Example Manually
+### Compiling the Flightdeck-BT82x PlatformIO Example Manually
 
 The following PlatformIO Code command will build the code for the "MM2040EV" environment:
 
