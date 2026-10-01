@@ -38,6 +38,7 @@
  */
 #include <string.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 // adresses of bitmap data in graphics ram ...

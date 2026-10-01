@@ -45,9 +45,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if IS_EVE_API(4)

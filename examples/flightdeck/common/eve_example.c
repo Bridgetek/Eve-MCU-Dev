@@ -42,11 +42,7 @@
 #include <string.h>
 #include <stdint.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-/* Include the EVE debug-output macros */
-#include "EVE_debug.h"
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 /* MACROS **************************************************************************/

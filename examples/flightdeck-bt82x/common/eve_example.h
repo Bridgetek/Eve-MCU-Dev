@@ -46,11 +46,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Headers required for this example */
-#include "touch.h"
-#include "dials/flight_controls.h"
-#include "dials/compass_controls.h"
-#include "maths/trig_furman.h"
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
+
+/* Include snippets */
+#include <touch.h>
+#include <dials/flight_controls.h>
+#include <dials/compass_controls.h>
+#include <maths/trig_furman.h>
 
 /* Entry point to the example code */
 void eve_example(void);

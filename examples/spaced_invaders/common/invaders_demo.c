@@ -38,6 +38,7 @@
  */
 #include <string.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #define PAUSE_TEXT 6
@@ -62,7 +63,7 @@ const title_t ready = {"READY PLAYER 1", 7, 11};
 
 void spaced_invaders_WaitForStart(uint32_t scale, int16_t dx, int16_t dy)
 {
-    int8_t tagTouch;
+    uint8_t tagTouch;
     uint8_t march = 0;
     int16_t xinv = INVADER_XMAX;
     enum {

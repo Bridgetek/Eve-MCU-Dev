@@ -42,11 +42,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-/* Include the EVE debug-output macros */
-#include "EVE_debug.h"
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 /* MACROS **************************************************************************/
@@ -246,7 +242,6 @@ static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, i
 static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const char *str)
 {
     uint16_t x = 0;
-    int i = 0;
     const char *ch = str;
 
     while (*ch)
@@ -300,13 +295,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
     uint32_t curr_time = platform_get_time();
     uint32_t prev_time = curr_time;
-    uint32_t key_time = curr_time;
+    //uint32_t key_time = curr_time;
 
     // Zoom for buttons
     uint32_t button_zoom = (0x10000 * (centre_x - (r_outer / 2))) / (font_getwidth(&clockfont) * 8);
     int16_t button_x1_zoom = (centre_x - r_outer) - ((4 * font_getwidth(&clockfont) * button_zoom) / 0x10000);
     int16_t button_x2_zoom = (centre_x + r_outer) + ((font_getwidth(&clockfont) * button_zoom) / 0x10000);
-    int16_t button_y_zoom = centre_y - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
+    //int16_t button_y_zoom = centre_y - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_y1_zoom = (centre_y / 2) - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_y2_zoom = ((centre_y * 3) / 2) - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_w_zoom = (4 * font_getwidth(&clockfont) * button_zoom) / 0x10000;
@@ -1029,7 +1024,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 trackVal = EVE_LIB_MemRead32(EVE_REG_TRACKER);
                 trackVal >>= 16;
 
-                int isTime = 0;
+                //int isTime = 0;
                 int units;
                 int step;
                 int adjust = 0;
@@ -1037,13 +1032,13 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 
                 if (selected >= 3)
                 {
-                    isTime = 1;
+                    //isTime = 1;
                     units = dial_time_units / dial_time_step;
                     step = dial_time_step;
                 }
                 else
                 {
-                    isTime = 0;
+                    //isTime = 0;
                     units = dial_number_units;
                     step = 1;
                 }
@@ -1051,13 +1046,13 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 dial_pos = (int)((trackVal * units) / 0x10000);
                 
                 // Find if the current rotation point is near the fully rotated position
-                if (((dial_pos == 0) && (dial_prev == units - 1)) ||
+                if (((dial_pos == 0) && (dial_prev == (uint32_t)units - 1)) ||
                     (dial_pos == dial_prev + 1))
                 {
                     adjust = +step;
                     sound_click();
                 }
-                else if (((dial_pos == units - 1) && (dial_prev == 0)) ||
+                else if (((dial_pos == (uint32_t)units - 1) && (dial_prev == 0)) ||
                     (dial_pos == dial_prev - 1))
                 {
                     adjust = -step;

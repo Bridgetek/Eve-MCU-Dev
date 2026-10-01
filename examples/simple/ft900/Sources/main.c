@@ -49,10 +49,8 @@
 #include <ft900_dlog.h>
 #include <ft900_memctl.h>
 
-/* Include the EVE debug-output macros */
-#include "eve_debug.h"
-/* Include the example interface and associated function prototypes. */
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 #if defined(__FT900__)
 #define GPIO_UART0_TX 48

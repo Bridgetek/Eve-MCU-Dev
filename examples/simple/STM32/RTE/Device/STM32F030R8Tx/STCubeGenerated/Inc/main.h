@@ -31,7 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

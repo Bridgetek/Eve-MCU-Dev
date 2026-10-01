@@ -1011,7 +1011,8 @@ A minimal bare-metal application entry point may therefore take the following fo
 ```c
 #include <stdint.h>
 #include "board_support.h"
-#include "eve_example.h"  /* Common example interface and related declarations. */
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 int main(void)
 {

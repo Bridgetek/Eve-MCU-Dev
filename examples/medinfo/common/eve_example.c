@@ -406,8 +406,8 @@ void eve_display(void)
     // Tooltips text
     const char *tooltip = NULL;
     uint8_t tooltip_key = 0;
-    uint16_t tooltip_x;
-    uint16_t tooltip_y;
+    uint16_t tooltip_x = 0;
+    uint16_t tooltip_y = 0;
 
     // Brightness display position
     uint32_t brightness_val = brightness_range;
@@ -904,7 +904,7 @@ void eve_display(void)
 
         // Make the heart sign "pulse" using sweep edge data
         pulse = pulse / 2; // decrease size of pulse slower for visual effect
-        for (k = 0; k < (int)sweep_step; k++)
+        for (k = 0; k < sweep_step; k++)
         {
             uint8_t test = sweep_edge[trace_hrm][k];
             if (test > pulse)

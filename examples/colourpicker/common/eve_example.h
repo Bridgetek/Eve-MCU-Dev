@@ -46,8 +46,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Headers required for this example */
-#include "touch.h"
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
+
+/* Include snippets */
+#include <touch.h>
 
 /* Entry point to the example code */
 void eve_example(void);

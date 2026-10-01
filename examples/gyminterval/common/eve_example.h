@@ -46,11 +46,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Headers required for this example */
-#include "touch.h"
-#include "controls/arcs.h"
-#include "controls/fonts.h"
-#include "controls/sound.h"
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
+
+/* Include snippets */
+#include <touch.h>
+#include <controls/arcs.h>
+#include <controls/fonts.h>
+#include <controls/sound.h>
 
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);

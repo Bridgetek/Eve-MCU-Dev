@@ -50,11 +50,8 @@
 #include <hardware/flash.h>
 #include <hardware/sync.h>
 
-/* Include the EVE debug-output macros. */
-#include "EVE_debug.h"
-
-/* Include the example interface and associated function prototypes. */
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
 

@@ -39,9 +39,7 @@
 
 #include <stdint.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h>
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 /* Array containing the bitmap sizes of ROM fonts. */

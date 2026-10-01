@@ -42,11 +42,7 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-/* Include the EVE debug-output macros */
-#include "EVE_debug.h"
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 // ==========================================================================
@@ -166,7 +162,7 @@ void spaced_invaders_RenderInvader(uint32_t scale, int16_t dx, int16_t dy)
             EVE_CELL(CH_EXPLODES);
             scaledVertexTranslate(scale, dx, dy, invader->xcrd, invader->ycrd);
             scaledVertex(scale, 0, 0);
-
+            // Fallthru...
         case IS_KAPUT:
         default:
             invader->life = IS_KAPUT;

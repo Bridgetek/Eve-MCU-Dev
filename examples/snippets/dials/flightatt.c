@@ -95,7 +95,6 @@ void attwidget(int16_t x, int16_t y, uint16_t radius, int16_t pitch, int16_t cli
     uint32_t ai_reference = 0xffffff;
     // Overlay reference colours
     uint32_t ovl_reference = 0xffaa00;
-    uint32_t ovl_reference_dark = 0x505050;
 
     int16_t dx, dy;
     int16_t dx1, dy1, dx2, dy2;

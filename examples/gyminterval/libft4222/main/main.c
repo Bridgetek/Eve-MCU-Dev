@@ -48,8 +48,8 @@
 #include <sys/time.h>
 #endif
 
-/* Include the example interface and associated function prototypes. */
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
 

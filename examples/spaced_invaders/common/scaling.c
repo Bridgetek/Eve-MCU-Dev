@@ -37,9 +37,8 @@
  * ============================================================================
  */
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
-
-#include "controls/fonts.h"
 
 struct eve_font_cache scaledfont;
 

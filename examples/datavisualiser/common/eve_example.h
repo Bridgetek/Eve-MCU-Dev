@@ -46,11 +46,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Headers required for this example */
-#include "touch.h"
-#include "controls/sound.h"
-#include "maths/trig_furman.h"
-#include "controls/arcs.h"
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
+
+/* Include snippets */
+#include <touch.h>
+#include <controls/sound.h>
+#include <maths/trig_furman.h>
+#include <controls/arcs.h>
 
 /* Functions called from eve_example code to platform specific code */
 int8_t platform_calib_init(void);

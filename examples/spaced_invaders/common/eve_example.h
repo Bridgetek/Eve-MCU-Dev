@@ -49,10 +49,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include <EVE.h>
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
 
-/* Headers required for this example */
+/* Include snippets */
 #include <touch.h>
+#include "controls/fonts.h"
 
 // ==========================================================================
 // Defined Constants
