@@ -112,7 +112,7 @@ int MCU_Init(void)
 
   /* Initialise SPI. */
 #if defined(PIN_REDEFINE) && defined(ARDUINO_ARCH_ESP32)
-  spi_device.begin(PIN_SPICLOCK, PIN_DATAIN, PIN_DATAOUT, NC);
+  spi_device.begin(PIN_SPICLOCK, PIN_DATAIN, PIN_DATAOUT, -1);
 #else
   spi_device.begin();
 #endif
