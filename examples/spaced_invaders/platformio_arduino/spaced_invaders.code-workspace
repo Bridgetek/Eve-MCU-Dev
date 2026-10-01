@@ -1,0 +1,104 @@
+{
+	"folders": [
+		{
+			"name": "include",
+			"path": "../../../include"
+		},
+		{
+			"name": "source",
+			"path": "../../../source"
+		},
+		{
+			"name": "snippets",
+			"path": "../../snippets"
+		},
+		{
+			"name": "eve_arch_platformio",
+			"path": "../../../ports/eve_arch_platformio"
+		},
+		{
+			"name": "spaced_invaders",
+			"path": "."
+		},
+		{
+			"path": "../common"
+		},
+		{
+			"path": "../docs"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"eve.h": "c",
+			"eve_config.h": "c",
+			"xmemory": "c",
+			"xutility": "c",
+			"xstring": "c",
+			"ftd2xx.h": "c",
+			"libmpsse_spi.h": "c",
+			"type_traits": "c",
+			"xtr1common": "c",
+			"xlocale": "c",
+			"ft8xx.h": "c",
+			"ftdi_infra.h": "c",
+			"mcu.h": "c",
+			"stm32f0xx_hal_gpio.h": "c",
+			"eve_example.h": "c",
+			"bt82x.h": "c",
+			"bt81x.h": "c",
+			"patch_api.h": "c",
+			"graphs.h": "c",
+			"eve_helper.h": "c",
+			"sevenseg.h": "c",
+			"b2tf.h": "c",
+			"videodemo.h": "c",
+			"fontmagic.h": "c",
+			"math.h": "c",
+			"corecrt_math_defines.h": "c",
+			"corecrt_math.h": "c",
+			"trig_furman.h": "c",
+			"patch.h": "c",
+			"*.template": "cpp",
+			"stdint.h": "c",
+			"hal.h": "c",
+			"string.h": "c",
+			"flightcontrols.h": "c",
+			"ranges": "c",
+			"valarray": "c",
+			"array": "c",
+			"deque": "c",
+			"format": "c",
+			"initializer_list": "c",
+			"list": "c",
+			"random": "c",
+			"regex": "c",
+			"span": "c",
+			"stack": "c",
+			"utility": "c",
+			"vector": "c",
+			"xhash": "c",
+			"xtree": "c",
+			"map": "c",
+			"unordered_map": "c",
+			"chrono": "c",
+			"filesystem": "c",
+			"patch_base.h": "c",
+			"locale": "c",
+			"optional": "c",
+			"sstream": "c",
+			"forward_list": "c",
+			"xiosbase": "c",
+			"stdio.h": "c",
+			"cstdlib": "c",
+			"stdarg.h": "c",
+			"atomic": "c",
+			"memory": "c",
+			"charconv": "c"
+		},
+		"mplab.clangd.arguments": [
+			"--header-insertion=never"
+		],
+		"mplab.clangd.compileCommandsDir": "${workspaceFolder}\\_build\\PIC18F46K22\\default",
+		"mplab.project.workspace.addNewSourceFiles": "Never"
+	}
+}
