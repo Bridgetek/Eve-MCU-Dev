@@ -74,11 +74,11 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, apidefs, apiimpl, apiproto, apiconstlist, definelist, excludelist, apirefactor):
+def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, apidefs, apiimpl, apiproto, apiconstlist, definelist, excludelist, apirefactor, local_headers=None):
     cppfile = []
     flag = 0
     str_full_url = re.sub(r'_', '-', str_full_version)
-    
+
     # defaults for each generation
     if api == 1:
         apidev = "FT800/FT801"
@@ -153,6 +153,21 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r'^static const uint8_t\s*(\w+)\s*\[', r'PROGMEM static const uint8_t \g<1> [', line)
                 line = re.sub(r'^const uint8_t\s*(\w+)\s*\[', r'PROGMEM const uint8_t \g<1> [', line)
+
+                # The generated Arduino examples are flat. Rewrite angled
+                # includes for headers copied locally into the example directory.
+                if local_headers:
+                    match = re.match(r'^(\s*#\s*include\s*)<([^>]+)>(.*)$', line)
+                    if match:
+                        include_path = match.group(2)
+                        include_file = os.path.basename(include_path)
+
+                        if include_file in local_headers:
+                            line = (
+                                f'{match.group(1)}'
+                                f'"{include_file}"'
+                                f'{match.group(3)}'
+                            )
 
                 # The Arduino library output is flat. Rewrite extension includes
                 # from the source-tree namespace to headers in the library root.
@@ -400,7 +415,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     except Exception as inst:
                         print("Error: preprocessing - ", inst)
                         exit(0)
-                   
+
                 if flag == 0: 
                     # Use variable EVE_RAM_G_SIZE for size of RAM_G
                     if file_out.endswith("registers.h"):
@@ -814,7 +829,7 @@ for subdirs in os.scandir(os.path.normpath("examples")):
             os.makedirs(os.path.join(dest_lib, "examples", destdir), exist_ok=True)
             # Add a docs directory
             os.makedirs(os.path.join(dest_lib, "examples", destdir, "docs"), exist_ok=True)
-            
+
             defines_list = []
             defineslist = os.path.normpath(os.path.join("examples", exampledir, "!defines.txt"))
             if os.path.exists(defineslist):
@@ -830,7 +845,7 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                                 else:
                                     defval = ""
                                 defines_list.append((defname, defval))
-            
+
             # Copy any docs
             docdir = os.path.normpath(os.path.join(src_api, "examples", exampledir, "docs"))
             docfiles = [f for f in os.listdir(docdir) if os.path.isfile(os.path.join(docdir, f))]
@@ -898,11 +913,6 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                             print(f"Adding asset file {d} renamed to {destname}")
                             common_files.append((os.path.join(assetdir, d), os.path.join(dest_lib, "examples", destdir, os.path.basename(destname))))
 
-            for t in common_files:
-                srcf, destf = t
-                print(f"common example files: {srcf} -> {destf}")
-                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, exclude_files, True)
-
             # Example files
             example_files = []
             # Definitions
@@ -926,10 +936,23 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                         if (os.path.basename(examplefilename) == os.path.split(exampledir)[-1] + ".ino"):
                             destname = os.path.split(exampledir)[-1] + "_EVE" + str_full_version + ".ino"
                         example_files.append((os.path.join("examples", exampledir, examplefilename), os.path.join(dest_lib, "examples", destpath, destname)))
+
+            # Headers copied locally into the flattened Arduino example directory.
+            local_headers = {
+                os.path.basename(destf)
+                for _, destf in common_files + example_files
+                if os.path.splitext(destf)[1] == ".h"
+            }
+
+            for t in common_files:
+                srcf, destf = t
+                print(f"common example files: {srcf} -> {destf}")
+                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, exclude_files, True, local_headers)
+
             for t in example_files:
                 srcf, destf = t
                 print(f"examples: {srcf} -> {destf}")
-                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, None, False)
+                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, None, False, local_headers)
         else:
             print("Not supporting example:", exampledir)
 

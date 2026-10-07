@@ -2,6 +2,9 @@
 import os
 import re
 
+# Headers copied into the flattened Arduino sketch directory.
+local_headers = set()
+
 # Add files to list of files to copy
 def add_files(src_dir, dest_dir, file_list):
     added_files = []
@@ -13,11 +16,17 @@ def add_files(src_dir, dest_dir, file_list):
             dino = d
             if os.path.splitext(d)[1] == '.c':
                 dino = os.path.splitext(d)[0] + '.ino'
-            added_files.append((os.path.join(src_dir,d), os.path.join(dest_dir,dino)))
+
+            added_files.append(
+                (os.path.join(src_dir, d), os.path.join(dest_dir, dino))
+            )
+
+            # Record headers which will be copied into the flattened sketch.
+            if os.path.splitext(dino)[1] == '.h':
+                local_headers.add(os.path.basename(dino))
+
     except:
         raise Exception(f"The directory \"{src_dir}\" doesn't look correct")
-    return added_files
-
     return added_files
 
 # Copy and normalise file to be added to the sketch
@@ -29,25 +38,29 @@ def copy_norm(src_file, dest_file, flatten_filter):
             while line := fsrc.readline():
                 cppadd = []
                 line = line.rstrip()
-                # Modify include statements to use local copy for sketch
-                line = line.replace("<EVE.h>", "\"EVE.h\"")
-                line = line.replace("<HAL.h>", "\"HAL.h\"")
-                line = line.replace("<MCU.h>", "\"MCU.h\"")
-                line = line.replace("<EVE_debug.h>", "\"EVE_debug.h\"")
-                line = line.replace("<EVE_registers.h>", "\"EVE_registers.h\"")
-                line = line.replace("<EVE_settings.h>", "\"EVE_settings.h\"")
-                line = line.replace("<EVE_commands.h>", "\"EVE_commands.h\"")
-                line = line.replace("<EVE_config.h>", "\"EVE_config.h\"")
-                line = line.replace("<EVE_defs.h>", "\"EVE_defs.h\"")
-                line = line.replace("<extensions/bt82x_patch.h>", "\"bt82x_patch.h\"")
-                line = line.replace("<extensions/custom_touch_fw.h>", "\"custom_touch_fw.h\"")
-                line = line.replace("<extensions/lcd_panel_init.h>", "\"lcd_panel_init.h\"")
+
+                # Modify include statements for headers copied locally into
+                # the flattened sketch directory.
+                match = re.match(r'^(\s*#\s*include\s*)<([^>]+)>(.*)$', line)
+                if match:
+                    include_path = match.group(2)
+                    include_file = os.path.basename(include_path)
+
+                    if include_file in local_headers:
+                        line = (
+                            f'{match.group(1)}'
+                            f'"{include_file}"'
+                            f'{match.group(3)}'
+                        )
+
                 # Remove directory paths in the files that need flattened for the sketch
                 for fl in flatten_filter:
                     line = line.replace(f"\"{fl}/", "\"")
+
                 # Global static consts moved into PROGMEM storage on Arduino
                 line = re.sub(r"^static const uint8_t ", "constexpr PROGMEM static const uint8_t ", line)
                 line = re.sub(r'^const uint8_t\s*(\w+)\s*\[', r'PROGMEM const uint8_t \g<1> [', line)
+
                 # Add PROGMEM storage linkage for eve_example.h
                 if dest_file.endswith("eve_example.h"):
                     if line == "#include <stdint.h>":
@@ -66,6 +79,7 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 "",
                         ]
                         print("eve_example.h updated for PROGMEM")
+
                 # Add PROGMEM storage read for eve_images.ino
                 elif dest_file.endswith("eve_images.ino"):
                     match = re.match(r"^(\s*)(\w*\[i\]) = \*(img\+\+);", line)
@@ -75,12 +89,15 @@ def copy_norm(src_file, dest_file, flatten_filter):
                             f"{match.group(1)}{match.group(2)} = pgm_read_byte({match.group(3)});",
                         ]
                         print("eve_images.ino updated for accessing PROGMEM")
+
                 # Add PROGMEM storage read for eve_fonts.ino
                 elif dest_file.endswith("eve_fonts.ino"):
                     # EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
                     match1 = re.match(r"^(\s*)EVE_LIB_WriteDataToRAMG\((\w+),\s(\w+),\s(\w+)\);", line)
+
                     # const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
                     match2 = re.match(r"^const EVE_GPU_FONT_HEADER \*(\w+)\s=\s\(const EVE_GPU_FONT_HEADER \*\)(\w+);", line)
+
                     if match1:
                         line = None
                         cppadd = [
@@ -102,6 +119,7 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 f"{match1.group(1)}}}",
                         ]
                         print("eve_fonts.ino updated for accessing PROGMEM")
+
                     if match2:
                         line = None
                         cppadd = [
@@ -109,6 +127,7 @@ def copy_norm(src_file, dest_file, flatten_filter):
                                 f"const EVE_GPU_FONT_HEADER *{match2.group(1)} = &font0_header;",
                         ]
                         print("eve_fonts.ino updated for PROGMEM compatible globals")
+
                 # Add PROGMEM storage read for extension firmware data.
                 elif dest_file.endswith("bt82x_patch.ino") or dest_file.endswith("custom_touch_fw.ino"):
                     match = re.match(
