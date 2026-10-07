@@ -540,13 +540,19 @@ void EVE_LIB_GetCoProException(char* desc)
 
     for (j = 0; j < 128; j += 4)
     {
-
-
+#if IS_EVE_API(3,4)
         // Read the text from the report register
-        w = HAL_MemRead32(EVE_COPROC_REPORT + j);
+        w = HAL_MemRead32(EVE_RAM_ERR_REPORT + j);
         // Immediately clear the report register
-        HAL_MemWrite32(EVE_COPROC_REPORT + j, 0);
+        HAL_MemWrite32(EVE_RAM_ERR_REPORT + j, 0);
         // Add the 4 characters to the report string
+#elif IS_EVE_API(5)
+        // Read the text from the report register
+        w = HAL_MemRead32(EVE_RAM_REPORT + j);
+        // Immediately clear the report register
+        HAL_MemWrite32(EVE_RAM_REPORT + j, 0);
+        // Add the 4 characters to the report string
+#endif
         for (i = 0; i < 4; i++)
         {
             c = (w >> (i * 8)) & 0x7f;
