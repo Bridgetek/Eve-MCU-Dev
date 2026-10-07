@@ -142,7 +142,7 @@ char const *get_register()
         return "RAM_G";
 #if IS_EVE_API(5)
     else if (address == EVE_REG_BOOT_STATUS) return "REG_BOOT_STATUS";
-    else if ((address >= EVE_COPROC_REPORT) && (address < (EVE_COPROC_REPORT + 256)))
+    else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
         return "COPROC_REPORT";
 #endif
     return "Unknown Register";
@@ -179,12 +179,12 @@ uint32_t get_response()
     {
         response = 72000000;
     }
-    else if ((address >= EVE_COPROC_REPORT) && (address < (EVE_COPROC_REPORT + 256)))
+    else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
     {
         const char msg[] = "This is a test\0\0\0";
-        if (address - EVE_COPROC_REPORT < strlen(msg))
+        if (address - EVE_RAM_REPORT < strlen(msg))
         {
-            memcpy(&response, &msg[address - EVE_COPROC_REPORT], 4);
+            memcpy(&response, &msg[address - EVE_RAM_REPORT], 4);
         }
         else
         {

@@ -540,6 +540,8 @@ void EVE_LIB_GetCoProException(char* desc)
 
     for (j = 0; j < 128; j += 4)
     {
+
+
         // Read the text from the report register
         w = HAL_MemRead32(EVE_COPROC_REPORT + j);
         // Immediately clear the report register
