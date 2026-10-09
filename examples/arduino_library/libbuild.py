@@ -250,17 +250,33 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     #line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
                     # Rename references from @file <file>.c to @file <file>.ino
                     line = re.sub(r'@file (\w+).c', r'@file \g<1>.ino', line)
-                    # Add extern or definition of the EVE class
-                    extern = ""
-                    if not file_out.endswith("eve_example.ino"):
-                        extern = "extern "
-                    line = re.sub(r'#include \<EVE.h\>', '#include <Bridgetek_EVE' + str_full_version + '.h>' \
-                                                          '\n\n/**\n' \
-                                                          ' @brief EVE library handle.\n' \
-                                                          ' @details This is the one instance of the EVE library. Available as a global.\n' \
-                                                          ' */\n' \
-                                                          + extern + 'Bridgetek_EVE' + str_full_version + ' eve;\n' \
-                                  , line)
+                    # Replace the C EVE API header with the generated Arduino library class.
+                    # Declare the global EVE handle wherever EVE.h is included.
+                    line = re.sub(
+                        r'#include \<EVE.h\>',
+                        '#include <Bridgetek_EVE' + str_full_version + '.h>'
+                        '\n\n/**\n'
+                        ' @brief EVE library handle.\n'
+                        ' @details This is the one instance of the EVE library. Available as a global.\n'
+                        ' */\n'
+                        'extern Bridgetek_EVE' + str_full_version + ' eve;\n',
+                        line
+                    )
+
+                    # Define the global EVE handle once in eve_example.ino.
+                    if file_out.endswith("eve_example.ino"):
+                        match = re.match(
+                            r'^\s*#include\s*[<"]eve_example\.h[>"]',
+                            line
+                        )
+                        if match:
+                            line += (
+                                '\n\n/**\n'
+                                ' @brief EVE library handle.\n'
+                                ' @details This is the one instance of the EVE library. Available as a global.\n'
+                                ' */\n'
+                                'Bridgetek_EVE' + str_full_version + ' eve;'
+                            )
                     # Remove snippet top level directory references (single quotes)
                     line = re.sub(r'#include \"[\w]+/([\w.]+)\"', r'#include "\g<1>"', line)
                     # Change references to const array stored in class to pointer from unsized array
