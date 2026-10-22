@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-## Porting EVE-MCU-Dev
+## EVE-MCU-Dev Platforms
 
 The EVE-MCU-Dev library is intended for simple porting to MCU and embedded environments. There are several common target types which are provided with this library:
 

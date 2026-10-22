@@ -1,0 +1,14 @@
+interface:
+  display_name: EVE-MCU-Dev Project Builder
+  short_description: Build reliable EVE projects from EVE-MCU-Dev samples
+  default_prompt: Use $eve-mcu-dev-project-builder to build a validated EVE project from
+    existing EVE-MCU-Dev samples.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

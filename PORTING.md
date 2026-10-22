@@ -368,6 +368,8 @@ There is no active `MCU_SPIRead24()`/`Platform_SPIRead24()` requirement.
 Implement the baseline interface rather than relying on the first selected example to exercise every function. 
 Keep function names, parameter types and return types consistent with the current `MCU.h` and `Platform.h` header file.
 
+The millisecond counter in `Platform_Time_ms()` must be a monotonic clock storing milliseconds since a program has started.
+
 **Reference:** [MCU.h function declarations][mcu-h], [Platform.h function declarations][platform-h].
 
 ### Initialisation, setup and shutdown
@@ -1078,6 +1080,20 @@ Where a selected module or panel provides predefined touch-transform values, the
 Persistent calibration storage can be added later using storage appropriate to the target, as described in [Section 9](#persistent-calibration-storage).
 
 **References:** [callback declarations][touch-h], [calibration control flow][touch-c].
+
+### Supply the millisecond timer hooks (optional)
+
+Some examples require access to a millisecond timer to provide screen update statistics and timer displays. 
+For these examples, this function should return a counter with millisecond accuracy. This function is not part of the API and distinct from the `MCU_Time_ms` function implemented in a port. A monotonic clock storing milliseconds since a program has started is standard but the example may use any time format it requires.
+
+An example of this is to get the time using the `millis()` function on an MCU:
+
+```c
+uint32_t platform_get_time(void)
+{
+    return millis();
+}
+```
 
 ### Make failures observable
 
