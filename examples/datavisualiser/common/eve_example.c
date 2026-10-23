@@ -444,6 +444,7 @@ static inline int16_t scalePosition(uint32_t size, uint16_t num, uint16_t den)
  */
 static void addRectangularGradient(int16_t grad_x, int16_t grad_y, uint16_t width, uint16_t height, uint32_t colour1, uint32_t colour2, bool alpha_compositing, bool mirror, bool vert)
 {
+    
     // scissor to the size of the gradient we want to create
     // this is required as we are using the wrapx/wrapy = REPEAT in the BITMAP_SIZE
     // call which requires the values to be a power of 2 for height or width or
@@ -606,6 +607,7 @@ static void addRectangularGradient(int16_t grad_x, int16_t grad_y, uint16_t widt
  */
 static void circleGaugeShadow(int16_t centre_x, int16_t centre_y, uint16_t radius, uint16_t thickness, uint16_t user_value)
 {
+
     // local variable for arc fill in degrees
     uint16_t arc_degrees = (uint16_t)((360UL * user_value) / 0xffffUL);
     // Ensure the arc_degrees is within limits (0 - 360)
@@ -832,6 +834,7 @@ static void circleGaugeShadow(int16_t centre_x, int16_t centre_y, uint16_t radiu
  * @param x_axis_labels pointer to array of chars for x axis labels
  */
 static void addLinePlotLinesAndLabels(int16_t input_x, int16_t input_y, uint16_t width, uint16_t height, uint8_t num_x_lines, uint8_t num_y_lines, uint8_t line_width, uint8_t font_handle, const uint8_t* y_axis_labels, const char* const* x_axis_labels) {
+    
     // ensure num_X_lines and num_y_lines are non-zero
     num_x_lines = MAX(num_x_lines, 1);
     num_y_lines = MAX(num_y_lines, 1);
@@ -850,7 +853,6 @@ static void addLinePlotLinesAndLabels(int16_t input_x, int16_t input_y, uint16_t
 
     // set line colour
     EVE_COLOR_RGB(255, 255, 255); // white
-
     // set line width
     EVE_LINE_WIDTH((line_width * 16) / 2);
     // draw X and Y axis main lines
@@ -883,6 +885,7 @@ static void addLinePlotLinesAndLabels(int16_t input_x, int16_t input_y, uint16_t
     for (uint16_t i = 0; i < num_y_lines; i++) {
         EVE_CMD_NUMBER((input_x - (text_offset / 2)), (input_y + (i * (y_line_spacing / pix_precision))), font_handle, EVE_OPT_RIGHTX | EVE_OPT_CENTERY, y_axis_labels[i]);
     }
+
     // restore context
     EVE_RESTORE_CONTEXT();
 
@@ -913,10 +916,8 @@ static void linePlot(int16_t input_x, int16_t input_y, uint16_t width, uint16_t 
 
     // set line colour from input
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
-
     // set line width from input
     EVE_LINE_WIDTH(line_width * 16);
-
     // draw main plot line
     EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
     for (uint16_t i = 0; i < num_points; i++) {
@@ -946,6 +947,7 @@ static void linePlot(int16_t input_x, int16_t input_y, uint16_t width, uint16_t 
         EVE_VERTEX2F(((input_x * pix_precision) + (i * point_spacing)), ((input_y + height - value) * pix_precision));
     }
     EVE_END();
+
     // restore context
     EVE_RESTORE_CONTEXT();
 
@@ -1022,6 +1024,7 @@ static void verticalBarGauge(int16_t input_x, int16_t input_y, uint16_t width, u
     }
     // end drawing
     EVE_END();
+
     // restore graphics context
     EVE_RESTORE_CONTEXT();
 
@@ -1045,6 +1048,7 @@ static void verticalBarGauge(int16_t input_x, int16_t input_y, uint16_t width, u
  */
 static void pieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
 {
+
     // Ensure the radius does not exceed max point size
     radius = MIN(radius, 511);
     // Draw in reverse if end_angle > start_angle
@@ -1172,6 +1176,7 @@ static void pieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_cent
     EVE_POINT_SIZE(radius * 16);
     // place at the center of the circle the pie segment sits inside
     EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
+
     // Restore previous graphics context
     EVE_RESTORE_CONTEXT();
 
@@ -1185,6 +1190,7 @@ static void pieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_cent
  * @param uptime variable used to determine the draw size of the two pie chart segments
  */
 static void pieChart(uint8_t uptime) {
+    
     // Ensure the uptime is within limits (0 - 100)
     uptime = MAX(uptime, 0);
     uptime = MIN(uptime, 100);
@@ -1223,6 +1229,7 @@ static void pieChart(uint8_t uptime) {
         // add pie chart segment onto the screen
         pieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0, 0);
     }
+
     // Restore previous graphics context
     EVE_RESTORE_CONTEXT();
 
@@ -1245,12 +1252,12 @@ static void pieChart(uint8_t uptime) {
  * @param pressed pressed state boolean for the button
  */
 static void circularButton(int16_t input_x, int16_t input_y, uint16_t size, uint32_t colour, uint32_t colour_pressed, uint32_t colour_text, uint8_t font_handle, const char* text, uint8_t tag, bool pressed) {
+    
     // save context
     EVE_SAVE_CONTEXT();
 
     // set full alpha
     EVE_COLOR_A(255);
-
     // begin points
     EVE_BEGIN(EVE_BEGIN_POINTS);
     // if the button isn't pressed in, draw a highlight at the top left/bottom right edges
@@ -1282,16 +1289,12 @@ static void circularButton(int16_t input_x, int16_t input_y, uint16_t size, uint
     EVE_TAG_MASK(1);
     // set input tag
     EVE_TAG(tag);
-
     // draw main point
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
-
     // end points
     EVE_END();
-
     // disable tagging
     EVE_TAG_MASK(0);
-
     // place some text in the middle of the button
     // colour based on input
     EVE_COLOR_RGB(((uint8_t)(colour_text >> 16)), ((uint8_t)(colour_text >> 8)), ((uint8_t)(colour_text)));
@@ -1517,6 +1520,7 @@ static void radarPlot(uint16_t centre_x, uint16_t centre_y, int16_t line_width, 
         // Convert from vertex units to pixel coordinates
         EVE_CMD_NUMBER((label_x / pix_precision), (label_y / pix_precision), font_handle, EVE_OPT_CENTER, (i + 1));
     }
+
     // restore graphics context
     EVE_RESTORE_CONTEXT();
 
@@ -1536,6 +1540,7 @@ static void addBackgroundBoxes(uint8_t alpha, uint32_t colour) {
 
     // save context
     EVE_SAVE_CONTEXT();
+
     // background boxes
     EVE_BEGIN(EVE_BEGIN_RECTS);
     // set line width
@@ -1562,6 +1567,7 @@ static void addBackgroundBoxes(uint8_t alpha, uint32_t colour) {
     EVE_VERTEX2F((circle_gauge_box_end_x * pix_precision), (circle_gauge_box_end_y * pix_precision));
     // end rects
     EVE_END();
+
     // restore context
     EVE_RESTORE_CONTEXT();
 
@@ -1576,6 +1582,7 @@ static void addBarGaugeLabelBoxes(uint32_t colour) {
 
     // save context
     EVE_SAVE_CONTEXT();
+
     // begin drawing rectangles
     EVE_BEGIN(EVE_BEGIN_RECTS);
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
@@ -1592,6 +1599,7 @@ static void addBarGaugeLabelBoxes(uint32_t colour) {
     EVE_VERTEX2F(((bargauge_x[5] + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
     // end drawing rectangles
     EVE_END();
+
     // restore context
     EVE_RESTORE_CONTEXT();
 }
@@ -1608,6 +1616,7 @@ static void addRadarPlotBG(uint16_t radius) {
 
     // save context
     EVE_SAVE_CONTEXT();
+
     // enable alpha only for stencil and buffer clear
     EVE_COLOR_MASK(0, 0, 0, 1);
     // Scissor for the size of the cutout + outline we wish to draw
@@ -1671,6 +1680,7 @@ static void addRadarPlotBG(uint16_t radius) {
     EVE_VERTEX2F((radar_plot_x * pix_precision), (radar_plot_y * pix_precision));
     // end drawing
     EVE_END();
+
     // restore context
     EVE_RESTORE_CONTEXT();
 }
@@ -1682,6 +1692,7 @@ static void addRadarPlotReadoutLines(void) {
 
     // Save context
     EVE_SAVE_CONTEXT();
+
     // white
     EVE_COLOR_RGB(255, 255, 255);
     // set alpha
@@ -1697,6 +1708,7 @@ static void addRadarPlotReadoutLines(void) {
     }
     // end drawing
     EVE_END();
+
     // restore context
     EVE_RESTORE_CONTEXT();
 }
@@ -1847,6 +1859,7 @@ static void settingsOptionMenu(int16_t input_x, int16_t input_y, uint16_t length
     // add text labels
     EVE_CMD_TEXT(text1_x, input_y, font_med, EVE_OPT_CENTER, "Mode");
     EVE_CMD_TEXT(text2_x, input_y, font_med, EVE_OPT_CENTER, "LCD");
+
     // restore context
     EVE_RESTORE_CONTEXT();
 
@@ -1861,6 +1874,7 @@ static void LCDBacklightPage(void) {
 
     // save context
     EVE_SAVE_CONTEXT();
+
     // set desired colour
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
     // add arc simple gauge onto the screen to act as input control
@@ -1944,6 +1958,7 @@ static void modePage(void) {
  *   the CMD_APPEND command.
  */
 static void generateStaticScreenComponents(void) {
+    
     //------------------------------------------------------------------------------
     // Construct display list to copy into RAM_DL
     //------------------------------------------------------------------------------
@@ -1969,9 +1984,8 @@ static void generateStaticScreenComponents(void) {
     EVE_TAG_MASK(0);
     // add background boxes
     //------------------------------------------------------------------------------
-
     addBackgroundBoxes(200, colourBGBox);
-
+  
     // add line plot outline onto the screen
     //------------------------------------------------------------------------------
     // white
@@ -1984,12 +1998,11 @@ static void generateStaticScreenComponents(void) {
     addRectangularGradient(line_plot_x, line_plot_y, line_plot_width, line_plot_height, colour4, colourBG, false, true, true);
     // reset alpha
     EVE_COLOR_A(255);
-
     // add graph lines and labels
     addLinePlotLinesAndLabels(line_plot_x, line_plot_y, line_plot_width, line_plot_height, line_plot_extra_x_lines, line_plot_extra_y_lines, line_plot_line_width, font_small, y_axis_labels, x_axis_labels);
+   
     // add settings menu button
     //------------------------------------------------------------------------------
-
     addSettingsButton(colourBG);
 
     // add label boxes and text for bar gauges
@@ -1999,7 +2012,7 @@ static void generateStaticScreenComponents(void) {
     // add text labels for bar gauges
     EVE_CMD_TEXT(((bargauge_x[0] + bargauge_x[1] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "VOC");
     EVE_CMD_TEXT(((bargauge_x[2] + bargauge_x[3] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "CO2");
-    EVE_CMD_TEXT(((bargauge_x[4] + bargauge_x[5] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "Humid");
+    EVE_CMD_TEXT(((bargauge_x[4] + bargauge_x[5] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "RH");
 
     // add text for circle gauge
     //------------------------------------------------------------------------------
@@ -2009,13 +2022,13 @@ static void generateStaticScreenComponents(void) {
     //------------------------------------------------------------------------------
     addRadarPlotBG(radar_plot_radius);
     // add main label
-    EVE_CMD_TEXT(radar_plot_label_x, radar_plot_label_y, font_med, EVE_OPT_RIGHTX, "Sensor");
+    EVE_CMD_TEXT(radar_plot_label_x, radar_plot_label_y, font_med, EVE_OPT_RIGHTX, "AQS");
     // add labels for readouts
-    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num1_y, font_med, 0, "S1:");
-    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num2_y, font_med, 0, "S2:");
-    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num3_y, font_med, 0, "S3:");
-    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num4_y, font_med, 0, "S4:");
-    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num5_y, font_med, 0, "S5:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num1_y, font_med, 0, "A1:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num2_y, font_med, 0, "A2:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num3_y, font_med, 0, "A3:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num4_y, font_med, 0, "A4:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num5_y, font_med, 0, "A5:");
     // add readout lines
     addRadarPlotReadoutLines();
 
