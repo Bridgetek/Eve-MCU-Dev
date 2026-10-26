@@ -75,6 +75,14 @@
 #endif
 #endif
 
+#if defined(ARDUINO)
+#if defined(ARDUINO_ARCH_AVR)
+#if ASSETS == USE_C_ARRAYS
+#error Arduinos based on AVR are not supported (program memory access restricted)
+#endif
+#endif
+#endif
+
 EVE_ASSET_PROPS patch_asset; 
 EVE_ASSET_PROPS Carbon_Fiber_800x480_asset; 
 EVE_ASSET_PROPS LED_32x32_asset;  

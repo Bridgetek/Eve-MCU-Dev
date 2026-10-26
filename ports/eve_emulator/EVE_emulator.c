@@ -1,6 +1,6 @@
 /**
  * @file EVE_emulator.c
- * @details Platform-specific code for controlling running a EVE Emulator instance.
+ * @details Platform-specific code for running and controlling an EVE Emulator instance.
  */
 /*
  * ============================================================================
@@ -70,6 +70,11 @@
 #include "EVE_Emulator/include/bt8xxemu_inttypes.h"
 #include "EVE_Emulator/include/bt8xxemu.h"
 
+// ensure API version
+#if !defined(BT8XXEMU_VERSION_API) || (BT8XXEMU_VERSION_API < 19)
+#error EVE Emulator API version 19 or later is required
+#endif
+
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 /* Include EVE-MCU-Dev library debug macros */
@@ -96,6 +101,10 @@ typedef enum
     MCU_PATH_FILE,
     MCU_PATH_FOLDER
 } MCU_PathType;
+
+/* ============================================================================
+ * File Path Helper Functions
+ * ============================================================================ */
 
 /**
  * @brief Determines whether a Windows path is absolute.
@@ -256,8 +265,72 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
     return resolvedPath;
 }
 
+/* ============================================================================
+ * Flash Emulation Functions
+ * ============================================================================ */
+
 // External flash emulation is supported by EVE API levels 3, 4, and 5.
 #if IS_EVE_API(3,4,5)
+
+#ifdef EVE_EMULATOR_FLASH_DEVICE
+/**
+ * @brief Helper function to determine whether a flash device name identifies an exact part.
+ *
+ * @return 1 for an exact part, 0 for a device family, or -1 on error.
+ */
+static int MCU_IsExactFlashPart(const eve_tchar_t* libraryName, const eve_tchar_t* deviceType)
+{
+    // Get the number of supported flash devices.
+    int count = BT8XXEMU_Flash_list(BT8XXEMU_VERSION_API, libraryName, NULL, 0);
+
+    if (count < 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to load flash emulator library.\n");
+        return -1;
+    }
+
+    if (count == 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: No supported flash devices found.\n");
+        return -1;
+    }
+
+    // Allocate memory for the device list.
+    BT8XXEMU_FlashDevice* devices = (BT8XXEMU_FlashDevice*)malloc(count * sizeof(BT8XXEMU_FlashDevice));
+
+    if (!devices)
+        return -1;
+
+    // Retrieve supported devices.
+    int total = BT8XXEMU_Flash_list(BT8XXEMU_VERSION_API, libraryName, devices, count);
+
+    if (total < 0 || total > count)
+    {
+        free(devices);
+        return -1;
+    }
+
+    int isFamily = 0;
+
+    for (int i = 0; i < total; i++)
+    {
+        // Exact part names take priority.
+        if (wcscmp(deviceType, devices[i].PartName) == 0)
+        {
+            free(devices);
+            return 1;
+        }
+
+        // Check whether the name identifies a device family.
+        if (wcscmp(deviceType, devices[i].FamilyName) == 0)
+            isFamily = 1;
+    }
+
+    free(devices);
+
+    return isFamily ? 0 : -1;
+}
+#endif
 
 /**
  * @brief Creates and attaches an emulated flash device.
@@ -271,7 +344,6 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
  * @return 0 on success, or -1 if the flash device cannot be configured or created.
  */
 static int MCU_AttachFlash(const eve_tchar_t* path) {
-
     EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator...\n");
 
     // Allocate and initialize the flash emulator configuration.
@@ -282,12 +354,43 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
         return -1;
     }
 
-    // Populate the configuration with emulator defaults.
-    BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
+    // Set defualt flash image size if not defined
+#ifndef EVE_EMULATOR_FLASH_FILE_SIZE
+#define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)
+#endif
+
+    // Populate the flash configuration with device-specific defaults.
+    if (!BT8XXEMU_Flash_defaultsEx(
+        BT8XXEMU_VERSION_API,
+        EmulatorFlashParameters,
+        EmulatorParameters->Mode,
+        EVE_EMULATOR_FLASH_FILE_SIZE))
+    {
+        EVE_DEBUG_PRINTF("WARNING: Using nearest supported flash configuration.\n");
+    }
+
+#ifdef EVE_EMULATOR_FLASH_DEVICE
+    // Determine whether the configured device is an exact flash part or a flash family (Determine the device type for subsequent flash-size selection).
+    int isExactPart = MCU_IsExactFlashPart(EmulatorFlashParameters->LibraryName, EVE_EMULATOR_FLASH_DEVICE);
+    if (isExactPart < 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unsupported flash device or family.\n");
+        return -1;
+    }
+
+    // Override the automatically selected flash device.
+    if (wcscpy_s(EmulatorFlashParameters->DeviceType, _countof(EmulatorFlashParameters->DeviceType), EVE_EMULATOR_FLASH_DEVICE) != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to set flash device type.\n");
+        return -1;
+    }
+
+    // Exact parts use their native capacity; families use the configured size.
+    EmulatorFlashParameters->SizeBytes = isExactPart ? 0 : EVE_EMULATOR_FLASH_FILE_SIZE;
+#endif
 
     // Resolve the flash file path supplied by the definition.
     const eve_tchar_t* flashPath = MCU_ResolvePath(MCU_PATH_FILE, path);
-
     if (!flashPath)
     {
         EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
@@ -300,20 +403,11 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
 
     // Copy the resolved flash path into the emulator configuration.
     errno_t result = wcscpy_s(EmulatorFlashParameters->DataFilePath, _countof(EmulatorFlashParameters->DataFilePath), flashPath);
-
     if (result != 0)
     {
         EVE_DEBUG_ERROR("ERROR: Unable to copy emulator flash path.\n");
         return -1;
     }
-
-    // Default the emulated flash size to 8 MiB when no size is configured.
-#ifndef EVE_EMULATOR_FLASH_FILE_SIZE
-#define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)  /* 8 MiB default */
-#endif /* EVE_EMULATOR_FLASH_FILE_SIZE */
-
-    // Set flash size to EVE_EMULATOR_FLASH_FILE_SIZE
-    EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
 
     // Create the emulated flash device.
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
@@ -323,13 +417,24 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
         return -1;
     }
 
+    // Print the selected flash device.
+    BT8XXEMU_FlashInfo flashInfo;
+    if (BT8XXEMU_Flash_info(EmulatorFlash, &flashInfo))
+    {
+        const eve_tchar_t* deviceName = flashInfo.Device.PartName[0] ? flashInfo.Device.PartName : flashInfo.Device.FamilyName;
+        EVE_DEBUG_PRINTF("Selected flash device: %ls (%td MiB)\n", deviceName, flashInfo.Device.SizeBytes / (1024 * 1024));
+    }
+
     // Attach the flash device to the emulator configuration.
     EmulatorParameters->Flash = EmulatorFlash;
 
     return 0;
 }
-
 #endif /* IS_EVE_API(3,4,5) */
+
+/* ============================================================================
+ * SD Card Emulation Functions
+ * ============================================================================ */
 
 // SD card folder emulation is supported by EVE API level 5 only.
 #if IS_EVE_API(5)
@@ -381,6 +486,10 @@ static int MCU_AttachSDFolder(const eve_tchar_t* path) {
 
 #endif /* IS_EVE_API(5) */
 
+/* ============================================================================
+ * MCU Interface Functions
+ * ============================================================================ */
+
 // ------------------ Platform specific initialisation  ------------------------
 int MCU_Init(void)
 {
@@ -418,6 +527,8 @@ int MCU_Init(void)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT817
 #elif (EVE_DEVICE == EVE_BT818)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT818
+#elif (EVE_DEVICE == EVE_BT819)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT819
 #elif (EVE_DEVICE == EVE_BT820)
 #define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
 #else
@@ -437,6 +548,9 @@ int MCU_Init(void)
     BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
     // Disable EmulatorEnableDynamicDegrade and EmulatorEnableRegPwmDutyEmulation
     EmulatorParameters->Flags &= ~(BT8XXEMU_EmulatorEnableDynamicDegrade | BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
+
+    // Enable window rotation
+    EmulatorParameters->Flags |= BT8XXEMU_EmulatorEnableWindowRotate;
 
 #ifdef EVE_EMULATOR_FLASH_FILE
 #if IS_EVE_API(3,4,5)
