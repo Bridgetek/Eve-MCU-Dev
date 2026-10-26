@@ -102,7 +102,7 @@ The required DLLs must be available in the same output directory as the applicat
 | File | Purpose |
 | --- | --- |
 | `bt8xxemu.dll` | Main EVE Emulator runtime library |
-| `mx25lemu.dll` | Additional flash-emulation dependency |
+| `btflashemu.dll` | Additional flash-emulation dependency |
 | `zlib.dll` | Compression dependency used by EVE for certain API function calls |
 
 The provided Visual Studio projects and `CMakeLists.txt` files automatically copy the available DLLs to the executable output directory after the application is built.
@@ -122,7 +122,7 @@ subdirectory.
 Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
 The application must be built using an `x64` configuration.
 
-When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
+When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
 
 ## Command-Line Builds (CMake)
 
@@ -173,7 +173,7 @@ cmake --build build --config Release
 
 The executable location depends on the selected generator and build configuration. For example, a Visual Studio build commonly places the executable in `build\Debug` or `build\Release`.
 
-When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
+When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
 
 ## Flash and SD Card Support
 
@@ -564,7 +564,7 @@ Rebuild the project to run its post-build copy operation, or manually copy the D
 ports\eve_emulator\EVE_Emulator\bin
 ```
 
-If required, copy `mx25lemu.dll` and `zlib.dll` to the same directory.
+If required, copy `btflashemumu.dll` and `zlib.dll` to the same directory.
 
 ### The Application or DLL Has the Wrong Architecture
 

@@ -68,7 +68,7 @@
     <PostBuildEvent>
       <Command>copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll "$(OutDir)btflashemu.dll" || exit /b 1
 
 copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
@@ -92,7 +92,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <PostBuildEvent>
       <Command>copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll "$(OutDir)bt8xxemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll "$(OutDir)mx25lemu.dll" || exit /b 1
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll "$(OutDir)btflashemu.dll" || exit /b 1
 
 copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
     </PostBuildEvent>
@@ -130,7 +130,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll" />
-    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll" />
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll" />
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll" />
   </ItemGroup>
   <ItemGroup>
