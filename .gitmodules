@@ -1,6 +1,6 @@
 [submodule "ports/eve_emulator/EVE_Emulator"]
 	path = ports/eve_emulator/EVE_Emulator
-	url = https://github.com/Bridgetek/EVE_Emulator
+	url = https://github.com/Bridgetek/EVE-Emulator.git
 [submodule "ftdi_libraries"]
 	path = ports/external/ftdi_libraries
 	url = https://github.com/Bridgetek/FTDI-SW-Release
