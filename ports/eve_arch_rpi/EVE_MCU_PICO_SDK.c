@@ -1,6 +1,6 @@
 /**
- * @file EVE_MCU_RP2040.c
- * @details MCU-specific code for controlling EVE on RP2040 devices.
+ * @file EVE_MCU_PICO_SDK.c
+ * @details MCU interface for Raspberry Pi pico SDK devices.
  */
 /*
  * ============================================================================
@@ -39,9 +39,10 @@
  */
 
 // Guard against being used for incorrect platform or architecture.
-#if defined(PLATFORM_RP2040)
+// Note: PLATFORM_RP2040 will be deprecated.
+#if defined(PLATFORM_RP2040) || defined(PLATFORM_PICO_SDK)
 
-#pragma message "Compiling " __FILE__ " for Raspberry Pi pico RP2040"
+#pragma message "Compiling " __FILE__ " for Raspberry Pi pico SDK"
 
 /* EVE MCU END */
 
@@ -50,28 +51,33 @@
 #include <stdio.h>
 #include <machine/endian.h>
 
-/* Include functions for EVE-MCU-Dev library MCU layer */
-#include <MCU.h>
-
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 #include <pico/time.h>
 
-// Pins to match Bridgetek IDM2040-7A/MM2040EV boards.
-const uint pd_pin = 7;
-const uint cs_pin = 5;
-const uint sck_pin = 2;
-const uint mosi_pin = 3;
-const uint miso_pin = 4;
-const uint int_pin = 6;
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+
+#if defined(EVE_QSPI_ENABLE)
+#error "EVE_QSPI_ENABLE is not supported by the Raspberry Pi pico SDK ports"
+#endif
+
+/* Raspberry Pi Pico pins. CS# remains under software GPIO control. */
+/* Pins to match Bridgetek IDM2040-7A/MM2040EV boards. */
+static const uint eve_pd_pin = 7u;
+static const uint eve_cs_pin = 5u;
+static const uint eve_sck_pin = 2u;
+static const uint eve_mosi_pin = 3u;
+static const uint eve_miso_pin = 4u;
+static const uint eve_int_pin = 6u;
 // Port to match Bridgetek IDM2040-7A/MM2040EV boards.
-spi_inst_t *spi_port = spi0;
+static spi_inst_t *eve_spi_port = spi0;
 
 /* EVE MCU HEADER END */
 
 /* EVE MCU */
 
-// This is the RP240 Platform specific section and contains the functions which
+// This is the pico SDK Platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
@@ -79,35 +85,35 @@ int MCU_Init(void)
 {
 
 	// Initialise CS (SPI Chip Select) pin high
-    gpio_init(cs_pin);
-    gpio_set_dir(cs_pin, GPIO_OUT);
-    gpio_put(cs_pin, 1);
+    gpio_init(eve_cs_pin);
+    gpio_set_dir(eve_cs_pin, GPIO_OUT);
+    gpio_put(eve_cs_pin, 1u);
 
     // Initialise PD (Power Down) pin high
-    gpio_init(pd_pin);
-    gpio_set_dir(pd_pin, GPIO_OUT);
-    gpio_put(pd_pin, 1);
+    gpio_init(eve_pd_pin);
+    gpio_set_dir(eve_pd_pin, GPIO_OUT);
+    gpio_put(eve_pd_pin, 1u);
 
     // Initialise INT# (Interrupt) pin input
-    gpio_init(int_pin);
-    gpio_set_dir(int_pin, GPIO_IN);
+    gpio_init(eve_int_pin);
+    gpio_set_dir(eve_int_pin, GPIO_IN);
 
     // Set SPI clock speed to 1 MHz
     // 1 MHz allows all EVE devices to initialise correctly
     // After initialisation the SPI speed can be increased in the MCU_Setup()
-    spi_init(spi_port, 1 * 1000 * 1000);
+    spi_init(eve_spi_port, 1 * 1000u * 1000u);
 
     // Set SPI format
-    spi_set_format( spi_port, 		// SPI instance
-                    8,      		// Number of bits per transfer
-                    SPI_CPOL_0,		// Polarity (CPOL)
-                    SPI_CPHA_0,		// Phase (CPHA)
+    spi_set_format( eve_spi_port,   // SPI instance
+                    8u,             // Number of bits per transfer
+                    SPI_CPOL_0,     // Polarity (CPOL)
+                    SPI_CPHA_0,     // Phase (CPHA)
                     SPI_MSB_FIRST);
 
     // Initialize SPI pin functions
-    gpio_set_function(sck_pin, GPIO_FUNC_SPI);
-    gpio_set_function(mosi_pin, GPIO_FUNC_SPI);
-    gpio_set_function(miso_pin, GPIO_FUNC_SPI);
+    gpio_set_function(eve_sck_pin, GPIO_FUNC_SPI);
+    gpio_set_function(eve_mosi_pin, GPIO_FUNC_SPI);
+    gpio_set_function(eve_miso_pin, GPIO_FUNC_SPI);
 
     return 0;
 }
@@ -115,11 +121,11 @@ int MCU_Init(void)
 int MCU_Deinit(void)
 {
     /* Leave EVE in a safe state. */
-    gpio_put(cs_pin, 1);
-    gpio_put(pd_pin, 0);
+    gpio_put(eve_cs_pin, 1u);
+    gpio_put(eve_pd_pin, 0u);
 
     /* Disable SPI. */
-    spi_deinit(spi_port);
+    spi_deinit(eve_spi_port);
 
     return 0;
 }
@@ -129,7 +135,7 @@ int MCU_Setup(void)
     /* Additional SPI Configuration */
     // Increase SPI speed to 25 MHz after initialisation is complete
     // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
-    spi_init(spi_port, 25 * 1000 * 1000);
+    spi_init(eve_spi_port, 25u * 1000u * 1000u);
 
     return 0;
 }
@@ -138,8 +144,7 @@ int MCU_Setup(void)
 int MCU_SetSPIMode(uint8_t mode)
 {
     /* QSPI Configuration */
-    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported RP2040
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is not supported pico SDK
     return -1;
 }
 #endif // defined(EVE_QSPI_ENABLE)
@@ -149,31 +154,31 @@ int MCU_SetSPIMode(uint8_t mode)
 // --------------------- Chip Select line low ----------------------------------
 inline void MCU_CSlow(void)
 {
-    gpio_put(cs_pin, 0);
+    gpio_put(eve_cs_pin, 0u);
 }  
 
 // --------------------- Chip Select line high ---------------------------------
 inline void MCU_CShigh(void)
 {
-    gpio_put(cs_pin, 1);
+    gpio_put(eve_cs_pin, 1u);
 }
 
 // -------------------------- PD line low --------------------------------------
 inline void MCU_PDlow(void)
 {
-    gpio_put(pd_pin, 0);
+    gpio_put(eve_pd_pin, 0u);
 }
 
 // ------------------------- PD line high --------------------------------------
 inline void MCU_PDhigh(void)
 {
-    gpio_put(pd_pin, 1);
+    gpio_put(eve_pd_pin, 1u);
 }
 
 // ------------------------ interrupt input ------------------------------------
 inline int MCU_Int(void) 
 {
-    bool val = gpio_get(int_pin);
+    bool val = gpio_get(eve_int_pin);
     return (int)val;
 }
 
@@ -181,11 +186,11 @@ inline int MCU_Int(void)
 
 uint8_t MCU_SPIRead8(void)
 {
-    uint8_t DataRead = 0;
+    uint8_t DataRead = 0u;
 
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer receives of integers will be little endian.
-    spi_read_blocking(spi_port, 0, &DataRead, 1);
+    spi_read_blocking(eve_spi_port, 0u, &DataRead, 1u);
 
     return DataRead;
 }
@@ -194,7 +199,7 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
 {
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer transmits of integers will be little endian.
-    spi_write_blocking(spi_port, &DataToWrite, 1);
+    spi_write_blocking(eve_spi_port, &DataToWrite, 1u);
 }
 
 uint16_t MCU_SPIRead16(void)
@@ -203,7 +208,7 @@ uint16_t MCU_SPIRead16(void)
 
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer receives of integers will be little endian.
-    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 2);
+    spi_read_blocking(eve_spi_port, 0u, (uint8_t *)&DataRead, 2u);
 
     return DataRead;
 }
@@ -212,23 +217,23 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer transmits of integers will be little endian.
-    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 2);
+    spi_write_blocking(eve_spi_port, (uint8_t *)&DataToWrite, 2u);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
 {
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer transmits of integers will be little endian.
-    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 3);
+    spi_write_blocking(eve_spi_port, (uint8_t *)&DataToWrite, 3u);
 }
 
 uint32_t MCU_SPIRead32(void)
 {
-    uint32_t DataRead = 0;
+    uint32_t DataRead = 0u;
 
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer receives of integers will be little endian.
-    spi_read_blocking(spi_port, 0, (uint8_t *)&DataRead, 4);
+    spi_read_blocking(eve_spi_port, 0u, (uint8_t *)&DataRead, 4u);
 
     return DataRead;
 }
@@ -237,27 +242,27 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 {
     // Note: This platform is LITTLE_ENDIAN. 
     // Buffer transmits of integers will be little endian.
-    spi_write_blocking(spi_port, (uint8_t *)&DataToWrite, 4);
+    spi_write_blocking(eve_spi_port, (uint8_t *)&DataToWrite, 4u);
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
-    spi_read_blocking(spi_port, 0, DataToRead, length);
+    spi_read_blocking(eve_spi_port, 0, DataToRead, length);
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-    spi_write_blocking(spi_port, DataToWrite, length);
+    spi_write_blocking(eve_spi_port, DataToWrite, length);
 }
 
 void MCU_Delay_20ms(void)
 {
-    sleep_ms(20);
+    sleep_ms(20u);
 }
 
 void MCU_Delay_500ms(void)
 {
-    sleep_ms(500);
+    sleep_ms(500u);
 }
 
 uint32_t MCU_Time_ms(void)
@@ -310,4 +315,4 @@ uint32_t MCU_le32toh(uint32_t h)
 
 /* EVE MCU END */
 
-#endif /* defined(PLATFORM_RP2040) */
+#endif /* defined(PLATFORM_RP2040) || defined(PLATFORM_PICO_SDK) */

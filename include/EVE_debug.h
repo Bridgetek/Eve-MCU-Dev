@@ -92,7 +92,8 @@
     defined(USE_MPSSE) || \
     defined(USE_FT4222) || \
     defined(PLATFORM_EMULATOR) || \
-    defined(PLATFORM_RP2040)
+    defined(PLATFORM_RP2040) || \
+    defined(PLATFORM_PICO_SDK)
 
 /* printf(), fprintf(), stderr */
 #include <stdio.h>
@@ -126,7 +127,7 @@
 
 #define EVE_DEBUG_ERROR(...) ESP_LOGE(__FUNCTION__, __VA_ARGS__)
 
-#elif defined(PLATFORM_RP2040)
+#elif defined(PLATFORM_RP2040) || defined(PLATFORM_PICO_SDK)
 
 /* Pico stdio does not normally separate stderr from stdout over USB or UART. */
 #define EVE_DEBUG_ERROR(...)         \
@@ -162,7 +163,8 @@
     defined(USE_MPSSE) || \
     defined(USE_FT4222) || \
     defined(PLATFORM_EMULATOR) || \
-    defined(PLATFORM_RP2040)
+    defined(PLATFORM_RP2040) || \
+    defined(PLATFORM_PICO_SDK)
 
 #define EVE_DEBUG_PRINTF(...) printf(__VA_ARGS__)
 
@@ -196,7 +198,8 @@
     defined(USE_MPSSE) || \
     defined(USE_FT4222) || \
     defined(PLATFORM_EMULATOR) || \
-    defined(PLATFORM_RP2040)
+    defined(PLATFORM_RP2040) || \
+    defined(PLATFORM_PICO_SDK)
 
 #define EVE_DEBUG_INFO(...) printf(__VA_ARGS__)
 

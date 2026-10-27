@@ -17,7 +17,7 @@ The EVE-MCU-Dev library is intended for simple porting to MCU and embedded envir
 | Microchip PIC18F | `PLATFORM_PIC` | [eve_arch_pic](eve_arch_pic/README.md) | N/A | Under Test |
 | NXP K64 | `PLATFORM_NXPK64` _(4)_  | [eve_arch_nxpk64](eve_arch_nxpk64/README.md) | N/A | Under Test |
 | Raspberry Pi | `PLATFORM_RASPBERRYPI` | [eve_arch_rpi](eve_arch_rpi/README.md#hardware-raspberry-pi) | Raspberry Pi Model 0 to 5 | Pass |
-| Raspberry Pi Pico (SDK and VS Code) | `PLATFORM_RP2040` | [eve_arch_rpi](eve_arch_rpi/README.md#hardware-rp2040) | RP2040 | Pass |
+| Raspberry Pi Pico (SDK and VS Code) | `PLATFORM_PICO_SDK` | [eve_arch_rpi](eve_arch_rpi/README.md#hardware-pico-sdk) | RP2040, RP2350 | Pass |
 | ST STM32 (Keil) | `PLATFORM_STM32` _(4)_| [eve_arch_stm32](eve_arch_stm32/README.md) | N/A | Pass |
 | ST STM32Cube | `PLATFORM_STM32CUBE` _(4)_ | [eve_arch_stm32](eve_arch_stm32/README.md) | STM32F0DISCOVERY and MiniSTM32H7xx | Pass |
 | Generic using libMPSSE | `USE_MPSSE` _(3)_ | [eve_libmpsse](eve_libmpsse/README.md) | FT4232H and FT232H | Pass |

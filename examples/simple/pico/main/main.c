@@ -40,12 +40,12 @@
 
 /* INCLUDES ************************************************************************/
 
-#include "pico/stdlib.h"
-
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+
+#include <pico/stdlib.h>
+#include <pico/time.h>
 
 /* Flash read/write capability for storing Non-volatile data */
 #include <hardware/flash.h>
@@ -59,7 +59,11 @@
 /**
  * @brief Location in flash to store touchscreen configuration.
  */
-#define FLASH_OFFSET_CONFIG (256 * 1024)
+#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
+
+/* LOCAL VARIABLES *****************************************************************/
+
+static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
@@ -78,11 +82,7 @@ int8_t platform_calib_init(void)
 
 int8_t platform_calib_write(struct touchscreen_calibration *calib)
 {
-#if (PICO_FLASH_SIZE_BYTES < FLASH_OFFSET_CONFIG + FLASH_SECTOR_SIZE)
-#error Configuration written above top of flash
-#endif
     // Data to write to flash must be aligned to a flash page
-    uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE);
     uint32_t ints = save_and_disable_interrupts();
 
     memset(config, 0xff, FLASH_PAGE_SIZE);
@@ -101,6 +101,12 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     memcpy(calib, p, sizeof(struct touchscreen_calibration));
     return 0;
 }
+
+uint32_t platform_get_time(void)
+{
+    return to_ms_since_boot(get_absolute_time());
+}
+
 //@}
 
 int main(void)
@@ -117,15 +123,13 @@ int main(void)
 
 void setup(void)
 {
-    int ch = 0;
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
 
     // Turn on the pico LED to show activity
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 1);
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 1);
     
 #if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
     // Wait for stdio (UART/USB) connection if enabled
@@ -136,7 +140,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Simple Example for Raspberry Pi Pico RP2040\r\n");
     printf ("\n");
     printf ("Pin configuration for example:\n");
     printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");

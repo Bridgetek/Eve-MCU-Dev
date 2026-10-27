@@ -6,12 +6,16 @@ There are two separate ports for Raspberry Pi products:
 
 | Port | PLATFORM macro | 
 | --- | --- | 
-| [RP2040](#hardware-rp2040) | `PLATFORM_RP2040` | 
+| [pico SDK](#hardware-pico-sdk) | `PLATFORM_PICO_SDK` _1_ | 
 | [Raspberry Pi](#hardware-raspberry-pi) | `PLATFORM_RASPBERRYPI` | 
 
-## Hardware RP2040
+- (1) This has previously been called `PLATFORM_RP2040`. However, newer additions to the pico family maintain pin and source code compatibility this has been changed to reflect this. The old macro will still be supported for several release cycles.
 
-The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi pico Datasheet for more information.
+## Hardware pico SDK
+
+The pico port was developed using an Raspberry Pi "pico" with an RP2040 MCU. The "pico2" module using an RP2350 MCU is pin compatible. This code supports both modules.
+
+The pico module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi pico Datasheet and pico2 Datasheet for more information.
 
 | RP2040 Pin| RP2040 Pin Name | pico Pin | pico Pin Name | MM2040EV J1 Pin | EVE Signal |
 | --- | --- | --- | --- | --- | --- |
@@ -28,7 +32,7 @@ The RP2040 port was developed using an Raspberry Pi pico. The RP2040 module can 
 
 Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
 
-A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
+A Bridgetek board with a Raspberry Pi pico and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
 
 ![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
 
@@ -38,11 +42,11 @@ A Bridgetek board with a Raspberry Pi RP2040 and a through-board connector (MM20
 
 | File | Function |
 | --- | --- |
-|[EVE_MCU_RP2040.c](EVE_MCU_RP2040.c) | Common file for Raspberry Pi RP2040, higher level read/writes, endian conversions, SPI peripheral setup and control, CS and PD pin control. |
+|[EVE_MCU_PICO_SDK.c](EVE_MCU_PICO_SDK.c) | Common file for Raspberry Pi pico SDK, higher level read/writes, endian conversions, SPI peripheral setup and control, CS and PD pin control. |
 
 ### IDM2040-7A Module
 
-The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT817Q. The screen resolution is 800x480.
+The IDM2040-7A from Bridgetek has an integrated Raspberry Pi RP2040 and a BT817Q. The screen resolution is 800x480.
 
 The settings required in `EVE_config.h` are:
 ```c
@@ -52,7 +56,7 @@ The settings required in `EVE_config.h` are:
 
 ### IDM2040-43A Module
 
-The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 pico and a BT883. The screen resolution is 480x272.
+The IDM2040-43A from Bridgetek has an integrated Raspberry Pi RP2040 and a BT883. The screen resolution is 480x272.
 
 The settings required in `EVE_config.h` are:
 ```c
@@ -62,7 +66,7 @@ The settings required in `EVE_config.h` are:
 
 ### IDM2040-21R Module
 
-The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 pico and a FT800Q. The screen resolution is 480x480.
+The IDM2040-21R from Bridgetek has an integrated Raspberry Pi RP2040 and a FT800Q. The screen resolution is 480x480.
 
 The settings required in `EVE_config.h` are:
 ```c

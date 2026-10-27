@@ -93,7 +93,7 @@
     || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
     || defined(PLATFORM_ESP32) || defined(PLATFORM_RP2040) \
-    || defined(PLATFORM_MSPM0)
+    || defined(PLATFORM_PICO_SDK) || defined(PLATFORM_MSPM0)
 #define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
 #define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
@@ -127,7 +127,7 @@
 /* FT9xx SPI Bus is set to 12.5 MHz by default */
 #define EVE_SPI_TIMEOUT 16
 
-#elif defined(PLATFORM_RP2040)
+#elif defined(PLATFORM_RP2040) || defined(PLATFORM_PICO_SDK) 
 /* RP2040 SPI bus is set to 10 MHz by default */
 #define EVE_SPI_TIMEOUT 16
 

@@ -136,11 +136,19 @@ int eve_calibrate(void)
     calib.transform[5] = 0x00000000; // 0.0
 #else
     // Uncharacterised panels
+    
+    // Flag set if persistent storage is available
+    int store = 0;
+
+    // Flag set if a valid calibration data read from peristent storage
     int valid = 0;
+    //
     // Try to read a touch configuration if the platform support it
     // NOTE: platform_calib_init to return zero if supported non-zero if not
     if (platform_calib_init() == 0)
     {
+        // Persistent storage is available
+        store = 1;
         // Do not read calibration information if screen is being touched at start
         // NOTE: Not available on capacitive touch screens.
         if (!eve_key_detect())
@@ -185,7 +193,12 @@ int eve_calibrate(void)
         calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
         calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
         calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
-        platform_calib_write(&calib);
+        
+        // Only write to persistent storage if it is available
+        if (store)
+        {
+            platform_calib_write(&calib);
+        }
     }
 #endif
 

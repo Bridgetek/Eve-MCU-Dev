@@ -59,7 +59,7 @@
 
 #if (ASSETS != USE_FLASH)
 // Pico platform cannot use host file system or arrays for assets
-#if defined(PLATFORM_RP2040)
+#if defined(PLATFORM_PICO_SDK)
 #error Target device must use assets in EVE Flash
 #endif
 #endif
