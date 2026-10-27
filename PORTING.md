@@ -145,7 +145,7 @@ Replacing a generated `main.c` with a may remove these prerequisites.
 Choose an existing EVE-MCU-Dev port with a similar SDK or peripheral interface as a reference. 
 The following ports are good starting points:
 
-* The [RP2040 "pico" implementation][rp2040-c] demonstrates a direct blocking SPI implementation using a hardware SDK in an MCU port.
+* The [pico SDK implementation][pico-sdk-c] demonstrates a direct blocking SPI implementation using a hardware SDK in an MCU port.
 * The [STM32Cube SPI implementation][stm32-spi-c] demonstrates another SDK integration in an MCU port. **Remove??**
 * The [Emulator][emulator-c] demonstrates MCU port using a third party DLL.
 * The [libFT4222][libft4222-c] demonstrates SPI buffering an MCU port using a third party DLL.
@@ -275,7 +275,7 @@ not values to copy from the BRT_AN_062 wiring diagram.
 
 For the new port implementation, choose SPI master mode, SPI Mode 0, 8-bit transfers and MSB-first bit order. 
 A conservative initial clock such as 1 MHz is a useful starting point, as demonstrated by the 
-[RP2040 port][rp2040-c]. Do not assume that its later operating speed is suitable for another board or EVE device.
+[pico SDK port][pico-sdk-c]. Do not assume that its later operating speed is suitable for another board or EVE device.
 
 ### Independent chip-select control
 
@@ -381,7 +381,7 @@ The millisecond counter in `Platform_Time_ms()` must be a monotonic clock storin
 | `MCU_Deinit()` | `Platform_Deinit()` | Complete outstanding activity, leave CS# inactive (logic high), apply the intended PD# shutdown state (logic low) and release resources owned by the port. Do not shut down or reset a shared SPI peripheral without accounting for its other users. |
 
 These functions return `0` on success and `-1` (or non-zero) on failure. 
-The [RP2040 implementation][rp2040-c] provides examples of initial configuration, 
+The [pico SDK implementation][pico-sdk-c] provides examples of initial configuration, 
 post-boot speed adjustment and shutdown; the [MCU interface][mcu-h] defines the lifecycle entry points.
 
 Where the target permits it, preload inactive output levels before enabling the GPIO output 
@@ -440,7 +440,7 @@ The library determines when a transaction starts and ends in the HAL layer.
 Similarly to the chip-select funtions the power-down functions change the output level of the pin only; 
 **do not** implement EVE reset sequencing or its delays in the new MCU port. 
 
-**References:** [HAL sequencing][hal-c], [RP2040 GPIO-controlled reference port][rp2040-c].
+**References:** [HAL sequencing][hal-c], [pico SDK GPIO-controlled reference port][pico-sdk-c].
 
 ```c
 /* board_gpio_write() applies a physical level: 0 = low, 1 = high.
@@ -481,7 +481,7 @@ The simplest implementation completes a SPI transfer before returning.
 Neither `MCU_SPIWrite()` nor `MCU_SPIRead()` should assert or deassert CS#. 
 The HAL layer surrounds related transfer calls with the required control-pin operations.
 
-**References:** [HAL transfer implementation][hal-c], [RP2040 transfers][rp2040-c].
+**References:** [HAL transfer implementation][hal-c], [pico SDK transfers][pico-sdk-c].
 
 | MCU Ports | Platform Ports | Required behaviour for the basic blocking port |
 | --- | --- | --- |
@@ -552,7 +552,7 @@ Keep the initial SPI peripheral configuration at eight bits and implement these 
 **Note:** MSB-first SPI bit order is not the same as byte order within a multi-byte value. 
 The HAL layer prepares the protocol representation; scalar helpers preserve the resulting object bytes rather than adding an unconditional swap.
 
-**References:** [HAL address/data operations][hal-c], [RP2040 scalar helpers][rp2040-c].
+**References:** [HAL address/data operations][hal-c], [pico SDK scalar helpers][pico-sdk-c].
 
 ```c
 void MCU_SPIWrite8(uint8_t value)
@@ -683,7 +683,7 @@ clear EVE interrupt flags, or wait for INT# to become active.
 
 **Note:** The INT# pin implementation is optional and is only required when `EVE_COPRO_METHOD` is set to `EVE_COPRO_INT` in `EVE_config.h`.
 
-**References:** [MCU input contract][mcu-h], [Platform input contract][platform-h], [RP2040 GPIO input example][rp2040-c].
+**References:** [MCU input contract][mcu-h], [Platform input contract][platform-h], [pico SDK GPIO input example][pico-sdk-c].
 
 Examples for both a wired INT# input and an unsupported-input implementation are provided in 
 [Section 9](#int-and-interrupt-based-co-processor-completion). 
@@ -1356,7 +1356,7 @@ Store and retrieve this structure using the platform's available non-volatile me
 The common touch code manages the calibration marker and transform values, so the platform implementation 
 should preserve the complete structure and report a failure when no valid stored record is available.
 
-The [RP2040 implementation][rp2040-c] provides an example of how persistent calibration storage can be integrated into a supported MCU port.
+The [pico SDK implementation][pico-sdk-c] provides an example of how persistent calibration storage can be integrated into a supported MCU port.
 
 **References:** [stored record and callback declarations][touch-h], [calibration ownership][touch-c].
 
@@ -1726,7 +1726,7 @@ The primary references for this guide are [BRT_AN_062][an062], which provides th
 and the current [EVE-MCU-Dev source][source], which defines the interfaces and behaviour described here. 
 When validating the guide against a newer library revision, begin with [MCU.h][mcu-h], [EVE_HAL.c][hal-c], [EVE_API.c][api-c], [EVE_config.h][config-h] and [EVE_settings.h][settings-h].
 
-For MCU implementation examples, refer to the [RP2040 port][rp2040-c] or the [STM32 CUBE SPI implementation][stm32-spi-c] together with its [common helpers][stm32-common-c]. 
+For MCU implementation examples, refer to the [pico SDK port][pico-sdk-c] or the [STM32 CUBE SPI implementation][stm32-spi-c] together with its [common helpers][stm32-common-c]. 
 The [STM32 CUBE Quad SPI implementation][stm32-qspi-c] provides an example of a more specialised buffered transport rather than the conventional GPIO-controlled SPI approach.
 
 For build integration, refer to [examples/examples.cmake][examples-cmake], [simple/common.cmake][simple-cmake] and the [Pico platform example][pico-cmake]. For application startup and calibration storage, see [simple/common/eve_example.c][simple-c], [touch.h][touch-h] and [touch.c][touch-c].
@@ -1754,7 +1754,7 @@ Additional source-specific references are provided alongside the relevant sectio
 [settings-h]: include/EVE_settings.h
 [debug-h]: include/EVE_debug.h
 
-[rp2040-c]: ports/eve_arch_rpi/EVE_MCU_RP2040.c
+[pico-sdk-c]: ports/eve_arch_rpi/EVE_MCU_PICO_SDK.c
 [stm32-spi-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE_SPI.c
 [stm32-qspi-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE_QUADSPI.c
 [stm32-common-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE.c
