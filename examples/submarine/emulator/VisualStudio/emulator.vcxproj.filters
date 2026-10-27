@@ -120,7 +120,7 @@
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll">
       <Filter>Library\ports\eve_emulator\EVE_Emulator\bin</Filter>
     </None>
-    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\mx25lemu.dll">
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll">
       <Filter>Library\ports\eve_emulator\EVE_Emulator\bin</Filter>
     </None>
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll">

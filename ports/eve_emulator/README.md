@@ -102,7 +102,7 @@ The required DLLs must be available in the same output directory as the applicat
 | File | Purpose |
 | --- | --- |
 | `bt8xxemu.dll` | Main EVE Emulator runtime library |
-| `mx25lemu.dll` | Additional flash-emulation dependency |
+| `btflashemu.dll` | Additional flash-emulation dependency |
 | `zlib.dll` | Compression dependency used by EVE for certain API function calls |
 
 The provided Visual Studio projects and `CMakeLists.txt` files automatically copy the available DLLs to the executable output directory after the application is built.
@@ -122,7 +122,7 @@ subdirectory.
 Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
 The application must be built using an `x64` configuration.
 
-When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
+When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
 
 ## Command-Line Builds (CMake)
 
@@ -173,7 +173,7 @@ cmake --build build --config Release
 
 The executable location depends on the selected generator and build configuration. For example, a Visual Studio build commonly places the executable in `build\Debug` or `build\Release`.
 
-When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `mx25lemu.dll`, and `zlib.dll` to the executable output directory.
+When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
 
 ## Flash and SD Card Support
 
@@ -325,9 +325,10 @@ For shells which use backslash escaping, add:
 
 The exact quotation rules may vary between shells and build systems.
 
+
 ### Flash Image Size
 
-The `EVE_EMULATOR_FLASH_FILE_SIZE` macro defines the size of the emulated flash device in bytes.
+The `EVE_EMULATOR_FLASH_FILE_SIZE` macro defines the capacity of the emulated flash device in bytes.
 
 If the macro is not defined, the port uses a default size of 8 MiB:
 
@@ -335,13 +336,86 @@ If the macro is not defined, the port uses a default size of 8 MiB:
 #define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)
 ```
 
-For example, the equivalent numeric preprocessor definition is:
+For example, a flash capacity of 16 MiB can be configured using:
 
-```text
-EVE_EMULATOR_FLASH_FILE_SIZE=8388608
+```
+EVE_EMULATOR_FLASH_FILE_SIZE=(16 * 1024 * 1024)
 ```
 
-The configured size should be suitable for both the selected EVE device and the supplied flash image.
+Or using the equivalent numeric definition:
+
+```
+EVE_EMULATOR_FLASH_FILE_SIZE=16777216
+```
+
+When a flash device family is selected using `EVE_EMULATOR_FLASH_DEVICE`, the configured size determines which device from that family is emulated.
+
+If an exact flash part is selected, its native capacity takes precedence over `EVE_EMULATOR_FLASH_FILE_SIZE`.
+
+The selected flash capacity should be suitable for the configured EVE device and supplied flash image.
+
+### Flash Device Selection
+
+The `EVE_EMULATOR_FLASH_DEVICE` macro allows a specific flash device or device family to be selected for emulation using `btflashemu.dll`.
+
+If the macro is not defined, the emulator automatically selects a compatible flash device based on the configured EVE device and flash capacity.
+
+The macro can specify either an exact flash part name or a flash device family.
+
+For example, to select an exact flash part:
+
+```
+EVE_EMULATOR_FLASH_DEVICE=TEXT("W25Q256JV")
+```
+
+This selects the **W25Q256JV** device with its native capacity of **32 MiB**, regardless of the value configured for `EVE_EMULATOR_FLASH_FILE_SIZE`.
+
+Alternatively, a flash device family can be selected:
+
+```
+EVE_EMULATOR_FLASH_DEVICE=TEXT("W25Q-JV")
+```
+
+When a family is specified, `EVE_EMULATOR_FLASH_FILE_SIZE` determines which device within that family is selected. For example, configuring a size of 16 MiB selects the W25Q128JV device.
+
+When defining the macro through CMake, use a wide string literal:
+
+```cmake
+add_compile_definitions(
+    EVE_EMULATOR_FLASH_DEVICE=L\"W25Q256JV\"
+)
+```
+
+The following flash devices are supported by the `btflashemu.dll` library:
+
+| Family | Name | Size |
+| --- | --- | --- |
+| W25Q-JV | W25Q16JV | 2 MiB |
+| W25Q-JV | W25Q32JV | 4 MiB |
+| W25Q-JV | W25Q64JV | 8 MiB |
+| W25Q-JV | W25Q128JV | 16 MiB |
+| W25Q-JV | W25Q256JV | 32 MiB |
+| MT25QL | MT25QL128ABA | 16 MiB |
+| MT25QL | MT25QL256ABA | 32 MiB |
+| MT25QL | MT25QL512ABB | 64 MiB |
+| MT25QL | MT25QL01GBBB | 128 MiB |
+| MT25QL | MT25QL02GCBB | 256 MiB |
+| MX25L-45 | MX25L6445E | 8 MiB |
+| MX25L-45 | MX25L12845E | 16 MiB |
+| MX25L-35 | MX25L12835F | 16 MiB |
+| MX25L-35 | KH25L12835F | 16 MiB |
+| MX25L-35 | MX25L25635F | 32 MiB |
+| S25FL-L | S25FL064L | 8 MiB |
+| S25FL-L | S25FL128L | 16 MiB |
+| S25FL-L | S25FL256L | 32 MiB |
+| W25N-GV | W25N01GV | 128 MiB |
+| AS5F | AS5F31G04SND-08LIN | 128 MiB |
+| AS5F | AS5F32G04SND-08LIN | 256 MiB |
+| AS5F | AS5F34G04SND-08LIN | 512 MiB |
+| AS5F | AS5F38G04SND-08LIN | 1024 MiB |
+
+The selected flash device must be compatible with the configured EVE generation. Not all flash devices are necessarily supported by every EVE device.
+
 
 ### Flash Persistence
 
@@ -503,27 +577,13 @@ Multi-touch support is not currently implemented by the EVE-MCU-Dev emulator por
 
 ### Display Rotation
 
-When display rotation is performed using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`, the dimensions of the emulator window are determined by the configured display resolution.
+Display rotation can be controlled using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`.
 
-For rotations which swap the horizontal and vertical axes, such as a 90-degree or 270-degree rotation, the values of `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` must also be swapped in the active display configuration.
+The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is enabled by defualt in `EVE_Emulator.c`. When `BT8XXEMU_EmulatorEnableWindowRotate` enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
 
-This ensures that the emulator creates a window with the correct orientation and aspect ratio.
+This eliminates the need to manually swap `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` solely to accommodate display rotation in the emulator.
 
-For example, if the normal display configuration is:
-
-```c
-#define EVE_DISP_WIDTH  800
-#define EVE_DISP_HEIGHT 480
-```
-
-a configuration intended to operate permanently in a 90-degree or 270-degree rotated orientation should use:
-
-```c
-#define EVE_DISP_WIDTH  480
-#define EVE_DISP_HEIGHT 800
-```
-
-The `EVE_REG_ROTATE` register or `EVE_CMD_SETROTATE` command controls how the EVE display is rendered, but it does not automatically resize or reshape the host window created by the emulator.
+When the flag is disabled, the emulator does not automatically adjust the window orientation or dimensions to compensate for display rotation.
 
 ### Power-Down Behaviour
 
@@ -564,7 +624,7 @@ Rebuild the project to run its post-build copy operation, or manually copy the D
 ports\eve_emulator\EVE_Emulator\bin
 ```
 
-If required, copy `mx25lemu.dll` and `zlib.dll` to the same directory.
+If required, copy `btflashemumu.dll` and `zlib.dll` to the same directory.
 
 ### The Application or DLL Has the Wrong Architecture
 
@@ -621,14 +681,9 @@ Remove the unsupported macro or select a compatible EVE API level.
 
 ### The Emulator Window Has the Wrong Orientation
 
-When using a rotation which swaps the display axes, swap the configured values of:
+Ensure that `BT8XXEMU_EmulatorEnableWindowRotate` is enabled in the emulator parameters set in `EVE_Emulator.c` when automatic display rotation compensation is required.
 
-```c
-EVE_DISP_WIDTH
-EVE_DISP_HEIGHT
-```
-
-The rotation register or command changes the rendered output but does not dynamically resize the emulator window.
+The emulator uses this flag to compensate for display rotation when presenting the output window, including rotations configured through `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`
 
 ## Linux
 

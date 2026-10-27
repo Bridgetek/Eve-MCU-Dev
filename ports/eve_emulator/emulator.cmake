@@ -35,9 +35,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
                 COMMAND_EXPAND_LISTS
     )
     endif()
-    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/EVE_Emulator/bin/mx25lemu.dll")
+    if(EXISTS "${API_DIRECTORY}/ports/eve_emulator/EVE_Emulator/bin/btflashemu.dll")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/EVE_Emulator/bin/mx25lemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${API_DIRECTORY}/ports/eve_emulator/EVE_Emulator/bin/btflashemu.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
                 COMMAND_EXPAND_LISTS
     )
     endif()

@@ -44,7 +44,7 @@ It is possible to use the command line instructions above in a terminal windows 
 
 The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder.
 
-The example application will automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `mx25lemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
+The example application will automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `btflashemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
 
 ## Linux
 

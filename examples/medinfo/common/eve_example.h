@@ -88,8 +88,13 @@ void eve_example(const char *assets);
 #endif
 
 #if defined(PLATFORM_EMULATOR)
-#if ASSETS != USE_C_ARRAYS
-#error Emulation in this example currently only supports USE_C_ARRAYS for the ASSETS macro
+// Emulator only supports c arrays and flash
+#if !((ASSETS == USE_C_ARRAYS) || (ASSETS == USE_FLASH))
+#error Emulation in this example currently only supports USE_C_ARRAYS or USE_FLASH for the ASSETS macro
+#endif
+// check for the flash file pre-processor definition 
+#if ((ASSETS == USE_FLASH) && !defined(EVE_EMULATOR_FLASH_FILE))
+#error EVE_EMULATOR_FLASH_FILE not defined, please ensure this is added as a preprocessor deinition which equals TEXT("..\\path\\to\\desried\\bin")
 #endif
 #endif
 
