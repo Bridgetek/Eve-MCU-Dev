@@ -39,13 +39,12 @@
 
 /* INCLUDES ************************************************************************/
 
-#include "pico/stdlib.h"
-#include "pico/time.h"
-
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+
+#include <pico/stdlib.h>
+#include <pico/time.h>
 
 /* Flash read/write capability for storing Non-volatile data */
 #include <hardware/flash.h>
@@ -56,41 +55,63 @@
 
 /* CONSTANTS ***********************************************************************/
 
+/**
+ * @brief Location in flash to store touchscreen configuration.
+ */
+#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
+
+/* LOCAL VARIABLES *****************************************************************/
+
+static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
+
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
-/** @brief Portable version of fopen/fopen_s
+/**
+ * @brief Functions used to store calibration data in flash.
+ * @details Note that this stored the calibration data at the very top sector of flash.
+ * This method is not recommended usage as a program may utilise this flash area.
+ * The implementation here is simply to show how the calibration information is 
+ * obtained and stored. Other methods should be explored for a completed application.
+ * A proper implementation of this method could modify the linker script to
+ * reserve this area. 
  */
 //@{
-FILE *port_fopen(char const * _FileName, char const * _Mode)
+int8_t platform_calib_init(void)
 {
-#if defined(_MSC_VER)
-    FILE *h1;
-    errno_t err;
-    err = fopen_s(&h1, _FileName, _Mode);
-    if (err)
-    {
-        return NULL;
-    }
-    return h1;
-#else
-    return fopen(_FileName, _Mode);
-#endif
+    return 0;
 }
-//@}
 
-/** @brief Functions used to get platform time
- */
-//@{
+int8_t platform_calib_write(struct touchscreen_calibration *calib)
+{
+    // Data to write to flash must be aligned to a flash page
+    uint32_t ints = save_and_disable_interrupts();
+
+    memset(config, 0xff, FLASH_PAGE_SIZE);
+    memcpy(config, calib, sizeof(struct touchscreen_calibration));
+
+    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
+    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
+    restore_interrupts (ints);
+
+    return 0;
+}
+
+int8_t platform_calib_read(struct touchscreen_calibration *calib)
+{
+    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
+    memcpy(calib, p, sizeof(struct touchscreen_calibration));
+    return 0;
+}
+
 uint32_t platform_get_time(void)
 {
-    uint32_t time_ms;
-    time_ms = to_ms_since_boot(get_absolute_time());
-    return time_ms;
+    return to_ms_since_boot(get_absolute_time());
 }
+
 //@}
 
 int main(void)
@@ -107,15 +128,13 @@ int main(void)
 
 void setup(void)
 {
-    int ch = 0;
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
 
     // Turn on the pico LED to show activity
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 1);
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 1);
     
 #if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
     // Wait for stdio (UART/USB) connection if enabled

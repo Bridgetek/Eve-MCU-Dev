@@ -72,7 +72,13 @@ void setup(void);
 /* FUNCTIONS ***********************************************************************/
 
 /**
- * @brief Functions used to store calibration data in file.
+ * @brief Functions used to store calibration data in flash.
+ * @details Note that this stored the calibration data at the very top sector of flash.
+ * This method is not recommended usage as a program may utilise this flash area.
+ * The implementation here is simply to show how the calibration information is 
+ * obtained and stored. Other methods should be explored for a completed application.
+ * A proper implementation of this method could modify the linker script to
+ * reserve this area. 
  */
 //@{
 int8_t platform_calib_init(void)
