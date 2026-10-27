@@ -70,20 +70,20 @@
 #include <MCU.h>
 
 /* SPI Master pins */
-#define PIN_NUM_MISO GPIO_NUM_19
-#define PIN_NUM_MOSI GPIO_NUM_23
 #define PIN_NUM_CLK  GPIO_NUM_18
+#define PIN_NUM_MOSI GPIO_NUM_23
+#define PIN_NUM_MISO GPIO_NUM_19
 #define PIN_NUM_CS   GPIO_NUM_22
 /* Powerdown pin */
-#define PIN_NUM_PD   GPIO_NUM_15
+#define PIN_NUM_PD   GPIO_NUM_16
 /* Interrupt pin */
-#define PIN_NUM_INT  GPIO_NUM_2
+#define PIN_NUM_INT  GPIO_NUM_17
 
 // SPI device
 static spi_device_handle_t spi;
 
 // Status LED
-#define PIN_NUM_BLUE_LED 5
+#define PIN_NUM_BLUE_LED GPIO_NUM_5
 
 #undef HSPI_HOST
 #define HSPI_HOST SPI2_HOST
@@ -154,7 +154,7 @@ int MCU_Init(void)
     gpio_config(&io_conf);
 
     // Interrupt input (no pull-up or -down)
-    gpio_set_direction(PIN_NUM_INT, GPIO_MODE_OUTPUT);
+    gpio_set_direction(PIN_NUM_INT, GPIO_MODE_INPUT);
 
     // Turn on the blue LED on the board to indication successful board initialisation
     gpio_set_level(PIN_NUM_BLUE_LED, 1);
