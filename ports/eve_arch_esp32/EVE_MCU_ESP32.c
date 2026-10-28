@@ -80,7 +80,7 @@
 #define PIN_NUM_INT  GPIO_NUM_17
 
 // SPI device
-static spi_device_handle_t spi;
+static spi_device_handle_t eve_spi;
 
 // Status LED
 #define PIN_NUM_BLUE_LED GPIO_NUM_5
@@ -120,13 +120,13 @@ static void mcu_setup_spi(int speed)
     ret=spi_bus_initialize(HSPI_HOST, &buscfg, 1);
     assert(ret==ESP_OK);
     //Attach the SPI bus
-    ret=spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
+    ret=spi_bus_add_device(HSPI_HOST, &devcfg, &eve_spi);
     assert(ret==ESP_OK);
 }
 
 static void mcu_deinit_spi(void)
 {
-    spi_bus_remove_device(spi);
+    spi_bus_remove_device(eve_spi);
     spi_bus_free(HSPI_HOST);
 }
 
@@ -177,11 +177,11 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
-    // Increase SPI speed to 25 MHz after initialisation is complete
-    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
+    /* Increase SPI speed to 20 MHz after initialisation is complete. */
+    /* See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     mcu_deinit_spi();
     MCU_Delay_20ms();
-    mcu_setup_spi(25000000);
+    mcu_setup_spi(20000000);
 
     return 0;
 }
@@ -239,7 +239,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
     trans.flags = 0;
     trans.tx_buffer = DataToWrite;
     trans.rx_buffer = NULL;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
     gpio_set_level(5, 0);
 }
 
@@ -252,7 +252,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     trans.flags = 0;
     trans.tx_buffer = NULL;
     trans.rx_buffer = DataToRead;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
 }
 
 uint8_t MCU_SPIRead8(void)
@@ -264,7 +264,7 @@ uint8_t MCU_SPIRead8(void)
     trans.rxlength = 0;
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
     trans.tx_data[0] = 0;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
     DataRead = trans.rx_data[0];
 
     return DataRead;
@@ -278,7 +278,7 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
     trans.rxlength = 0;
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
     trans.tx_data[0] = DataToWrite;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
 }
 
 uint16_t MCU_SPIRead16(void)
@@ -290,7 +290,7 @@ uint16_t MCU_SPIRead16(void)
     trans.rxlength = 0;
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
     *(uint16_t *)trans.tx_data = 0;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
     DataRead = *((uint16_t *)trans.rx_data);
 
     return DataRead;
@@ -304,7 +304,7 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     trans.rxlength = 0;
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
     *(uint16_t *)trans.tx_data = DataToWrite;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
@@ -316,7 +316,7 @@ void MCU_SPIWrite24(uint32_t DataToWrite)
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
 
     *(uint32_t *)trans.tx_data = DataToWrite;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
 }
 
 uint32_t MCU_SPIRead32(void)
@@ -329,7 +329,7 @@ uint32_t MCU_SPIRead32(void)
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
 
     *(uint32_t *)trans.tx_data = 0;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
     DataRead = *((uint32_t *)trans.rx_data);
 
     return DataRead;
@@ -344,7 +344,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
     trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
 
     *(uint32_t *)trans.tx_data = DataToWrite;
-    spi_device_transmit(spi, &trans);
+    spi_device_transmit(eve_spi, &trans);
 }
 
 

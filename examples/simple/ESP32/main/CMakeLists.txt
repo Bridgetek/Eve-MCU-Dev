@@ -1,5 +1,5 @@
 set(COMPONENT_NAME "eve_example")
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPROGMEM=")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DPROGMEM= -DEVE_DEBUG_LEVEL=2")
                     
 idf_component_register(SRCS 
                     "main.c" 

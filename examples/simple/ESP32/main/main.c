@@ -140,6 +140,7 @@ void main_thread(void *p)
     setup();
 
     ESP_LOGI(__FUNCTION__, "example starting");
+
     /* Start example code */
     eve_example();
 

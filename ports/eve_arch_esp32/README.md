@@ -29,8 +29,24 @@ __PICTURE INCORRECT__ - __AWAITING UPDATE__
 
 __PICTURE INCORRECT__ - __AWAITING UPDATE__
 
-__NOTE:__ The ESP32 Thing has a (deprecated) 26 MHz crystal. If this device is used then the default monitor baud rate is 74880 baud rather than 115200 baud with an ESP32 with the currently supported 40 MHz crystal.
-
-__NOTE:__ Other ESP32 variations will required different pin numbers and SPI busses to be used. These settings are for the ESP32 (Tensilica LX6 microprocessor). If other variants of the ESP32 are to be used then the differences can be added in the top of the `EVE_MCU_ESP32.c` file or additional files for different types created.
-
 **NOTE:** The INT# line is not shown connected.
+
+The following table shows the SPI transfer frequencies for the ESP32:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 20 MHz |
+
+The ESP32 Thing has a (deprecated) 26 MHz crystal. 
+If this device is used then the default monitor baud rate is 74880 baud rather than 115200 baud with an ESP32 with the currently supported 40 MHz crystal.
+
+Other ESP32 variations may required different pin numbers and SPI busses to be used. 
+These settings are for the ESP32 (Tensilica LX6 microprocessor). 
+If other variants of the ESP32 are to be used then the differences can be added in the top of the `EVE_MCU_ESP32.c` file or additional files for different types created.
+
+The example code is not written to support the multi-tasking environment in the FreeRTOS environment on which the ESP32 code is run.
+If the Task Watchdog Timer is enabled in the configuration then the watchdog may cause the application to reset. 
+Ensure that this is turned off.
+- In the `sdkconfig` file by setting the line containing `CONFIG_ESP_TASK_WDT_EN` to `# CONFIG_ESP_TASK_WDT_EN is not set`.
+- Using the "SDK Configuration editor" page in Visual Studio Code locate "Component config" and "ESP System Settings". Uncheck the box for Enable Task Watchdog Timer.
+  ![ESP32 SDK Configuration editor Task Watchdog Timer](../../docs/esp32_configuration_twt.png)
