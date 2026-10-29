@@ -26,3 +26,15 @@ Ensure that the power supply from the FT9XX module is capable of also powering t
 An MM930Lite board can be connected to an EVE board using the through board connector as in the following picture.
 
 ![MM930Lite Wiring Picture](../../docs/mm930lite.png)
+
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the FT9xx port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 12.5 MHz | 12.5 MHz |
+
+## Software
+
+Please refer to the [FT9xx Simple example](../../examples/simple/FT900/README.md) for instructions on using the hardware library in an EVE-MCU-Dev project.

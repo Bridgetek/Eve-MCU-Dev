@@ -43,3 +43,9 @@ This example contains PlatformIO environments for the following boards:
 | zero | atmelsam | zero | Default Arduino pins | 
 | MM2040EV | raspberrypi | pico | SCLK 2, MOSI 3, MISO 4, CS# 5, PD# 7, INT# 6 | 
 | esp32thing | espressif32 | esp32thing | SCLK 18, MOSI 23, MISO 19, CS# 15, PD# 15, INT# 2 | 
+
+## Persistent Storage
+
+In the [main.cpp](main/main.cpp) program there are the following functions used to store calibration data in flash `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()`.
+
+In this example the calibration data is not stored and calibration must be performed each time.

@@ -51,3 +51,17 @@ The UF2 file for programming onto the board is `medinfo_pico.uf2` in the `build`
 If the `ASSETS` macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The flash image file is `flash-820-default.bin` in the `assets` directory. If `USE_C_ARRAYS` then no additional action is needed. The `USE_FILES` or `USE_FLASHIMAGE` options are not possible on the pico platform as there is no file system built into the example.
 
 Note: the default setting for `ASSETS` on pico is `USE_C_ARRAYS` which is set in the `CMakeLists.txt` file. 
+
+## Persistent Storage
+
+In the [main.c](main/main.c) program there are the following functions used to store calibration data in flash `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()`.
+
+In this example the calibration data is stored by these functions in flash program memory at the very top sector of flash.
+
+This method is not recommended usage as a program may utilise this flash area and the calibration data may overwrite the program.
+The implementation here is simply to show how the calibration information is obtained and stored.
+Other methods should be explored for a completed application.
+
+A proper implementation of this method in an application would modify the linker script to reserve this area for the storage of any persistent data that is required for an application.
+Other methods of storing calibration data may be utilised such as writing to the flash attached to the EVE or external devices connected to the pico.
+

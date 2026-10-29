@@ -43,3 +43,17 @@ The following CMake command will build the code and place the resulting files in
 ```
 
 The UF2 file for programming onto the board is `cruise_pico.uf2` in the `build` directory.
+
+## Persistent Storage
+
+In the [main.c](main/main.c) program there are the following functions used to store calibration data in flash `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()`.
+
+In this example the calibration data is stored by these functions in flash program memory at the very top sector of flash.
+
+This method is not recommended usage as a program may utilise this flash area and the calibration data may overwrite the program.
+The implementation here is simply to show how the calibration information is obtained and stored.
+Other methods should be explored for a completed application.
+
+A proper implementation of this method in an application would modify the linker script to reserve this area for the storage of any persistent data that is required for an application.
+Other methods of storing calibration data may be utilised such as writing to the flash attached to the EVE or external devices connected to the pico.
+

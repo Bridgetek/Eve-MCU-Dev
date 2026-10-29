@@ -38,7 +38,15 @@ A Bridgetek board with a Raspberry Pi pico and a through-board connector (MM2040
 
 **NOTE:** The INT# line is not shown connected.
 
-## Files
+### SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the pico SDK port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 25 MHz |
+
+### Files
 
 | File | Function |
 | --- | --- |
@@ -97,7 +105,15 @@ A Raspberry Pi can be connected to an EVE board as in the following picture.
 
 ![Raspberry Pi Wiring Picture](../../docs/rpi400.png)
 
-## Files
+### SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the Raspberry Pi port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 1 MHz |
+
+### Files
 
 | File | Function |
 | --- | --- |

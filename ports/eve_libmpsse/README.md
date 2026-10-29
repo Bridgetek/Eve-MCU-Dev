@@ -48,6 +48,14 @@ Ensure that the computer has sufficient power to supply the EVE module when the 
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. The `INT#` signal is connected to the `ADBUS5` pin on the `FT232H` and is read using the low-byte GPIO functionality provided by the modified libMPSSE source used by this port. This allows the EVE interrupt-based co-processor completion method to be used.
 
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the libFT4222 port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 15 MHz |
+
 ## FTDI Software Dependencies
 
 This port uses files from the [Bridgetek FTDI-SW-Release](https://github.com/Bridgetek/FTDI-SW-Release) repository. The repository is included in EVE-MCU-Dev as a submodule under:

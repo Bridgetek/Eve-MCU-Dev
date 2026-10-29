@@ -32,6 +32,17 @@ An Arduino board can be connected to an EVE board as in the following picture (t
 
 **NOTE:** The INT# line is not shown connected.
 
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the Arduino port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 8 MHz |
+
+The maximum runtime speed of the SPI bus is reduced to support the legacy Arduino boards.
+This may be increased in line with the supported SPI frequencies of more capable Arduino boards.
+
 ## Software
 
 Please refer to the [Arduino Simple example](../../examples/simple/arduino/README.md) for instructions on using the hardware sketch in an EVE-MCU-Dev project.

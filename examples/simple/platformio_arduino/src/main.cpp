@@ -85,8 +85,9 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
 
 void setup(void)
 {
-    pinMode(25, OUTPUT);
-    digitalWrite(25, 1);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, 1);
+
     /* Print out a welcome message... */
     //printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     //printf ("---------------------------------------------------------------- \r\n");
@@ -96,15 +97,6 @@ void setup(void)
 
 void loop() 
 {
-    int i;
-    for (i = 0; i < 10; i++)
-    {
-        digitalWrite(25, 1);
-        sleep_ms(100);
-        digitalWrite(25, 0);
-        sleep_ms(100);
-    }
-
     /* Start example code */
     eve_example();
 }

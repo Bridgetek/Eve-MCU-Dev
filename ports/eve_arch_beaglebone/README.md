@@ -23,6 +23,17 @@ The BeagleBone Black port was developed using a BeagleBone Black. The BeagleBone
 
 Ensure that the power supply from the BeagleBone Black module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the BeagleBone Black and EVE modules common to both power sources.
 
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the BeagleBone Black port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1 MHz | 1 MHz |
+
+The SPI bus frequency is not increased for runtime on the BeagleBone Black.
+This can be changed if required in an application to suit the application.
+
 ## Software
 
 Please refer to the [BeagleBone Simple example](../../examples/simple/BeagleBone/README.md) for instructions on using the hardware library in an EVE-MCU-Dev project.

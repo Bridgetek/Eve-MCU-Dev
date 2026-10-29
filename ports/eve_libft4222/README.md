@@ -95,6 +95,14 @@ The settings required in `EVE_config.h` are:
 
 With an appropiate `EVE_DISPLAY_RES` settings for the attached LCD panel.
 
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the libFT4222 port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1.25 MHz | 20 MHz |
+
 ## Windows
 
 Important Information about Windows builds.
