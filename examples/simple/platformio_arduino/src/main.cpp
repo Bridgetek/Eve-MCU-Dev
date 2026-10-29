@@ -58,8 +58,63 @@ void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
+#if defined(ARDUINI_AVR_UNO) || defined(ARDUINO_AVR_LEONARDO) \
+    || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_NANO) \
+    || defined(ARDUINO_AVR_MICRO)
 /**
  * @brief Functions used to store calibration data in file.
+ * @details Boards with a physical EEPROM as reported by https://docs.arduino.cc/learn/programming/eeprom-guide/
+ */
+//@{
+#include <EEPROM.h>
+int8_t platform_calib_init(void)
+{
+    return 0;
+}
+
+int8_t platform_calib_write(struct touchscreen_calibration *calib)
+{
+    EEPROM.put(0, *calib);
+    return 0;
+}
+
+int8_t platform_calib_read(struct touchscreen_calibration *calib)
+{
+    EEPROM.get(0, *calib);
+    return 0;
+}
+//@}
+#elif defined(ARDUINO_ARCH_ESP32)
+/**
+ * @brief Functions used to store calibration data in file.
+ * @details Boards with an EEPROM library
+ */
+//@{
+#include <EEPROM.h>
+
+int8_t platform_calib_init(void)
+{
+    return 0;
+}
+
+int8_t platform_calib_write(struct touchscreen_calibration *calib)
+{
+    EEPROM.begin(sizeof(struct touchscreen_calibration));
+    EEPROM.put(0, *calib);
+    EEPROM.commit();
+    return 0;
+}
+
+int8_t platform_calib_read(struct touchscreen_calibration *calib)
+{
+    EEPROM.begin(sizeof(struct touchscreen_calibration));
+    EEPROM.get(0, *calib);
+    return 0;
+}
+//@}
+#else 
+/**
+ * @brief Functions to report no persistent calibration storage.
  */
 //@{
 int8_t platform_calib_init(void)
@@ -77,14 +132,17 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     return -1;
 }
 //@}
+#endif
 
 void setup(void)
 {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, 1);
 
+    Serial.begin(115200);
+
     /* Print out a welcome message... */
-    //printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     //printf ("---------------------------------------------------------------- \r\n");
     //printf ("Welcome to EVE-MCU-Dev Simple Example for the FT4222 Library\r\n");
     //printf ("\n");
