@@ -39,7 +39,7 @@
  */
 
 // Guard against being used for incorrect platform or architecture.
-#if defined(ARDUINO)
+#if defined(PLATFORM_PLATFORMIO_ARDUINO)
 
 #pragma message "Compiling " __FILE__ " for PlatformIO Arduino"
 
@@ -347,4 +347,4 @@ uint32_t MCU_le32toh(uint32_t h) {
 
 /* EVE MCU END */
 
-#endif /* defined(ARDUINO) */
+#endif /* defined(PLATFORM_PLATFORMIO_ARDUINO) */

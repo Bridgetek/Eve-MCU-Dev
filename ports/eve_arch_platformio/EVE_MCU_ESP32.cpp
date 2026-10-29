@@ -1,0 +1,441 @@
+/**
+ * @file EVE_MCU_ESP32.cpp
+ * @details MCU-specific code for controlling EVE on ESP32 devices.
+ */
+/*
+ * ============================================================================
+ * (C) Copyright Bridgetek Pte Ltd
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
+
+// Guard against being used for incorrect platform or architecture. ESP32 is Xtensa LE based.
+#if defined(PLATFORM_PLATFORMIO_ESPIDF)
+
+#pragma message "Compiling " __FILE__ " for PlatformIO Espressif ESP32"
+
+/* EVE MCU HEADER */
+
+#include <string.h>
+#include <stdint.h>
+/* Endian tools required as we send 32 bit values. */
+#include <endian.h>
+
+extern "C" {
+/* REQUIRE FreeRTOS to enable accurate timers. */
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+/* Local copy of endian.h */
+/*#include "endian.h"*/
+
+#include "esp_system.h"
+#include "driver/spi_master.h"
+#include "driver/spi_common.h"
+#include "hal/spi_types.h"
+#include "soc/gpio_struct.h"
+#include "rom/gpio.h"
+#include "driver/gpio.h"
+#include "soc/gpio_num.h"
+#include "esp_log.h"
+}
+
+/** @brief Library includes
+ * @details Includes the EVE-MCU-Dev MCU interface implemented by this
+ *      Arduino port. The C interface is exposed to this C++ source using
+ *      C linkage.
+ */
+//@{
+extern "C" {
+#include <MCU.h>
+}
+//@}
+
+/* SPI Master pins */
+#define PIN_NUM_CLK  GPIO_NUM_18
+#define PIN_NUM_MOSI GPIO_NUM_23
+#define PIN_NUM_MISO GPIO_NUM_19
+#define PIN_NUM_CS   GPIO_NUM_22
+/* Powerdown pin */
+#define PIN_NUM_PD   GPIO_NUM_16
+/* Interrupt pin */
+#define PIN_NUM_INT  GPIO_NUM_17
+
+// SPI device
+static spi_device_handle_t eve_spi;
+
+// Status LED
+#define PIN_NUM_BLUE_LED GPIO_NUM_5
+
+#undef HSPI_HOST
+#define HSPI_HOST SPI2_HOST
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the ESP32 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
+
+static void mcu_setup_spi(int speed)
+{
+    esp_err_t ret;
+
+    spi_bus_config_t buscfg={
+        .mosi_io_num = PIN_NUM_MOSI,
+        .miso_io_num = PIN_NUM_MISO,
+        .sclk_io_num = PIN_NUM_CLK,
+        .quadwp_io_num=-1,
+        .quadhd_io_num=-1,
+        .data4_io_num=-1,
+        .data5_io_num=-1,
+        .data6_io_num=-1,
+        .data7_io_num=-1,
+
+        .data_io_default_level = 0,
+        .max_transfer_sz = 0,
+        .dma_burst_size = 0,
+        .flags = 0,
+        .isr_cpu_id = ESP_INTR_CPU_AFFINITY_AUTO,
+        .intr_flags = 0
+    };
+
+    spi_device_interface_config_t devcfg={
+        .command_bits = 0, // Command operated manually
+        .address_bits = 0, // Address operated manually
+        .dummy_bits = 0,
+        .mode = 0, //SPI mode 0
+        .clock_source = SPI_CLK_SRC_DEFAULT,
+        .duty_cycle_pos = 0,
+        .cs_ena_pretrans = 0,
+        .cs_ena_posttrans = 0,
+        .clock_speed_hz = speed, // Clock out
+        .input_delay_ns = 0,
+        .sample_point = SPI_SAMPLING_POINT_PHASE_0,
+        .spics_io_num= -1, // CS pin operated manually
+        .flags = 0,
+        .queue_size = 7,
+        .pre_cb = (transaction_cb_t)NULL,
+        .post_cb = (transaction_cb_t)NULL
+    };
+
+    //Initialize the SPI bus
+    ret=spi_bus_initialize(HSPI_HOST, &buscfg, 1);
+    assert(ret==ESP_OK);
+    //Attach the SPI bus
+    ret=spi_bus_add_device(HSPI_HOST, &devcfg, &eve_spi);
+    assert(ret==ESP_OK);
+}
+
+static void mcu_deinit_spi(void)
+{
+    spi_bus_remove_device(eve_spi);
+    spi_bus_free(HSPI_HOST);
+}
+
+// ------------------- MCU specific initialisation  ----------------------------
+int MCU_Init(void)
+{
+    gpio_config_t io_conf;
+
+    // Set SPI clock speed to 1 MHz
+    // 1 MHz allows all EVE devices to initialise correctly
+    // After initialisation the SPI speed can be increased in the MCU_Setup()
+    mcu_setup_spi(1000000);
+
+    // Disable interrupt
+    io_conf.intr_type = GPIO_INTR_DISABLE;
+    // Set gpio_config as output mode
+    io_conf.mode = GPIO_MODE_OUTPUT;
+    // Bit mask of the Chip Select and Power Down output pins
+    io_conf.pin_bit_mask = BIT(PIN_NUM_PD) | BIT(PIN_NUM_CS) | BIT(PIN_NUM_BLUE_LED);
+    // Disable pull-down mode
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    // Disable pull-up mode
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    // Configure GPIO with the given settings
+    gpio_config(&io_conf);
+
+    // Interrupt input (no pull-up or -down)
+    gpio_set_direction(PIN_NUM_INT, GPIO_MODE_INPUT);
+
+    // Turn on the blue LED on the board to indication successful board initialisation
+    gpio_set_level(PIN_NUM_BLUE_LED, 1);
+
+    return 0;
+}
+
+int MCU_Deinit(void)
+{
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Shut down the SPI master. */
+    mcu_deinit_spi();
+
+    return 0;
+}
+
+int MCU_Setup(void)
+{
+    /* Additional SPI Configuration */
+    /* Increase SPI speed to 20 MHz after initialisation is complete. */
+    /* See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
+    mcu_deinit_spi();
+    MCU_Delay_20ms();
+    mcu_setup_spi(20000000);
+
+    return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on ESP32
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+// ########################### GPIO CONTROL ####################################
+
+// --------------------- Chip Select line low ----------------------------------
+void MCU_CSlow(void)
+{
+    gpio_set_level(PIN_NUM_CS, 0);
+}  
+
+// --------------------- Chip Select line high ---------------------------------
+void MCU_CShigh(void)
+{
+    gpio_set_level(PIN_NUM_CS, 1);
+}
+
+// -------------------------- PD line low --------------------------------------
+void MCU_PDlow(void)
+{
+    gpio_set_level(PIN_NUM_PD, 0);
+}
+
+// ------------------------- PD line high --------------------------------------
+void MCU_PDhigh(void)
+{
+    gpio_set_level(PIN_NUM_PD, 1);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+    return gpio_get_level(PIN_NUM_INT);
+}
+
+// --------------------- SPI Send and Receive ----------------------------------
+
+void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
+{
+    static spi_transaction_t trans;
+
+    trans.length = length * 8;
+    trans.rxlength = 0;
+    trans.flags = 0;
+    trans.tx_buffer = DataToWrite;
+    trans.rx_buffer = NULL;
+    spi_device_transmit(eve_spi, &trans);
+    gpio_set_level(PIN_NUM_BLUE_LED, 0);
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
+{
+    static spi_transaction_t trans;
+
+    trans.length = length * 8;
+    trans.rxlength = 0;
+    trans.flags = 0;
+    trans.tx_buffer = NULL;
+    trans.rx_buffer = DataToRead;
+    spi_device_transmit(eve_spi, &trans);
+}
+
+uint8_t MCU_SPIRead8(void)
+{
+    uint8_t DataRead = 0;
+    static spi_transaction_t trans;
+
+    trans.length = 8;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+    trans.tx_data[0] = 0;
+    spi_device_transmit(eve_spi, &trans);
+    DataRead = trans.rx_data[0];
+
+    return DataRead;
+}
+
+void MCU_SPIWrite8(uint8_t DataToWrite)
+{
+    static spi_transaction_t trans;
+
+    trans.length = 8;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+    trans.tx_data[0] = DataToWrite;
+    spi_device_transmit(eve_spi, &trans);
+}
+
+uint16_t MCU_SPIRead16(void)
+{
+    uint16_t DataRead = 0;
+    static spi_transaction_t trans;
+
+    trans.length = 16;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+    *(uint16_t *)trans.tx_data = 0;
+    spi_device_transmit(eve_spi, &trans);
+    DataRead = *((uint16_t *)trans.rx_data);
+
+    return DataRead;
+}
+
+void MCU_SPIWrite16(uint16_t DataToWrite)
+{
+    static spi_transaction_t trans;
+
+    trans.length = 16;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+    *(uint16_t *)trans.tx_data = DataToWrite;
+    spi_device_transmit(eve_spi, &trans);
+}
+
+void MCU_SPIWrite24(uint32_t DataToWrite)
+{
+    static spi_transaction_t trans;
+
+    trans.length = 24;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+
+    *(uint32_t *)trans.tx_data = DataToWrite;
+    spi_device_transmit(eve_spi, &trans);
+}
+
+uint32_t MCU_SPIRead32(void)
+{
+    uint32_t DataRead = 0;
+    static spi_transaction_t trans;
+
+    trans.length = 32;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+
+    *(uint32_t *)trans.tx_data = 0;
+    spi_device_transmit(eve_spi, &trans);
+    DataRead = *((uint32_t *)trans.rx_data);
+
+    return DataRead;
+}
+
+void MCU_SPIWrite32(uint32_t DataToWrite)
+{
+    static spi_transaction_t trans;
+
+    trans.length = 32;
+    trans.rxlength = 0;
+    trans.flags = SPI_TRANS_USE_RXDATA | SPI_TRANS_USE_TXDATA;
+
+    *(uint32_t *)trans.tx_data = DataToWrite;
+    spi_device_transmit(eve_spi, &trans);
+}
+
+
+void MCU_Delay_20ms(void)
+{
+    vTaskDelay(20 / portTICK_PERIOD_MS);
+}
+
+void MCU_Delay_500ms(void)
+{
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return xTaskGetTickCount();
+}
+
+// ESP32 is Little Endian.
+// Use toolchain defined functions.
+uint16_t MCU_htobe16(uint16_t h)
+{
+    return htobe16(h);
+}
+
+uint32_t MCU_htobe32(uint32_t h)
+{
+    return htobe32(h);
+}
+
+uint16_t MCU_htole16(uint16_t h)
+{
+    return htole16(h);
+}
+
+uint32_t MCU_htole32(uint32_t h)
+{
+    return htole32(h);
+}
+
+uint16_t MCU_be16toh(uint16_t h)
+{
+    return be16toh(h);
+}
+
+uint32_t MCU_be32toh(uint32_t h)
+{
+    return be32toh(h);
+}
+
+uint16_t MCU_le16toh(uint16_t h)
+{
+    return le16toh(h);
+}
+
+uint32_t MCU_le32toh(uint32_t h)
+{
+    return le32toh(h);
+}
+
+/* EVE MCU */
+
+#endif /* defined(PLATFORM_PLATFORMIO_ESPIDF) */

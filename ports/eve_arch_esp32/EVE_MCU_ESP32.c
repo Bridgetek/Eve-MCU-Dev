@@ -100,20 +100,41 @@ static void mcu_setup_spi(int speed)
     esp_err_t ret;
 
     spi_bus_config_t buscfg={
-        .miso_io_num = PIN_NUM_MISO,
         .mosi_io_num = PIN_NUM_MOSI,
+        .miso_io_num = PIN_NUM_MISO,
         .sclk_io_num = PIN_NUM_CLK,
         .quadwp_io_num=-1,
-        .quadhd_io_num=-1
+        .quadhd_io_num=-1,
+        .data4_io_num=-1,
+        .data5_io_num=-1,
+        .data6_io_num=-1,
+        .data7_io_num=-1,
+
+        .data_io_default_level = 0,
+        .max_transfer_sz = 0,
+        .dma_burst_size = 0,
+        .flags = 0,
+        .isr_cpu_id = ESP_INTR_CPU_AFFINITY_AUTO,
+        .intr_flags = 0
     };
 
     spi_device_interface_config_t devcfg={
-        .clock_speed_hz = speed, // Clock out
-        .mode=0, //SPI mode 0
-        .spics_io_num= -1, // CS pin operated manually
-        .queue_size = 7,
-        .address_bits = 0, // Address operated manually
         .command_bits = 0, // Command operated manually
+        .address_bits = 0, // Address operated manually
+        .dummy_bits = 0,
+        .mode = 0, //SPI mode 0
+        .clock_source = SPI_CLK_SRC_DEFAULT,
+        .duty_cycle_pos = 0,
+        .cs_ena_pretrans = 0,
+        .cs_ena_posttrans = 0,
+        .clock_speed_hz = speed, // Clock out
+        .input_delay_ns = 0,
+        .sample_point = SPI_SAMPLING_POINT_PHASE_0,
+        .spics_io_num= -1, // CS pin operated manually
+        .flags = 0,
+        .queue_size = 7,
+        .pre_cb = (transaction_cb_t)NULL,
+        .post_cb = (transaction_cb_t)NULL
     };
 
     //Initialize the SPI bus
@@ -141,15 +162,15 @@ int MCU_Init(void)
     mcu_setup_spi(1000000);
 
     // Disable interrupt
-    io_conf.intr_type = GPIO_MODE_DISABLE;
+    io_conf.intr_type = GPIO_INTR_DISABLE;
     // Set gpio_config as output mode
     io_conf.mode = GPIO_MODE_OUTPUT;
     // Bit mask of the Chip Select and Power Down output pins
     io_conf.pin_bit_mask = BIT(PIN_NUM_PD) | BIT(PIN_NUM_CS) | BIT(PIN_NUM_BLUE_LED);
     // Disable pull-down mode
-    io_conf.pull_down_en = 0;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
     // Disable pull-up mode
-    io_conf.pull_up_en = 0;
+    io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
     // Configure GPIO with the given settings
     gpio_config(&io_conf);
 
@@ -199,25 +220,25 @@ int MCU_SetSPIMode(uint8_t mode)
 // ########################### GPIO CONTROL ####################################
 
 // --------------------- Chip Select line low ----------------------------------
-inline void MCU_CSlow(void)
+void MCU_CSlow(void)
 {
     gpio_set_level(PIN_NUM_CS, 0);
 }  
 
 // --------------------- Chip Select line high ---------------------------------
-inline void MCU_CShigh(void)
+void MCU_CShigh(void)
 {
     gpio_set_level(PIN_NUM_CS, 1);
 }
 
 // -------------------------- PD line low --------------------------------------
-inline void MCU_PDlow(void)
+void MCU_PDlow(void)
 {
     gpio_set_level(PIN_NUM_PD, 0);
 }
 
 // ------------------------- PD line high --------------------------------------
-inline void MCU_PDhigh(void)
+void MCU_PDhigh(void)
 {
     gpio_set_level(PIN_NUM_PD, 1);
 }
@@ -240,7 +261,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
     trans.tx_buffer = DataToWrite;
     trans.rx_buffer = NULL;
     spi_device_transmit(eve_spi, &trans);
-    gpio_set_level(5, 0);
+    gpio_set_level(PIN_NUM_BLUE_LED, 0);
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)

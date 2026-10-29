@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief Example source file for a new FT4222 project.
+ * @brief Example source file for a new PlatformIO Arduino project.
  */
 /*
  * ============================================================================
@@ -51,11 +51,6 @@
 #include "eve_example.h"
 
 /* CONSTANTS ***********************************************************************/
-
-/**
- * @brief Filename to store touchscreen configuration.
- */
-const char *config_file = "config.bin";
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
