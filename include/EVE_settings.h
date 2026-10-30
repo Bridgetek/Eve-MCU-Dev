@@ -564,6 +564,7 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_WQVGA
 
@@ -585,6 +586,29 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+
+#elif EVE_DISPLAY_RES == EVE_WQVGAR
+
+#define EVE_DISP_WIDTH 480 // Active width of LCD display
+#define EVE_DISP_HEIGHT 480 // Active height of LCD display
+#define EVE_DISP_HCYCLE 578 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 40 // Start of active line
+#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 40 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 576 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 12 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
+#define EVE_DISP_PCLK 3 // Pixel Clock
+#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
+#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
+#define EVE_DISP_CSPREAD 0
+#define EVE_DISP_DITHER 1
+// BT82x settings
+#define EVE_DISP_LVDSTXCLKDIV 3
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_WVGA
 
@@ -606,6 +630,7 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_WSVGA
 
@@ -630,6 +655,7 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_WXGA
 
@@ -648,36 +674,40 @@
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 0
-// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+// Set the PCLK frequency to 66MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define EVE_SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 66MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_WXGA_NG
 
 #define EVE_DISP_WIDTH 1280 // Active width of LCD display
 #define EVE_DISP_HEIGHT 800 // Active height of LCD display
-#define EVE_DISP_HCYCLE 1440 // Total number of clocks per line
-#define EVE_DISP_HOFFSET 158 // Start of active line
-#define EVE_DISP_HSYNC0 72 // Start of horizontal sync pulse
-#define EVE_DISP_HSYNC1 70 // End of horizontal sync pulse
-#define EVE_DISP_VCYCLE 838 // Total number of lines per screen
-#define EVE_DISP_VOFFSET 36 // Start of active screen
-#define EVE_DISP_VSYNC0 12 // Start of vertical sync pulse
-#define EVE_DISP_VSYNC1 14 // End of vertical sync pulse
+#define EVE_DISP_HCYCLE 1470 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 188 // Start of active line
+#define EVE_DISP_HSYNC0 8 // Start of horizontal sync pulse
+#define EVE_DISP_HSYNC1 4 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 815 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 14 // Start of active screen
+#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
+#define EVE_DISP_VSYNC1 2 // End of vertical sync pulse
 #define EVE_DISP_PCLK 1 // Pixel Clock
 #define EVE_DISP_SWIZZLE 0 // Define RGB output pins
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
-#define EVE_DISP_DITHER 0
-// Set the PCLK frequency to 51MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+#define EVE_DISP_DITHER 1
+// Set the PCLK frequency to 72MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define EVE_SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8B1    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
+#define EVE_DISP_PCLK_FREQ  0x8C1    // set 72MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
+// enable REG_PCLK_2X
+#define EVE_DISP_PLCK_2X 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
 
 #elif EVE_DISPLAY_RES == EVE_FULLHD
 
@@ -699,6 +729,7 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_SO_MODE EVE_SO_MODE_4PIXEL_DUAL
 
 #elif EVE_DISPLAY_RES == EVE_WUXGA
 
@@ -720,24 +751,7 @@
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
-
-#elif EVE_DISPLAY_RES == EVE_WQVGAR
-
-#define EVE_DISP_WIDTH 480 // Active width of LCD display
-#define EVE_DISP_HEIGHT 480 // Active height of LCD display
-#define EVE_DISP_HCYCLE 578 // Total number of clocks per line
-#define EVE_DISP_HOFFSET 40 // Start of active line
-#define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
-#define EVE_DISP_HSYNC1 40 // End of horizontal sync pulse
-#define EVE_DISP_VCYCLE 576 // Total number of lines per screen
-#define EVE_DISP_VOFFSET 12 // Start of active screen
-#define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
-#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
-#define EVE_DISP_PCLK 3 // Pixel Clock
-#define EVE_DISP_SWIZZLE 0 // Define RGB output pins
-#define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
-#define EVE_DISP_CSPREAD 0
-#define EVE_DISP_DITHER 1
+#define EVE_DISP_SO_MODE EVE_SO_MODE_4PIXEL_DUAL
 
 #else
 

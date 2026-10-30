@@ -230,12 +230,13 @@ uint32_t EVE_TOUCH_ADDR
 ```
 #if IS_EVE_API(5)
 
-The BT82x has 2 variables for setting up the LVDS Tx port (graphics output format) and another 
+The BT82x has 3 variables for setting up the LVDS Tx port (graphics output format) and another 
 holding the total configured size of RAM_G.
 
 ```
 uint32_t EVE_DISP_LVDSTXCLKDIV
 uint32_t EVE_DISP_LVDSTXFORMAT
+uint32_t EVE_DISP_SO_MODE
 uint32_t EVE_RAM_G_CONFIG_SIZE
 ```
 #endif
