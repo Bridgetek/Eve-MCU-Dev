@@ -143,7 +143,7 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_DITHER, (uint8_t)EVE_DISP_DITHER);
     // Turn on or off Adaptive Framerate (BT81x only)
 #if defined(EVE_DISP_ADAPTIVE_FRAMERATE) && defined(EVE_REG_ADAPTIVE_FRAMERATE)
-    HAL_MemWrite8(EVE_REG_TOUCH_CONFIG, (uint8_t)EVE_REG_ADAPTIVE_FRAMERATE);
+    HAL_MemWrite8(EVE_REG_ADAPTIVE_FRAMERATE, (uint8_t)EVE_DISP_ADAPTIVE_FRAMERATE);
 #endif
     // Enable Adaptive HSYNC (BT817/8 only)
 #if defined(EVE_DISP_AH_HCYCLE_MAX) && defined(EVE_REG_AH_HCYCLE_MAX)
