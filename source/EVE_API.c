@@ -236,6 +236,13 @@ int EVE_Init(void)
 #endif // defined(EVE_COPROC_PROFILE)
 
 #elif IS_EVE_API(5) 
+    // Load base patch or project defined patch if overriden
+    if (eve_loadpatch() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
+        return -1;
+    }
+
     EVE_LIB_BeginCoProList();
     EVE_CMD_REGWRITE(EVE_REG_SC0_SIZE, 2);
     EVE_CMD_REGWRITE(EVE_REG_SC0_PTR0, (EVE_RAM_G_SIZE - 0x280000UL - ((uint32_t)EVE_DISP_WIDTH * (uint32_t)EVE_DISP_HEIGHT * 3UL)));
@@ -292,8 +299,8 @@ int EVE_Init(void)
     if (lvdstlldiv > 4) pllcfg = 0x00300870 + lvdstlldiv;
     else pllcfg = 0x00301070 + lvdstlldiv;
 
-    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
-    EVE_CMD_APBWRITE(EVE_REG_LVDSTX_EN, 6ul); // Enable PLLs for LVDS CH1 and CH2
+    EVE_CMD_REGWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
+    EVE_CMD_REGWRITE(EVE_REG_LVDSTX_EN, 6ul); // Enable PLLs for LVDS CH1 and CH2
 
     EVE_CMD_REGWRITE(EVE_REG_SO_MODE, extsyncmode);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
@@ -312,13 +319,6 @@ int EVE_Init(void)
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-
-    // Load base patch or project defined patch if overriden
-    if (eve_loadpatch() != 0)
-    {
-        EVE_DEBUG_ERROR("ERROR: Failed to load/verify BT82x base patch.\n");
-        return -1;
-    }
 
 #endif // IS_EVE_API(5)
 
@@ -2140,20 +2140,6 @@ void EVE_CMD_REGWRITE(uint32_t a, uint32_t b)
     HAL_WriteCmd(EVE_ENC_CMD_REGWRITE);
     HAL_WriteCmd(a);
     HAL_WriteCmd(b);
-}
-
-void EVE_CMD_APBWRITE(uint32_t a, uint32_t b)
-{
-    HAL_WriteCmd(EVE_ENC_CMD_APBWRITE);
-    HAL_WriteCmd(a);
-    HAL_WriteCmd(b);
-}
-
-void EVE_CMD_APBREAD(uint32_t a, uint32_t result)
-{
-    HAL_WriteCmd(EVE_ENC_CMD_APBREAD);
-    HAL_WriteCmd(a);
-    HAL_WriteCmd(result);
 }
 
 void EVE_CMD_LOADWAV(uint32_t dst, uint32_t options)

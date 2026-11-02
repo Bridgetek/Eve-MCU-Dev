@@ -383,8 +383,6 @@
 
 /* EVE5 only */
 #if IS_EVE_API(5)
-#define EVE_ENC_CMD_APBREAD             0xffffff62ul
-#define EVE_ENC_CMD_APBWRITE            0xffffff63ul
 #define EVE_ENC_CMD_ARC                 0xffffff87ul
 #define EVE_ENC_CMD_CGRADIENT           0xffffff8aul
 #define EVE_ENC_CMD_COPYLIST            0xffffff88ul
