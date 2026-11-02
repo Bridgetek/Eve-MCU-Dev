@@ -702,6 +702,8 @@
 // Set the PCLK frequency to 72MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define EVE_SET_PCLK_FREQ
 #define EVE_DISP_PCLK_FREQ  0x8C1    // set 72MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
+// enable PCLK 2X mode
+#define EVE_DISP_PLCK_2X 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
