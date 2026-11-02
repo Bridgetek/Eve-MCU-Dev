@@ -143,7 +143,7 @@ int EVE_Init(void)
     HAL_MemWrite8(EVE_REG_DITHER, (uint8_t)EVE_DISP_DITHER);
     // Turn on or off Adaptive Framerate (BT81x only)
 #if defined(EVE_DISP_ADAPTIVE_FRAMERATE) && defined(EVE_REG_ADAPTIVE_FRAMERATE)
-    HAL_MemWrite8(EVE_REG_TOUCH_CONFIG, (uint8_t)EVE_REG_ADAPTIVE_FRAMERATE);
+    HAL_MemWrite8(EVE_REG_ADAPTIVE_FRAMERATE, (uint8_t)EVE_DISP_ADAPTIVE_FRAMERATE);
 #endif
     // Enable Adaptive HSYNC (BT817/8 only)
 #if defined(EVE_DISP_AH_HCYCLE_MAX) && defined(EVE_REG_AH_HCYCLE_MAX)
@@ -292,8 +292,6 @@ int EVE_Init(void)
     EVE_CMD_REGWRITE(EVE_REG_TOUCH_CONFIG, ((uint32_t)EVE_TOUCH_ADDR << 4) | ((uint32_t)EVE_TOUCH_TYPE) | (1 << 11));
 #endif // defined(EVE_TOUCH_ADDR) && defined(EVE_TOUCH_TYPE)
 
-    // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
-    uint32_t extsyncmode = 3;
     uint32_t lvdstlldiv = EVE_DISP_LVDSTXCLKDIV;
     uint32_t pllcfg = 0;
     if (lvdstlldiv > 4) pllcfg = 0x00300870 + lvdstlldiv;
@@ -302,7 +300,8 @@ int EVE_Init(void)
     EVE_CMD_REGWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
     EVE_CMD_REGWRITE(EVE_REG_LVDSTX_EN, 6ul); // Enable PLLs for LVDS CH1 and CH2
 
-    EVE_CMD_REGWRITE(EVE_REG_SO_MODE, extsyncmode);
+    // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
+    EVE_CMD_REGWRITE(EVE_REG_SO_MODE, (uint32_t)EVE_DISP_SO_MODE);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
     EVE_CMD_REGWRITE(EVE_REG_SO_FORMAT, (uint32_t)EVE_DISP_LVDSTXFORMAT);
     EVE_CMD_REGWRITE(EVE_REG_SO_EN, 1ul);

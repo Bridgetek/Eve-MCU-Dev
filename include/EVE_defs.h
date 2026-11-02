@@ -177,6 +177,21 @@
 //@}
 
 /**
+ * @brief BT82x LVDS scanout pixel mode definitions.
+ * @details Defines the supported scanout modes for EVE_REG_SO_MODE.
+ *      These values are selected using EVE_DISP_SO_MODE in EVE_settings.h.
+ *
+ * @note Modes 1 and 2 require horizontal timing values to be even.
+ *      Mode 3 requires horizontal timing values to be multiples of 4.
+ */
+ //@{
+#define EVE_SO_MODE_1PIXEL_SINGLE 0 // 1 pixel per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_SINGLE 1 // 2 pixels per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_DUAL   2 // 2 pixels per clock, dual LVDS channels
+#define EVE_SO_MODE_4PIXEL_DUAL   3 // 4 pixels per clock, dual LVDS channels
+//@}
+
+/**
  * @brief Definitions for capacitive touch controller I2C addresses and types.(type is BT82X only).
  *
  * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable

@@ -49,7 +49,7 @@ uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 uint32_t EVE_TOUCH_ADDR;
 #if IS_EVE_API(5)
-uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT;
+uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT, EVE_DISP_SO_MODE;
 uint32_t EVE_RAM_G_SIZE = ### EVE CLASS ###::RAM_G_1_GBIT;
 #endif
 
@@ -104,6 +104,11 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_DISP_PCLK_FREQ = 0x454; // 7.5 Mhz
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
     }
     else if (panel == EVE_WQVGA)
     {
@@ -125,132 +130,11 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_DISP_PCLK_FREQ = 0x21;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_WVGA)
-    {
-        EVE_DISP_WIDTH = 800;
-        EVE_DISP_HEIGHT = 480;
-        EVE_DISP_HCYCLE = 928;
-        EVE_DISP_VCYCLE = 525;
-        EVE_DISP_HOFFSET = 88;
-        EVE_DISP_VOFFSET = 32;
-        EVE_DISP_HSYNC0 = 0;
-        EVE_DISP_HSYNC1 = 48;
-        EVE_DISP_VSYNC0 = 0;
-        EVE_DISP_VSYNC1 = 3;
-        EVE_DISP_PCLKPOL = 1;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 1;
-        EVE_DISP_PCLK = 2;
-        EVE_DISP_PCLK_FREQ = 0x461;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_WSVGA)
-    {
-        EVE_DISP_WIDTH = 1024;
-        EVE_DISP_HEIGHT = 600;
-        EVE_DISP_HCYCLE = 1344;
-        EVE_DISP_VCYCLE = 635;
-        EVE_DISP_HOFFSET = 160;
-        EVE_DISP_VOFFSET = 23;
-        EVE_DISP_HSYNC0 = 0;
-        EVE_DISP_HSYNC1 = 100;
-        EVE_DISP_VSYNC0 = 0;
-        EVE_DISP_VSYNC1 = 10;
-        EVE_DISP_PCLKPOL = 1;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 1;
-        EVE_DISP_PCLK = 1;
-        EVE_DISP_PCLK_FREQ = 0xd12;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_WXGA)
-    {
-        EVE_DISP_WIDTH = 1280;
-        EVE_DISP_HEIGHT = 800;
-        EVE_DISP_HCYCLE = 1411;
-        EVE_DISP_VCYCLE = 815;
-        EVE_DISP_HOFFSET = 120;
-        EVE_DISP_VOFFSET = 14;
-        EVE_DISP_HSYNC0 = 0;
-        EVE_DISP_HSYNC1 = 100;
-        EVE_DISP_VSYNC0 = 0;
-        EVE_DISP_VSYNC1 = 10;
-        EVE_DISP_PCLKPOL = 0;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 0;
-        EVE_DISP_PCLK = 1;
-        EVE_DISP_PCLK_FREQ = 0x8B1;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_WXGA_NG)
-    {
-        EVE_DISP_WIDTH = 1280;
-        EVE_DISP_HEIGHT = 800;
-        EVE_DISP_HCYCLE = 1440;
-        EVE_DISP_VCYCLE = 838;
-        EVE_DISP_HOFFSET = 158;
-        EVE_DISP_VOFFSET = 36;
-        EVE_DISP_HSYNC0 = 72;
-        EVE_DISP_HSYNC1 = 70;
-        EVE_DISP_VSYNC0 = 12;
-        EVE_DISP_VSYNC1 = 14;
-        EVE_DISP_PCLKPOL = 0;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 0;
-        EVE_DISP_PCLK = 1;
-        EVE_DISP_PCLK_FREQ = 0x8B1;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_FULLHD)
-    {
-        EVE_DISP_WIDTH = 1920;
-        EVE_DISP_HEIGHT = 1080;
-        EVE_DISP_HCYCLE = 2140;
-        EVE_DISP_VCYCLE = 1108;
-        EVE_DISP_HOFFSET = 220;
-        EVE_DISP_VOFFSET = 28;
-        EVE_DISP_HSYNC0 = 0;
-        EVE_DISP_HSYNC1 = 20;
-        EVE_DISP_VSYNC0 = 0;
-        EVE_DISP_VSYNC1 = 4;
-        EVE_DISP_PCLKPOL = 0;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 1;
-        EVE_DISP_PCLK = 1;
-        EVE_DISP_PCLK_FREQ = 0x8B1;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
-    }
-    else if (panel == EVE_WUXGA)
-    {
-        EVE_DISP_WIDTH = 1920;
-        EVE_DISP_HEIGHT = 1200;
-        EVE_DISP_HCYCLE = (1920 + 180);
-        EVE_DISP_VCYCLE = (1200 + 45);
-        EVE_DISP_HOFFSET = 50;
-        EVE_DISP_VOFFSET = 10;
-        EVE_DISP_HSYNC0 = 0;
-        EVE_DISP_HSYNC1 = 30;
-        EVE_DISP_VSYNC0 = 0;
-        EVE_DISP_VSYNC1 = 3;
-        EVE_DISP_PCLKPOL = 0;
-        EVE_DISP_SWIZZLE = 0;
-        EVE_DISP_CSPREAD = 0;
-        EVE_DISP_DITHER = 1;
-        EVE_DISP_PCLK = 2;
-        EVE_DISP_PCLK_FREQ = 0x8B1;
-        // Default - automatic 
-        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
     }
     else if (panel == EVE_WQVGAR)
     {
@@ -272,6 +156,167 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_DISP_PCLK_FREQ = 0x441;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
+    }
+    else if (panel == EVE_WVGA)
+    {
+        EVE_DISP_WIDTH = 800;
+        EVE_DISP_HEIGHT = 480;
+        EVE_DISP_HCYCLE = 928;
+        EVE_DISP_VCYCLE = 525;
+        EVE_DISP_HOFFSET = 88;
+        EVE_DISP_VOFFSET = 32;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 48;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 3;
+        EVE_DISP_PCLKPOL = 1;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK = 2;
+        EVE_DISP_PCLK_FREQ = 0x461;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
+    }
+    else if (panel == EVE_WSVGA)
+    {
+        EVE_DISP_WIDTH = 1024;
+        EVE_DISP_HEIGHT = 600;
+        EVE_DISP_HCYCLE = 1344;
+        EVE_DISP_VCYCLE = 635;
+        EVE_DISP_HOFFSET = 160;
+        EVE_DISP_VOFFSET = 23;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 100;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 10;
+        EVE_DISP_PCLKPOL = 1;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK = 1;
+        EVE_DISP_PCLK_FREQ = 0xd12;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
+    }
+    else if (panel == EVE_WXGA)
+    {
+        EVE_DISP_WIDTH = 1280;
+        EVE_DISP_HEIGHT = 800;
+        EVE_DISP_HCYCLE = 1411;
+        EVE_DISP_VCYCLE = 815;
+        EVE_DISP_HOFFSET = 120;
+        EVE_DISP_VOFFSET = 14;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 100;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 10;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 0;
+        EVE_DISP_PCLK = 1;
+        EVE_DISP_PCLK_FREQ = 0x8B1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
+    }
+    else if (panel == EVE_WXGA_NG)
+    {
+        EVE_DISP_WIDTH = 1280;
+        EVE_DISP_HEIGHT = 800;
+        EVE_DISP_HCYCLE = 1440;
+        EVE_DISP_VCYCLE = 838;
+        EVE_DISP_HOFFSET = 158;
+        EVE_DISP_VOFFSET = 36;
+        EVE_DISP_HSYNC0 = 72;
+        EVE_DISP_HSYNC1 = 70;
+        EVE_DISP_VSYNC0 = 12;
+        EVE_DISP_VSYNC1 = 14;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 0;
+        EVE_DISP_PCLK = 1;
+        EVE_DISP_PCLK_FREQ = 0x8B1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+#endif
+    }
+    else if (panel == EVE_FULLHD)
+    {
+        EVE_DISP_WIDTH = 1920;
+        EVE_DISP_HEIGHT = 1080;
+        EVE_DISP_HCYCLE = 2140;
+        EVE_DISP_VCYCLE = 1108;
+        EVE_DISP_HOFFSET = 220;
+        EVE_DISP_VOFFSET = 28;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 20;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 4;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK = 1;
+        EVE_DISP_PCLK_FREQ = 0x8B1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_4PIXEL_DUAL;
+#endif
+    }
+    else if (panel == EVE_WUXGA)
+    {
+        EVE_DISP_WIDTH = 1920;
+        EVE_DISP_HEIGHT = 1200;
+        EVE_DISP_HCYCLE = (1920 + 180);
+        EVE_DISP_VCYCLE = (1200 + 45);
+        EVE_DISP_HOFFSET = 50;
+        EVE_DISP_VOFFSET = 10;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 30;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 3;
+        EVE_DISP_PCLKPOL = 0;
+        EVE_DISP_SWIZZLE = 0;
+        EVE_DISP_CSPREAD = 0;
+        EVE_DISP_DITHER = 1;
+        EVE_DISP_PCLK = 2;
+        EVE_DISP_PCLK_FREQ = 0x8B1;
+        // Default - automatic 
+        EVE_TOUCH_ADDR = 0;
+#if IS_EVE_API(5)
+        EVE_DISP_LVDSTXCLKDIV = 3;
+        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_SO_MODE = EVE_SO_MODE_4PIXEL_DUAL;
+#endif
     }
     else
     {
@@ -279,8 +324,4 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         Serial.print("ERROR: No panel selected!\n");
     }
 
-#if IS_EVE_API(5)
-    EVE_DISP_LVDSTXCLKDIV = 3;
-    EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
-#endif
 }
