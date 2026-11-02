@@ -18,14 +18,14 @@ If the version of the cable is used which has the 3.3V power output (or if using
 
 | Wire colour | EVE Signal |
 | --- | --- |
-| Orange | SCK |
-| Yellow | MOSI |
-| Green | MISO |
-| Brown | CS# |
-| Blue | PD# |
-| Purple | INT# _(1)_ |
-| Red | 5V |
-| Black | GND |
+| Orange <span style="color:rgb(255,165,0)">&#9724;</span> | SCK |
+| Yellow <span style="color:rgb(255,255,0)">&#9724;</span> | MOSI |
+| Green <span style="color:rgb(0,255,0)">&#9724;</span> | MISO |
+| Brown <span style="color:rgb(165,42,42)">&#9724;</span> | CS# |
+| Blue <span style="color:rgb(0,0,255)">&#9724;</span>  | PD# |
+| Purple <span style="color:rgb(128,0,128)">&#9724;</span> | INT# _(1)_ |
+| Red <span style="color:rgb(255,0,0)">&#9724;</span> | 5V |
+| Black <span style="color:rgb(0,0,0)">&#9724;</span> | GND |
 
 An alternative is the `VA800A-SPI` module can also be used in the same way as the `C232HM`. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
 
@@ -55,6 +55,8 @@ The following table shows the SPI transfer frequencies for the libFT4222 port:
 | Initialisation Phase | Runtime |
 | --- | --- |
 | 1 MHz | 15 MHz |
+
+__NOTE:__ The maximum reliable frequency for the SPI bus will depend on the wire length from the MPSSE device to the EVE device.
 
 ## FTDI Software Dependencies
 

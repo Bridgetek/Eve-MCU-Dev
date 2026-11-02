@@ -13,30 +13,37 @@ There are two separate ports for Raspberry Pi products:
 
 ## Hardware pico SDK
 
-The pico port was developed using an Raspberry Pi "pico" with an RP2040 MCU. The "pico2" module using an RP2350 MCU is pin compatible. This code supports both modules.
+The pico port was developed using an Raspberry Pi "pico" with an RP2040 MCU. The "pico2" module using an RP2350 MCU is pin compatible. This code supports both modules with the board type selected in the `PICO_BOARD` environment string for "Board Type".
 
-The pico module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi pico Datasheet and pico2 Datasheet for more information.
+- For pico: `set(PICO_BOARD pico CACHE STRING "Board type")`
+- For pico2: `set(PICO_BOARD pico2 CACHE STRING "Board type")`
 
-| RP2040 Pin| RP2040 Pin Name | pico Pin | pico Pin Name | MM2040EV J1 Pin | EVE Signal |
+The pico module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi pico Datasheet and pico2 Datasheet for more information. 
+
+The following picture is of a pico module connected using the wire colours in [Module Connections](../../README.md#module-connections).
+
+![pico Wiring Picture](../../docs/pico.png)
+
+The pin connections for pico modules is as follows for the 2x8 and 1x10 connectors:
+
+| pico Pin | pico Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
-| 4 | GPIO2 | 4 | GP2 | 1 | SCK |
-| 5 | GPIO3 | 5 | GP3 | 4 | MOSI |
-| 6 | GPIO4 | 6 | GP4 | 3 | MISO |
-| 7 | GPIO5 | 7 | GP5 | 2 | CS# |
-| 8 | GPIO6 | 9 | GP6 | 14 | INT# _(1)_ |
-| 9 | GPIO7 | 10 | GP7 | 13 | PD# |
-| - | - | 40 | - | 10 | 5V |
-| - | - | 8 | - | 11/12 | GND |
+| 4 | GP2 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
+| 5 | GP3 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
+| 6 | GP4 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
+| 7 | GP5 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
+| 9 | GP6 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
+| 10 | GP7 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
+| 40 | - | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
+| 3/8/13 | - | 11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
-Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of theRaspberry Pi pico and EVE modules common to both power sources.
+Ensure that the power supply from the Raspberry Pi pico module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Raspberry Pi pico and EVE modules common to both power sources.
 
-A Bridgetek board with a Raspberry Pi pico and a through-board connector (MM2040EV) can be connected to an EVE board as in the following picture.
+The MM2040EV is a Bridgetek board with a Raspberry Pi pico and a through-board 2x8 connector can be connected to an EVE board as in the following picture.
 
 ![MM2040EV Wiring Picture](../../docs/mm2040ev.png)
-
-**NOTE:** The INT# line is not shown connected.
 
 ### SPI Transfer Frequency
 
@@ -84,26 +91,30 @@ The settings required in `EVE_config.h` are:
 
 ## Hardware Raspberry Pi
 
-The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However it is compatible with all of the Raspberry Pi SBCs sharing the same 40-pin GPIO header. Please reference the Raspberry Pi documentation for more information.
+The Raspberry Pi port was developed using an Raspberry Pi Model B+ SBC. However it is compatible with all of the Raspberry Pi SBCs sharing the same 40-pin GPIO header. 
+
+The Raspberry Pi can be connected via short wires to the corresponding signals of an EVE module. Please reference the Raspberry Pi documentation for more information.
+
+A Raspberry Pi can be connected to an EVE board as in the following picture using the wire colours in [Module Connections](../../README.md#module-connections). __NOTE:__ The image does not show the correct wire colours. This will be updated soon.
+
+![Raspberry Pi Wiring Picture](../../docs/rpi400.png)
+
+The pin connections for pico modules is as follows for the 2x8 and 1x10 connectors:
 
 | GPIO Header Name | GPIO Header Pin | EVE Signal |
 | --- | --- | --- |
-| GPIO11(SCLK) | 23 | SCK |
-| GPIO10(MOSI) | 19 | MOSI |
-| GPIO9(MISO) | 21 | MISO |
-| GPIO25 | 22 | CS# |
-| GPIO24 | 18 | PD# |
-| GPIO23 | 16 | INT# _(1)_ |
-| 5v Power | 2 | 5V |
-| Ground | 20 | GND |
+| GPIO11(SCLK) | 23 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
+| GPIO10(MOSI) | 19 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
+| GPIO9(MISO) | 21 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
+| GPIO25 | 22 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
+| GPIO23 | 16 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
+| GPIO24 | 18 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
+| 5v Power | 2 | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
+| Ground | 20 | 11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
 
-- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_CMD_WRITE|EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
 
 Ensure that the power supply from the Raspberry Pi SBC is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Raspberry Pi SBC and EVE modules common to both power sources.
-
-A Raspberry Pi can be connected to an EVE board as in the following picture.
-
-![Raspberry Pi Wiring Picture](../../docs/rpi400.png)
 
 ### SPI Transfer Frequency
 

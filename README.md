@@ -755,56 +755,59 @@ There are 2 standard connectors for EVE modules used by BridgeTek. Alternatively
 
 The connectors can be interfaced with a host MCU using jumper wires. The wiring colours in photographs in this section for each connection are defined in the following table.
 
-| Colour | EVE Signal |
-| --- | --- |
-| Blue | SCK |
-| Green | MOSI |
-| Yellow | MISO |
-| Orange | CS# |
-| Red | PD# |
-| Purple | INT# |
-| Brown | GND |
-| Not shown | INT# |
-
 ### Through-Board 2x8 Pins
 
 This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board on top of the EVE module.
 
-| Pin | EVE Signal | Pin | EVE Signal |
-| --- | --- | --- | --- |
-| 1 | N/C | 2 | N/C |
-| 3 | INT# | 4 | PD# |
-| 5 | GND | 6 | N/C |
-| 7 | 5V | 8 | N/C |
-| 9 | N/C | 10 | N/C |
-| 11 | N/C | 12 | N/C |
-| 13 | MOSI | 14 | MISO |
-| 15 | CS# | 16 | SCK |
-
-The 2x8 header can be connected as in the following picture. **NOTE:** The INT# line is not shown connected.
+The 2x8 header can be connected as in the following pictures:
 
 ![Wiring for 2x8 Header](docs/header2x8.png)
+
+![Wiring for 2x8 Header Reverse](docs/header2x8-1.png)
+
+| Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- |
+| 1 | N/C | |
+| 2 | N/C | |
+| 3 | INT# | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
+| 4 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
+| 5 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> | 
+| 6 | N/C | |
+| 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
+| 8 | N/C | |
+| 9 | N/C | |
+| 10 | N/C | |
+| 11 | N/C | |
+| 12 | N/C |
+| 13 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
+| 14 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
+| 15 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
+| 16 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
 
 ### Header 1x10 Pins
 
 This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the [MM4222-QSPI](https://brtchip.com/product/mm4222-qspi/) board or VA800A-SPI. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
 
-| Pin | EVE Signal |
-| --- | --- |
-| 1 | SCK |
-| 2 | MOSI |
-| 3 | MISO |
-| 4 | CS# |
-| 5 | INT# |
-| 6 | PD# |
-| 7 | 5V |
-| 8 | N/C |
-| 9 | GND |
-| 10 | GND |
-
-The 1x10 header can be connected as in the following picture. **NOTE:** The INT# line is not shown connected.
+The 1x10 header can be connected as in the following pictures:
 
 ![Wiring for 1x10 Header](docs/header1x10.png)
+
+![Wiring for 1x10 Header another board](docs/header1x10-1.png)
+
+The pin descriptions and wire colours are as follows:
+
+| Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- |
+| 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
+| 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
+| 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
+| 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
+| 5 | INT# | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
+| 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
+| 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
+| 8 | N/C | Grey <span style="color:rgb(128,128,128)">&#9724;</span> |
+| 9 | GND | White <span style="color:rgb(255,255,255)">&#9724;</span> |
+| 10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
 
 ### MPSSE USB Cables
 
@@ -814,14 +817,14 @@ These cables have wire-ends colour coded as follows.
 
 | Wire colour | EVE Signal |
 | --- | --- |
-| Orange | SCK |
-| Yellow | MOSI |
-| Green | MISO |
-| Brown | CS# |
-| Blue | PD# |
-| Purple | INT# |
-| Red | 5V |
-| Black | GND |
+| Orange <span style="color:rgb(255,165,0)">&#9724;</span> | SCK |
+| Yellow  <span style="color:rgb(255,255,0)">&#9724;</span> | MOSI |
+| Green <span style="color:rgb(0,255,0)">&#9724;</span> | MISO |
+| Brown <span style="color:rgb(165,42,42)">&#9724;</span> | CS# |
+| Blue <span style="color:rgb(0,0,255)">&#9724;</span>| PD# |
+| Purple <span style="color:rgb(128,0,128)">&#9724;</span> | INT# |
+| Red <span style="color:rgb(255,0,0)">&#9724;</span> | 5V |
+| Black <span style="color:rgb(0,0,0)">&#9724;</span> | GND |
 
 ## Creating screens and executing commands
 
