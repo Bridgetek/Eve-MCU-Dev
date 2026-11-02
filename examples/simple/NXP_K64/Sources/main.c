@@ -57,27 +57,6 @@
 /* FUNCTIONS ***********************************************************************/
 
 /**
- * @brief Functions used to store calibration data in file.
- * @details Currently not used.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    return -1;
-}
-//@}
-
-/**
   * @brief  Main program.
   * @param  None
   * @retval None

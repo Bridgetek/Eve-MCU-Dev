@@ -8,6 +8,11 @@ set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../snippets")
 add_executable(${EXAMPLE_PROJECT_NAME}
 )
 
+# Calibration snippets
+file(GLOB EXAMPLE_CALIB_SNIPPETS CONFIGURE_DEPENDS 
+        "${EXAMPLE_SNIPPETS}/calibration/*.c")
+message("calib ${EXAMPLE_CALIB_SNIPPETS}")
+
 # Source for example code
 add_library(eve_example # Example code library name
         # Source files for example code library
@@ -15,7 +20,9 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_fonts.c
         ${EXAMPLE_COMMON}/eve_images.c
         ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_CALIB_SNIPPETS}
 )
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

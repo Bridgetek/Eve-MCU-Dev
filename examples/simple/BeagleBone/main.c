@@ -50,52 +50,11 @@
 
 /* CONSTANTS ***********************************************************************/
 
-/**
- * @brief Filename to store touchscreen configuration.
- */
-const char *config_file = "config.bin";
-
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    FILE *h1;
-
-    if ((h1 = fopen(config_file, "w")) != NULL)
-    {
-        fwrite(calib, sizeof(struct touchscreen_calibration), 1, h1);
-        fclose(h1); 
-        return 0;
-    }
-    return -1;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    FILE *h1;
-
-    if ((h1 = fopen(config_file, "r")) != NULL)
-    {
-        fread(calib, sizeof(struct touchscreen_calibration), 1, h1);
-        fclose(h1); 
-        return 0;
-    }
-    return -1;
-}
-//@}
 
 void platform_write_cmd_from_flash(const uint8_t *ImgData, uint32_t length)
 {
