@@ -41,17 +41,16 @@
 
 #include <stdint.h>
 
-extern "C" {
 #include "calib.h"
-}
 
 /* Only compile this code if calibration storage is needed on Arduino. */
+
+#if defined(ARDUINO)
 
 /**
  * @brief Functions used to store calibration data in EEPROM.
  * @details Boards with an EEPROM library
  */
-//@{
 
 #if CALIBRATION_STORAGE == CALIBRATION_STORAGE_ARDUINO_EEPROM
 
@@ -66,18 +65,30 @@ int8_t platform_calib_init(void)
     return 0;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
+    uint32_t addr = 0;
+    uint8_t *p = (uint8_t *)calib;
+    
     EEPROM.begin();
-    EEPROM.put(0, *calib);
+    while (addr < len)
+    {
+        EEPROM.update(addr++, *p++);
+    }
     EEPROM.end();
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_read(void *calib, uint32_t len)
 {
+    uint32_t addr = 0;
+    uint8_t *p = (uint8_t *)calib;
+
     EEPROM.begin();
-    EEPROM.get(0, *calib);
+    while (addr < len)
+    {
+        *p++ = EEPROM.read(addr++);
+    }
     EEPROM.end();
     return 0;
 }
@@ -95,19 +106,31 @@ int8_t platform_calib_init(void)
     return 0;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
-    EEPROM.begin(sizeof(struct touchscreen_calibration));
-    EEPROM.put(0, *calib);
+    uint32_t addr = 0;
+    uint8_t *p = (uint8_t *)calib;
+
+    EEPROM.begin(len);
+    while (addr < len)
+    {
+        EEPROM.write(addr++, *p++);
+    }
     EEPROM.commit();
     EEPROM.end();
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_read(void *calib, uint32_t len)
 {
-    EEPROM.begin(sizeof(struct touchscreen_calibration));
-    EEPROM.get(0, *calib);
+    uint32_t addr = 0;
+    uint8_t *p = (uint8_t *)calib;
+
+    EEPROM.begin(len);
+    while (addr < len)
+    {
+        *p++ = EEPROM.read(addr++);
+    }
     EEPROM.end();
     return 0;
 }
@@ -136,19 +159,18 @@ static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
  * A proper implementation of this method could modify the linker script to
  * reserve this area. 
  */
-//@{
 int8_t platform_calib_init(void)
 {
     return 0;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
     // Data to write to flash must be aligned to a flash page
     uint32_t ints = save_and_disable_interrupts();
 
     memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, sizeof(struct touchscreen_calibration));
+    memcpy(config, calib, len);
 
     flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
     flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
@@ -157,10 +179,10 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_read(void *calib, uint32_t len)
 {
-    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, sizeof(struct touchscreen_calibration));
+    void *p = (void *)(XIP_BASE + FLASH_OFFSET_CONFIG);
+    memcpy(calib, p, len);
     return 0;
 }
 
@@ -171,15 +193,17 @@ int8_t platform_calib_init(void)
     return -1;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_read(void *calib, uint32_t len)
 {
     return -1;
 }
 
 #endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_ARDUINO_EEPROM_*
-//@}
+
+#endif // defined(ARDUINO)
+

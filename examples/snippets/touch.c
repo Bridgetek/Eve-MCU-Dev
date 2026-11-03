@@ -46,6 +46,12 @@
 #include <EVE.h>
 
 #include "touch.h"
+/* Include calibration storage functions */
+#if !defined(ARDUINO) || defined(PLATFORM_PLATFORMIO)
+#include "platform/calib.h"
+#else
+#include "calib.h"
+#endif
 
 /* FUNCTIONS ***********************************************************************/
 
@@ -142,7 +148,7 @@ int eve_calibrate(void)
 
     // Flag set if a valid calibration data read from peristent storage
     int valid = 0;
-    //
+
     // Try to read a touch configuration if the platform support it
     // NOTE: platform_calib_init to return zero if supported non-zero if not
     if (platform_calib_init() == 0)
@@ -154,7 +160,7 @@ int eve_calibrate(void)
         if (!eve_key_detect())
         {
             // Read calibration information from platform
-            if (platform_calib_read(&calib) == 0)
+            if (platform_calib_read(&calib, sizeof(struct touchscreen_calibration)) == 0)
             {
                 // Verify the information is valid
                 if (calib.key == VALID_KEY_TOUCHSCREEN)
@@ -197,7 +203,7 @@ int eve_calibrate(void)
         // Only write to persistent storage if it is available
         if (store)
         {
-            platform_calib_write(&calib);
+            platform_calib_write(&calib, sizeof(struct touchscreen_calibration));
         }
     }
 #endif

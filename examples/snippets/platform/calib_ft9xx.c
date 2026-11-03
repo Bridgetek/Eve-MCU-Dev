@@ -44,57 +44,83 @@
 #include "calib.h"
 
 /* Only compile this code if calibration storage is needed on pico SDK. */
-#if CALIBRATION_STORAGE == CALIBRATION_STORAGE_PICO
+#if CALIBRATION_STORAGE == CALIBRATION_STORAGE_FT9XX
 
-/* CONSTANTS ***********************************************************************/
+#include <string.h>
+#include <ft900.h>
 
 /**
- * @brief Location in flash to store touchscreen configuration.
+ @brief Defined area in flash to store EVE calibration data.
+ @details This 256 byte array is initialised to all 1s. It will be used to store the
+      touch screen calibration data. There is a key placed at the start of the array
+      when the calibration is programmed, this indicates that the data is valid.
+      Only if this array is in place will calibration data be programmed.
+      The size is 256 bytes and it is aligned on a 256 byte boundary as the minimum
+      programmable Flash sector is 256 bytes.
  */
-#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
-
-/* LOCAL VARIABLES *****************************************************************/
-
-static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
+__flash__ uint8_t __attribute__((aligned(256))) dlog_pm[256] = {[0 ... 255] = 0xff };
 
 /* FUNCTIONS ***********************************************************************/
 
 /**
  * @brief Functions used to store calibration data in flash.
- * @details Note that this stored the calibration data at the very top sector of flash.
- * This method is not recommended usage as a program may utilise this flash area.
- * The implementation here is simply to show how the calibration information is 
- * obtained and stored. Other methods should be explored for a completed application.
- * A proper implementation of this method could modify the linker script to
- * reserve this area. 
  */
 //@{
 int8_t platform_calib_init(void)
 {
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    // Data to write to flash must be aligned to a flash page
-    uint32_t ints = save_and_disable_interrupts();
-
-    memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, sizeof(struct touchscreen_calibration));
-
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
+    /* The Flash destination must be aligned to a 256-byte page. */
+    if (((uint32_t)dlog_pm & 0xFFU) != 0)
+    {
+        return -1;
+    }
 
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
-    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, sizeof(struct touchscreen_calibration));
+    uint8_t	dlog_flash[256] __attribute__((aligned(4)));
+
+    /* Read the existing Flash page into a properly aligned array. */
+    CRITICAL_SECTION_BEGIN
+    memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, sizeof(dlog_flash));
+    CRITICAL_SECTION_END
+
+    /* The Flash page must be blank before it can be programmed. */
+    for (uint32_t i = 0; i < sizeof(dlog_flash); i++)
+    {
+        if (dlog_flash[i] != 0xFF)
+        {
+            return -1;
+        }
+    }
+
+    /* Copy calibration data into a properly aligned array. */
+    memset(dlog_flash, 0xff, sizeof(dlog_flash));
+    memcpy(dlog_flash, calib, len);
+
+    CRITICAL_SECTION_BEGIN
+    /* This are must be set to 0xff for Flash programming to work. */
+    memcpy_dat2flash((uint32_t)dlog_pm, dlog_flash, sizeof(dlog_flash));
+    CRITICAL_SECTION_END
+
+    return 0;
+}
+
+int8_t platform_calib_read(void *calib, uint32_t len)
+{
+    uint8_t dlog_flash[256] __attribute__((aligned(4)));
+
+    /* Read calibration data from Flash to a properly aligned array. */
+    CRITICAL_SECTION_BEGIN
+    memcpy_flash2dat((void *)dlog_flash, (uint32_t)dlog_pm, sizeof(dlog_flash));
+    CRITICAL_SECTION_END
+
+    /* Return the stored data */
+    memcpy(calib, dlog_flash, len);
+
     return 0;
 }
 //@}
 
-#endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_PICO
+#endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_FT9XX

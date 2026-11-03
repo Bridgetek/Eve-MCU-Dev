@@ -78,30 +78,4 @@ int eve_key_detect(void);
  */
 int eve_read_tag(uint8_t *key);
 
-/**
- @brief Functions called from eve_example code to platform specific code 
- @details These will not be called if there is a preconfigured touchscreen
- setting for a panel. e.g. DP_1012_01A and DP_1561_01A.
- */
-//@{
-
-/** @brief Initialise method used to store touchscreen settings
- * @returns zero if storing touchscreen settings is supported
- *          non-zero if the program does not store touchscreen settings
- */
-int8_t platform_calib_init(void);
-
-/** @brief Write touchscreen settings
- * @returns zero if touchscreen settings successfully written
- *          non-zero if the program could not store touchscreen settings
- */
-int8_t platform_calib_write(struct touchscreen_calibration *calib);
-
-/** @brief Read touchscreen settings
- * @returns zero if touchscreen settings successfully read
- *          non-zero if the program could not read touchscreen settings
- */
-int8_t platform_calib_read(struct touchscreen_calibration *calib);
-//@}
-
 #endif /* _EVE_TOUCH_H */

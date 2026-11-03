@@ -700,7 +700,7 @@ In addition to the core MCU functionality, a new port may need to provide suppor
 
 | Interface or feature  | Port responsibility   |
 | --- |---- |
-| `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()` | Provide application or platform-specific storage for touch calibration data when using the `touch.c` example snippet. These functions are not part of `MCU.h`; temporary implementations are provided in [Section 7](#connect-the-application-entry-point).  |
+| `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()` | Provide application or platform-specific storage for touch calibration data when using the `touch.c` example snippet. Common implementations are in the [`examples/snippets/platform`][platform-dir] directory. These functions are not part of `MCU.h`; temporary implementations are provided in [Section 7](#connect-the-application-entry-point).  |
 | Debug output  | Provide a suitable output mapping when library diagnostics are required. Support for a new MCU platform can be added to `EVE_debug.h`, or an independent platform-specific debug mechanism may be used. |
 | LCD panel initialisation | Provide any board-specific GPIO, SPI or timing support required by the selected LCD panel extension. Some LCD panel drivers may require additional MCU GPIOs for signals such as a dedicated panel reset or chip-select. This is only required for LCD panels that need additional initialisation and is enabled through defining `EVE_LCD_INIT` in `EVE_config.h`. Any resources required before `MCU_Init()`/`Platform_Init()` must be available at the appropriate point in the startup sequence. |
 
@@ -1038,41 +1038,45 @@ int main(void)
 Adapt the entry point to the MCU vendor's required startup model, RTOS task structure or generated project framework. 
 Ensure that the application contains only one active `main()` implementation.
 
-
 ### Supply the calibration-storage hooks
 
 The simple example uses the touch-calibration support in [`examples/snippets/touch.c`][touch-c]. 
-The associated storage callbacks are declared in [`touch.h`][touch-h].
+The associated functions are declared in [`touch.h`][touch-h].
+Callback functions performing persistent storage of these calibration settings are declared in the file [`example/snippets/platform/calib.h`][platform-calib-h].
 
 These callbacks are application or platform support functions rather than part of the `MCU.h` interface, 
 similarly they are also unrelated to the Linux `Platform.h` transport layer.
 
 For initial bring-up, persistent calibration storage is not required. 
-The following temporary implementations can be placed in `main.c` or in a separate application-support source file that includes `touch.h`:
+The following temporary implementations can be placed in `main.c` or in a separate application-support source file that includes `touch.h`.
+
+There are hooks for common platforms in the [`example/snippets/platform`][platform-dir] in filenames beginning with `calib`. 
+The file [`example/snippets/platform/calib.h`][platform-calib-h] defines a macro `CALIBRATION_STORAGE` which determines the actions taken in the `calib_*` source files in that directory.
+
+To disable persistent storage undefine the macro `CALIBRATION_STORAGE` and add the file [`example/snippets/platform/calib_none.c`] to the build. This will include the following code:
 
 ```c
 int8_t platform_calib_init(void)
 {
-    /* Persistent calibration storage is not implemented. */
-    return 1;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    (void)calib;
     return -1;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
     (void)calib;
+    (void)len;
+    return 0;
+}
+
+int8_t platform_calib_read(void *calib, uint32_t len)
+{
+    (void)calib;
+    (void)len;
     return -1;
 }
 ```
 
 Provide all three callbacks even when persistent storage is not implemented. 
-In the generic calibration flow, the write callback may still be called after an interactive 
-calibration has completed, so omitting it can result in unresolved symbols or incomplete application support.
 
 These temporary callbacks allow the example to perform interactive calibration without reporting uninitialised storage as valid calibration data. 
 Where a selected module or panel provides predefined touch-transform values, the interactive calibration stage may be bypassed.
@@ -1773,6 +1777,8 @@ Additional source-specific references are provided alongside the relevant sectio
 [simple-c]: examples/simple/common/eve_example.c
 [touch-h]: examples/snippets/touch.h
 [touch-c]: examples/snippets/touch.c
+[platform-dir]: examples/snippets/platform/
+[platform-calib-h]: example/snippets/platform/calib.h
 
 [lcd-h]: include/extensions/lcd_panel_init.h
 [lcd-c]: source/extensions/lcd_panel_init.c

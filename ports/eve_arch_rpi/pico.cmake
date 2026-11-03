@@ -12,7 +12,7 @@ pico_enable_stdio_uart(${PROJECT_NAME} 0)
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Source code for EVE library (targetted at pico SDK - RP2040, RP2350):
-target_sources(eve_library PUBLIC
+target_sources(eve_library PRIVATE
         # Source code for EVE library
         ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_MCU_PICO_SDK.c
 )
@@ -21,5 +21,4 @@ target_sources(eve_library PUBLIC
 target_link_libraries(eve_library 
         pico_stdlib
         hardware_spi
-        pico_time
         )

@@ -56,7 +56,8 @@ extern "C" {
 
 /* Include snippets */
 #include <touch.h>
-#include "controls/fonts.h"
+#include <controls/fonts.h>
+#include <platform/time.h>
 
 // ==========================================================================
 // Defined Constants
@@ -148,9 +149,6 @@ extern "C" {
 
 /* Entry point to the example code */
 void eve_example(void);
-
-/* Functions called from eve_example code to platform specific code */
-uint32_t platform_get_time(void);
 
 /* Load Invaders data */
 void spaced_invaders_LoadBitmaps(uint32_t scale);

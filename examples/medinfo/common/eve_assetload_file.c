@@ -63,7 +63,21 @@ static const char *assetdir;
  *  @details This is provided in the main.c file if the platform is able to use
  *           a file system for accessing assets.
  */
-extern FILE *port_fopen(char const * _FileName, char const * _Mode);
+static FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
 
 const char *join(const char *dirname, const char *filename)
 {

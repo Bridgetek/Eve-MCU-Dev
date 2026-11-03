@@ -17,9 +17,18 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/invaders_demo.c
         ${EXAMPLE_COMMON}/invaders_game.c
         ${EXAMPLE_COMMON}/scaling.c
+)
+
+# Snippet files to add to example
+target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/controls/fonts.c
 )
+
+# Platform specific snippets
+file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
+target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

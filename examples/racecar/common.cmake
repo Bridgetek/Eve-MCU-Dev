@@ -21,8 +21,16 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_assetload_array.c
         ${EXAMPLE_COMMON}/eve_assetload_file.c
         ${EXAMPLE_COMMON}/patch_textscale.c
+)
+
+# Snippet files to add to example
+target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
 )
+
+# Platform specific snippets
+file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
+target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
 
 # Example code assets
 # Add all C files, the EVE generation macro selects the correct data

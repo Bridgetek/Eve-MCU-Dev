@@ -45,38 +45,19 @@
 #include <string.h>
 
 #include <pico/stdlib.h>
-#include <pico/time.h>
-
-/* Flash read/write capability for storing Non-volatile data */
-#include <hardware/flash.h>
-#include <hardware/sync.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
 
-/**
- * @brief Location in flash to store touchscreen configuration.
- */
-#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
-
 /* LOCAL VARIABLES *****************************************************************/
-
-static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
-
-uint32_t platform_get_time(void)
-{
-    return to_ms_since_boot(get_absolute_time());
-}
-
-//@}
 
 int main(void)
 {

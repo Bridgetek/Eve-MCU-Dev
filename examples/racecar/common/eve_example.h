@@ -54,10 +54,8 @@ extern "C" {
 /* Include snippets */
 #include <touch.h>
 #include <maths/trig_furman.h>
+#include <platform/time.h>
 #include <patch_textscale.h>
-
-/* Functions called from eve_example code to platform specific code */
-uint32_t platform_get_time(void);
 
 /* Entry point to the example code */
 void eve_example(const char *assets);

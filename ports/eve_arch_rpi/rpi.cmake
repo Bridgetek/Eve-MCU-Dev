@@ -7,7 +7,7 @@ add_compile_definitions(PLATFORM_RASPBERRYPI)
 add_compile_definitions(USE_LINUX_SPI_DEV)
 
 # Source code for EVE library (targetted at Raspberry Pi):
-target_sources(eve_library PUBLIC
+target_sources(eve_library PRIVATE
         # Source code for EVE library
         ${API_DIRECTORY}/ports/eve_arch_rpi/EVE_Linux_RPi.c
 )

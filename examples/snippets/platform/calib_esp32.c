@@ -46,6 +46,8 @@
 /* Only compile this code if calibration storage is needed on ESP32. */
 #if CALIBRATION_STORAGE == CALIBRATION_STORAGE_ESP32
 
+#include "nvs_flash.h"
+
 /* CONSTANTS ***********************************************************************/
 
 /**
@@ -74,7 +76,7 @@ int8_t platform_calib_init(void)
     return 0;
 }
 
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
     nvs_handle my_handle;
     esp_err_t err = ESP_OK;
@@ -84,7 +86,7 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
     if (err != ESP_OK) return err;
 
     // Write value including previously saved blob if available
-    err = nvs_set_blob(my_handle, STORAGE_CALIBRATION, calib, sizeof(struct touchscreen_calibration));
+    err = nvs_set_blob(my_handle, STORAGE_CALIBRATION, calib, len);
 
     if (err != ESP_OK) return err;
 
@@ -97,7 +99,7 @@ int8_t platform_calib_write(struct touchscreen_calibration *calib)
     return err;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_read(void *calib, uint32_t len)
 {
     nvs_handle my_handle;
     esp_err_t err;
@@ -107,7 +109,7 @@ int8_t platform_calib_read(struct touchscreen_calibration *calib)
     if (err != ESP_OK) return err;
 
     // Read calibration blob
-    size_t required_size = sizeof(struct touchscreen_calibration);
+    size_t required_size = (size_t)len;
     err = nvs_get_blob(my_handle, STORAGE_CALIBRATION, calib, &required_size);
     if (err != ESP_OK) return err;
     if (required_size == 0) err = -1;

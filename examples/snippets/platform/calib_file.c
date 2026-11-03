@@ -1,5 +1,6 @@
 /**
- * @file calib_none.c
+ * @file calib_file.c
+ * @brief Standard file system storage for calibration data.
  */
 /*
  * ============================================================================
@@ -40,33 +41,77 @@
 /* INCLUDES ************************************************************************/
 
 #include <stdint.h>
+#include <stdio.h>
 
 #include "calib.h"
 
-/* Only compile this code if no calibration storage is needed. */
-#if CALIBRATION_STORAGE == CALIBRATION_STORAGE_NONE || !defined(CALIBRATION_STORAGE)
+/* Only compile this code if the file system option is valid. */
+#if CALIBRATION_STORAGE == CALIBRATION_STORAGE_FILE
+
+/* CONSTANTS ***********************************************************************/
+
+/**
+ * @brief Filename to store touchscreen configuration.
+ */
+const char *config_file = "config.bin";
+
+/* LOCAL FUNCTIONS *****************************************************************/
 
 /* FUNCTIONS ***********************************************************************/
 
+/** @brief Portable version of fopen/fopen_s
+ */
+//@{
+static FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
+//@}
+
 /**
- * @brief Functions used to store calibration data.
- * @details This code does not store calibration data.
+ * @brief Functions used to store calibration data in file.
  */
 //@{
 int8_t platform_calib_init(void)
 {
-    return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
     return 0;
 }
 
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
+int8_t platform_calib_write(void *calib, uint32_t len)
 {
-    return -1;
+    FILE *h1 = port_fopen( config_file, "w");
+    if( !h1 )
+    {
+        return -1;
+    }
+
+    fwrite(calib, len, 1, h1);
+    fclose(h1);
+    return 0;
+}
+
+int8_t platform_calib_read(void *calib, uint32_t len)
+{
+    FILE *h1 = port_fopen( config_file, "r");
+    if( !h1 )
+    {
+        return -1;
+    }
+    fread(calib, len, 1, h1);
+    fclose(h1);
+    return 0;
 }
 //@}
 
-#endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_NONE
+#endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_FILE

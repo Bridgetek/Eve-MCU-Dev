@@ -13,17 +13,26 @@ add_executable(${EXAMPLE_PROJECT_NAME}
 add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
-        ${EXAMPLE_SNIPPETS}/touch.c
-        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
-        ${EXAMPLE_SNIPPETS}/dials/compass_binnacle.c
-        ${EXAMPLE_SNIPPETS}/dials/compass_bulkhead.c
-        ${EXAMPLE_SNIPPETS}/dials/sub_depth.c
         ${EXAMPLE_ASSETS}/clownfish_102x54_ARGB1555.c
         ${EXAMPLE_ASSETS}/parrotfish_116x43_ARGB1555.c
         ${EXAMPLE_ASSETS}/surgeonfish_133x56_ARGB1555.c
         ${EXAMPLE_ASSETS}/yellowtang_128x81_ARGB1555.c
         ${EXAMPLE_ASSETS}/prop1_128x128_ARGB2.c
 )
+
+# Snippet files to add to example
+target_sources(eve_example PRIVATE
+        ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_binnacle.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_bulkhead.c
+        ${EXAMPLE_SNIPPETS}/dials/sub_depth.c
+)
+
+# Platform specific snippets
+file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
+target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

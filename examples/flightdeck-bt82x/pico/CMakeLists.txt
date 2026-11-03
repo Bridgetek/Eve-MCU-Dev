@@ -21,9 +21,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.3.0)
+set(sdkVersion 2.3.1)
 set(toolchainVersion 15_2_Rel1)
-set(picotoolVersion 2.3.0)
+set(picotoolVersion 2.3.1)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -47,6 +47,12 @@ project(${EXAMPLE_PROJECT_NAME} C CXX)
 
 # Include the common CMake recipie for this example:
 include(../common.cmake)
+
+# Add extra link libraries for pico SDK
+target_link_libraries(eve_example 
+        pico_time
+        hardware_flash
+        )
 
 # Include any port CMake additions for this example:
 include(../../../ports/eve_arch_rpi/pico.cmake)

@@ -4,28 +4,6 @@ extern "C" {
 #include "eve_example.h"
 }
 
-int8_t platform_calib_init(void)
-{
-    return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    (void)calib;
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    (void)calib;
-    return -1;
-}
-
-uint32_t platform_get_time(void)
-{
-    return millis();
-}
-
 void setup() {
   Serial.begin(9600);
 }

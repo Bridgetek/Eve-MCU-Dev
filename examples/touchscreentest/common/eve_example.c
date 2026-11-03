@@ -44,6 +44,9 @@
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
+/* Include snippet header for calibration storage routine for this platform. */
+#include <platform/calib.h>
+
 /* CONSTANTS ***********************************************************************/
 
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
@@ -341,7 +344,10 @@ void eve_example(void)
     calib.transform[3] = 0;
     calib.transform[4] = 0;
     calib.transform[5] = 0;
-    platform_calib_write(&calib);
+    if (platform_calib_init() == 0)
+    {
+        platform_calib_write(&calib, sizeof(struct touchscreen_calibration));
+    }
 
     while (1)
     {

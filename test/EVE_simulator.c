@@ -50,6 +50,8 @@
 #include <endian.h>
 #include <unistd.h>
 #include <time.h>
+#else
+#include <windows.h>
 #endif // _WIN32
 
 /* Include EVE-MCU-Dev library API layer */

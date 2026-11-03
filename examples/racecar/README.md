@@ -202,7 +202,6 @@ Platform specific build instructions and setup requirements are shown in the `RE
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
 The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system. 
-- **platform_get_time** get the system time elapsed since start in milliseconds.
 
 The example program in the common code is then called.
 

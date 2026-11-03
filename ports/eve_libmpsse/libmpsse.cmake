@@ -36,6 +36,6 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     )
 endif()
 
-target_sources(eve_library PUBLIC
+target_sources(eve_library PRIVATE
     ${API_DIRECTORY}/ports/eve_libmpsse/EVE_libmpsse.c
 )

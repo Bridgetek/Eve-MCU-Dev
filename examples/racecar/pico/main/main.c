@@ -44,75 +44,19 @@
 #include <string.h>
 
 #include <pico/stdlib.h>
-#include <pico/time.h>
-
-/* Flash read/write capability for storing Non-volatile data */
-#include <hardware/flash.h>
-#include <hardware/sync.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
 
-/**
- * @brief Location in flash to store touchscreen configuration.
- */
-#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
-
 /* LOCAL VARIABLES *****************************************************************/
-
-static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in flash.
- * @details Note that this stored the calibration data at the very top sector of flash.
- * This method is not recommended usage as a program may utilise this flash area.
- * The implementation here is simply to show how the calibration information is 
- * obtained and stored. Other methods should be explored for a completed application.
- * A proper implementation of this method could modify the linker script to
- * reserve this area. 
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    // Data to write to flash must be aligned to a flash page
-    uint32_t ints = save_and_disable_interrupts();
-
-    memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, sizeof(struct touchscreen_calibration));
-
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
-
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, sizeof(struct touchscreen_calibration));
-    return 0;
-}
-
-uint32_t platform_get_time(void)
-{
-    return to_ms_since_boot(get_absolute_time());
-}
-
-//@}
 
 int main(void)
 {

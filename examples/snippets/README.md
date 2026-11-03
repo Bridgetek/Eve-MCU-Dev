@@ -23,6 +23,9 @@ The `snippets` directory contains code that is used in the examples for the EVE-
   - [Submarine Control Widgets](#submarine-control-widgets)
 - [Maths](#maths)
   - [Trigonometry using Furmans](#trigonometry-using-furmans)
+- [Platform Specific Snippets](#platform-specific-snippets)
+  - [Calibration Persistent Storage](#calibration-persistent-storage)
+    - [pico Persistent Storage](#pico-persistent-storage)
 
 ## Utilities
 
@@ -899,3 +902,23 @@ _Example:_
 int16_t vx = CIRC_X(0x2000); 
 int16_t vy = CIRC_Y(0x2000); 
 ```
+
+## Platform Specific Snippets
+
+### Calibration Persistent Storage
+
+There are platform specific files named `calib_*.c` and `calib_*.cpp` which use a platforms non-volatile storage to keep configuration data.
+
+### pico Persistent Storage
+
+In the [calib_pico.c](examples/snippets/platform/calib_pico.c) program there are the following functions used to store calibration data in flash `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()`.
+
+In this example the calibration data is stored by these functions in flash program memory at the very top sector of flash.
+
+This method is not recommended usage as a program may utilise this flash area and the calibration data may overwrite the program.
+The implementation here is simply to show how the calibration information is obtained and stored.
+Other methods should be explored for a completed application.
+
+A proper implementation of this method in an application would modify the linker script to reserve this area for the storage of any persistent data that is required for an application.
+Other methods of storing calibration data may be utilised such as writing to the flash attached to the EVE or external devices connected to the pico.
+

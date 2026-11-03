@@ -14,10 +14,7 @@ The following is an screenshot of the simple example.
 
 The application starts up in the file `simple.ino` which provides initial MCU configuration and the program code for the example. 
 
-The `simple.ino` code must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+The `simple.ino` code must provide any functions that rely on a platform's operating system.
 
 The `setup` function in the sketch is as follows:
 

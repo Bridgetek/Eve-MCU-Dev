@@ -42,9 +42,6 @@
 
 #include <stdint.h>
 
-/* Get the touchscreen calibration storage structure. */
-#include "../touch.h"
-
 /* No calibration data is stored. 
  * Selects: "calib_none.c" 
  */
@@ -77,12 +74,29 @@
  */
 #define CALIBRATION_STORAGE_FT9XX 7
 
+/* Ignore the platform-specific selection of persistent storage
+ * if a previous setting has been made.
+ * This is primarily used to disable storage of calibration info.
+ */
+#if !defined(CALIBRATION_STORAGE)
+
 // Condition 1: File system available - running on Windows or Linux
 #if defined(_WIN32) || defined(linux)
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_FILE
 // Condition 2: Using pico SDK - standalone and within Arduino
-#elif defined(PICO_SDK_VERSION_STRING)
+#elif defined(PLATFORM_PICO_SDK)
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_PICO
+// Condition 3: Supported Arduino devices on PlatformIO
+#elif defined(PLATFORM_PLATFORMIO_ARDUINO)
+    #if defined(ARDUINO_ARCH_ESP32)
+    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ESP32
+    // Condition 3c: Pico SDK on Arduino
+    #elif defined(ARDUINO_RASPBERRY_PI_PICO)
+    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_PICO
+    // Condition 3d: No support on available on Arduino
+    #else
+    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
+    #endif
 // Condition 3: Supported Arduino devices
 #elif defined(ARDUINO)
     // Condition 3a: Built-in EEPROM library for Arduino
@@ -94,7 +108,7 @@
     #elif defined(ARDUINO_ARCH_ESP32)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_EEPROM_ESP32
     // Condition 3c: Pico SDK on Arduino
-    #elif defined(PICO_SDK_VERSION_STRING)
+    #elif defined(ARDUINO_RASPBERRY_PI_PICO)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_FLASH_PICO
     // Condition 3d: No support on available on Arduino
     #else
@@ -109,5 +123,32 @@
 #else
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
 #endif
+
+#endif // !defined(CALIBRATION_STORAGE)
+
+/** @brief Functions called from touch snippet code to store calibration
+ * @details These will not be called if there is a preconfigured touchscreen
+ *          setting for a panel. e.g. DP_1012_01A and DP_1561_01A.
+ */
+//@{
+
+/** @brief Initialise method used to store touchscreen settings
+ * @returns zero if storing touchscreen settings is supported
+ *          non-zero if the program does not store touchscreen settings
+ */
+int8_t platform_calib_init(void);
+
+/** @brief Write calibration settings
+ * @returns zero if calibration settings successfully written
+ *          non-zero if the program could not store calibration settings
+ */
+int8_t platform_calib_write(void *calib, uint32_t len);
+
+/** @brief Read calibration settings
+ * @returns zero if calibration settings successfully read
+ *          non-zero if the program could not read calibration settings
+ */
+int8_t platform_calib_read(void *calib, uint32_t len);
+//@}
 
 #endif /* _EVE_CALIB_H */

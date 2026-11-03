@@ -53,31 +53,6 @@
 
 void setup(void);
 
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    return 0;
-}
-//@}
-
-uint32_t platform_get_time(void)
-{
-    return 0;
-}
-
 /* FUNCTIONS ***********************************************************************/
 
 int main(void)

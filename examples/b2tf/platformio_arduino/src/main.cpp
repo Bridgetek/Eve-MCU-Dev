@@ -52,45 +52,11 @@
 
 /* CONSTANTS ***********************************************************************/
 
-/**
- * @brief Filename to store touchscreen configuration.
- */
-const char *config_file = "config.bin";
-
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    return -1;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    return -1;
-}
-//@}
-
-/** @brief Functions used to get platform time
- */
-//@{
-uint32_t platform_get_time(void)
-{
-    return millis();
-}
-//@}
 
 void setup(void)
 {

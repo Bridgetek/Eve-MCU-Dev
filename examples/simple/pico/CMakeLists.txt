@@ -48,6 +48,12 @@ project(${EXAMPLE_PROJECT_NAME} C CXX)
 # Include the common CMake recipie for this example:
 include(../common.cmake)
 
+# Add extra link libraries for pico SDK
+target_link_libraries(eve_example 
+        pico_time
+        hardware_flash
+        )
+
 # Include any port CMake additions for this example:
 include(../../../ports/eve_arch_rpi/pico.cmake)
 

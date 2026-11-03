@@ -22,7 +22,7 @@ add_compile_definitions(USE_TRIG_TABLE)
 
 # BY DEFAULT: On libft4222 use the files in the "assets" directory
 # Comment out this line to set the method in common/eve_example.h
-add_compile_definitions(ASSETS=USE_FILES)
+add_compile_definitions(ASSETS=USE_C_ARRAYS)
 
 # Build Final Executable:
 target_link_libraries(${PROJECT_NAME} 

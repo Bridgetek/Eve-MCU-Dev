@@ -13,7 +13,7 @@ if(NOT EXISTS "${FTDI_SUBMODULE}/libFT4222")
 endif()
 
 # Source code for EVE library (targetted at FT4222):
-target_sources(eve_library PUBLIC
+target_sources(eve_library PRIVATE
         # Source code for EVE library
         ${API_DIRECTORY}/ports/eve_libft4222/EVE_libft4222.c
 )

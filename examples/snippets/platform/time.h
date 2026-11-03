@@ -1,6 +1,5 @@
 /**
- * @file calib_file.c
- * @brief Standard file system storage for calibration data.
+ * @file time.h
  */
 /*
  * ============================================================================
@@ -38,80 +37,12 @@
  * ============================================================================
  */
 
-/* INCLUDES ************************************************************************/
+#ifndef _EVE_TIME_H
+#define _EVE_TIME_H
 
 #include <stdint.h>
-#include <stdio.h>
 
-#include "calib.h"
+/* Functions called from eve_example code to platform specific code */
+uint32_t platform_get_time(void);
 
-/* Only compile this code if the file system option is valid. */
-#if CALIBRATION_STORAGE == CALIBRATION_STORAGE_FILE
-
-/* CONSTANTS ***********************************************************************/
-
-/**
- * @brief Filename to store touchscreen configuration.
- */
-const char *config_file = "config.bin";
-
-/* LOCAL FUNCTIONS *****************************************************************/
-
-/** @brief Portable version of fopen/fopen_s
- */
-//@{
-static FILE *port_fopen(char const * _FileName, char const * _Mode)
-{
-#if defined(_MSC_VER)
-    FILE *h1;
-    errno_t err;
-    err = fopen_s(&h1, _FileName, _Mode);
-    if (err)
-    {
-        return NULL;
-    }
-    return h1;
-#else
-    return fopen(_FileName, _Mode);
-#endif
-}
-//@}
-
-/* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    FILE *h1 = port_fopen( config_file, "w");
-    if( !h1 )
-    {
-        return -1;
-    }
-
-    fwrite(calib, sizeof(struct touchscreen_calibration), 1, h1);
-    fclose(h1);
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    FILE *h1 = port_fopen( config_file, "r");
-    if( !h1 )
-    {
-        return -1;
-    }
-    fread(calib, sizeof(struct touchscreen_calibration), 1, h1);
-    fclose(h1);
-    return 0;
-}
-//@}
-
-#endif // CALIBRATION_STORAGE == CALIBRATION_STORAGE_FILE
+#endif // _EVE_TIME_H

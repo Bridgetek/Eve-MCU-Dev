@@ -16,12 +16,22 @@ add_library(eve_example # Example code library name
         # Source files for example code library
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_ASSETS}/lake_wanaka.c
+)
+
+# Snippet files to add to example
+target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/touch.c
+        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
         ${EXAMPLE_SNIPPETS}/dials/flightalt.c
         ${EXAMPLE_SNIPPETS}/dials/flightatt.c
         ${EXAMPLE_SNIPPETS}/dials/compass_binnacle.c
-        ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
+        ${EXAMPLE_SNIPPETS}/dials/compass_bulkhead.c
 )
+
+# Platform specific snippets
+file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
+target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
+
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

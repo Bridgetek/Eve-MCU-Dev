@@ -19,11 +19,19 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_tracedata.c
         ${EXAMPLE_COMMON}/eve_graph_extension.c
         ${EXAMPLE_COMMON}/eve_graph_vertexes.c
+        ${EXAMPLE_COMMON}/patch_medinfo.c
+)
+
+# Snippet files to add to example
+target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/touch.c
         ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
         ${EXAMPLE_SNIPPETS}/widgets/dialogs.c
-        ${EXAMPLE_COMMON}/patch_medinfo.c
 )
+
+# Platform specific snippets
+file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
+target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
 
 # Example code assets
 # Add all C files, the EVE generation macro selects the correct data

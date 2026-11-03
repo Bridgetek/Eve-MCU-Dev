@@ -61,7 +61,7 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${EXAMPLE_COMMON}/eve_images.c
     ${EXAMPLE_COMMON}/eve_fonts.c
     ${EXAMPLE_SNIPPETS}/touch.c
-    ${EXAMPLE_SNIPPETS}/calibration/*.c
+    ${EXAMPLE_SNIPPETS}/platform/calib_ft9xx.c
 
     # API Sources
     ${API_DIRECTORY}/source/EVE_API.c

@@ -4,7 +4,7 @@
 add_compile_definitions(PLATFORM_EMULATOR)
 
 # Source code for EVE library (targetted at the EVE Emulator):
-target_sources(eve_library PUBLIC
+target_sources(eve_library PRIVATE
         ${API_DIRECTORY}/ports/eve_emulator/EVE_emulator.c
 )
 
