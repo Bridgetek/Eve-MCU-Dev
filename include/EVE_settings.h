@@ -686,24 +686,22 @@
 
 #define EVE_DISP_WIDTH 1280 // Active width of LCD display
 #define EVE_DISP_HEIGHT 800 // Active height of LCD display
-#define EVE_DISP_HCYCLE 1470 // Total number of clocks per line
-#define EVE_DISP_HOFFSET 188 // Start of active line
+#define EVE_DISP_HCYCLE 1412 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 120 // Start of active line
 #define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
-#define EVE_DISP_HSYNC1 4 // End of horizontal sync pulse
-#define EVE_DISP_VCYCLE 815 // Total number of lines per screen
+#define EVE_DISP_HSYNC1 100 // End of horizontal sync pulse
+#define EVE_DISP_VCYCLE 816 // Total number of lines per screen
 #define EVE_DISP_VOFFSET 14 // Start of active screen
 #define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
-#define EVE_DISP_VSYNC1 2 // End of vertical sync pulse
+#define EVE_DISP_VSYNC1 10 // End of vertical sync pulse
 #define EVE_DISP_PCLK 1 // Pixel Clock
 #define EVE_DISP_SWIZZLE 0 // Define RGB output pins
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 0
-// Set the PCLK frequency to 72MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
+// Set the PCLK frequency to 66MHz (recommend to use the CMD_PCLKFREQ for easier calculation)
 #define EVE_SET_PCLK_FREQ
-#define EVE_DISP_PCLK_FREQ  0x8C1    // set 72MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
-// enable PCLK 2X mode
-#define EVE_DISP_PLCK_2X 1
+#define EVE_DISP_PCLK_FREQ  0x8B1    // set 66MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
 #define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
