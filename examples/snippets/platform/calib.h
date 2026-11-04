@@ -82,10 +82,13 @@
 
 // Condition 1: File system available - running on Windows or Linux
 #if defined(_WIN32) || defined(linux)
+
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_FILE
+
 // Condition 2: Using pico SDK - standalone and within Arduino
 #elif defined(PLATFORM_PICO_SDK)
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_PICO
+
 // Condition 3: Supported Arduino devices on PlatformIO
 #elif defined(PLATFORM_PLATFORMIO_ARDUINO)
     #if defined(ARDUINO_ARCH_ESP32)
@@ -97,29 +100,34 @@
     #else
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
     #endif
-// Condition 3: Supported Arduino devices
+
+// Condition 4: Supported Arduino devices
 #elif defined(ARDUINO)
-    // Condition 3a: Built-in EEPROM library for Arduino
+    // Condition 4a: Built-in EEPROM library for Arduino
     // AVR, MEGAAVR, Renesas, Renesas Portenta, Renesas Uno
     #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_MEGAAVR) \
         || defined(ARDUINO_ARCH_RENESAS)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_EEPROM
-    // Condition 3b: ESP32 architecture Arduinos
+    // Condition 4b: ESP32 architecture Arduinos
     #elif defined(ARDUINO_ARCH_ESP32)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_EEPROM_ESP32
-    // Condition 3c: Pico SDK on Arduino
+    // Condition 4c: Pico SDK on Arduino
     #elif defined(ARDUINO_RASPBERRY_PI_PICO)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_FLASH_PICO
     // Condition 3d: No support on available on Arduino
     #else
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
     #endif
+
 // Condition 4: ESP32 devices
-#elif defined(ESP32)
+#elif defined(PLATFORM_ESP32)
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ESP32
+
 // Condition 5: FT9xx devices
-#elif defined(__FT930__) || defined(__FT900__)
+#elif defined(PLATFORM_FT9XX)
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_FT9XX
+
+// Condition 6: No support
 #else
 #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
 #endif

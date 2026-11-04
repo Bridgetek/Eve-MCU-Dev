@@ -22,6 +22,9 @@
 		},
 		{
 			"path": "../../../ports/eve_arch_platformio"
+		},
+		{
+			"path": "../common"
 		}
 	],
 	"settings": {

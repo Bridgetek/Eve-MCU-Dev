@@ -51,6 +51,7 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "driver/gpio.h"
+#include "nvs_flash.h"
 #include "soc/rtc.h"
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */

@@ -176,6 +176,10 @@ int MCU_Init(void)
     // Interrupt input (no pull-up or -down)
     gpio_set_direction(PIN_NUM_INT, GPIO_MODE_INPUT);
 
+    // Setup initial conditions on control pins
+    MCU_CShigh();
+    MCU_PDhigh();
+
     // Turn on the blue LED on the board to indication successful board initialisation
     gpio_set_level(PIN_NUM_BLUE_LED, 1);
 
@@ -260,7 +264,6 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
     trans.tx_buffer = DataToWrite;
     trans.rx_buffer = NULL;
     spi_device_transmit(eve_spi, &trans);
-    gpio_set_level(PIN_NUM_BLUE_LED, 0);
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)

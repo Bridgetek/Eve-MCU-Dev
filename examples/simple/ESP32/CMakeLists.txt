@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 add_compile_definitions(PLATFORM_ESP32)
 
 set(INCLUDE_DIRECTORIES "./main" "../../../../include" "../../common" "../../../snippets/")
-set(EXTRA_COMPONENT_DIRS "./main" "../../../ports/eve_arch_esp32" "../../snippets")
+set(EXTRA_COMPONENT_DIRS "./main" "../../../ports/eve_arch_esp32")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(simple_esp32)
