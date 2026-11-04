@@ -205,7 +205,11 @@ void eve_display(void)
 {
     // Colour wheel position on screen
     const uint16_t image_x = 50;
+#if EVE_DISP_HEIGHT > WHEEL_SIZE + 100
     const uint16_t image_y = 50;
+#else
+    const uint16_t image_y = (EVE_DISP_HEIGHT / 2) - (WHEEL_SIZE / 2);
+#endif
 
     // Gap between colour wheel and info
     const uint16_t gap_x = 50;
@@ -277,7 +281,7 @@ void eve_display(void)
         EVE_END();
 
         // Set the blending back to default so that any later items will not be affected
-        EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);		
+        EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
         // Re-enabble colours and alpha
         EVE_COLOR_MASK(1, 1, 1, 1);
 
@@ -467,12 +471,17 @@ void eve_example(void)
     generate_colour_wheel();
 
     // Load the colour wheel as a bitmap into a handle
-    EVE_DEBUG_PRINTF("configuring Colour Wheel...\n");
+    EVE_DEBUG_PRINTF("Configuring Colour Wheel...\n");
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(WHEEL_HANDLE);
+#if IS_EVE_API(1)
+    EVE_BITMAP_SOURCE(WHEEL_RAMG_ADDR);
+    EVE_BITMAP_LAYOUT(WHEEL_FORMAT, 250 * sizeof(WHEEL_STORAGE), 250);
+#else
     EVE_CMD_SETBITMAP(WHEEL_RAMG_ADDR, WHEEL_FORMAT, 250, 250);
+#endif
     EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_BORDER, EVE_WRAP_BORDER, 250, 250);
     EVE_DISPLAY();
     EVE_CMD_SWAP();
