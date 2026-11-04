@@ -182,7 +182,13 @@ typedef struct siObject
 #define BITMAP_SHIELDS     1
 // Font handles
 #define BITMAP_FIXED_FONT  16
+#if !IS_EVE_API(1)
+// Scaled font is mapped to a new handle
 #define BITMAP_SCALED_FONT 14
+#else
+// Scaling is disabled on EVE1
+#define BITMAP_SCALED_FONT BITMAP_FIXED_FONT
+#endif
 
 // Cell handles (individual cell offsets within bitmaps) ...
 #define CH_INVADERS  0

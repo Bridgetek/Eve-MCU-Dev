@@ -24,7 +24,9 @@ Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
+| Yes _1_ | Yes | Yes | Yes | Yes |
+
+* _1_ - On EVE API 1 (FT80x) there is no scaling of the display screen.
 
 ## Platform Support
 

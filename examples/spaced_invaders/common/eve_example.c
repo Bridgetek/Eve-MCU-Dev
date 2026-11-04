@@ -329,16 +329,25 @@ void spaced_invaders_FlushDisplay(void)
 
 void spaced_invaders(void)
 {
+#if IS_EVE_API(1)
+    // Scaling is disabled on EVE1
+    const uint32_t scale_x = 0x10000;
+    const uint32_t scale_y = 0x10000;
+#else    
     // the scale is dependent on the mapped screen dimensions
     const uint32_t scale_x = (EVE_DISP_WIDTH * 0x10000) / DISPLAY_XPIX;
     const uint32_t scale_y = (EVE_DISP_HEIGHT * 0x10000) / DISPLAY_YPIX;
+#endif
     uint32_t scale = MIN(scale_x, scale_y);
 
     dispX = (EVE_DISP_WIDTH / 2) - SCALE(DISPLAY_XPIX / 2, scale);
     dispY = (EVE_DISP_HEIGHT / 2) - SCALE(DISPLAY_YPIX / 2, scale);
     
     spaced_invaders_LoadBitmaps(scale);
+#if !IS_EVE_API(1)
+    // Scaling is disabled on EVE1
     scaledFont(scale, BITMAP_FIXED_FONT, BITMAP_SCALED_FONT);
+#endif
 
     do
     {
