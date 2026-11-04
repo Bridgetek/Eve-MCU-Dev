@@ -97,12 +97,12 @@ The Raspberry Pi can be connected via short wires to the corresponding signals o
 
 A Raspberry Pi can be connected to an EVE board as in the following picture using the wire colours in [Module Connections](../../README.md#module-connections). __NOTE:__ The image does not show the correct wire colours. This will be updated soon.
 
-![Raspberry Pi Wiring Picture](../../docs/rpi400.png)
+![Raspberry Pi Wiring Picture](../../docs/raspberry_pi_extension_board.png)
 
 The pin connections for pico modules is as follows for the 2x8 and 1x10 connectors:
 
-| GPIO Header Name | GPIO Header Pin | EVE Signal |
-| --- | --- | --- |
+| GPIO Header Name | GPIO Header Pin | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- | --- | --- | --- |
 | GPIO11(SCLK) | 23 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
 | GPIO10(MOSI) | 19 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
 | GPIO9(MISO) | 21 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
