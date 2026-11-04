@@ -83,8 +83,7 @@ static spi_inst_t *eve_spi_port = spi0;
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
 {
-
-	// Initialise CS (SPI Chip Select) pin high
+    // Initialise CS (SPI Chip Select) pin high
     gpio_init(eve_cs_pin);
     gpio_set_dir(eve_cs_pin, GPIO_OUT);
     gpio_put(eve_cs_pin, 1u);
@@ -133,9 +132,9 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     /* Additional SPI Configuration */
-    // Increase SPI speed to 25 MHz after initialisation is complete
+    // Increase SPI speed to 20 MHz after initialisation is complete.
     // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
-    spi_init(eve_spi_port, 25u * 1000u * 1000u);
+    spi_init(eve_spi_port, 20u * 1000u * 1000u);
 
     return 0;
 }

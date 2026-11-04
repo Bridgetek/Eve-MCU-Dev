@@ -63,10 +63,10 @@ void setup(void)
     pinMode(25, OUTPUT);
     digitalWrite(25, 1);
     /* Print out a welcome message... */
-    //printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
-    //printf ("---------------------------------------------------------------- \r\n");
-    //printf ("Welcome to EVE-MCU-Dev Simple Example for the FT4222 Library\r\n");
-    //printf ("\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    printf ("---------------------------------------------------------------- \r\n");
+    printf ("Welcome to EVE-MCU-Dev GymInterval Example for the PlatformIO\r\n");
+    printf ("\n");
 }
 
 void loop() 

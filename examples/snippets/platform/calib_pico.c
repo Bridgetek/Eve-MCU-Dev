@@ -49,6 +49,7 @@
 #include <string.h>
 
 /* Flash read/write capability for storing Non-volatile data */
+#include <pico/flash.h>
 #include <hardware/flash.h>
 #include <hardware/sync.h>
 
@@ -62,6 +63,22 @@
 /* LOCAL VARIABLES *****************************************************************/
 
 static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
+const uint8_t *flash_config = (const uint8_t *) (XIP_BASE + FLASH_OFFSET_CONFIG);
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
+// This function will be called when it's safe to call flash_range_erase
+static void call_flash_range_erase(void *param) {
+    uint32_t offset = (uint32_t)param;
+    flash_range_erase(offset, FLASH_SECTOR_SIZE);
+}
+
+// This function will be called when it's safe to call flash_range_program
+static void call_flash_range_program(void *param) {
+    uint32_t offset = ((uintptr_t*)param)[0];
+    const uint8_t *data = (const uint8_t *)((uintptr_t*)param)[1];
+    flash_range_program(offset, data, FLASH_PAGE_SIZE);
+}
 
 /* FUNCTIONS ***********************************************************************/
 
@@ -83,22 +100,28 @@ int8_t platform_calib_init(void)
 int8_t platform_calib_write(void *calib, uint32_t len)
 {
     // Data to write to flash must be aligned to a flash page
-    uint32_t ints = save_and_disable_interrupts();
+
+    // Flash is "execute in place" and so will be in use when any code that is stored in flash runs, e.g. an interrupt handler
+    // or code running on a different core.
+    // Calling flash_range_erase or flash_range_program at the same time as flash is running code would cause a crash.
+    // flash_safe_execute disables interrupts and tries to cooperate with the other core to ensure flash is not in use
+    // See the documentation for flash_safe_execute and its assumptions and limitations
+    int rc = flash_safe_execute(call_flash_range_erase, (void*)FLASH_OFFSET_CONFIG, UINT32_MAX);
+    hard_assert(rc == PICO_OK);
 
     memset(config, 0xff, FLASH_PAGE_SIZE);
     memcpy(config, calib, len);
 
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
+    uintptr_t params[] = {FLASH_OFFSET_CONFIG, (uintptr_t)config};
+    rc = flash_safe_execute(call_flash_range_program, params, UINT32_MAX);
+    hard_assert(rc == PICO_OK);
 
     return 0;
 }
 
 int8_t platform_calib_read(void *calib, uint32_t len)
 {
-    void *p = (void *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, len);
+    memcpy(calib, flash_config, len);
     return 0;
 }
 //@}

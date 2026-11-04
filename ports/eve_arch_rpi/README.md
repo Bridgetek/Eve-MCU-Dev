@@ -51,7 +51,7 @@ The following table shows the SPI transfer frequencies for the pico SDK port:
 
 | Initialisation Phase | Runtime |
 | --- | --- |
-| 1 MHz | 25 MHz |
+| 1 MHz | 20 MHz |
 
 ### Files
 

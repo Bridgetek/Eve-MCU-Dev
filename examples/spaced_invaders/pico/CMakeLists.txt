@@ -29,6 +29,9 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
+
+# Set the board type for the Raspberry Pi Pico SDK:
+# - use "pico" or "pico2" depending on the board
 set(PICO_BOARD pico CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
@@ -48,10 +51,11 @@ project(${EXAMPLE_PROJECT_NAME} C CXX)
 # Include the common CMake recipie for this example:
 include(../common.cmake)
 
-# Add extra link libraries for pico SDK
+# Add extra link libraries for Raspberry Pi Pico SDK
 target_link_libraries(eve_example 
-        pico_time
-        hardware_flash
+        pico_time # For supplying millisecond counter
+        hardware_flash # For non-volatile storage
+        hardware_sync # For non-volatile storage
         )
 
 # Include any port CMake additions for this example:
@@ -63,6 +67,9 @@ target_sources(${EXAMPLE_PROJECT_NAME} PUBLIC
         )
 
 # Enable debug logging output to stdio:
+# On pico SDK enabling EVE_DEBUG_LEVEL and setting it to 1 or higher
+# will require that a terminal is connected to the Virtual COM port 
+# on the device before the program starts running.
 add_compile_definitions(EVE_DEBUG_LEVEL=0)
 
 # Default name is the project name, version 0.1
@@ -73,8 +80,6 @@ pico_set_program_version(${EXAMPLE_PROJECT_NAME} "0.1")
 target_link_libraries(${EXAMPLE_PROJECT_NAME}
         eve_example # Depends on example code library
         eve_library # Depends on EVE library
-        hardware_flash # For non-volatile storage
-        hardware_sync # For non-volatile storage
         pico_stdlib # For standard library
         )
 
