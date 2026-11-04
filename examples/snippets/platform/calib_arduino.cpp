@@ -135,57 +135,6 @@ int8_t platform_calib_read(void *calib, uint32_t len)
     return 0;
 }
 
-#elif CALIBRATION_STORAGE == CALIBRATION_STORAGE_ARDUINO_FLASH_PICO
-
-/* CONSTANTS ***********************************************************************/
-
-/**
- * @brief Location in flash to store touchscreen configuration.
- */
-#define FLASH_OFFSET_CONFIG (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
-
-/* LOCAL VARIABLES *****************************************************************/
-
-static uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE) = {0};
-
-/* FUNCTIONS ***********************************************************************/
-
-/**
- * @brief Functions used to store calibration data in flash.
- * @details Note that this stored the calibration data at the very top sector of flash.
- * This method is not recommended usage as a program may utilise this flash area.
- * The implementation here is simply to show how the calibration information is 
- * obtained and stored. Other methods should be explored for a completed application.
- * A proper implementation of this method could modify the linker script to
- * reserve this area. 
- */
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(void *calib, uint32_t len)
-{
-    // Data to write to flash must be aligned to a flash page
-    uint32_t ints = save_and_disable_interrupts();
-
-    memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, len);
-
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
-
-    return 0;
-}
-
-int8_t platform_calib_read(void *calib, uint32_t len)
-{
-    void *p = (void *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, len);
-    return 0;
-}
-
 #else
 
 int8_t platform_calib_init(void)

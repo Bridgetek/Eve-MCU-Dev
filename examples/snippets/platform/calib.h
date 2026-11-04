@@ -62,7 +62,6 @@
  */
 #define CALIBRATION_STORAGE_ARDUINO_EEPROM 3
 #define CALIBRATION_STORAGE_ARDUINO_EEPROM_ESP32 4
-#define CALIBRATION_STORAGE_ARDUINO_FLASH_PICO 5
 
 /* Calibration data is stored in ESP32 flash.
  * Selects: "calib_esp32.c" 
@@ -111,9 +110,6 @@
     // Condition 4b: ESP32 architecture Arduinos
     #elif defined(ARDUINO_ARCH_ESP32)
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_EEPROM_ESP32
-    // Condition 4c: Pico SDK on Arduino
-    #elif defined(ARDUINO_RASPBERRY_PI_PICO)
-    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ARDUINO_FLASH_PICO
     // Condition 3d: No support on available on Arduino
     #else
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
