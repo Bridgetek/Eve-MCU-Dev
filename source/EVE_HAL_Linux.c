@@ -138,15 +138,15 @@ int HAL_EVE_Init(void)
     // Clock selection and clock rate selection will put EVE to sleep and so 
     // must be before the Active command.
     // For example:
-    HAL_HostCmdWrite(0x44, 0x00); // 0x44 = HostCMD_CLKEXT
     HAL_HostCmdWrite(0x62, 0x00); // 0x64 = HostCMD_CLK48M
+    HAL_HostCmdWrite(0x44, 0x00); // 0x44 = HostCMD_CLKEXT
 #endif
 
 #if IS_EVE_API(3, 4)
     // Can optionally set to 72MHz system clock here.
     // Can also adjust EVE_REG_FREQUENCY after the host commands are finished.
+    HAL_HostCmdWrite(0x61, 0x46); // 0x61 = HostCMD_CLKSEL (0x46 = 72MHz)
     HAL_HostCmdWrite(0x44, 0x00); // 0x44 = HostCMD_CLKEXT
-    HAL_HostCmdWrite(0x61, 0x46);
 #endif
 
 #if IS_EVE_API(2, 3, 4)
