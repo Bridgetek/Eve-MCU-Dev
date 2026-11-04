@@ -244,14 +244,14 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
     {
         EVE_DISP_WIDTH = 1280;
         EVE_DISP_HEIGHT = 800;
-        EVE_DISP_HCYCLE = 1440;
+        EVE_DISP_HCYCLE = 1412;
         EVE_DISP_VCYCLE = 838;
-        EVE_DISP_HOFFSET = 158;
+        EVE_DISP_HOFFSET = 120;
         EVE_DISP_VOFFSET = 36;
-        EVE_DISP_HSYNC0 = 72;
-        EVE_DISP_HSYNC1 = 70;
-        EVE_DISP_VSYNC0 = 12;
-        EVE_DISP_VSYNC1 = 14;
+        EVE_DISP_HSYNC0 = 0;
+        EVE_DISP_HSYNC1 = 100;
+        EVE_DISP_VSYNC0 = 0;
+        EVE_DISP_VSYNC1 = 10;
         EVE_DISP_PCLKPOL = 0;
         EVE_DISP_SWIZZLE = 0;
         EVE_DISP_CSPREAD = 0;
