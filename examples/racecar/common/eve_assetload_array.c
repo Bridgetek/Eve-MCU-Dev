@@ -102,6 +102,7 @@ int eve_loadpatch_impl(void)
         total += (uint32_t)chunk;
         ptr += (uint32_t)chunk;
     } while (chunk == 256);
+    EVE_LIB_BeginCoProList();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();

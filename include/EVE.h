@@ -348,10 +348,14 @@ void EVE_LIB_ReadDataFromRAMG(uint8_t *ImgData, uint32_t DataSize, uint32_t SrcA
 /**
  * @brief EVE API: Write a buffer to the co-processor command memory
  * @details Writes a block of data via SPI to the EVE co-processor.
- *      This must be part of a co-processor list. It will typically be called
+ *      This function will end the current co-processor list and restart
+ *      a new list for data transmitted. It will typically be called
  *      after a co-processor command to provide data for the operation.
  *      The data will be added to the co-processor command list therefore the
  *      write will block on available space in this list.
+ *      The function will leave the co-processor list inactive upon
+ *      return - for subsequent commands it must be restarted with
+ *      EVE_LIB_BeginCoProList().
  * @param ImgData - Pointer to start of data buffer.
  * @param DataSize - Number of bytes in buffer.
  */

@@ -240,6 +240,7 @@ int eve_loadpatch_impl(void)
             }
         } while (xfer == sizeof(buffer));
         fclose(h1); 
+        EVE_LIB_BeginCoProList();
         EVE_CMD_SWAP();
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
