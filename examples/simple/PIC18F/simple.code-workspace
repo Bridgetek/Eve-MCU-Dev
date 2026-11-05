@@ -4,25 +4,32 @@
 			"path": "."
 		},
 		{
-			"path": "../common"
-		},
-		{
-			"path": "../../../source"
-		},
-		{
+			"name": "include",
 			"path": "../../../include"
 		},
 		{
+			"name": "common",
+			"path": "../common"
+		},
+		{
+			"name": "eve_arch_pic",
 			"path": "../../../ports/eve_arch_pic"
 		},
 		{
+			"name": "source",
+			"path": "../../../source"
+		},
+		{
+			"name": "snippets",
 			"path": "../../snippets"
 		}
 	],
 	"settings": {
 		"mplab.clangd.arguments": [
-			"--compile-commands-dir=${workspaceFolder}\\_build\\PIC18F46K22\\default"
+			"--header-insertion=never"
 		],
-		"mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v3.10\\bin\\xc8-clangd.exe"
+		"mplab.clangd.compileCommandsDir": "${workspaceFolder}/_build/PIC18F46K22/default",
+		"mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v3.10\\bin\\xc8-clangd.exe",
+		"C_Cpp.intelliSenseEngine": "disabled"
 	}
 }
