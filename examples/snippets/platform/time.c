@@ -134,6 +134,15 @@ uint32_t platform_get_time(void)
     return to_ms_since_boot(get_absolute_time());
 }
 
+#elif defined(PLATFORM_ESP32)
+
+#include "esp_timer.h"
+
+uint32_t platform_get_time(void)
+{
+    return esp_timer_get_time() / 1000;
+}
+
 #else
 
 // Unsupported time on platform

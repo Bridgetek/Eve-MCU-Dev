@@ -11,6 +11,7 @@ idf_component_register(SRCS
                     "../../../snippets/touch.c" 
                     # Platform specific snippets
                     "../../../snippets/platform/calib_esp32.c"
+                    "../../../snippets/platform/time.c"
                     INCLUDE_DIRS 
                     "../../../../include" 
                     "../../common" 
