@@ -47,6 +47,17 @@
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 /* FUNCTIONS ***********************************************************************/
 
 void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
@@ -146,7 +157,8 @@ void eve_display(void)
         memcpy(&present, ptm, sizeof(struct tm));
 #endif
     }
-    while (1)
+    
+    do
     {
         /*
         EVE_DEBUG_PRINTF("The date time is: %d month %d day %d year %d hour %d minutes\n",
@@ -331,7 +343,8 @@ void eve_display(void)
             memcpy(&lasttime, ptm, sizeof(struct tm));
 #endif
         }
-    }
+
+    } while (LOOP);
 }
 
 // Application Code begins here

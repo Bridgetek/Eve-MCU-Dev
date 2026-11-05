@@ -28,10 +28,6 @@ target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/maths/trig_furman.c
 )
 
-# Platform specific snippets
-file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
-target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
-
 # Example code assets
 # Add all C files, the EVE generation macro selects the correct data
 file(GLOB EVE_ASSET_LIST CONFIGURE_DEPENDS 

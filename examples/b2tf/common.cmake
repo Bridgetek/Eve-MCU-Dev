@@ -21,10 +21,6 @@ target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/widgets/sevenseg.c
 )
 
-# Platform specific snippets
-file(GLOB EXAMPLE_PLATFORM_SNIPPETS CONFIGURE_DEPENDS "${EXAMPLE_SNIPPETS}/platform/*.c")
-target_sources(eve_example PRIVATE ${EXAMPLE_PLATFORM_SNIPPETS})
-
 # Header files used for example code library
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
