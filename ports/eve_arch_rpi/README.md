@@ -26,16 +26,18 @@ The following picture is of a pico module connected using the wire colours in [M
 
 The pin connections for pico modules is as follows for the 2x8 and 1x10 connectors:
 
-| pico Pin | pico Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
+
+| Pico Pin | Pico Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
-| 4 | GP2 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| 5 | GP3 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
-| 6 | GP4 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
-| 7 | GP5 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
-| 9 | GP6 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
-| 10 | GP7 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| 40 | - | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| 3/8/13 | - | 11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| 4 | GP2 | 1 | 1 | SCK | Brown 🟫 |
+| 5 | GP3 | 4 | 2 | MOSI | Red 🟥 |
+| 6 | GP4 | 3 | 3 | MISO | Orange 🟧 |
+| 7 | GP5 | 2 | 4 | CS# | Yellow 🟨 |
+| 9 | GP6 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| 10 | GP7 | 13 | 6 | PD# | Blue 🟦 |
+| 40 | - | 10 | 7 | 5V | Purple 🟪 |
+| 3/8/13 | - | 11/12 | 9/10 | GND | Black ⬛ |
+
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
@@ -101,16 +103,18 @@ A Raspberry Pi can be connected to an EVE board as in the following picture usin
 
 The pin connections for pico modules is as follows for the 2x8 and 1x10 connectors:
 
+
 | GPIO Header Name | GPIO Header Pin | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
-| GPIO11(SCLK) | 23 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| GPIO10(MOSI) | 19 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
-| GPIO9(MISO) | 21 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
-| GPIO25 | 22 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
-| GPIO23 | 16 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
-| GPIO24 | 18 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| 5v Power | 2 | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| Ground | 20 | 11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| GPIO11(SCLK) | 23 | 1 | 1 | SCK | Brown 🟫 |
+| GPIO10(MOSI) | 19 | 4 | 2 | MOSI | Red 🟥 |
+| GPIO9(MISO) | 21 | 3 | 3 | MISO | Orange 🟧 |
+| GPIO25 | 22 | 2 | 4 | CS# | Yellow 🟨 |
+| GPIO23 | 16 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| GPIO24 | 18 | 13 | 6 | PD# | Blue 🟦 |
+| 5v Power | 2 | 10 | 7 | 5V | Purple 🟪 |
+| Ground | 20 | 11/12 | 9/10 | GND | Black ⬛ |
+
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
 

@@ -20,19 +20,19 @@
       <Filter>Example\Patch</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\flightalt.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\flightatt.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\dials\compass_binnacle.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\assets\lake_wanaka.c">
       <Filter>Example\Assets</Filter>
@@ -59,19 +59,19 @@
       <Filter>Example\Patch</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\dials\flight_controls.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\MCU.h">
       <Filter>Library\include</Filter>
@@ -105,6 +105,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h">
       <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -142,7 +148,7 @@
     <Filter Include="Example\Patch">
       <UniqueIdentifier>{2c8df202-32bb-4411-888f-fba197874d00}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Example\Snippets">
+    <Filter Include="Example\snippets">
       <UniqueIdentifier>{d7fe8860-f83a-4469-86ac-fc38c2ca49fb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Example\Assets">

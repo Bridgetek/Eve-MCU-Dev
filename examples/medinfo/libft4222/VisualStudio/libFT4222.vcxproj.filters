@@ -83,13 +83,13 @@
       <Filter>Example\Assets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\widgets\dialogs.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\snippets\touch.c">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\..\include\Platform.h">
       <Filter>Library\include</Filter>
@@ -107,13 +107,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\widgets\dialogs.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
-      <Filter>Example\Snippets</Filter>
+      <Filter>Example\snippets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\EVE_config.h">
       <Filter>Library\include</Filter>
@@ -160,6 +160,18 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h">
       <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\platform\time.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\platform\time.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll">
@@ -199,7 +211,7 @@
     <Filter Include="Example\Patch">
       <UniqueIdentifier>{1b329021-10e2-499a-86fa-f609c5bc3e69}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Example\Snippets">
+    <Filter Include="Example\snippets">
       <UniqueIdentifier>{ca151776-e058-4b8c-9a33-064d6dd0707f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Main">

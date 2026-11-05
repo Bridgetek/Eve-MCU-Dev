@@ -765,24 +765,26 @@ The 2x8 header can be connected as in the following pictures:
 
 ![Wiring for 2x8 Header Reverse](docs/header2x8-1.png)
 
+
 | Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- |
 | 1 | N/C | |
 | 2 | N/C | |
-| 3 | INT# | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
-| 4 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| 5 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> | 
+| 3 | INT# | Green 🟩 |
+| 4 | PD# | Blue 🟦 |
+| 5 | GND | Black ⬛ |
 | 6 | N/C | |
-| 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
+| 7 | 5V | Purple 🟪 |
 | 8 | N/C | |
 | 9 | N/C | |
 | 10 | N/C | |
 | 11 | N/C | |
-| 12 | N/C |
-| 13 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
-| 14 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
-| 15 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
-| 16 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
+| 12 | N/C | |
+| 13 | MOSI | Red 🟥 |
+| 14 | MISO | Orange 🟧 |
+| 15 | CS# | Yellow 🟨 |
+| 16 | SCK | Brown 🟫 |
+
 
 ### Header 1x10 Pins
 
@@ -796,18 +798,26 @@ The 1x10 header can be connected as in the following pictures:
 
 The pin descriptions and wire colours are as follows:
 
+
 | Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- |
-| 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
-| 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
-| 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
-| 5 | INT# | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
-| 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| 8 | N/C | Grey <span style="color:rgb(128,128,128)">&#9724;</span> |
-| 9 | GND | White <span style="color:rgb(255,255,255)">&#9724;</span> |
-| 10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| 1 | N/C | |
+| 2 | N/C | |
+| 3 | INT# | Green 🟩 |
+| 4 | PD# | Blue 🟦 |
+| 5 | GND | Black ⬛ |
+| 6 | N/C | |
+| 7 | 5V | Purple 🟪 |
+| 8 | N/C | |
+| 9 | N/C | |
+| 10 | N/C | |
+| 11 | N/C | |
+| 12 | N/C | |
+| 13 | MOSI | Red 🟥 |
+| 14 | MISO | Orange 🟧 |
+| 15 | CS# | Yellow 🟨 |
+| 16 | SCK | Brown 🟫 |
+
 
 ### MPSSE USB Cables
 
@@ -817,14 +827,14 @@ These cables have wire-ends colour coded as follows.
 
 | Wire colour | EVE Signal |
 | --- | --- |
-| Orange <span style="color:rgb(255,165,0)">&#9724;</span> | SCK |
-| Yellow  <span style="color:rgb(255,255,0)">&#9724;</span> | MOSI |
-| Green <span style="color:rgb(0,255,0)">&#9724;</span> | MISO |
-| Brown <span style="color:rgb(165,42,42)">&#9724;</span> | CS# |
-| Blue <span style="color:rgb(0,0,255)">&#9724;</span>| PD# |
-| Purple <span style="color:rgb(128,0,128)">&#9724;</span> | INT# |
-| Red <span style="color:rgb(255,0,0)">&#9724;</span> | 5V |
-| Black <span style="color:rgb(0,0,0)">&#9724;</span> | GND |
+| Orange 🟧 | SCK |
+| Yellow 🟨 | MOSI |
+| Green 🟩 | MISO |
+| Brown 🟫 | CS# |
+| Blue 🟦 | PD# |
+| Purple 🟪 | INT# |
+| Red 🟥 | 5V |
+| Black ⬛ | GND |
 
 ## Creating screens and executing commands
 
@@ -1155,7 +1165,6 @@ style X50 fill:none,stroke:none;
 style X65 fill:none,stroke:none;
 style X111 fill:none,stroke:none;
 style X158 fill:none,stroke:none;
-
 ```
 
 ### Writing DL Instructions and Co-Processor Commands

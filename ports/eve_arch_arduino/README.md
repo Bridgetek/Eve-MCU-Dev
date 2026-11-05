@@ -19,16 +19,17 @@ The following pictures are of a Arduino Zero module connected using the wire col
 
 The pin connections for Arduino modules is as follows for the 2x8 and 1x10 connectors:
 
+
 | Arduino Name | Arduino Pin | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
-| SCLK | ISCP 3 | 1 | 1 | SCK | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| COPI | ISCP 4 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> |
-| CIPO | ISCP 1 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> |
-| D10 | - | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> |
-| D8 | - | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> |
-| D9 | - | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| - | ISCP 2 | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| - | ISCP 6 / GND | 11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| SCLK | ICSP 3 | 1 | 1 | SCK | Brown 🟫 |
+| COPI | ICSP 4 | 4 | 2 | MOSI | Red 🟥 |
+| CIPO | ICSP 1 | 3 | 3 | MISO | Orange 🟧 |
+| D10 | - | 2 | 4 | CS# | Yellow 🟨 |
+| D8 | - | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| D9 | - | 13 | 6 | PD# | Blue 🟦 |
+| - | ICSP 2 | 10 | 7 | 5V | Purple 🟪 |
+| - | ICSP 6 / GND | 11/12 | 9/10 | GND | Black ⬛ |
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 

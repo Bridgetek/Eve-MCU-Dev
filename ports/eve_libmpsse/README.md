@@ -16,16 +16,18 @@ For the versions with 5V output on the red wire (`C232HM-EDHSL` and `USBC-HS-MPS
 
 If the version of the cable is used which has the 3.3V power output (or if using the 5V version but the EVE module requires more current than can be provided) then a separate power connection to the EVE module could be used, with the grounds of the `C232HM` / `USBC-HS-MPSSE` and the separate power source common together to EVE.
 
+
 | Wire colour | EVE Signal |
 | --- | --- |
-| Orange <span style="color:rgb(255,165,0)">&#9724;</span> | SCK |
-| Yellow <span style="color:rgb(255,255,0)">&#9724;</span> | MOSI |
-| Green <span style="color:rgb(0,255,0)">&#9724;</span> | MISO |
-| Brown <span style="color:rgb(165,42,42)">&#9724;</span> | CS# |
-| Blue <span style="color:rgb(0,0,255)">&#9724;</span>  | PD# |
-| Purple <span style="color:rgb(128,0,128)">&#9724;</span> | INT# _(1)_ |
-| Red <span style="color:rgb(255,0,0)">&#9724;</span> | 5V |
-| Black <span style="color:rgb(0,0,0)">&#9724;</span> | GND |
+| Orange 🟧 | SCK |
+| Yellow 🟨 | MOSI |
+| Green 🟩 | MISO |
+| Brown 🟫 | CS# |
+| Blue 🟦 | PD# |
+| Purple 🟪 | INT# _(1)_ |
+| Red 🟥 | 5V |
+| Black ⬛ | GND |
+
 
 An alternative is the `VA800A-SPI` module can also be used in the same way as the `C232HM`. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
 

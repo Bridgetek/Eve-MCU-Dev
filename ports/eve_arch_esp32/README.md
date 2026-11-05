@@ -24,16 +24,18 @@ The following picture is of a ESP32 Thing module connected using the wire colour
 
 The pin connections for ESP32 Thing modules is as follows for the 2x8 and 1x10 connectors:
 
+
 | ESP32 Thing J2 Pin | ESP32 Thing Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
-| --- | --- | --- | --- | --- | --- | 
-| 16 | GPIO18 | 1 | 1 | SCK  | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| 15 | GPIO19 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> | 
-| 14 | GPIO23 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> | 
-| 13 | GPIO22 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> | 
-| 5 | GPIO17 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> | 
-| 6 | GPIO16 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| 2 | VUSB | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| 1 | GND |  11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| --- | --- | --- | --- | --- | --- |
+| 16 | GPIO18 | 1 | 1 | SCK | Brown 🟫 |
+| 15 | GPIO19 | 4 | 2 | MOSI | Red 🟥 |
+| 14 | GPIO23 | 3 | 3 | MISO | Orange 🟧 |
+| 13 | GPIO22 | 2 | 4 | CS# | Yellow 🟨 |
+| 5 | GPIO17 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| 6 | GPIO16 | 13 | 6 | PD# | Blue 🟦 |
+| 2 | VUSB | 10 | 7 | 5V | Purple 🟪 |
+| 1 | GND | 11/12 | 9/10 | GND | Black ⬛ |
+
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
@@ -50,16 +52,17 @@ The following picture is of a ESP32-DevKitC module connected using the wire colo
 
 The pin connections for ESP32-DevKitC modules is as follows for the 2x8 and 1x10 connectors:
 
+
 | ESP32-DevKitC Pin | ESP32-DevKitC Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
-| --- | --- | --- | --- | --- | --- | 
-| J3 9 | GPIO18 | 1 | 1 | SCK  | Brown <span style="color:rgb(165,42,42)">&#9724;</span> |
-| J3 8 | GPIO19 | 4 | 2 | MOSI | Red <span style="color:rgb(255,0,0)">&#9724;</span> | 
-| J3 2 | GPIO23 | 3 | 3 | MISO | Orange <span style="color:rgb(255,165,0)">&#9724;</span> | 
-| J3 3 | GPIO22 | 2 | 4 | CS# | Yellow <span style="color:rgb(255,255,0)">&#9724;</span> | 
-| J3 11 | GPIO17 | 14 | 5 | INT# _(1)_ | Green <span style="color:rgb(0,255,0)">&#9724;</span> | 
-| J3 12 | GPIO16 | 13 | 6 | PD# | Blue <span style="color:rgb(0,0,255)">&#9724;</span> |
-| J2 19 | VUSB | 10 | 7 | 5V | Purple <span style="color:rgb(128,0,128)">&#9724;</span> |
-| J3 1 | GND |  11/12 | 9/10 | GND | Black <span style="color:rgb(0,0,0)">&#9724;</span> |
+| --- | --- | --- | --- | --- | --- |
+| J3 9 | GPIO18 | 1 | 1 | SCK | Brown 🟫 |
+| J3 8 | GPIO19 | 4 | 2 | MOSI | Red 🟥 |
+| J3 2 | GPIO23 | 3 | 3 | MISO | Orange 🟧 |
+| J3 3 | GPIO22 | 2 | 4 | CS# | Yellow 🟨 |
+| J3 11 | GPIO17 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| J3 12 | GPIO16 | 13 | 6 | PD# | Blue 🟦 |
+| J2 19 | VUSB | 10 | 7 | 5V | Purple 🟪 |
+| J3 1 | GND | 11/12 | 9/10 | GND | Black ⬛ |
 
 - (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 

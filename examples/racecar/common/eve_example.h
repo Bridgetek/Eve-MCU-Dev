@@ -88,8 +88,7 @@ void eve_example(const char *assets);
 /* Array containing the bitmap sizes of ROM fonts. */
 uint8_t eve_romfont_width(uint8_t font);
 uint8_t eve_romfont_height(uint8_t font);
-void eve_set_romfont_width(uint8_t font, uint8_t w);
-void eve_set_romfont_height(uint8_t font, uint8_t h);
+
 // Asset storage information
 typedef struct EVE_ASSET_PROPS_s
 {
