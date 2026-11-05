@@ -72,6 +72,7 @@ The example contains a common directory with several files which comprises all t
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Implementation file for Arc style control widget |
 | [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
+| [snippets/platform/time.c](../snippets/platform/time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`

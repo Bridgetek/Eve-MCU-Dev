@@ -133,6 +133,7 @@ The example contains a common directory with several files which comprises all t
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/widgets/sevenseg.c](../widgets/sevenseg.c) | Implementation file for 7 segment LED widget |
 | [snippets/widgets/dialogs.c](../widgets/dialogs.c) | Implementation file for tooltip and dialog box widgets |
+| [snippets/platform/time.c](../snippets/platform/time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 | [assets](assets) | Directory for storage of assets |
 | [assets/c_array_assets](assets/c_array_assets) | Directory for arrays of assets |
