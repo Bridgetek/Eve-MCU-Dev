@@ -561,9 +561,6 @@
 
 /* EVE2+ options */
 #if IS_EVE_API(2,3,4,5)
-#define EVE_OPT_FULLSPEED               0x0ul
-#define EVE_OPT_HALFSPEED               0x4ul
-#define EVE_OPT_QUARTERSPEED            0x8ul
 #define EVE_OPT_MEDIAFIFO               0x10ul
 #define EVE_OPT_SOUND                   0x20ul
 #endif
@@ -579,6 +576,9 @@
 
 /* EVE5-only options */
 #if IS_EVE_API(5)
+#define EVE_OPT_FULLSPEED               0x0ul
+#define EVE_OPT_HALFSPEED               0x4ul
+#define EVE_OPT_QUARTERSPEED            0x8ul
 #define EVE_OPT_BASELINE                0x8000ul
 #define EVE_OPT_CASESENSITIVE           0x2ul
 #define EVE_OPT_COMPLETEREG             0x1000ul
