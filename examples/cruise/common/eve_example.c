@@ -54,6 +54,15 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 // Draw a stencil to show a circular display
 #define TARGET_CIRCULAR
 #define TARGET_SCREEN_RADIUS 240
@@ -430,7 +439,7 @@ void eve_display(void)
             }
         }
 
-    } while (1);
+    } while (LOOP);
 }
 
 // Application Code begins here

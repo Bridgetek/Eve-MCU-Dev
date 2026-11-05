@@ -46,6 +46,7 @@
 #include "eve_example.h"
 
 /* MACROS **************************************************************************/
+
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
@@ -54,6 +55,15 @@
 #endif
 
 /* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
 
 /**
  @brief Define constants and global variables for use in the example.
@@ -2735,7 +2745,7 @@ static void eve_display(void)
     generateStaticScreenComponents();
 
     // main loop
-    while (1)
+    do
     {
         //--------------------------------------------------------------------------
         // Update the screen with either demo data or sensor data
@@ -2776,7 +2786,7 @@ static void eve_display(void)
                 sound_played = false;
             }
         }
-    }
+    } while (LOOP);
 }
 
 /**

@@ -49,6 +49,15 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
 
@@ -164,8 +173,10 @@ void eve_display(void)
     {
         font = 30;
     }
+    printf("%s %d\n", __FUNCTION__, __LINE__);
 
     eve_readcalib();
+    printf("%s %d\n", __FUNCTION__, __LINE__);
     
     do {
         EVE_LIB_BeginCoProList();
@@ -318,7 +329,8 @@ void eve_display(void)
         }
 
         key = tag;
-    } while (1);
+    
+    } while (LOOP);
 }
 
 // Application Code begins here
@@ -349,7 +361,7 @@ void eve_example(void)
         platform_calib_write(&calib, sizeof(struct touchscreen_calibration));
     }
 
-    while (1)
+    do
     {
         // Calibrate the display
         EVE_DEBUG_PRINTF("Calibrating display...\n");
@@ -362,5 +374,6 @@ void eve_example(void)
         // Start example code
         EVE_DEBUG_PRINTF("Starting demo:\n");
         eve_display();
-    }
+    
+    } while (LOOP);
 }

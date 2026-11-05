@@ -52,6 +52,17 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* LOCAL VARIABLES *****************************************************************/
+
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
 
@@ -352,5 +363,5 @@ void eve_example(void)
         // Debounce touchscreen.
         while (eve_read_tag(&key) != 0);
         
-    } while (1);
+    } while (LOOP);
 }

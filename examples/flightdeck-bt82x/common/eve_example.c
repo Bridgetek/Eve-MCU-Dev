@@ -58,6 +58,11 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// Prevent this example running in the simulator 
+#if defined(SOFTWARE_SIMULATOR)
+#error Not supported in the software simulator
+#endif
+
 // Bitmap handles
 #define HND_LVDSRX 1
 #define HND_BACKUP 2

@@ -45,9 +45,18 @@
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
-// ==========================================================================
-// Global variables
-// ==========================================================================
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* GLOBAL VARIABLES ****************************************************************/
 
 const uint8_t colours[24][3] =
 {
@@ -95,22 +104,22 @@ int16_t scoreHighest = 0;
 
 static unsigned int randseed;
 
-// ==========================================================================
-// Local functions
-// ==========================================================================
-
-int pseudo_rand(void)
-{
-    // Linear Congreuential RNG
-    randseed = (randseed * 1103515245 + 12345) & RAND_MAX;
-    return randseed;
-}
+/* LOCAL FUNCTIONS *****************************************************************/
 
 /** @brief Random number generator seed setter
  */
 static void pseudo_rand_seed(int seed)
 {
     randseed = seed;
+}
+
+/* FUNCTIONS ***********************************************************************/
+
+int pseudo_rand(void)
+{
+    // Linear Congreuential RNG
+    randseed = (randseed * 1103515245 + 12345) & RAND_MAX;
+    return randseed;
 }
 
 void spaced_invaders_RenderTextual(uint32_t scale, int16_t dx, int16_t dy, uint16_t xcrd, uint16_t ycrd, const char * text)
@@ -349,7 +358,7 @@ void spaced_invaders(void)
     scaledFont(scale, BITMAP_FIXED_FONT, BITMAP_SCALED_FONT);
 #endif
 
-    do
+    while (LOOP)
     {
         // wait for start button to be pressed then start game (reset and start first wave) ...
         spaced_invaders_WaitForStart(scale, dispX, dispY);
@@ -421,7 +430,7 @@ void spaced_invaders(void)
 
         } while (1);
 
-    } while (1);
+    };
 }
 
 // Application Code begins here

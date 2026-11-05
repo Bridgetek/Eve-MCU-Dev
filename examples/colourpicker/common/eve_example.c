@@ -50,6 +50,15 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 // Configuration
 
 #define WHEEL_FORMAT    EVE_FORMAT_RGB565
@@ -230,7 +239,7 @@ void eve_display(void)
 
     bool tag_outofrange = false;
 
-    while(1)
+    do
     {
         // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
@@ -445,7 +454,8 @@ void eve_display(void)
         {
             tag_outofrange = false;
         }
-    }
+
+    } while (LOOP);
 }
 
 void eve_example(void)

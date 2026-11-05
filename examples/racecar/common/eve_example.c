@@ -38,12 +38,17 @@
   * ============================================================================
   */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* CHECKS **************************************************************************/
 
 /* Set properties of all of the assets to be loaded */
 
@@ -83,6 +88,19 @@
 #endif
 #endif
 
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* LOCAL VARIABLES *****************************************************************/
+
 EVE_ASSET_PROPS patch_asset; 
 EVE_ASSET_PROPS Carbon_Fiber_800x480_asset; 
 EVE_ASSET_PROPS LED_32x32_asset;  
@@ -96,6 +114,7 @@ EVE_ASSET_PROPS Car_Overhead_44x80_asset;
 EVE_ASSET_PROPS Battery_Cells_40x1440_asset;
 EVE_ASSET_PROPS eurostile_150_L8;
 
+/* MACROS **************************************************************************/
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
@@ -106,15 +125,15 @@ EVE_ASSET_PROPS eurostile_150_L8;
 
 #define SCALE(a, sc) (((a) * (sc)) / 0x10000)
 
+/* FORWARD DECLARATIONS ************************************************************/
+
 void scaledText(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t font, uint16_t options, const char* string, ...);
 void scaledNumber(uint32_t scale, int16_t input_x, int16_t input_y, uint8_t font, uint16_t options, uint32_t number);
 void scaledVertex(uint32_t scale, int16_t input_x, int16_t input_y);
 void scaledPointSize(uint32_t scale, uint16_t size);
 void scaledTranslate(uint32_t scale, int16_t x, int16_t y);
 
-// ######################################################################################################################################################################################################
-// #######################################################                      Code for the Loading Assets                         #####################################################################
-// ######################################################################################################################################################################################################
+/* LOCAL FUNCTIONS *****************************************************************/
 
 void eve_display_load_assets(void)
 {
@@ -403,10 +422,7 @@ void scaledTranslate(uint32_t scale, int16_t x, int16_t y)
     EVE_VERTEX_TRANSLATE_Y(SCALE(y, scale)); 
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                      Code for the Widgets Example                          ###################################################################
-// ######################################################################################################################################################################################################
-
+/* FUNCTIONS ***********************************************************************/
 
 void tractionCircle(uint32_t scale, int16_t input_x, int16_t input_y, uint16_t array_end, uint16_t count, const int16_t *acc_x, const int16_t *acc_y) {
  
@@ -2095,7 +2111,7 @@ void eve_display(void)
     get_romfile_widths();
 #endif
 
-while(1)
+    do
     {
 #if defined(EVE_COPROC_PROFILE)
         EVE_LIB_BeginCoProProfile();
@@ -2368,7 +2384,8 @@ while(1)
 #endif
             EVE_DEBUG_PRINTF("FPS: %d DL/sec: %d\n", FPS, DLPS);
         } 
-    }
+    
+    } while (LOOP);
 }
 
 // Patches only apply to BT82x

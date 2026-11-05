@@ -56,6 +56,15 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 // Bitmap handle to use for scaled fonts
 #define SCALED_FONT 14
 
@@ -1107,11 +1116,11 @@ void eve_display(void)
     int interval_rest_count = 15;
     int timer_count = 90;
 
-    while (1)
+    do
     {
         setup_page(&cycle_count, &cycle_rest_count, &interval_count, &interval_rest_count, &timer_count);
         timer_page(cycle_count, cycle_rest_count, interval_count, interval_rest_count, timer_count);
-    }
+    } while(LOOP);
 }
 
 // Application Code begins here

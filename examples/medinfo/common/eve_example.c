@@ -37,6 +37,8 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,9 +50,7 @@
 
 #include "eve_example.h"
 
-// ######################################################################################################################################################################################################
-// #######################################################            Set properties of all of the assets to be loaded                ###################################################################
-// ######################################################################################################################################################################################################
+/* CHECKS **************************************************************************/
 
 #if IS_EVE_API(1,2)
 #error This project needs EVE API 3, 4 or 5 (BT81x, BT82x).
@@ -63,6 +63,17 @@
 #endif
 
 #endif // !defined(IS_ARDUINO_LIB)
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
 
 // Handle for icon cell images
 const uint32_t handle_icons_large = 0;
@@ -165,6 +176,8 @@ const uint32_t update_period_ms = 1000;
 // Brightness range - Note PWM max is 0x80.
 const uint16_t brightness_range = 96;
 const uint16_t brightness_min = 32;
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display_load_assets(void)
 {
@@ -423,7 +436,7 @@ void eve_display(void)
     trace_colour[trace_resp] =  green;
     trace_colour[trace_sat] =  blue;
 
-    while(1)
+    do
     {
         // Calculate updated data "received" to display on the traces
         if (icon_updatestate == icon_pause)
@@ -999,7 +1012,8 @@ void eve_display(void)
         uint32_t dlsize =  receivedata[2];
         (void)dlsize;
         EVE_DEBUG_PRINTF("DL: %08x frame %d ms\n", dlsize, frame_render_time);
-    }
+    
+    } while(LOOP);
 }
 
 // Application Code begins here

@@ -49,6 +49,17 @@
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
 /* TYPES / STRUCTURES **************************************************************/
 
 // Structure to hold information to draw animated bubbles
@@ -444,7 +455,7 @@ void eve_display(void)
     int prop_handle = fish_handle;
     addr = load_prop_image(prop1_128x128_ARGB2, prop1_128x128_ARGB2_size, prop_handle++, EVE_FORMAT_ARGB2, 1, 128, 128, addr);
 
-    while (1)
+    do
     {
         EVE_LIB_BeginCoProList();
         EVE_CMD_DLSTART();
@@ -474,7 +485,8 @@ void eve_display(void)
 
         depth++;
         heading++;
-    }
+    
+    } while (LOOP);
 }
 
 // Application Code begins here

@@ -46,6 +46,17 @@
 
 /* CONSTANTS ***********************************************************************/
 
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* EXTERNAL CONSTANTS **************************************************************/
+
 extern const EVE_GPU_FONT_HEADER *font0_hdr;
 
 /* FUNCTIONS ***********************************************************************/
@@ -122,7 +133,8 @@ void eve_display(void)
                 counter = 0;
             }
         }
-    } while (1);
+        
+    } while (LOOP);
 }
 
 // Application Code begins here
