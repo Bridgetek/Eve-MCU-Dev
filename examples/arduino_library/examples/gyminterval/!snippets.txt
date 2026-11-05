@@ -1,5 +1,9 @@
 touch.h
 touch.c
+platform/calib.h
+platform/calib_arduino.cpp
+platform/time.h
+platform/time.cpp
 controls/arcs.h
 controls/arcs.c
 controls/fonts.h
