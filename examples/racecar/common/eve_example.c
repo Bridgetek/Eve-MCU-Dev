@@ -2126,8 +2126,10 @@ while(1)
         // For BT81x when the background image is decoded from a PNG just draw a purple tinged background.
         EVE_COLOR_RGB(30,30,30); // grey
         EVE_BEGIN(EVE_BEGIN_RECTS);
-        scaledVertex(scale, x * 16, y * 16);
-        scaledVertex(scale, (x + 800) * 16, (y + 480) * 16);
+        EVE_VERTEX_FORMAT(3); // set pixel precision to 1/8th for this rectangle
+        scaledVertex(scale, x * 8, y * 8);
+        scaledVertex(scale, (x + 800) * 8, (y + 480) * 8);
+        EVE_VERTEX_FORMAT(4); // reset pixel precision to 1/16th
 #endif // (IS_EVE_API(3,4) && ((ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE))) || IS_EVE_API(5)
        
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
