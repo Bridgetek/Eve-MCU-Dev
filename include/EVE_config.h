@@ -98,7 +98,7 @@
  */
 //@{
 #ifndef EVE_DEVICE
-#define EVE_DEVICE EVE_BT820
+#define EVE_DEVICE EVE_BT817
 #endif
 //@}
 

@@ -2214,7 +2214,7 @@ void EVE_CMD_FSDIR(uint32_t dst, uint32_t num, const char* path, uint32_t result
 
 void EVE_CMD_SDBLOCKREAD(uint32_t dst, uint32_t src, uint32_t count, uint32_t result)
 {
-    HAL_WriteCmd(EVE_ENC_CMD_FSDIR);
+    HAL_WriteCmd(EVE_ENC_CMD_SDBLOCKREAD);
     HAL_WriteCmd(dst);
     HAL_WriteCmd(src);
     HAL_WriteCmd(count);
@@ -2248,6 +2248,47 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq)
     HAL_WriteCmd(freq);
 }
 
+void EVE_CMD_PLAYWAV(uint32_t options)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_PLAYWAV);
+    HAL_WriteCmd(options);
+}
+
+void EVE_CMD_DDRSHUTDOWN(void)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_DDRSHUTDOWN);
+}
+
+void EVE_CMD_DDRSTARTUP(void)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_DDRSTARTUP);
+}
+
+void EVE_CMD_RESTORECONTEXT(void)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_RESTORECONTEXT);
+}
+
+void EVE_CMD_SAVECONTEXT(void)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_SAVECONTEXT);
+}
+
+void EVE_CMD_SKIPCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask, int32_t num)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_SKIPCOND);
+    HAL_WriteCmd(a);
+    HAL_WriteCmd(func);
+    HAL_WriteCmd(ref);
+    HAL_WriteCmd(mask);
+    HAL_WriteCmd((uint32_t)num);
+}
+
+void EVE_CMD_WATCHDOG(uint32_t init_val)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_WATCHDOG);
+    HAL_WriteCmd(init_val);
+}
 #endif
 
 /* EVE API END */

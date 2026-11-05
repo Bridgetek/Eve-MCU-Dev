@@ -904,7 +904,7 @@ The following table shows the display list commands which are supported by each 
 | API Name               | Command Name       | EVE1 | EVE2 | EVE3 | EVE4 | EVE5 |
 | ---------------------- | ------------------ | ---- | ---- | ---- | ---- | ---- |
 | EVE_ALPHA_FUNC         | ALPHA_FUNC         | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BEGIN              | CLEAR_COLOR_RGB    | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BEGIN              | BEGIN              | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_EXT_FORMAT  | BITMAP_EXT_FORMAT  | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_BITMAP_HANDLE      | BITMAP_HANDLE      | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_LAYOUT      | BITMAP_LAYOUT      | Yes  | Yes  | Yes  | Yes  | Yes  |
@@ -916,11 +916,11 @@ The following table shows the display list commands which are supported by each 
 | EVE_BITMAP_SOURCE_H    | BITMAP_SOURCE_H    | *No* | *No* | *No* | *No* | Yes  |
 | EVE_BITMAP_SWIZZLE     | BITMAP_SWIZZLE     | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_BITMAP_TRANSFORM_A | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_TRANSFORM_B | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_TRANSFORM_C | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_TRANSFORM_D | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_TRANSFORM_E | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_BITMAP_TRANSFORM_F | BITMAP_TRANSFORM_A | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_TRANSFORM_B | BITMAP_TRANSFORM_B | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_TRANSFORM_C | BITMAP_TRANSFORM_C | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_TRANSFORM_D | BITMAP_TRANSFORM_D | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_TRANSFORM_E | BITMAP_TRANSFORM_E | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_BITMAP_TRANSFORM_F | BITMAP_TRANSFORM_F | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_BITMAP_ZORDER      | BITMAP_ZORDER      | *No* | *No* | *No* | *No* | Yes  |
 | EVE_BLEND_FUNC         | BLEND_FUNC         | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CALL               | CALL               | Yes  | Yes  | Yes  | Yes  | Yes  |
@@ -942,7 +942,7 @@ The following table shows the display list commands which are supported by each 
 | EVE_MACRO              | MACRO              | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_NOP                | NOP                | *No* | Yes  | Yes  | Yes  | Yes  |
 | EVE_PALETTE_SOURCE     | PALETTE_SOURCE     | *No* | Yes  | Yes  | Yes  | Yes  |
-| EVE_PALLETE_SOURCE_H   | PALLETE_SOURCE_H   | *No* | *No* | *No* | *No* | Yes  |
+| EVE_PALETTE_SOURCE_H   | PALETTE_SOURCE_H   | *No* | *No* | *No* | *No* | Yes  |
 | EVE_POINT_SIZE         | POINT_SIZE         | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_REGION             | REGION             | *No* | *No* | *No* | *No* | Yes  |
 | EVE_RESTORE_CONTEXT    | RESTORE_CONTEXT    | Yes  | Yes  | Yes  | Yes  | Yes  |
@@ -992,7 +992,7 @@ The following table shows the co-processor commands which are supported by each 
 | EVE_CMD_SKETCH           | CMD_SKETCH           | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_MEMSET           | CMD_MEMSET           | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_GRADCOLOR        | CMD_GRADCOLOR        | Yes  | Yes  | Yes  | Yes  | Yes  |
-| EVE_CMD_BITMAP_TRANSFORM | CMD_BITMAP_TRANSFORM | Yes  | Yes  | Yes  | Yes  | Yes  |
+| EVE_CMD_BITMAP_TRANSFORM | CMD_BITMAP_TRANSFORM | *No* | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_CALIBRATE        | CMD_CALIBRATE        | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_INFLATE          | CMD_INFLATE          | Yes  | Yes  | Yes  | Yes  | Yes  |
 | EVE_CMD_SETFONT          | CMD_SETFONT          | Yes  | Yes  | Yes  | Yes  | Yes  |
@@ -1082,8 +1082,6 @@ The following table shows the co-processor commands which are supported by each 
 | EVE_CMD_FENCE            | CMD_FENCE            | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_GRAPHICSFINISH   | CMD_GRAPHICSFINISH   | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_REGWRITE         | CMD_REGWRITE         | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_APBWRITE         | CMD_APBWRITE         | *No* | *No* | *No* | *No* | Yes  |
-| EVE_CMD_APBREAD          | CMD_APBREAD          | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_LOADWAV          | CMD_LOADWAV          | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_LOADASSET        | CMD_LOADASSET        | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_LOADPATCH        | CMD_LOADPATCH        | *No* | *No* | *No* | *No* | Yes  |
@@ -1099,3 +1097,10 @@ The following table shows the co-processor commands which are supported by each 
 | EVE_CMD_WAITCOND         | CMD_WAITCOND         | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_RESULT           | CMD_RESULT           | *No* | *No* | *No* | *No* | Yes  |
 | EVE_CMD_I2SSTARTUP       | CMD_I2SSTARTUP       | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_PLAYWAV          | CMD_PLAYWAV          | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_DDRSHUTDOWN      | CMD_DDRSHUTDOWN      | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_DDRSTARTUP       | CMD_DDRSTARTUP       | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_RESTORECONTEXT   | CMD_RESTORECONTEXT   | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_SAVECONTEXT      | CMD_SAVECONTEXT      | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_SKIPCOND         | CMD_SKIPCOND         | *No* | *No* | *No* | *No* | Yes  |
+| EVE_CMD_WATCHDOG         | CMD_WATCHDOG         | *No* | *No* | *No* | *No* | Yes  |

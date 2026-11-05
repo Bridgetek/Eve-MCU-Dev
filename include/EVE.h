@@ -730,6 +730,13 @@ void EVE_CMD_WAITCHANGE(uint32_t a);
 void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask);
 void EVE_CMD_RESULT(uint32_t a);
 void EVE_CMD_I2SSTARTUP(uint32_t freq);
+void EVE_CMD_PLAYWAV(uint32_t options);
+void EVE_CMD_DDRSHUTDOWN(void);
+void EVE_CMD_DDRSTARTUP(void);
+void EVE_CMD_RESTORECONTEXT(void);
+void EVE_CMD_SAVECONTEXT(void);
+void EVE_CMD_SKIPCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask, int32_t num);
+void EVE_CMD_WATCHDOG(uint32_t init_val);
 #endif // IS_EVE_API(5) 
 
 #endif  /* _EVE_HEADER_H */
