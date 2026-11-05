@@ -555,6 +555,10 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     else if (state == state_write_cont)
     {
         printf("%04x ", DataToWrite);
+        if (address == EVE_REG_CMD_WRITE)
+        {
+            write_pointer = DataToWrite;
+        }
     }
     else
     {
@@ -654,6 +658,10 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
     {
         printf("%s %08x ", get_register(), DataToWrite);
         state = state_write_cont;
+        if (address == EVE_REG_CMD_WRITE)
+        {
+            write_pointer = DataToWrite;
+        }
     }
     else if (state == state_write_cont)
     {

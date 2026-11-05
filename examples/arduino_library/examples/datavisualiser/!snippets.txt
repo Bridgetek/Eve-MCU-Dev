@@ -1,5 +1,7 @@
 touch.h
 touch.c
+platform/calib.h
+platform/calib_arduino.cpp
 controls/sound.h
 controls/sound.c
 maths/trig_furman.h
