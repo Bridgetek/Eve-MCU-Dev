@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\..\snippets\dials\flightalt.c" />
     <ClCompile Include="..\..\..\snippets\dials\flightatt.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
     <ClCompile Include="..\..\assets\lake_wanaka.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
@@ -116,6 +117,7 @@
     <ClInclude Include="..\..\..\..\include\extensions\lcd_panel_init.h" />
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dials\flight_controls.h" />
+    <ClInclude Include="..\..\..\snippets\platform\calib.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />

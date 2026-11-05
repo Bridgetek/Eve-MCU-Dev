@@ -19,7 +19,7 @@
     <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
-     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
+    <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c">
       <Filter>Library\source\extensions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c">
@@ -47,7 +47,7 @@
       <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\extensions\lcd_panel_init.h">
-      <Filter>Library\include\extensions</Filter> 
+      <Filter>Library\include\extensions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\snippets\touch.h">
       <Filter>Example\snippets</Filter>
@@ -85,8 +85,14 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h">
       <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll">
       <Filter>Library\ports\external\ftdi_libraries\libFT4222</Filter>
     </None>

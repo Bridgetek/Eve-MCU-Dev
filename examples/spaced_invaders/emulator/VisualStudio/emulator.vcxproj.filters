@@ -100,6 +100,18 @@
     <ClCompile Include="..\..\common\scaling.c">
       <Filter>Example</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\snippets\platform\time.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\snippets\platform\time.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll">

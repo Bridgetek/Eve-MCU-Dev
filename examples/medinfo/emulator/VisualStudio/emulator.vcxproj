@@ -52,7 +52,7 @@
     <IncludePath>..\..\..\..\ports\eve_emulator;..\..\..\..\include;..\..\common;..\..\..\snippets;..\..\..\..\source;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
- </PropertyGroup>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -101,6 +101,8 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClCompile Include="..\..\..\..\ports\eve_emulator\EVE_emulator.c" />
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
+    <ClCompile Include="..\..\..\snippets\platform\time.c" />
     <ClCompile Include="..\..\..\snippets\widgets\dialogs.c" />
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
     <ClCompile Include="..\..\assets\c_array_assets\bad.c" />
@@ -136,13 +138,15 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClInclude Include="..\..\..\..\include\EVE_settings.h" />
     <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
-    <ClInclude Include="..\..\..\..\source\extensions\custom_touch_fw.c" />   
+    <ClInclude Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClInclude Include="..\..\..\..\include\extensions\lcd_panel_init.h" />
-    <ClInclude Include="..\..\..\..\source\extensions\lcd_panel_init.c" />  
+    <ClInclude Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
+    <ClInclude Include="..\..\..\snippets\platform\calib.h" />
+    <ClInclude Include="..\..\..\snippets\platform\time.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\snippets\widgets\dialogs.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />

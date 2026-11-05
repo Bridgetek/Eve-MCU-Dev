@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\main.c">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\source\EVE_HAL.c">
       <Filter>Library\source</Filter>
     </ClCompile>
@@ -85,11 +82,20 @@
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
-      <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h">
+    <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h">
       <Filter>Library\ports\eve_emulator\EVE_Emulator\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h">
       <Filter>Library\ports\eve_emulator\EVE_Emulator\include</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\main.c">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -103,6 +103,12 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\include\libmpsse_spi.h">
       <Filter>Library\ports\external\ftdi_libraries\libMPSSE</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
+      <Filter>Example\snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\calib.h">
+      <Filter>Example\snippets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

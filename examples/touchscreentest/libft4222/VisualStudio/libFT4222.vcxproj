@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
     <ClCompile Include="..\..\..\..\ports\eve_libft4222\EVE_libft4222.c" />
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
     <ClCompile Include="..\..\common\eve_images.c" />
@@ -111,6 +112,7 @@
     <ClInclude Include="..\..\..\..\include\extensions\bt82x_patch.h" />
     <ClInclude Include="..\..\..\..\include\extensions\custom_touch_fw.h" />
     <ClInclude Include="..\..\..\..\include\extensions\lcd_panel_init.h" />
+    <ClInclude Include="..\..\..\snippets\platform\calib.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />
@@ -118,7 +120,7 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\include\LibFT4222.h" />
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h" />
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll" />
   </ItemGroup>
   <ItemGroup>

@@ -105,6 +105,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClCompile Include="..\..\..\snippets\dials\compass_bulkhead.c" />
     <ClCompile Include="..\..\..\snippets\dials\sub_depth.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
     <ClCompile Include="..\..\assets\clownfish_102x54_ARGB1555.c" />
     <ClCompile Include="..\..\assets\parrotfish_116x43_ARGB1555.c" />
     <ClCompile Include="..\..\assets\prop1_128x128_ARGB2.c" />
@@ -131,6 +132,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClInclude Include="..\..\..\snippets\dials\compass_controls.h" />
     <ClInclude Include="..\..\..\snippets\dials\sub_controls.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
+    <ClInclude Include="..\..\..\snippets\platform\calib.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />

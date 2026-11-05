@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\..\..\source\extensions\bt82x_patch.c" />
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
+    <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
     <ClCompile Include="..\..\common\eve_example.c" />
     <ClCompile Include="..\..\common\eve_fonts.c" />
     <ClCompile Include="..\..\..\snippets\touch.c" />
@@ -113,6 +114,7 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\include\libmpsse_spi.h" />
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_infra.h" />
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libMPSSE\source\ftdi_mid.h" />
+    <ClInclude Include="..\..\..\snippets\platform\calib.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\..\include\MCU.h" />

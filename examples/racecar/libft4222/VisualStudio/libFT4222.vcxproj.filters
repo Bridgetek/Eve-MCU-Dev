@@ -139,6 +139,12 @@
     <ClInclude Include="..\..\..\..\ports\external\ftdi_libraries\libFTD2XX\include\ftd2xx.h">
       <Filter>Library\ports\external\ftdi_libraries\libFTD2XX</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\snippets\platform\time.c">
+      <Filter>Example\Snippets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\snippets\platform\time.h">
+      <Filter>Example\Snippets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\ports\external\ftdi_libraries\libFT4222\lib-windows\LibFT4222-64.dll">
