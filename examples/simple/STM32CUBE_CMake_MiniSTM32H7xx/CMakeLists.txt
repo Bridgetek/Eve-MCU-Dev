@@ -29,6 +29,12 @@ project(${CMAKE_PROJECT_NAME} C ASM)
 # Include the common CMake recipie for this example:
 include(../common.cmake)
 
+# Platform specific snippets add to example
+target_sources(eve_example PRIVATE
+        ${EXAMPLE_SNIPPETS}/platform/time.c
+        ${EXAMPLE_SNIPPETS}/platform/calib_none.c
+)
+
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
 
