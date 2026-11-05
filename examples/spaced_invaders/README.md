@@ -62,6 +62,9 @@ The example contains a common directory with several files which comprises all t
 | [common/invaders_demo.c](common/invaders_demo.c) | Example source code for demo screen |
 | [common/invaders_game.c](common/invaders_game.c) | Example source code for gameplay |
 | [common/scaling.c](common/scaling.c) | Helper functions to scale graphics primatives, fonts, and bitmaps |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/controls/fonts.c](../snippets/controls/fonts.c) | ROM Fonts helper code |
+| [snippets/platform/time.c](../snippets/platform/time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
