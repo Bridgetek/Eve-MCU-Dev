@@ -20,7 +20,9 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\simple_libmpsse.exe` or `build\simple_libmpsse.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\simple_libmpsse.exe` or  `build\simple_libmpsse.exe`. This can be run from the command line. 
+
+Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
 ## Visual Studio Code
 

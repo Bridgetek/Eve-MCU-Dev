@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Cruise Example for libft4222
+# EVE-MCU-Dev Data Visulaiser Example for libft4222
 
 Please follow instructions to install the LibFT4222 Middleware Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libft4222](../../../ports/eve_libft4222/README.md). This must be done before compilation.
 
@@ -22,9 +22,9 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\datavisualiser_libft4222.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\datavisualiser_libft4222.exe` or `build\datavisualiser_libft4222.exe`. This can be run from the command line. 
 
-Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
+Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
