@@ -49,6 +49,11 @@
 
 /* CONSTANTS ***********************************************************************/
 
+/* MACROS **************************************************************************/
+
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 void setup(void);
@@ -80,6 +85,6 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Example Tester Program\r\n");
+    printf ("Welcome to EVE-MCU-Dev Example Tester: " STR(EXAMPLE) "\r\n");
     printf ("\n");
 }

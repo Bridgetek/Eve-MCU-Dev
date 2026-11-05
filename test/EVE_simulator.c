@@ -83,6 +83,8 @@ uint32_t address;
 int hostptr = 0;
 uint8_t hostcmd[16];
 
+uint16_t write_pointer = 0;
+
 char const *get_state()
 {
     if (state == state_reset) return "reset";
@@ -136,6 +138,18 @@ char const *get_register()
     else if (address == EVE_REG_VOL_SOUND) return "REG_VOL_SOUND";
     else if (address == EVE_REG_SOUND) return "REG_SOUND";
     else if (address == EVE_REG_GPIO_DIR) return "REG_GPIO_DIR";
+    else if (address == EVE_REG_TOUCH_SCREEN_XY) return "REG_TOUCH_SCREEN_XY";
+    else if (address == EVE_REG_TOUCH_RAW_XY) return "REG_TOUCH_RAW_XY";
+    else if (address == EVE_REG_TOUCH_TAG) return "REG_TOUCH_TAG";
+    else if (address == EVE_REG_TOUCH_TAG_XY) return "REG_TOUCH_TAG_XY";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_A) return "REG_TOUCH_TRANSFORM_A";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_B) return "REG_TOUCH_TRANSFORM_B";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_C) return "REG_TOUCH_TRANSFORM_C";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_D) return "REG_TOUCH_TRANSFORM_D";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_E) return "REG_TOUCH_TRANSFORM_E";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_F) return "REG_TOUCH_TRANSFORM_F";
+    else if (address == EVE_REG_FRAMES) return "REG_FRAMES";
+    else if (address == EVE_ROMFONT_TABLEADDRESS) return "ROMFONT_TABLEADDRESS";
     else if ((address >= EVE_RAM_DL) && (address < (EVE_RAM_DL + EVE_RAM_DL_SIZE)))
         return "RAM_DL";
     else if ((address >= EVE_RAM_CMD) && (address < (EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
@@ -160,7 +174,11 @@ uint32_t get_response()
     }
     else if (address == EVE_REG_CMD_READ)
     {
-        response = HAL_GetCmdPointer();
+        response = write_pointer;
+    }
+    else if (address == EVE_REG_CMD_WRITE)
+    {
+        response = write_pointer;
     }
     else if (address == EVE_REG_CPURESET)
     {
@@ -183,7 +201,9 @@ uint32_t get_response()
     }
     else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
     {
-        const char msg[] = "This is a test\0\0\0";
+        // Keep up-to-date with the expected value in `bt82x_patch.c` function eve_loadpatch();
+        const char msg[] = "patch_base;1.5;touch-1.1;\0\0\0";
+        
         if (address - EVE_RAM_REPORT < strlen(msg))
         {
             memcpy(&response, &msg[address - EVE_RAM_REPORT], 4);
@@ -266,6 +286,22 @@ int MCU_Init(void)
         "IDM2040-43A"
 #elif EVE_MODULE == EVE_IDM20407A
         "IDM2040-7A"
+#elif EVE_MODULE == EVE_VM820B10A       
+        "VM820B10A"
+#elif EVE_MODULE == EVE_VM820B15A      
+        "VM820B15A"
+#elif EVE_MODULE == EVE_IDK_FT810_43A 
+        "IDK-FT810-43A"
+#elif EVE_MODULE == EVE_IDK_BT816_50A
+        "IDK-BT816-50A"
+#elif EVE_MODULE == EVE_IDK_BT817_70A
+        "IDK-BT817-70A"
+#elif EVE_MODULE == EVE_IDK_BT817_101A  
+        "IDK-BT817-101A"
+#elif EVE_MODULE ==  EVE_IDK_BT820_101A  
+        "IDK-BT820-101A"
+#else
+        "EVE_MODULE definition not recognised"
 #endif // EVE_MODULE
     );
 #endif // EVE_MODULE != EVE_NO_MODULE
@@ -293,7 +329,7 @@ int MCU_Init(void)
 #elif EVE_PANEL == EVE_DP_IDM21R
         "IDM204021R (Capacitive)"
 #else
-        "Other"
+        "EVE_PANEL not recognised"
 #endif // EVE_PANEL
     );
 #endif // EVE_PANEL != EVE_NO_PANEL
@@ -579,21 +615,39 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 {
     if (state == state_address)
     {
+#if IS_EVE_API(1, 2, 3, 4)
+        DataToWrite = DataToWrite << 8;
+#endif
         address = MCU_be32toh(DataToWrite);
-        if (address >> 31)
+#if IS_EVE_API(1, 2, 3, 4)
+        if (address >> 23)
         {
             state = state_write;
-            printf("write ");
         }
         else
         {
             state = state_read;
+        }
+        address = address & 0x7fffff;
+#else
+        if (address >> 31)
+        {
+            state = state_write;
+        }
+        else
+        {
+            state = state_read;
+        }
+        address = address & 0x7fffffff;
+#endif
+        if (state == state_write)
+        {
+            printf("write ");
+        }
+        else
+        {
             printf("read ");
         }
-        address = MCU_be32toh(DataToWrite) & 0x7fffffff;
-#if IS_EVE_API(1, 2, 3, 4)
-        address = address >> 8;
-#endif
         printf("%x ", address);
     }
     else if (state == state_write)
@@ -638,6 +692,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
             printf("%02x", DataRead & 0xff);
             DataRead = DataRead >> 8;
         }
+        printf(" ");
     }
     else if (state == state_read_cont)
     {

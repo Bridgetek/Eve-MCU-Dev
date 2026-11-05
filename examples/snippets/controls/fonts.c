@@ -86,7 +86,12 @@ uint8_t font_getmax(void)
 // If the  ROM font will return a pointer of zero.
 uint32_t font_getromptr(uint8_t fontnumber)
 {
-    uint32_t fontroot, fontptr;
+    // Do no query the ROM if we are in simulator mode
+#if defined(SOFTWARE_SIMULATOR)
+    return 0;
+#endif // defined(SOFTWARE_SIMULATOR)
+
+    uint32_t fontroot, fontptr = 0;
 
 #if IS_EVE_API(5)
     // BT82x

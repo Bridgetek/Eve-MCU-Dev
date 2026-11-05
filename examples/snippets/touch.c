@@ -46,12 +46,17 @@
 #include <EVE.h>
 
 #include "touch.h"
-/* Include calibration storage functions */
-#if !defined(ARDUINO) || defined(PLATFORM_PLATFORMIO)
-#include "platform/calib.h"
-#else
-#include "calib.h"
-#endif
+
+/* External linkage to calibration storage functions 
+ * These are implemented for common cases in the snippets/platform directory.
+ * The linkage here allows these to be provided in application specific cases.
+ */
+/* Initialise method used to store touchscreen settings */
+extern int8_t platform_calib_init(void);
+/* Write calibration settings */
+extern int8_t platform_calib_write(void *calib, uint32_t len);
+/* Read calibration settings */
+extern int8_t platform_calib_read(void *calib, uint32_t len);
 
 /* FUNCTIONS ***********************************************************************/
 
@@ -103,6 +108,9 @@ int eve_read_tag(uint8_t *key)
 
 int eve_calibrate(void)
 {
+    // Do not perform a calibration if the simulator is running the code
+#if !defined(SOFTWARE_SIMULATOR)
+
     struct touchscreen_calibration calib;
 
     // Transform matrix definition
@@ -223,6 +231,8 @@ int eve_calibrate(void)
     EVE_LIB_MemWrite32(EVE_REG_CPURESET, 2);
     EVE_LIB_MemWrite32(EVE_REG_CPURESET, 0);
 #endif
+
+#endif // !defined(SOFTWARE_SIMULATOR)
 
     return 0;
 }
