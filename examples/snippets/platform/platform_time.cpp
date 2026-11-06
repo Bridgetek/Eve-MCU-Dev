@@ -1,5 +1,5 @@
 /**
- * @file time.h
+ * @file platform_time.cpp
  */
 /*
  * ============================================================================
@@ -37,20 +37,12 @@
  * ============================================================================
  */
 
-#ifndef _EVE_TIME_H
-#define _EVE_TIME_H
-
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <Arduino.h>
+#include "platform_time.h"
 
-/* Functions called from eve_example code to platform specific code */
-uint32_t platform_get_time(void);
-
-#ifdef __cplusplus
+uint32_t platform_get_time(void)
+{
+    return millis();
 }
-#endif
-
-#endif // _EVE_TIME_H

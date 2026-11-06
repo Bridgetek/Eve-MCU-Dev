@@ -102,7 +102,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClCompile Include="..\..\..\snippets\controls\arcs.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
     <ClCompile Include="..\..\..\snippets\platform\calib_file.c" />
-    <ClCompile Include="..\..\..\snippets\platform\time.c" />
+    <ClCompile Include="..\..\..\snippets\platform\platform_time.c" />
     <ClCompile Include="..\..\..\snippets\widgets\dialogs.c" />
     <ClCompile Include="..\..\..\snippets\widgets\sevenseg.c" />
     <ClCompile Include="..\..\assets\c_array_assets\bad.c" />
@@ -146,7 +146,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClInclude Include="..\..\..\snippets\controls\arcs.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
     <ClInclude Include="..\..\..\snippets\platform\calib.h" />
-    <ClInclude Include="..\..\..\snippets\platform\time.h" />
+    <ClInclude Include="..\..\..\snippets\platform\platform_time.h" />
     <ClInclude Include="..\..\..\snippets\touch.h" />
     <ClInclude Include="..\..\..\snippets\widgets\dialogs.h" />
     <ClInclude Include="..\..\..\snippets\widgets\sevenseg.h" />

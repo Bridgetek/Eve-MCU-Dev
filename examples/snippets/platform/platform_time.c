@@ -1,5 +1,5 @@
 /**
- * @file time.c
+ * @file platform_time.c
  */
 /*
  * ============================================================================
@@ -38,6 +38,8 @@
  */
 
 #include <stdint.h>
+
+#include "platform_time.h"
 
 #if defined(_WIN32) || defined(linux)
 

@@ -10,7 +10,7 @@ idf_component_register(SRCS
                     # Snippet files to add to example
                     "../../../snippets/touch.c" 
                     # Platform specific snippets
-                    "../../../snippets/platform/time.c"
+                    "../../../snippets/platform/platform_time.c"
                     "../../../snippets/platform/calib_esp32.c"
                     INCLUDE_DIRS 
                     "../../../../include" 

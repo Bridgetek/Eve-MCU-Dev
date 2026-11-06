@@ -102,7 +102,8 @@ The example contains a common directory with several files which comprises all t
 | [eve_example.h](eve_example.h) | Header file for examaple |
 | [touch.ino](touch.ino) | Calibrations routines |
 | [touch.h](touch.h) | Calibrations routines header file |
-| [time.h](time.h) | Platform time routines header file |
+| [platform_time.cpp](platform_time.cpp) | Platform time routines |
+| [platform_time.h](platform_time.h) | Platform time routines header file |
 | [sound.ino](sound.ino) | Sound routines |
 | [sound.h](sound.h) | Sound routines header file |
 | [fonts.ino](fonts.ino) | Font routines |

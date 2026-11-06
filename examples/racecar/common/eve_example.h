@@ -54,7 +54,7 @@ extern "C" {
 /* Include snippets */
 #include <touch.h>
 #include <maths/trig_furman.h>
-#include <platform/time.h>
+#include <platform/platform_time.h>
 #include <patch_textscale.h>
 
 /* Entry point to the example code */

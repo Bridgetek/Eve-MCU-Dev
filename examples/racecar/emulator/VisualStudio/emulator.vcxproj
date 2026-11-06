@@ -102,7 +102,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClCompile Include="..\..\..\..\source\extensions\custom_touch_fw.c" />
     <ClCompile Include="..\..\..\..\source\extensions\lcd_panel_init.c" />
     <ClCompile Include="..\..\..\snippets\maths\trig_furman.c" />
-    <ClCompile Include="..\..\..\snippets\platform\time.c" />
+    <ClCompile Include="..\..\..\snippets\platform\platform_time.c" />
     <ClCompile Include="..\..\assets\c_array_assets\arrows_96x192_PNG.c" />
     <ClCompile Include="..\..\assets\c_array_assets\Battery_Cells_40x1440_PNG.c" />
     <ClCompile Include="..\..\assets\c_array_assets\Bottom_Bar_800x8_PNG.c" />
@@ -137,7 +137,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
     <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu.h" />
     <ClInclude Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\include\bt8xxemu_inttypes.h" />
     <ClInclude Include="..\..\..\snippets\maths\trig_furman.h" />
-    <ClInclude Include="..\..\..\snippets\platform\time.h" />
+    <ClInclude Include="..\..\..\snippets\platform\platform_time.h" />
     <ClInclude Include="..\..\common\eve_example.h" />
     <ClInclude Include="..\..\..\..\include\EVE.h" />
     <ClInclude Include="..\..\..\..\include\EVE_config.h" />

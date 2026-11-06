@@ -54,7 +54,7 @@ extern "C" {
 #include <touch.h>
 #include <widgets/sevenseg.h>
 #include <widgets/dialogs.h>
-#include <platform/time.h>
+#include <platform/platform_time.h>
 #include "patch_medinfo.h"
 
 /* Entry point to the example code */

@@ -220,7 +220,7 @@ The example contains a common directory with several files which comprises all t
 | [common/eve_assetload_flash_eve4.c](common/eve_assetload_flash_eve4.c) | Flash mapping addresses for BT817/8 |
 | [common/eve_assetload_flash_eve3.c](common/eve_assetload_flash_eve3.c) | Flash mapping addresses for BT815/6 |
 | [snippets/maths/trig_furman.c](../snippets/maths/trig_furman.c) | Trigonometric (Furman) macros and routines |
-| [snippets/platform/time.c](../snippets/platform/time.c) | Platform time routines |
+| [snippets/platform/platform_time.c](../snippets/platform/platform_time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 | [assets](assets) | Directory for storage of assets |
 | [assets/eve5](assets/eve5) | Directory for storage of encoded ASTC compressed images for BT82x |

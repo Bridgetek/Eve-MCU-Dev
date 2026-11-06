@@ -106,13 +106,13 @@
     <ClCompile Include="..\..\..\snippets\platform\calib_file.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\snippets\platform\time.c">
+    <ClCompile Include="..\..\..\snippets\platform\platform_time.c">
       <Filter>Example\snippets</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\snippets\platform\calib.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\snippets\platform\time.h">
+    <ClInclude Include="..\..\..\snippets\platform\platform_time.h">
       <Filter>Example\snippets</Filter>
     </ClInclude>
   </ItemGroup>
