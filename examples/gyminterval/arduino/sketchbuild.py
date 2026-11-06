@@ -35,7 +35,7 @@ src_flatten_dirs = ["maths", "controls"]
 dist_source_files.extend(add_files(src_example, sketch, ["eve_example.c", "eve_example.h"]))
 dist_source_files.extend(add_files(src_snippets, sketch, ["touch.c", "touch.h"]))
 dist_source_files.extend(add_files(os.path.join(src_snippets, "platform"), sketch, ["calib_arduino.cpp", "calib.h"]))
-dist_source_files.extend(add_files(os.path.join(src_snippets, "platform"), sketch, ["platform_time.c", "platform_time.h"]))
+dist_source_files.extend(add_files(os.path.join(src_snippets, "platform"), sketch, ["platform_time.cpp", "platform_time.h"]))
 dist_source_files.extend(add_files(os.path.join(src_snippets, "maths"), sketch, ["trig_furman.c", "trig_furman.h"]))
 dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketch, ["arcs.c", "arcs.h", "fonts.c", "fonts.h", "sound.c", "sound.h"]))
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_settings.h", "EVE_commands.h", "EVE_defs.h", "EVE_config.h"]))
