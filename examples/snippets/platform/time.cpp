@@ -40,6 +40,7 @@
 #include <stdint.h>
 
 #include <Arduino.h>
+#include "time.h"
 
 uint32_t platform_get_time(void)
 {
