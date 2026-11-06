@@ -52,7 +52,7 @@ project(${EXAMPLE_PROJECT_NAME} C CXX)
 include(../common.cmake)
 
 # Platform specific snippets add to example
-target_sources(eve_example PRIVATEc
+target_sources(eve_example PRIVATE
         ${EXAMPLE_SNIPPETS}/platform/calib_pico.c
 )
 
