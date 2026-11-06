@@ -44,7 +44,6 @@
 #include <string.h>
 
 #include <pico/stdlib.h>
-#include <pico/time.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include <eve_example.h>

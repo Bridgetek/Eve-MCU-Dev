@@ -45,10 +45,6 @@
 
 #include <pico/stdlib.h>
 
-/* Flash read/write capability for storing Non-volatile data */
-#include <hardware/flash.h>
-#include <hardware/sync.h>
-
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include <eve_example.h>
 
