@@ -34,17 +34,17 @@ jobs:
       max-parallel: 1
       matrix:
         eve: [ 
-          {EXAMPLE: simple, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: b2tf, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: cruise, ASSETS: 0, EVE1: false, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: datavisualiser, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: flightdeck, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: fontmagic, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: gyminterval, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: medinfo, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: EVE_FULLHD, EVE4: EVE_FULLHD, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: racecar, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: submarine, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
-          {EXAMPLE: touchscreentest, ASSETS: 0, EVE1: EVE_QVGA, EVE2: EVE_WQVGA, EVE3: EVE_WVGA, EVE4: EVE_WXGA, EVE5: EVE_WUXGA }, 
+          {EXAMPLE: simple, GILDED: true, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: b2tf, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: cruise, GILDED: false, ASSETS: 0, EVE1: false, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: datavisualiser, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: flightdeck, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: fontmagic, GILDED: false, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: WUXGA }, 
+          {EXAMPLE: gyminterval, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: medinfo, GILDED: false, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: FULLHD, EVE4: FULLHD, EVE5: WUXGA }, 
+          {EXAMPLE: racecar, GILDED: false, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: submarine, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: touchscreentest, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA}, 
         ]
     
     # Set the name of the job to include the important information
@@ -58,7 +58,7 @@ jobs:
     # Test using matrix
     - name: Configure CMake EVE5
       if: ${{ matrix.eve.EVE5 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE5
@@ -66,45 +66,55 @@ jobs:
       run: cmake --build build
       working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Configure CMake EVE4
-      if: ${{ matrix.eve.EVE4 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT818 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    - name: Run EVE5
+      if: ${{ matrix.eve.EVE5 }}
+      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Build EVE4
-      if: ${{ matrix.eve.EVE4 }}
-      run: cmake --build build
+    - name: Compare results EVE5
+      if: ${{ matrix.eve.GILDED && matrix.eve.EVE5 }}
+      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Configure CMake EVE3
-      if: ${{ matrix.eve.EVE3 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT815 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Configure CMake EVE4
+    #   if: ${{ matrix.eve.EVE4 }}
+    #   run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT818 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Build EVE3
-      if: ${{ matrix.eve.EVE3 }}
-      run: cmake --build build
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Build EVE4
+    #   if: ${{ matrix.eve.EVE4 }}
+    #   run: cmake --build build
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Configure CMake EVE2
-      if: ${{ matrix.eve.EVE2 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT812 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Configure CMake EVE3
+    #   if: ${{ matrix.eve.EVE3 }}
+    #   run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT815 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Build EVE2
-      if: ${{ matrix.eve.EVE2 }}
-      run: cmake --build build
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Build EVE3
+    #   if: ${{ matrix.eve.EVE3 }}
+    #   run: cmake --build build
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Configure CMake EVE1
-      if: ${{ matrix.eve.EVE1 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Configure CMake EVE2
+    #   if: ${{ matrix.eve.EVE2 }}
+    #   run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT812 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
-    - name: Build EVE1
-      if: ${{ matrix.eve.EVE1 }}
-      run: cmake --build build
-      working-directory: ${{github.workspace}}/test/exampletester
+    # - name: Build EVE2
+    #   if: ${{ matrix.eve.EVE2 }}
+    #   run: cmake --build build
+    #   working-directory: ${{github.workspace}}/test/exampletester
+
+    # - name: Configure CMake EVE1
+    #   if: ${{ matrix.eve.EVE1 }}
+    #   run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+    #   working-directory: ${{github.workspace}}/test/exampletester
+
+    # - name: Build EVE1
+    #   if: ${{ matrix.eve.EVE1 }}
+    #   run: cmake --build build
+    #   working-directory: ${{github.workspace}}/test/exampletester
 
     # Do not run the executable as it may not support the operations - we are testing compilation only
     #- name: Run test 
