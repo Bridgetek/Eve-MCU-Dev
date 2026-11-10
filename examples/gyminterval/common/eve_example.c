@@ -485,7 +485,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         int16_t clock_x_zoom = centre_x - (stringwidth(&clockfont, clock_zoom, clock) / 2);
         int16_t clock_y_zoom = centre_y - (((font_getheight(&clockfont) * clock_zoom) / 0x10000) / 2);
             
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -696,9 +698,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             }
         }
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         uint8_t key = 0;

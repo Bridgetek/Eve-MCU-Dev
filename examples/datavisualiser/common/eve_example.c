@@ -2070,8 +2070,9 @@ static void renderScreenUpdate(void) {
     // Construct display list and send to EVE
     //------------------------------------------------------------------------------
 
-    // start the display list
+    // Begin a new co-processor list
     EVE_LIB_BeginCoProList();
+    // Begin a display list
     EVE_CMD_DLSTART();
     // append static sections of display list that were previously generated and stored in RAM_G
     EVE_CMD_APPEND(static_screen_location, static_screen_size);
@@ -2172,13 +2173,13 @@ static void renderScreenUpdate(void) {
         }
     }
 
-    // display
+    // Finish the display list
     EVE_DISPLAY();
-    EVE_DISPLAY(); // per BRT_TN_005
-    // swap this display list into RAM_DL
+    // Swap onto the screen to make it visible
     EVE_CMD_SWAP();
-    // send display list to co-processor
+    // Finish the list of commands
     EVE_LIB_EndCoProList();
+    // Await for the commands to be executed
     EVE_LIB_AwaitCoProEmpty();
 
 }

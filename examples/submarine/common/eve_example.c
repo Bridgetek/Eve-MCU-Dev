@@ -457,7 +457,9 @@ void eve_display(void)
 
     do
     {
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -478,9 +480,13 @@ void eve_display(void)
         compass_bulkhead(x_compass, y_compass, compass_radius, OPT_COMPASS_BULKHEAD_RECT | OPT_COMPASS_TRANSPARENT /*| OPT_COMPASS_BULKHEAD_USE_FONT*/, heading);
         sub_depth(x_depth, y_depth, depth_width, depth_height, OPT_COMPASS_TRANSPARENT, depth, 60 * SUB_UNITS_SCALE);
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         depth++;

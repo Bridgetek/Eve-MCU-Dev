@@ -120,7 +120,9 @@ void eve_display(void)
     enum state cruise_active = e_disabled;
 
     do {
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -320,9 +322,13 @@ void eve_display(void)
         EVE_CMD_BUTTON((TARGET_SCREEN_RADIUS * 2) + BUTTON_GAP, BUTTON_GAP + (eve_romfont_height(EXT_FONT) * 12), BUTTON_WIDTH, (eve_romfont_height(EXT_FONT) * 2), 28, 0, "Brake!");
 #endif
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         while (eve_read_tag(&key) == 0);

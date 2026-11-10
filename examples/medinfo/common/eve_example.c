@@ -492,7 +492,9 @@ void eve_display(void)
             }
         }
 
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1, 1, 1);
@@ -738,9 +740,11 @@ void eve_display(void)
         // Get display list fullness
         EVE_CMD_MEMCPY(infostatus.RAM_G_Start + (sizeof(uint32_t) * 2), EVE_REG_CMD_DL, sizeof(uint32_t));
 
-        // Send display to EVE
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
         // Await is implied in the EVE_LIB_BeginCoProList() call on the next frame
         //EVE_LIB_AwaitCoProEmpty();

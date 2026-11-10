@@ -1622,7 +1622,6 @@ void sectorWidget(uint32_t scale, int16_t center_x, int16_t center_y, uint16_t r
         }
     } 
 
-
     //draw the outer radius here and blend destination alpha to source alpha to maintain the aliased edge of the circle we are going to draw for the outline
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_SRC_ALPHA);
     EVE_BEGIN(EVE_BEGIN_POINTS);
@@ -2116,7 +2115,9 @@ void eve_display(void)
 #if defined(EVE_COPROC_PROFILE)
         EVE_LIB_BeginCoProProfile();
 #endif
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1, 1, 1);
@@ -2276,11 +2277,13 @@ void eve_display(void)
         scaledText(scale, x + 0, y + 0, label_font_small, EVE_OPT_FORMAT, "%d FPS", FPS);
         scaledText(scale, x + 800, y + 0, label_font_small, EVE_OPT_FORMAT | EVE_OPT_RIGHTX, "%d DL/sec", DLPS);
         
-        // Send display to EVE
+        // Finish the display list
         EVE_DISPLAY();
-        EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         if (EVE_LIB_AwaitCoProEmpty()) break;
 
 #if defined(EVE_COPROC_PROFILE)

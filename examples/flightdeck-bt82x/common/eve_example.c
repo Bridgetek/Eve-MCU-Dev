@@ -182,7 +182,9 @@ void update_widgets(void)
 
 void eve_message(const char *s)
 {
+    // Begin a new co-processor list
     EVE_LIB_BeginCoProList();
+    // Begin a display list
     EVE_CMD_DLSTART();
     EVE_CLEAR_COLOR_RGB(0, 80, 0);
     EVE_CLEAR(1,1,1);
@@ -202,9 +204,13 @@ void eve_message(const char *s)
 
     update_widgets();
 
+    // Finish the display list
     EVE_DISPLAY();
+    // Swap onto the screen to make it visible
     EVE_CMD_SWAP();
+    // Finish the list of commands
     EVE_LIB_EndCoProList();
+    // Await for the commands to be executed
     EVE_LIB_AwaitCoProEmpty();
 }
 
@@ -317,7 +323,9 @@ void video_LVDS(void)
 
             if (lvds_connected == 2)
             {
+                // Begin a new co-processor list
                 EVE_LIB_BeginCoProList();
+                // Begin a display list
                 EVE_CMD_DLSTART();
                 EVE_CLEAR_COLOR_RGB(0, 80, 0);
                 EVE_CLEAR(1,1,1);
@@ -329,9 +337,13 @@ void video_LVDS(void)
 
                 update_widgets();
 
+                // Finish the display list
                 EVE_DISPLAY();
+                // Swap onto the screen to make it visible
                 EVE_CMD_SWAP();
+                // Finish the list of commands
                 EVE_LIB_EndCoProList();
+                // Await for the commands to be executed
                 EVE_LIB_AwaitCoProEmpty();
             }
             else

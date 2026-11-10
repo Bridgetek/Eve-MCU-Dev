@@ -262,7 +262,9 @@ void eve_example(void)
     do
     {
         // Start drawing test screen.
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(64,72,64);
         EVE_CLEAR(1,1,1);
@@ -353,9 +355,13 @@ void eve_example(void)
             action = 0;
         }
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         // Do not query the touchscreen when running in the simulator.

@@ -176,7 +176,9 @@ void eve_display(void)
               present.tm_min
               );
               */
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0x0, 0x0, 0x0);
         EVE_CLEAR(1,1,1);
@@ -328,9 +330,13 @@ void eve_display(void)
         ledbox(dx, dy, 2, segsize);
         lednumber(dx, dy, 2, segsize, lasttime.tm_min, fg, bg);
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
 #if IS_EVE_API(5)

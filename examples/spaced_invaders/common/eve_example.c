@@ -316,8 +316,9 @@ void spaced_invaders_ScissorDisplay(uint32_t scale, int16_t dx, int16_t dy)
 
 void spaced_invaders_StartDisplay(void)
 {
-    // start of new display list ...
+    // Begin a new co-processor list
     EVE_LIB_BeginCoProList();
+    // Begin a display list
     EVE_CMD_DLSTART();
     // clear display (using colour specified) ...
     EVE_CLEAR_COLOR_RGB(0, 0, 0);
