@@ -173,10 +173,8 @@ void eve_display(void)
     {
         font = 30;
     }
-    printf("%s %d\n", __FUNCTION__, __LINE__);
 
     eve_readcalib();
-    printf("%s %d\n", __FUNCTION__, __LINE__);
     
     do {
         // Begin a new co-processor list
