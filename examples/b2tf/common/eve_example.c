@@ -131,7 +131,14 @@ void eve_display(void)
     destination.tm_hour = 1;
     destination.tm_min = 21;
     
+#if defined(SOFTWARE_SIMULATOR)
+    // Use a constant time of 00:00 on Jan 1st 1970 when using the simulator
+    ptime = ((time_t) 0);
+#else
+    // Get the current time in the Unix Epoch
     ptime = time(NULL);
+#endif
+
     if (ptime == -1)
     {
         // If there is no real time clock then time() returns -1.
