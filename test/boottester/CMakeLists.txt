@@ -100,3 +100,9 @@ target_include_directories(eve_library PUBLIC
 target_link_libraries(${PROJECT_NAME}
         eve_library # Example code depends on EVE library
 )
+
+# Print out compiled target file name
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo TARGET: $<TARGET_FILE:${PROJECT_NAME}>
+)

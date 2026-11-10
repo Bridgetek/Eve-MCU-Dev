@@ -153,3 +153,9 @@ target_link_libraries(eve_example
 target_link_libraries(${PROJECT_NAME} 
         eve_example # Project depends on example code library
 )
+
+# Print out compiled target file name
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo TARGET: $<TARGET_FILE:${PROJECT_NAME}>
+)

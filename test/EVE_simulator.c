@@ -82,19 +82,19 @@ extern uint16_t HAL_GetCmdPointer(void);
 #endif
 
 #if SIMULATOR_OUTPUT==1
-#define SIMULATOR_PRINT_REGISTERS(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#define SIMULATOR_PRINT_REGISTERS(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
 #else
 #define SIMULATOR_PRINT_REGISTERS(...) ((void)0)
 #endif
 
 #if SIMULATOR_OUTPUT==2
-#define SIMULATOR_PRINT_CMDS(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#define SIMULATOR_PRINT_CMDS(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
 #else
 #define SIMULATOR_PRINT_CMDS(...) ((void)0)
 #endif
 
 #if SIMULATOR_OUTPUT==3
-#define SIMULATOR_PRINT_RAM_G(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#define SIMULATOR_PRINT_RAM_G(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
 #else
 #define SIMULATOR_PRINT_RAM_G(...) ((void)0)
 #endif
@@ -115,6 +115,7 @@ uint32_t address;
 int hostptr = 0;
 uint8_t hostcmd[16];
 int doeol = 0;
+int width = 0;
 
 uint16_t write_pointer = 0;
 
@@ -430,6 +431,7 @@ void MCU_CSlow(void)
         hostptr = 0;
     }
     doeol = 0;
+    width = 0;
 }
 
 // --------------------- Chip Select line high ---------------------------------
@@ -463,14 +465,14 @@ void MCU_CShigh(void)
         {
             if (state == state_read_cont)
             {
-                SIMULATOR_PRINT_CMDS("\n");
                 SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_CMDS("\n");
                 SIMULATOR_PRINT_RAM_G("\n");
             }
             else if (state == state_write_cont)
             {
-                SIMULATOR_PRINT_CMDS("\n");
                 SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_CMDS("\n");
                 SIMULATOR_PRINT_RAM_G("\n");
             }
             doeol = 0;
@@ -684,8 +686,13 @@ uint32_t MCU_SPIRead32(void)
         if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
             SIMULATOR_PRINT_RAM_G("<-- %08x ", DataRead);
+            SIMULATOR_PRINT_REGISTERS("%s Read:\n%08x ", get_register(), DataRead);
         }
-        SIMULATOR_PRINT_REGISTERS("%s Read %08x ", get_register(), DataRead);
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Read %08x ", get_register(), DataRead);
+        }
+
         state = state_read_cont;
     }
     else if (state == state_read_cont)
@@ -739,16 +746,38 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
     }
     else if (state == state_write)
     {
-        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
         {
-            SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
+            if (width == 0)
+            {
+                SIMULATOR_PRINT_REGISTERS("%s Write:\n%08x ", get_register(), DataToWrite);
+                SIMULATOR_PRINT_CMDS("==> %08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("==> %08x ", DataToWrite);
+            }
+            else
+            {
+                SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            }
         }
-        else if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+        else if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
-            SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
-            SIMULATOR_PRINT_CMDS("--> %08x ", DataToWrite);
+            if (width == 0)
+            {
+                SIMULATOR_PRINT_REGISTERS("%s Write:\n%08x ", get_register(), DataToWrite);
+                SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
+            }
+            else
+            {
+                SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            }
         }
-        SIMULATOR_PRINT_REGISTERS("%s Write %08x ", get_register(), DataToWrite);
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Write %08x ", get_register(), DataToWrite);
+        }
 
         state = state_write_cont;
         if (address == EVE_REG_CMD_WRITE)
@@ -759,16 +788,32 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
     }
     else if (state == state_write_cont)
     {
+        if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+        {
+            SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_CMDS("\n => ");
+                SIMULATOR_PRINT_RAM_G("\n => ");
+                width = 0;
+            }
+        }
         if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
             SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
-        }
-        else if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
-        {
-            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
-            SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_RAM_G("\n -> ");
+                width = 0;
+            }
         }
         SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+        if (width == 16)
+        {
+            SIMULATOR_PRINT_REGISTERS("\n");
+            width = 0;
+        }
         inc_address(4);
     }
     else
@@ -796,11 +841,16 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
         DataToRead[3] = 1;
         DataPtr = 4;
 #endif
-        SIMULATOR_PRINT_REGISTERS("%s Read ", get_register());
         if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
             SIMULATOR_PRINT_RAM_G("<-- ");
+            SIMULATOR_PRINT_REGISTERS("%s Read:\n", get_register());
         }
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Read ", get_register());
+        }
+        width = 0;
 
         for (i = DataPtr; i < length; i+=4)
         {
@@ -816,8 +866,18 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
             if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
             {
                 SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n<-| ");
+                    width = 0;
+                }
             }
             SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
 
             inc_address(4);
         }
@@ -838,8 +898,18 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
             if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
             {
                 SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n");
+                    width = 0;
+                }
             }
             SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
 
             DataRead = DataRead >> 8;
             inc_address(4);
@@ -861,8 +931,8 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 
     if (state == state_write)
     {
-        SIMULATOR_PRINT_REGISTERS("%s Write ", get_register());
-
+        SIMULATOR_PRINT_REGISTERS("%s Write:\n", get_register());
+        width = -1;
         for (i = 0; i < length; i+=4)
         {
             val = 0;
@@ -872,10 +942,47 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             }
             if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
-                SIMULATOR_PRINT_RAM_G("%08x ", val);
-                SIMULATOR_PRINT_CMDS("%08x ", val);
+                if (width == -1)
+                {
+                    width = 0;
+                    SIMULATOR_PRINT_CMDS("==> %08x ", val);
+                    SIMULATOR_PRINT_RAM_G("==> %08x ", val);
+                }
+                else
+                {
+                    SIMULATOR_PRINT_CMDS("%08x ", val);
+                    SIMULATOR_PRINT_RAM_G("%08x ", val);
+                }
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_CMDS("\n => ");
+                    SIMULATOR_PRINT_RAM_G("\n => ");
+                    width = 0;
+                }
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                if (width == -1)
+                {
+                    width = 0;
+                    SIMULATOR_PRINT_RAM_G("--> %08x ", val);
+                }
+                else
+                {
+                    SIMULATOR_PRINT_RAM_G("%08x ", val);
+                }
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n -> ");
+                    width = 0;
+                }
             }
             SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
 
             inc_address(4);
         }
@@ -892,10 +999,30 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             }
             if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
-                SIMULATOR_PRINT_RAM_G("%08x ", val);
                 SIMULATOR_PRINT_CMDS("%08x ", val);
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_CMDS("\n => ");
+                    SIMULATOR_PRINT_RAM_G("\n => ");
+                    width = 0;
+                }
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n -> ");
+                    width = 0;
+                }
             }
             SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
 
             inc_address(4);
         }
