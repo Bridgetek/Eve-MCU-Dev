@@ -67,6 +67,38 @@ extern uint16_t HAL_GetCmdPointer(void);
 #define HOSTCMDLEN 5
 #endif
 
+#define SIMULATOR_ERROR(...) fprintf(stderr, __VA_ARGS__)
+
+#if SIMULATOR_BOOT
+#define SIMULATOR_PRINT_BOOT(...) printf(__VA_ARGS__)
+#else
+#define SIMULATOR_PRINT_BOOT(...) ((void)0)
+#endif
+
+#if SIMULATOR_SPI_PROTOCOL
+#define SIMULATOR_PRINT_SPI(...) printf(__VA_ARGS__)
+#else
+#define SIMULATOR_PRINT_SPI(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==1
+#define SIMULATOR_PRINT_REGISTERS(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#else
+#define SIMULATOR_PRINT_REGISTERS(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==2
+#define SIMULATOR_PRINT_CMDS(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#else
+#define SIMULATOR_PRINT_CMDS(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==3
+#define SIMULATOR_PRINT_RAM_G(...) do { printf(__VA_ARGS__); doeol = 1;} while (0);
+#else
+#define SIMULATOR_PRINT_RAM_G(...) ((void)0)
+#endif
+
 enum eve_state {
     state_reset,
     state_booting,
@@ -82,6 +114,7 @@ enum eve_state {
 uint32_t address;
 int hostptr = 0;
 uint8_t hostcmd[16];
+int doeol = 0;
 
 uint16_t write_pointer = 0;
 
@@ -97,6 +130,16 @@ char const *get_state()
     else if (state == state_read_cont) return "read continue";
     else if (state == state_end) return "end";
     return "unknown";
+}
+
+void inc_address()
+{
+#if defined(EVE_USE_CMDB_METHOD)
+    if (!((address == EVE_REG_CMDB_SPACE) || (address == EVE_REG_CMDB_WRITE)))
+    {
+        address += 4;
+    }
+#endif // defined(EVE_USE_CMDB_METHOD)
 }
 
 char const *get_register()
@@ -164,7 +207,7 @@ char const *get_register()
     return "Unknown Register";
 }
 
-uint32_t get_response()
+uint32_t get_response_32()
 {
     uint32_t response = 0;
 
@@ -378,13 +421,14 @@ void MCU_CSlow(void)
     if (state == state_idle)
     {
         state = state_address;
-        printf("addr: ");
+        SIMULATOR_PRINT_SPI("addr: ");
     }
     else if (state == state_booting)
     {
-        printf("host command: ");
+        SIMULATOR_PRINT_BOOT("host command: ");
         hostptr = 0;
     }
+    doeol = 0;
 }
 
 // --------------------- Chip Select line high ---------------------------------
@@ -404,9 +448,8 @@ void MCU_CShigh(void)
             {
                 // Leave host command state
                 state = state_idle;
-                printf("\nidle");
             }
-            printf("\n");
+            SIMULATOR_PRINT_BOOT("\n");
         }
     }
     else if (state == state_idle)
@@ -415,8 +458,23 @@ void MCU_CShigh(void)
     }
     else
     {
+        if (doeol)
+        {
+            if (state == state_read_cont)
+            {
+                SIMULATOR_PRINT_CMDS("\n");
+                SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_RAM_G("\n");
+            }
+            else if (state == state_write_cont)
+            {
+                SIMULATOR_PRINT_CMDS("\n");
+                SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_RAM_G("\n");
+            }
+            doeol = 0;
+        }
         state = state_idle;
-        printf("\n");
     }
 }
 
@@ -424,14 +482,14 @@ void MCU_CShigh(void)
 void MCU_PDlow(void)
 {
     state = state_reset;
-    printf("%s\n", get_state());
+    SIMULATOR_PRINT_BOOT("%s\n", get_state());
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
     state = state_booting;
-    printf("%s\n", get_state());
+    SIMULATOR_PRINT_BOOT("%s\n", get_state());
 }
 
 // ------------------------ interrupt input ------------------------------------
@@ -444,12 +502,12 @@ int MCU_Int(void)
 
 void MCU_Delay_20ms(void)
 {
-    printf("delay 20 ms\n");
+    SIMULATOR_PRINT_BOOT("delay 20 ms\n");
 }
 
 void MCU_Delay_500ms(void)
 {
-    printf("delay 500 ms\n");
+    SIMULATOR_PRINT_BOOT("delay 500 ms\n");
 }
 
 uint32_t MCU_Time_ms(void)
@@ -472,21 +530,31 @@ uint8_t MCU_SPIRead8(void)
 {
     uint8_t DataRead = 0;
 
-    DataRead = (uint8_t)get_response();
+    DataRead = (uint8_t)get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %02x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %02x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Read %02x ", get_register(), DataRead);
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%02x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%02x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%02x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(1);
 
     return DataRead;
 }
@@ -495,53 +563,64 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
 {
     if (state == state_write)
     {
-        printf("%s %02x ", get_register(), DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%s Write %02x ", get_register(), DataToWrite);
         state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        printf("%02x ", DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%02x ", DataToWrite);
     }
 #if IS_EVE_API(1,2,3,4)
     // Host commands
     else if (state == state_booting)
     {
-        printf("%02x ", DataToWrite);
+        SIMULATOR_PRINT_BOOT("%02x ", DataToWrite);
         hostcmd[hostptr++] = DataToWrite;
         if (hostptr > HOSTCMDLEN)
         {
-            printf("[%s] host command length error %d\n", __FUNCTION__, hostptr);
+            SIMULATOR_ERROR("[%s] host command length error %d\n", __FUNCTION__, hostptr);
             exit(-1);
         }
     }
 #endif
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(1);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
     uint16_t DataRead = 0;
 
-    DataRead = (uint16_t)get_response();
+    DataRead = (uint16_t)get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %04x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %04x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Read %04x ", get_register(), DataRead);
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%04x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%04x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%04x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 
+    inc_address(2);
     return DataRead;
 }
 
@@ -549,12 +628,12 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     if (state == state_write)
     {
-        printf("%s %04x ", get_register(), DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%s Write %04x ", get_register(), DataToWrite);
         state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        printf("%04x ", DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%04x ", DataToWrite);
         if (address == EVE_REG_CMD_WRITE)
         {
             write_pointer = DataToWrite;
@@ -562,9 +641,10 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(2);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
@@ -572,22 +652,22 @@ void MCU_SPIWrite24(uint32_t DataToWrite)
     if (state == state_address)
     {
         address = MCU_be32toh(DataToWrite);
+        SIMULATOR_PRINT_SPI("0x%x ", address);
         if (address >> 31)
         {
             state = state_write;
             address = (address & 0x7fffff00) >> 8;
-            printf("write %x ", address);
         }
         else
         {
             // Read address cannot be send in 24 bits
-            printf("[%s] state error %s cannot set read address in 24 bits\n", __FUNCTION__, get_state());
+            SIMULATOR_ERROR("[%s] state error %s cannot set read address in 24 bits\n", __FUNCTION__, get_state());
             exit(-1);
         }
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
@@ -596,22 +676,32 @@ uint32_t MCU_SPIRead32(void)
 {
     uint32_t DataRead = 0;
 
-    DataRead = get_response();
+    DataRead = get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %08x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %08x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Read %08x ", get_register(), DataRead);
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%08x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%08x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%08x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
     
+    inc_address(4);
     return DataRead;
 }
 
@@ -623,6 +713,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
         DataToWrite = DataToWrite << 8;
 #endif
         address = MCU_be32toh(DataToWrite);
+        SIMULATOR_PRINT_SPI("0x%x ", address);
 #if IS_EVE_API(1, 2, 3, 4)
         if (address >> 23)
         {
@@ -644,32 +735,44 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
         }
         address = address & 0x7fffffff;
 #endif
-        if (state == state_write)
-        {
-            printf("write ");
-        }
-        else
-        {
-            printf("read ");
-        }
-        printf("%x ", address);
     }
     else if (state == state_write)
     {
-        printf("%s %08x ", get_register(), DataToWrite);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
+        }
+        else if (address == EVE_REG_CMDB_WRITE)
+        {
+            SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
+            SIMULATOR_PRINT_CMDS("--> %08x ", DataToWrite);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Write %08x ", get_register(), DataToWrite);
+
         state = state_write_cont;
         if (address == EVE_REG_CMD_WRITE)
         {
             write_pointer = DataToWrite;
         }
+        inc_address(4);
     }
     else if (state == state_write_cont)
     {
-        printf("%08x ", DataToWrite);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+        }
+        else if (address == EVE_REG_CMDB_WRITE)
+        {
+            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+        }
+        SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+        inc_address(4);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
@@ -678,9 +781,9 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
     uint32_t DataRead = 0;
     uint16_t DataPtr = 0;
+    uint32_t val;
     uint32_t i;
-
-    DataRead = get_response();
+    uint32_t j;
 
     if (state == state_read)
     {
@@ -692,53 +795,109 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
         DataToRead[3] = 1;
         DataPtr = 4;
 #endif
-        printf("%s (LE) ", get_register());
-
-        for (i = DataPtr; i < length; i++)
+        SIMULATOR_PRINT_REGISTERS("%s Read ", get_register());
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
-            DataToRead[DataPtr++] = DataRead & 0xff;
-            printf("%02x", DataRead & 0xff);
-            DataRead = DataRead >> 8;
+            SIMULATOR_PRINT_RAM_G("<-- ");
         }
-        printf(" ");
+
+        for (i = DataPtr; i < length; i+=4)
+        {
+            DataRead = get_response_32();
+            
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                DataToRead[DataPtr++] = DataRead & 0xff;
+                val |= ((DataRead & 0xff) << (j * 8));
+                DataRead = DataRead >> 8;
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+
+            inc_address(4);
+        }
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        for (i = DataPtr; i < length; i++)
+        for (i = DataPtr; i < length; i+=4)
         {
-            DataToRead[DataPtr++] = DataRead & 0xff;
-            printf("%02x", DataRead & 0xff);
+            DataRead = get_response_32();
+            
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                DataToRead[DataPtr++] = DataRead & 0xff;
+                val |= ((DataRead & 0xff) << (j * 8));
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+
             DataRead = DataRead >> 8;
+            inc_address(4);
         }
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
+    uint16_t DataPtr = 0;
+    uint32_t val;
     uint32_t i;
+    uint32_t j;
 
     if (state == state_write)
     {
-        printf("%s ", get_register());
+        SIMULATOR_PRINT_REGISTERS("%s Write ", get_register());
 
-        for (i = 0; i < length; i++)
+        for (i = 0; i < length; i+=4)
         {
-            printf("%02x", DataToWrite[i]);
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
+            }
+            if (address == EVE_REG_CMDB_WRITE)
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                SIMULATOR_PRINT_CMDS("%08x ", val);
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+
+            inc_address(4);
         }
-        printf(" ");
+        state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        for (i = 0; i < length; i++)
+        for (i = 0; i < length; i+=4)
         {
-            printf("%02x", DataToWrite[i]);
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
+            }
+            if (address == EVE_REG_CMDB_WRITE)
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                SIMULATOR_PRINT_CMDS("%08x ", val);
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+
+            inc_address(4);
         }
-        printf(" ");
     }
 #if IS_EVE_API(5)
     else if (state == state_booting)
@@ -747,19 +906,19 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
         for (i = 0; i < length; i++)
         {
             hostcmd[hostptr++] = DataToWrite[i];
-            printf("%02x", DataToWrite[i]);
+            SIMULATOR_PRINT_BOOT("%02x", DataToWrite[i]);
             if (hostptr > HOSTCMDLEN)
             {
-                printf("[%s] host command length error %d\n", __FUNCTION__, hostptr);
+                SIMULATOR_ERROR("[%s] host command length error %d\n", __FUNCTION__, hostptr);
                 exit(-1);
             }
         }
-        printf(" ");
+        SIMULATOR_PRINT_BOOT(" ");
     }
 #endif
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }

@@ -33,11 +33,11 @@ jobs:
       max-parallel: 1
       matrix:
         eve: [ 
-          {name: "FT800/QVGA", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800" }, 
-          {name: "FT813/WQVGA", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813" }, 
-          {name: "BT815/WVGA", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815" }, 
-          {name: "BT817(IDM2040-7A)", config: "-DEVE_MODULE=EVE_IDM20407A" }, 
-          {name: "BT820/WUXGA", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820" }, 
+          {name: "FT800/QVGA", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800", gild: "FT800_QVGA.txt" }, 
+          {name: "FT813/WQVGA", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813", gild: "FT813_DP_0431_11A.txt" }, 
+          {name: "BT815/WVGA", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815", gild: "BT815_WVGA.txt" }, 
+          {name: "BT817(IDM2040-7A)", config: "-DEVE_MODULE=EVE_IDM20407A", gild: "BT817_IDM20407A.txt" }, 
+          {name: "BT820/WUXGA", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820", gild: "BT820_WXUGA.txt" }, 
         ]
     
     # Set the name of the job to include the important information
@@ -58,4 +58,9 @@ jobs:
       working-directory: ${{github.workspace}}/test/boottester
 
     - name: Run test 
-      run: ${{github.workspace}}/test/boottester/build/boottester
+      run: ./build/boottester > ./build/${{ matrix.eve.gild }}
+      working-directory: ${{github.workspace}}/test/boottester
+
+    - name: Compare results
+      run: diff -s -a -w ./gilds/${{ matrix.eve.gild }} ./build/${{ matrix.eve.gild }}
+      working-directory: ${{github.workspace}}/test/boottester

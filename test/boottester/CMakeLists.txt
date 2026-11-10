@@ -65,6 +65,16 @@ include_directories(
 # Tell EVE library to use SOFTWARE_SIMULATOR as base class
 add_compile_definitions(SOFTWARE_SIMULATOR)
 
+# Do not report boot actions (delays, PD#)
+add_compile_definitions(SIMULATOR_BOOT=1)
+# Do not report SPI protocol actions (addressing, CS#)
+add_compile_definitions(SIMULATOR_SPI_PROTOCOL=1)
+# Report bitmap 0 - no output; 
+#               1 - register reads/writes (including RAM_G); 
+#               2 - co-processor reads/writes;
+#               3 - co-processor reads/writes (including RAM_G).
+add_compile_definitions(SIMULATOR_OUTPUT=1)
+
 add_compile_definitions(EVE_DEBUG_LEVEL=1)
 add_compile_definitions(EVE_SPI_TIMEOUT=8)
 add_compile_definitions(EVE_SPI_MAX_TRANSFER=0x100)
