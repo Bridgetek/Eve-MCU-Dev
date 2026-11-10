@@ -357,11 +357,15 @@ void eve_example(void)
         EVE_CMD_SWAP();
         EVE_LIB_EndCoProList();
         EVE_LIB_AwaitCoProEmpty();
-        
-        // Wait for touchscreen before moving to the next action.
-        while (eve_read_tag(&key) == 0);
-        // Debounce touchscreen.
-        while (eve_read_tag(&key) != 0);
+
+        // Do not query the touchscreen when running in the simulator.
+        if (LOOP)
+        {
+            // Wait for touchscreen before moving to the next action.
+            while (eve_read_tag(&key) == 0);
+            // Debounce touchscreen.
+            while (eve_read_tag(&key) != 0);
+        }
         
     } while (LOOP);
 }

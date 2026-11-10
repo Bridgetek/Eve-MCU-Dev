@@ -35,7 +35,7 @@ jobs:
       matrix:
         eve: [ 
           {EXAMPLE: simple, GILDED: true, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
-          {EXAMPLE: b2tf, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: b2tf, GILDED: true, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: cruise, GILDED: false, ASSETS: 0, EVE1: false, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: datavisualiser, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: flightdeck, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 

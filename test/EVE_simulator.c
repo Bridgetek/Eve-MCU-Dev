@@ -192,6 +192,7 @@ char const *get_register()
     else if (address == EVE_REG_TOUCH_TRANSFORM_E) return "REG_TOUCH_TRANSFORM_E";
     else if (address == EVE_REG_TOUCH_TRANSFORM_F) return "REG_TOUCH_TRANSFORM_F";
     else if (address == EVE_REG_FRAMES) return "REG_FRAMES";
+    else if (address == EVE_REG_PLAY) return "REG_PLAY";
     else if (address == EVE_ROMFONT_TABLEADDRESS) return "ROMFONT_TABLEADDRESS";
     else if ((address >= EVE_RAM_DL) && (address < (EVE_RAM_DL + EVE_RAM_DL_SIZE)))
         return "RAM_DL";

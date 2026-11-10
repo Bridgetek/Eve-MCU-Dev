@@ -41,6 +41,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
@@ -321,7 +322,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     uint8_t msg_timer = 0;
     uint8_t msg_alpha = 0;
 
-    while ((cycle > 0) || (rest > 0))
+    while (((cycle > 0) || (rest > 0)) && (LOOP))
     {
         curr_time = platform_get_time();
 
@@ -802,7 +803,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 
     uint32_t total_time = 0;
 
-    while (1)
+    do
     {
         total_time = *cycle_count * (*cycle_rest_count + (*interval_count * (*interval_rest_count + *timer_count)));
 
@@ -1104,7 +1105,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 dial_track = (trackVal + furmans_top) & 0xffff;
             }
         }
-    }
+    
+    } while (LOOP);
 }
 
 void eve_display(void)
@@ -1139,6 +1141,7 @@ void eve_example(void)
     sound_enable();
     
     // Get a cache of the ROM font we want to use.
+    memset(&clockfont, 1, sizeof(clockfont));
     font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
 
     // Map the ROM font we are using onto a normal bitmap.
