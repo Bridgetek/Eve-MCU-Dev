@@ -742,7 +742,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
         {
             SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
         }
-        else if (address == EVE_REG_CMDB_WRITE)
+        else if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
         {
             SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
             SIMULATOR_PRINT_CMDS("--> %08x ", DataToWrite);
@@ -762,7 +762,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
         {
             SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
         }
-        else if (address == EVE_REG_CMDB_WRITE)
+        else if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
         {
             SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
             SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
@@ -869,7 +869,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             {
                 val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
             }
-            if (address == EVE_REG_CMDB_WRITE)
+            if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
                 SIMULATOR_PRINT_RAM_G("%08x ", val);
                 SIMULATOR_PRINT_CMDS("%08x ", val);
@@ -889,7 +889,7 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             {
                 val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
             }
-            if (address == EVE_REG_CMDB_WRITE)
+            if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
                 SIMULATOR_PRINT_RAM_G("%08x ", val);
                 SIMULATOR_PRINT_CMDS("%08x ", val);

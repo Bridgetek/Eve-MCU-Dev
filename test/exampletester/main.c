@@ -65,10 +65,6 @@ int main(void)
     /* Setup UART */
     setup();
 
-    /* Start tester code */
-    /* Initialise the display */
-    EVE_Init();
-
     /* Placeholder to ensure example is compiled */
 #if defined(ASSETS) && (ASSETS > 0)
     eve_example("..");
