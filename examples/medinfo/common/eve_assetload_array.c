@@ -147,7 +147,11 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // EVE3 does not support CMD_GETPTR on CMD_LOADIMAGE
         asset->RAM_G_EndAddr = asset->RAM_G_Start + (w * h * 2);
         // EVE3 does not support CMD_GETIMAGE for CMD_LOADIMAGE results
-        uint32_t filetype = MCU_be32toh(*(uint32_t*)(asset->Array_Ptr));
+        uint32_t filetype = 0;
+        filetype |= asset->Array_Ptr[0] << 24;
+        filetype |= asset->Array_Ptr[1] << 16;
+        filetype |= asset->Array_Ptr[2] << 8;
+        filetype |= asset->Array_Ptr[3] << 0;
         if (filetype == 0x89504e47)
         {
             // Array holds a PNG file
