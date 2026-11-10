@@ -1096,6 +1096,10 @@ void EVE_MACRO(uint8_t m)
 void EVE_DISPLAY(void)
 {
     HAL_WriteCmd(EVE_ENC_DISPLAY());
+#if !IS_EVE_API(5)
+    // https://brtchip.com/wp-content/uploads/2024/04/BRT_TN_005_BT81x_Errata_Technical_Note.pdf
+    HAL_WriteCmd(EVE_ENC_DISPLAY());
+#endif
 }
 
 void EVE_BITMAP_TRANSFORM_A(long a)
