@@ -49,7 +49,7 @@
 /* CONSTANTS ***********************************************************************/
 
 // Set pixel precision based on EVE version
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 // 1/8 pixel on EVE2,3,4,5
 #define PIX_PRECISION 8
 #elif IS_EVE_API(1)
@@ -141,10 +141,12 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
     // Save current graphics context
     EVE_SAVE_CONTEXT();
 
-    #if IS_EVE_API(2,3,4,5) // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
+    #if !IS_EVE_API(1) 
+    // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
     // Set desired vertex format for the example
     EVE_VERTEX_FORMAT(3);
-    #endif
+    #endif // !IS_EVE_API(1)
+
     // Stencils preclude using alpha
     EVE_COLOR_A(255);
 

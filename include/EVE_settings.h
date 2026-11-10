@@ -419,10 +419,10 @@
         #define EVE_USE_INTERRUPT_METHOD
     #endif
 #else // else defined(EVE_COPRO_METHOD)
-    #if IS_EVE_API(2,3,4,5)
+    #if !IS_EVE_API(1)
         // Default to CMDB on EVE2 onwards.
         #define EVE_USE_CMDB_METHOD
-    #endif // IS_EVE_API(2,3,4,5)
+    #endif // !IS_EVE_API(1)
 #endif // defined(EVE_COPRO_METHOD)
 
 /** Interrupt management.
@@ -442,7 +442,7 @@
     #if defined(EVE_QSPI_ENABLE)
         #undef EVE_QSPI_ENABLE
     #endif // EVE_QSPI_ENABLE
-#endif // IS_EVE_API(2,3,4,5)
+#endif // IS_EVE_API(1)
 
 
 /** Custom touch firmware is supported by EVE API 2-4.

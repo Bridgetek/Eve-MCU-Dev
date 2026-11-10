@@ -210,7 +210,7 @@ data structure and associate the font with the handle.
 The `eve.CMD_SETFONT2` command will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
 #endif
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 The `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands are generated automatically by
 the co-processor using data from the font structure and are therefore not required.
 #else

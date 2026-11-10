@@ -40,7 +40,7 @@ jobs:
           {EXAMPLE: datavisualiser, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: flightdeck, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: fontmagic, GILDED: false, ASSETS: 0, EVE1: false, EVE2: false, EVE3: false, EVE4: false, EVE5: WUXGA }, 
-          {EXAMPLE: gyminterval, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
+          {EXAMPLE: gyminterval, GILDED: true, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: medinfo, GILDED: false, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: FULLHD, EVE4: FULLHD, EVE5: WUXGA }, 
           {EXAMPLE: racecar, GILDED: false, ASSETS: USE_C_ARRAYS, EVE1: false, EVE2: false, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 
           {EXAMPLE: submarine, GILDED: false, ASSETS: 0, EVE1: QVGA, EVE2: WQVGA, EVE3: WVGA, EVE4: WXGA, EVE5: WUXGA }, 

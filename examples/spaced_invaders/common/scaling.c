@@ -85,7 +85,7 @@ void get_romfile_widths(void)
 
 void scaledVertex(uint32_t scale, int16_t input_x, int16_t input_y)
 {
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
     EVE_VERTEX2F(SCALE(input_x, scale), SCALE(input_y, scale));
 #else
     EVE_VERTEX2F(SCALE(input_x + x_offset, scale) << v_format, SCALE(input_y + y_offset, scale) << v_format);
@@ -104,7 +104,7 @@ void scaledLineWidth(uint32_t scale, uint16_t size)
 
 void scaledVertexTranslate(uint32_t scale, int16_t dx, int16_t dy, int16_t x, int16_t y)
 {
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
     EVE_VERTEX_TRANSLATE_X((dx + SCALE(x, scale)) * 16); 
     EVE_VERTEX_TRANSLATE_Y((dy + SCALE(y, scale)) * 16); 
 #else
@@ -115,7 +115,7 @@ void scaledVertexTranslate(uint32_t scale, int16_t dx, int16_t dy, int16_t x, in
 
 void scaledVertexFormat(uint8_t format)
 {
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
     EVE_VERTEX_FORMAT(format);
 #else
     v_format = 4 - format;

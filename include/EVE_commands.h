@@ -174,7 +174,7 @@
 /* =========================================================================
  * DL MACROS ADDED IN EVE2 (FT810 / BT880 onwards); not on EVE1
  * ========================================================================= */
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 #define EVE_ENC_BITMAP_LAYOUT_H(linestride,height)  ((0x28ul<<24)|(((linestride)&0x3ul)<<2)|(((height)&0x3ul)<<0))
 #define EVE_ENC_BITMAP_SIZE_H(width,height)         ((0x29ul<<24)|(((width)&0x3ul)<<2)|(((height)&0x3ul)<<0))
 #define EVE_ENC_NOP()                               ((0x2dul<<24))
@@ -182,7 +182,7 @@
 #define EVE_ENC_VERTEX_FORMAT(frac)                 ((0x27ul<<24)|(((frac)&0x7ul)<<0))
 #define EVE_ENC_VERTEX_TRANSLATE_X(x)               ((0x2bul<<24)|(((uint32_t)(x)&0x1fffful)<<0))
 #define EVE_ENC_VERTEX_TRANSLATE_Y(y)               ((0x2cul<<24)|(((uint32_t)(y)&0x1fffful)<<0))
-#endif /* IS_EVE_API(2,3,4,5) */
+#endif /* !IS_EVE_API(1) */
 
 /* =========================================================================
  * DL MACROS ADDED IN EVE3 (BT815/816 onwards)
@@ -303,7 +303,7 @@
 #endif
 
 /* Commands added in EVE2; same opcode in EVE2/3/4; different in EVE5 */
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 #define EVE_ENC_CMD_SETROTATE   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff36ul,0xffffff36ul,0xffffff36ul,0xffffff31ul)
 #define EVE_ENC_CMD_SETBASE     EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff38ul,0xffffff38ul,0xffffff38ul,0xffffff33ul)
 #define EVE_ENC_CMD_MEDIAFIFO   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff39ul,0xffffff39ul,0xffffff39ul,0xffffff34ul)
@@ -314,7 +314,7 @@
 #define EVE_ENC_CMD_VIDEOFRAME  EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff41ul,0xffffff41ul,0xffffff41ul,0xffffff3bul)
 #define EVE_ENC_CMD_SYNC        EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff42ul,0xffffff42ul,0xffffff42ul,0xffffff3cul)
 #define EVE_ENC_CMD_SETBITMAP   EVE_API_SELECT(EVE_CMD_NOT_AVAILABLE,0xffffff43ul,0xffffff43ul,0xffffff43ul,0xffffff3dul)
-#endif
+#endif // !IS_EVE_API(1)
 
 /* Commands added in EVE2, present only in EVE2/3/4 (absent in EVE5) */
 #if IS_EVE_API(2,3,4)
@@ -437,14 +437,14 @@
 #define EVE_FORMAT_BARGRAPH             0xbul
 
 /* Added in EVE2 */
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 #define EVE_FORMAT_PALETTED565          0xeul
 #define EVE_FORMAT_PALETTED4444         0xful
 #define EVE_FORMAT_PALETTED8            0x10ul
-#endif
+#endif // !IS_EVE_API(1)
 
 /* Added in EVE3 */
-#if IS_EVE_API(3,4,5)
+#if !IS_EVE_API(1,2)
 #define EVE_FORMAT_L2                   0x11ul
 /** Marker for extended GL / ASTC formats - use with EVE_ENC_BITMAP_EXT_FORMAT. */
 #define EVE_GLFORMAT                    0x1ful
@@ -462,7 +462,7 @@
 #define EVE_FORMAT_COMPRESSED_RGBA_ASTC_10x10_KHR 0x93bbul
 #define EVE_FORMAT_COMPRESSED_RGBA_ASTC_12x10_KHR 0x93bcul
 #define EVE_FORMAT_COMPRESSED_RGBA_ASTC_12x12_KHR 0x93bdul
-#endif
+#endif // !IS_EVE_API(1,2)
 
 /* Added in EVE5 */
 #if IS_EVE_API(5)
@@ -560,10 +560,10 @@
 #define EVE_OPT_SIGNED                  0x100ul
 
 /* EVE2+ options */
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 #define EVE_OPT_MEDIAFIFO               0x10ul
 #define EVE_OPT_SOUND                   0x20ul
-#endif
+#endif // !IS_EVE_API(1)
 
 /* EVE3+ options */
 #if IS_EVE_API(3,4,5)

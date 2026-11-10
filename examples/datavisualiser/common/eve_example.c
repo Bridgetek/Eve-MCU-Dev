@@ -83,9 +83,9 @@ const uint32_t colour4 = 0xE1341E; // orange
 // pixel precision related constants
 //----------------------------------------------------------------------------------
 // set pixel precision constant based on EVE version, used in VERTEX2F() calls
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 const uint8_t pix_precision = 8; // 1/8th
-#elif IS_EVE_API(1)
+#else
 const uint8_t pix_precision = 16; // 1/16th
 #endif
 
@@ -1410,7 +1410,7 @@ static void radarPlot(uint16_t centre_x, uint16_t centre_y, int16_t line_width, 
     EVE_SAVE_CONTEXT();
 
     // set desried vertex format
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
     EVE_VERTEX_FORMAT(3);
 #endif
 
@@ -1984,7 +1984,7 @@ static void generateStaticScreenComponents(void) {
     // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a
     // VERTEX_FORMAT() command; this command will cascade through the remaining
     // commands in the display list (such as the VERTEX2F calls)
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
     // Set desired vertex format for the example
     EVE_VERTEX_FORMAT(3);
 #endif

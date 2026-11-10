@@ -140,7 +140,7 @@
 #define EVE_RAM_REG             EVE_API_SELECT(0x102400ul,  0x302000ul,  0x302000ul,  0x302000ul,  0x7f006000ul)
 
 /** @brief ROM sub-routine base address - (EVE2/3/4/5 only). */
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 #define EVE_RAM_ROMSUB          EVE_API_SELECT(EVE_REG_NOT_AVAILABLE, 0x30a000ul,  0x30a000ul,  0x30a000ul,  0x7f027800ul)
 #endif
 
