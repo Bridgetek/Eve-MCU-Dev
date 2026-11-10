@@ -76,8 +76,6 @@ Once the precceeding steps are complete, the main loop is called which sits in a
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
-The platform specific functions in `datavisualiser.ino` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
-
 ## Files and Folders
 
 The example contains a common directory with several files which comprises all the demo functionality.

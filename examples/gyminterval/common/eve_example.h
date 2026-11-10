@@ -56,7 +56,7 @@ extern "C" {
 #include <controls/arcs.h>
 #include <controls/fonts.h>
 #include <controls/sound.h>
-#include <platform/time.h>
+#include <platform/platform_time.h>
 
 /* Entry point to the example code */
 void eve_example(void);

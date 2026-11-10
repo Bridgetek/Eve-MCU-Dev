@@ -2,8 +2,8 @@ touch.h
 touch.c
 platform/calib.h
 platform/calib_arduino.cpp
-platform/time.h
-platform/time.cpp
+platform/platform_time.h
+platform/platform_time.cpp
 widgets/sevenseg.c
 widgets/sevenseg.h
 widgets/dialogs.c

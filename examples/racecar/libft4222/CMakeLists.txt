@@ -11,7 +11,7 @@ include(../common.cmake)
 
 # Platform specific snippets add to example
 target_sources(eve_example PRIVATE
-        ${EXAMPLE_SNIPPETS}/platform/time.c
+        ${EXAMPLE_SNIPPETS}/platform/platform_time.c
 )
 
 # Include any port CMake additions for this example:

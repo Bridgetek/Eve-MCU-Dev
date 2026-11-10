@@ -1,5 +1,5 @@
 /**
- * @file time.h
+ * @file platform_time.h
  */
 /*
  * ============================================================================
@@ -42,7 +42,15 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Functions called from eve_example code to platform specific code */
 uint32_t platform_get_time(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _EVE_TIME_H

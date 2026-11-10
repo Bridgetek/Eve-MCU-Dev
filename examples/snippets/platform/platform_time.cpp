@@ -1,5 +1,5 @@
 /**
- * @file time_win.c
+ * @file platform_time.cpp
  */
 /*
  * ============================================================================
@@ -40,6 +40,7 @@
 #include <stdint.h>
 
 #include <Arduino.h>
+#include "platform_time.h"
 
 uint32_t platform_get_time(void)
 {

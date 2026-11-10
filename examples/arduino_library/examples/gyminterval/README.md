@@ -91,8 +91,6 @@ Finally, the main program sits in a continuous loop within `eve_display()`. Each
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
-The platform specific functions in `simple.ino` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
-
 ## Files and Folders
 
 The example contains a common directory with several files which comprises all the demo functionality.
@@ -104,6 +102,8 @@ The example contains a common directory with several files which comprises all t
 | [eve_example.h](eve_example.h) | Header file for examaple |
 | [touch.ino](touch.ino) | Calibrations routines |
 | [touch.h](touch.h) | Calibrations routines header file |
+| [platform_time.cpp](platform_time.cpp) | Platform time routines |
+| [platform_time.h](platform_time.h) | Platform time routines header file |
 | [sound.ino](sound.ino) | Sound routines |
 | [sound.h](sound.h) | Sound routines header file |
 | [fonts.ino](fonts.ino) | Font routines |

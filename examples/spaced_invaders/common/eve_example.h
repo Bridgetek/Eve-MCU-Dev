@@ -57,7 +57,7 @@ extern "C" {
 /* Include snippets */
 #include <touch.h>
 #include <controls/fonts.h>
-#include <platform/time.h>
+#include <platform/platform_time.h>
 
 // ==========================================================================
 // Defined Constants
