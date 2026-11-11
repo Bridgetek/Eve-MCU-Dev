@@ -298,8 +298,10 @@ int EVE_Init(void)
     else pllcfg = 0x00301070 + lvdstlldiv;
 
     EVE_CMD_REGWRITE(EVE_REG_LVDSTX_PLLCFG, pllcfg);
-    EVE_CMD_REGWRITE(EVE_REG_LVDSTX_EN, 6ul); // Enable PLLs for LVDS CH1 and CH2
 
+    // Enable the configured LVDS Tx channels
+    EVE_CMD_REGWRITE(EVE_REG_LVDSTX_EN, (uint32_t)EVE_DISP_LVDSTX_EN);
+    
     // 0: 1 pixel single // 1: 2 pixel single // 2: 2 pixel dual // 3: 4 pixel dual
     EVE_CMD_REGWRITE(EVE_REG_SO_MODE, (uint32_t)EVE_DISP_SO_MODE);
     EVE_CMD_REGWRITE(EVE_REG_SO_SOURCE, EVE_SWAPCHAIN_0);
