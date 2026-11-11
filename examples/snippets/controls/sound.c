@@ -146,6 +146,22 @@ void sound_enable(void)
 #endif
 }
 
+void sound_set_volume(uint8_t volume)
+{
+#if IS_EVE_API(1,2,3,4)
+    // Set synthesizer volume
+    EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, volume);
+    // Set audio playback volume
+    EVE_LIB_MemWrite8(EVE_REG_VOL_PB, volume);
+#else
+    // Set synthesizer volume
+    EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, volume);
+    // Set left and right audio playback volume
+    EVE_LIB_MemWrite32(EVE_REG_VOL_L_PB, volume);
+    EVE_LIB_MemWrite32(EVE_REG_VOL_R_PB, volume);
+#endif
+}
+
 int sound_is_playing(void)
 {
 #if IS_EVE_API(1,2,3,4)
@@ -186,6 +202,21 @@ void sound_mute(void)
 #else
 	// set synthesizer to note
 	EVE_LIB_MemWrite32(EVE_REG_SOUND, SOUND_MUTE);
+	// play sound
+	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
+#endif
+}
+
+void sound_silence(void)
+{
+#if IS_EVE_API(1,2,3,4)
+	// set synthesizer to note
+	EVE_LIB_MemWrite16(EVE_REG_SOUND, SOUND_SILENCE);
+	// play sound
+	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+#else
+	// set synthesizer to note
+	EVE_LIB_MemWrite32(EVE_REG_SOUND, SOUND_SILENCE);
 	// play sound
 	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
 #endif

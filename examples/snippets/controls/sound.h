@@ -190,9 +190,11 @@
 #define NOTE_C8 108 // C8 4186.0
 
 void sound_enable(void);
+void sound_set_volume(uint8_t volume);
 int sound_is_playing();
 void sound_play(uint8_t sound, uint8_t note);
 void sound_mute(void);
+void sound_silence(void);
 void sound_click(void);
 void sound_chimes(uint8_t note);
 void sound_bell(uint8_t note);
