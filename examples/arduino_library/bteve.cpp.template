@@ -49,7 +49,7 @@ uint32_t EVE_DISP_PCLKPOL, EVE_DISP_SWIZZLE, EVE_DISP_CSPREAD, EVE_DISP_DITHER;
 uint32_t EVE_DISP_PCLK, EVE_DISP_PCLK_FREQ;
 uint32_t EVE_TOUCH_ADDR;
 #if IS_EVE_API(5)
-uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT, EVE_DISP_SO_MODE;
+uint32_t EVE_DISP_LVDSTXCLKDIV, EVE_DISP_LVDSTXFORMAT, EVE_DISP_SO_MODE, EVE_DISP_LVDSTX_EN;
 uint32_t EVE_RAM_G_SIZE = ### EVE CLASS ###::RAM_G_1_GBIT;
 #endif
 
@@ -106,8 +106,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WQVGA)
@@ -132,8 +133,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WQVGAR)
@@ -158,8 +160,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WVGA)
@@ -184,8 +187,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WSVGA)
@@ -205,13 +209,14 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_DISP_CSPREAD = 0;
         EVE_DISP_DITHER = 1;
         EVE_DISP_PCLK = 1;
-        EVE_DISP_PCLK_FREQ = 0xd12;
+        EVE_DISP_PCLK_FREQ = 0xD12;
         // Default - automatic 
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WXGA)
@@ -236,8 +241,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_WXGA_NG)
@@ -262,8 +268,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_1PIXEL_SINGLE;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_CH0;
 #endif
     }
     else if (panel == EVE_FULLHD)
@@ -288,8 +295,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_4PIXEL_DUAL;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_DUAL;
 #endif
     }
     else if (panel == EVE_WUXGA)
@@ -314,8 +322,9 @@ void ### EVE CLASS ###::setpanel(uint32_t panel)
         EVE_TOUCH_ADDR = 0;
 #if IS_EVE_API(5)
         EVE_DISP_LVDSTXCLKDIV = 3;
-        EVE_DISP_LVDSTXFORMAT = EVE_FORMAT_RGB6;
+        EVE_DISP_LVDSTXFORMAT = EVE_SO_FORMAT_RGB8;
         EVE_DISP_SO_MODE = EVE_SO_MODE_4PIXEL_DUAL;
+        EVE_DISP_LVDSTX_EN = EVE_LVDSTX_CHANNEL_DUAL;
 #endif
     }
     else

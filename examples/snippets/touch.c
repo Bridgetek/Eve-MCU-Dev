@@ -117,17 +117,7 @@ int eve_calibrate(void)
     // x' = x * A + y * B + C
     // y' = x * D + y * E + F
 
-#if EVE_PANEL == EVE_DP_1012_01A
-    // Predefined transform matrix for DP-1012-01A display panel
-    // X-axis 1920 pixels. Raw 1919 -> 0 (0x780)
-    // Y-axis 1200 pixels. Raw 1199 -> 0 (0x4b0)
-    calib.transform[0] = 0xffff0000; // - 1.0
-    calib.transform[1] = 0x00000000; // 0.0
-    calib.transform[2] = 0x07800000; // + 1200
-    calib.transform[3] = 0x00000000; // 0.0
-    calib.transform[4] = 0xffff0000; // - 1.0
-    calib.transform[5] = 0x04b00000; // + 1200.0
-#elif EVE_PANEL == EVE_DP_IDM21R
+#if EVE_PANEL == EVE_DP_IDM21R
     // Predefined transform matrix for EVE_DP_IDM21R display panel
     // use default register values here as the first calib dot wont appear
     // on the round panel

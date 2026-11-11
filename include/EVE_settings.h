@@ -439,11 +439,10 @@
 
 /** EVE1 does not support QSPI, disable this if it has been defined */
 #if IS_EVE_API(1)
-    #if defined(EVE_QSPI_ENABLE)
-        #undef EVE_QSPI_ENABLE
-    #endif // EVE_QSPI_ENABLE
+#if defined(EVE_QSPI_ENABLE)
+#undef EVE_QSPI_ENABLE
+#endif // EVE_QSPI_ENABLE
 #endif // IS_EVE_API(1)
-
 
 /** Custom touch firmware is supported by EVE API 2-4.
  *
@@ -453,13 +452,13 @@
 #if IS_EVE_API(2,3,4) 
 #define EVE_SUPPORT_CUSTOM_TOUCH
 #endif
+
 /** IDM2040-21R is an EVE API 1 exception which requires a
  * custom touch firmware patch.
  */
 #if defined(EVE_MODULE) && (EVE_MODULE == EVE_IDM204021R)
 #define EVE_SUPPORT_CUSTOM_TOUCH
 #endif
-
 
 #if !defined(IS_ARDUINO_LIB) /* This block is not used in Arduino libraries */
 
@@ -563,8 +562,9 @@
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WQVGA
 
@@ -585,8 +585,9 @@
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WQVGAR
 
@@ -607,8 +608,9 @@
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WVGA
 
@@ -629,8 +631,9 @@
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WSVGA
 
@@ -654,8 +657,9 @@
 #define EVE_DISP_PCLK_FREQ  0xD12    // set 51MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WXGA
 
@@ -679,8 +683,9 @@
 #define EVE_DISP_PCLK_FREQ  0x8B1    // set 66MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_WXGA_NG
 
@@ -704,8 +709,9 @@
 #define EVE_DISP_PCLK_FREQ  0x8B1    // set 66MHz (must also define EVE_SET_PCLK_FREQ in line above to use this)
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_1PIXEL_SINGLE
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_CH0
 
 #elif EVE_DISPLAY_RES == EVE_FULLHD
 
@@ -726,30 +732,32 @@
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_4PIXEL_DUAL
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_DUAL
 
 #elif EVE_DISPLAY_RES == EVE_WUXGA
 
 #define EVE_DISP_WIDTH 1920 // Active width of LCD display
 #define EVE_DISP_HEIGHT 1200 // Active height of LCD display
-#define EVE_DISP_HCYCLE (1920 + 180) // Total number of clocks per line
-#define EVE_DISP_HOFFSET 50 // Start of active line
+#define EVE_DISP_HCYCLE 2228 // Total number of clocks per line
+#define EVE_DISP_HOFFSET 152 // Start of active line
 #define EVE_DISP_HSYNC0 0 // Start of horizontal sync pulse
 #define EVE_DISP_HSYNC1 30 // End of horizontal sync pulse
-#define EVE_DISP_VCYCLE (1200 + 45) // Total number of lines per screen
-#define EVE_DISP_VOFFSET 10 // Start of active screen
+#define EVE_DISP_VCYCLE 1244 // Total number of lines per screen
+#define EVE_DISP_VOFFSET 42 // Start of active screen
 #define EVE_DISP_VSYNC0 0 // Start of vertical sync pulse
-#define EVE_DISP_VSYNC1 3 // End of vertical sync pulse
-#define EVE_DISP_PCLK 2 // Pixel Clock
+#define EVE_DISP_VSYNC1 4 // End of vertical sync pulse
+#define EVE_DISP_PCLK 3 // Pixel Clock
 #define EVE_DISP_SWIZZLE 0 // Define RGB output pins
 #define EVE_DISP_PCLKPOL 0 // Define active edge of PCLK
 #define EVE_DISP_CSPREAD 0
 #define EVE_DISP_DITHER 1
 // BT82x settings
 #define EVE_DISP_LVDSTXCLKDIV 3
-#define EVE_DISP_LVDSTXFORMAT EVE_FORMAT_RGB6
+#define EVE_DISP_LVDSTXFORMAT EVE_SO_FORMAT_RGB8
 #define EVE_DISP_SO_MODE EVE_SO_MODE_4PIXEL_DUAL
+#define EVE_DISP_LVDSTX_EN EVE_LVDSTX_CHANNEL_DUAL
 
 #else
 

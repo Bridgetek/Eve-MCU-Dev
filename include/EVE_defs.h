@@ -161,55 +161,6 @@
 //@}
 
 /**
- * @brief RAM_G size options for BT82X only
- * @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
- */
-//@{
-#define EVE_RAM_G_32_MBIT  0x100000UL
-#define EVE_RAM_G_64_MBIT  0x200000UL
-#define EVE_RAM_G_128_MBIT 0x400000UL
-#define EVE_RAM_G_256_MBIT 0x800000UL
-#define EVE_RAM_G_512_MBIT 0x4000000UL
-#define EVE_RAM_G_1_GBIT   0x8000000UL
-#define EVE_RAM_G_2_GBIT   0x10000000UL
-#define EVE_RAM_G_4_GBIT   0x20000000UL
-#define EVE_RAM_G_8_GBIT   0x40000000UL
-//@}
-
-/**
- * @brief BT82x LVDS scanout pixel mode definitions.
- * @details Defines the supported scanout modes for EVE_REG_SO_MODE.
- *      These values are selected using EVE_DISP_SO_MODE in EVE_settings.h.
- *
- * @note Modes 1 and 2 require horizontal timing values to be even.
- *      Mode 3 requires horizontal timing values to be multiples of 4.
- */
- //@{
-#define EVE_SO_MODE_1PIXEL_SINGLE 0 // 1 pixel per clock, single LVDS channel
-#define EVE_SO_MODE_2PIXEL_SINGLE 1 // 2 pixels per clock, single LVDS channel
-#define EVE_SO_MODE_2PIXEL_DUAL   2 // 2 pixels per clock, dual LVDS channels
-#define EVE_SO_MODE_4PIXEL_DUAL   3 // 4 pixels per clock, dual LVDS channels
-//@}
-
-/**
- * @brief Definitions for capacitive touch controller I2C addresses and types.(type is BT82X only).
- *
- * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
- */
-//@{
-#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
-#define TOUCH_TYPE_FOCALTECH 1
-#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
-#define TOUCH_TYPE_GOODIX 2
-#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
-#define TOUCH_TYPE_ILITEK 4
-#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
-#define TOUCH_TYPE_SITRONIX 6
-#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
-#define TOUCH_TYPE_EETI 7
-//@}
-
-/**
  * @brief Definitions for transfer methods for co-processor lists.
  * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
  *      or enable the INT# line to be used when REG_CMD_WRITE method
@@ -241,6 +192,75 @@
 #define EVE_SPI_SINGLE_CHANNEL    0x00
 #define EVE_SPI_DUAL_CHANNEL      0x01
 #define EVE_SPI_QUAD_CHANNEL      0x02
+//@}
+
+/**
+ * @brief Definitions for capacitive touch controller I2C addresses and types. (type is BT82X only).
+ *
+ * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
+ */
+//@{
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
+#define TOUCH_TYPE_GOODIX 2
+#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
+#define TOUCH_TYPE_ILITEK 4
+#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
+#define TOUCH_TYPE_SITRONIX 6
+#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
+#define TOUCH_TYPE_EETI 7
+//@}
+
+/**
+ * @brief RAM_G size options for BT82X only
+ * @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
+ */
+//@{
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
+//@}
+
+/**
+ * @brief BT82x LVDS scanout pixel mode definitions.
+ * @details Defines the supported scanout modes for EVE_REG_SO_MODE.
+ *
+ * @note Modes 1 and 2 require horizontal timing values to be even.
+ *      Mode 3 requires horizontal timing values to be multiples of 4.
+ */
+//@{
+#define EVE_SO_MODE_1PIXEL_SINGLE 0 // 1 pixel per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_SINGLE 1 // 2 pixels per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_DUAL   2 // 2 pixels per clock, dual LVDS channels
+#define EVE_SO_MODE_4PIXEL_DUAL   3 // 4 pixels per clock, dual LVDS channels
+//@}
+
+/**
+ * @brief BT82x LVDS transmitter channel enable definitions.
+ * @details Values for EVE_REG_LVDSTX_EN used to enable LVDS channels.
+ */
+//@{
+#define EVE_LVDSTX_CHANNEL_NONE  0x00UL
+#define EVE_LVDSTX_CHANNEL_CH0   0x02UL
+#define EVE_LVDSTX_CHANNEL_CH1   0x04UL
+#define EVE_LVDSTX_CHANNEL_DUAL  (EVE_LVDSTX_CHANNEL_CH0 | EVE_LVDSTX_CHANNEL_CH1)
+//@}
+
+/**
+ * @brief BT82x scanout format definitions.
+ * @details Supported formats for EVE_REG_SO_FORMAT, see Table 12 of BRT_AN_086.
+ */
+//@{
+#define EVE_SO_FORMAT_RGB6   0x16UL
+#define EVE_SO_FORMAT_RGB8   0x13UL
+#define EVE_SO_FORMAT_YCBCR  0x1CUL
 //@}
 
 #endif /* _EVE_DEFS_H */

@@ -237,6 +237,7 @@ holding the total configured size of RAM_G.
 uint32_t EVE_DISP_LVDSTXCLKDIV
 uint32_t EVE_DISP_LVDSTXFORMAT
 uint32_t EVE_DISP_SO_MODE
+uint32_t EVE_DISP_LVDSTX_EN
 uint32_t EVE_RAM_G_CONFIG_SIZE
 ```
 #endif
