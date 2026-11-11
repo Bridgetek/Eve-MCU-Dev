@@ -24,6 +24,10 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
+  # Allow a custom build directory
+  BUILD_DIR: build
+  # Executable program made by the CMake build (location and name depend on compiler)
+  TARGET: boottester
 
 jobs:
   build:
@@ -50,17 +54,17 @@ jobs:
 
     # Test using matrix
     - name: Configure CMake
-      run: cmake -B build -S . -G Ninja ${{ matrix.eve.config }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja ${{matrix.eve.config}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       working-directory: ${{github.workspace}}/test/boottester
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/boottester
 
     - name: Run test 
-      run: ./build/boottester > ./build/${{ matrix.eve.gild }}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.gild}}
       working-directory: ${{github.workspace}}/test/boottester
 
     - name: Compare results
-      run: diff -s -a -w ./gilds/${{ matrix.eve.gild }} ./build/${{ matrix.eve.gild }}
+      run: diff -s -a -w ./gilds/${{matrix.eve.gild}} ./${{env.BUILD_DIR}}/${{matrix.eve.gild}}
       working-directory: ${{github.workspace}}/test/boottester

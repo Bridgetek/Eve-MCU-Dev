@@ -79,8 +79,8 @@ int main(void)
 void setup(void)
 {
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
-    printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Example Tester: " STR(EXAMPLE) "\r\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd.\n\n");
+    printf ("----------------------------------------------------------------\n");
+    printf ("Welcome to EVE-MCU-Dev Example Tester: " STR(EXAMPLE) "\n");
     printf ("\n");
 }

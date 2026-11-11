@@ -1,6 +1,6 @@
-(C) Copyright, Bridgetek Pte. Ltd. 
- 
----------------------------------------------------------------- 
+(C) Copyright, Bridgetek Pte. Ltd.
+
+----------------------------------------------------------------
 Welcome to EVE-MCU-Dev Tester Program
 
 EVE device: FT800

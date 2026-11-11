@@ -25,6 +25,10 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
+  # Allow a custom build directory
+  BUILD_DIR: build
+  # Executable program made by the CMake build (location and name depend on compiler)
+  TARGET: exampletester
 
 jobs:
   build:
@@ -48,7 +52,7 @@ jobs:
         ]
     
     # Set the name of the job to include the important information
-    name: test example - ${{ matrix.eve.EXAMPLE }}
+    name: test example - ${{matrix.eve.EXAMPLE}}
 
     steps:
     - uses: actions/checkout@v6
@@ -57,101 +61,101 @@ jobs:
 
     # Test using matrix
     - name: Configure CMake EVE5
-      if: ${{ matrix.eve.EVE5 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE5 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      if: ${{matrix.eve.EVE5}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja -DEVE_DEVICE=EVE_BT820 -DEVE_DISPLAY_RES=EVE_${{matrix.eve.EVE5}} -DEXAMPLE=${{matrix.eve.EXAMPLE}} -DASSETS=${{matrix.eve.ASSETS}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE5
-      if: ${{ matrix.eve.EVE5 }}
-      run: cmake --build build
+      if: ${{matrix.eve.EVE5}}
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Run EVE5
-      if: ${{ matrix.eve.EVE5 }}
-      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt
+      if: ${{matrix.eve.EVE5}}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT820_${{matrix.eve.EVE5}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Compare results EVE5
-      if: ${{ matrix.eve.GILDED && matrix.eve.EVE5 }}
-      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_BT820_${{ matrix.eve.EVE5 }}.txt
+      if: ${{matrix.eve.GILDED && matrix.eve.EVE5}}
+      run: diff -s -a -w ./gilds/${{matrix.eve.EXAMPLE}}_BT820_${{matrix.eve.EVE5}}.txt ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT820_${{matrix.eve.EVE5}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
-
+#end
     - name: Configure CMake EVE4
-      if: ${{ matrix.eve.EVE4 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT818 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE4 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      if: ${{matrix.eve.EVE4}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja -DEVE_DEVICE=EVE_BT818 -DEVE_DISPLAY_RES=EVE_${{matrix.eve.EVE4}} -DEXAMPLE=${{matrix.eve.EXAMPLE}} -DASSETS=${{matrix.eve.ASSETS}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE4
-      if: ${{ matrix.eve.EVE4 }}
-      run: cmake --build build
+      if: ${{matrix.eve.EVE4}}
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Run EVE4
-      if: ${{ matrix.eve.EVE4 }}
-      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_BT818_${{ matrix.eve.EVE4 }}.txt
+      if: ${{matrix.eve.EVE4}}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT818_${{matrix.eve.EVE4}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Compare results EVE4
-      if: ${{ matrix.eve.GILDED && matrix.eve.EVE4 }}
-      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_BT818_${{ matrix.eve.EVE4 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_BT818_${{ matrix.eve.EVE4 }}.txt
+      if: ${{matrix.eve.GILDED && matrix.eve.EVE4}}
+      run: diff -s -a -w ./gilds/${{matrix.eve.EXAMPLE}}_BT818_${{matrix.eve.EVE4}}.txt ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT818_${{matrix.eve.EVE4}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE3
-      if: ${{ matrix.eve.EVE3 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_BT815 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE3 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      if: ${{matrix.eve.EVE3}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja -DEVE_DEVICE=EVE_BT815 -DEVE_DISPLAY_RES=EVE_${{matrix.eve.EVE3}} -DEXAMPLE=${{matrix.eve.EXAMPLE}} -DASSETS=${{matrix.eve.ASSETS}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE3
-      if: ${{ matrix.eve.EVE3 }}
-      run: cmake --build build
+      if: ${{matrix.eve.EVE3}}
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Run EVE3
-      if: ${{ matrix.eve.EVE3 }}
-      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_BT815_${{ matrix.eve.EVE3 }}.txt
+      if: ${{matrix.eve.EVE3}}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT815_${{matrix.eve.EVE3}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Compare results EVE3
-      if: ${{ matrix.eve.GILDED && matrix.eve.EVE3 }}
-      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_BT815_${{ matrix.eve.EVE3 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_BT815_${{ matrix.eve.EVE3 }}.txt
+      if: ${{matrix.eve.GILDED && matrix.eve.EVE3}}
+      run: diff -s -a -w ./gilds/${{matrix.eve.EXAMPLE}}_BT815_${{matrix.eve.EVE3}}.txt ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_BT815_${{matrix.eve.EVE3}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE2
-      if: ${{ matrix.eve.EVE2 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT812 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE2 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      if: ${{matrix.eve.EVE2}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja -DEVE_DEVICE=EVE_FT812 -DEVE_DISPLAY_RES=EVE_${{matrix.eve.EVE2}} -DEXAMPLE=${{matrix.eve.EXAMPLE}} -DASSETS=${{matrix.eve.ASSETS}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE2
-      if: ${{ matrix.eve.EVE2 }}
-      run: cmake --build build
+      if: ${{matrix.eve.EVE2}}
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Run EVE2
-      if: ${{ matrix.eve.EVE2 }}
-      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_FT812_${{ matrix.eve.EVE2 }}.txt
+      if: ${{matrix.eve.EVE2}}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_FT812_${{matrix.eve.EVE2}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Compare results EVE2
-      if: ${{ matrix.eve.GILDED && matrix.eve.EVE2 }}
-      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_FT812_${{ matrix.eve.EVE2 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_FT812_${{ matrix.eve.EVE2 }}.txt
+      if: ${{matrix.eve.GILDED && matrix.eve.EVE2}}
+      run: diff -s -a -w ./gilds/${{matrix.eve.EXAMPLE}}_FT812_${{matrix.eve.EVE2}}.txt ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_FT812_${{matrix.eve.EVE2}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Configure CMake EVE1
-      if: ${{ matrix.eve.EVE1 }}
-      run: cmake -B build -S . -G Ninja -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_${{ matrix.eve.EVE1 }} -DEXAMPLE=${{ matrix.eve.EXAMPLE }} -DASSETS=${{ matrix.eve.ASSETS }}
+      if: ${{matrix.eve.EVE1}}
+      run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_${{matrix.eve.EVE1}} -DEXAMPLE=${{matrix.eve.EXAMPLE}} -DASSETS=${{matrix.eve.ASSETS}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Build EVE1
-      if: ${{ matrix.eve.EVE1 }}
-      run: cmake --build build
+      if: ${{matrix.eve.EVE1}}
+      run: cmake --build ${{env.BUILD_DIR}}
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Run EVE1
-      if: ${{ matrix.eve.EVE1 }}
-      run: ./build/exampletester > ./build/${{ matrix.eve.EXAMPLE }}_FT800_${{ matrix.eve.EVE1 }}.txt
+      if: ${{matrix.eve.EVE1}}
+      run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_FT800_${{matrix.eve.EVE1}}.txt
       working-directory: ${{github.workspace}}/test/exampletester
 
     - name: Compare results EVE1
-      if: ${{ matrix.eve.GILDED && matrix.eve.EVE1 }}
-      run: diff -s -a -w ./gilds/${{ matrix.eve.EXAMPLE }}_FT800_${{ matrix.eve.EVE1 }}.txt ./build/${{ matrix.eve.EXAMPLE }}_FT800_${{ matrix.eve.EVE1 }}.txt
+      if: ${{matrix.eve.GILDED && matrix.eve.EVE1}}
+      run: diff -s -a -w ./gilds/${{matrix.eve.EXAMPLE}}_FT800_${{matrix.eve.EVE1}}.txt ./${{env.BUILD_DIR}}/${{matrix.eve.EXAMPLE}}_FT800_${{matrix.eve.EVE1}}.txt
       working-directory: ${{github.workspace}}/test/exampletester

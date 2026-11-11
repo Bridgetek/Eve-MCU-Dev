@@ -59,6 +59,11 @@
 /* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
+/* Version string for BT820 patch 
+ * This is the string returned from the RAM_REPORT area by the simulator.
+ */
+#define SIMULATOR_BT820_PATCH_VERSION "patch_base;1.5;touch-1.1;\0\0\0"
+
 extern uint16_t HAL_GetCmdPointer(void);
 
 #if IS_EVE_API(1, 2, 3, 4)
@@ -247,7 +252,7 @@ uint32_t get_response_32()
     else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
     {
         // Keep up-to-date with the expected value in `bt82x_patch.c` function eve_loadpatch();
-        const char msg[] = "patch_base;1.5;touch-1.1;\0\0\0";
+        const char msg[] = SIMULATOR_BT820_PATCH_VERSION;
         
         if (address - EVE_RAM_REPORT < strlen(msg))
         {

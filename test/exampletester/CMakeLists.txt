@@ -11,11 +11,11 @@ get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} C CXX)
 
-message(API_DIRECTORY="${API_DIRECTORY}")
-message(ProjectId="${PROJECT_SOURCE_DIR}")
-message(PROJECT_NAME="${PROJECT_NAME}")
-message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
-message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
+message(STATUS API_DIRECTORY="${API_DIRECTORY}")
+message(STATUS ProjectId="${PROJECT_SOURCE_DIR}")
+message(STATUS PROJECT_NAME="${PROJECT_NAME}")
+message(STATUS CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
+message(STATUS CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
 # Set C/C++ Standards
 set(CMAKE_C_STANDARD 11)
@@ -26,7 +26,7 @@ option(EXAMPLE "Example directory")
 # Set a dummy source code directory
 IF(EXAMPLE)
     ADD_DEFINITIONS(-DEXAMPLE=${EXAMPLE})
-    message(EXAMPLE="${EXAMPLE}")
+    message(STATUS EXAMPLE="${EXAMPLE}")
 ENDIF(EXAMPLE)
 
 # Directory for assetss source code for a dummy build
@@ -34,7 +34,7 @@ option(ASSETS "Example assets flag")
 # Set a dummy source code directory
 IF(ASSETS)
     ADD_DEFINITIONS(-DASSETS=${ASSETS})
-    message(ASSETS="${ASSETS}")
+    message(STATUS ASSETS="${ASSETS}")
     # Set the assets flag
     add_compile_definitions(ASSETS=${ASSETS})
 ENDIF(ASSETS)
@@ -52,22 +52,22 @@ option(EVE_DISPLAY_RES "Panel Display Resolution" )
 # Set a module type
 IF(EVE_MODULE)
     ADD_DEFINITIONS(-DEVE_MODULE=${EVE_MODULE})
-    message(EVE_MODULE="${EVE_MODULE}")
+    message(STATUS EVE_MODULE="${EVE_MODULE}")
 ELSE(EVE_MODULE)
 # Set the eve device type
 IF(EVE_DEVICE)
     ADD_DEFINITIONS(-DEVE_DEVICE=${EVE_DEVICE})
-    message(EVE_DEVICE="${EVE_DEVICE}")
+    message(STATUS EVE_DEVICE="${EVE_DEVICE}")
 ENDIF(EVE_DEVICE)
 # Set the panel type
 IF(EVE_PANEL)
     ADD_DEFINITIONS(-DEVE_PANEL=${EVE_PANEL})
-    message(EVE_PANEL="${EVE_PANEL}")
+    message(STATUS EVE_PANEL="${EVE_PANEL}")
 ELSE(EVE_PANEL)
 # Set the display resolution
 IF(EVE_DISPLAY_RES)
     ADD_DEFINITIONS(-DEVE_DISPLAY_RES=${EVE_DISPLAY_RES})
-    message(EVE_DISPLAY_RES="${EVE_DISPLAY_RES}")
+    message(STATUS EVE_DISPLAY_RES="${EVE_DISPLAY_RES}")
 ENDIF(EVE_DISPLAY_RES)
 ENDIF(EVE_PANEL)
 ENDIF(EVE_MODULE)
