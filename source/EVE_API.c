@@ -772,25 +772,29 @@ uint8_t EVE_LIB_MemRead8(uint32_t address)
 // Writes a string over SPI.
 uint16_t EVE_LIB_SendString(const char* string)
 {
-    uint16_t length;
-    uint16_t CommandSize;
+    int8_t offset = 0;
+    uint16_t CommandSize = 0;
 
-    // Include the terminating null character in the string length.
-    // Pad string length to a multiple of 4.
-    length = ((strlen(string) + 1) + 3) & (~3);
-    CommandSize = length;
+    uint32_t val32 = 0;
 
-    uint32_t val32;
-    while (length)
+    do
     {
-        val32 = *string++;
-        val32 |= ((uint32_t)*string++ << 8);
-        val32 |= ((uint32_t)*string++ << 16);
-        val32 |= ((uint32_t)*string++ << 24);
-        HAL_WriteCmd(val32);
-        length -= 4;
-    }
+        val32 |= ((uint32_t)*string << ((CommandSize & 3) << 3));
+        if (*string++ == '\0')
+        {
+            HAL_WriteCmd(val32);
+            break;
+        }
+        CommandSize++;
+        if ((CommandSize & 3) == 0)
+        {
+            HAL_WriteCmd(val32);
+            val32 = 0;
+        }
+    } while(1);
 
+    // Pad string length to a multiple of 4.
+    CommandSize = (CommandSize + 3) & (~3);
     return CommandSize;
 }
 
