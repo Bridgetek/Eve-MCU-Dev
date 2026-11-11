@@ -42,77 +42,87 @@ for action in actions:
     print("Updating gild for", name)
 
     gild = action.get("gild")
+
+    # Get the steps to generate the output
     steps = build.get("steps")
 
-    config_step = None
-    build_step = None
-    run_step = None
-
     for step in steps:
+        config_step = None
+        build_step = None
+        run_step = None
+
+        # Get the name of this step
         step_name = step.get("name")
         if step_name:
+            # Get the supported steps (based on name)
             if step_name.startswith("Configure CMake"):
                 config_step = step
-            if step_name.startswith("Build"):
+            elif step_name.startswith("Build"):
                 build_step = step
-            if step_name.startswith("Run"):
+            elif step_name.startswith("Run"):
                 run_step = step
 
-    def yamlrep(s):
-        try:
-            s = re.sub(r"\${{matrix.eve.config}}", config, s)
-            s = re.sub(r"\${{matrix.eve.gild}}", gild, s)
-            s = re.sub(r"\${{env.BUILD_TYPE}}", build_type, s)
-            s = re.sub(r"\${{env.BUILD_DIR}}", build_dir, s)
-            s = re.sub(r"\${{env.TARGET}}", target, s)
-            s = re.sub(r"\${{github.workspace}}", os.curdir, s)
-        except:
-            raise Exception(f"YAML file replacement failed.")
-        return s.split()
+        def yamlrep(s):
+            try:
+                s = re.sub(r"\${{matrix.eve.config}}", config, s)
+                s = re.sub(r"\${{matrix.eve.gild}}", gild, s)
+                s = re.sub(r"\${{env.BUILD_TYPE}}", build_type, s)
+                s = re.sub(r"\${{env.BUILD_DIR}}", build_dir, s)
+                s = re.sub(r"\${{env.TARGET}}", target, s)
+                s = re.sub(r"\${{github.workspace}}", os.curdir, s)
+            except:
+                raise Exception(f"YAML file replacement failed.")
+            return s.split()
 
-    def runstep(step, add=None):
-        try:
-            cmd = yamlrep(step.get("run"))
-            if add:
-                cmd.append(add)
-            print("Running:", step.get("name"))
-            # Windows from unux paths
-            ncmd = []
-            for c in cmd:
-                if c == ">": break
-                ncmd.append(os.path.normpath(c))
-            print(' '.join(ncmd))
-            res = subprocess.run(ncmd, stdout=subprocess.PIPE)
-        except:
-            raise Exception(f"{step.get('name')} failed.")
-        if (res.returncode != 0):
-            raise Exception(f"{step.get('name')} error {res.returncode}.")
-        return res.stdout.decode('utf-8')
+        def runstep(step, add=None):
+            try:
+                cmd = yamlrep(step.get("run"))
+                if add:
+                    cmd.append(add)
+                print("Action:", step.get("name"))
+                # Windows from unux paths
+                ncmd = []
+                for c in cmd:
+                    if c == ">": break
+                    ncmd.append(os.path.normpath(c))
+                print("Command:", ' '.join(ncmd))
+                res = subprocess.run(ncmd, stdout=subprocess.PIPE)
+            except:
+                raise Exception(f"{step.get('name')} failed.")
+            if (res.returncode != 0):
+                raise Exception(f"{step.get('name')} error {res.returncode}.")
+            return res.stdout.decode('utf-8')
 
-    def gettarget(s):
-        target = None
-        slines = s.splitlines()
-        for t in slines:
-            t = t.strip()
-            if t.startswith("TARGET: "):
-                target = t.split(" ", 1)[1]
-        if target:
-            target = os.path.relpath(target, os.path.abspath(build_dir))
-        return target
+        def gettarget(s):
+            target = None
+            slines = s.splitlines()
+            for t in slines:
+                t = t.strip()
+                if t.startswith("TARGET: "):
+                    target = t.split(" ", 1)[1]
+            if target:
+                target = os.path.relpath(target, os.path.abspath(build_dir))
+            return target
 
-    runstep(config_step, "--fresh")
-    sbuild = runstep(build_step, "--clean-first")
-    target = gettarget(sbuild)
-    assert(target)
-    expected = runstep(run_step)
+        # Run our supported actions
+        if config_step:
+            runstep(config_step, "--fresh")
 
-    # Fix windows line endings
-    expected = re.sub("\r\n", "\n", expected)
+        elif build_step:
+            sbuild = runstep(build_step, "--clean-first")
+            target = gettarget(sbuild)
+            assert(target)
 
-    print("Updating gild file:", os.path.join("gilds", gild))
-    
-    with open(os.path.join("gilds", gild), "w") as g:
-        g.write(expected)
-    
+        elif run_step:
+            expected = runstep(run_step)
+
+            # Fix windows line endings
+            expected = re.sub("\r\n", "\n", expected)
+
+            print("Updating gild file:", os.path.join("gilds", gild))
+        
+            with open(os.path.join("gilds", gild), "w") as g:
+                g.write(expected)
+        
     print("Done")
 

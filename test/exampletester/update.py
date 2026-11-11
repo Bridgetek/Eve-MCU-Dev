@@ -33,138 +33,130 @@ except:
     raise Exception("The workflow file is invalid")
 
 for action in actions:
+
+    # Get the defined values from the matrix
     try:
         name = action.get("EXAMPLE")
         gilded = action.get("GILDED")
         assets = str(action.get("ASSETS"))
-        eve1 = action.get("EVE1")
-        eve2 = action.get("EVE2")
-        eve3 = action.get("EVE3")
-        eve4 = action.get("EVE4")
-        eve5 = action.get("EVE5")
     except:
         raise Exception("The workflow actions are invalid")
     config = ""
 
     print("Updating all gilds for", name)
 
+    # Get the steps to generate the output
     steps = build.get("steps")
 
-    config_step = None
-    build_step = None
-    run_step = None
-    dsteps = []
+    for step in steps:
+        config_step = None
+        build_step = None
+        run_step = None
+        device = None
+        display = None
 
-    for d in ["EVE1", "EVE2", "EVE3", "EVE4", "EVE5"]:
+        # Get the name of this step
+        step_name = step.get("name")
+        if step_name:
+            # Get the supported steps (based on name)
+            if step_name.startswith("Configure CMake"):
+                config_step = step
+            elif step_name.startswith("Build"):
+                build_step = step
+            elif step_name.startswith("Run"):
+                run_step = step
+            # Get the device type (based on name)
+            device = step_name.split()[-1]
 
-        if d == "EVE1" and eve1 == False: continue
-        if d == "EVE2" and eve2 == False: continue
-        if d == "EVE3" and eve3 == False: continue
-        if d == "EVE4" and eve4 == False: continue
-        if d == "EVE5" and eve5 == False: continue
-
-        for step in steps:
-            step_name = step.get("name")
-            if step_name:
-                if step_name.endswith(d):
-                    if step_name.startswith("Configure CMake"):
-                        config_step = step
-                    if step_name.startswith("Build"):
-                        build_step = step
-                    if step_name.startswith("Run"):
-                        run_step = step
-        if config_step and build_step and run_step:
-            dsteps.append({"device": d, "config": config_step, "build": build_step, "run": run_step,})
+        # Get the display resolution from the device type
+        if device == None:
+            continue
         else:
-            raise Exception("The workflow actions are incomplete")
+            display = action.get(device)
 
-    def yamlrep(s):
-        try:
-            s = re.sub(r"\${{matrix.eve.config}}", config, s)
-            #s = re.sub(r"\${{matrix.eve.gild}}", gild, s)
-            s = re.sub(r"\${{matrix.eve.EXAMPLE}}", name, s)
-            if eve1: s = re.sub(r"\${{matrix.eve.EVE1}}", eve1, s)
-            if eve2: s = re.sub(r"\${{matrix.eve.EVE2}}", eve2, s)
-            if eve3: s = re.sub(r"\${{matrix.eve.EVE3}}", eve3, s)
-            if eve4: s = re.sub(r"\${{matrix.eve.EVE4}}", eve4, s)
-            if eve5: s = re.sub(r"\${{matrix.eve.EVE5}}", eve5, s)
-            s = re.sub(r"\${{matrix.eve.ASSETS}}", assets, s)
-            s = re.sub(r"\${{env.BUILD_TYPE}}", build_type, s)
-            s = re.sub(r"\${{env.BUILD_DIR}}", build_dir, s)
-            s = re.sub(r"\${{env.TARGET}}", target, s)
-            s = re.sub(r"\${{github.workspace}}", os.curdir, s)
-        except:
-            raise Exception(f"YAML file replacement failed.")
-        return s.split()
+        # If this action isn't supported for this device stop here
+        if display == False:
+            continue
 
-    def runstep(step, add=None):
-        try:
-            cmd = yamlrep(step.get("run"))
-            if add:
-                cmd.append(add)
-            print("Running:", step.get("name"))
-            # Windows from unux paths
-            ncmd = []
+        def yamlrep(s):
+            try:
+                s = re.sub(r"\${{matrix.eve.config}}", config, s)
+                s = re.sub(r"\${{matrix.eve.EXAMPLE}}", name, s)
+                if display: s = re.sub(r"\${{matrix.eve.EVE.}}", display, s)
+                s = re.sub(r"\${{matrix.eve.ASSETS}}", assets, s)
+                s = re.sub(r"\${{env.BUILD_TYPE}}", build_type, s)
+                s = re.sub(r"\${{env.BUILD_DIR}}", build_dir, s)
+                s = re.sub(r"\${{env.TARGET}}", target, s)
+                s = re.sub(r"\${{github.workspace}}", os.curdir, s)
+            except:
+                raise Exception(f"YAML file replacement failed.")
+            return s.split()
+
+        def runstep(step, add=None):
+            try:
+                cmd = yamlrep(step.get("run"))
+                if add:
+                    cmd.append(add)
+                print("Action:", step.get("name"))
+                # Windows from unux paths
+                ncmd = []
+                for c in cmd:
+                    if c == ">": break
+                    ncmd.append(os.path.normpath(c))
+                print("Command:", ' '.join(ncmd))
+                res = subprocess.run(ncmd, stdout=subprocess.PIPE)
+            except:
+                raise Exception(f"{step.get('name')} failed.")
+            if (res.returncode != 0):
+                raise Exception(f"{step.get('name')} error {res.returncode}.")
+            return res.stdout.decode('utf-8')
+
+        def gettarget(s):
+            target = None
+            slines = s.splitlines()
+            for t in slines:
+                t = t.strip()
+                if t.startswith("TARGET: "):
+                    target = t.split(" ", 1)[1]
+            if target:
+                target = os.path.relpath(target, os.path.abspath(build_dir))
+            return target
+
+        def get_gild(s):
+            gild = None
+            cmd = yamlrep(s)
+            flag = 0
             for c in cmd:
-                if c == ">": break
-                ncmd.append(os.path.normpath(c))
-            print(' '.join(ncmd))
-            res = subprocess.run(ncmd, stdout=subprocess.PIPE)
-        except:
-            raise Exception(f"{step.get('name')} failed.")
-        if (res.returncode != 0):
-            raise Exception(f"{step.get('name')} error {res.returncode}.")
-        return res.stdout.decode('utf-8')
+                if flag: 
+                    gild = os.path.normpath(c)
+                    break
+                if c == ">": 
+                    flag = 1
+            if gild:
+                gild = os.path.relpath(gild, os.path.abspath(build_dir))
+            return gild
 
-    def gettarget(s):
-        target = None
-        slines = s.splitlines()
-        for t in slines:
-            t = t.strip()
-            if t.startswith("TARGET: "):
-                target = t.split(" ", 1)[1]
-        if target:
-            target = os.path.relpath(target, os.path.abspath(build_dir))
-        return target
+        # Run our supported actions
+        if config_step:
+            runstep(config_step, "--fresh")
 
-    def get_gild(s):
-        gild = None
-        cmd = yamlrep(s)
-        flag = 0
-        for c in cmd:
-            if flag: 
-                gild = os.path.normpath(c)
-                break
-            if c == ">": 
-                flag = 1
-        if gild:
-            gild = os.path.relpath(gild, os.path.abspath(build_dir))
-        return gild
+        elif build_step:
+            sbuild = runstep(build_step, "--clean-first")
+            target = gettarget(sbuild)
+            assert(target)
 
-    for d in dsteps:
+        elif run_step:
+            expected = runstep(run_step)
 
-        print("Updating gilds for", name, d.get("device"))
+            if gilded:
+                gild = get_gild(run_step.get("run"))
 
-        config_step = d.get("config")
-        build_step = d.get("build")
-        run_step = d.get("run")
+                # Fix windows line endings
+                expected = re.sub("\r\n", "\n", expected)
 
-        runstep(config_step, "--fresh")
-        sbuild = runstep(build_step, "--clean-first")
-        target = gettarget(sbuild)
-        assert(target)
-        expected = runstep(run_step)
-
-        if gilded:
-            gild = get_gild(run_step.get("run"))
-            print(gild)
-
-            # Fix windows line endings
-            expected = re.sub("\r\n", "\n", expected)
-
-            print("Updating gild file:", os.path.join("gilds", gild))
+                print("Updating gild file:", os.path.join("gilds", gild))
+                
+                with open(os.path.join("gilds", gild), "w") as g:
+                    g.write(expected)
             
-            with open(os.path.join("gilds", gild), "w") as g:
-                g.write(expected)
-        
-        print("Done")
+    print("Done")
