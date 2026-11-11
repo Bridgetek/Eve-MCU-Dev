@@ -384,6 +384,27 @@ sound_enable();
 sound_click();
 ```
 
+#### sound_set_volume
+
+Enable sound generation from the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_set_volume(uint8_t volume)`
+
+_Parameters:_
+
+-  **volume**: 0-255 vlalue representing the synthesizer playback volume.
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_set_volume(127); // set 50% volume
+```
+
 #### sound_is_playing
 
 Dtermine whether the EVE audio synthesizer is playing a sound.
@@ -432,6 +453,27 @@ sound_enable();
 sound_click();
 while (sound_is_playing()) {};
 sound_mute();
+```
+
+#### sound_silence
+
+Play silence with the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_silence(void);`
+
+_Parameters:_
+
+-  N/A
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_silence();
 ```
 
 #### sound_play
