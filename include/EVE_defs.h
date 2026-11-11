@@ -161,6 +161,58 @@
 //@}
 
 /**
+ * @brief Definitions for transfer methods for co-processor lists.
+ * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
+ *      or enable the INT# line to be used when REG_CMD_WRITE method
+ *      is being used. See the "Command FIFO" section in the Programming
+ *      Guides for details of the differences. The "Interrupts" section
+ *      in the Data Sheets explains the use of the INT# line.
+ *      The EVE_COPRO_INT option is not permissible with the
+ *      EVE_COPRO_CMDB_WRITE setting and will be ignored.
+ */
+//@{
+// Use REG_CMDB_WRITE to add data to the co-processor command buffer.
+// Supported on EVE2 onwards.
+#define EVE_COPRO_CMDB_WRITE     0
+// Write directly to the co-processor circular buffer and update REG_CMD_WRITE.
+#define EVE_COPRO_CMD_WRITE      1
+// Use the INT# line to detect completion of the co-processor command list.
+// Uses the EVE_COPRO_CMD_WRITE method.
+#define EVE_COPRO_INT            3
+//@}
+
+/**
+ * @brief SPI interface width definitions.
+ * @details Defines the supported EVE SPI bus widths used when configuring
+ *      the host and EVE interfaces. Single and quad channel modes are used
+ *      by the library. Dual channel mode is defined for completeness but is
+ *      not currently used by the library.
+ */
+//@{
+#define EVE_SPI_SINGLE_CHANNEL    0x00
+#define EVE_SPI_DUAL_CHANNEL      0x01
+#define EVE_SPI_QUAD_CHANNEL      0x02
+//@}
+
+/**
+ * @brief Definitions for capacitive touch controller I2C addresses and types. (type is BT82X only).
+ *
+ * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
+ */
+//@{
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
+#define TOUCH_TYPE_GOODIX 2
+#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
+#define TOUCH_TYPE_ILITEK 4
+#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
+#define TOUCH_TYPE_SITRONIX 6
+#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
+#define TOUCH_TYPE_EETI 7
+//@}
+
+/**
  * @brief RAM_G size options for BT82X only
  * @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
  */
@@ -202,55 +254,13 @@
 //@}
 
 /**
- * @brief Definitions for capacitive touch controller I2C addresses and types.(type is BT82X only).
- *
- * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
+ * @brief BT82x scanout format definitions.
+ * @details Supported formats for EVE_REG_SO_FORMAT, see Table 12 of BRT_AN_086.
  */
 //@{
-#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
-#define TOUCH_TYPE_FOCALTECH 1
-#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
-#define TOUCH_TYPE_GOODIX 2
-#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
-#define TOUCH_TYPE_ILITEK 4
-#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
-#define TOUCH_TYPE_SITRONIX 6
-#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
-#define TOUCH_TYPE_EETI 7
-//@}
-
-/**
- * @brief Definitions for transfer methods for co-processor lists.
- * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
- *      or enable the INT# line to be used when REG_CMD_WRITE method
- *      is being used. See the "Command FIFO" section in the Programming
- *      Guides for details of the differences. The "Interrupts" section
- *      in the Data Sheets explains the use of the INT# line.
- *      The EVE_COPRO_INT option is not permissible with the
- *      EVE_COPRO_CMDB_WRITE setting and will be ignored.
- */
-//@{
-// Use REG_CMDB_WRITE to add data to the co-processor command buffer.
-// Supported on EVE2 onwards.
-#define EVE_COPRO_CMDB_WRITE     0
-// Write directly to the co-processor circular buffer and update REG_CMD_WRITE.
-#define EVE_COPRO_CMD_WRITE      1
-// Use the INT# line to detect completion of the co-processor command list.
-// Uses the EVE_COPRO_CMD_WRITE method.
-#define EVE_COPRO_INT            3
-//@}
-
-/**
- * @brief SPI interface width definitions.
- * @details Defines the supported EVE SPI bus widths used when configuring
- *      the host and EVE interfaces. Single and quad channel modes are used
- *      by the library. Dual channel mode is defined for completeness but is
- *      not currently used by the library.
- */
-//@{
-#define EVE_SPI_SINGLE_CHANNEL    0x00
-#define EVE_SPI_DUAL_CHANNEL      0x01
-#define EVE_SPI_QUAD_CHANNEL      0x02
+#define EVE_SO_FORMAT_RGB6   0x16UL
+#define EVE_SO_FORMAT_RGB8   0x13UL
+#define EVE_SO_FORMAT_YCBCR  0x1CUL
 //@}
 
 #endif /* _EVE_DEFS_H */
