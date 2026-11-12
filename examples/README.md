@@ -16,6 +16,7 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\BeagleBone` Platform specific files for the BeagleBone.
 - `\examples\<demo>\emulator` MCU specific files for the EVE_Emulator.
 - `\examples\<demo>\ESP32` MCU specific files for the ESP32.
+- `\examples\<demo>\infineon-eclipse` MCU specific files for the Infineon PS0C6.
 - `\examples\<demo>\ft900` MCU specific files for the Bridgetek FT9xx.
 - `\examples\<demo>\libft4222` MCU specific files for FT4222H interface.
 - `\examples\<demo>\libmpsse` MCU specific files for MPSSE interface.
@@ -147,23 +148,24 @@ Some projects are supplied with Visual Studio solutions.
 
 The following platforms support the following build methods:
 
-| Port Name                  | CMake    | VS Code   | Visual Studio | STM32CubeIDE  | uVision | Ti CCS | Arduino IDE   |
-| ---                        | ---      | ---       | ---           | ---           | ---     | ---    | ---           |
-| Arduino                    | No       | No        | No            | No            | No      | No     | Yes           |
-| BeagleBone                 | Yes      | Yes _2_   | No _2_        | No            | No      | No     | No            |
-| Expressif ESP32            | Yes      | Yes       | No            | No            | No      | No     | No            |
-| Bridgetek FT9xx            | Yes      | Yes       | No            | No            | No      | No     | No            |
-| TI MSP430                  | No       | No        | No            | No            | No      | Yes    | No            |
-| TI MSPM0                   | No       | No        | No            | No            | No      | Yes    | No            |
-| Microchip PIC18F           | No       | Yes       | No            | No            | No      | No     | No            |
-| NXP K64                    | No       | Yes _1_   | No            | No            | No      | No     | No            |
-| Raspberry Pi               | Yes      | Yes _2_   | No _2_        | No            | No      | No     | No            |
-| **Raspberry Pi Pico**          | Yes      | Yes       | No            | No            | No      | No     | No            |
-| ST STM32 (Keil)            | No       | No        | No            | No            | Yes     | No     | No            |
-| ST STM32Cube               | Yes      | Yes       | No            | Yes           | No      | No     | No            |
-| Generic using libMPSSE     | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
-| **Generic using libFT4222**    | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
-| **Generic using EVE Emulator** | Yes      | Yes _2_   | Yes _2_       | No            | No      | No     | No            |
+| Port Name                  | CMake    | VS Code       | Visual Studio | STM32CubeIDE  | uVision | Ti CCS | Arduino IDE   | Eclipse IDE    |
+| ---                        | ---      | ---           | ---           | ---           | ---     | ---    | ---           | ---            |           
+| Arduino                    | No       | No            | No            | No            | No      | No     | **Yes**       | No             |
+| BeagleBone                 | **Yes**  | **Yes** _2_   | No _2_        | No            | No      | No     | No            | No             |
+| Expressif ESP32            | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| Bridgetek FT9xx            | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| Infineon PS0C6             | No       | No            | No            | No            | No      | No     | No            | **Yes**        | 
+| TI MSP430                  | No       | No            | No            | No            | No      | **Yes**| No            | No             |
+| TI MSPM0                   | No       | No            | No            | No            | No      | **Yes**| No            | No             |
+| Microchip PIC18F           | No       | **Yes**       | No            | No            | No      | No     | No            | No             |
+| NXP K64                    | No       | **Yes** _1_   | No            | No            | No      | No     | No            | No             |
+| Raspberry Pi               | **Yes**  | **Yes** _2_   | No _2_        | No            | No      | No     | No            | No             |
+| **Raspberry Pi Pico**      | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| ST STM32 (Keil)            | No       | No            | No            | No            | **Yes** | No     | No            | No             |
+| ST STM32Cube               | **Yes**  | **Yes**       | No            | **Yes**       | No      | No     | No            | No             |
+| Generic using libMPSSE     | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
+| **Generic using libFT4222**    | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
+| **Generic using EVE Emulator** | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
 
 * _1_ - The MCUXpresso for VS Code extension needs to be installed. The workspace file is not included for examples in this library.
 * _2_ - Support is generic CMake file support in VS Code and Visual Studio.
