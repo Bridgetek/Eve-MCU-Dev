@@ -11,11 +11,11 @@
         <listEntry value="4"/>
     </listAttribute>
     <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-        <mapEntry key="CY_COMPILER_GCC_ARM_DIR" value="${mtb_gcc_arm_path_buildvar__e0b11913-cd8f-4344-ae7e-6ca6c4e89594}"/>
-        <mapEntry key="CY_COMPILER_IAR_DIR" value="${mtb_iar_path_buildvar__e0b11913-cd8f-4344-ae7e-6ca6c4e89594}"/>
-        <mapEntry key="CY_COMPILER_LLVM_ARM_DIR" value="${mtb_llvm_arm_path_buildvar__e0b11913-cd8f-4344-ae7e-6ca6c4e89594}"/>
+        <mapEntry key="CY_COMPILER_GCC_ARM_DIR" value="${mtb_gcc_arm_path_buildvar__36d4944d-438b-4001-bb4c-6082ce950316}"/>
+        <mapEntry key="CY_COMPILER_IAR_DIR" value="${mtb_iar_path_buildvar__36d4944d-438b-4001-bb4c-6082ce950316}"/>
+        <mapEntry key="CY_COMPILER_LLVM_ARM_DIR" value="${mtb_llvm_arm_path_buildvar__36d4944d-438b-4001-bb4c-6082ce950316}"/>
         <mapEntry key="CY_TOOLS_PATHS" value="${mtb_tools_path_buildvar__36d4944d-438b-4001-bb4c-6082ce950316}"/>
-        <mapEntry key="MTB_JLINK_DIR" value="${mtb_jlink_path_buildvar__e0b11913-cd8f-4344-ae7e-6ca6c4e89594}"/>
+        <mapEntry key="MTB_JLINK_DIR" value="${mtb_jlink_path_buildvar__36d4944d-438b-4001-bb4c-6082ce950316}"/>
         <mapEntry key="PATH" value="${cy_tools_path:modus-shell}/bin:${env_var:PATH}"/>
     </mapAttribute>
     <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
