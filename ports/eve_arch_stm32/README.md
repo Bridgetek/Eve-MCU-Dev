@@ -161,16 +161,18 @@ Both MCUs have two SPI master interface. These are a single channel SPI interfac
 
 Both STM32F0 Discovery modules can be connected via short wires to the corresponding signals of an EVE module. Please reference the Datasheet for more information.
 
-| STM32F0 Discovery Label | I/O Pin | EVE Signal |
-| --- | --- | --- |
-| PB3 | P2 11 | SCK |
-| PB5 | P2 9 | MOSI |
-| PB4 | P2 10 | MISO |
-| PB6 | P2 8 | CS# |
-| PB8 | P2 4 | INT# |
-| PB7 | P2 7 | PD# |
-| 5V | P2 1 | 5V |
-| GND | P2 2 | GND |
+| STM32F0 Discovery Pin | STM32F0 Discovery Label | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- | --- | --- | --- |
+| P 2 11 | PB3 | 1 | 1 | SCK | Brown 🟫 |
+| P 2 9 | PB5 | 4 | 2 | MOSI | Red 🟥 |
+| P2 10 | PB4 | 3 | 3 | MISO | Orange 🟧 |
+| P2 8 | PB6 | 2 | 4 | CS# | Yellow 🟨 |
+| P2 4 | PB8 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| P2 7 | PB7 | 13 | 6 | PD# | Blue 🟦 |
+| P2 1 | 5V | 10 | 7 | 5V | Purple 🟪 |
+| P2 2 | GND | 11/12 | 9/10 | GND | Black ⬛ |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
 
 Ensure that the power supply from the STM32F0 Discovery module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the STM32F0 Discovery and EVE modules common to both power sources.
 
@@ -184,15 +186,18 @@ The MiniSTM32H7xx module can be connected to an EVE module using either short wi
 
 If that board is not available then jumper wires can be used. Please reference the MiniSTM32H7xx Datasheet for more information.
 
-| MiniSTM32H7xx Label | I/O Pin | EVE Signal |
-| --- | --- | --- |
-| PB3 | P1 11 | SCK |
-| PB5 | P1 9 | MOSI |
-| PB4 | P1 10 | MISO |
-| PB6 | P1 8 | CS# |
-| PB7 | P1 12 | PD# |
-| 5V | P1 2 | 5V |
-| GND | P1 1 | GND |
+| MiniSTM32H7xx Pin | MiniSTM32H7xx Label | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- | --- | --- | --- |
+| P1 11 | PB3 | 1 | 1 | SCK | Brown 🟫 |
+| P1 9 | PB5 | 4 | 2 | MOSI | Red 🟥 |
+| P1 10 | PB4 | 3 | 3 | MISO | Orange 🟧 |
+| P1 8 | PB6 | 2 | 4 | CS# | Yellow 🟨 |
+| N/A | PB8 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| P1 12 | PB7 | 13 | 6 | PD# | Blue 🟦 |
+| P2 2 | 5V | 10 | 7 | 5V | Purple 🟪 |
+| P2 1 | GND | 11/12 | 9/10 | GND | Black ⬛ |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. The INT# pin has not been tested on this module.
 
 Ensure that the power supply from the MiniSTM32H7xx module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the MiniSTM32H7xx and EVE modules common to both power sources.
 
@@ -251,15 +256,18 @@ The MCU has two SPI master interface. These are a single channel SPI interface. 
 
 The discovery module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Datasheet for more information.
 
-| STM32F0 Discovery Label | I/O Pin | EVE Signal |
-| --- | --- | --- |
-| PB3 | P2 11 | SCK |
-| PB5 | P2 9 | MOSI |
-| PB4 | P2 10 | MISO |
-| PB6 | P2 8 | CS# |
-| PB7 | P2 7 | PD# |
-| 5V | P2 1 | 5V |
-| GND | P2 2 | GND |
+| STM32F0308-DISCO Pin | STM32F0308-DISCO Label | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
+| --- | --- | --- | --- | --- | --- |
+| P2 11 | PB3 | 1 | 1 | SCK | Brown 🟫 |
+| P2 9 | PB5 | 4 | 2 | MOSI | Red 🟥 |
+| P2 10 | PB4 | 3 | 3 | MISO | Orange 🟧 |
+| P2 8 | PB6 | 2 | 4 | CS# | Yellow 🟨 |
+| P2 4 | PB8 | 14 | 5 | INT# _(1)_ | Green 🟩 |
+| P2 7 | PB7 | 13 | 6 | PD# | Blue 🟦 |
+| P2 1 | 5V | 10 | 7 | 5V | Purple 🟪 |
+| P2 2 | GND | 11/12 | 9/10 | GND | Black ⬛ |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. 
 
 Ensure that the power supply from the STM32F0 Discovery module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the STM32F0 Discovery and EVE modules common to both power sources.
 
