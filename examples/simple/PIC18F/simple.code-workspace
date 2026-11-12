@@ -30,6 +30,35 @@
 		],
 		"mplab.clangd.compileCommandsDir": "${workspaceFolder}/_build/PIC18F46K22/default",
 		"mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v3.10\\bin\\xc8-clangd.exe",
-		"C_Cpp.intelliSenseEngine": "disabled"
+		"mplab.ioview.columnHeaders": {
+			"PIC18F46K22-default": [
+				"Name",
+				"Address",
+				"Description",
+				"Decimal",
+				"Value",
+				"Bits"
+			]
+		},
+		"mplab.ioview.columnWidths": {
+			"PIC18F46K22-default": [
+				255,
+				100,
+				100,
+				100,
+				100,
+				600
+			]
+		},
+		"mplab.ioview.taggedNodes": {
+			"PIC18F46K22-default": []
+		},
+		"memory-inspector.debugTypes": [
+			"arm-debugger",
+			"embedded-debug",
+			"gdb",
+			"gdbtarget",
+			"mplab-core-da"
+		]
 	}
 }
