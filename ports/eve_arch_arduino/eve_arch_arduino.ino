@@ -144,13 +144,11 @@ int MCU_SetSPIMode(uint8_t mode)
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void) {
   digitalWrite(PIN_CHIPSELECT, LOW);  
-  delayMicroseconds(10);
 }
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void) {
   digitalWrite(PIN_CHIPSELECT, HIGH);  // disable CS#
-  delayMicroseconds(10);
 }
 
 // -------------------------- PD line low --------------------------------------
