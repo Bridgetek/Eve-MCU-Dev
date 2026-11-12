@@ -19,7 +19,7 @@ CY_TOOLS_PATHS+=C:/Users/gordon.mcnab/ModusToolbox/tools_3.9
 
 
 # This project sits at examples/simple/infineon-eclipse in the EVE library tree.
-EVE_ROOT=../../..
+EVE_ROOT=../../../..
 
 SOURCES+=source/main.c
 SOURCES+=$(EVE_ROOT)/examples/simple/common/eve_example.c

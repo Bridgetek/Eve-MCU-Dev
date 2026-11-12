@@ -109,6 +109,11 @@ void MCU_PDhigh(void)
     cyhal_gpio_write(EVE_PSOC6_PD_PIN, true);
 }
 
+int MCU_Int(void)
+{
+    return cyhal_gpio_read(EVE_PSOC6_INT_PIN);
+}
+
 void MCU_Delay_20ms(void)
 {
     cyhal_system_delay_ms(20U);
