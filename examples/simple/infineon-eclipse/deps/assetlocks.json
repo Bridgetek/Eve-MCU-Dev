@@ -1,0 +1,30 @@
+[
+    {
+        "asset-name": "bt-fw-mur-cyw43439",
+        "locked-commit": "release-v1.0.0"
+    },
+    {
+        "asset-name": "cat1cm0p",
+        "locked-commit": "release-v1.11.0"
+    },
+    {
+        "asset-name": "cmsis",
+        "locked-commit": "release-v6.1.0"
+    },
+    {
+        "asset-name": "core-make",
+        "locked-commit": "release-v3.10.0"
+    },
+    {
+        "asset-name": "device-db",
+        "locked-commit": "release-v4.38.0"
+    },
+    {
+        "asset-name": "mtb-pdl-cat1",
+        "locked-commit": "release-v3.23.0"
+    },
+    {
+        "asset-name": "recipe-make-cat1a",
+        "locked-commit": "release-v2.8.0"
+    }
+]

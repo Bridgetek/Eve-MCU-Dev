@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "settings": {
+    "mtb-tools-version": "3.9.0.18765",
+    "toolchain-version-GCC_ARM": "14.2.1.265",
+    "jlink-version": "9.76.0.1"
+  }
+}

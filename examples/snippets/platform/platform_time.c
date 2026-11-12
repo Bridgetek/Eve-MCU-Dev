@@ -143,6 +143,15 @@ uint32_t platform_get_time(void)
     return esp_timer_get_time() / 1000;
 }
 
+#elif defined(PLATFORM_INFINEON_PSOC6)
+
+extern uint32_t MCU_Time_ms(void);
+
+uint32_t platform_get_time(void)
+{
+    return MCU_Time_ms();
+}
+
 #else
 
 // Unsupported time on platform

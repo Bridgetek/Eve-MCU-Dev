@@ -1,0 +1,7 @@
+build/
+libs/
+mtb_shared/
+*.hex
+*.elf
+*.map
+.settings/
