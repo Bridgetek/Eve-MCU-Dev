@@ -2522,7 +2522,7 @@ static void checkTouchStatus(void)
     }
 
     // if the current tag value equals mode button 2 tag && mode_button_2_press is false
-    if ((TagVal == mode_button_2_tag) && (!mode_button_1_press)) {
+    if ((TagVal == mode_button_2_tag) && (!mode_button_2_press)) {
         // set mode button 2 press to true
         mode_button_2_press = true;
         // flag that we want to update the screen
@@ -2541,6 +2541,7 @@ static void checkTouchStatus(void)
         //reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
+     
         // flip boolean state for mode button 1 press
         mode_button_1_press = !mode_button_1_press;
 
@@ -2562,7 +2563,7 @@ static void checkTouchStatus(void)
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
-        // flip boolean state for mode button 1 press
+        // flip boolean state for mode button 2 press
         mode_button_2_press = !mode_button_2_press;
 
         // flip demo mode variable
