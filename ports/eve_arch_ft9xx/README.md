@@ -4,9 +4,23 @@
 
 The port for FT9XX comprises the MCU connected to the EVE device via the SPI bus. The FT9XX device manages the EVE device SPI bus. Both the FT90X and FT93X range of devices are supported.
 
+## Requirements 
+
+| Requirement | Details | 
+| --- | --- | 
+| Host operating system | Windows/Linux |
+| Application architecture | ft32-elf |
+| Build environment | VSCode with Bridgetek FT9xx, CMake-compatible toolchain | 
+| Platform definition | `PLATFORM_FT9XX` |
+| Other | None |
+
 ## Hardware
 
-The FT9XX port was developed using a board from the MM900EV1B series along with the UMFTPD2A debug and programming module. The MM900EVxB modules can be attached directly to the rear of some modules (such as ME812A-WH50R, ME813A-WH50C, ME817EV modules and MM930Lite) or be connected via short wires to the corresponding signals if using a different EVE module.
+The FT9XX port was developed using a board from the MM900EV1B series along with the UMFTPD2A debug and programming module. 
+
+#### Connection to EVE
+
+The MM900EVxB modules can be attached directly to the rear of some modules (such as ME812A-WH50R, ME813A-WH50C, ME817EV modules and MM930Lite) or be connected via short wires to the corresponding signals if using a different EVE module.
 
 | FT90X Pin | FT93X Pin | MM900EVxB Name | MM900EVxB Pin | EVE Signal |
 | --- | --- | --- | --- | --- |
@@ -27,13 +41,41 @@ An MM930Lite board can be connected to an EVE board using the through board conn
 
 ![MM930Lite Wiring Picture](../../docs/mm930lite.png)
 
-## SPI Transfer Frequency
+## SPI
 
 The following table shows the SPI transfer frequencies for the FT9xx port:
 
 | Initialisation Phase | Runtime |
 | --- | --- |
 | 12.5 MHz | 12.5 MHz |
+
+The EVE PD# and CS# pins are controlled by software using GPIOs.The CS# and PD# pins are setup as GPIO output pins with a "Low" output and no pull ups or pull downs, as they are controlled by software. 
+
+The INT# pin is setup as a GPIO input with no pull ups or pull downs.
+
+## Files
+
+| File | Function |
+| --- | --- |
+| [EVE_MCU_FT9XX.c](EVE_MCU_FT9XX.c) | MCU layer interface for interface setup, higher level read/writes, endian conversions, PD# pin control, INT# detection. |
+
+## Compilation
+
+The "platform" macro `PLATFORM_FT9XX` must be set to enable this port. All other platform macros must be undefined.
+
+For example in the compiler command line the following would be a parameter to the compiler to select the Beaglebone port.
+
+```console
+-DPLATFORM_FT9XX
+```
+
+In a CMake recipe the compile definition would be:
+
+```cmake
+add_compile_definitions(PLATFORM_FT9XX)
+```
+
+The CMake recipes for FT9XX are a unique format so there is no recipe to include for this port.
 
 ## Software
 

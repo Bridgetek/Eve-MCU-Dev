@@ -4,14 +4,22 @@
 
 The port for ESP32 comprises the MCU connected to the EVE device via the SPI bus. The ESP32 device manages the EVE device SPI bus. 
 
-This port is selected with the `PLATFORM_ESP32` macro.
+## Requirements 
+
+| Requirement | Details | 
+| --- | --- | 
+| Host operating system | Windows/Linux |
+| Application architecture | xtensa-esp32-elf, xtensa-esp32s2-elf, riscv32-esp-elf |
+| Build environment | VSCode with ESP-IDF, CMake-compatible toolchain | 
+| Platform definition | `PLATFORM_ESP32` |
+| Other | ESP-SDK |
 
 ## Hardware
 
 The ESP32 port was developed using a [ESP32 Thing](https://www.sparkfun.com/products/13907) from SparkFun and a [ESP32-DevKitC](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/index.html) from Espressif.
 
 Other ESP32 variations may required different pin numbers and SPI busses to be used. 
-These settings and the example workspaces for ESP-IDF are for the ESP32 (Tensilica LX6 microprocessor). 
+These settings and the example workspaces for ESP-IDF use the ESP-SDK to interface with Xtensa and RISK-V versions of the ESP32.
 
 If other variants of the ESP32 are to be used then the differences can be added in the top of the `EVE_MCU_ESP32.c` file or additional files for different types created.
 
@@ -19,6 +27,8 @@ If other variants of the ESP32 are to be used then the differences can be added 
 
 The ESP32 Thing module can be connected via short wires to the corresponding signals of an EVE module. 
 Please reference the [ESP32 Hookup Guide](https://learn.sparkfun.com/tutorials/esp32-thing-hookup-guide).
+
+#### Connection to EVE
 
 The following picture is of a ESP32 Thing module connected using the wire colours in [Module Connections](../../README.md#module-connections).
 
@@ -48,6 +58,8 @@ Ensure that the power supply from the ESP32 Thing module is capable of also powe
 The ESP32-DevKitC module can be connected via short wires to the corresponding signals of an EVE module. 
 Please reference the [ESP32-DevKitC User Guide](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html).
 
+#### Connection to EVE
+
 The following picture is of a ESP32-DevKitC module connected using the wire colours in [Module Connections](../../README.md#module-connections).
 
 ![ESP32-DevKitC Wiring Picture](../../docs/esp32-devkitc.png)
@@ -70,7 +82,7 @@ The pin connections for ESP32-DevKitC modules is as follows for the 2x8 and 1x10
 
 Ensure that the power supply from the ESP32-DevKitC module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the ESP32-DevKitC and EVE modules common to both power sources.
 
-## SPI Transfer Frequency
+## SPI
 
 The following table shows the SPI transfer frequencies for the ESP32:
 
@@ -81,11 +93,49 @@ The following table shows the SPI transfer frequencies for the ESP32:
 The ESP32 Thing has a (deprecated) 26 MHz crystal. 
 If this device is used then the default monitor baud rate is 74880 baud rather than 115200 baud with an ESP32 with the currently supported 40 MHz crystal.
 
-## Sotfware (ESP-IDF)
+The EVE PD# and CS# pins are controlled by software using GPIOs.The CS# and PD# pins are setup as GPIO output pins with a "Low" output and no pull ups or pull downs, as they are controlled by software. 
+
+The INT# pin is setup as a GPIO input with no pull ups or pull downs.
+
+## Files
+
+| File | Function |
+| --- | --- |
+| [EVE_MCU_ESP32.c](EVE_MCU_ESP32.c) | MCU layer interface for interface setup, higher level read/writes, endian conversions, PD# pin control, INT# detection. |
+| [component.mk](component.mk) | Component file to include EVE-MCU-Dev in an ESP-IDF project. |
+| [CMakeLists.txt](CMakeLists.txt) | CMake file included as a component in an ESP-IDF project. |
+| [byteswap.h](byteswap.h) | Local version of byteswap routines to correct endianness in the port. |
+| [endian.h](endian.h) | Local version of endian detection routines to correct endianness in the port. |
+
+## Compilation
+
+The "platform" macro `PLATFORM_ESP32` must be set to enable this port. All other platform macros must be undefined.
+
+For example in the compiler command line the following would be a parameter to the compiler to select the Beaglebone port.
+
+```console
+-DPLATFORM_ESP32
+```
+
+In a CMake recipe the compile definition would be:
+
+```cmake
+add_compile_definitions(PLATFORM_ESP32)
+```
+
+A sample CMake recipe and ESP-IDF component file is included which can be used in a project to add ESP32 to an ESP-IDF project. 
+
+## Software (ESP-IDF)
 
 The example code is not written to support the multi-tasking environment in the FreeRTOS environment on which the ESP32 code is run.
-If the Task Watchdog Timer is enabled in the configuration then the watchdog may cause the application to reset. 
-Ensure that this is turned off.
+If the Task Watchdog Timer is enabled in the configuration then the watchdog may cause the application to reset. Ensure that this is turned off.
+
 - In the `sdkconfig` file by setting the line containing `CONFIG_ESP_TASK_WDT_EN` to `# CONFIG_ESP_TASK_WDT_EN is not set`.
 - Using the "SDK Configuration editor" page in Visual Studio Code locate "Component config" and "ESP System Settings". Uncheck the box for Enable Task Watchdog Timer.
+
   ![ESP32 SDK Configuration editor Task Watchdog Timer](../../docs/esp32_configuration_twt.png)
+
+
+## Example Software
+
+Please refer to the [ESP32 Simple example](../../examples/simple/esp32/README.md) for instructions on using the port in an EVE-MCU-Dev project.

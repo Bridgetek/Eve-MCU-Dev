@@ -5,6 +5,7 @@
 The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because the **EVE_Emulator** library is not currently distributed for Linux.
 
 ## Requirements 
+
 | Requirement | Details | 
 | --- | --- | 
 | Host operating system | Windows |
@@ -12,6 +13,46 @@ The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host
 | Emulator library | Bridgetek **EVE_Emulator** |
 | Build environment | Visual Studio or a CMake-compatible toolchain | 
 | Platform definition | `PLATFORM_EMULATOR` |
+
+## Software
+
+### Enabling the Emulator Port
+
+The `PLATFORM_EMULATOR` macro enables an EVE-MCU-Dev application to use the `EVE Emulator` port.
+
+If the emulator's interrupt line is to be used to detect the completion of a co-processor list then the `EVE_COPRO_METHOD` macro can be set to `EVE_COPRO_INT`.
+
+## Files
+
+| File | Function |
+| --- | --- |
+| [EVE_emulator.c](EVE_emulator.c) | MCU layer interface for interface setup, higher level read/writes, endian conversions, PD# pin control, INT# detection. |
+| [emulator.cmake](emulator.cmake) | CMake recipe suitable for including in an application CMakeLists.txt file to include the Emulator in a project. |
+| [EVE_Emulator/](EVE_Emulator) | Directory containing EVE Emulator libraries for Windows. |
+
+## Compilation
+
+The "platform" macro `PLATFORM_EMULATOR` must be set to enable this port. All other platform macros must be undefined.
+
+For example in the compiler command line the following would be a parameter to the compiler to select the Emulator.
+
+```bash
+-DPLATFORM_EMULATOR
+```
+
+In a CMake recipe the compile definition would be:
+
+```cmake
+add_compile_definitions(PLATFORM_EMULATOR)
+```
+
+A sample CMake recipe is included which can be used in a project to add the Emulator functionality. The selected toolchain must generate a 64-bit Windows application to be compatible with the EVE Emulator libraries.
+
+For Visual Studio this can be set in "Project Properties" -> "Configuration Properties" -> "C/C++" -> "Preprocessor" -> "Preprocessor Definitions":
+
+![PLATFORM_EMULATOR Setting in Visual Studio](../../docs/vs_emulator.png)
+
+Ensure that the project is configured to build for the `x64` platform.
 
 ## Installing the EVE Emulator Library 
 
@@ -43,52 +84,6 @@ ports/eve_emulator/EVE_Emulator
 
 The emulator header files, import library, and runtime DLLs should all be taken from the same **EVE_Emulator** revision. Mixing files from different releases may cause build or runtime compatibility problems.
 
-
-## Using the EVE Emulator in EVE-MCU-Dev Projects
-
-### Enabling the Emulator Port
-
-The `PLATFORM_EMULATOR` macro enables an EVE-MCU-Dev application to use the `EVE Emulator` port.
-
-If the emulator's interrupt line is to be used to detect the completion of a co-processor list then the `EVE_COPRO_METHOD` macro can be set to `EVE_COPRO_INT`.
-
-#### Visual Studio
-
-In Visual Studio, add the following definition under:
-
-```text
-Project Properties
-    -> Configuration Properties
-    -> C/C++
-    -> Preprocessor
-    -> Preprocessor Definitions
-```
-
-```text
-PLATFORM_EMULATOR
-```
-
-Ensure that the project is configured to build for the `x64` platform.
-
-#### CMake
-
-Add the following definition to the project's `CMakeLists.txt` file:
-
-```cmake
-# Use the EVE Emulator platform port.
-add_compile_definitions(PLATFORM_EMULATOR)
-```
-
-#### GCC or MinGW
-
-Add the following compiler definition:
-
-```console
--DPLATFORM_EMULATOR
-```
-
-The selected GCC or MinGW toolchain must generate a 64-bit Windows application.
-
 ### Runtime DLLs
 
 The `EVE Emulator` runtime DLLs are supplied in:
@@ -108,72 +103,6 @@ The required DLLs must be available in the same output directory as the applicat
 The provided Visual Studio projects and `CMakeLists.txt` files automatically copy the available DLLs to the executable output directory after the application is built.
 
 In most configurations, `bt8xxemu.dll` is the primary runtime dependency. The additional DLLs are copied so that optional runtime dependencies are also available.
-
-## Visual Studio Projects
-
-The Visual Studio project files for an example are normally located in its:
-
-```text
-emulator/VisualStudio
-```
-
-subdirectory.
-
-Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\x64\{Debug|Release}` folder.
-The application must be built using an `x64` configuration.
-
-When an example application is built in Visual Studio, a post-build event copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
-
-## Command-Line Builds (CMake)
-
-The `CMakeLists.txt` files for an example are normally located in its:
-
-```text
-emulator
-```
-subdirectory.
-
-To configure an example using CMake's default generator:
-
-```console
-cmake -B build -S .
-```
-
-To explicitly select Visual Studio 2022 and the `x64` platform:
-
-```console
-cmake -B build -S . -G "Visual Studio 17 2022" -A x64
-```
-
-To explicitly select MinGW Makefiles:
-
-```console
-cmake -B build -S . -G "MinGW Makefiles"
-```
-
-The selected MinGW installation must support 64-bit Windows applications.
-
-After configuring the project, build it using:
-
-```console
-cmake --build build
-```
-
-For a multi-configuration generator such as Visual Studio, the build configuration can be selected explicitly:
-
-```console
-cmake --build build --config Debug
-```
-
-or:
-
-```console
-cmake --build build --config Release
-```
-
-The executable location depends on the selected generator and build configuration. For example, a Visual Studio build commonly places the executable in `build\Debug` or `build\Release`.
-
-When an example application is built with CMake, a post-build event in the `CMakeLists.txt` file copies `bt8xxemu.dll`, `btflashemu.dll`, and `zlib.dll` to the executable output directory.
 
 ## Flash and SD Card Support
 
@@ -688,3 +617,7 @@ The emulator uses this flag to compensate for display rotation when presenting t
 ## Linux
 
 Linux builds are not supported because the EVE Emulator library is not currently distributed for Linux.
+
+## Example Software
+
+Please refer to the [Emulator Simple example](../../examples/simple/emulator/README.md) for instructions on using the port in an EVE-MCU-Dev project.

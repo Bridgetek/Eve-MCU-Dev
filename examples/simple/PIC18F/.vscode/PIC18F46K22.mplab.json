@@ -13,8 +13,7 @@
             "provider": "microchip.toolchains:xc8@3.10",
             "properties": {
                 "HI-TECH-COMP.define-macros": [
-                    "PLATFORM_PIC",
-                    "MACRO=2"
+                    "PLATFORM_PIC"
                 ],
                 "HI-TECH-COMP.disable-optimizations": false,
                 "HI-TECH-COMP.extra-include-directories": [

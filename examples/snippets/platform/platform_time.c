@@ -143,7 +143,8 @@ uint32_t platform_get_time(void)
     return esp_timer_get_time() / 1000;
 }
 
-#elif defined(PLATFORM_INFINEON_PSOC6) || defined(PLATFORM_PIC)
+#elif defined(PLATFORM_INFINEON_PSOC6) || defined(PLATFORM_PIC) || \
+    defined(PLATFORM_MSP430) || defined(PLATFORM_MSPM0)
 
 /* Use the millisecond counter from the platform port code. */
 /* This is called as an extern to avoid using the MCU.h file. */

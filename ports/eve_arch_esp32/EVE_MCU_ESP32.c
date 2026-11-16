@@ -38,7 +38,7 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect platform or architecture. ESP32 is Xtensa LE based.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_ESP32)
 
 #pragma message "Compiling " __FILE__ " for Espressif ESP32"

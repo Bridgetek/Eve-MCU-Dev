@@ -1,4 +1,4 @@
-# EVE simple example for Infineon PSoC 6 - Eclipse / ModusToolbox 3.8
+# EVE simple example for Infineon PSoC 6 - Eclipse / ModusToolbox 3.9
 
 This is a ModusToolbox 3.x single-core combined application for the
 `CY8CPROTO-062S2-43439`. It communicates with a Bridgetek BT817 over SPI and
@@ -11,11 +11,11 @@ Eclipse for ModusToolbox must generate its own project metadata. Generic CDT
 metadata prevents the ModusToolbox Quick Panel from registering the
 application and hides the application-specific Tools actions.
 
-## First-time setup for Tools Package 3.8
+## First-time setup for Tools Package 3.9
 
 1. Extract the archive to a normal writable directory. Do not work inside the ZIP.
 2. Start **Library Manager** from the Windows Start menu or from the
-   ModusToolbox Tools Package 3.8 installation.
+   ModusToolbox Tools Package 3.9 installation.
 3. In Library Manager, browse to this application directory:
 
    `examples/simple/infineon-eclipse`
@@ -31,7 +31,7 @@ application and hides the application-specific Tools actions.
    make getlibs
    ```
 
-6. Start Eclipse for ModusToolbox 3.8 with a new or clean workspace.
+6. Start Eclipse for ModusToolbox 3.9 with a new or clean workspace.
 7. Use one of these ModusToolbox import commands:
 
    - Quick Panel -> **Import Existing Application In-Place**
@@ -55,16 +55,7 @@ a generic Eclipse project and the ModusToolbox Tools actions will not appear.
 
 ## Default wiring
 
-| EVE signal | CY8CPROTO-062S2-43439 pin |
-|---|---:|
-| MOSI | P9[1] |
-| MISO | P9[0] |
-| SCLK | P9[2] |
-| CS# | P9[4] |
-| PD# | P9[5] |
-| GND | GND |
-
-The pin definitions are in `source/eve_psoc6_config.h`.
+Default pin allocations from the Infineon PSoC6 port are used.
 
 ## Build and program
 
@@ -77,11 +68,11 @@ make program
 
 The default EVE module configuration is `IDM20407A` (BT817, 800 x 480).
 
-## Custom Tools 3.8 installation
+## Custom Tools 3.9 installation
 
-The Makefile searches the normal per-user Tools Package 3.8 location. For a
+The Makefile searches the normal per-user Tools Package 3.9 location. For a
 custom installation, invoke make with a forward-slash path:
 
 ```sh
-make getlibs CY_TOOLS_PATHS=C:/Infineon/ModusToolbox/tools_3.8
+make getlibs CY_TOOLS_PATHS=C:/Infineon/ModusToolbox/tools_3.9
 ```
