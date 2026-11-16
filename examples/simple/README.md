@@ -36,8 +36,8 @@ This example supports the following platforms:
 | [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
 | [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) _(1)_ _(3)_ | 
 | [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) _(2)_ | 
-| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) _(2)_ _(3)_ | 
-| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) _(3)_ | 
+| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) _(2)_ | 
+| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
 | [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
 | [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
