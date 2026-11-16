@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": ""
+    }
+  ],
+  "settings": {},
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "simple_MSP430",
+        "type": "ccs-debug",
+        "request": "launch",
+        "projectInfo": {
+          "name": "simple_MSP430",
+          "resourceId": "/simple_MSP430"
+        }
+      }
+    ]
+  }
+}

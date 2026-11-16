@@ -58,11 +58,31 @@
 #define PD              GPIO_GRP_0_PORT->GPIO_GRP_0_PD_PIN         // Power Down
 #define SCLK            GPIO_SPI_0_SCLK_PORT->GPIO_SPI_0_SCLK_PIN  // SPI clock
 #define CS              GPIO_GRP_0_PORT->GPIO_GRP_0_CS_PIN         // Chip Select
+#define INT             GPIO_GRP_0_PORT->GPIO_GRP_0_INT_PIN        // Interrupt
 #define CPU_FREQ        CPUCLK_FREQ                // for use in delay function
 
 /* EVE MCU HEADER END */
 
 /* EVE MCU */
+
+/* State machine to keep track of the current SPI Controller mode */
+typedef enum SPI_ControllerModeEnum {
+    IDLE_MODE,
+    WRITE_DATA_MODE,
+    READ_DATA_MODE,
+    TIMEOUT_MODE
+} SPI_Controller_Mode;
+
+/* Global used to receive data in the ISR */
+uint8_t gRxVal;
+/* Global used to transmit data in the ISR */
+uint8_t gTxVal;
+
+/* Used to track the state of the software state machine */
+volatile SPI_Controller_Mode gControllerMode = IDLE_MODE;
+
+/* Dummy data sent when receiving data from SPI Peripheral */
+#define DUMMY_DATA (0xFF)
 
 // This is the MSPM0 platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
@@ -136,25 +156,6 @@ int MCU_SetSPIMode(uint8_t mode)
     return -1;
 }
 #endif // defined(EVE_QSPI_ENABLE)
-
-/* State machine to keep track of the current SPI Controller mode */
-typedef enum SPI_ControllerModeEnum {
-    IDLE_MODE,
-    WRITE_DATA_MODE,
-    READ_DATA_MODE,
-    TIMEOUT_MODE
-} SPI_Controller_Mode;
-
-/* Global used to receive data in the ISR */
-uint8_t gRxVal;
-/* Global used to transmit data in the ISR */
-uint8_t gTxVal;
-
-/* Used to track the state of the software state machine */
-volatile SPI_Controller_Mode gControllerMode = IDLE_MODE;
-
-/* Dummy data sent when receiving data from SPI Peripheral */
-#define DUMMY_DATA (0xFF)
 
 void SPI_0_INST_IRQHandler(void)
 {

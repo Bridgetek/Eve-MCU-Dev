@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+/* Only compile this file if it is included in an Arduino sketch or library. */
+#if defined(ARDUINO)
+
 #include <stdint.h>
 
 #include <Arduino.h>
@@ -46,3 +49,5 @@ uint32_t platform_get_time(void)
 {
     return millis();
 }
+
+#endif // defined(ARDUINO)
