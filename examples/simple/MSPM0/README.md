@@ -4,7 +4,7 @@
 
 ## Setting Up the MSPM0 Example on Code Composer Studio v20
 
-The build environment depends on the presence of the CCS v20 IDE. This can be setup following instructions in the [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO) page from the Espressif website.
+The build environment depends on the presence of the CCS v20 IDE. This can be setup following instructions in the [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO) page from the Texas Instruments website.
 
 ## Compiling the Simple MSPM0 Example on Code Composer Studio v20
 
