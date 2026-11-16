@@ -121,7 +121,7 @@ git submodule update --init --recursive
 ```
 
 **Note:** EVE-MCU-Dev currently utilises submodules for USB based host implementations with 
-external driver dependencies; [FT4222][4222-c], [MPSSE][mpsse-c]. A submodule is also 
+external driver dependencies; [FT4222][lib4222-c], [MPSSE][libmpsse-c]. A submodule is also 
 utilised for the [EVE_Emulator][emulator-c] port to obtain the required dependencies.
 
 It is recommended to record the repository commit reference, compiler version, target hardware SDK version, 
@@ -146,9 +146,10 @@ Choose an existing EVE-MCU-Dev port with a similar SDK or peripheral interface a
 The following ports are good starting points:
 
 * The [pico SDK implementation][pico-sdk-c] demonstrates a direct blocking SPI implementation using a hardware SDK in an MCU port.
-* The [STM32Cube SPI implementation][stm32-spi-c] demonstrates another SDK integration in an MCU port. **Remove??**
+* The [Ti MSPM0 implementation][mspm0-spi-c] demonstrates another SDK integration in an MCU port using interrupt driven responses.
+* The [STM32Cube SPI implementation][stm32-spi-c] demonstrates an MCU port supporting both QUADSPI and singlle channel SPI.
 * The [Emulator][emulator-c] demonstrates MCU port using a third party DLL.
-* The [libFT4222][libft4222-c] demonstrates SPI buffering an MCU port using a third party DLL.
+* The [libFT4222][libft4222-c] demonstrates SPI buffering a Platform port using a third party DLL.
 * The [Raspberry Pi][rpi-c] demonstrated using a Linux character device in a Platform port.
 
  From the existing port, copy and rename appropriately, the directory layout in the ports directory. 
@@ -1053,7 +1054,7 @@ The following temporary implementations can be placed in `main.c` or in a separa
 There are hooks for common platforms in the [`example/snippets/platform`][platform-dir] in filenames beginning with `calib`. 
 The file [`example/snippets/platform/calib.h`][platform-calib-h] defines a macro `CALIBRATION_STORAGE` which determines the actions taken in the `calib_*` source files in that directory.
 
-To disable persistent storage undefine the macro `CALIBRATION_STORAGE` and add the file [`example/snippets/platform/calib_none.c`] to the build. This will include the following code:
+To disable persistent storage undefine the macro `CALIBRATION_STORAGE` and add the file [`example/snippets/platform/calib_none.c`][platform-calib-c] to the build. This will include the following code:
 
 ```c
 int8_t platform_calib_init(void)
@@ -1753,19 +1754,21 @@ Additional source-specific references are provided alongside the relevant sectio
 [eve-h]: include/EVE.h
 [api-c]: source/EVE_API.c
 
+[include-d]: include/
 [config-h]: include/EVE_config.h
 [defs-h]: include/EVE_defs.h
 [settings-h]: include/EVE_settings.h
 [debug-h]: include/EVE_debug.h
 
 [pico-sdk-c]: ports/eve_arch_rpi/EVE_MCU_PICO_SDK.c
+[mspm0-spi-c]: ports/eve_arch_msp/EVE_MCU_MSPM0.c
 [stm32-spi-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE_SPI.c
 [stm32-qspi-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE_QUADSPI.c
 [stm32-common-c]: ports/eve_arch_stm32/EVE_MCU_STM32CUBE.c
 [ft9xx-c]: ports/eve_arch_ft9xx/EVE_MCU_FT9XX.c
 [nxp-c]: ports/eve_arch_nxpk64/EVE_MCU_NXP.c
-[4222-c]: ports/eve_libft4222/EVE_libft4222.c
-[mpsse-c]: ports/eve_libmpsse/EVE_libmpsse.c
+[lib4222-c]: ports/eve_libft4222/EVE_libft4222.c
+[libmpsse-c]: ports/eve_libmpsse/EVE_libmpsse.c
 [emulator-c]: ports/eve_emulator/EVE_emulator.c
 
 [examples-cmake]: examples/examples.cmake
@@ -1779,6 +1782,7 @@ Additional source-specific references are provided alongside the relevant sectio
 [touch-c]: examples/snippets/touch.c
 [platform-dir]: examples/snippets/platform/
 [platform-calib-h]: example/snippets/platform/calib.h
+[platform-calib-c]: example/snippets/platform/calib.c
 
 [lcd-h]: include/extensions/lcd_panel_init.h
 [lcd-c]: source/extensions/lcd_panel_init.c
