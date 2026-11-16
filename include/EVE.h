@@ -68,7 +68,7 @@
 #if IS_EVE_API(5)
     // Base patch for BT82x
     #include <extensions/bt82x_patch.h>
-#endif //IS_EVE_API(5)
+#endif // IS_EVE_API(5)
 
 /* EVE API DEFINITIONS */
 
@@ -313,7 +313,7 @@ uint8_t EVE_LIB_GetInterrupt(uint8_t mask);
  */
 uint32_t EVE_LIB_GetResult(int offset);
 
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
 /**
  * @brief EVE API: Get co-processor exception description
  * @details Will query the co-processor exception description to a string.
@@ -323,7 +323,7 @@ uint32_t EVE_LIB_GetResult(int offset);
  *      and must be sufficient to hold 128 characters.
  */
 void EVE_LIB_GetCoProException(char *desc);
-#endif // IS_EVE_API(3, 4, 5)
+#endif // !IS_EVE_API(1, 2)
 
 /**
  * @brief EVE API: Write a buffer to memory mapped RAM
@@ -418,7 +418,7 @@ void EVE_LIB_GetMatrix(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *d, uint3
  */
 void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
 
-#if IS_EVE_API(2, 3, 4, 5)
+#if !IS_EVE_API(1)
 /**
  * @brief EVE API: Computes a bitmap transformation matrix.
  * @details  It computes the transform given three corresponding points in screen space and bitmap space.
@@ -434,9 +434,9 @@ void EVE_LIB_MemCrc(uint32_t ptr, uint32_t num, uint32_t *result);
 void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, 
                               int32_t tx0, int32_t ty0, int32_t tx1, int32_t ty1, int32_t tx2, int32_t ty2,
                               uint32_t *result );
-#endif // IS_EVE_API(2, 3, 4, 5)
+#endif // !IS_EVE_API(1)
 
-#if IS_EVE_API(4, 5)
+#if !IS_EVE_API(1, 2, 3)
 /**
  * @brief EVE API: Get properties of a CMD_LOADIMAGE operation.
  * @details From the last CMD_LOADIMAGE get the address, size, format and palette of the loaded image.
@@ -448,7 +448,7 @@ void EVE_LIB_BitmapTransform( int32_t x0, int32_t y0, int32_t x1, int32_t y1, in
  * @param *palette - pointer to variable to receive the palette of the loaded image.
  */
 void EVE_LIB_GetImage(uint32_t *addr, uint32_t *fmt, uint32_t *width, uint32_t *height, uint32_t *palette);
-#endif // IS_EVE_API(4, 5)
+#endif // !IS_EVE_API(1, 2, 3)
 
 #if IS_EVE_API(5)
 /**
@@ -545,7 +545,7 @@ void EVE_BITMAP_TRANSFORM_D(long d);
 void EVE_BITMAP_TRANSFORM_E(long e);
 void EVE_BITMAP_TRANSFORM_F(long f);
 
-#if IS_EVE_API(2, 3, 4, 5) // FT81x API change
+#if !IS_EVE_API(1) // FT81x API change
 void EVE_VERTEX_FORMAT(uint8_t frac);
 void EVE_BITMAP_LAYOUT_H(uint8_t linestride, uint8_t height);
 void EVE_BITMAP_SIZE_H(uint8_t width, uint8_t height);
@@ -553,19 +553,19 @@ void EVE_PALETTE_SOURCE(uint32_t addr);
 void EVE_VERTEX_TRANSLATE_X(uint32_t x);
 void EVE_VERTEX_TRANSLATE_Y(uint32_t y);
 void EVE_NOP(void);
-#endif // IS_EVE_API(2, 3, 4, 5)
+#endif // !IS_EVE_API(1)
 
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
 void EVE_BITMAP_EXT_FORMAT(uint16_t fmt);
 void EVE_BITMAP_SWIZZLE(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-#endif // IS_EVE_API(3, 4, 5)
+#endif // !IS_EVE_API(1, 2)
 
 #if IS_EVE_API(5) // BT82x extensions
 void EVE_BITMAP_SOURCE_H(uint8_t addr);
 void EVE_BITMAP_ZORDER(uint8_t o);
 void EVE_PALETTE_SOURCE_H(uint8_t addr);
 void EVE_REGION(uint8_t y, uint8_t h, uint16_t dest);
-#endif
+#endif // IS_EVE_API(5)
 
 // Co-Processor Widgets.
 // Common to all generations.
@@ -597,7 +597,7 @@ void EVE_CMD_CALIBRATE(uint32_t result);
 #if IS_EVE_API(1, 2, 3, 4) // BT82x API change
 void EVE_CMD_INFLATE(uint32_t ptr);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr);
-#else // EVE 5
+#else // !IS_EVE_API(1, 2, 3, 4)
 void EVE_CMD_INFLATE(uint32_t ptr, uint32_t options);
 void EVE_CMD_SETFONT(uint32_t font, uint32_t ptr, uint32_t firstchar);
 #endif // IS_EVE_API(1, 2, 3, 4)
@@ -625,7 +625,7 @@ void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t opti
 #if IS_EVE_API(2)
 void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format, uint16_t freq);
 #endif // IS_EVE_API(2)
-#if IS_EVE_API(2, 3, 4, 5)
+#if !IS_EVE_API(1)
 void EVE_CMD_SETROTATE(uint32_t r);
 void EVE_CMD_MEDIAFIFO(uint32_t ptr, uint32_t size);
 void EVE_CMD_SYNC(void);
@@ -636,7 +636,7 @@ void EVE_CMD_VIDEOSTART(void);
 void EVE_CMD_SETBASE(uint32_t base);
 void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h);
 void EVE_CMD_SETSCRATCH(uint32_t handle);
-#endif // IS_EVE_API(2, 3, 4, 5)
+#endif // !IS_EVE_API(1)
 
 #if IS_EVE_API(2, 3, 4) // FT80x, BT82x API change
 void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar);
@@ -650,14 +650,14 @@ void EVE_CMD_INTRAMSHARED(uint32_t ptr);
 void EVE_CMD_VIDEOSTARTF(void);
 #endif // IS_EVE_API(3, 4)
 
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
 void EVE_CMD_ANIMSTART(int32_t ch, uint32_t aoptr, uint32_t loop);
 void EVE_CMD_ANIMSTOP(int32_t ch);
 void EVE_CMD_ANIMXY(int32_t ch, int16_t x, int16_t y);
 void EVE_CMD_ANIMDRAW(int32_t ch);
 void EVE_CMD_ANIMFRAME(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame);
 void EVE_CMD_APPENDF(uint32_t ptr, uint32_t num);
-#endif // IS_EVE_API(3, 4, 5)
+#endif // !IS_EVE_API(1, 2)
 
 #if IS_EVE_API(4)
 void EVE_CMD_ANIMFRAMERAM(int16_t x, int16_t y, uint32_t aoptr, uint32_t frame );
@@ -669,7 +669,7 @@ void EVE_CMD_HSF(uint32_t w );
 void EVE_CMD_PCLKFREQ(uint32_t ftarget, int32_t rounding, uint32_t factual);
 #endif // IS_EVE_API(4)
 
-#if IS_EVE_API(4, 5)
+#if !IS_EVE_API(1, 2, 3)
 void EVE_CMD_RUNANIM(uint32_t waitmask, uint32_t play);
 void EVE_CMD_TESTCARD(void);
 void EVE_CMD_WAIT(uint32_t us);
@@ -677,9 +677,9 @@ void EVE_CMD_NEWLIST(uint32_t a);
 void EVE_CMD_ENDLIST(void);
 void EVE_CMD_CALLLIST(uint32_t a);
 void EVE_CMD_RETURN(void);
-#endif // IS_EVE_API(4, 5)
+#endif // !IS_EVE_API(1, 2, 3)
 
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
 void EVE_CMD_NOP(void);
 void EVE_CMD_FILLWIDTH(uint32_t s); 
 void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s);
@@ -698,12 +698,12 @@ void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num);
 void EVE_CMD_FLASHATTACH(void);
 void EVE_CMD_FLASHDETATCH(void);
 void EVE_CMD_FLASHSPIDESEL(void);
-#endif // IS_EVE_API(3, 4, 5)
+#endif // !IS_EVE_API(1, 2)
 
-#if IS_EVE_API(4, 5)
+#if !IS_EVE_API(1, 2, 3)
 void EVE_CMD_GETIMAGE(uint32_t source, uint32_t fmt, uint32_t w, uint32_t h, uint32_t palette);
 void EVE_CMD_CALIBRATESUB(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t result);
-#endif // IS_EVE_API(4, 5)
+#endif // !IS_EVE_API(1, 2, 3)
 
 #if IS_EVE_API(5)
 void EVE_CMD_COPYLIST(uint32_t dst);

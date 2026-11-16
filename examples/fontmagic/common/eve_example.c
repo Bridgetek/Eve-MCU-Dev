@@ -127,7 +127,7 @@ void cmd_textdraw(int x, int y, struct eve_font_cache *cache, char ch)
 void cmd_textrotate(int x, int y, struct eve_font_cache *cache, char *text)
 {
     // CMD_ROTATEAROUND is only available on BT82x, BT81x.
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
     EVE_SAVE_CONTEXT();
 
     // Setup the font.
