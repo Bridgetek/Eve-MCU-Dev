@@ -46,7 +46,7 @@
 #include <time.h>
 #ifndef _MSC_VER
 #include <sys/time.h>
-#endif
+#endif // _MSC_VER
 
 /** @brief Functions used to get platform time
  */
@@ -93,7 +93,7 @@ static int clock_gettime(int clockname, struct timespec* tv)
 
     return 0;
 }
-#endif
+#endif // _MSC_VER
 
 static void get_platform_time(platform_time_t *tm)
 {
@@ -125,26 +125,11 @@ uint32_t platform_get_time(void)
     return millis();
 }
 
-#elif defined(PLATFORM_PICO_SDK)
-
-#include <pico/time.h>
-
-uint32_t platform_get_time(void)
-{
-    return to_ms_since_boot(get_absolute_time());
-}
-
-#elif defined(PLATFORM_ESP32)
-
-#include "esp_timer.h"
-
-uint32_t platform_get_time(void)
-{
-    return esp_timer_get_time() / 1000;
-}
-
 #elif defined(PLATFORM_INFINEON_PSOC6) || defined(PLATFORM_PIC) || \
-    defined(PLATFORM_MSP430) || defined(PLATFORM_MSPM0)
+    defined(PLATFORM_MSP430) || defined(PLATFORM_MSPM0) || \
+    defined(PLATFORM_STM32) || defined(PLATFORM_STM32_CUBE) || \
+    defined(PLATFORM_FT9XX) || defined(PLATFORM_NXPK64) || \
+    defined(PLATFORM_PICO_SDK) || defined(PLATFORM_ESP32)
 
 /* Use the millisecond counter from the platform port code. */
 /* This is called as an extern to avoid using the MCU.h file. */

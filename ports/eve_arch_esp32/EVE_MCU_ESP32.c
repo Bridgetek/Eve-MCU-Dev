@@ -57,6 +57,7 @@
 /*#include "endian.h"*/
 
 #include "esp_system.h"
+#include "esp_timer.h"
 #include "driver/spi_master.h"
 #include "driver/spi_common.h"
 #include "hal/spi_types.h"
@@ -383,7 +384,7 @@ void MCU_Delay_500ms(void)
 
 uint32_t MCU_Time_ms(void)
 {
-    return xTaskGetTickCount();
+    return esp_timer_get_time() / 1000;
 }
 
 // ESP32 is Little Endian.
