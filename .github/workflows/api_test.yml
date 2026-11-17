@@ -27,7 +27,7 @@ env:
   # Allow a custom build directory
   BUILD_DIR: build
   # Executable program made by the CMake build (location and name depend on compiler)
-  TARGET: boottester
+  TARGET: apitester
 
 jobs:
   build:
@@ -37,11 +37,11 @@ jobs:
       max-parallel: 1
       matrix:
         eve: [ 
-          {name: "FT800/QVGA", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800", gild: "FT800_QVGA.txt" }, 
-          {name: "FT813/WQVGA", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813", gild: "FT813_DP_0431_11A.txt" }, 
-          {name: "BT815/WVGA", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815", gild: "BT815_WVGA.txt" }, 
-          {name: "BT817(IDM2040-7A)", config: "-DEVE_MODULE=EVE_IDM20407A", gild: "BT817_IDM20407A.txt" }, 
-          {name: "BT820/WUXGA", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820", gild: "BT820_WUXGA.txt" }, 
+          {name: "API1/FT800", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800", gild: "api1.txt" }, 
+          {name: "API2/FT813", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813", gild: "api2.txt" }, 
+          {name: "API3/BT815", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815", gild: "api3.txt" }, 
+          {name: "API4/BT817", config: "-DEVE_MODULE=EVE_IDM20407A", gild: "api4.txt" }, 
+          {name: "API5/BT820", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820", gild: "api5.txt" }, 
         ]
     
     # Set the name of the job to include the important information
@@ -55,16 +55,16 @@ jobs:
     # Test using matrix
     - name: Configure CMake
       run: cmake -B ${{env.BUILD_DIR}} -S . -G Ninja ${{matrix.eve.config}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      working-directory: ${{github.workspace}}/test/boottester
+      working-directory: ${{github.workspace}}/test/apitester
 
     - name: Build
       run: cmake --build ${{env.BUILD_DIR}}
-      working-directory: ${{github.workspace}}/test/boottester
+      working-directory: ${{github.workspace}}/test/apitester
 
     - name: Run test 
       run: ./${{env.BUILD_DIR}}/${{env.TARGET}} > ./${{env.BUILD_DIR}}/${{matrix.eve.gild}}
-      working-directory: ${{github.workspace}}/test/boottester
+      working-directory: ${{github.workspace}}/test/apitester
 
     - name: Compare results
       run: diff -s -a -w ./gilds/${{matrix.eve.gild}} ./${{env.BUILD_DIR}}/${{matrix.eve.gild}}
-      working-directory: ${{github.workspace}}/test/boottester
+      working-directory: ${{github.workspace}}/test/apitester

@@ -122,7 +122,16 @@ uint8_t hostcmd[16];
 int doeol = 0;
 int width = 0;
 
-uint16_t write_pointer = 0;
+/* Current offset in the command buffer */
+uint16_t cmd_write_ptr = 0;
+/* Rewind array of command buffer */
+uint32_t cmd_buffer[EVE_RAM_CMD_SIZE/4];
+
+/* Retrieve the command buffer from the simulator (not part of the MCU layer) */
+uint32_t *get_cmd_buffer(void)
+{
+    return cmd_buffer;
+}
 
 char const *get_state()
 {
@@ -224,11 +233,11 @@ uint32_t get_response_32()
     }
     else if (address == EVE_REG_CMD_READ)
     {
-        response = write_pointer;
+        response = cmd_write_ptr;
     }
     else if (address == EVE_REG_CMD_WRITE)
     {
-        response = write_pointer;
+        response = cmd_write_ptr;
     }
     else if (address == EVE_REG_CPURESET)
     {
@@ -644,7 +653,7 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
         SIMULATOR_PRINT_REGISTERS("%04x ", DataToWrite);
         if (address == EVE_REG_CMD_WRITE)
         {
-            write_pointer = DataToWrite;
+            cmd_write_ptr = DataToWrite;
         }
     }
     else
@@ -787,7 +796,7 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
         state = state_write_cont;
         if (address == EVE_REG_CMD_WRITE)
         {
-            write_pointer = DataToWrite;
+            cmd_write_ptr = DataToWrite;
         }
         inc_address(4);
     }
@@ -795,6 +804,10 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
     {
         if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
         {
+            cmd_buffer[cmd_write_ptr/4] = DataToWrite;
+            cmd_write_ptr += 4;
+            if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+            
             SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
             SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
             if (width == 16)
@@ -947,6 +960,10 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             }
             if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
+                cmd_buffer[cmd_write_ptr/4] = val;
+                cmd_write_ptr += 4;
+                if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+
                 if (width == -1)
                 {
                     width = 0;
@@ -1004,6 +1021,10 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
             }
             if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
             {
+                cmd_buffer[cmd_write_ptr/4] = val;
+                cmd_write_ptr += 4;
+                if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+
                 SIMULATOR_PRINT_CMDS("%08x ", val);
                 SIMULATOR_PRINT_RAM_G("%08x ", val);
                 if (width == 16)

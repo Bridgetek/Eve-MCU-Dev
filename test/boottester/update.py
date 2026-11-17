@@ -7,7 +7,7 @@ import yaml
 import subprocess
 
 # Source directories for source files to be copied to sketch
-workflow = os.path.normpath("../../.github/workflows/api_test.yml")
+workflow = os.path.normpath("../../.github/workflows/boot_test.yml")
 print("Workflow file: ", workflow)
 
 # Load YAML file
