@@ -1664,6 +1664,15 @@ void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr,
 
 #if !IS_EVE_API(1)
 
+void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_GRADIENTA);
+    HAL_WriteCmd(((uint32_t)y0 << 16) | (x0 & 0xFFFF));
+    HAL_WriteCmd(argb0);
+    HAL_WriteCmd(((uint32_t)y1 << 16) | (x1 & 0xFFFF));
+    HAL_WriteCmd(argb1);
+}
+
 void EVE_CMD_SETROTATE(uint32_t r)
 {
     HAL_WriteCmd(EVE_ENC_CMD_SETROTATE);
@@ -1702,11 +1711,6 @@ void EVE_CMD_VIDEOFRAME(uint32_t dst, uint32_t ptr)
     HAL_WriteCmd(ptr);
 }
 
-void EVE_CMD_VIDEOSTART(void)
-{
-    HAL_WriteCmd(EVE_ENC_CMD_VIDEOSTART);
-}
-
 void EVE_CMD_SETBASE(uint32_t base)
 {
     HAL_WriteCmd(EVE_ENC_CMD_SETBASE);
@@ -1730,6 +1734,11 @@ void EVE_CMD_SETSCRATCH(uint32_t handle)
 #endif // !IS_EVE_API(1)
 
 #if IS_EVE_API(2, 3, 4) // FT80x, BT82x API change
+
+void EVE_CMD_VIDEOSTART(void)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_VIDEOSTART);
+}
 
 void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar)
 {
@@ -1943,15 +1952,6 @@ void EVE_CMD_RESETFONTS(void)
     HAL_WriteCmd(EVE_ENC_CMD_RESETFONTS);
 }
 
-void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1)
-{
-    HAL_WriteCmd(EVE_ENC_CMD_GRADIENTA);
-    HAL_WriteCmd(((uint32_t)y0 << 16) | (x0 & 0xFFFF));
-    HAL_WriteCmd(argb0);
-    HAL_WriteCmd(((uint32_t)y1 << 16) | (x1 & 0xFFFF));
-    HAL_WriteCmd(argb1);
-}
-
 void EVE_CMD_FLASHERASE(void)
 {
     HAL_WriteCmd(EVE_ENC_CMD_FLASHERASE);
@@ -2036,7 +2036,7 @@ void EVE_CMD_FLASHATTACH(void)
     HAL_WriteCmd(EVE_ENC_CMD_FLASHATTACH);
 }
 
-void EVE_CMD_FLASHDETATCH(void)
+void EVE_CMD_FLASHDETACH(void)
 {
     HAL_WriteCmd(EVE_ENC_CMD_FLASHDETACH);
 }
@@ -2255,6 +2255,12 @@ void EVE_CMD_I2SSTARTUP(uint32_t freq)
 {
     HAL_WriteCmd(EVE_ENC_CMD_I2SSTARTUP);
     HAL_WriteCmd(freq);
+}
+
+void EVE_CMD_VIDEOSTART(uint32_t options)
+{
+    HAL_WriteCmd(EVE_ENC_CMD_VIDEOSTART);
+    HAL_WriteCmd(options);
 }
 
 void EVE_CMD_PLAYWAV(uint32_t options)

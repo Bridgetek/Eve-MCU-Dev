@@ -626,19 +626,20 @@ void EVE_CMD_TOGGLE(int16_t x, int16_t y, int16_t w, int16_t font, uint16_t opti
 void EVE_CMD_CSKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, uint16_t format, uint16_t freq);
 #endif // IS_EVE_API(2)
 #if !IS_EVE_API(1)
+void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1);
 void EVE_CMD_SETROTATE(uint32_t r);
 void EVE_CMD_MEDIAFIFO(uint32_t ptr, uint32_t size);
 void EVE_CMD_SYNC(void);
 void EVE_CMD_ROMFONT(uint32_t font, uint32_t romslot);
 void EVE_CMD_PLAYVIDEO(uint32_t options);
 void EVE_CMD_VIDEOFRAME(uint32_t dst, uint32_t ptr);
-void EVE_CMD_VIDEOSTART(void);
 void EVE_CMD_SETBASE(uint32_t base);
 void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h);
 void EVE_CMD_SETSCRATCH(uint32_t handle);
 #endif // !IS_EVE_API(1)
 
 #if IS_EVE_API(2, 3, 4) // FT80x, BT82x API change
+void EVE_CMD_VIDEOSTART(void);
 void EVE_CMD_SETFONT2(uint32_t font, uint32_t ptr, uint32_t firstchar);
 void EVE_CMD_SNAPSHOT2(uint32_t fmt, uint32_t ptr, int16_t x, int16_t y, int16_t w, int16_t h);
 #endif // IS_EVE_API(2, 3, 4)
@@ -684,7 +685,6 @@ void EVE_CMD_NOP(void);
 void EVE_CMD_FILLWIDTH(uint32_t s); 
 void EVE_CMD_ROTATEAROUND(int32_t x, int32_t y, int32_t a, int32_t s);
 void EVE_CMD_RESETFONTS(void);
-void EVE_CMD_GRADIENTA(int16_t x0, int16_t y0, uint32_t argb0, int16_t x1, int16_t y1, uint32_t argb1);
 void EVE_CMD_FLASHERASE(void);
 void EVE_CMD_FLASHWRITEEXT(uint32_t dest, uint32_t num, uint8_t *data);
 void EVE_CMD_FLASHWRITE(uint32_t ptr, uint32_t num);
@@ -696,7 +696,7 @@ void EVE_CMD_FLASHSPITX(uint32_t num);
 void EVE_CMD_FLASHFAST(uint32_t result);
 void EVE_CMD_FLASHSPIRX(uint32_t ptr, uint32_t num);
 void EVE_CMD_FLASHATTACH(void);
-void EVE_CMD_FLASHDETATCH(void);
+void EVE_CMD_FLASHDETACH(void);
 void EVE_CMD_FLASHSPIDESEL(void);
 #endif // !IS_EVE_API(1, 2)
 
@@ -730,6 +730,7 @@ void EVE_CMD_WAITCHANGE(uint32_t a);
 void EVE_CMD_WAITCOND(uint32_t a, uint32_t func, uint32_t ref, uint32_t mask);
 void EVE_CMD_RESULT(uint32_t a);
 void EVE_CMD_I2SSTARTUP(uint32_t freq);
+void EVE_CMD_VIDEOSTART(uint32_t options);
 void EVE_CMD_PLAYWAV(uint32_t options);
 void EVE_CMD_DDRSHUTDOWN(void);
 void EVE_CMD_DDRSTARTUP(void);
