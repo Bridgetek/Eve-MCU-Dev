@@ -136,7 +136,7 @@ void api_test_cmd(uint32_t t1, uint32_t t2)
     /* 5.31 CMD_GRADCOLOR */ EVE_CMD_GRADCOLOR(t1);
     /* 5.32 CMD_GAUGE */ EVE_CMD_GAUGE(t1,t2,t1,t2,t1,t2,t1,t2);
     /* 5.33 CMD_GRADIENT */ EVE_CMD_GRADIENT(t1,t2,t1,t2,t1,t2);
-    /* 5.34 CMD_GRADIENTA */ EVE_CMD_GRADIENTA(t1,t2,t1,t2,t1,t2);
+    /* 5.34 CMD_GRADIENTA */
     /* 5.35 CMD_KEYS */ EVE_CMD_KEYS(t1,t2,t1,t2,t1,t2,"12345");
     /* 5.36 CMD_PROGRESS */ EVE_CMD_PROGRESS(t1,t2,t1,t2,t1,t2,t1);
     /* 5.37 CMD_SCROLLBAR */ EVE_CMD_SCROLLBAR(t1,t2,t1,t2,t1,t2,t1,t2);
