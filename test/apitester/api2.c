@@ -170,7 +170,7 @@ void api_test_cmd(uint32_t t1, uint32_t t2)
     /* 5.65 CMD_SETBITMAP */ EVE_CMD_SETBITMAP(t1,t2,t1,t2);
     /* 5.66 CMD_LOGO */ EVE_CMD_LOGO();
     /* 5.67 CMD_SYNC */ EVE_CMD_SYNC();
-    /* 5.68 CMD_BITMAP_TRANSFORM */ EVE_CMD_LOGO();
+    /* 5.68 CMD_BITMAP_TRANSFORM */ EVE_CMD_BITMAP_TRANSFORM(t1,t2,t1,t2,t1,t2,t1,t2,t1,t2,t1,t2,t1);
     /* 5.69 CMD_CSKETCH */ EVE_CMD_CSKETCH(t1,t2,t1,t2,t1,t2,t1);
     EVE_LIB_EndCoProList();
 }
