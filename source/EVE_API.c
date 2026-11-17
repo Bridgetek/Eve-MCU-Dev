@@ -1309,7 +1309,7 @@ void EVE_CMD_SLIDER(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t options
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
     HAL_WriteCmd(((uint32_t)val << 16) | (options & 0xffff));
-    HAL_WriteCmd(range);
+    HAL_WriteCmd(range & 0xffff);
 }
 
 void EVE_CMD_INTERRUPT(uint32_t ms)
@@ -1363,7 +1363,7 @@ void EVE_CMD_SKETCH(int16_t x, int16_t y, uint16_t w, uint16_t h, uint32_t ptr, 
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
     HAL_WriteCmd(ptr);
-    HAL_WriteCmd(format);
+    HAL_WriteCmd(format & 0xffff);
 }
 
 void EVE_CMD_MEMSET(uint32_t ptr, uint32_t value, uint32_t num)
@@ -1492,7 +1492,7 @@ void EVE_CMD_TRACK(int16_t x, int16_t y, int16_t w, int16_t h, int16_t tag)
     HAL_WriteCmd(EVE_ENC_CMD_TRACK);
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
-    HAL_WriteCmd(tag);
+    HAL_WriteCmd(tag & 0xffff);
 }
 
 void EVE_CMD_GETPTR(uint32_t result)
@@ -1507,7 +1507,7 @@ void EVE_CMD_PROGRESS(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t optio
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)h << 16) | (w & 0xffff));
     HAL_WriteCmd(((uint32_t)val << 16) | (options & 0xffff));
-    HAL_WriteCmd(range);
+    HAL_WriteCmd(range & 0xffff);
 }
 
 void EVE_CMD_COLDSTART(void)
@@ -1520,7 +1520,7 @@ void EVE_CMD_DIAL(int16_t x, int16_t y, int16_t r, uint16_t options, uint16_t va
     HAL_WriteCmd(EVE_ENC_CMD_DIAL);
     HAL_WriteCmd(((uint32_t)y << 16) | (x & 0xffff));
     HAL_WriteCmd(((uint32_t)options << 16) | (r & 0xffff));
-    HAL_WriteCmd(val);
+    HAL_WriteCmd(val & 0xffff);
 }
 
 void EVE_CMD_LOADIMAGE(uint32_t ptr, uint32_t options)
@@ -1722,7 +1722,7 @@ void EVE_CMD_SETBITMAP(uint32_t source, uint16_t fmt, uint16_t w, uint16_t h)
     HAL_WriteCmd(EVE_ENC_CMD_SETBITMAP);
     HAL_WriteCmd(source);
     HAL_WriteCmd(((uint32_t)w << 16) | (fmt & 0xffff));
-    HAL_WriteCmd(h);
+    HAL_WriteCmd(h & 0xffff);
 }
 
 void EVE_CMD_SETSCRATCH(uint32_t handle)
@@ -2123,8 +2123,8 @@ void EVE_CMD_RENDERTARGET(uint32_t dest, uint16_t fmt, uint16_t w, uint16_t h)
 {
     HAL_WriteCmd(EVE_ENC_CMD_RENDERTARGET);
     HAL_WriteCmd(dest);
-    HAL_WriteCmd(fmt | ((uint32_t)w << 16));
-    HAL_WriteCmd(h);
+    HAL_WriteCmd((fmt  & 0xffff) | ((uint32_t)w << 16));
+    HAL_WriteCmd(h & 0xffff);
 }
 
 void EVE_CMD_ENABLEREGION(uint32_t en)

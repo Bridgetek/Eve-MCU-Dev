@@ -104,5 +104,5 @@ Test CMD Pattern aaaaaaaa/55555555:
  => ffffff69 aaaaaaaa ffffff81 aaaaaaaa 55555555 ffffff2d ffffff53 ffffff17 aaaaaaaa 55555555 ffffff86 aaaaaaaa 55555555 ffffff8d aaaaaaaa aaaa5555 
  => 00005555 ffffff4c ffffff7d ffffff89 aaaaaaaa ffffff5a ffffff39 aaaaaaaa 55555555 ffffff7c ffffff2b ffffff3d aaaaaaaa aaaa5555 00005555 ffffff36 
  => aaaaaaaa 55555555 aaaaaaaa ffffff31 aaaaaaaa ffffff37 aaaaaaaa ffffff2c 5555aaaa 5555aaaa aaaaaaaa 00005555 ffffff8c aaaaaaaa 55555555 aaaaaaaa 
- => 55555555 aaaaaaaa ffffff1d aaaaaaaa ffffff14 5555aaaa 5555aaaa ffffff15 ffffff3c ffffff57 ffffff28 5555aaaa 5555aaaa ffffaaaa ffffff59 aaaaaaaa 
+ => 55555555 aaaaaaaa ffffff1d aaaaaaaa ffffff14 5555aaaa 5555aaaa ffffff15 ffffff3c ffffff57 ffffff28 5555aaaa 5555aaaa 0000aaaa ffffff59 aaaaaaaa 
  => ffffff67 aaaaaaaa ffffff78 aaaaaaaa 55555555 aaaaaaaa 55555555 ffffff83 aaaaaaaa 

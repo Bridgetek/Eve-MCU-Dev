@@ -133,6 +133,7 @@ void api_test_cmd(uint32_t t1, uint32_t t2)
     /* 5.37 CMD_TOGGLE */ EVE_CMD_TOGGLE(t1,t2,t1,t2,t1,t2,"123456");
     /* 5.38 CMD_TEXT */ EVE_CMD_TEXT(t1,t2,t1,t2,"1234567");
     /* 5.39 CMD_NUMBER */ EVE_CMD_NUMBER(t1,t2,t1,t2,t1);
+    /* 5.xx CMD_LOADIDENTITY */ EVE_CMD_LOADIDENTITY();
     /* 5.40 CMD_SETMATRIX */ EVE_CMD_SETMATRIX();
     /* 5.41 CMD_GETMATRIX */ EVE_CMD_GETMATRIX(t1,t2,t1,t2,t1,t2);
     /* 5.42 CMD_GETPTR */ EVE_CMD_GETPTR(t1);
