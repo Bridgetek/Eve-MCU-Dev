@@ -40,7 +40,7 @@ Test CMD Pattern aaaaaaaa/55555555:
  => 5555aaaa 5555aaaa 5555aaaa 5555aaaa ffffff0b 5555aaaa aaaaaaaa aaaa5555 55555555 ffffff57 5555aaaa aaaaaaaa aaaa5555 55555555 ffffff0e 5555aaaa 
  => 5555aaaa 5555aaaa 34333231 00000035 ffffff0f 5555aaaa 5555aaaa 5555aaaa 0000aaaa ffffff11 5555aaaa 5555aaaa 5555aaaa 5555aaaa ffffff10 5555aaaa 
  => 5555aaaa 5555aaaa 0000aaaa ffffff2d 5555aaaa 5555aaaa 0000aaaa ffffff12 5555aaaa 5555aaaa 5555aaaa 34333231 00003635 ffffff58 aaaaaaaa ffffff0c 
- => 5555aaaa 5555aaaa 34333231 00373635 ffffff38 aaaaaaaa ffffff2e 5555aaaa 5555aaaa aaaaaaaa ffffff5b ffffff26 ffffff2a ffffff33 aaaaaaaa 55555555 
+ => 5555aaaa 5555aaaa 34333231 00373635 ffffff38 aaaaaaaa ffffff2e 5555aaaa 5555aaaa aaaaaaaa ffffff53 ffffff26 ffffff2a ffffff33 aaaaaaaa 55555555 
  => aaaaaaaa 55555555 aaaaaaaa 55555555 ffffff23 aaaaaaaa ffffff25 aaaaaaaa 55555555 aaaaaaaa ffffff28 aaaaaaaa 55555555 ffffff29 aaaaaaaa ffffff51 
  => aaaaaaaa 55555555 aaaaaaaa 55555555 ffffff27 aaaaaaaa 55555555 ffffff15 aaaaaaaa ffffff36 aaaaaaaa ffffff16 5555aaaa 5555aaaa ffffff2f ffffff30 
  => 5555aaaa 5555aaaa aaaaaaaa 00005555 ffffff17 ffffff2b aaaaaaaa 55555555 ffffff3b aaaaaaaa 55555555 aaaaaaaa ffffff3c aaaaaaaa ffffff3f aaaaaaaa 

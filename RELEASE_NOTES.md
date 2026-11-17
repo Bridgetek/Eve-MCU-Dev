@@ -29,7 +29,7 @@ This update restructures the library's headers and configuration, improves co-pr
 
 ### BT820 support
 
-- Added BT82x command implementations for `COPYLIST`, `PLAYWAV`, DDR startup/shutdown, context save/restore, conditional skipping, and watchdog control.
+- Added BT82x command implementations for `CMD_COPYLIST`, `CMD_PLAYWAV`, DDR startup/shutdown, context save/restore, conditional skipping, and watchdog control.
 - Added configurable BT820 LVDS scanout modes, channel selection, and output formats.
 - Moved BT82x patches into a dedicated extension.
 
@@ -52,9 +52,9 @@ This update restructures the library's headers and configuration, improves co-pr
 
 - Fixed a potential buffer overread when sending padded strings in `EVE_LIB_SendString()`.
 - Corrected BT820 startup and system-clock command sequencing, including an FT4222 host-command interaction.
-- Corrected the BT82x `SDBLOCKREAD` opcode.
+- Corrected the BT82x `CMD_SDBLOCKREAD` opcode.
 - Applied duplicate `DISPLAY` command handling for earlier EVE generations in line with the referenced erratum.
-- Corrected command availability and signatures: enabled `GRADIENTA` for EVE2 and added the BT820 options parameter to `VIDEOSTART`.
+- Corrected command availability. Added the BT820 options parameter to `CMD_VIDEOSTART`.
 - Corrected integer packing in several command implementations, image decoding on EVE3, and example touch-processing logic. 
 
 ## Build, Testing, and Documentation
