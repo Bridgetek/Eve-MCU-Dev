@@ -47,7 +47,7 @@
 
 #if GRAPHING_METHOD == USE_GRAPH_VERTEXES
 
-TRACE_PROPS trace[trace_total];
+EVE_TRACE_PROPS trace[trace_total];
 uint8_t trace_data[trace_total][TRACE_POINTS];
 
 static void graph_trace_zero(uint8_t *store)

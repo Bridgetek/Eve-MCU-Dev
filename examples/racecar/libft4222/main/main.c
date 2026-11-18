@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include <eve_example.h>

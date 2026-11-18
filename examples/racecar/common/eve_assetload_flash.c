@@ -57,7 +57,6 @@
 const char *flashimage;
 const char *assetdir;
 
-
 /* FUNCTIONS ***********************************************************************/
 
 /** @brief Portable version of fopen/fopen_s
@@ -102,6 +101,23 @@ const char *join(const char *dirname, const char *filename)
 }
 #endif
 
+#if IS_EVE_API(3,4)
+void eve_status_mode_screen(char *str, uint32_t val)
+{
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_DLSTART();
+    EVE_CLEAR_COLOR_RGB(255, 0, 0);
+    EVE_CLEAR(1,1,1);
+    EVE_COLOR_RGB(255,255,255);
+    EVE_CMD_TEXT(100, 50, 28, 0, "Error detaching flash");
+    EVE_CMD_TEXT(100,100, 28, EVE_OPT_FORMAT, "Mode is %d ", val);
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+}
+#endif // IS_EVE_API(3,4)
+
 // Code to set flash to full speed mode
 void eve_flash_full_speed(void)
 {
@@ -118,17 +134,8 @@ void eve_flash_full_speed(void)
 
     if (EVE_FLASH_STATUS_DETACHED != Flash_Status)
     {
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(255, 0, 0);
-        EVE_CLEAR(1,1,1);
-        EVE_COLOR_RGB(255,255,255);
-        EVE_CMD_TEXT(100, 50, 28, 0, "Error detaching flash");
-        EVE_CMD_TEXT(100,100, 28, EVE_OPT_FORMAT, "Mode is %d ", Flash_Status);
-        EVE_DISPLAY();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
+        eve_status_mode_screen("Error detaching flash", Flash_Status);
+        EVE_DEBUG_ERROR("error detaching flash\n");
         while(1)
         {
         }
@@ -144,17 +151,8 @@ void eve_flash_full_speed(void)
 
     if (EVE_FLASH_STATUS_BASIC != Flash_Status)
     {
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR_COLOR_RGB(0, 255, 0);
-        EVE_CLEAR(1,1,1);
-        EVE_COLOR_RGB(255,255,255);
-        EVE_CMD_TEXT(100, 50, 28, 0, "Error attaching flash");
-        EVE_CMD_TEXT(100,100, 28, EVE_OPT_FORMAT, "Mode is %d ", Flash_Status);
-        EVE_DISPLAY();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
+        eve_status_mode_screen("Error attaching flash", Flash_Status);
+        EVE_DEBUG_ERROR("error attaching flash\n");
         while(1)
         {
         }
@@ -170,18 +168,8 @@ void eve_flash_full_speed(void)
 
     if (EVE_FLASH_STATUS_FULL != Flash_Status)
     {
-
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_DLSTART();
-        EVE_CLEAR(1,1,1);
-        EVE_CLEAR_COLOR_RGB(0, 0, 255);
-        EVE_COLOR_RGB(255,255,255);
-        EVE_CMD_TEXT(100, 50, 28, 0, "Error going to full mode");
-        EVE_CMD_TEXT(100,100, 28, EVE_OPT_FORMAT, "Mode is %d ", Flash_Status);
-        EVE_DISPLAY();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
+        eve_status_mode_screen("Error going to flash full speed mode", Flash_Status);
+        EVE_DEBUG_ERROR("error going to flash full speed mode\n");
         while(1)
         {
         }
@@ -196,15 +184,35 @@ void eve_flash_full_speed(void)
 
 int eve_loadpatch_impl(void)
 {
-#if ASSETS == USE_FLASH
+    int result = 0;
 
-    // Read directy from flash
+#if ASSETS == USE_FLASH
+    uint8_t patch[64];
+
+    // Read first 64 bytes of flash location for patch into RAM_G
     EVE_LIB_BeginCoProList();
-    EVE_CMD_FLASHSOURCE(patch_asset.Flash_Start);
-    EVE_CMD_LOADPATCH(EVE_OPT_FLASH);
+    EVE_CMD_FLASHREAD(0, patch_asset.Flash_Start, 64);
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
-    
+    // Read 64 bytes from RAM_G to patch array
+    EVE_LIB_ReadDataFromRAMG(patch, 64, 0);
+    // Only load the patch if the signature is 0x7c 0xda
+    if ((patch[0] == 0x7c) && (patch[1] == 0xda))
+    {
+        // Read directy from flash
+        EVE_LIB_BeginCoProList();
+        EVE_CMD_FLASHSOURCE(patch_asset.Flash_Start);
+        EVE_CMD_LOADPATCH(EVE_OPT_FLASH);
+        EVE_LIB_EndCoProList();
+        // Failure can be EVE_COPRO_STATUS_EXCEPTION or EVE_COPRO_STATUS_TIMEOUT
+        result = EVE_LIB_AwaitCoProEmpty();
+    }
+    else
+    {
+        EVE_DEBUG_ERROR("load patch from flash error");
+        result = -1;
+    }
+
 #elif ASSETS == USE_FLASHIMAGE
 
     FILE *h1;
@@ -218,42 +226,59 @@ int eve_loadpatch_impl(void)
     {
         int res;
 
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_LOADPATCH(0);
         res = fseek(h1, patch_asset.Flash_Start, SEEK_SET);
         if (res != 0)
         {
-            EVE_DEBUG_PRINTF("seek error\n");
-            return -1;
+            EVE_DEBUG_ERROR("flash image file seek error\n");
+            result = -2;
         }
-        do {
-            chunk = (size_t)(patch_asset.Flash_Size - total);
-            if (chunk > sizeof(buffer)) 
-            {
-                chunk = sizeof(buffer);
-            }
-            xfer = fread(buffer, 1, (size_t)chunk, h1);
+        else
+        {
+            xfer = fread(buffer, 1, (size_t)64, h1);
             if (xfer > 0)
             {
-                EVE_LIB_WriteDataToCMD(buffer, chunk);
-                total += (uint32_t)xfer;
+                // Only load the patch if the signature is 0x7cda
+                if ((buffer[0] == 0x7c) && (buffer[1] == 0xda))
+                {
+                    EVE_LIB_BeginCoProList();
+                    EVE_CMD_LOADPATCH(0);
+                    EVE_LIB_WriteDataToCMD(buffer, 64);
+                    do {
+                        chunk = (size_t)(patch_asset.Flash_Size - total);
+                        if (chunk > sizeof(buffer)) 
+                        {
+                            chunk = sizeof(buffer);
+                        }
+                        xfer = fread(buffer, 1, (size_t)chunk, h1);
+                        if (xfer > 0)
+                        {
+                            EVE_LIB_WriteDataToCMD(buffer, chunk);
+                            total += (uint32_t)xfer;
+                        }
+                    } while (xfer == sizeof(buffer));
+                    EVE_LIB_BeginCoProList();
+                    EVE_CMD_SWAP();
+                    EVE_LIB_EndCoProList();
+                    EVE_LIB_AwaitCoProEmpty();
+                }
+                else
+                {
+                    EVE_DEBUG_ERROR("load patch from flash image file error");
+                    result = -1;
+                }
             }
-        } while (xfer == sizeof(buffer));
+        }
         fclose(h1); 
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
     }
     else
     {
-        EVE_DEBUG_PRINTF("file error\n");
-        return -1;
+        EVE_DEBUG_ERROR("flash image file error\n");
+        result = -1;
     }
 
 #endif
     
-    return 0;
+    return result;
 }
 
 #endif
@@ -324,7 +349,7 @@ void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
         res = fseek(h1, asset->Flash_Start, SEEK_SET);
         if (res != 0)
         {
-            EVE_DEBUG_PRINTF("seek error\n");
+            EVE_DEBUG_ERROR("file seek error\n");
             return;
         }
         // Decode image

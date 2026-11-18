@@ -123,14 +123,14 @@ const uint8_t resp_hysteresis = 16;
 uint8_t sweep_edge[trace_total][TRACE_STEP];
 
 // Updated touchscreen and status info data loaded into sweep_edge
-TRACE_PROPS infostatus;
+EVE_TRACE_PROPS infostatus;
 
 // Array to receive touchscreen and status info
 uint32_t receivedata[3];
 
-ASSET_PROPS patch_asset;
-ASSET_PROPS icon_assets_small[icons_total_small];
-ASSET_PROPS icon_assets_large[icons_total_large];
+EVE_ASSET_PROPS patch_asset;
+EVE_ASSET_PROPS icon_assets_small[icons_total_small];
+EVE_ASSET_PROPS icon_assets_large[icons_total_large];
 
 // Built-in fonts
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
@@ -339,13 +339,14 @@ void eve_draw_number(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32
 
 int eve_loadpatch(void)
 {
-    eve_loadpatch_impl();
+    int result = eve_loadpatch_impl();
     char actual[128];
-
+    
+    // Print the patch version
     EVE_LIB_GetCoProException(actual);
     EVE_DEBUG_PRINTF("%s\n", actual);
 
-    return 0;
+    return result;
 }
 
 #endif

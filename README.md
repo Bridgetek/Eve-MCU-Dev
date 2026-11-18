@@ -801,22 +801,16 @@ The pin descriptions and wire colours are as follows:
 
 | Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- |
-| 1 | N/C | |
-| 2 | N/C | |
-| 3 | INT# | Green 🟩 |
-| 4 | PD# | Blue 🟦 |
-| 5 | GND | Black ⬛ |
-| 6 | N/C | |
+| 1 | SCK | Brown 🟫 |
+| 2 | MOSI | Red 🟥 |
+| 3 | MISO | Orange 🟧 |
+| 4 | CS# | Yellow 🟨 |
+| 5 | INT# _(1)_ | Green 🟩 |
+| 6 | PD# | Blue 🟦 |
 | 7 | 5V | Purple 🟪 |
-| 8 | N/C | |
-| 9 | N/C | |
-| 10 | N/C | |
-| 11 | N/C | |
-| 12 | N/C | |
-| 13 | MOSI | Red 🟥 |
-| 14 | MISO | Orange 🟧 |
-| 15 | CS# | Yellow 🟨 |
-| 16 | SCK | Brown 🟫 |
+| 8 | N/C | Grey ⬜ |
+| 9 | GND | White ⬜ |
+| 10 | GND | Black ⬛ |
 
 
 ### MPSSE USB Cables

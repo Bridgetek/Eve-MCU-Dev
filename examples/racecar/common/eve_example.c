@@ -2396,13 +2396,14 @@ void eve_display(void)
 
 int eve_loadpatch(void)
 {
-    eve_loadpatch_impl();
+    int result = eve_loadpatch_impl();
     char actual[128];
-
+    
+    // Print the patch version
     EVE_LIB_GetCoProException(actual);
     EVE_DEBUG_PRINTF("%s\n", actual);
 
-    return 0;
+    return result;
 }
 
 #endif

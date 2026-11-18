@@ -37,6 +37,7 @@
  * ============================================================================
  */
 
+
 /* INCLUDES ************************************************************************/
 
 #include <stdint.h>
@@ -44,9 +45,9 @@
 /* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
-/* CONSTANTS ***********************************************************************/
-
 #if ASSETS == USE_C_ARRAYS
+
+/* CONSTANTS ***********************************************************************/
 
 // Patch
 extern const uint8_t patch_medinfo2[];
@@ -82,10 +83,10 @@ extern const uint32_t sick_size;
 extern const uint8_t off_on[];
 extern const uint32_t off_on_size;
 
-/* FUNCTIONS ***********************************************************************/
-
 // Patches only apply to BT82x
 #if IS_EVE_API(5)
+
+/* FUNCTIONS ***********************************************************************/
 
 int eve_loadpatch_impl(void)
 {
@@ -115,7 +116,7 @@ int eve_loadpatch_impl(void)
 
 #endif
 
-void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 {
     const uint8_t *ptr = asset->Array_Ptr;
     uint32_t total = 0;

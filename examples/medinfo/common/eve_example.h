@@ -41,6 +41,7 @@
 #define _EVE_EXAMPLE_H
 
 #include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -72,7 +73,7 @@ void eve_example(const char *assets);
 // (Convert to EVE assets as required)
 #define USE_FILES 4
 
-// Choose the methods for storing assets
+// Choose the methods for storing assets (check setting in CMakeLists.txt or build file)
 #ifndef ASSETS
 #define ASSETS USE_C_ARRAYS
 #endif
@@ -176,7 +177,7 @@ void eve_example(const char *assets);
 #define POINTS_FILTER 10
 
 // Asset storage information
-typedef struct ASSET_PROPS_s
+typedef struct EVE_ASSET_PROPS_s
 {
     uint8_t Handle;
     uint8_t Cell;
@@ -195,17 +196,17 @@ typedef struct ASSET_PROPS_s
     uint16_t Width;
     uint16_t Height;
     uint16_t CellHeight;
-} ASSET_PROPS;
+} EVE_ASSET_PROPS;
  
 // Trace storage
-typedef struct TRACE_PROPS_s
+typedef struct EVE_TRACE_PROPS_s
 {
     uint32_t RAM_G_Start;
     uint32_t RAM_G_EndAddr;
     const uint8_t *Source; 
     uint32_t SourceSize;
     uint32_t SourceCounter;
-} TRACE_PROPS;
+} EVE_TRACE_PROPS;
  
 // Trace buffer setup
 enum {
@@ -215,8 +216,8 @@ enum {
     trace_total
 };
 
-extern ASSET_PROPS patch_asset;
-extern TRACE_PROPS trace[trace_total];
+extern EVE_ASSET_PROPS patch_asset;
+extern EVE_TRACE_PROPS trace[trace_total];
 
 // Parts of icons_asset
 enum { 
@@ -242,9 +243,9 @@ enum {
 };
 
 // 100x100 size icons
-extern ASSET_PROPS icon_assets_small[icons_total_small];
+extern EVE_ASSET_PROPS icon_assets_small[icons_total_small];
 // 200x200 size icons
-extern ASSET_PROPS icon_assets_large[icons_total_large];
+extern EVE_ASSET_PROPS icon_assets_large[icons_total_large];
 
 // Incoming data simulation arrays
 extern const uint32_t hrm_size;
@@ -256,7 +257,7 @@ extern const uint8_t sats [];
 
 /* Asset loading function depends on the storage method in ASSETS macro */
 void eve_asset_properties(const char *assets);
-void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage);
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage);
 int eve_loadpatch_impl(void);
 
 /* Graphing functions depend on the GRAPHING_METHOD macro */

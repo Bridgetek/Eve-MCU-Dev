@@ -44,11 +44,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Include EVE-MCU-Dev library API layer */
-#include <EVE.h> 
-/* Include the EVE debug-output macros */
-#include "EVE_debug.h"
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if ASSETS == USE_FILES
@@ -110,38 +106,63 @@ int eve_loadpatch_impl(void)
     uint32_t total = 0;
     uint32_t chunk;
     size_t xfer;
+    int result = 0;
 
     h1 = port_fopen(patch_asset.filename, "rb");
     if (h1)
     {
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_LOADPATCH(0);
-        do {
-            chunk = sizeof(buffer);
-            xfer = fread(buffer, 1, (size_t)chunk, h1);
-            if (xfer > 0)
+        xfer = fread(buffer, 1, (size_t)64, h1);
+        if (xfer > 0)
+        {
+            // Only load the patch if the signature is 0x7c 0xda
+            if ((buffer[0] == 0x7c) && (buffer[1] == 0xda))
             {
-                EVE_LIB_WriteDataToCMD(buffer, chunk);
-                total += (uint32_t)xfer;
+                EVE_LIB_BeginCoProList();
+                EVE_CMD_LOADPATCH(0);
+                EVE_LIB_WriteDataToCMD(buffer, 64);
+                do {
+                    chunk = (size_t)(patch_asset.Flash_Size - total);
+                    if (chunk > sizeof(buffer)) 
+                    {
+                        chunk = sizeof(buffer);
+                    }
+                    xfer = fread(buffer, 1, (size_t)chunk, h1);
+                    if (xfer > 0)
+                    {
+                        EVE_LIB_WriteDataToCMD(buffer, chunk);
+                        total += (uint32_t)xfer;
+                    }
+                } while (xfer == sizeof(buffer));
+                EVE_LIB_BeginCoProList();
+                EVE_CMD_SWAP();
+                EVE_LIB_EndCoProList();
+                EVE_LIB_AwaitCoProEmpty();
             }
-        } while (xfer == sizeof(buffer));
+            else
+            {
+                EVE_DEBUG_ERROR("load patch from file error");
+                result = -1;
+            }
+        }
+        else
+        {
+            EVE_DEBUG_ERROR("patch file read error\n");
+            result = -1;
+        }
         fclose(h1); 
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
     }
     else
     {
-        EVE_DEBUG_PRINTF("Patch file error\n");
-        exit(-1);
+        EVE_DEBUG_ERROR("patch file error\n");
+        result = -1;
     }
 
-    return 0;
+    return result;
 }
 
 #endif
 
-void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 {
     FILE *h1;
     uint8_t buffer[512];
