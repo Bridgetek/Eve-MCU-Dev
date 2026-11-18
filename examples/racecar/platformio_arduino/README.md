@@ -43,3 +43,14 @@ This example contains PlatformIO environments for the following boards:
 | zero | atmelsam | zero | Default Arduino pins | 
 | MM2040EV | raspberrypi | pico | SCLK 2, MOSI 3, MISO 4, CS# 5, PD# 7, INT# 6 | 
 | esp32thing | espressif32 | esp32thing | SCLK 18, MOSI 23, MISO 19, CS# 15, PD# 15, INT# 2 | 
+
+## Running the Example
+
+If the `ASSETS` macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The options for the image are found in the `eve3`/`eve4`/`eve5` subdirectory. 
+
+If `USE_C_ARRAYS` then no additional action is needed. However, there is not enough program memory in some MCUs to load this program in its current form. The graphics will need to be modified to fit into the flash memory of the MCU.
+
+The `USE_FILES` or `USE_FLASHIMAGE` options are not possible on the PlatformIO platform as there is no file system built into the example.
+
+Note: the default setting for `ASSETS` on pico is `USE_FLASH` which is set in the `platformio.ini` file. 
+

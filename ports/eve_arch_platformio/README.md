@@ -33,8 +33,8 @@ build_flags =
     -D PIN_DATAOUT=23
     -D PIN_DATAIN=19
     -D PIN_CHIPSELECT=22
-    -D PIN_POWERDOWN=15
-    -D PIN_INTERRUPT=2
+    -D PIN_POWERDOWN=16
+    -D PIN_INTERRUPT=17
 ```
 
 There is support for overridding the default pinout according to this list:
@@ -74,8 +74,8 @@ build_flags =
     -D PIN_DATAOUT=23
     -D PIN_DATAIN=19
     -D PIN_CHIPSELECT=22
-    -D PIN_POWERDOWN=15
-    -D PIN_INTERRUPT=2
+    -D PIN_POWERDOWN=16
+    -D PIN_INTERRUPT=17
 ```
 
 ### Software

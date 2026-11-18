@@ -94,7 +94,7 @@
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_ESP32
     // Condition 3c: Pico SDK on Arduino
     #elif defined(ARDUINO_RASPBERRY_PI_PICO)
-    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_PICO
+    #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
     // Condition 3d: No support on available on Arduino
     #else
     #define CALIBRATION_STORAGE CALIBRATION_STORAGE_NONE
