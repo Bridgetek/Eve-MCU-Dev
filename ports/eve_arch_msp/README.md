@@ -31,9 +31,15 @@ The MSP430 port was developed using a MSP-EXP430G2 LaunchPad Development Kit.
 
 The MSP430 module can be connected via short wires to the corresponding signals of an EVE module. Please reference the MSP-EXP430G2 LaunchPad Development Kit Datasheet for more information.
 
+The following picture is of a MSP430 Launchpad module connected using the wire colours in [Module Connections](../../README.md#module-connections).
+
+![MSP430 Launchpad Wiring Picture](../../docs/MSP430_Launchpad.png)
+
+The pin connections for MSP430 Launchpad module is as follows for the 2x8 and 1x10 connectors:
+
 | LaunchPad Pin | LaunchPad Pin Name | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
-| P1.1 | J1 p1.4 | 1 | 1 | SCK | Brown 🟫 |
+| P1.4 | J1 p1.4 | 1 | 1 | SCK | Brown 🟫 |
 | P1.2 | J1 p1.2 | 4 | 2 | MOSI | Red 🟥 |
 | P1.1 | J1 p1.1 | 3 | 3 | MISO | Orange 🟧 |
 | P1.5 | J1 p1.5 | 2 | 4 | CS# | Yellow 🟨 |

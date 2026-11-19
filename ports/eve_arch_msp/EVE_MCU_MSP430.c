@@ -61,7 +61,7 @@
 #define PD              BIT3                // P1.3 is Power Down, active low
 #define SCLK            BIT4                // P1.4 is SPI clock
 #define CS              BIT5                // P1.5 is Chip Select, active lwo
-#define INT             BIT6                // P1.7 is EVE interrupt, active low
+#define INT             BIT6                // P1.6 is EVE interrupt, active low
 
 #define DCO_FREQUENCY_HZ 8000000UL
 
