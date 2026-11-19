@@ -41,7 +41,7 @@ def copy_norm(src_file, dest_file, flatten_filter):
 
                 # Modify include statements for headers copied locally into
                 # the flattened sketch directory.
-                match = re.match(r'^(\s*#\s*include\s*)<([^>]+)>(.*)$', line)
+                match = re.match(r'^(\s*#\s*include\s*)[<\"]([^>\"]+)[>\"](.*)$', line)
                 if match:
                     include_path = match.group(2)
                     include_file = os.path.basename(include_path)
