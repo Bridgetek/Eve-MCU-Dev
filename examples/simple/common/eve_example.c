@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -36,16 +36,30 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
-#include "touch.h"
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* EXTERNAL CONSTANTS **************************************************************/
 
 extern const EVE_GPU_FONT_HEADER *font0_hdr;
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display(void)
 {
@@ -59,7 +73,9 @@ void eve_display(void)
         // Uncomment and it will increment by one each press.
         //while (eve_read_tag(&key) != 0);
 
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -104,9 +120,13 @@ void eve_display(void)
         }
 #endif
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         while (eve_read_tag(&key) == 0);
@@ -119,31 +139,38 @@ void eve_display(void)
                 counter = 0;
             }
         }
-    } while (1);
+        
+    } while (LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     uint32_t font_end;
 
     // Initialise the display
-    EVE_Init();
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
-        while(1);
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
     }
 
     // Load fonts and images
-    DEBUG_PRINTF("Loading font...\n");
+    EVE_DEBUG_PRINTF("Loading font...\n");
     font_end = eve_init_fonts();
-    DEBUG_PRINTF("Loading images...\n");
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(font_end);
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();
 }

@@ -1,5 +1,5 @@
 /**
- @file trig_furman.h
+ * @file trig_furman.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_TRIG_FURMAN_H
-#define EVE_TRIG_FURMAN_H
+#ifndef _EVE_TRIG_FURMAN_H
+#define _EVE_TRIG_FURMAN_H
 
 /* Note that EVE furman angles are 16.16 format and have integer furmans in the
  * upper 16-bits and fractional furmans in the lower 16-bits. */
@@ -90,4 +90,4 @@ int16_t sin_furman(uint16_t furman16);
  */
 int16_t cos_furman(uint16_t furman16);
 
-#endif // EVE_TRIG_FURMAN_H
+#endif /* _EVE_TRIG_FURMAN_H */

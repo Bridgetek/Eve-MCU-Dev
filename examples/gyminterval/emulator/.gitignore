@@ -1,0 +1,9 @@
+# emulator distribution directory
+.vs
+.vscode
+imports/
+build/
+VisualStudio/*
+!VisualStudio/emulator.sln
+!VisualStudio/emulator.vcxproj
+!VisualStudio/emulator.vcxproj.filters

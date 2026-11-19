@@ -4,37 +4,15 @@
 
 ## Simple Example
 
-The `simple` example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G. 
+The `simple` example demonstrates detection of a touch event on a display item, and loading both a custom font and a bitmap into RAM_G.  The example code uses the `touch` snippet from the [snippets](../snippets) directory to provide application functionality. 
 
 The custom font provides a character set that contains the numbers 0 to 9 resembling a 7 segment LED. The font is called DS-FONT. A touch event detected on the numbers will increase the number displayed. A BridgeTek logo is loaded as a bitmap and displayed above the counter.
 
-## Platform Support
+## Screenshot
 
-This example supports the following platforms:
+The following is an screenshot of the `simple` example:
 
-| Port Name | Port Directory | 
-| --- | --- | 
-| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
-| [Beaglebone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) (1) | 
-| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
-| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) (1) |
-| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) (1) | 
-| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) (2) | 
-| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) (2) | 
-| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
-| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
-| [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
-| [Generic using libMPSSE CMake](libft4222/README.md) | [libft4222](libft4222/) | 
-| [Generic using libMPSSE Visual Studio](libft4222/README.md) | [libft4222](libft4222/) | 
-| [Generic using libFT4222 CMake](libmpsse/README.md) | [libmpsse](libmpsse/) | 
-| [Generic using libFT4222 Visual Studio](libmpsse/README.md) | [libmpsse](libmpsse/) | 
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
-
-- (1) Hardware testing ongoing.
-- (2) Build environment incomplete.
- 
-Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+![Simple Example](docs/simple.png)
 
 ## EVE API Support
 
@@ -44,41 +22,93 @@ Supported EVE APIs in this example:
 | --- | --- | --- | --- | --- |
 | Yes | Yes | Yes | Yes | Yes |
 
-The following is an screenshot of the simple example.
+## Platform Support
 
-![Simple Example](docs/simple.png)
+This example supports the following platforms:
 
-## Platform Files and Folders
+| Port Name | Port Directory | 
+| --- | --- | 
+| [Bridgetek FT9xx](ft900/README.md) | [ft900](ft900/) | 
+| [Arduino IDE](arduino/README.md) | [arduino](arduino/) | 
+| [BeagleBone Black](BeagleBone/README.md) | [BeagleBone](BeagleBone/) | 
+| [Expressif ESP32](ESP32/README.md) | [ESP32](ESP32/) | 
+| [Infineon PS0C6](infineon-eclipse/simple/README.md) | [infineon-eclispe](infineon-eclipse/) | 
+| [TI MSP430](MSP430/README.md) | [MSP430](MSP430/) |
+| [TI MSPM0](MSPM0/README.md) | [MSPM0](MSPM0/) _(1)_ _(3)_ | 
+| [Microchip PIC18F](PIC18F/README.md) | [PIC18F](PIC18F/) _(2)_ | 
+| [NXP K64](NXP_K64/README.md) | [NXP_K64](NXP_K64/) _(2)_ | 
+| [ST STM32 (Keil)](STM32/README.md) | [STM32](STM32/) | 
+| [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
+| [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/)  | 
+| [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | 
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 
+
+- (1) Hardware testing ongoing.
+- (2) Build environment incomplete.
+- (3) Using the EVE INT# line for coprocessor completion is not supported.
+ 
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## Platform Files
 
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
+| [common/eve_images.c](common/eve_images.c) | Image helper routines |
+| [docs](docs) | Documentation support files |
+
 
 ### `eve_example.c`
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
     uint32_t font_end;
+
     // Initialise the display
-    EVE_Init();
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+
     // Calibrate the display
-    eve_calibrate();
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
+
     // Load fonts and images
+    EVE_DEBUG_PRINTF("Loading font...\n");
     font_end = eve_init_fonts();
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(font_end);
+
     // Start example code
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();
- }
+}
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
@@ -95,7 +125,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {
@@ -104,7 +134,7 @@ Another function of this file is to read a single touch tag from the screen.
     }
 ```
 
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
+A TAG event is read from the `EVE_REG_TOUCH_TAG` register. This is verified by reading the `EVE_REG_TOUCH_RAW_XY` register. 
 If that register indicates a valid touch then this is flagged to the calling program.
 
 ### `eve_images.c`
@@ -119,7 +149,7 @@ RAM_G address specified in the command.
 In the following code snippet from the example the `while` loop will look for the end marker of the JPG
 data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
-```
+```c
     EVE_CMD_LOADIMAGE(start_addr, 0);
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
@@ -143,7 +173,7 @@ data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
 Once loaded into RAM_G the `EVE_CMD_GETPROPS` command can find the size of the image.
 
-```
+```c
     EVE_LIB_GetProps(&eve_addr, &img_width, &img_height);
 ```
 
@@ -152,7 +182,7 @@ The code will select bitmap mode with the `EVE_BEGIN`, this tells the device tha
 Then it will set the source address of the bitmap in RAM_G with `EVE_BITMAP_SOURCE`. 
 Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device how to render the bitmaps included in the font.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);
@@ -168,7 +198,7 @@ Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device
 Some EVE devices have a larger address space and also have an `EVE_BITMAP_SOURCE_H` command for the higher address bits.
 Other EVE devices have `EVE_BITMAP_LAYOUT_H` and `EVE_BITMAP_SIZE_H` to cope with larger supported bitmap sizes.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the bitmap handle on the device so that it can be used by subsequent display lists.
 
 ### `eve_fonts.c`
@@ -177,21 +207,21 @@ This file contains the data array of a font which was produced by the Font Conve
 
 The font created from EVE Asset Builder will be located at a certain address in RAM_G. In the example here the font was at address 1000(decimal). This must be 32-bit aligned.
 
-```
-const uint32_t font0_offset = 1000; // Taken from commmand line
+```c
+const uint32_t font0_offset = 1000; // Taken from command line
 const uint8_t font0[] = { <data for font> };
 ```
 
 The font data in the array `font0` is directly written into RAM_G using the API call `EVE_LIB_WriteDataToRAMG`. 
 This function takes a pointer to an array and writes to RAM_G.
 
-```
+```c
     EVE_LIB_WriteDataToRAMG(font0, font0_size, font0_offset);
 ```
 
 Once this has been written to RAM_G then the EVE device must be instructed how make a font use the data in RAM_G. 
 
-```
+```c
     EVE_CMD_DLSTART();
 #if IS_EVE_API(5)
     EVE_CMD_SETFONT(FONT_CUSTOM, font0_offset, 0);
@@ -211,32 +241,19 @@ Once this has been written to RAM_G then the EVE device must be instructed how m
     EVE_DISPLAY();
     EVE_CMD_SWAP();
 ```
-
 A font must be set-up on the device before the font can be used. A font is essentially a set of bitmaps, 
 one for each character. The bitmap parameters are therefore needed to be setup in the same way as other
-bitmaps are. The device needs the `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands 
+bitmaps are. The device needs the `EVE_BITMAP_SOURCE`, `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands 
 to properly render the font's characters. 
 
-On BT82x, using the `eve.CMD_SETFONT` command, and on FT81x, BT88x, BT81x, using the `eve.CMD_SETFONT2` 
+On BT82x, using the `EVE_CMD_SETFONT` command, and on FT81x, BT88x, BT81x, using the `EVE_CMD_SETFONT2` 
 command, the co-processor will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
 
 On FT80x the required information for setting up the font must be taken from the font structure. In this
 example it uses a cast to the data structure cast as `font0_hdr`. 
-Finally, the `eve.CMD_SETFONT` command will initialise the font on the device and associate it with the 
+Finally, the `EVE_CMD_SETFONT` command will initialise the font on the device and associate it with the 
 supplied handle.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the font handle on the device so that it can be used by subsequent display lists.
-
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [common/eve_fonts.c](common/eve_fonts.c) | Font helper routines |
-| [common/eve_images.c](common/eve_images.c) | Image helper routines |
-| [docs](docs) | Documentation support files |

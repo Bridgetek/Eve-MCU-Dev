@@ -1,0 +1,266 @@
+/**
+ * @file EVE_defs.h
+ * @brief Header file with preset definitions used in configuring the target application in EVE_config.h.
+ *
+ * @details Defines the supported EVE devices, modules, panels, display
+ *      resolutions, RAM_G sizes and configuration options used by
+ *      EVE_config.h and other library headers.
+ */
+/*
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
+
+#ifndef _EVE_DEFS_H
+#define _EVE_DEFS_H
+
+/* EVE DEFS */
+
+/**
+ * @brief Definitions used for target device selection.
+ * @details The following options are defined for the EVE_DEVICE macro.
+ */
+#define EVE_FT800 800
+#define EVE_FT801 801
+#define EVE_FT810 810
+#define EVE_FT811 811
+#define EVE_FT812 812
+#define EVE_FT813 813
+#define EVE_BT880 880
+#define EVE_BT881 881
+#define EVE_BT882 882
+#define EVE_BT883 883
+#define EVE_BT815 815
+#define EVE_BT816 816
+#define EVE_BT817 817
+#define EVE_BT818 818
+#define EVE_BT820 820
+
+/**
+ * @brief Select Bridgetek EVE Module or Development Kit Types.
+ * @details The following options are defined for the EVE_MODULE macro:
+ *      VM800B           - VM800B35A-BK with 3.5-inch display (FT800 with DP-0351-11A)
+ *      VM800C35A        - VM800C35A-D with 3.5-inch display (FT800 with DP-0351-11A)
+ *      VM800C43A        - VM800C43A-D with 4.3-inch display (FT800 with DP-0431-11A)
+ *      VM800C50A        - VM800C50A-D with 5-inch display (FT800 with DP-0502-11A)
+ *      VM810C           - VM810C50A-D with 5-inch display (FT810 with DP-0501-11A)
+ *      ME812A           - ME812A-WH50R, ME812AU-WH50R with 5-inch display (FT812 with DP-0501-11A)
+ *      ME813A           - ME813A-WH50C with 5-inch display (FT813 with DP-0501-01A)
+ *      VM816C           - VM816C50A-D, VM816CU50A-D with 5-inch display (BT816 with DP-0501-11A)
+ *      VM880C           - VM880C with assumed 4.3-inch display (BT880 with DP-0431-11A)
+ *      IDM204021R       - IDM2040-21R (FT800 with 2.1-inch display)
+ *      IDM204043A       - IDM2040-43A (BT883 with DP-0431-11A)
+ *      IDM20407A        - IDM2040-7A (BT817 with DP-0701-01A)
+ *      VM820B10A        - VM820B10A with 10.1-inch display (BT820 with DP-1011-02A)
+ *      VM820B15A        - VM820B15A with 15.6-inch display (BT820 with DP-1561-02A)
+ *      IDK_FT810_43A    - FT810 IC Development Kit with 4.3-inch display (FT810 with DP-0431-11A)
+ *      IDK_BT816_50A    - BT816 IC Development Kit with 5.0-inch display (BT816 with DP-0501-11A)
+ *      IDK_BT817_70A    - BT817 IC Development Kit with 7.0-inch display (BT817 with DP-0701-01A)
+ *      IDK_BT817_101A   - BT817 IC Development Kit with 10.1-inch display (BT817 with DP-1011-02A)
+ *      IDK_BT820_101A   - BT820 IC Development Kit with 10.1-inch display (BT820 with DP-1012-01A)
+ * 
+ * Setting EVE_MODULE will select the correct EVE_DEVICE, EVE_PANEL and EVE_DISPLAY_RES.
+ */
+//@{
+#define EVE_VM800B          800     // VM800B35A-BK 
+#define EVE_VM800C35A       835     // VM800C35A-D 
+#define EVE_VM800C43A       843     // VM800C43A-D 
+#define EVE_VM800C50A       850     // VM800C50A-D 
+#define EVE_VM810C          810     // VM810C50A-D 
+#define EVE_ME812A          812     // ME812A-WH50R, ME812AU-WH50R 
+#define EVE_ME813A          813     // ME813A-WH50C 
+#define EVE_VM816C          816     // VM816C50A-D, VM816CU50A-D 
+#define EVE_VM880C          880     // VM880C 
+#define EVE_IDM204021R      204021  // IDM2040-21R 
+#define EVE_IDM204043A      204043  // IDM2040-43A 
+#define EVE_IDM20407A       20407   // IDM2040-7A 
+#define EVE_VM820B10A       82010   // VM820B10A 
+#define EVE_VM820B15A       82015   // VM820B15A 
+#define EVE_IDK_FT810_43A   81043   // IDK-FT810-43A 
+#define EVE_IDK_BT816_50A   81650   // IDK-BT816-50A 
+#define EVE_IDK_BT817_70A   81770   // IDK-BT817-70A 
+#define EVE_IDK_BT817_101A  817101  // IDK-BT817-101A  
+#define EVE_IDK_BT820_101A  820101  // IDK-BT820-101A
+#define EVE_NO_MODULE       0
+//@}
+
+/**
+ * @brief Define Bridgetek Panel Types
+ * @details The following options are defined for the EVE_PANEL macro.
+ */
+//@{
+#define EVE_DP_0351_11A 0351    // DP-0351-11A QVGA (Resistive)
+#define EVE_DP_0431_11A 0431    // DP-0431-11A WQVGA (Resistive)
+#define EVE_DP_0501_01A 050101  // DP-0501-01A WVGA (Capacitive)
+#define EVE_DP_0501_11A 050111  // DP-0501-11A WVGA (Resistive)
+#define EVE_DP_0502_11A 0502    // DP-0502-11A WQVGA (Resistive)
+#define EVE_DP_0701_01A 0701    // DP-0701-01A WVGA (Capacitive)
+#define EVE_DP_1011_01A 10111   // DP-1011-01A WXGA (Capacitive)
+#define EVE_DP_1011_02A 10112   // DP-1011-02A WXGA_NG (Capacitive)
+#define EVE_DP_1012_01A 1012    // DP-1012-01A WUXGA (Capacitive)
+#define EVE_DP_1561_01A 156101  // DP-1561-01A FullHD (Capacitive)
+#define EVE_DP_1561_02A 156102  // DP-1561-02A FullHD (Capacitive)
+#define EVE_DP_IDM21R   21      // IDM204021R (Capacitive)
+#define EVE_NO_PANEL    0
+//@}
+
+/** 
+ * @brief Select Display Resolutions for Common Panels
+ * @details The following options are defined for the EVE_DISPLAY_RES macro:
+ *      QVGA      - 320x240   e.g. DP-0351-11A
+ *      WQVGA     - 480x272   e.g. DP-0431-11A, DP-0502-11A
+ *      WQVGAR    - 480x480   e.g. IDM2040-21R with 2.1-inch round display
+ *      WVGA      - 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-01A
+ *      WSVGA     - 1024x600  e.g. BT817 with 7-inch display
+ *      WXGA      - 1280x800  e.g. DP-1011-01A
+ *      WXGA_NG   - 1280x800  e.g. DP-1011-02A
+ *      FULLHD    - 1920x1080 e.g. DP-1561-01A, DP-1561-02A
+ *      WUXGA     - 1920x1200 e.g. DP-1012-01A
+ */
+//@{
+#define EVE_QVGA    320        // 320x240   e.g. DP-0351-11A
+#define EVE_WQVGA   480        // 480x272   e.g. DP-0431-11A, DP-0502-11A
+#define EVE_WQVGAR  480480     // 480x480   e.g. IDM2040-21R with 2.1-inch round display
+#define EVE_WVGA    800        // 800x480   e.g. DP-0501-01A, DP-0501-11A, DP-0701-01A
+#define EVE_WSVGA   1024       // 1024x600  e.g. BT817 with 7-inch display
+#define EVE_WXGA    12801      // 1280x800  e.g. DP-1011-01A
+#define EVE_WXGA_NG 12802      // 1280x800  e.g. DP-1011-02A
+#define EVE_FULLHD  1920       // 1920x1080 e.g. DP-1561-01A, DP-1561-02A
+#define EVE_WUXGA   19201200   // 1920x1200 e.g. DP-1012-01A
+//@}
+
+/**
+ * @brief Definitions for transfer methods for co-processor lists.
+ * @details These can enable the use of REG_CMDB_WRITE on EVE2 onwards
+ *      or enable the INT# line to be used when REG_CMD_WRITE method
+ *      is being used. See the "Command FIFO" section in the Programming
+ *      Guides for details of the differences. The "Interrupts" section
+ *      in the Data Sheets explains the use of the INT# line.
+ *      The EVE_COPRO_INT option is not permissible with the
+ *      EVE_COPRO_CMDB_WRITE setting and will be ignored.
+ */
+//@{
+// Use REG_CMDB_WRITE to add data to the co-processor command buffer.
+// Supported on EVE2 onwards.
+#define EVE_COPRO_CMDB_WRITE     0
+// Write directly to the co-processor circular buffer and update REG_CMD_WRITE.
+#define EVE_COPRO_CMD_WRITE      1
+// Use the INT# line to detect completion of the co-processor command list.
+// Uses the EVE_COPRO_CMD_WRITE method.
+#define EVE_COPRO_INT            3
+//@}
+
+/**
+ * @brief SPI interface width definitions.
+ * @details Defines the supported EVE SPI bus widths used when configuring
+ *      the host and EVE interfaces. Single and quad channel modes are used
+ *      by the library. Dual channel mode is defined for completeness but is
+ *      not currently used by the library.
+ */
+//@{
+#define EVE_SPI_SINGLE_CHANNEL    0x00
+#define EVE_SPI_DUAL_CHANNEL      0x01
+#define EVE_SPI_QUAD_CHANNEL      0x02
+//@}
+
+/**
+ * @brief Definitions for capacitive touch controller I2C addresses and types. (type is BT82X only).
+ *
+ * @note For FT81X/BT88X/BT81X, only TOUCH_ADDR_FOCALTECH and TOUCH_ADDR_GOODIX are applicable
+ */
+//@{
+#define TOUCH_ADDR_FOCALTECH 0x38 // Focaltech (e.g. FT5206)
+#define TOUCH_TYPE_FOCALTECH 1
+#define TOUCH_ADDR_GOODIX 0x5d // Goodix (e.g. GT911)
+#define TOUCH_TYPE_GOODIX 2
+#define TOUCH_ADDR_ILITEK 0x41 // Ilitek (e.g. ILI2511, ILI2130)
+#define TOUCH_TYPE_ILITEK 4
+#define TOUCH_ADDR_SITRONIX 0x55 // Sitronix (e.g. ST1633i)
+#define TOUCH_TYPE_SITRONIX 6
+#define TOUCH_ADDR_EETI 0x55 // Eeti (e.g. EXC80W46)
+#define TOUCH_TYPE_EETI 7
+//@}
+
+/**
+ * @brief RAM_G size options for BT82X only
+ * @details Available options are in Gigabits: 0.03Gb, 0.06Gb, 0.12Gb, 0.25Gb, 0.5Gb, 1Gb, 2Gb, 4Gb, or 8Gb
+ */
+//@{
+#define EVE_RAM_G_32_MBIT  0x100000UL
+#define EVE_RAM_G_64_MBIT  0x200000UL
+#define EVE_RAM_G_128_MBIT 0x400000UL
+#define EVE_RAM_G_256_MBIT 0x800000UL
+#define EVE_RAM_G_512_MBIT 0x4000000UL
+#define EVE_RAM_G_1_GBIT   0x8000000UL
+#define EVE_RAM_G_2_GBIT   0x10000000UL
+#define EVE_RAM_G_4_GBIT   0x20000000UL
+#define EVE_RAM_G_8_GBIT   0x40000000UL
+//@}
+
+/**
+ * @brief BT82x LVDS scanout pixel mode definitions.
+ * @details Defines the supported scanout modes for EVE_REG_SO_MODE.
+ *
+ * @note Modes 1 and 2 require horizontal timing values to be even.
+ *      Mode 3 requires horizontal timing values to be multiples of 4.
+ */
+//@{
+#define EVE_SO_MODE_1PIXEL_SINGLE 0 // 1 pixel per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_SINGLE 1 // 2 pixels per clock, single LVDS channel
+#define EVE_SO_MODE_2PIXEL_DUAL   2 // 2 pixels per clock, dual LVDS channels
+#define EVE_SO_MODE_4PIXEL_DUAL   3 // 4 pixels per clock, dual LVDS channels
+//@}
+
+/**
+ * @brief BT82x LVDS transmitter channel enable definitions.
+ * @details Values for EVE_REG_LVDSTX_EN used to enable LVDS channels.
+ */
+//@{
+#define EVE_LVDSTX_CHANNEL_NONE  0x00UL
+#define EVE_LVDSTX_CHANNEL_CH0   0x02UL
+#define EVE_LVDSTX_CHANNEL_CH1   0x04UL
+#define EVE_LVDSTX_CHANNEL_DUAL  (EVE_LVDSTX_CHANNEL_CH0 | EVE_LVDSTX_CHANNEL_CH1)
+//@}
+
+/**
+ * @brief BT82x scanout format definitions.
+ * @details Supported formats for EVE_REG_SO_FORMAT, see Table 12 of BRT_AN_086.
+ */
+//@{
+#define EVE_SO_FORMAT_RGB6   0x16UL
+#define EVE_SO_FORMAT_RGB8   0x13UL
+#define EVE_SO_FORMAT_YCBCR  0x1CUL
+//@}
+
+#endif /* _EVE_DEFS_H */

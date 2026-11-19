@@ -1,72 +1,63 @@
 /**
- @file EVE_emulator.c
+ * @file EVE_emulator.c
+ * @details Platform-specific code for running and controlling an EVE Emulator instance.
  */
- /*
-  * ============================================================================
-  * (C) Copyright Bridgetek Pte Ltd
-  * ============================================================================
-  *
-  * This source code ("the Software") is provided by Bridgetek Pte Ltd
-  * ("Bridgetek") subject to the licence terms set out
-  * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
-  * You must read the Licence Terms before downloading or using the Software.
-  * By installing or using the Software you agree to the Licence Terms. If you
-  * do not agree to the Licence Terms then do not download or use the Software.
-  *
-  * Without prejudice to the Licence Terms, here is a summary of some of the key
-  * terms of the Licence Terms (and in the event of any conflict between this
-  * summary and the Licence Terms then the text of the Licence Terms will
-  * prevail).
-  *
-  * The Software is provided "as is".
-  * There are no warranties (or similar) in relation to the quality of the
-  * Software. You use it at your own risk.
-  * The Software should not be used in, or for, any medical device, system or
-  * appliance. There are exclusions of Bridgetek liability for certain types of loss
-  * such as: special loss or damage; incidental loss or damage; indirect or
-  * consequential loss or damage; loss of income; loss of business; loss of
-  * profits; loss of revenue; loss of contracts; business interruption; loss of
-  * the use of money or anticipated savings; loss of information; loss of
-  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
-  * corruption of data.
-  * There is a monetary cap on Bridgetek's liability.
-  * The Software may have subsequently been amended by another user and then
-  * distributed by that other user ("Adapted Software").  If so that user may
-  * have additional licence terms that apply to those amendments. However, Bridgetek
-  * has no liability in relation to those amendments.
-  * ============================================================================
-  */
+/*
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
 
-  // Guard against being used for incorrect platform or architecture.
-  // USE_EMULATOR macro enables this file to open the emulator library.
-  // In gcc compilers this is in the Makefile. -DUSE_EMULATOR=0
-  // In VisualStudio this is in Project Properties -> Configuration Properties -> 
-  //     C/C++ -> Preprocessor -> Preprocessor Definitions.
-#if defined(USE_EMULATOR)
+// Guard against being used for incorrect platform or architecture.
+// PLATFORM_EMULATOR macro enables this file to open the emulator library.
+// In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
+// In Visual Studio this is in Project Properties -> Configuration Properties -> 
+//     C/C++ -> Preprocessor -> Preprocessor Definitions.
+#if defined(PLATFORM_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
+
+#ifdef _WIN64
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <stdlib.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
-/* EVE MCU HEADER */
-
-#if defined(__linux__) || defined(__CYGWIN__)
-// Linux endianness (not BSD variants)
-#include <endian.h>
-#include <unistd.h>
-#elif defined(_WIN32)
 // Windows endianness is little endian
 #include <windows.h>
-#else
-// Other endianness (check naming conventions)
-#include <sys/endian.h>
-#endif // _WIN32
 
 // From issue #25
 #if defined(BYTE_ORDER) && BYTE_ORDER == ORDER_LITTLE_ENDIAN
@@ -75,133 +66,548 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#include "bt8xxemu_inttypes.h"
-#include "bt8xxemu.h"
+// Include EVE_Emulator header files
+#include "EVE_Emulator/include/bt8xxemu_inttypes.h"
+#include "EVE_Emulator/include/bt8xxemu.h"
+
+// ensure API version
+#if !defined(BT8XXEMU_VERSION_API) || (BT8XXEMU_VERSION_API < 19)
+#error EVE Emulator API version 19 or later is required
+#endif
+
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
+/* Include the EVE register definitions */
+#include "EVE_registers.h"
 
 /* EVE MCU HEADER END */
 
-#include <EVE.h>
-#include <HAL.h>
-#include <MCU.h>
-
 /* EVE MCU */
 
-// This platform specific section contains the functions which
-// enable the GPIO and SPI interfaces.
+// This platform specific section contains the functions which create the EVE Emulator instance
 
-void* Emulator;
-void* EmulatorFlash;
-BT8XXEMU_EmulatorParameters* EmulatorParameters;
-BT8XXEMU_FlashParameters* EmulatorFlashParameters;
+// Emulator state
+static BT8XXEMU_Emulator* Emulator = NULL;
+static BT8XXEMU_EmulatorParameters* EmulatorParameters = NULL;
 
-static int MCU_SetFlashDataFilePath(BT8XXEMU_FlashParameters* parameters, const eve_tchar_t* filePath)
+static BT8XXEMU_Flash* EmulatorFlash = NULL;
+static BT8XXEMU_FlashParameters* EmulatorFlashParameters = NULL;
+
+// Type used when resolving emulator SD Folder or Flash Image path.
+typedef enum
 {
-#ifdef _WIN32
-    eve_tchar_t resolvedPath[260];
-    eve_tchar_t* lastSeparator;
-    DWORD pathLength;
+    MCU_PATH_FILE,
+    MCU_PATH_FOLDER
+} MCU_PathType;
 
-    if (!filePath || !filePath[0])
-        return -1;
+/* ============================================================================
+ * File Path Helper Functions
+ * ============================================================================ */
 
-    // Preserve absolute paths supplied by the application.
-    if (filePath[0] == L'\\' || filePath[0] == L'/' || filePath[1] == L':')
-        return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), filePath) == 0 ? 0 : -1;
+/**
+ * @brief Determines whether a Windows path is absolute.
+ *
+ * Absolute paths:
+ *   C:\folder\file.bin
+ *   C:/folder/file.bin
+ *   \\server\share\file.bin
+ *   //server/share/file.bin
+ */
+static bool MCU_IsAbsoluteWindowsPath(const eve_tchar_t* path)
+{
+    if (!path || !path[0])
+        return false;
 
-    // Relative firmware paths are resolved beside the running executable.
-    pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
-    if (!pathLength || pathLength >= _countof(resolvedPath))
-        return -1;
+    /* UNC path */
+    if ((path[0] == L'\\' || path[0] == L'/') &&
+        (path[1] == L'\\' || path[1] == L'/'))
+    {
+        return true;
+    }
 
-    lastSeparator = wcsrchr(resolvedPath, L'\\');
-    if (!lastSeparator)
-        return -1;
-    lastSeparator[1] = L'\0';
+    /* Drive-rooted path */
+    if (path[1] == L':' &&
+        (path[2] == L'\\' || path[2] == L'/'))
+    {
+        return true;
+    }
 
-    if (wcscat_s(resolvedPath, _countof(resolvedPath), filePath) != 0)
-        return -1;
-
-    return wcscpy_s(parameters->DataFilePath, _countof(parameters->DataFilePath), resolvedPath) == 0 ? 0 : -1;
-#else
-    if (!filePath || !filePath[0])
-        return -1;
-    strncpy(parameters->DataFilePath, filePath, sizeof(parameters->DataFilePath) - 1);
-    parameters->DataFilePath[sizeof(parameters->DataFilePath) - 1] = '\0';
-    return 0;
-#endif
+    return false;
 }
 
-// ------------------ Platform specific initialisation  ------------------------
-
-int MCU_Init(void)
+/**
+ * @brief Resolves and validates an emulator asset path.
+ *
+ * @details Absolute paths are used as supplied. Relative paths are resolved against
+ *      the directory containing the executable. The resolved path is also checked
+ *      to ensure that it exists and matches the requested file or folder type.
+ *
+ * @param pathType Expected path type: file or folder.
+ * @param path     Path supplied by the emulator configuration.
+ *
+ * @return The validated path, or NULL if the path cannot be resolved or is invalid.
+ */
+static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar_t* path)
 {
-    printf(BT8XXEMU_version());
+    static eve_tchar_t resolvedPath[MAX_PATH];
+    eve_tchar_t* lastSeparator;
+    DWORD pathLength;
+    DWORD attributes;
 
-// Set emulator type from EVE_conig.h EVE type setting
-#if (FT8XX_TYPE == FT800)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT800
-#elif (FT8XX_TYPE == FT801)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT801
-#elif (FT8XX_TYPE == FT810)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT810
-#elif (FT8XX_TYPE == FT811)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT811
-#elif (FT8XX_TYPE == FT812)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT812
-#elif (FT8XX_TYPE == FT813)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT813
-#elif (FT8XX_TYPE == BT880)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT880
-#elif (FT8XX_TYPE == BT881)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT881
-#elif (FT8XX_TYPE == BT882)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT882
-#elif (FT8XX_TYPE == BT883)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT883
-#elif (FT8XX_TYPE == BT815)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT815
-#elif (FT8XX_TYPE == BT816)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT816
-#elif (FT8XX_TYPE == BT817)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT817
-#elif (FT8XX_TYPE == BT818)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT818
-#elif (FT8XX_TYPE == BT820)
-#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
+    if (!path || !path[0])
+        return NULL;
+
+    // Absolute paths are used as supplied; only validate the target type.
+    if (MCU_IsAbsoluteWindowsPath(path))
+    {
+        // Print the absolute path.
+        // EVE_Debug.h does not provide a wprintf macro.
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
+        wprintf(L"Path: %ls\n", path);
 #endif
 
-    // Make defaults
-    EmulatorParameters = (BT8XXEMU_EmulatorParameters*)malloc(sizeof(BT8XXEMU_EmulatorParameters));
-    if (!EmulatorParameters)
+        // Verify that the path exists and has the expected type.
+        attributes = GetFileAttributesW(path);
+        if (pathType == MCU_PATH_FOLDER)
+        {
+            if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+                return NULL;
+            }
+        }
+        else if (pathType == MCU_PATH_FILE)
+        {
+            if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                EVE_DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+                return NULL;
+            }
+        }
+        else 
+        {
+            EVE_DEBUG_ERROR("ERROR: Invalid path type.\n");
+            return NULL;
+        }
+
+        // return the absolute path.
+        return path;
+    }
+
+    // Print the path relative to the executable.
+    // EVE_Debug.h does not provide a wprintf macro..
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0) 
+    wprintf(L"Path from executable: %ls\n", path);
+#endif
+
+    // Resolve relative paths against the directory containing the executable
+    pathLength = GetModuleFileNameW(NULL, resolvedPath, _countof(resolvedPath));
+
+    if (!pathLength)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to obtain executable path.\n");
+        return NULL;
+    }
+
+    if (pathLength >= _countof(resolvedPath))
+    {
+        EVE_DEBUG_ERROR("ERROR: Executable path exceeds MAX_PATH.\n");
+        return NULL;
+    }
+
+    lastSeparator = wcsrchr(resolvedPath, L'\\');
+
+    if (!lastSeparator)
+        return NULL;
+
+    lastSeparator[1] = L'\0';
+
+    // Treat a single leading slash or backslash as relative to the executable directory
+    const eve_tchar_t* relativePath = path;
+
+    if (relativePath[0] == L'/' || relativePath[0] == L'\\')
+        ++relativePath;
+
+    if (!relativePath[0])
+        return NULL;
+
+    if (wcscat_s(resolvedPath, _countof(resolvedPath), relativePath) != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Resolved asset path exceeds MAX_PATH.\n");
+        return NULL;
+    }
+
+    // Verify that the resolved path exists and has the expected type.
+    attributes = GetFileAttributesW(resolvedPath);
+    if (pathType == MCU_PATH_FOLDER) {
+        if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+            return NULL;
+        }
+    }
+    else if (pathType == MCU_PATH_FILE) {
+        if (attributes == INVALID_FILE_ATTRIBUTES || (attributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            EVE_DEBUG_ERROR("ERROR: Flash (.bin) file does not exist.\n");
+            return NULL;
+        }
+    }
+    else
+    {
+        EVE_DEBUG_ERROR("ERROR: Invalid path type.\n");
+        return NULL;
+    }
+
+    // Return the resolved path.
+    return resolvedPath;
+}
+
+/* ============================================================================
+ * Flash Emulation Functions
+ * ============================================================================ */
+
+// External flash emulation is supported by EVE API levels 3, 4, and 5.
+#if IS_EVE_API(3,4,5)
+
+#ifdef EVE_EMULATOR_FLASH_DEVICE
+/**
+ * @brief Helper function to determine whether a flash device name identifies an exact part.
+ *
+ * @return 1 for an exact part, 0 for a device family, or -1 on error.
+ */
+static int MCU_IsExactFlashPart(const eve_tchar_t* libraryName, const eve_tchar_t* deviceType)
+{
+    // Get the number of supported flash devices.
+    int count = BT8XXEMU_Flash_list(BT8XXEMU_VERSION_API, libraryName, NULL, 0);
+
+    if (count < 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to load flash emulator library.\n");
         return -1;
+    }
+
+    if (count == 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: No supported flash devices found.\n");
+        return -1;
+    }
+
+    // Allocate memory for the device list.
+    BT8XXEMU_FlashDevice* devices = (BT8XXEMU_FlashDevice*)malloc(count * sizeof(BT8XXEMU_FlashDevice));
+
+    if (!devices)
+        return -1;
+
+    // Retrieve supported devices.
+    int total = BT8XXEMU_Flash_list(BT8XXEMU_VERSION_API, libraryName, devices, count);
+
+    if (total < 0 || total > count)
+    {
+        free(devices);
+        return -1;
+    }
+
+    int isFamily = 0;
+
+    for (int i = 0; i < total; i++)
+    {
+        // Exact part names take priority.
+        if (wcscmp(deviceType, devices[i].PartName) == 0)
+        {
+            free(devices);
+            return 1;
+        }
+
+        // Check whether the name identifies a device family.
+        if (wcscmp(deviceType, devices[i].FamilyName) == 0)
+            isFamily = 1;
+    }
+
+    free(devices);
+
+    return isFamily ? 0 : -1;
+}
+#endif
+
+/**
+ * @brief Creates and attaches an emulated flash device.
+ *
+ * @details Resolves the configured flash file, initializes the flash emulator
+ *      parameters, creates the flash device, and attaches it to the emulator
+ *      configuration.
+ *
+ * @param path Path to the flash binary file.
+ *
+ * @return 0 on success, or -1 if the flash device cannot be configured or created.
+ */
+static int MCU_AttachFlash(const eve_tchar_t* path) {
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator...\n");
+
+    // Allocate and initialize the flash emulator configuration.
     EmulatorFlashParameters = (BT8XXEMU_FlashParameters*)malloc(sizeof(BT8XXEMU_FlashParameters));
     if (!EmulatorFlashParameters)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to allocate flash emulator parameters.\n");
         return -1;
+    }
 
-    BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
-    EmulatorParameters->Flags &= (~BT8XXEMU_EmulatorEnableDynamicDegrade & ~BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
-
-    // flash is only supoprted in EVE API level = 3,4,5
-#if IS_EVE_API(3,4,5)
-    BT8XXEMU_Flash_defaults(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
-    #if defined(EVE_EMULATOR_FLASH_FILE)
-        if (MCU_SetFlashDataFilePath(EmulatorFlashParameters, EVE_EMULATOR_FLASH_FILE) != 0)
-        {
-            printf("Unable to resolve emulator Flash file path.\n");
-            return -1;
-        }
-    #if defined(EVE_EMULATOR_FLASH_FILE_SIZE)
-        EmulatorFlashParameters->SizeBytes = EVE_EMULATOR_FLASH_FILE_SIZE;
-    #else
-        EmulatorFlashParameters->SizeBytes = (8 * 1024 * 1024);
-    #endif
-    #endif
-        EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
-        EmulatorParameters->Flash = EmulatorFlash;
+    // Set defualt flash image size if not defined
+#ifndef EVE_EMULATOR_FLASH_FILE_SIZE
+#define EVE_EMULATOR_FLASH_FILE_SIZE (8 * 1024 * 1024)
 #endif
 
-    // run the emulator instance
+    // Populate the flash configuration with device-specific defaults.
+    if (!BT8XXEMU_Flash_defaultsEx(
+        BT8XXEMU_VERSION_API,
+        EmulatorFlashParameters,
+        EmulatorParameters->Mode,
+        EVE_EMULATOR_FLASH_FILE_SIZE))
+    {
+        EVE_DEBUG_PRINTF("WARNING: Using nearest supported flash configuration.\n");
+    }
+
+#ifdef EVE_EMULATOR_FLASH_DEVICE
+    // Determine whether the configured device is an exact flash part or a flash family (Determine the device type for subsequent flash-size selection).
+    int isExactPart = MCU_IsExactFlashPart(EmulatorFlashParameters->LibraryName, EVE_EMULATOR_FLASH_DEVICE);
+    if (isExactPart < 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unsupported flash device or family.\n");
+        return -1;
+    }
+
+    // Override the automatically selected flash device.
+    if (wcscpy_s(EmulatorFlashParameters->DeviceType, _countof(EmulatorFlashParameters->DeviceType), EVE_EMULATOR_FLASH_DEVICE) != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to set flash device type.\n");
+        return -1;
+    }
+
+    // Exact parts use their native capacity; families use the configured size.
+    EmulatorFlashParameters->SizeBytes = isExactPart ? 0 : EVE_EMULATOR_FLASH_FILE_SIZE;
+#endif
+
+    // Resolve the flash file path supplied by the definition.
+    const eve_tchar_t* flashPath = MCU_ResolvePath(MCU_PATH_FILE, path);
+    if (!flashPath)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
+        EVE_DEBUG_ERROR("Check that the flash (.bin) file exists on the path defined by:\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"flash-name.bin\").\n");
+        EVE_DEBUG_ERROR("OR\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FILE = TEXT(\"..\\\\path\\\\to\\\\bin\\\\from\\\\exe\\\\flash-name.bin\").\n\n");
+        return -1;
+    }
+
+    // Copy the resolved flash path into the emulator configuration.
+    errno_t result = wcscpy_s(EmulatorFlashParameters->DataFilePath, _countof(EmulatorFlashParameters->DataFilePath), flashPath);
+    if (result != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to copy emulator flash path.\n");
+        return -1;
+    }
+
+    // Create the emulated flash device.
+    EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
+    if (!EmulatorFlash)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to create Emulator Flash.\n");
+        return -1;
+    }
+
+    // Print the selected flash device.
+    BT8XXEMU_FlashInfo flashInfo;
+    if (BT8XXEMU_Flash_info(EmulatorFlash, &flashInfo))
+    {
+        const eve_tchar_t* deviceName = flashInfo.Device.PartName[0] ? flashInfo.Device.PartName : flashInfo.Device.FamilyName;
+        EVE_DEBUG_PRINTF("Selected flash device: %ls (%td MiB)\n", deviceName, flashInfo.Device.SizeBytes / (1024 * 1024));
+    }
+
+    // Attach the flash device to the emulator configuration.
+    EmulatorParameters->Flash = EmulatorFlash;
+
+    return 0;
+}
+#endif /* IS_EVE_API(3,4,5) */
+
+/* ============================================================================
+ * SD Card Emulation Functions
+ * ============================================================================ */
+
+// SD card folder emulation is supported by EVE API level 5 only.
+#if IS_EVE_API(5)
+
+/**
+ * @brief Attaches a folder as an emulated SD card.
+ *
+ * @details Resolves and validates the configured folder, then inserts it into the
+ *       running emulator as an SD card image.
+ *
+ * @param path Path to the folder containing the SD card contents.
+ *
+ * @return 0 on success, or -1 if the folder cannot be resolved or attached.
+ */
+static int MCU_AttachSDFolder(const eve_tchar_t* path) {
+
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_SD_FOLDER is defined, attempting to attach SD card folder to emulator...\n");
+
+    // Resolve the SD card folder path supplied by the definition.
+    const eve_tchar_t* sdPath = MCU_ResolvePath(MCU_PATH_FOLDER, path);
+
+    // Verify that the SD card folder path is valid.
+    if (sdPath == NULL)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator SD card folder file path.\n\n");
+        EVE_DEBUG_ERROR("Check that the folder exists on the path defined by:\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"sdFolderName\").\n");
+        EVE_DEBUG_ERROR("OR\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_SD_FOLDER = TEXT(\"..\\\\path\\\\to\\\\sd\\\\folder\\\\from\\\\exe\\\\sdFolderName\").\n\n");
+        return -1;
+    }
+
+    // Check whether EVE_EMULATOR_SD_FOLDER_SIZE has been defined, if not set (0).
+    // Passing zero for minimumSize lets the emulator calculate the required FAT32 image size from the folder contents.
+#ifndef EVE_EMULATOR_SD_FOLDER_SIZE
+#define EVE_EMULATOR_SD_FOLDER_SIZE 0
+#endif  /* EVE_EMULATOR_SD_FOLDER_SIZE */
+
+    // Insert the SD card folder into the emulator instance.
+    // The function returns the size of the inserted SD card folder.
+    if (BT8XXEMU_insertSDCardFolder(Emulator, sdPath, EVE_EMULATOR_SD_FOLDER_SIZE, false) <= 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to attach SD card to emulator.\n\n");
+        return -1;
+    }
+
+    return 0; 
+}
+
+#endif /* IS_EVE_API(5) */
+
+/* ============================================================================
+ * MCU Interface Functions
+ * ============================================================================ */
+
+// ------------------ Platform specific initialisation  ------------------------
+int MCU_Init(void)
+{
+    // Print Emulator Version
+    EVE_DEBUG_PRINTF("\n");
+    EVE_DEBUG_PRINTF("%s", BT8XXEMU_version());
+    EVE_DEBUG_PRINTF("\n\n");
+
+    // Map the configured EVE device type to the corresponding emulator device.
+#if (EVE_DEVICE == EVE_FT800)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT800
+#elif (EVE_DEVICE == EVE_FT801)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT801
+#elif (EVE_DEVICE == EVE_FT810)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT810
+#elif (EVE_DEVICE == EVE_FT811)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT811
+#elif (EVE_DEVICE == EVE_FT812)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT812
+#elif (EVE_DEVICE == EVE_FT813)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorFT813
+#elif (EVE_DEVICE == EVE_BT880)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT880
+#elif (EVE_DEVICE == EVE_BT881)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT881
+#elif (EVE_DEVICE == EVE_BT882)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT882
+#elif (EVE_DEVICE == EVE_BT883)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT883
+#elif (EVE_DEVICE == EVE_BT815)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT815
+#elif (EVE_DEVICE == EVE_BT816)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT816
+#elif (EVE_DEVICE == EVE_BT817)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT817
+#elif (EVE_DEVICE == EVE_BT818)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT818
+#elif (EVE_DEVICE == EVE_BT819)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT819
+#elif (EVE_DEVICE == EVE_BT820)
+#define EVE_SUPPORT_CHIPID BT8XXEMU_EmulatorBT820
+#else
+#error Unsupported EVE_DEVICE for EVE Emulator
+#endif
+
+    // Allocate and initialize the emulator configuration.
+    EmulatorParameters = (BT8XXEMU_EmulatorParameters*)malloc(sizeof(BT8XXEMU_EmulatorParameters));
+    if (!EmulatorParameters)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to allocate emulator parameters.\n");
+        MCU_Deinit();
+        return -1;
+    }
+
+    // Populate the configuration with emulator defaults.
+    BT8XXEMU_defaults(BT8XXEMU_VERSION_API, EmulatorParameters, EVE_SUPPORT_CHIPID & 0xffff);
+    // Disable EmulatorEnableDynamicDegrade and EmulatorEnableRegPwmDutyEmulation
+    EmulatorParameters->Flags &= ~(BT8XXEMU_EmulatorEnableDynamicDegrade | BT8XXEMU_EmulatorEnableRegPwmDutyEmulation);
+
+    // Enable window rotation
+    EmulatorParameters->Flags |= BT8XXEMU_EmulatorEnableWindowRotate;
+
+#ifdef EVE_EMULATOR_FLASH_FILE
+#if IS_EVE_API(3,4,5)
+    // Attach flash to the emulator configuration.
+    if (MCU_AttachFlash(EVE_EMULATOR_FLASH_FILE) == 0)
+    {
+        EVE_DEBUG_PRINTF("SUCCESS: Flash (.bin) file attached to emulator.\n\n");
+    }
+    else
+    {
+        MCU_Deinit();
+        return -1;
+    }
+#else
+#error EVE_EMULATOR_FLASH_FILE requires EVE API 3, 4, or 5
+#endif /* IS_EVE_API(3,4,5) */
+#endif /* EVE_EMULATOR_FLASH_FILE */
+
+    // Create and start the emulator instance on the current thread.
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
+    if (!Emulator)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to create Emulator.\n");
+        MCU_Deinit();
+        return -1;
+    }
+
+    // Attach the configured SD card folder after the emulator has started.
+#ifdef EVE_EMULATOR_SD_FOLDER
+#if IS_EVE_API(5)
+    // Attach the SD card folder to the running emulator.
+    if (MCU_AttachSDFolder(EVE_EMULATOR_SD_FOLDER) == 0)
+    {
+        EVE_DEBUG_PRINTF(
+            "SUCCESS: SD card folder successfully attached to emulator.\n\n");
+    }
+    else
+    {
+        MCU_Deinit();
+        return -1;
+    }
+#else
+#error EVE_EMULATOR_SD_FOLDER requires EVE API 5
+#endif /* IS_EVE_API(5) */
+#endif /* EVE_EMULATOR_SD_FOLDER */
+
+    // Release the emulator CPU from reset on EVE API levels 1 through 4.
+#if IS_EVE_API(1,2,3,4)
+    MCU_CSlow();
+    // send EVE_REG_CPURESET address
+    MCU_SPIWrite24(MCU_htobe32((EVE_REG_CPURESET << 8) | (1UL << 31)));
+    // write register to 0
+    MCU_SPIWrite8(0);
+    MCU_CShigh();
+#endif /* IS_EVE_API(1,2,3,4) */
+
+    EVE_DEBUG_PRINTF("SUCCESS: Emulator instance running.\n\n");
 
     return 0;
 }
@@ -213,15 +619,15 @@ int MCU_Deinit(void)
     {
         BT8XXEMU_stop(Emulator);
         BT8XXEMU_destroy(Emulator);
+        Emulator = NULL;
     }
-    Emulator = NULL;
 
-    // Release flash
+    // Release flash emulator
     if (EmulatorFlash)
     {
         BT8XXEMU_Flash_destroy(EmulatorFlash);
+        EmulatorFlash = NULL;
     }
-    EmulatorFlash = NULL;
 
     // Release emulator parameters
     if (EmulatorParameters)
@@ -229,6 +635,8 @@ int MCU_Deinit(void)
         free(EmulatorParameters);
         EmulatorParameters = NULL;
     }
+
+    // Release flash emulator parameters
     if (EmulatorFlashParameters)
     {
         free(EmulatorFlashParameters);
@@ -240,88 +648,102 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* No Additional "SPI" Configuration */
     return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* No Additional "SPI" Configuration */
+    return 0;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+static void emulator_check(void)
+{
+    // Check if the emulator instance exists
+    if (!Emulator) {
+        EVE_DEBUG_ERROR("ERROR: Emulator is not initialised.\n");
+        // If the emulator instance doesnt exist, call MCU_Deinit() 
+        MCU_Deinit();
+        // Exit application with exit code -1
+        exit(-1);
+    }
+
+    // Check whether the emulator window is still running 
+    if (!BT8XXEMU_isRunning(Emulator)) {
+        EVE_DEBUG_PRINTF("Emulator is no longer running.\n");
+        // If the window is no longer running, call MCU_Deinit() to destroy the emulator
+        MCU_Deinit();
+        // Exit application with exit code 0
+        exit(0);
+    }
 }
 
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void)
 {
-    // check here if the emulator window is still running 
-    if (!BT8XXEMU_isRunning(Emulator)) {
-        // if the window is no longer running, then call MCU_Deinit() to destory the emluator
-        MCU_Deinit();
-        // exit application with code 0
-        exit(0);
-    }
- 
+    emulator_check();
     BT8XXEMU_chipSelect(Emulator, 1);
 }
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void)
 {
+    emulator_check();
     BT8XXEMU_chipSelect(Emulator, 0);
 }
 
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    //NOTE: called in EVE_API.c after MCU_Init(), which reults in the emulator instance being imemditaly killed.
-
     /*
-    if (!Emulator)
-    {
-        BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
-    }
-
-    BT8XXEMU_stop(Emulator);
-    BT8XXEMU_destroy(Emulator);
-    Emulator = NULL;
-    */
+     * PD emulation is intentionally disabled. EVE_API.c calls MCU_PDlow()
+     * immediately after MCU_Init(), which would destroy the newly created
+     * emulator instance.
+     */
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-
-    //NOTE: called in EVE_API.c after MCU_PDlow(), which reults in the emulator instance being restarted.
-
     /*
-    if (Emulator)
-    {
-        BT8XXEMU_stop(Emulator);
-        BT8XXEMU_destroy(Emulator);
-        Emulator = NULL;
-    }
+     * PD emulation is intentionally disabled. EVE_API.c calls MCU_PDhigh()
+     * immediately after MCU_PDlow(), which would result in the emulator
+     * instance being restarted.
+     */
+}
 
-    BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
-    */
+// ------------------------ Interrupt line high --------------------------------
+int MCU_Int(void)
+{
+    emulator_check();
+    return !BT8XXEMU_hasInterrupt(Emulator);
 }
 
 // ------------------------- Delay functions -----------------------------------
 
 void MCU_Delay_20ms(void)
 {
-#ifdef _WIN32
     Sleep(20);
-#else
-    usleep(20 * 1000);
-#endif
 }
 
 void MCU_Delay_500ms(void)
 {
-#ifdef _WIN32
     Sleep(500);
-#else
-    usleep(500 * 1000);
-#endif
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
 
 // Exchange a single byte on the SPI bus
-char MCU_SPIReadWrite8(uint8_t val)
+uint8_t MCU_SPIReadWrite8(uint8_t val)
 {
     uint8_t valrx = BT8XXEMU_transfer(Emulator, val);
     return valrx;
@@ -373,6 +795,7 @@ uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite)
 }
 
 uint8_t MCU_SPIRead8(void) {
+
     uint8_t DataRead = 0;
 
     DataRead = MCU_SPIReadWrite8(0);
@@ -381,10 +804,13 @@ uint8_t MCU_SPIRead8(void) {
 }
 
 void MCU_SPIWrite8(uint8_t DataToWrite) {
+
     MCU_SPIReadWrite8(DataToWrite);
+
 }
 
 uint16_t MCU_SPIRead16(void) {
+
     uint16_t DataRead = 0;
 
     DataRead = MCU_SPIReadWrite16(0);
@@ -392,15 +818,20 @@ uint16_t MCU_SPIRead16(void) {
     return DataRead;
 }
 
-void MCU_SPIWrite16(uint16_t DataToWrite) {
+void MCU_SPIWrite16(uint16_t DataToWrite)
+{
     MCU_SPIReadWrite16(DataToWrite);
+
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite) {
+
     MCU_SPIReadWrite24(DataToWrite);
+
 }
 
 uint32_t MCU_SPIRead32(void) {
+
     uint32_t DataRead = 0;
 
     DataRead = MCU_SPIReadWrite32(0);
@@ -413,9 +844,8 @@ void MCU_SPIWrite32(uint32_t DataToWrite) {
 }
 
 void MCU_SPIWrite(const uint8_t* DataToWrite, uint32_t length) {
-    //TODO: replace with SPI.transfer(DataToWrite, length);
-    // Note that DataToWrite is overwritten.
-    uint16_t DataPointer = 0;
+
+    uint32_t DataPointer = 0;
 
     while (DataPointer < length) {
         MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
@@ -424,8 +854,8 @@ void MCU_SPIWrite(const uint8_t* DataToWrite, uint32_t length) {
 }
 
 void MCU_SPIRead(uint8_t* DataToRead, uint32_t length) {
-    //TODO: replace with SPI.transfer(DataToRead, length);
-    uint16_t DataPointer = 0;
+
+    uint32_t DataPointer = 0;
 
     while (DataPointer < length) {
         DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
@@ -435,76 +865,50 @@ void MCU_SPIRead(uint8_t* DataToRead, uint32_t length) {
 
 uint16_t MCU_htobe16(uint16_t h)
 {
-#ifdef _WIN32
     return _byteswap_ushort(h);
-#else // _WIN32
-    return htobe16(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_htobe32(uint32_t h)
 {
-#ifdef _WIN32
     return _byteswap_ulong(h);
-#else // _WIN32
-    return htobe32(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_htole16(uint16_t h)
 {
-#ifdef _WIN32
     return (h);
-#else // _WIN32
-    return htole16(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_htole32(uint32_t h)
 {
-#ifdef _WIN32
     return (h);
-#else // _WIN32
-    return htole32(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_be16toh(uint16_t h)
 {
-#ifdef _WIN32
     return _byteswap_ushort(h);
-#else // _WIN32
-    return be16toh(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_be32toh(uint32_t h)
 {
-#ifdef _WIN32
     return _byteswap_ulong(h);
-#else // _WIN32
-    return be32toh(h);
-#endif // _WIN32
 }
 
 uint16_t MCU_le16toh(uint16_t h)
 {
-#ifdef _WIN32
     return (h);
-#else // _WIN32
-    return le16toh(h);
-#endif // _WIN32
 }
 
 uint32_t MCU_le32toh(uint32_t h)
 {
-#ifdef _WIN32
     return (h);
-#else // _WIN32
-    return le32toh(h);
-#endif // _WIN32
 }
 
 /* EVE MCU END */
 
-#endif /* defined(USE_EMULATOR) */
+#else
+
+#error EVE Emulator is only supported on x64 Windows
+
+#endif // _WIN64
+
+#endif /* defined(PLATFORM_EMULATOR) */

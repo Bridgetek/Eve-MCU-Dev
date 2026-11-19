@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -36,20 +36,34 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* MACROS **************************************************************************/
 
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
 #ifndef MIN
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#endif
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
 #endif
 
 // Bitmap handle to use for scaled fonts
@@ -64,6 +78,18 @@ const uint16_t furmans_top = 0x8000;
 #define ARC_CYCLE_WIDTH (EVE_DISP_HEIGHT / 32)
 
 #define ARC_GAP(A) ((A) * 8 / 10)
+
+// Configuration screen keys
+const int key_conf_row_1 = 1;
+const int key_conf_row_2 = 4;
+const int key_wheel = 100;
+const int key_go = 101;
+
+// Countdown screen keys
+const int key_finish = 1;
+const int key_restart = 2;
+const int key_skip = 3;
+const int key_pause = 4;
 
 // Colours in hexadecimal RGB
 const uint32_t col_timer_active = 0x6666ff;
@@ -84,6 +110,8 @@ const int interval_count_max = 99;
 const int timer_max = (59*60) + 59;
 
 const int key_debounce_filter = 3;
+
+/* FUNCTIONS ***********************************************************************/
 
 // Turn an unsigned integer into a string.
 static void uint2str(uint8_t val, char *str)
@@ -130,8 +158,10 @@ static void time2str(uint16_t val, char *str)
     str[i++] = '\0';
 }
 
-static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch)
+static int8_t chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch)
 {
+    // Set to non-zero if a vertex translate is set
+    int8_t vt = 0;
     if (cache->legacy)
     {
         // This is a legacy font.
@@ -140,6 +170,7 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
 #if IS_EVE_API(2, 3, 4, 5)
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
+            vt = 1;
 #endif
             EVE_VERTEX2II(0, 0, cache->handle, ch);
         }
@@ -160,6 +191,7 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
 #if IS_EVE_API(2, 3, 4, 5)
             EVE_VERTEX_TRANSLATE_X(x * 16);
             EVE_VERTEX_TRANSLATE_Y(y * 16);
+            vt = 1;
 #endif
             EVE_VERTEX2F(0, 0);
         }
@@ -168,11 +200,8 @@ static void chardraw(struct eve_font_cache *cache, int16_t x, int16_t y, char ch
             EVE_VERTEX2F(x * 16, y * 16);
         }
     }
-
-#if IS_EVE_API(2, 3, 4, 5)
-    EVE_VERTEX_TRANSLATE_X(0);
-    EVE_VERTEX_TRANSLATE_Y(0);
-#endif
+    // Return non-zero if a vertex translate reset is needed
+    return vt;
 }
 
 static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
@@ -196,21 +225,33 @@ static void setupzoom(struct eve_font_cache *cache, uint32_t zoom)
 static void stringdraw(struct eve_font_cache *cache, uint32_t zoom, int16_t x, int16_t y, const char *str)
 {
     const char *ch = str;
+    int8_t vt = 0;
 
     while (*ch)
     {
-        chardraw(cache, x, y, *ch);
+        if (chardraw(cache, x, y, *ch))
+        {
+            vt = 1;
+        }
     
         // Move the cursor in the x-axis.
         x = x + (((uint32_t)font_getcharwidth(cache, *ch) * zoom) / 0x10000);
         ch++;
+    }
+
+    // If resetting vertex translate X,Y is required from the character drawing
+    if (vt)
+    {
+#if IS_EVE_API(2, 3, 4, 5)
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
+#endif
     }
 }
 
 static uint16_t stringwidth(struct eve_font_cache *cache, uint32_t zoom, const char *str)
 {
     uint16_t x = 0;
-    int i = 0;
     const char *ch = str;
 
     while (*ch)
@@ -252,8 +293,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     int timer = timer_count;
     int quit_rest_count = 10;
 
-    int rest = 0;
-    int rest_max;
+    // Start exercise with a rest period
+    int rest = interval_rest_count;
+    int rest_max = interval_rest_count;
     int skip = 0;
     int pause = 0;
 
@@ -263,13 +305,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
     uint32_t curr_time = platform_get_time();
     uint32_t prev_time = curr_time;
-    uint32_t key_time = curr_time;
+    //uint32_t key_time = curr_time;
 
     // Zoom for buttons
     uint32_t button_zoom = (0x10000 * (centre_x - (r_outer / 2))) / (font_getwidth(&clockfont) * 8);
     int16_t button_x1_zoom = (centre_x - r_outer) - ((4 * font_getwidth(&clockfont) * button_zoom) / 0x10000);
     int16_t button_x2_zoom = (centre_x + r_outer) + ((font_getwidth(&clockfont) * button_zoom) / 0x10000);
-    int16_t button_y_zoom = centre_y - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
+    //int16_t button_y_zoom = centre_y - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_y1_zoom = (centre_y / 2) - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_y2_zoom = ((centre_y * 3) / 2) - (((font_getheight(&clockfont) * button_zoom) / 0x10000) / 2);
     int16_t button_w_zoom = (4 * font_getwidth(&clockfont) * button_zoom) / 0x10000;
@@ -280,7 +322,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
     uint8_t msg_timer = 0;
     uint8_t msg_alpha = 0;
 
-    while ((cycle > 0) || (rest > 0))
+    while (((cycle > 0) || (rest > 0)) && (LOOP))
     {
         curr_time = platform_get_time();
 
@@ -316,10 +358,10 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         timer--;
                         if ((timer < 4) && (timer > 0))
                         {
-                            playClick();
+                            sound_pip(NOTE_C3);
                         }
 
-                        if ((timer == 0) || (skip))
+                        if ((timer == 0) || (skip == 1))
                         {
                             interval--;
                             if (interval > 0)
@@ -330,7 +372,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                 if (skip == 0)
                                 {
                                     msg_text = "Interval Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_play(SOUND_BELL, NOTE_C3);
                                 }
                             }
                             else if (cycle > 0)
@@ -343,7 +385,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                     rest_max = cycle_rest_count;
 
                                     msg_text = "Cycle Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_chimes(NOTE_C3);
                                 }
                                 else
                                 {
@@ -351,13 +393,17 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                                     rest_max = cycle_rest_count;
 
                                     msg_text = "Workout Complete";
-                                    playChimes(NOTE_C3);
+                                    sound_chimes(NOTE_C3);
                                 }
                             }
-                            if (skip)
+                            if (skip == 1)
                             {
                                 timer = timer_count;
                             }
+                        }
+                        if (skip == -1)
+                        {
+                            timer = timer_count;
                         }
                     }
                 }
@@ -366,16 +412,20 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                     rest--;
                     if ((rest < 4) && (rest > 0))
                     {
-                        playPip(NOTE_C3);
+                        sound_pip(NOTE_C3);
                     }
                     else if (rest == 0)
                     {
-                        playBell(NOTE_C3);
+                        sound_bell(NOTE_C3);
                     }
 
-                    if (skip)
+                    if (skip == 1)
                     {
                         rest = 0;
+                    }
+                    if (skip == -1)
+                    {
+                        rest = interval_rest_count;
                     }
                 }
         
@@ -435,7 +485,9 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         int16_t clock_x_zoom = centre_x - (stringwidth(&clockfont, clock_zoom, clock) / 2);
         int16_t clock_y_zoom = centre_y - (((font_getheight(&clockfont) * clock_zoom) / 0x10000) / 2);
             
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -444,20 +496,37 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_BEGIN(EVE_BEGIN_RECTS);
         // Don't show on screen
         EVE_COLOR_MASK(0, 0, 0, 0);
-        EVE_TAG(1);
+        EVE_TAG(key_finish);
         // Finish active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
-        EVE_VERTEX_TRANSLATE_Y(button_y_zoom * 16);
+        EVE_VERTEX_TRANSLATE_Y(button_y2_zoom * 16);
         EVE_VERTEX2F(0, 0);
         EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
-        EVE_VERTEX_TRANSLATE_Y((button_y_zoom + button_h_zoom) * 16);
+        EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
-        EVE_VERTEX2F(button_x1_zoom, button_y_zoom);
-        EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y_zoom + button_h_zoom);
+        EVE_VERTEX2F(button_x1_zoom, button_y2_zoom);
+        EVE_VERTEX2F(button_x1_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
 #endif
-        EVE_TAG(2);
+        EVE_TAG(key_restart);
+        // Skip active area
+#if IS_EVE_API(2, 3, 4, 5)
+        EVE_VERTEX_TRANSLATE_X(button_x1_zoom * 16);
+        EVE_VERTEX_TRANSLATE_Y(button_y1_zoom * 16);
+        EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X((button_x1_zoom + button_w_zoom) * 16);
+        EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
+        EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
+#else
+        EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
+        EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
+#endif
+        EVE_TAG(key_skip);
         // Skip active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
@@ -466,11 +535,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y1_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x2_zoom, button_y1_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y1_zoom + button_h_zoom);
 #endif
-        EVE_TAG(3);
+        EVE_TAG(key_pause);
         // Pause active area
 #if IS_EVE_API(2, 3, 4, 5)
         EVE_VERTEX_TRANSLATE_X(button_x2_zoom * 16);
@@ -479,10 +550,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
         EVE_VERTEX_TRANSLATE_X((button_x2_zoom + button_w_zoom) * 16);
         EVE_VERTEX_TRANSLATE_Y((button_y2_zoom + button_h_zoom) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F(button_x2_zoom, button_y2_zoom);
         EVE_VERTEX2F(button_x2_zoom + button_w_zoom, button_y2_zoom + button_h_zoom);
 #endif
+
         EVE_COLOR_MASK(1, 1, 1, 1);
         EVE_TAG_MASK(0);
 
@@ -498,15 +572,19 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
         EVE_TAG_MASK(1);
         setupzoom(&clockfont, button_zoom);
-        EVE_TAG(1);
+        EVE_TAG(key_finish);
         stringdraw(&clockfont, button_zoom, 
             button_x1_zoom, 
-            button_y_zoom, "FINISH");
-        EVE_TAG(2);
+            button_y2_zoom, "FINISH");
+        EVE_TAG(key_restart);
+        stringdraw(&clockfont, button_zoom, 
+            button_x1_zoom, 
+            button_y1_zoom, "RESTART");
+        EVE_TAG(key_skip);
         stringdraw(&clockfont, button_zoom, 
             button_x2_zoom, 
             button_y1_zoom, "SKIP");
-        EVE_TAG(3);
+        EVE_TAG(key_pause);
         if (pause == 0)
         {
             stringdraw(&clockfont, button_zoom, 
@@ -596,6 +674,11 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             EVE_COLOR(col_clock);
             EVE_COLOR_A(msg_alpha);
 
+#if IS_EVE_API(2, 3, 4, 5)
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
+#endif
+
             setupzoom(&clockfont, msg_zoom);
             stringdraw(&clockfont, msg_zoom, 
                 centre_x - (stringwidth(&clockfont, msg_zoom, msg_text) / 2), 
@@ -615,9 +698,13 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             }
         }
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         uint8_t key = 0;
@@ -627,7 +714,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
             if ((key_debounce > key_debounce_filter) && (key != key_prev))
             {
                 key_prev = key;
-                if (key == 1)
+                if (key == key_finish)
                 {
                     if (cycle > 0)
                     {
@@ -646,7 +733,15 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
                         rest_max = 0;
                     }
                 }
-                else if (key == 2)
+                else if (key == key_restart)
+                {
+                    // Back
+                    skip = -1;
+                    //pause = 0;
+
+                    msg_text = "Restart";
+                }
+                else if (key == key_skip)
                 {
                     // Skip
                     skip = 1;
@@ -654,7 +749,7 @@ void timer_page(int cycle_count, int cycle_rest_count, int interval_count, int i
 
                     msg_text = "Skipped";
                 }
-                else if (key == 3)
+                else if (key == key_pause)
                 {
                     // Pause
                     if (pause == 0)
@@ -714,7 +809,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 
     uint32_t total_time = 0;
 
-    while (1)
+    do
     {
         total_time = *cycle_count * (*cycle_rest_count + (*interval_count * (*interval_rest_count + *timer_count)));
 
@@ -728,8 +823,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Top row active rectangles
         for (i = 0; i < 3; i++)
         {
-            EVE_TAG(i + 1);
-            if (selected == i + 1)
+            EVE_TAG(key_conf_row_1 + i);
+            if (selected == key_conf_row_1 + i)
             {
                 EVE_COLOR(col_selected);
             }
@@ -744,6 +839,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 6) * 16);
             EVE_VERTEX2F(0, 0);
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
 #else
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 0)) * 16);
@@ -754,8 +851,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Middle row active rectangles
         for (i = 0; i < 2; i++)
         {
-            EVE_TAG(i + 4);
-            if (selected == i + 4)
+            EVE_TAG(key_conf_row_2 + i);
+            if (selected == key_conf_row_2 + i)
             {
                 EVE_COLOR(col_selected);
             }
@@ -770,6 +867,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * (3 + (2 * i)) / 8) * 16);
             EVE_VERTEX_TRANSLATE_Y((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 13) * 16);
             EVE_VERTEX2F(0, 0);
+            EVE_VERTEX_TRANSLATE_X(0);
+            EVE_VERTEX_TRANSLATE_Y(0);
 #else
             EVE_VERTEX2F((EVE_DISP_WIDTH * (1 + (2 * i)) / 8) * 16,
                 ((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 7)) * 16);
@@ -778,10 +877,6 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 #endif
         }
 
-#if IS_EVE_API(2, 3, 4, 5)
-        EVE_VERTEX_TRANSLATE_X(0);
-        EVE_VERTEX_TRANSLATE_Y(0);
-#endif
         EVE_TAG_MASK(0);
 
         EVE_COLOR(col_text);
@@ -864,7 +959,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         // Active areas to adjust values
         // tag and add a tracker to the arc gauge point
         EVE_TAG_MASK(1); // enable tagging
-        EVE_TAG(100);
+        EVE_TAG(key_wheel);
         arc_simple_gauge(
             (EVE_DISP_WIDTH * 3 / 4), 
             (EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10), 
@@ -892,7 +987,7 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         EVE_TAG_MASK(1); // enable tagging
         msg_text = "GO";
         EVE_COLOR(col_selected);
-        EVE_TAG(101);
+        EVE_TAG(key_go);
         // Start active area
         EVE_BEGIN(EVE_BEGIN_POINTS);
         EVE_POINT_SIZE((stringwidth(&clockfont, time_zoom, msg_text) * 3 / 5) * 16);
@@ -900,6 +995,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
         EVE_VERTEX_TRANSLATE_X((EVE_DISP_WIDTH * 3 / 4) * 16);
         EVE_VERTEX_TRANSLATE_Y(((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16);
         EVE_VERTEX2F(0, 0);
+        EVE_VERTEX_TRANSLATE_X(0);
+        EVE_VERTEX_TRANSLATE_Y(0);
 #else
         EVE_VERTEX2F((EVE_DISP_WIDTH * 3 / 4) * 16,
             (((EVE_DISP_HEIGHT / 32) + (((font_getheight(&clockfont) * text_zoom) / 0x10000) * 10)) * 16));
@@ -924,30 +1021,26 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
             if ((key_debounce > key_debounce_filter) && (key != key_prev))
             {
                 key_prev = key;
-                if ((key > 0) && (key < 100))
+                if ((key > 0) && (key < key_wheel))
                 {
                     selected = key;
                 }
-                else if (key == 101)
+                else if (key == key_go)
                 {
                     // Start!
-                    playBell(NOTE_C3);
+                    sound_bell(NOTE_C3);
                     break;
                 }
             }
             
-            if (key == 100)
+            if (key == key_wheel)
             {
                 uint32_t trackVal;
                 // register has a differnt name for the FT80x series
-#if IS_EVE_API(2,3,4,5)
                 trackVal = EVE_LIB_MemRead32(EVE_REG_TRACKER);
-#else
-                trackVal = EVE_LIB_MemRead32(EVE_REG_TRACK);
-#endif
                 trackVal >>= 16;
 
-                int isTime = 0;
+                //int isTime = 0;
                 int units;
                 int step;
                 int adjust = 0;
@@ -955,13 +1048,13 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
 
                 if (selected >= 3)
                 {
-                    isTime = 1;
+                    //isTime = 1;
                     units = dial_time_units / dial_time_step;
                     step = dial_time_step;
                 }
                 else
                 {
-                    isTime = 0;
+                    //isTime = 0;
                     units = dial_number_units;
                     step = 1;
                 }
@@ -969,46 +1062,46 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 dial_pos = (int)((trackVal * units) / 0x10000);
                 
                 // Find if the current rotation point is near the fully rotated position
-                if (((dial_pos == 0) && (dial_prev == units - 1)) ||
+                if (((dial_pos == 0) && (dial_prev == (uint32_t)units - 1)) ||
                     (dial_pos == dial_prev + 1))
                 {
                     adjust = +step;
-                    playClick();
+                    sound_click();
                 }
-                else if (((dial_pos == units - 1) && (dial_prev == 0)) ||
+                else if (((dial_pos == (uint32_t)units - 1) && (dial_prev == 0)) ||
                     (dial_pos == dial_prev - 1))
                 {
                     adjust = -step;
-                    playClick();
+                    sound_click();
                 }
                 dial_prev = dial_pos;
 
                 // Update the cycles count
-                if (selected == 1)
+                if (selected == key_conf_row_1 + 0)
                 {
                     *cycle_count += adjust;
                     if (*cycle_count < 1) *cycle_count = 1;
                     if (*cycle_count > cycle_count_max) *cycle_count = cycle_count_max;
                 }
-                else if (selected == 2)
+                else if (selected == key_conf_row_1 + 1)
                 {
                     *interval_count += adjust;
                     if (*interval_count < 1) *interval_count = 1;
                     if (*interval_count > interval_count_max) *interval_count = interval_count_max;
                 }
-                else if (selected == 3) 
+                else if (selected == key_conf_row_1 + 2) 
                 {
                     *timer_count += adjust;
                     if (*timer_count < dial_time_step) *timer_count = dial_time_step;
                     if (*timer_count > timer_max) *timer_count = timer_max;
                 }
-                else if (selected == 4) 
+                else if (selected == key_conf_row_2 + 0) 
                 {
                     *cycle_rest_count += adjust;
                     if (*cycle_rest_count < dial_time_step) *cycle_rest_count = dial_time_step;
                     if (*cycle_rest_count > timer_max) *cycle_rest_count = timer_max;
                 }
-                else if (selected == 5) 
+                else if (selected == key_conf_row_2 + 1) 
                 {
                     *interval_rest_count += adjust;
                     if (*interval_rest_count < dial_time_step) *interval_rest_count = dial_time_step;
@@ -1018,7 +1111,8 @@ void setup_page(int *cycle_count, int *cycle_rest_count, int *interval_count, in
                 dial_track = (trackVal + furmans_top) & 0xffff;
             }
         }
-    }
+    
+    } while (LOOP);
 }
 
 void eve_display(void)
@@ -1030,20 +1124,30 @@ void eve_display(void)
     int interval_rest_count = 15;
     int timer_count = 90;
 
-    while (1)
+    do
     {
         setup_page(&cycle_count, &cycle_rest_count, &interval_count, &interval_rest_count, &timer_count);
         timer_page(cycle_count, cycle_rest_count, interval_count, interval_rest_count, timer_count);
-    }
+    } while(LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising EVE...\n");
-    EVE_Init();
-
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
+    // Enable audio amplifier
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
+    sound_enable();
+    
     // Get a cache of the ROM font we want to use.
+    memset(&clockfont, 1, sizeof(clockfont));
     font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
 
     // Map the ROM font we are using onto a normal bitmap.
@@ -1063,14 +1167,14 @@ void eve_example(void)
     clockfont.handle = SCALED_FONT;
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
-        while(1);
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
     }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
-    eve_display();
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

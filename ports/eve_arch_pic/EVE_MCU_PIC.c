@@ -1,14 +1,15 @@
 /**
- @file EVE_MCU_PIC.c
+ * @file EVE_MCU_PIC.c
+ * @details MCU-specific code for controlling EVE on PIC devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,6 +43,8 @@
 
 #pragma message "Compiling " __FILE__ " for Microchip PIC"
 
+/* EVE MCU HEADER */
+
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
@@ -50,32 +53,35 @@
 #include <string.h>
 #include <stdint.h> // For Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
 #define _XTAL_FREQ 12000000      // Required for _delay() function, internal OSC Max
 
 // PIC configuration definitions
-#pragma config WDTEN = OFF                                                      // Watchdog Timer Enable bit
-#pragma config PWRTEN = OFF                                                     // Power-up Timer Enable bit (PWRT disabled)
-#pragma config MCLRE = EXTMCLR                                                  // MCLR Pin Function Select bit (MCLR pin function is MCLR)
-#pragma config CP0 = OFF                                                        // Code Protection Block 0
-#pragma config CP1 = OFF                                                        // Code Protection Block 1
-#pragma config CP2 = OFF                                                        // Code Protection Block 2
-#pragma config CP3 = OFF                                                        // Code Protection Block 3
-#pragma config CPB = OFF                                                        // Boot Block Code Protection bit (Boot block (000000-0007FFh) not code-protected)
-#pragma config CPD = OFF                                                        // Data EEPROM Code Protection bit (Data EEPROM not code-protected)
-#pragma config BOREN = ON                                                       // Brown-out Reset Selection bits (BOR enabled)
+#pragma config WDTEN = OFF          // Watchdog Timer Enable bit
+#pragma config PWRTEN = OFF         // Power-up Timer Enable bit (PWRT disabled)
+#pragma config MCLRE = EXTMCLR      // MCLR Pin Function Select bit (MCLR pin function is MCLR)
+#pragma config CP0 = OFF            // Code Protection Block 0
+#pragma config CP1 = OFF            // Code Protection Block 1
+#pragma config CP2 = OFF            // Code Protection Block 2
+#pragma config CP3 = OFF            // Code Protection Block 3
+#pragma config CPB = OFF            // Boot Block Code Protection bit (Boot block (000000-0007FFh) not code-protected)
+#pragma config CPD = OFF            // Data EEPROM Code Protection bit (Data EEPROM not code-protected)
+#pragma config BOREN = ON           // Brown-out Reset Selection bits (BOR enabled)
 
-#pragma config IESO = ON       // Internal External Switchover enable bit 
-#pragma config FCMEN = ON       // Fail-Safe Clock Monitor Enabled bit 
-#pragma config PRICLKEN = ON       // 
-#pragma config PLLCFG = ON       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
-#pragma config FOSC = 0x03       // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
+#pragma config IESO = ON            // Internal External Switchover enable bit 
+#pragma config FCMEN = ON           // Fail-Safe Clock Monitor Enabled bit 
+#pragma config PRICLKEN = ON        // 
+#pragma config PLLCFG = ON          // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
+#pragma config FOSC = 0x03          // Fail-Safe Clock Monitor Enabled bit (Fail-Safe Clock Monitor is enabled)
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the PIC platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -86,23 +92,24 @@ int MCU_Init(void)
     ANSELD = 0x00;
 
     // Port pin set-up
-    TRISCbits.TRISC7 = 0;                                                       // CS
-    TRISCbits.TRISC6 = 0;                                                       // PD pin
-    TRISCbits.TRISC3 = 0;                                                       // SCK
-    TRISCbits.TRISC4 = 1;                                                       // SDI (MISO)
-    TRISCbits.TRISC5 = 0;                                                       // SDO (MOSI)
+    TRISCbits.TRISC7 = 0;      // CS# pin (output)
+    TRISCbits.TRISC6 = 0;      // PD# pin (output)
+    TRISCbits.TRISC3 = 0;      // SCK
+    TRISCbits.TRISC4 = 1;      // SDI (MISO)
+    TRISCbits.TRISC5 = 0;      // SDO (MOSI)
+    TRISCbits.TRISC2 = 1;      // INT# pin (input)
 
-    TRISDbits.TRISD7 = 1;                                                       // RXD INPUT
-    TRISDbits.TRISD6 = 0;                                                       // TXD OUTPUT
-    TRISDbits.TRISD5 = 1;                                                       // RTS INPUT (FROM FT232 RTS))
-    TRISDbits.TRISD4 = 0;                                                       // CTS OUTPUT (TO FT232 CTS)
+    TRISDbits.TRISD7 = 1;      // RXD INPUT
+    TRISDbits.TRISD6 = 0;      // TXD OUTPUT
+    TRISDbits.TRISD5 = 1;      // RTS INPUT (FROM FT232 RTS))
+    TRISDbits.TRISD4 = 0;      // CTS OUTPUT (TO FT232 CTS)
 
     LATBbits.LATB0 = 1;
     
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
 
     // SPI 1 set-up
-    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+    SSP1CON1bits.SSPEN  = 0;    // Disable SPI1
 
     SSP1CON1bits.WCOL   = 0;
     SSP1CON1bits.SSPOV  = 0;
@@ -116,45 +123,54 @@ int MCU_Init(void)
     SSP1STATbits.CKE = 1;
     SSP1STATbits.BF  = 0;
 
-    SSP1CON1bits.SSPEN  = 1;                                                    // Enable SPI1 after configuration
+    SSP1CON1bits.SSPEN  = 1;     // Enable SPI1 after configuration
+
+    // Millisecond interrupt
+    T1CON = 0x01;
+
+    PIR1bits.TMR1IF = 0;
+    TMR1H = 0xEC;
+    TMR1L = 0x78;
+    PIE1bits.TMR1IE = 1;
+    INTCON = 0xC0;
 
     return 0;
 }
 
 int MCU_Deinit(void)
 {
-    SSP1CON1bits.SSPEN  = 0;                                                    //Disable SPI1
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
 
+    /* Disable SPI1. */
+    SSP1CON1bits.SSPEN = 0;
+    
     return 0;
 }
 
 int MCU_Setup(void)
 {
-//#ifdef FT81X_ENABLE
-// Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
-//	MCU_CSlow();
-//	MCU_SPIWrite24(MCU_htobe32((REG_SPI_WIDTH << 8) | (1 << 31)));
-//	MCU_SPIWrite8(2);
-//	MCU_CShigh();
-
-// Turn on quad-SPI.
-//	spi_option(SPIM, spi_option_bus_width, 4);
-
-//#endif // FT81X_ENABLE
-
-// Turn off SPI buffering. Timing of chip select is critical.
-//	spi_option(SPIM, spi_option_fifo, 0);
-
+    /* Additional SPI Configuration */
     return 0;
 }
 
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on PIC18
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // ########################### GPIO CONTROL ####################################
 
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void)
 {
-    LATCbits.LATC7 = 0;                                                         // CS# line low
+    LATCbits.LATC7 = 0;         // CS# line low
     NOP();
 }  
 
@@ -162,19 +178,25 @@ void MCU_CSlow(void)
 void MCU_CShigh(void)
 {
     NOP();
-    LATCbits.LATC7 = 1;                                                         // CS# line high
+    LATCbits.LATC7 = 1;         // CS# line high
 }
 
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    LATCbits.LATC6 = 0;                                                         // PD# line low
+    LATCbits.LATC6 = 0;         // PD# line low
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    LATCbits.LATC6 = 1;                                                         // PD# line high
+    LATCbits.LATC6 = 1;         // PD# line high
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void)
+{
+    return (int)LATCbits.LATC2;         // INT# line
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -182,10 +204,10 @@ uint8_t MCU_SPIReadWrite8(uint8_t DataToWrite)
 {
     uint8_t DataRead = 0;
     
-    DataRead = SSP1BUF;                                                         // Dummy read, ensure BF clearedDataRead = SSP1BUF;
-    SSP1BUF = (DataToWrite);                                                    // Write data to SPI data register
-    while(!SSP1STATbits.BF);                                                    // Wait for completion of the SPI transfer
-    DataRead = SSP1BUF;                                                         // Get the value clocked in from the FT8xx
+    DataRead = SSP1BUF;         // Dummy read, ensure BF clearedDataRead = SSP1BUF;
+    SSP1BUF = (DataToWrite);    // Write data to SPI data register
+    while(!SSP1STATbits.BF);    // Wait for completion of the SPI transfer
+    DataRead = SSP1BUF;         // Get the value clocked in from the FT8xx/BT8xx
 
     return DataRead;
 }
@@ -249,6 +271,24 @@ void MCU_Delay_500ms(void)
     {
         __delay_ms(20);
     }
+}
+
+// --------------------------- msec delay based on timer -------------------------
+static volatile uint32_t ticks = 0;
+void Interrupt() 
+{
+    if(PIR1bits.TMR1IF)
+    {  
+        PIR1bits.TMR1IF = 0;
+        TMR1H = 0xEC;
+        TMR1L = 0x78;
+        ticks++;
+    }
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return ticks;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -361,7 +401,9 @@ uint16_t MCU_le16toh (uint16_t h)
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-     return h;
+    return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_PIC) */

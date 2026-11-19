@@ -4,7 +4,7 @@
 
 ## GymInterval Example
 
-The `gyminterval` example demonstrates drawing a countdown timer for interval training in a gym. 
+The `gyminterval` example demonstrates drawing a countdown timer for interval training in a gym. The example code uses the `arcs`, and `sound` snippets from the [snippets](../snippets) directory to perform some of the drawing and provide application functionality. 
 
 An animated countdown timer is drawn using arcs, text scaling and simple animation. The tracker feature is used for setting up the example. 
 
@@ -16,7 +16,7 @@ The interval timer allows a variable number of "sets" which are repeated a by th
 
 The number of sets and cycles, along with the length of each set and the reset times between each set and cycle is setup. To change one of the 5 parameters click on the setting to change then adjust the counter or time using the scroll-wheel surrounding the "GO" button.
 
-The following is an screenshot of the gyminterval setup screen.
+The following is an screenshot of the `gyminterval` setup screen.
 
 ![GymInterval Setup Screen Example](docs/setup.png)
 
@@ -28,17 +28,6 @@ Once the timer has started then the countdown will be shown as a time in the cen
 
 ![GymInterval Timer Example](docs/timer.png)
 
-## Platform Support
-
-This example supports the following platforms:
-
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-
-Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
-
 ## EVE API Support
 
 Supported EVE APIs in this example:
@@ -49,17 +38,26 @@ Supported EVE APIs in this example:
 
 The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays.
 
-## Platform Files and Folders
+## Platform Support
+
+This example supports the following platforms:
+
+| Port Name | Port Directory | Supported |
+| --- | --- | --- |
+| [Arduino IDE](arduino/README.md) | [ft900](arduino/) | Yes |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## Platform Files
 
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
-- **platform_get_time** get the system time elapsed since start in milliseconds.
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system.
 
 The example program in the common code is then called.
 
@@ -72,20 +70,56 @@ The example contains a common directory with several files which comprises all t
 | [README.md](README.md) | This file |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Implementation file for Arc style control widget |
+| [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
+| [snippets/platform/platform_time.c](../snippets/platform/platform_time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
 In the function `eve_example` the basic format is as follows:
 
-```
-void eve_example(const char *assets)
+```c
+void eve_example(void)
 {
-    EVE_Init();                 // Initialise the display
+    // Initialise the display
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
-    eve_calibrate();          // Calibrate the display
+    // Get a cache of the ROM font we want to use.
+    font_getfontinforom(&clockfont, EVE_ROMFONT_MAX);
 
-    eve_display();              // Run Application
+    // Map the ROM font we are using onto a normal bitmap.
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_DLSTART();
+#if IS_EVE_API(1)
+    font_romfont(SCALED_FONT, EVE_ROMFONT_MAX);
+#else
+    EVE_CMD_ROMFONT(SCALED_FONT, EVE_ROMFONT_MAX);
+#endif
+    EVE_DISPLAY();
+    EVE_CMD_SWAP();
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+
+    // Tell the program to use the mapped handle instead of the ROM font handle.
+    clockfont.handle = SCALED_FONT;
+
+    // Calibrate the display
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
+
+    // Start example code
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
@@ -102,7 +136,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {
@@ -113,3 +147,11 @@ Another function of this file is to read a single touch tag from the screen.
 
 A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
 If that register indicates a valid touch then this is flagged to the calling program.
+
+### `arcs.c`
+
+The arcs snippet will draw a smooth arc using blending and stencilling. An optional gauge method allows the positioning of a marker to indicate where a marker is placed on the arc.
+
+### `sound.c`
+
+The sounds snippet provides funtionality to enable audio driver circuity on development boards, and provide function calls to play the built-in sounds from the audio subsystem.

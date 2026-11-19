@@ -4,97 +4,174 @@
 
 The port for libft4222 comprises a host PC with a USB host controller connecting to the target EVE device through an FTDI FT4222H device. The FT4222H device manages the EVE device SPI bus. The host PC uses a library or DLL to manage the interface with the FT4222H device.
 
+## Requirements 
+
+| Requirement | Details | 
+| --- | --- | 
+| Host operating system | Windows/Linux |
+| Application architecture | `x64` |
+| Build environment | Visual Studio or a CMake-compatible toolchain | 
+| Platform definition | `USE_FT4222` |
+| Other | External FTDI Libraries |
+
 ## Hardware
 
-This code requires an FT4222H adapter to connect to the EVE module. The FT4222H adapter is normally based around the FTDI FT4222H USB bridging chip.
+This code requires an FT4222H adapter to connect to the EVE module. The FT4222H adapter is normally based around the [FTDI FT4222H](https://ftdichip.com/products/ft4222h/) USB bridging chip.
+
+### UMFT4222EV-D
 
 A popular solution which makes it easy to get up and running quickly is the FTDI [UMFT4222EV-D](https://ftdichip.com/products/umft4222ev/) module. 
 
-The UMFT4222EV-D module uses the FT2222H chipset. The module can be connected to the associated pins of the EVE module using jumper wires.
+The UMFT4222EV-D module uses the FT4222H chipset. 
 
-| UMFT4222EV-D Name | UMFT4222EV-D Pin | EVE Signal |
-| --- | --- | --- |
-| SCK | JP5 Pin 9 | SCK |
-| MOSI | JP5 Pin 7 | MOSI |
-| MISO | JP5 Pin 8 | MISO |
-| GPIO1 | JP4 Pin 5 | CS# |
-| GPIO1 | JP4 Pin 4 | PD# |
-| VCC (5V) | JP4 Pin 1 | 5V |
-| GND | JP4 Pin 3 / JP5 Pin 10 | GND |
+#### Connection to EVE
 
-The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
+The module can be connected to the associated pins of the EVE module using jumper wires.
 
-### ME812AU-WH50R Module
+| UMFT4222EV-D Name | UMFT4222EV-D Pin | 2x8 Pin | 1x10 Pin |EVE Signal |
+| --- | --- | --- | --- | --- |
+| SCK | JP5 Pin 9 | 1 | 1 | SCK |
+| MOSI | JP5 Pin 7 | 4 | 2 | MOSI |
+| MISO | JP5 Pin 8 | 3 | 3 | MISO |
+| SSO0 | JP4 Pin 9 | 2 | 4 | CS# |
+| GPIO2 | JP4 Pin 6 | 14 | 5 | INT# _(1)_ |
+| GPIO0 | JP4 Pin 4 | 13 | 6 | PD# |
+| VCC (5V) | JP4 Pin 1 | 10 | 7 | 5V |
+| GND | JP4 Pin 3 / JP5 Pin 10 | 11/12 | 9/10 | GND |
 
-The ME812AU-WH50R from Bridgetek has an integrated FT4222H and a FT812Q. The screen resolution is 800x480.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
+
+The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the UMFT4222EV-D and the separate power source common together to EVE. 
+
+### MM4222-QSPI
+
+Bridgetek offer the [MM4222-QSPI](https://brtchip.com/product/mm4222-qspi/) module, designed to support a range of host interfaces for Bridgetek EVE modules, including USB to SPI/QSPI. 
+
+The MM4222-QSPI module uses the FT4222H chipset.
+
+#### Connection to EVE
+
+The module can be connected to the associated pins of the EVE module using jumper wires. It supports EVE module SPI/QSPI connections through a 10-pin / 2-pin (**CN2** / **CN3**) single-row socket or a 8x2 dual-row socket (**CN8**).
+
+| MM4222-QSPI Name | CN2 pin | CN3 pin | CN8 pin | EVE Signal |
+| --- | --- | --- | --- | --- |
+| EVE_SCK | 1 | N/A | 1 | SCK |
+| EVE_MOSI | 2 | N/A | 4 | MOSI |
+| EVE_MISO | 3 | N/A | 3 | MISO |
+| EVE_IO2 | N/A | 1 | 6 | I02 |
+| EVE_IO3 | N/A | 2 | 5 | IO3 |
+| EVE_CS# | 4 | N/A | 2 | CS# |
+| EVE_INT# | 5 | N/A | 14 | INT# _(1)_ |
+| EVE_RST# | 6 | N/A | 13 | PD# |
+| VCC5V-Board | 7 | N/A | 10  | 5V |
+| GND | 9 / 10 | N/A | 11 / 12 | GND |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
+
+The adapter also provides a 5V power supply via the 5V pin on the header. Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the MM4222-QSPI and the separate power source common together to EVE. 
+
+### Modules 
+
+The following modules contain both a USB to SPI bridge and an EVE device. No additional connections are required between the components.
+
+#### ME812AU-WH50R Module
+
+The [ME812AU-WH50R](http://brtchip.com/product/me812au-wh50r/) from Bridgetek has an integrated FT4222H and a FT812Q. The screen resolution is 800x480.
 
 The settings required in `EVE_config.h` are:
-```
-#define FT8XX_TYPE FT812
-#define DISPLAY_RES WVGA
+```c
+#define EVE_DEVICE FT812
+#define EVE_DISPLAY_RES WVGA
 ```
 
-### VM816CU50A-D Module
+#### VM816CU50A-D Module
 
-The VM816CU50A-D from Bridgetek has an integrated FT4222H and a BT816Q. The screen resolution is 800x480.
+The [VM816CU50A-D](https://brtchip.com/product/vm816cu50a-d/) from Bridgetek has an integrated FT4222H and a BT816Q. The screen resolution is 800x480.
 
 The settings required in `EVE_config.h` are:
-```
-#define FT8XX_TYPE BT816
-#define DISPLAY_RES WVGA
+```c
+#define EVE_DEVICE BT816
+#define EVE_DISPLAY_RES WVGA
 ```
 
-## Windows
+#### ME817EV Module
+
+The [ME817EV](https://brtchip.com/product/me817ev/) from Bridgetek has an integrated FT4222H and a BT817Q.
+
+The settings required in `EVE_config.h` are:
+```c
+#define EVE_DEVICE BT817
+```
+
+With an appropiate `EVE_DISPLAY_RES` settings for the attached LCD panel.
+
+#### VM820C
+
+The [VM820C](https://brtchip.com/product/vm820c/) Credit Card Module from Bridgetek has an integrated FT4222H and functions as the baseboard for development modules based on the **BT820B** IC.
+
+The settings required in `EVE_config.h` are:
+```c
+#define EVE_DEVICE BT820
+```
+
+With an appropiate `EVE_DISPLAY_RES` settings for the attached LCD panel.
+
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the libFT4222 port:
+
+| Initialisation Phase | Runtime |
+| --- | --- |
+| 1.25 MHz | 20 MHz |
+
+The CS# pin is controlled by the libFT4222 library.
+
+The EVE PD# pin is controlled by software using GPIOs.The PD# pin is setup as GPIO output pin with a "Low" output and no pull ups or pull downs, as is is controlled by software. 
+
+The INT# pin is setup as a GPIO input with no pull ups or pull downs.
+
+## Files
+
+| File | Function |
+| --- | --- |
+| [EVE_libft4222.c](EVE_libft4222.c) | MCU layer interface for interface setup, higher level read/writes, endian conversions, PD# pin control, INT# detection. |
+| [libft4222.cmake](libft4222.cmake) | CMake recipe suitable for including in an application CMakeLists.txt file to include libFT4222 in a project. |
+| [../external/ftdi_libraries/libFT4222](../external/ftdi_libraries/libFT4222) | Directory containing FT4222 libraries for Linux and Windows. |
+| [../external/ftdi_libraries/libFTD2XX](../external/ftdi_libraries/libFTD2XX) | Directory containing D2XX libraries for Linux and Windows. |
+
+## Compilation
+
+The "platform" macro `USE_FT4222` must be set to enable this port. All other platform macros must be undefined.
+
+The `USE_FT4222` macro holds the FT4222H channel to open. For example in the compiler command line the following would be a parameter to the compiler to select channel 0 on the FT4222 device.
+
+```console
+-DUSE_FT4222=0
+```
+
+In a CMake recipe the compile definition would be:
+
+```cmake
+add_compile_definitions(USE_FT4222=0)
+```
+
+A sample CMake recipe is included which can be used in a project to add the libFT4222 functionality. 
+
+For Visual Studio this can be set in "Project Properties" -> "Configuration Properties" -> "C/C++" -> "Preprocessor" -> "Preprocessor Definitions":
+
+![USE_FT4222 Setting in Visual Studio](../../docs/vs_use_ft4222.png)
+
+### Windows
 
 Important Information about Windows builds.
 
-To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.8 or later. It is available from the FTDI website:
+To compile this you will have to download the **LibFT4222** "middleware library" for Windows. The recommended version is v1.4.8 or later. The distributed files for this library are collected in the repository by Bridgetek for convenience: 
 
-https://ftdichip.com/software-examples/ft4222h-software-examples/
+https://github.com/Bridgetek/FTDI-SW-Release/
 
-Download the latest version of the LibFT4222 library distribution. The file will typically have a name in the format `LibFT4222-vx.x.x.zip` where *vx.x.x* is the version number. 
+This is used as a submodule for Windows compilations and is found in the directory `ports/external/ftdi_libraries`. Ensure that the repository has been cloned before compiling libft4222 builds.
 
-The library is installed *once* into the `ports\eve_libft4222` directory. When building the example code the library files (H, DLL and LIB files) are loaded from this location.
-
-### Install the LibFT4222 Middleware Library in EVE-MCU-Dev library
-
-The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `imports`. The distribution contains libraries for various CPU architectures. On v1.4.8 these architectures are AMD64 (64-bit Windows) and x86 (32- bit Windows).
-
-Each architecture has:
-- A DLL file for LibFT4222
-- LIB files for connecting the application to the LibFT4222 DLL and FTD2XX DLLs
-- C header files for LibFT4222 and FTD2XX
-
-A Windows Command Line BAT file `install_libft4222.bat` is included in this folder. This will copy the correct files from a LibFT4222 library distribution to the 
-current directory (`ports\eve_libft4222`).
-
-To run the BAT file change directory to the `ports\eve_libft4222` directory. The path to the `imports` directory in the extracted distribution folder is passed as the first parameter to the BAT file. For example:
-
-```
-> cd ports\eve_libft4222
-> install_libft4222.bat ..\..\..\LibFT4222-v1.4.8\imports
-Installing AMD64 libraries from "..\..\..\LibFT4222-v1.4.8\imports"
-Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.dll" to LibFT4222-64.dll
-        1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\dll\amd64\LibFT4222-64.lib" to libft4222.lib
-        1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\LibFT4222\inc\LibFT4222.h" to libft4222.h
-        1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\dll\amd64\ftd2xx.lib" to libftd2xx.lib
-        1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\ftd2xx.h" to ftd2xx.h
-        1 file(s) copied.
-Copying "..\..\..\LibFT4222-v1.4.8\imports\ftd2xx\WinTypes.h" to WinTypes.h
-        1 file(s) copied.
-```
-
-The example application will load and use the `LibFT4222-64.dll` or `LibFT4222.dll` file at runtime. This file must be available either locally (in the same directory as the example executable) or on the system path (recommended "C:\Windows\System32"). The `CMakeLists.txt` file in each example will copy the DLL to the same output directory as the executable.
-
-Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
-
-A **bash** script file `install_libft4222.sh` is also included in this folder. It has the same functionality as `install_libft4222.bat` but can run in a bash shell to help with setting up the environment.
-
-## Linux
+### Linux
 
 Important Information about Linux builds.
 
@@ -106,8 +183,13 @@ Download the latest version of the LibFT4222 library distribution. The file will
 
 The library is installed *once* into the Linux file system. When building the example code the library files (H, DLL and LIB files) are found by the operating system.
 
-### Install the LibFT4222 Middleware Library in Linux
+#### Install the LibFT4222 Middleware Library in Linux
 
 The LibFT4222 library distribution zip file must be extracted into a new directory. The new directory will have a file called `ReadMe.txt` which describes in detail how to install the library on a Linux system. 
 
 Once the library is installed then the build will search the standard locations for include and library files.
+
+## Example Software
+
+Please refer to the [libft4222 Simple example](../../examples/simple/libft4222/README.md) for instructions on using the port in an EVE-MCU-Dev project.
+

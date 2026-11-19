@@ -1,4 +1,3 @@
-# This test is disabled as FTDI have implemented a cloudflare filter for these files.
 name: Build Simple Example for Linux 
 
 on:
@@ -30,60 +29,33 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: false
 
     strategy:
+      fail-fast: false
       max-parallel: 1
       matrix:
         example: [
-          {dir: raspberry_pi,   compiler: arm,  library: rpi},
+          # Disable test for RPi since GitHub action is not running on Raspberry Pi OS with libgpiod2
+          #{dir: raspberry_pi,   compiler: arm,  library: rpi},
           {dir: pico,           compiler: arm,  library: pico},
-          {dir: libft4222,      compiler: none, library: libft4222},
-          {dir: libmpsse,       compiler: none, library: libmpsse },
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
         eve: [ 
-          {DISPLAY_RES: QVGA, FT8XX_TYPE: FT800, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: NO_RES, FT8XX_TYPE: FT813, PANEL_TYPE: DP_0431_11A , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: WVGA, FT8XX_TYPE: BT815, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
-          {DISPLAY_RES: NO_RES, FT8XX_TYPE: NO_FT8XX, PANEL_TYPE: NO_PANEL , MODULE_TYPE: IDM20407A }, 
-          {DISPLAY_RES: WUXGA, FT8XX_TYPE: BT820, PANEL_TYPE: NO_PANEL , MODULE_TYPE: NO_MODULE }, 
+          {name: "FT800/QVGA", config: "-DEVE_DISPLAY_RES=EVE_QVGA -DEVE_DEVICE=EVE_FT800" }, 
+          {name: "FT813/WQVGA", config: "-DEVE_PANEL=EVE_DP_0431_11A -DEVE_DEVICE=EVE_FT813" }, 
+          {name: "BT815/WVGA", config: "-DEVE_DISPLAY_RES=EVE_WVGA -DEVE_DEVICE=EVE_BT815" }, 
+          {name: "BT817(IDM2040-7A)", config: "-DEVE_MODULE=EVE_IDM20407A" }, 
+          {name: "BT820/WUXGA", config: "-DEVE_DISPLAY_RES=EVE_WUXGA -DEVE_DEVICE=EVE_BT820" }, 
         ]
     
     # Set the name of the job to include the important information
-    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.FT8XX_TYPE }} ${{ matrix.eve.MODULE_TYPE }} ${{ matrix.eve.PANEL_TYPE }} ${{ matrix.eve.DISPLAY_RES }}
+    name: build ${{ matrix.example.dir }} - ${{ matrix.eve.name }}
 
     steps:
     - uses: actions/checkout@v6
-
-    # Form a cache of tar files from FTDI to save downloading them each time
-    - name: Get cache libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      id: ftdicache
-      uses: actions/cache@v5
       with:
-        path: |
-          ~/lib/
-        key: ${{ runner.os }}-ftdilibs-ubuntu-1
-        restore-keys: |
-          ${{ runner.os }}-ftdilibs-ubuntu
-
-    # If the cache hit for the FTDI tar files fails then download them
-    - name: Get libFTD2XX, libFT4222 and libMPSSE-SPI libraries
-      if: steps.ftdicache.outputs.cache-hit != 'true'
-      run: |
-        mkdir ~/lib/
-        cd ~/lib/
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/11/libftd2xx-linux-x86_64-1.4.34.tgz"
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/04/libft4222-linux-1.4.4.232.zip"
-        unzip libft4222-linux-1.4.4.232.zip
-        rm libft4222-linux-1.4.4.232.zip
-        curl --insecure -O "https://ftdichip.com/wp-content/uploads/2025/08/libmpsse-x86_64-1.0.8.tgz"
-        tar xfvz libftd2xx-linux-x86_64-1.4.34.tgz
-        tar xfvz libmpsse-x86_64-1.0.8.tgz
-        tar xfvz libft4222-linux-1.4.4.232.tgz
-        rm libftd2xx-linux-x86_64-1.4.34.tgz
-        rm libmpsse-x86_64-1.0.8.tgz
-        rm libft4222-linux-1.4.4.232.tgz
-        cd ..
+        submodules: 'false'
 
     # Use a cached version of gcc for arm from https://github.com/carlosperate (thanks!)
     - name: Setup gcc-arm-none-eabi environment
@@ -91,33 +63,6 @@ jobs:
       uses: carlosperate/arm-none-eabi-gcc-action@v1
       # Equivalent to the following line but uses caches for speed:
       # run: sudo apt-get update && sudo apt-get install gcc-arm-none-eabi
-
-    - name: Setup libFTD2XX library
-      if: ${{ matrix.example.library == 'libmpsse' || matrix.example.library == 'libft4222' }}
-      run: |
-        cd ~/lib/
-        cd linux-x86_64/
-        sudo cp libftd2xx.* /usr/local/lib
-        sudo chmod 0755 /usr/local/lib/libftd2xx.so.1.4.34
-        sudo ln -sf /usr/local/lib/libftd2xx.so.1.4.34 /usr/local/lib/libftd2xx.so
-        sudo cp ftd2xx.h /usr/local/include
-        sudo cp WinTypes.h /usr/local/include
-        cd ..
-
-    - name: Setup libMPSSE-SPI library
-      if: ${{ matrix.example.library == 'libmpsse' }}
-      run: |
-        cd ~/lib/
-        cd release
-        chmod +x install_libmpsse.sh
-        ./install_libmpsse.sh
-        cd ..
-
-    - name: Setup libFT4222 library
-      if: ${{ matrix.example.library == 'libft4222' }}
-      run: |
-        cd ~/lib/
-        sudo ./install4222.sh
 
     - name: Setup Linux GPIO library
       if: ${{ matrix.example.library == 'rpi' }}
@@ -133,7 +78,7 @@ jobs:
      
     # Test using matrix
     - name: Configure CMake
-      run: cmake -B build -S . -G Ninja -DMODULE_TYPE=${{ matrix.eve.MODULE_TYPE }} -DPANEL_TYPE=${{ matrix.eve.PANEL_TYPE }} -DFT8XX_TYPE=${{ matrix.eve.FT8XX_TYPE }} -DDISPLAY_RES=${{ matrix.eve.DISPLAY_RES }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B build -S . -G Ninja ${{ matrix.eve.config }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       working-directory: ${{github.workspace}}/examples/simple/${{ matrix.example.dir }}
 
     - name: Build

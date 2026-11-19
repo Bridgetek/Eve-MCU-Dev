@@ -1,42 +1,44 @@
 /**
- @file EVE_MCU_STM32CUBE.c
-*/
+ * @file EVE_MCU_STM32CUBE.c
+ * @details MCU-specific code for controlling EVE on STM32 devices.
+ */
 /*
-* ============================================================================
-* (C) Copyright Bridgetek Pte Ltd
-* ============================================================================
-*
-* This source code ("the Software") is provided by Bridgetek Pte Ltd
-* ("Bridgetek") subject to the licence terms set out
-* https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
-* You must read the Licence Terms before downloading or using the Software.
-* By installing or using the Software you agree to the Licence Terms. If you
-* do not agree to the Licence Terms then do not download or use the Software.
-*
-* Without prejudice to the Licence Terms, here is a summary of some of the key
-* terms of the Licence Terms (and in the event of any conflict between this
-* summary and the Licence Terms then the text of the Licence Terms will
-* prevail).
-*
-* The Software is provided "as is".
-* There are no warranties (or similar) in relation to the quality of the
-* Software. You use it at your own risk.
-* The Software should not be used in, or for, any medical device, system or
-* appliance. There are exclusions of Bridgetek liability for certain types of loss
-* such as: special loss or damage; incidental loss or damage; indirect or
-* consequential loss or damage; loss of income; loss of business; loss of
-* profits; loss of revenue; loss of contracts; business interruption; loss of
-* the use of money or anticipated savings; loss of information; loss of
-* opportunity; loss of goodwill or reputation; and/or loss of, damage to or
-* corruption of data.
-* There is a monetary cap on Bridgetek's liability.
-* The Software may have subsequently been amended by another user and then
-* distributed by that other user ("Adapted Software").  If so that user may
-* have additional licence terms that apply to those amendments. However, Bridgetek
-* has no liability in relation to those amendments.
-* ============================================================================
-*/
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
 
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_STM32_CUBE)
 
 /* EVE MCU HEADER */
@@ -53,17 +55,13 @@
 #define STR(x) STR_HELPER(x)
 #pragma message ("STM32Cube Quad Channel SPI controller enabled on channel " STR(PLATFORM_STM32_CUBE_CHANNEL))
 
-/* EVE MCU HEADER END */
 
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <HAL.h>
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
-
-/* EVE MCU */
 
 #include "quadspi.h"
 
@@ -71,10 +69,29 @@
  * and must be below 11 MHz. The fastest speed is usually in the order of
  * 120 to 240 MHz. So a prescalar of 64 will be safely within that limit.
  * The speed will be set to the full speed after initialisation. */
-#define QSPI_CLK_DIV (64 - 1)
+#define QSPI_INIT_CLK_DIV (64 - 1)
 
+/*
+ * Runtime QSPI prescaler selected according to the EVE API level.
+ *
+ * Current STM32H7 simple examples use a 120 MHz QSPI kernel clock:
+ * API 2-4: 120 MHz / (4 + 1) = 24 MHz
+ * API 5:   120 MHz / (1 + 1) = 60 MHz
+ */
+#if IS_EVE_API(5)
+#define QSPI_RUN_CLK_DIV 1
+#else 
+#define QSPI_RUN_CLK_DIV 4
+#endif
 
-#if defined(QUADSPI_ENABLE)
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the STM32 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
+
+#if defined(EVE_QSPI_ENABLE)
 #pragma message ("SPI Mode: Quad channel")
 #if IS_EVE_API(1)
 #error Quad SPI is not supported on EVE API 1 (FT80x)
@@ -84,16 +101,19 @@
 #endif
 
 /* SPI handler declaration */
+
 /* There is only one QUADSPI channel available. */
 extern QSPI_HandleTypeDef hqspi;
 
-/* Transfers are "chunked" to the EVE by the HAL.
- * This buffer is large enough to receive one chunk of
- * data and transmit it in one go. If it cannot be
- * sent in one go then the write address may not be
- * valid on subsequent packets.
+/*
+ * Size of the local SPI transfer buffer.
+ *
+ * EVE data transfers are chunked by the HAL. This buffer is sized to hold
+ * a complete HAL transfer chunk so that it can be sent to EVE in a single
+ * SPI transaction. Splitting a chunk across multiple transactions may
+ * invalidate the write address used by subsequent transfers.
  */
-#define MCU_BUFFER_SIZE (HAL_MAX_CHUNK_SIZE)
+#define MCU_BUFFER_SIZE 1024
 static uint8_t *MCU_buffer;
 static uint16_t MCU_bufferLen;
 
@@ -103,14 +123,13 @@ static void Error_Handler(void);
 #endif
 
 /* Default QuadSPI off. */
-static int ftIsQuad = 0;
+static int isQuadSPI = 0;
 
 int MCU_Init(void)
 {
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        DEBUG_ERROR("QSPI Setup malloc failed\n");
         return -1;
     }
 
@@ -121,7 +140,7 @@ int MCU_Init(void)
      * Use the "safe" prescaler to get a safe clock for SPI
      * during initialisation.
      */
-    hqspi.Init.ClockPrescaler = QSPI_CLK_DIV;
+    hqspi.Init.ClockPrescaler = QSPI_INIT_CLK_DIV;
     if (HAL_QSPI_Init(&hqspi) != HAL_OK)
     {
       Error_Handler();
@@ -133,7 +152,16 @@ int MCU_Init(void)
 
 int MCU_Deinit(void)
 {
-    HAL_QSPI_DeInit(&hqspi);
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Disable SPI peripheral. */
+    if (HAL_QSPI_DeInit(&hqspi) != HAL_OK)
+    {
+        return -1;
+    }
+
     if (MCU_buffer)
     {
         free(MCU_buffer);
@@ -145,26 +173,37 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-    /* Increase SPI speed after initialisation is complete.
-     * See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-     * This will set the QUADSPI to maximum speed configured
-     * in STM32CubeMX.
-     * This can be a maximum of 60 MHz for BT820, or 25 MHz
-     * on FT81x, BT88x, BT81x. */
-    MX_QUADSPI_Init();
+    /* Additional QSPI Configuration */
+    /* Increase the QSPI clock after EVE initialisation is complete. */
+    hqspi.Init.ClockPrescaler = QSPI_RUN_CLK_DIV;
 
-#if defined QUADSPI_ENABLE
-#if IS_EVE_API(2,3,4,5)
-    /* Select QSPI after initialisation complete. */
-    HAL_SetSPIMode(2);
-    ftIsQuad = 1;
-#else // IS_EVE_API(2,3,4,5)
-    ftIsQuad = 0;
-#endif
-#endif // QUADSPI_ENABLE
+    if (HAL_QSPI_Init(&hqspi) != HAL_OK)
+    {
+        return -1;
+    }
+    
+    return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        isQuadSPI= 0;
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        isQuadSPI = 1;
+    }
+    else
+    {
+        return -1;
+    }
 
     return 0;
 }
+#endif /* defined(EVE_QSPI_ENABLE) */
 
 /* Send data in the write buffer and read in bytes from the QSPI. */
 static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
@@ -184,7 +223,7 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         sCommand.InstructionMode   = QSPI_INSTRUCTION_NONE;
         sCommand.AddressMode       = QSPI_ADDRESS_NONE;
         sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
-        if (ftIsQuad == 0)
+        if (isQuadSPI == 0)
         {
             sCommand.DataMode          = QSPI_DATA_1_LINE;
         }
@@ -201,7 +240,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         status = HAL_QSPI_Command(&hqspi, &sCommand, HAL_MAX_DELAY);
         if (status != HAL_OK)
         {
-            DEBUG_PRINTF("QSPI command sending error in QSPI_Transmit...\n");
             return status;
         }
         else
@@ -209,7 +247,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
 			status = HAL_QSPI_Transmit(&hqspi, MCU_buffer, HAL_MAX_DELAY);
 			if (status != HAL_OK)
 			{
-				DEBUG_PRINTF("QSPI Transmit error in QSPI_Transmit...\n");
 				return status;
 			}
 		}
@@ -228,7 +265,7 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
         sCommand.Address           = addr;
 
-        if (ftIsQuad == 0)
+        if (isQuadSPI == 0)
         {
             sCommand.AddressMode       = QSPI_ADDRESS_1_LINE;
             sCommand.DataMode          = QSPI_DATA_1_LINE;
@@ -247,7 +284,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
         status = HAL_QSPI_Command(&hqspi, &sCommand, HAL_MAX_DELAY);
         if (status != HAL_OK)
         {
-            DEBUG_PRINTF("QSPI command sending error in rdBuffer...\n");
             return status;
         }
         else
@@ -255,7 +291,6 @@ static HAL_StatusTypeDef MCU_multi_transfer(uint8_t *DataToRead, uint32_t len)
 			status = HAL_QSPI_Receive(&hqspi, DataToRead, HAL_MAX_DELAY);
 			if (status != HAL_OK)
 			{
-				DEBUG_PRINTF("QSPI receive error in rdBuffer...\n");
 				return status;
 			}
         }
@@ -352,8 +387,7 @@ uint8_t MCU_SPIRead8(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 1, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
  
@@ -373,8 +407,7 @@ uint16_t MCU_SPIRead16(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 2, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
 
@@ -399,8 +432,7 @@ uint32_t MCU_SPIRead32(void)
     status = MCU_receive_buffer((uint8_t *)&DataRead, 4, 0);
     if (HAL_OK != status)
     {
-         // QUADSPI master read failed
-        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", status);
+        // QUADSPI master read failed
         DataRead = 0;
     }
 
@@ -417,16 +449,15 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     HAL_StatusTypeDef status;
 
     status = MCU_receive_buffer((uint8_t *)DataToRead, length, 0);
-    if (HAL_OK != status)
-    {
-         // QUADSPI master read failed
-        DEBUG_ERROR("MCU_SPIRead failed %d\n", status);
-    }
+    (void)status;
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-    MCU_append_buffer(DataToWrite, length, 0);
+    HAL_StatusTypeDef status;
+    
+    status = MCU_append_buffer(DataToWrite, length, 0);
+    (void)status;
 }
 
 /* EVE MCU END */

@@ -7,7 +7,7 @@
 
 void setup() {
   Serial.begin(9600);
-  eve.setup(WUXGA, EVE_RAM_G_1_GBIT);
+  eve.setup(EVE_WUXGA, EVE_RAM_G_1_GBIT);
   eve.Init();
 }
 

@@ -5,19 +5,19 @@ Please follow instructions to install the EVE Emulator in EVE-MCU-Dev library. I
 ## Command Line Compilation
 
 To configure the project with the default C compiler:
-```
+```console
     cmake -B build -S .
 ```
 On Windows, if an MSVC compiler is not the default compiler on your platform then choose a suitable Visual Studio compiler explicitly:
-```
+```console
     cmake -B build -S . -G "Visual Studio 17 2022"
 ```
 On Windows, to compile the project use the MinGW C compiler:
-```
+```console
     cmake -B build -S . -G "MinGW Makefiles"
 ```
 Then to compile:
-```
+```console
     cmake --build build
 ```
 Default builds are compiled with debugging enabled. 
@@ -28,8 +28,8 @@ Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to e
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
-```
-cmake --fresh  -G "MinGW Makefiles" -B build -DFT8XX_TYPE=FT810 -DDISPLAY_RES=WVGA -S .
+```console
+    cmake --fresh  -G "MinGW Makefiles" -B build -DEVE_DEVICE=EVE_FT810 -DEVE_DISPLAY_RES=EVE_WVGA -S .
 ```
 
 ## Visual Studio Code
@@ -42,7 +42,9 @@ It is possible to use the command line instructions above in a terminal windows 
 
 ## Visual Studio
 
-The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
+The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder.
+
+The example application will automatically copy the required DLLs to the executable output directory. In most cases, only `bt8xxemu.dll` is required; however, `btflashemu.dll` and `zlib.dll` are also copied to simplify deployment and ensure all runtime dependencies are available.
 
 ## Linux
 

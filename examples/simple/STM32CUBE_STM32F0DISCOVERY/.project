@@ -41,11 +41,6 @@
 			<locationURI>$%7BAPI_DIRECTORY%7D/ports/eve_arch_stm32</locationURI>
 		</link>
 		<link>
-			<name>eve_bt82x</name>
-			<type>2</type>
-			<locationURI>$%7BAPI_DIRECTORY%7D/ports/eve_bt82x</locationURI>
-		</link>
-		<link>
 			<name>include</name>
 			<type>2</type>
 			<locationURI>$%7BAPI_DIRECTORY%7D/include</locationURI>

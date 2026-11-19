@@ -1,0 +1,22 @@
+# https://clangd.llvm.org/config.html
+Completion:
+  HeaderInsertion: Never
+
+InlayHints:
+  Enabled: true
+  ParameterNames: false   # show names of parameters at call sites.
+  DeducedTypes: true      # show deduced type names when non-obvious (eg, auto).
+  Designators: true       # show hints in aggregate initialization.
+  BlockEnd: true          # show begging of block as a virtual comment at the end of the block.
+  DefaultArguments: true  # show default arguments / values in function calls.
+  TypeNameLimit: 25       # character limit for type hints
+
+# https://clangd.llvm.org/config.html#diagnostics
+# ClangTidy diagnostics: https://clang.llvm.org/extra/clang-tidy/checks/list.html
+Diagnostics:
+  Suppress:
+    - unused-includes       # too aggressive, generates many spurious warnings.
+    - pp_file_not_found     # mitigate Eclipse/clangd limitation, don't report spurious errors
+    - -Wimplicit-function-declaration
+#    - '*'
+

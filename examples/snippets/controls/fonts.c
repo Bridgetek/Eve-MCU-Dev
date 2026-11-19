@@ -1,5 +1,5 @@
 /**
- @file fonts.c
+ * @file fonts.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,12 +36,18 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+ 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stddef.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "fonts.h"
+
+/* FUNCTIONS ***********************************************************************/
 
 #if IS_EVE_API(1)
 // The FT800 does not have the CMD_ROMFONT feature. 
@@ -80,7 +86,12 @@ uint8_t font_getmax(void)
 // If the  ROM font will return a pointer of zero.
 uint32_t font_getromptr(uint8_t fontnumber)
 {
-    uint32_t fontroot, fontptr;
+    // Do no query the ROM if we are in simulator mode
+#if defined(SOFTWARE_SIMULATOR)
+    return 0;
+#endif // defined(SOFTWARE_SIMULATOR)
+
+    uint32_t fontroot, fontptr = 0;
 
 #if IS_EVE_API(5)
     // BT82x
@@ -111,12 +122,6 @@ uint32_t font_getromptr(uint8_t fontnumber)
 
 static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character)
 {
-    uint32_t page;
-    uint32_t gptr;
-    uint32_t wptr;
-    uint32_t cdptr;
-    int ch, w;
-    uint32_t N;
     int32_t start_of_graphics;
 
     cache->legacy = 0;
@@ -126,6 +131,12 @@ static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, u
     // Read the first word of the font metric block.
     // This determines the format of the font and how it is handled.
 #if IS_EVE_API(4,5)
+    uint32_t page;
+    uint32_t gptr;
+    uint32_t wptr;
+    int ch, w;
+    uint32_t N;
+
     uint32_t format = EVE_LIB_MemRead32(fontptr);
     if (format == 0x0100AAFF)
     {
@@ -165,6 +176,7 @@ static void getfontinfocache(struct eve_font_cache *cache, uint8_t fontnumber, u
 #if IS_EVE_API(5)
     if (format == 0x0200AAFF)
     {
+        uint32_t cdptr;
         // Extended format 2 font cache.
         cache->legacy = 0;
         // Get the font pixel sizes.

@@ -1,14 +1,15 @@
 /**
- @file eve_arch_arduino.ino
+ * @file eve_arch_arduino.ino
+ * @details MCU-specific code for controlling EVE on Arduino devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,7 +38,7 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(ARDUINO)
 
 /* EVE MCU HEADER */
@@ -45,44 +46,50 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-/* EVE MCU HEADER END */
-
-/** @brief Library Includes
- * NOTE That all the file used in the example sketch must be in the same directory
- * as the sketch. Copy this file, the include files from the include directory,
- * the source files from the source directory of the library to the sketch 
- * location.
- * It will be possible to make a library with these files.
- * Include these files as "C" files.
+/** @brief Library includes
+ * @details Includes the EVE-MCU-Dev MCU interface implemented by this
+ *      Arduino port. The C interface is exposed to this C++ source using
+ *      C linkage.
  */
 //@{
 extern "C" {
-#include <EVE.h>
-#include <HAL.h>
 #include <MCU.h>
 }
 //@}
+
+/* EVE MCU HEADER END */
 
 /* EVE MCU */
 
 /** @brief Pin definitions
  */
 //@{
-/// Standard SPI pinouts 10(CS), 11(COPI), 12(CIPO), 13(SCK)
-#define PIN_SPICLOCK    13  // SCK
-#define PIN_DATAOUT     11  // MOSI (COPI)
-#define PIN_DATAIN      12  // MISO (CIPO)
+/// Standard Arduino SPI pinouts 10 (CS), 11 (COPI), 12 (CIPO), 13 (SCK)
+/// For Arduino UNO, Nano, Mega etc, these cannot be changed.
+#define PIN_SPICLOCK    13  // SCK          (information only)
+#define PIN_DATAOUT     11  // MOSI (COPI)  (information only)
+#define PIN_DATAIN      12  // MISO (CIPO)  (information only)
 #define PIN_CHIPSELECT  10  // CS#
-/// Additional pin for power down on EVE
+/// Additional power down signal pin 9 (PD#)
 #define PIN_POWERDOWN   9   // PD#
+/// Additional interrupt signal pin 8 (INT#)
+#define PIN_INTERRUPT   8   // INT#
 //@}
 
-int MCU_Init(void) {
+int MCU_Init(void) 
+{
+#if defined(LED_BUILTIN)  
+  /* Indicate we are running. */
+  digitalWrite(LED_BUILTIN, 1);
+#endif
 
+  /* Initialise SPI. */
   SPI.begin();
 
+  /* Set CS#, PD#, INT# pin directions. */
   pinMode(PIN_CHIPSELECT, OUTPUT);
   pinMode(PIN_POWERDOWN, OUTPUT);
+  pinMode(PIN_INTERRUPT, INPUT);
 
   digitalWrite(PIN_CHIPSELECT, HIGH);  //disable CS#
   digitalWrite(PIN_POWERDOWN, HIGH);   //disable HD#
@@ -96,19 +103,37 @@ int MCU_Init(void) {
 }
 
 int MCU_Deinit(void) {
+
+  /* Leave EVE control signals in a safe state. */
+  digitalWrite(PIN_CHIPSELECT, HIGH);
+  digitalWrite(PIN_POWERDOWN, LOW);
+
+  /* Shut down SPI. */
   SPI.endTransaction();
   SPI.end();
   return 0;
 }
 
 int MCU_Setup(void) {
+
+  /* Additional SPI Configuration */
   SPI.endTransaction();
 
   // Increase SPI speed to 8 MHz after initialisation is complete
-  // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+  // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
   SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
   return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+  /* QSPI Configuration */
+  #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
+  /* Initialize IO2 and IO3 pad/pin for quad settings */
+  return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // Simple endian alignment for tested Arduino devices
 #define bswap16(x) __builtin_bswap16(x)
@@ -118,14 +143,12 @@ int MCU_Setup(void) {
 
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void) {
-  digitalWrite(PIN_CHIPSELECT, LOW);  // disable CS#
-  delayMicroseconds(10);
+  digitalWrite(PIN_CHIPSELECT, LOW);  
 }
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void) {
   digitalWrite(PIN_CHIPSELECT, HIGH);  // disable CS#
-  delayMicroseconds(10);
 }
 
 // -------------------------- PD line low --------------------------------------
@@ -136,6 +159,11 @@ void MCU_PDlow(void) {
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void) {
   digitalWrite(PIN_POWERDOWN, HIGH);  // disable HD#
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) {
+  return digitalRead(PIN_INTERRUPT);
 }
 
 // Exchange a single byte on the SPI bus
@@ -178,6 +206,11 @@ void MCU_Delay_20ms(void) {
 
 void MCU_Delay_500ms(void) {
   delay(500);
+}
+
+uint32_t MCU_Time_ms(void)
+{
+  return millis();
 }
 
 // --------------------- SPI Send and Receive ----------------------------------

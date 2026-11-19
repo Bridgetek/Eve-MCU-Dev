@@ -1,5 +1,5 @@
 /**
- @file dialogs.c
+ * @file dialogs.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,11 +36,16 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
 #include <EVE.h>
 
 #include "dialogs.h"
+
+/* CONSTANTS ***********************************************************************/
 
 /* Array containing the bitmap sizes of ROM fonts. */
 
@@ -51,6 +56,8 @@
 static const uint8_t rom_font_widths[] = EVE_ROMFONT_WIDTHS;
 static const uint8_t rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 static uint8_t romfont_width(uint8_t font)
 {
     return rom_font_widths[font];
@@ -60,6 +67,9 @@ static uint8_t romfont_height(uint8_t font)
 {
     return rom_font_heights[font];
 }
+
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * font - Font used for measuring the text.
@@ -144,7 +154,7 @@ void messagebox(int16_t font, uint16_t options, const char *message)
  * x - x-coordinate of tooltip box centre point, in pixels.
  * y - y-coordinate of tooltip box centre point, in pixels.
  * font - Font used for the text. 
- * options - By default, the message box is drawn with a 3D effect unless the OPT_FLAT option is set.
+ * options - By default, the tooltip is drawn with a 3D effect unless the OPT_FLAT option is set.
  *           The OPT_MSGTOP will draw the tooltip box above the centre point in x,y. Similarly, the
  *           OPT_MSGBOTTOM will draw the tooltip below. If neither are specified then the tooltip box
  *           will be drawn centred.

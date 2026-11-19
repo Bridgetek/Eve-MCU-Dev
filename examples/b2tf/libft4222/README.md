@@ -22,14 +22,14 @@ Then to compile:
 ```
 Default builds are compiled with debugging enabled. 
 
-The executable file is `build\Debug\simple_libft4222.exe`. This can be run from the command line. 
+The executable file is normally `build\Debug\b2tf_libft4222.exe` or  `build\b2tf_libft4222.exe`. This can be run from the command line. 
 
-Note: Necessary DLLs are copied into the `build\Debug` directory to enable the executable to run.
+Note: Necessary DLLs are copied into the `build\Debug` or `build` directory to enable the executable to run.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
 ```
-cmake --fresh  -G "MinGW Makefiles" -B build -DFT8XX_TYPE=FT810 -DDISPLAY_RES=WVGA -S .
+cmake --fresh  -G "MinGW Makefiles" -B build -DEVE_DEVICE=EVE_FT810 -DEVE_DISPLAY_RES=EVE_WVGA -S .
 ```
 
 ## Visual Studio Code
@@ -42,9 +42,9 @@ It is possible to use the command line instructions above in a terminal windows 
 
 ## Visual Studio
 
-The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
+The Visual Studio project files for the example are found in the `VisualStudio` folder. Object files are placed into the `VisualStudio\obj` folder. Program executables are placed into the `VisualStudio\bin` folder. 
 
-When the example application is launched in Visual Studio it will add the location of the `LibFT4222-64.dll` or `LibFT4222.dll` file to the PATH environment variable of the running process.
+The example application will automatically copy either the `LibFT4222-64.dll` or `LibFT4222.dll` DLLs to the executable output directory. 
 
 ## Linux
 

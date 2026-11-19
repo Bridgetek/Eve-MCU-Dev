@@ -1,5 +1,5 @@
 /**
- @file sevenseg.h
+ * @file sevenseg.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+#ifndef _EVE_SEVENSEG_H
+#define _EVE_SEVENSEG_H
+ 
 #define EVE_OPT_DECIMAL 16
 #define EVE_OPT_TIMECOLON 32
 #define EVE_OPT_NUMBER 15
@@ -45,4 +48,6 @@
 #ifndef EVE_OPT_FILL
 #define EVE_OPT_FILL 0x2000ul
 #endif
-void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);
+void sevensegment(int16_t x, int16_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);
+
+#endif /* _EVE_SEVENSEG_H */

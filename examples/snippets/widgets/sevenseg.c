@@ -1,5 +1,5 @@
 /**
- @file sevenseg.c
+ * @file sevenseg.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,11 +36,17 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+ 
 #include <stdint.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "sevenseg.h"
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of seven segment graphic in pixels
@@ -49,7 +55,7 @@
  * fgcolor - colour of on/highlighted segment
  * bgcolor - colour of off segment
 */
-void sevensegment(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
+void sevensegment(int16_t x, int16_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour)
 {
 #if IS_EVE_API(2, 3, 4, 5)
     const int32_t vertex = 4;

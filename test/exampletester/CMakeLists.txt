@@ -11,11 +11,11 @@ get_filename_component(ProjectId ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} C CXX)
 
-message(API_DIRECTORY="${API_DIRECTORY}")
-message(ProjectId="${PROJECT_SOURCE_DIR}")
-message(PROJECT_NAME="${PROJECT_NAME}")
-message(CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
-message(CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
+message(STATUS API_DIRECTORY="${API_DIRECTORY}")
+message(STATUS ProjectId="${PROJECT_SOURCE_DIR}")
+message(STATUS PROJECT_NAME="${PROJECT_NAME}")
+message(STATUS CMAKE_C_COMPILER_ID="${CMAKE_C_COMPILER_ID}")
+message(STATUS CMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}")
 
 # Set C/C++ Standards
 set(CMAKE_C_STANDARD 11)
@@ -26,7 +26,7 @@ option(EXAMPLE "Example directory")
 # Set a dummy source code directory
 IF(EXAMPLE)
     ADD_DEFINITIONS(-DEXAMPLE=${EXAMPLE})
-    message(EXAMPLE="${EXAMPLE}")
+    message(STATUS EXAMPLE="${EXAMPLE}")
 ENDIF(EXAMPLE)
 
 # Directory for assetss source code for a dummy build
@@ -34,7 +34,7 @@ option(ASSETS "Example assets flag")
 # Set a dummy source code directory
 IF(ASSETS)
     ADD_DEFINITIONS(-DASSETS=${ASSETS})
-    message(ASSETS="${ASSETS}")
+    message(STATUS ASSETS="${ASSETS}")
     # Set the assets flag
     add_compile_definitions(ASSETS=${ASSETS})
 ENDIF(ASSETS)
@@ -44,33 +44,33 @@ ENDIF(ASSETS)
 # - panel type, display resolution and eve device type are ignored
 # A panel configures a display resolution
 # - display resolution is ignored
-option(MODULE_TYPE "EVE Module Name" )
-option(FT8XX_TYPE "EVE Device Type Name" )
-option(PANEL_TYPE "EVE Panel Type" )
-option(DISPLAY_RES "Panel Display Resolution" )
+option(EVE_MODULE "EVE Module Name" )
+option(EVE_DEVICE "EVE Device Type Name" )
+option(EVE_PANEL "EVE Panel Type" )
+option(EVE_DISPLAY_RES "Panel Display Resolution" )
 
 # Set a module type
-IF(MODULE_TYPE)
-    ADD_DEFINITIONS(-DMODULE_TYPE=${MODULE_TYPE})
-    message(MODULE_TYPE="${MODULE_TYPE}")
-ELSE(MODULE_TYPE)
+IF(EVE_MODULE)
+    ADD_DEFINITIONS(-DEVE_MODULE=${EVE_MODULE})
+    message(STATUS EVE_MODULE="${EVE_MODULE}")
+ELSE(EVE_MODULE)
 # Set the eve device type
-IF(FT8XX_TYPE)
-    ADD_DEFINITIONS(-DFT8XX_TYPE=${FT8XX_TYPE})
-    message(FT8XX_TYPE="${FT8XX_TYPE}")
-ENDIF(FT8XX_TYPE)
+IF(EVE_DEVICE)
+    ADD_DEFINITIONS(-DEVE_DEVICE=${EVE_DEVICE})
+    message(STATUS EVE_DEVICE="${EVE_DEVICE}")
+ENDIF(EVE_DEVICE)
 # Set the panel type
-IF(PANEL_TYPE)
-    ADD_DEFINITIONS(-DPANEL_TYPE=${PANEL_TYPE})
-    message(PANEL_TYPE="${PANEL_TYPE}")
-ELSE(PANEL_TYPE)
+IF(EVE_PANEL)
+    ADD_DEFINITIONS(-DEVE_PANEL=${EVE_PANEL})
+    message(STATUS EVE_PANEL="${EVE_PANEL}")
+ELSE(EVE_PANEL)
 # Set the display resolution
-IF(DISPLAY_RES)
-    ADD_DEFINITIONS(-DDISPLAY_RES=${DISPLAY_RES})
-    message(DISPLAY_RES="${DISPLAY_RES}")
-ENDIF(DISPLAY_RES)
-ENDIF(PANEL_TYPE)
-ENDIF(MODULE_TYPE)
+IF(EVE_DISPLAY_RES)
+    ADD_DEFINITIONS(-DEVE_DISPLAY_RES=${EVE_DISPLAY_RES})
+    message(STATUS EVE_DISPLAY_RES="${EVE_DISPLAY_RES}")
+ENDIF(EVE_DISPLAY_RES)
+ENDIF(EVE_PANEL)
+ENDIF(EVE_MODULE)
 
 # Add environment for example code
 set(EXAMPLE_SNIPPETS "${CMAKE_CURRENT_SOURCE_DIR}/../../examples/snippets")
@@ -86,9 +86,20 @@ include_directories(
 # Tell EVE library to use SOFTWARE_SIMULATOR as base class
 add_compile_definitions(SOFTWARE_SIMULATOR)
 
-add_compile_definitions(DEBUG_LEVEL=1)
-add_compile_definitions(MCU_SPI_TIMEOUT=8)
-add_compile_definitions(MCU_SPI_TRANSFER=0x100)
+# Do not report boot actions (delays, PD#)
+add_compile_definitions(SIMULATOR_BOOT=0)
+# Do not report SPI protocol actions (addressing, CS#)
+add_compile_definitions(SIMULATOR_SPI_PROTOCOL=0)
+# Report bitmap 0 - no output; 
+#               1 - register reads/writes (including RAM_G); 
+#               2 - co-processor reads/writes;
+#               3 - co-processor reads/writes (including RAM_G).
+add_compile_definitions(SIMULATOR_OUTPUT=3)
+
+add_compile_definitions(EVE_DEBUG_LEVEL=2)
+add_compile_definitions(EVE_SPI_TIMEOUT=8)
+add_compile_definitions(EVE_SPI_MAX_TRANSFER=0x100)
+add_compile_definitions(EVE_COPRO_METHOD=EVE_COPRO_CMDB_WRITE)
 
 # Use look up table instead of maths functions for trig
 add_compile_definitions(USE_TRIG_TABLE) 
@@ -99,13 +110,14 @@ add_library(eve_library # EVE library name
         ${API_DIRECTORY}/source/EVE_API.c
         ${API_DIRECTORY}/source/EVE_HAL.c
         ${API_DIRECTORY}/test/EVE_simulator.c
-        ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c # Only applicable to BT82x
+        ${API_DIRECTORY}/source/extensions/bt82x_patch.c # Only applicable to BT82x
+        ${API_DIRECTORY}/source/extensions/custom_touch_fw.c # Only applicable to FT81x/BT88x/BT81x
+        ${API_DIRECTORY}/source/extensions/lcd_panel_init.c # Only applicable LCD panels that require driver initialisation
 )
 # Header files used for EVE library
 target_include_directories(eve_library PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ${API_DIRECTORY}/ports/eve_tester # Tester Library headers
 )
 
@@ -127,7 +139,6 @@ add_library(eve_example # Example code library name
 target_include_directories(eve_example PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${API_DIRECTORY}/include # Headers for EVE library
-        ${API_DIRECTORY}/ports/eve_bt82x # BT82x base patch
         ../../examples/${EXAMPLE}/common
         ../../examples/${EXAMPLE}/assets
         ${EXAMPLE_SNIPPETS}/ # Headers for snippets 
@@ -141,4 +152,10 @@ target_link_libraries(eve_example
 # Project dependencies
 target_link_libraries(${PROJECT_NAME} 
         eve_example # Project depends on example code library
+)
+
+# Print out compiled target file name
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo TARGET: $<TARGET_FILE:${PROJECT_NAME}>
 )

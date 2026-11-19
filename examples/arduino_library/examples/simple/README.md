@@ -14,10 +14,7 @@ The following is an screenshot of the simple example.
 
 The application starts up in the file `simple.ino` which provides initial MCU configuration and the program code for the example. 
 
-The `simple.ino` code must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+The `simple.ino` code must provide any functions that rely on a platform's operating system.
 
 The `setup` function in the sketch is as follows:
 
@@ -53,8 +50,7 @@ void eve_example(void) {
   Serial.print("Calibrating display...\n");
   if (eve_calibrate() != 0) {
     Serial.print("Exception...\n");
-    while (1)
-      ;
+    return;
   }
 
   // Load fonts and images
@@ -79,8 +75,6 @@ Finally, the main program sits in a continuous loop within `eve_display()`. Each
 ### `touch.ino`
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
-
-The platform specific functions in `simple.ino` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
 ### `eve_images.c`
 
@@ -216,7 +210,7 @@ data structure and associate the font with the handle.
 The `eve.CMD_SETFONT2` command will initialise the bitmap settings for the font using information in the font
 data structure and associate the font with the handle.
 #endif
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 The `eve.BITMAP_SOURCE`, `eve.BITMAP_LAYOUT` and `eve.BITMAP_SIZE` commands are generated automatically by
 the co-processor using data from the font structure and are therefore not required.
 #else

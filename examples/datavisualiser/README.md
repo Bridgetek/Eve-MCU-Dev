@@ -4,7 +4,7 @@
 
 ## Data Visualiser Example
 
-The `datavisualiser` example demonstrates drawing a simple data visualiser application, utilising in-built EVE graphics primitives only to generate a variety of data indicator widgets. 
+The `datavisualiser` example demonstrates drawing a simple data visualiser application, utilising in-built EVE graphics primitives only to generate a variety of data indicator widgets. The example code uses the `touch`, `arcs`, `sound`, and `trig_furman` snippets from the [snippets](../snippets) directory to perform some of the drawing and provide application functionality. 
 
 The data indicator widgets are defined in standalone functions which can be easily incorporated into other applications, and are constructed entirely without any external graphics assets. These widgets can be resized as required and include; line plot graphs, bar indicators, circular gauges, and pie (or doughnut) chart segments.
 
@@ -12,12 +12,24 @@ The example includes a 'settings menu' button in the top right corner, which inc
 
 - The first sub menu can be used to select between running the example in 'demo' mode or in 'sensor' mode. The sensor mode functionality has intentionally not been implemented to allow users freedom in this regard. The demo mode utilises global variables to cycle readings on the indicator widgets.
  
-- The second sub menu utilises a arc control widget to implement a slider for controlling the LCD display brightness. The tracker feature is used for touch inputs on this widget.
+- The second sub menu utilises the arc control widget from the [snippets](../snippets) directory to implement a slider for controlling the LCD display brightness. The tracker feature is used for touch inputs on this widget.
 
-The following is an screenshot of the datavisulaiser screen:
+## Screenshot
+
+The following is an screenshot of the `datavisualiser` example:
 
 ![DataVisualiser Screen Example](docs/dataVisualiser.png)
 
+## EVE API Support
+
+Supported EVE APIs in this example:
+
+| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
+| --- | --- | --- | --- | --- |
+| Yes | Yes | Yes | Yes | Yes |
+
+
+The screen items are scaled based on the defined screen resolution, as such there is no set maximum or minimum supported resolution. 
 
 ## Platform Support
 
@@ -31,28 +43,13 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-## EVE API Support
-
-Supported EVE APIs in this example:
-
-| EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
-| --- | --- | --- | --- | --- |
-| Yes | Yes | Yes | Yes | Yes |
-
-
-The screen items are scaled based on the defined screen resolution, as such there is no set maximum or minimum supported resolution. 
-
-## Platform Files and Folders
+## Platform Files
 
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
-
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system.
 
 The example program in the common code is then called.
 
@@ -67,42 +64,46 @@ The example contains a common directory with several files which comprises all t
 | [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [snippets/controls/arcs.c](../snippets/controls/arcs.c) | Arc style control widget routines |
 | [snippets/controls/sound.c](../snippets/controls/sound.c) | Sound synthesizer helper routines |
-| [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines
+| [snippets/maths/trig_furman.c](../snippets/controls/arcs.c) | Trigonometric maths routines |
 | [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
+    // Enable audio amplifier
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
+    sound_enable();
 
     // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
     if (eve_calibrate() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
-        while (1);
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
     }
 
-    // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
-    enableSound();
-
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
+    EVE_DEBUG_PRINTF("Starting demo:\n");
     eve_display();          // Run Application
 }
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
-Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
+The `sound_enable()` function is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development modules. After which the sound synthesizer is set to play the MUTE sound.
 
-The `enableSound()` funciton is then called from the `sound.c` file (linked above) which configures a GPIO pin on EVE to enable the Audio Amplifier circurity commonly used on BridgeTek development boards. After which the sound synthesizer is set to play the MUTE sound.
+Next, the function `eve_calibrate()` is called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
 Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
@@ -112,16 +113,14 @@ This function is used to show the touchscreen calibration screen and prompt the 
 
 The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
 
-Another function of this file is to read a single touch tag from the screen.
+### `arcs.c`
 
-```
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-```
+The arcs snippet will draw a smooth arc using blending and stencilling. An optional gauge method allows the positioning of a marker to indicate where a marker is placed on the arc.
 
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
-If that register indicates a valid touch then this is flagged to the calling program.
+### `sound.c`
+
+The sounds snippet provides funtionality to enable audio driver circuity on development boards, and provide function calls to play the built-in sounds from the audio subsystem.
+
+### `trig_furman.c`
+
+This snippept provides fucntions to perform trigonometry using angles in furmans rather than degrees or radians. Furman angles are an implementation of angles using only integer values to enable demos to run on hardware which does not support floating point values. Refer to the BridgeTek Programming Guides for the EVE device for a full explanation of this method. Macros are provided to turn degrees into furmans and vice versa, and to turn a radius and degrees/furmans into components for X and Y vector.

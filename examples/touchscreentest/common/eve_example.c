@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -36,22 +36,44 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* Include snippet header for calibration storage routine for this platform. */
+#include <platform/calib.h>
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
 
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t heights[] = EVE_ROMFONT_HEIGHTS;
-uint8_t font;
+
 const uint8_t button_clear = 102;
 const uint8_t button_restore = 101;
 const uint8_t button_recalibrate = 100;
 
+/* TYPES / STRUCTURES **************************************************************/
+
 struct touchscreen_calibration calib;
+
+/* GLOBAL VARIABLES ****************************************************************/
+
+uint8_t font;
+
+/* FUNCTIONS ***********************************************************************/
 
 int eve_recalibrate(void)
 {
@@ -155,7 +177,9 @@ void eve_display(void)
     eve_readcalib();
     
     do {
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -268,9 +292,13 @@ void eve_display(void)
             ypos += heights[font];
         }
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         touch_detect = eve_read_tag(&tag);
@@ -283,7 +311,7 @@ void eve_display(void)
         else if (key == button_recalibrate)
         {
             // Recalibrate...
-            DEBUG_PRINTF("Perform recalibration.\n");
+            EVE_DEBUG_PRINTF("Perform recalibration.\n");
             eve_recalibrate();
             eve_readcalib();
             tag = 0;
@@ -291,7 +319,7 @@ void eve_display(void)
         else if (key == button_restore)
         {
             // Restore calibration...
-            DEBUG_PRINTF("Restoring saved calibration.\n");
+            EVE_DEBUG_PRINTF("Restoring saved calibration.\n");
             eve_calibrate();
             eve_readcalib();
             tag = 0;
@@ -299,22 +327,29 @@ void eve_display(void)
         else if (key == button_clear)
         {
             // Clear sketch...
-            DEBUG_PRINTF("Clearing sketch bitmap.\n");
+            EVE_DEBUG_PRINTF("Clearing sketch bitmap.\n");
             eve_clear_sketch();
             tag = 0;
         }
 
         key = tag;
-    } while (1);
+    
+    } while (LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
-
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
     // Load images (and obtain the start of the sketch bitmap)
-    DEBUG_PRINTF("Loading images...\n");
+    EVE_DEBUG_PRINTF("Loading images...\n");
     eve_load_images(0);
 
     // Reset calibration data to force re-calibration on first call
@@ -325,20 +360,24 @@ void eve_example(void)
     calib.transform[3] = 0;
     calib.transform[4] = 0;
     calib.transform[5] = 0;
-    platform_calib_write(&calib);
+    if (platform_calib_init() == 0)
+    {
+        platform_calib_write(&calib, sizeof(struct touchscreen_calibration));
+    }
 
-    while (1)
+    do
     {
         // Calibrate the display
-        DEBUG_PRINTF("Calibrating display...\n");
+        EVE_DEBUG_PRINTF("Calibrating display...\n");
         if (eve_calibrate() != 0)
         {
-            DEBUG_PRINTF("Exception...\n");
-            while(1);
+            EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+            return;
         }
 
         // Start example code
-        DEBUG_PRINTF("Starting demo:\n");
+        EVE_DEBUG_PRINTF("Starting demo:\n");
         eve_display();
-    }
+    
+    } while (LOOP);
 }

@@ -44,6 +44,7 @@
 //#define ColorPicker_ImagePaletted8
 
 #include <stdint.h>
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "eve_example.h"

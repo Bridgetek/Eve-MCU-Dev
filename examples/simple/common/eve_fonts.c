@@ -1,5 +1,5 @@
 /**
- @file eve_fonts.c
+ * @file eve_fonts.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,11 +37,14 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
-#include <EVE.h>
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 const uint32_t font0_offset = 1000; // Taken from commmand line
 
@@ -167,6 +170,8 @@ static const uint8_t font0[] =
 };
 
 const EVE_GPU_FONT_HEADER *font0_hdr = (const EVE_GPU_FONT_HEADER *)font0;
+
+/* FUNCTIONS ***********************************************************************/
 
 uint32_t eve_init_fonts(void)
 {

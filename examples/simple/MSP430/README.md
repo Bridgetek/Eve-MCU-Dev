@@ -2,9 +2,11 @@
 
 [Back](../README.md)
 
+The [Ti MSP430 port](../../../ports/eve_arch_msp/README.md#msp430) is used for this example.
+
 ## Setting Up the MSP430 Example on Code Composer Studio v20
 
-The build environment depends on the presence of the CCS v20 IDE. This can be setup following instructions in the [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO) page from the Espressif website.
+The build environment depends on the presence of the CCS v20 IDE. This can be setup following instructions in the [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO) page from the Texas Instruments website.
 
 ## Compiling the Simple MSP430 Example on Code Composer Studio v20
 

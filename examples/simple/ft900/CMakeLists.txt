@@ -1,8 +1,5 @@
 # Standard CMakeLists.txt Template for FT9xx project compilation.
 
-# To build use the command line as follows:
-# cmake -G "Ninja" -S . -B build -DBUILD=Debug -DTARGET=ft90x
-
 # Project name. Default name is the name of the current directory.
 # On command line call cmake with the parameter "-DPROJECT=firmware" to override.
 
@@ -30,14 +27,14 @@ else()
     message(FATAL_ERROR "Make sure that the FT9XX is installed correctly. Can't find the 'toolchain_ft9xx.cmake' file")
 endif()
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
 # Set the project name to the current directory if it is not defined in the command line.
 if (NOT DEFINED ${PROJECT})
     get_filename_component(PARENT_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY)
     get_filename_component(PARENT_NAME ${PARENT_DIR} NAME)
     get_filename_component(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-    string(REPLACE " " "_" PROJECT "${PROJECT_DIR}_${PARENT_NAME}")
+    string(REPLACE " " "_" PROJECT "${PARENT_NAME}_${PROJECT_DIR}")
     message(STATUS "Project name set to ${PROJECT}")
 endif()
 
@@ -64,14 +61,20 @@ file(GLOB SRC_FILES CONFIGURE_DEPENDS
     ${EXAMPLE_COMMON}/eve_images.c
     ${EXAMPLE_COMMON}/eve_fonts.c
     ${EXAMPLE_SNIPPETS}/touch.c
+    ${EXAMPLE_SNIPPETS}/platform/platform_time.c
+    ${EXAMPLE_SNIPPETS}/platform/calib_ft9xx.c
 
     # API Sources
     ${API_DIRECTORY}/source/EVE_API.c
     ${API_DIRECTORY}/source/EVE_HAL.c
     ${API_DIRECTORY}/ports/eve_arch_ft9xx/EVE_MCU_FT9XX.c
     
-    # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x/patch_base.c
+    # BT82x Base patch
+    ${API_DIRECTORY}/source/extensions/bt82x_patch.c
+    # Only applicable to FT81x/BT88x/BT81x
+    ${API_DIRECTORY}/source/extensions/custom_touch_fw.c
+    # Only applicable LCD panels that require driver initialisation
+    ${API_DIRECTORY}/source/extensions/lcd_panel_init.c 
 
     # GENERATED: SOURCES - DO NOT MODIFY - BEGIN
     # GENERATED: SOURCES - DO NOT MODIFY - END
@@ -102,8 +105,6 @@ target_include_directories(${EXECUTABLE} PRIVATE
     Includes
     # API Includes
     ${API_DIRECTORY}/include
-    # Base patch include
-    ${API_DIRECTORY}/ports/eve_bt82x
     # Example project includes
     ${EXAMPLE_COMMON}
     # Header for snippets 

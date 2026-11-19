@@ -1,34 +1,50 @@
-# EVE-MCU-Dev Simple Beaglebone Black Example
+# EVE-MCU-Dev Simple BeagleBone Black Example
 
 [Back](../README.md)
 
-## Compiling the Simple Beaglebone Black Example
+## Compiling the Simple BeagleBone Black Example
 
-The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be esily installed by the following command.
+The [Beaglebone Black port](../../../ports/eve_arch_beaglebone/README.md) is used for this example.
 
+The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be easily installed by the following command.
+
+```console
+    sudo apt-get install build-essential
 ```
-sudo apt-get install build-essential
+
+### Using Make (Makefile):
+Then to compile:
+```console
+    make
 ```
+### Using CMake (CmakeLists.txt):
+
+Cmake can easily installed by the following command.
+
+```console
+    sudo apt-get install cmake
+```
+
 To configure the project with the default C compiler:
-```
+```console
     cmake -B build -S .
 ```
 Then to compile:
-```
+```console
     cmake --build build
 ```
 Default builds are compiled with debugging enabled. 
 
 The executable file is `build/simple_BeagleBone`. This can be run from the command line. 
 
-## Running the Simple Beaglebone Black Example
+## Running the Simple BeagleBone Black Example
 
 The executable image is found in the file `simple_BeagleBone` in the current directory. To run this file simple call it from the command line.
-```
+```console
 ./build/simple_BeagleBone
 ```
 The program will output:
-```
+```text
 Calibrating display...
 Loading font...
 Loading images...

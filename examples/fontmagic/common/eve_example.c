@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,21 +36,37 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <EVE.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if IS_EVE_API(1, 2, 3, 4)
 #error This example requires EVE API 5 or above.
 #endif
 
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* LOCAL VARIABLES *****************************************************************/
+
 struct eve_font_cache romfontcache;
 struct eve_font_cache customfontcache;
 
+/* FUNCTIONS ***********************************************************************/
 
 // Check a ROM font is supported by a platform.
 int isromfont(uint8_t fontnumber)
@@ -111,7 +127,7 @@ void cmd_textdraw(int x, int y, struct eve_font_cache *cache, char ch)
 void cmd_textrotate(int x, int y, struct eve_font_cache *cache, char *text)
 {
     // CMD_ROTATEAROUND is only available on BT82x, BT81x.
-#if IS_EVE_API(3, 4, 5)
+#if !IS_EVE_API(1, 2)
     EVE_SAVE_CONTEXT();
 
     // Setup the font.
@@ -210,6 +226,7 @@ uint32_t loadlegacyfont(const uint8_t *fontptr, uint32_t fontsize, uint32_t font
 	return ((fontsize + fontoffset) + 16) & (~15);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     int action = 0;
@@ -217,26 +234,37 @@ void eve_example(void)
     int x;
     uint8_t key;
     
-    // Initialise the display.
-    EVE_Init();
+    // Initialise the display
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
-    // Calibrate the display.
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    // Calibrate the display
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
     // Load fonts and images.
-    printf("Loading font...\n");
+    EVE_DEBUG_PRINTF("Loading font...\n");
     loadlegacyfont(font0, font0_size, font0_offset);
 
     // Start example code.
-    printf("Starting demo...\n");
+    EVE_DEBUG_PRINTF("Starting demo...\n");
     font_getfontinforom(&romfontcache, FONT_ROM);
     font_getfontinfocustom(&customfontcache, FONT_CUSTOM, font0_offset, font0_first);
 
     do
     {
         // Start drawing test screen.
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(64,72,64);
         EVE_CLEAR(1,1,1);
@@ -327,15 +355,23 @@ void eve_example(void)
             action = 0;
         }
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
+
+        // Do not query the touchscreen when running in the simulator.
+        if (LOOP)
+        {
+            // Wait for touchscreen before moving to the next action.
+            while (eve_read_tag(&key) == 0);
+            // Debounce touchscreen.
+            while (eve_read_tag(&key) != 0);
+        }
         
-        // Wait for touchscreen before moving to the next action.
-        while (eve_read_tag(&key) == 0);
-        // Debounce touchscreen.
-        while (eve_read_tag(&key) != 0);
-        
-    } while (1);
+    } while (LOOP);
 }

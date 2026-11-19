@@ -1,14 +1,15 @@
 /**
- @file EVE_libmpsse.c
+ * @file EVE_libmpsse.c
+ * @details Platform-specific code for controlling EVE on MPSSE devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,6 +47,8 @@
 
 #pragma message ("Compiling " __FILE__ " for libMPSSE")
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -53,6 +56,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
@@ -72,31 +76,50 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#include "ftd2xx.h"
-#include "libmpsse_spi.h"
+#include <ftd2xx.h>
+#include <libmpsse_spi.h>
 
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
+
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the MPSSE Platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
+/*
+ * Size of the local buffered-write staging area.
+ *
+ * Writes larger than this buffer are automatically split into multiple
+ * SPI transfers by the port implementation. This value therefore does not
+ * represent the maximum transfer size accepted from the HAL.
+ */
 #define MCU_BUFFER_SIZE 512
 uint8_t *MCU_buffer;
 uint16_t MCU_bufferLen;
 
-// This is the Windows Platform specific section and contains the functions which
-// enable the GPIO and SPI interfaces.
-
 /*
-    MPSSE pin connections:
+ * MPSSE pin connections:
+ *
+ * BD0 - SCK
+ * BD1 - MOSI
+ * BD2 - MISO
+ * BD3 - SS#   (SPI_CONFIG_OPTION_CS_DBUS3)
+ * BD5 - INT#  (GPIO input)
+ * BD7 - PD#   (controlled using SPI_ChangeCS / SPI_ToggleCS)
+ *
+ * DBUS5 remains an input so that the EVE INT# signal can be read.
+ * DBUS7 is configured as an output when selected by SPI_ChangeCS().
+ */
 
-    BD0 - SCK
-    BD1 - MOSI
-    BD2 - MISO
-    BD3 - SS#	(SPI_CONFIG_OPTION_CS_DBUS3)
-    BD7 - PD#	(SPI_CONFIG_OPTION_CS_DBUS7)
-
-    Direction (1 =Output, 0 =Inputs) 1xxx 1011
-*/
-// ------------------ Platform specific initialisation  ------------------------
+ // ------------------ Platform specific initialisation -------------------------
 
 FT_HANDLE ftHandle;
 DWORD openChannel = -1;
@@ -106,29 +129,38 @@ static void cmd_open_channel(DWORD channel, uint32_t speed)
     FT_STATUS ftStatus;
     ChannelConfig channelConf;
 
-    /* Set SPI clock speed to 15 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Configure the MPSSE SPI interface. */
     memset(&channelConf, 0, sizeof(ChannelConfig));
+
     channelConf.ClockRate = speed;
     channelConf.LatencyTimer = 10;
     channelConf.configOptions = SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW;
 
-    // Open the the channel specified by the USE_MPSSE macro.
-    // This must be defined to get this far.
+
+    /*
+     * Leave the additional low-byte pins as inputs initially.
+     * DBUS5 is used for EVE INT#.
+     * DBUS7 will be configured as an output when used for EVE PD#.
+     */
+    channelConf.Pin = 0;
+
+    /* Open the MPSSE channel selected by USE_MPSSE. */
     channel = USE_MPSSE;
 
     ftStatus = SPI_OpenChannel(channel, &ftHandle);
     if (ftStatus != FT_OK)
     {
-        fprintf(stderr, "Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
-        exit (-2);
+        EVE_DEBUG_ERROR("Channel %d failed to open status %d\n", (int)channel, (int)ftStatus);
+        exit(-2);
     }
+
     ftStatus = SPI_InitChannel(ftHandle, &channelConf);
     if (ftStatus != FT_OK)
     {
-        fprintf(stderr, "Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
-        exit (-3);
+        EVE_DEBUG_ERROR("Channel %d failed to initialise SPI status %d\n", (int)channel, (int)ftStatus);
+        exit(-3);
     }
-    
+
     openChannel = channel;
 }
 
@@ -139,32 +171,41 @@ int MCU_Init(void)
     DWORD channels;
     FT_STATUS ftStatus;
 
+    /* Initialise libMPSSE */
     Init_libMPSSE();
 
     ftStatus = SPI_GetNumChannels(&channels);
+    if (ftStatus != FT_OK)
+    {
+        EVE_DEBUG_ERROR("SPI_GetNumChannels failed with status %u. \nCheck that the D2XX driver and ftd2xx.dll are available.\n", (unsigned int)ftStatus);
+        
+        Cleanup_libMPSSE();
+        return -1;
+    }
+
     for (channel = 0; channel < channels; channel++)
     {
         ftStatus = SPI_GetChannelInfo(channel, &devList);
         if (ftStatus != FT_OK)
         {
-            printf("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
+            EVE_DEBUG_PRINTF("SPI_GetChannelInfo returned %u for channel %d\n", (int)ftStatus, (uint32_t)channel);
             continue;
         }
 
-        printf("SPI channel %u: ", (uint32_t)channel);
+        EVE_DEBUG_PRINTF("SPI channel %u: ", (uint32_t)channel);
         if (channel == USE_MPSSE)
         {
-            printf("selected\n");
+            EVE_DEBUG_PRINTF("selected\n");
             /*print the dev info*/
-            printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
-            printf("\t\tSerialNumber: %s\n", devList.SerialNumber);
-            printf("\t\tDescription: %s\n", devList.Description);
+            EVE_DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devList.ID >> 16), (uint16_t)(devList.ID & 0xffff));
+            EVE_DEBUG_PRINTF("\t\tSerialNumber: %s\n", devList.SerialNumber);
+            EVE_DEBUG_PRINTF("\t\tDescription: %s\n", devList.Description);
 
             openChannel = channel;
         }
         else
         {
-            printf("ignored\n");
+            EVE_DEBUG_PRINTF("ignored\n");
         }
     }
 
@@ -177,14 +218,14 @@ int MCU_Init(void)
     }
     else
     {
-        fprintf(stderr, "No SPI channels found\n");
+        EVE_DEBUG_ERROR("No SPI channels found\n");
         return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        fprintf(stderr, "Setup malloc failed\n");
+        EVE_DEBUG_ERROR("Setup malloc failed\n");
         return -1;
     }
     MCU_bufferLen = 0;
@@ -210,14 +251,24 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
+    /* Additional SPI Configuration */
     SPI_CloseChannel(ftHandle);
 
-    // Increase SPI speed to 15 MHz after initialisation is complete
-    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    /* Set SPI clock speed to 15 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     cmd_open_channel(openChannel, 15000000);
 
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on libmpsse
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 // ------------------------- Output buffering ----------------------------------
 
@@ -228,9 +279,9 @@ void MCU_transmit_buffer(void)
 
     ftStatus = SPI_Write(ftHandle, (uint8_t *)MCU_buffer, MCU_bufferLen, &transferred, 0);
      if (FT_OK != ftStatus)
-     {
-         // spi master write failed
-        fprintf(stderr, "MCU_transmit_buffer failed %d\n", (int)ftStatus);
+    {
+        // spi master write failed
+        EVE_DEBUG_ERROR("MCU_transmit_buffer failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
     MCU_bufferLen = 0;
@@ -282,7 +333,7 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx/BT8xx board
     SPI_ToggleCS(ftHandle, FALSE);
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS7 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, TRUE);
@@ -291,11 +342,28 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx/BT8xx board
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS7 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, FALSE);
     SPI_ChangeCS(ftHandle, SPI_CONFIG_OPTION_MODE0 | SPI_CONFIG_OPTION_CS_DBUS3 | SPI_CONFIG_OPTION_CS_ACTIVELOW);
     SPI_ToggleCS(ftHandle, FALSE);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void)
+{
+    uint8_t gpioState = 0;
+    FT_STATUS ftStatus;
+
+    ftStatus = FT_ReadGPIO(ftHandle, 1, &gpioState);
+    if (ftStatus != FT_OK)
+    {
+        EVE_DEBUG_ERROR("MCU_Int failed %d\n", (int)ftStatus);
+        exit(ftStatus);
+    }
+
+    /* Check bit 5, which corresponds to EVE INT# on ADBUS5 or BDBUS5. */
+    return (gpioState & (1U << 5)) ? 1 : 0;
 }
 
 // ------------------------- Delay functions -----------------------------------
@@ -318,6 +386,20 @@ void MCU_Delay_500ms(void)
 #endif
 }
 
+uint32_t MCU_Time_ms(void)
+{
+#ifdef _WIN32
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+#else
+    // For MinGW synthesize a tick counter from clock_gettime. Resolution 1 ms.
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+#endif
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)
@@ -328,10 +410,10 @@ uint8_t MCU_SPIRead8(void)
 
     MCU_transmit_buffer();
     ftStatus = SPI_Read(ftHandle, &DataRead, 1, &transferred, 0);
-     if (FT_OK != ftStatus)
-     {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead8 failed %d\n", (int)ftStatus);
+    if (FT_OK != ftStatus)
+    {
+        // spi master read failed
+        EVE_DEBUG_ERROR("MCU_SPIRead8 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -353,8 +435,8 @@ uint16_t MCU_SPIRead16(void)
     ftStatus = SPI_Read(ftHandle, (UCHAR *)&DataRead, 2, &transferred, 0);
      if (FT_OK != ftStatus)
      {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead16 failed %d\n", (int)ftStatus);
+        // spi master read failed
+        EVE_DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -382,7 +464,7 @@ uint32_t MCU_SPIRead32(void)
      if (FT_OK != ftStatus)
      {
          // spi master read failed
-        fprintf(stderr, "MCU_SPIRead32 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -403,8 +485,8 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     ftStatus = SPI_Read(ftHandle, (UCHAR *)DataToRead, length, &transferred, 0);
      if (FT_OK != ftStatus)
      {
-         // spi master read failed
-        fprintf(stderr, "MCU_SPIRead failed %d\n", (int)ftStatus);
+        // spi master read failed
+        EVE_DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 }
@@ -485,5 +567,7 @@ uint32_t MCU_le32toh(uint32_t h)
     return le32toh(h);
 #endif // _WIN32
 }
+
+/* EVE MCU END */
 
 #endif /* defined(USE_MPSSE) */

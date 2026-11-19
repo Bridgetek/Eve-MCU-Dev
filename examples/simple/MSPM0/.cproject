@@ -111,7 +111,7 @@
                         </toolChain>
                     </folderInfo>
                     <sourceEntries>
-                        <entry excluding="snippets/widgets|snippets/maths|snippets/controls|snippets/dials" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="snippets/platform/platform_time.cpp|snippets/platform/calib_arduino.cpp|snippets/widgets|snippets/maths|snippets/controls|snippets/dials" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                     </sourceEntries>
                 </configuration>
             </storageModule>

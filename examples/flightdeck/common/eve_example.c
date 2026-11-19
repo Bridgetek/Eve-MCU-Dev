@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,14 +36,16 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
-#include <time.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <string.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <EVE.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* MACROS **************************************************************************/
 
 #ifndef MAX
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
@@ -51,6 +53,19 @@
 #ifndef MIN
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #endif
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display(void)
 {
@@ -91,9 +106,11 @@ void eve_display(void)
     uint16_t xcompass = (EVE_DISP_WIDTH / 2);
     uint16_t ycompass = (EVE_DISP_HEIGHT * 2 / 3);
 
-    while (1)
+    do
     {
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -110,9 +127,13 @@ void eve_display(void)
         altwidget(xalt, yalt, dial_radius, alt);
         compass_binnacle(xcompass, ycompass, dial_radius, OPT_COMPASS_BEZEL, heading);
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         pitch = max_pitch * sin_furman(((anim * anim_pitch_num) / anim_pitch_denom) & 0xffff) / 0x8000;
@@ -121,19 +142,29 @@ void eve_display(void)
         alt = (max_alt / 2) + (max_alt / 2) * sin_furman(((0x10000 * anim * anim_alt_num) / anim_alt_denom)) / 0x8000;
         anim+=1;
         heading++;
-    }
+    } while (LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
     // Calibrate the display
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
     // Start example code
-    printf("Starting demo:\n");
-    eve_display();
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

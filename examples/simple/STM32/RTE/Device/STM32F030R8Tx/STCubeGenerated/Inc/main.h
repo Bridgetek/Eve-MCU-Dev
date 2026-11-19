@@ -31,7 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -52,7 +53,6 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-/* This function is used by the platform to report errors. It must be included in all projects for this platform. */
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
@@ -60,6 +60,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define EVE_CS__Pin GPIO_PIN_6
+#define EVE_CS__GPIO_Port GPIOB
+#define EVE_PD__Pin GPIO_PIN_7
+#define EVE_PD__GPIO_Port GPIOB
+#define EVE_INT__Pin GPIO_PIN_8
+#define EVE_INT__GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

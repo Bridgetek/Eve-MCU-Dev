@@ -10,14 +10,22 @@ The `snippets` directory contains code that is used in the examples for the EVE-
   - [Calibration Utility](#calibration-utility)
   - [Touch Detection Utility](#touch-detection-utility)
   - [Tag Reading Utility](#tag-reading-utility)
+- [Controls](#Controls)
+  - [Arcs](#arcs)
+  - [Fonts](#fonts)
+  - [Sound](#sound)
 - [Widgets](#widgets)
   - [Seven Segment LED Widget](#seven-segment-led-widget)
+  - [Dialogs Widget](#dialogs-widget)
 - [Dials](#dials)
   - [Flight Control Widgets](#flight-control-widgets)
   - [Compass Widgets](#compass-widgets)
   - [Submarine Control Widgets](#submarine-control-widgets)
 - [Maths](#maths)
   - [Trigonometry using Furmans](#trigonometry-using-furmans)
+- [Platform Specific Snippets](#platform-specific-snippets)
+  - [Calibration Persistent Storage](#calibration-persistent-storage)
+    - [pico Persistent Storage](#pico-persistent-storage)
 
 ## Utilities
 
@@ -53,8 +61,8 @@ _Returns:_
 
 _Example:_
 
-```
-   eve_calibrate();
+```c
+eve_calibrate();
 ```
 
 ### Touch Detection Utility
@@ -83,8 +91,8 @@ _Returns:_
 
 _Example:_
 
-```
-   eve_key_detect();
+```c
+eve_key_detect();
 ```
 
 ### Tag Reading Utility
@@ -101,11 +109,11 @@ _Source File:_
 
 _Calling format:_
 
-   `int eve_read_tag(uint8_t *key)`
+   `int eve_read_tag(uint8_t *tag)`
 
 _Parameters:_
 
--   int8_t **tag**: Tag value of currently pressed point on screen.
+-   **tag**: Tag value of currently pressed point on screen.
 
 _Returns:_
 
@@ -113,23 +121,497 @@ _Returns:_
 
 _Example:_
 
+```c
+uint8_t tag_val = 0;
+if (eve_read_tag(&tag_val))
+{
+   // Screen is pressed, action the tag stored in tag_val
+}
 ```
-   uint8_t tag_val = 0;
-   if (eve_read_tag(&tag_val))
-   {
-      // Screen is pressed, action the tag stored in tag_val
-   }
-```
+## Controls
 
-## Widgets
-
-There is source code for widgets in the directory:
+In this snippets folder you will find code that can be used to help with low level functions on the EVE devices. 
 
 | Snippet | Description |
 | --- | --- |
-| [sevenseg](#Seven-Segment-LED-Widget) | Seven segement LED code |
+| [arcs](#Arcs) | Arcs control code |
+| [fonts](#Fonts) | Fonts helper code |
+| [sounds](#Sounds) | Sound Synthesiser helper code |
 
-### Seven Segment LED Widget
+### Arcs
+
+The arcs snippet will draw a smooth arc using blending and stencilling. An optional gauge method allows the positioning of a marker to indicate where a marker is placed on the arc. This can be used for user interface purposes.
+
+_Header File:_
+
+   `#include "snippets/controls/arcs.h"`
+
+_Source File:_
+
+   `snippets/controls/arcs.c`
+
+#### arc_simple
+
+Draw a simple arc, specifying the width of the arc and the start and end positions.
+
+_Calling format:_
+
+   `void arc_simple(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1);`
+
+_Parameters:_
+
+-    **x**, **y**: Location of centre of the arc (in pixels).
+-    **r0**: Inner radius of the arc (in pixels).
+-    **r1**: Outer radius of the arc (in pixels).
+-    **a0**: Angle clockwise from the bottom of the circle for the start of the arc (in furmans).
+-    **a1**: Angle clockwise from the bottom of the circle for the end of the arc (in furmans).
+
+#### arc_simple_gauge
+
+Draw a simple arc with a gauge marker, specifying the width of the arc and the start and end positions.
+
+_Calling format:_
+
+   `void arc_simple_gauge(int16_t x, int16_t y, uint16_t r0, uint16_t r1, uint16_t a0, uint16_t a1, uint16_t val);`
+
+_Parameters:_
+
+-    **x**, int16_t **y**: Location of centre of the arc (in pixels).
+-    **r0**: Inner radius of the arc (in pixels).
+-    **r1**: Outer radius of the arc (in pixels).
+-    **a0**: Angle clockwise from the bottom of the circle for the start of the arc (in furmans).
+-    **a1**: Angle clockwise from the bottom of the circle for the end of the arc (in furmans).
+-    **val**: Angle of gauge marker clockwise from the bottom of the circle (in furmans).
+
+### Fonts
+
+The fonts snippet can provide more information on built-in and custom fonts allowing for font sizes and spacing to be used in calculations. 
+
+Information about a font is cached in a structure passed by the calling program. This can then be used to find the required information about a font.
+
+_Header File:_
+
+   `#include "snippets/controls/fonts.h"`
+
+_Source File:_
+
+   `snippets/controls/fonts.c`
+
+#### font_getmax
+
+Get the highest font handle available on the EVE device. This will differ over each generation of EVE device.
+
+_Calling format:_
+
+   `uint8_t font_getmax(void);`
+
+_Parameters - messagebox():_
+
+-  N/A
+
+_Returns:_
+
+-   uint8_t - The maximum number of fonts supported by the EVE device.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+
+uint8_t maxfont = font_getmax();
+```
+
+#### font_getromptr
+
+Get a pointer, as an EVE memory address, to a font which resides in ROM. This must be one of the built-in fonts in the EVE device. 
+
+_Calling format:_
+
+   `uint32_t font_getromptr(uint8_t fontnumber);`
+
+_Parameters - messagebox():_
+
+-  **fontnumber**: The handle of the built-in font to find the memory address of.
+
+_Returns:_
+
+-   uint32_t - The EVE memory address of the built-in font.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+
+uint32_t fontptr = font_getromptr(16);
+```
+
+#### font_getfontinforom
+
+Initialise a cache structure with information about a built-in ROM font. The structure is used in subsequent calls to the font functions.
+
+_Calling format:_
+
+   `void font_getfontinforom(struct eve_font_cache *cache, uint8_t fontnumber);`
+
+_Parameters - messagebox():_
+
+-  **cache**: Structure fill with cached information about the font. This is used when calling further functions in this file to find the font information.
+-  **fontnumber**: The handle of the built-in font from which to initialise the cache structure.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+#define CLOCK_FONT 21
+
+struct eve_font_cache clockfont;
+font_getfontinforom(&clockfont, CLOCK_FONT);
+```
+
+#### font_getfontinforom
+
+Initialise a cache structure with information about a built-in ROM font. The structure is used in subsequent calls to the font functions.
+
+_Calling format:_
+
+   `void font_getfontinfocustom(struct eve_font_cache *cache, uint8_t fontnumber, uint32_t fontptr, uint8_t first_character);`
+
+_Parameters - messagebox():_
+
+-  **cache**: Structure fill with cached information about the font. This is used when calling further functions in this file to find the font information.
+-  **fontnumber**: The handle of the custom font from which to initialise the cache structure.
+-  **fontptr**: Pointer to the custom font in RAM_G.
+-  **first\_character**: First character defined in the font. See CMD_SETFONT.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+#define DIGITAL_FONT 12
+
+struct eve_font_cache clockfont;
+font_getfontinfocustom(&clockfont, DIGITAL_FONT, 0x1000, 32);
+```
+
+#### font_getheight/font_getwidth
+
+Get the width or height of the maximum extent of a character in the cached font.
+
+_Calling format:_
+
+   `uint16_t font_getheight(struct eve_font_cache *cache);`
+   `uint16_t font_getwidth(struct eve_font_cache *cache);`
+
+_Parameters - messagebox():_
+
+-  **cache**: The cache structure which has been initialised with the font information.
+
+_Returns:_
+
+-   uint16_t - The width of height of the largest character in the font.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+#define DIGITAL_FONT 12
+
+struct eve_font_cache clockfont;
+font_getfontinfocustom(&clockfont, DIGITAL_FONT, 0x1000, 32);
+
+uint16_t fontw = font_getwidth(&clockfont);
+```
+
+#### font_getcharwidth
+
+Get the visible width of a single character in the cached font. This can be used for proportional spacing of letters on the display.
+
+_Calling format:_
+
+   `uint16_t font_getcharwidth(struct eve_font_cache *cache, uint8_t ch);`
+
+_Parameters - messagebox():_
+
+-  **cache**: The cache structure which has been initialised with the font information.
+-  **ch**: The character to find the proportional spaced width of.
+
+_Returns:_
+
+-   uint16_t - The width of the character.
+
+_Examples:_
+
+```c
+#include "snippets/controls/fonts.h"
+#define DIGITAL_FONT 12
+
+struct eve_font_cache clockfont;
+font_getfontinfocustom(&clockfont, DIGITAL_FONT, 0x1000, 32);
+
+uint16_t fontw_w = font_getcharwidth(&clockfont, 'w');
+```
+
+### Sound
+
+The sounds snippet can play the built-in sounds from the audio subsystem.
+
+_Header File:_
+
+   `#include "snippets/controls/sound.h"`
+
+_Source File:_
+
+   `snippets/controls/sound.c`
+
+#### sound_enable
+
+Enable sound generation from the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_enable(void);`
+
+_Parameters:_
+
+-  N/A
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_click();
+```
+
+#### sound_set_volume
+
+Enable sound generation from the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_set_volume(uint8_t volume)`
+
+_Parameters:_
+
+-  **volume**: 0-255 vlalue representing the synthesizer playback volume.
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_set_volume(127); // set 50% volume
+```
+
+#### sound_is_playing
+
+Dtermine whether the EVE audio synthesizer is playing a sound.
+
+_Calling format:_
+
+   `int sound_is_playing();`
+
+_Parameters:_
+
+-  N/A
+
+_Returns:_
+
+-   int - Non-zero if a sound is currently being played.
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_click();
+while (sound_is_playing()) {};
+sound_clack();
+```
+
+#### sound_mute
+
+Mute sound generation of the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_mute(void);`
+
+_Parameters:_
+
+-  N/A
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_click();
+while (sound_is_playing()) {};
+sound_mute();
+```
+
+#### sound_silence
+
+Play silence with the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_silence(void);`
+
+_Parameters:_
+
+-  N/A
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_silence();
+```
+
+#### sound_play
+
+Play a note with the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_play(uint8_t sound, uint8_t note);`
+
+_Parameters:_
+
+-  **sound**: The synthesizer voice to use for the note.
+-  **note**: A note to play when the synthesizer voice allows. 
+
+_Examples:_
+
+```c
+#include "snippets/controls/sound.h"
+
+sound_enable();
+sound_play(SOUND_ORGAN, NOTE_C3);
+Sleep(1);
+sound_play(SOUND_SILENCE, NOTE_C3);
+sound_mute();
+```
+
+#### sound_click/sound_clack
+
+Play a click or a clack with the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_click(void);`
+   `void sound_clack(void);`
+
+_Parameters:_
+
+-  N/A
+
+#### sound_chimes/sound_bell/sound_pip
+
+Play a note with the audio synthesizer on the EVE device.
+
+_Calling format:_
+
+   `void sound_chimes(uint8_t note);`
+   `void sound_bell(uint8_t note);`
+   `void sound_pip(uint8_t note);`
+
+_Parameters:_
+
+-  **note**: A note to play when the synthesizer voice allows. 
+
+## Widgets
+
+The widget snippets draw complex items on the display. They are usually comprised of several primitives to make the final result. There is source code for widgets in the directory:
+
+| Snippet | Description |
+| --- | --- |
+| [dialogs](#Dialogs-Widget) | Dialogs (Message Box & Tooltip) code |
+| [sevenseg](#Seven-Segment-LED-Widget) | Seven Segement LED code |
+
+### Dialogs Widget
+
+This file provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the selected options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by default, take an input font handle, and message string. Options are available to render the widgets flat, and their colour can be set by preceding CMD_FGCOLOUR call, while the text colour can be set similarly with a COLOR_RGB call.
+
+_Header File:_
+
+   `#include "snippets/widgets/dialogs.h"`
+
+_Source File:_
+
+   `snippets/widgets/dialogs.c`
+
+#### messagebox
+
+_Calling format:_
+
+   `void messagebox(int16_t font, uint16_t options, const char *message);`
+
+_Parameters:_
+
+-   **font**: Font to be used for the text in the messagebox.
+-   **options**: Options for rendering position and style. 
+-   **message**: Text string to display in the messagebox.
+
+_Examples:_
+
+```c
+#include "snippets/widgets/dialogs.h"
+
+messagebox(27, 0, "message");
+```
+
+#### tooltip
+
+_Calling format:_
+
+   `void tooltip(int16_t x, int16_t y, int16_t font, uint16_t options, const char *message);`
+
+_Parameters:_
+
+-    **x**, int16_t **y**: Location of top left of the tooltip widget (in pixels).
+-    **font**: Font to be used for the text in the tooltip.
+-    **options**: Options for rendering position and style. 
+-    **message**: Text string to display in the tooltip.
+
+_Examples:_
+
+```c
+#include "snippets/widgets/dialogs.h"
+
+tooltip(100, 100, 27, 0, "message");
+```
+
+#### textsize
+
+_Calling format:_
+
+   `void textsize(uint16_t font, uint16_t options, const char *message, uint16_t *w, uint16_t *h);`
+
+_Parameters:_
+
+-    **font**: Font to be used for the text in the tooltip.
+-    **options**: Options for rendering position and style. 
+-    **message**: Text string to display in the tooltip.
+-    **w**, **h**: Returned values containing width and height in pixels.
+
+_Examples:_
+
+```c
+#include "snippets/widgets/dialogs.h"
+uint16_t w, h;
+textsize(27, 0, "message", &w, &h);
+```
+
+### Seven Segment LED Widget (sevensegment)
 
 This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimal displays, and for 16 a dash '-' is displayed.
 
@@ -145,19 +627,19 @@ _Source File:_
 
 _Calling format:_
 
-   `sevensegment(x, y, size, digit, fgcolour, bgcolour);`
+   `void sevensegment(int16_t x, int16_t y, uint16_t size, uint16_t digit, uint32_t fgcolour, uint32_t bgcolour);`
 
 _Parameters:_
 
--   uint32_t **x**, uint32_t **y**: Location of top left of the seven segment LED widget (in pixels).
--   uint16_t **size**: Size of a segment of the seven segment LED widget (in pixels).
--   uint8_t **digit**: Number to display on seven segment LED. 
--   uint32_t **fgcolour**: RGB colour for active segment.
--   uint32_t **bgcolour**: RGB colour for inactive segment.
+-   **x**, **y**: Location of top left of the seven segment LED widget (in pixels).
+-   **size**: Size of a segment of the seven segment LED widget (in pixels).
+-   **digit**: Number to display on seven segment LED. 
+-   **fgcolour**: RGB colour for active segment.
+-   **bgcolour**: RGB colour for inactive segment.
 
 _Example:_
 
-```
+```c
 #include "snippets/widgets/sevenseg.h"
 
 void drawLED(void){
@@ -182,7 +664,7 @@ These widgets will simulate an aeroplane altitude indicator and attitude indicat
 
 Both widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furmans) utility to be compiled with the application.
 
-#### Flight Control Altitude Indicator
+#### Flight Control Altitude Indicator (altwidget)
 
 This is a simulation of an altitude indicator. It reads from zero to 10000 feet. It has 2 hands measuring thousands and hundreds of feet.
 
@@ -200,23 +682,23 @@ _Source File:_
 
 _Calling format:_
 
-   `altwidget(x, y, radius, alt)`
+   `void altwidget(int16_t x, int16_t y, uint16_t radius, int alt);`
 
 _Parameters:_
 
--   int16_t **x**, int16_t **y**: Location of centre of the indicator (in pixels).
--   int16_t **radius**: Radius of the widget dial (in pixels).
--   int **alt**: Altitude to render.
+-   **x**, **y**: Location of centre of the indicator (in pixels).
+-   **radius**: Radius of the widget dial (in pixels).
+-   **alt**: Altitude to render.
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/flight_controls.h"
 
 altwidget(300, 300, 200, 4382);
 ```
 
-#### Flight Control Attitude Indicator
+#### Flight Control Attitude Indicator (attwidget)
 
 This is a simulation of an attitude indicator. It displays pitch, roll and climb.
 
@@ -234,19 +716,19 @@ _Source File:_
 
 _Calling format:_
 
-   `attwidget(x, y, radius, pitch, climb, roll)`
+   `void attwidget(int16_t x, int16_t y, uint16_t radius, int pitch, int climb, int roll);`
 
 _Parameters:_
 
--   int16_t **x**, int16_t **y**: Location of centre of the indicator (in pixels).
--   int16_t **radius**: Radius of the widget dial (in pixels).
--   int **pitch**: Pitch angle in furmans.
--   int **climb**: Climb angle in furmans.
--   int **roll**: Roll angle in furmans.
+-   **x**, **y**: Location of centre of the indicator (in pixels).
+-   **radius**: Radius of the widget dial (in pixels).
+-   **pitch**: Pitch angle in furmans.
+-   **climb**: Climb angle in furmans.
+-   **roll**: Roll angle in furmans.
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/flight_controls.h"
 
 attwidget(300, 300, 200, 0x1000, 0xe000, 0xd000);
@@ -258,9 +740,9 @@ These widgets will simulate an compass.
 
 These widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furmans) utility to be compiled with the application.
 
-#### Binnacle Compass
+#### compass_binnacle
 
-This is a simulation of a binnacle mounted compass. It portrays a top-down view of a roating compass.
+This is a simulation of a binnacle mounted compass. It portrays a top-down view of a rotating compass.
 
 ![Binnacle Compass](docs/compass_binnacle.png)
 
@@ -274,14 +756,14 @@ _Source File:_
 
 _Calling format:_
 
-   `compass_binnacle(x, y, radius, options, heading)`
+   `void compass_binnacle(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);`
 
 _Parameters:_
 
--   int16_t **x**, int16_t **y**: Location of the centre of the indicator (in pixels).
--   uint16_t **radius**: Radius of the indicator (in pixels).
--   uint16_t **options**: Rendering options for the indicator.
--   int **heading**: Compass bearing to point to North.
+-   **x**, **y**: Location of the centre of the indicator (in pixels).
+-   **radius**: Radius of the indicator (in pixels).
+-   **options**: Rendering options for the indicator.
+-   **heading**: Compass bearing to point to North.
 
 _Options:_
 
@@ -290,15 +772,15 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/compass_controls.h"
 
 compass_binnacle(300, 300, 250, OPT_COMPASS_BEZEL, 127);
 ```
 
-#### Bulkhead Compass
+#### compass_bulkhead
 
-This is a simulation of a binnacle mounted compass. It portrays a side-on view of a roating compass.
+This is a simulation of a binnacle mounted compass. It portrays a side-on view of a rotating compass.
 
 ![Bulkhead Compass](docs/compass_bulkhead.png)
 
@@ -312,14 +794,14 @@ _Source File:_
 
 _Calling format:_
 
-   `compass_bulkhead(x, y, radius, options, heading)`
+   `void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);`
 
 _Parameters:_
 
--   int16_t **x**, int16_t **y**: Location of the centre of the indicator (in pixels).
--   uint16_t **radius**: Radius of the indicator (in pixels).
--   uint16_t **options**: Rendering options for the indicator.
--   int **heading**: Compass bearing to point to North.
+-   **x**, **y**: Location of the centre of the indicator (in pixels).
+-   **radius**: Radius of the indicator (in pixels).
+-   **options**: Rendering options for the indicator.
+-   **heading**: Compass bearing to point to North.
 
 _Options:_
 
@@ -330,7 +812,7 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/compass_controls.h"
 
 compass_bulkhead(300, 300, 250, OPT_COMPASS_BULKHEAD_RECT | OPT_COMPASS_TRANSPARENT, 127);
@@ -342,7 +824,7 @@ These widgets will simulate an submarine depth indicator.
 
 These widgets require the [Trigonometry using Furmans](#Trigonometry-using-Furmans) utility to be compiled with the application.
 
-#### Sumarine Depth Indicator
+#### Submarine Depth Indicator (sub_depth)
 
 This is a simulation of a depth indicator. It reads from zero showing an indicator pointing at a scaled depth.
 
@@ -360,15 +842,15 @@ _Source File:_
 
 _Calling format:_
 
-   `sub_depth(x, y, width, height, options, depth, visible)`
+   `void sub_depth(int32_t x, int32_t y, uint16_t width, uint16_t height, uint16_t options, int16_t depth, int16_t visible);`
 
 _Parameters:_
 
--   int16_t **x**, int16_t **y**: Location of the top left of the indicator (in pixels).
--   uint16_t **width**, uint16_t **height**: Width and height of the indicator (in pixels).
--   uint16_t **options**: Rendering options for the indicator.
--   int **depth**: Depth to render. Scaled by SUB_UNITS_SCALE.
--   int **visible**: Depth range visible in the indicator. Scaled by SUB_UNITS_SCALE.
+-   **x**, **y**: Location of the top left of the indicator (in pixels).
+-   **width**, uint16_t **height**: Width and height of the indicator (in pixels).
+-   **options**: Rendering options for the indicator.
+-   **depth**: Depth to render. Scaled by SUB_UNITS_SCALE.
+-   **visible**: Depth range visible in the indicator. Scaled by SUB_UNITS_SCALE.
 
 _Options:_
 
@@ -377,7 +859,7 @@ _Options:_
 
 _Example:_
 
-```
+```c
 #include "snippets/dials/sub_controls.h"
 
 sub_depth(300, 300, 150, 400, OPT_SUB_BEZEL, 382 * SUB_UNITS_SCALE, 50 * SUB_UNITS_SCALE);
@@ -391,9 +873,9 @@ sub_depth(300, 300, 150, 400, OPT_SUB_BEZEL, 382 * SUB_UNITS_SCALE, 50 * SUB_UNI
 
 ### Trigonometry using Furmans
 
-A utility is provided to perform trigonometery using angles in furmans rather than degrees or radians. 
+A utility is provided to perform trigonometry using angles in furmans rather than degrees or radians. 
 
-The return value is an `int16_t` format ranging from -0x8000 to +0x7fff.
+The return value is an `int16_t` format ranging from -0x8000 to +0x7fff or when cast as a `uint16_t` from 0x0000 to 0xffff.
 
 _Header File:_
 
@@ -405,16 +887,16 @@ _Source File:_
 
 _Calling format:_
 
-   `sin_furman(angle);`
-   `cos_furman(angle);`
+   `int16_t sin_furman(uint16_t furman16);`
+   `int16_t cos_furman(uint16_t furman16);`
 
 _Parameters:_
 
--   int16_t **angle**: Angle in furmans
+-   **angle**: Angle in furmans
 
 _Example:_
 
-```
+```c
 uint16_t scale = sin_furman(0xd000);
 ```
 
@@ -429,12 +911,12 @@ _Calling format:_
 
 _Parameters:_
 
--   int16_t **furman**: Angle in furmans
+-   uint16_t **furman**: Angle in furmans
 -   int **degrees**: Angle in degrees
 
 _Example:_
 
-```
+```c
 int16_t angle = DEG2FURMAN(0x4000); // angle = 90
 ```
 
@@ -457,8 +939,28 @@ _Parameters:_
 
 _Example:_
 
-```
+```c
 // angle = 45
 int16_t vx = CIRC_X(0x2000); 
 int16_t vy = CIRC_Y(0x2000); 
 ```
+
+## Platform Specific Snippets
+
+### Calibration Persistent Storage
+
+There are platform specific files named `calib_*.c` and `calib_*.cpp` which use a platforms non-volatile storage to keep configuration data.
+
+### pico Persistent Storage
+
+In the [calib_pico.c](examples/snippets/platform/calib_pico.c) program there are the following functions used to store calibration data in flash `platform_calib_init()`, `platform_calib_read()`, `platform_calib_write()`.
+
+In this example the calibration data is stored by these functions in flash program memory at the very top sector of flash.
+
+This method is not recommended usage as a program may utilise this flash area and the calibration data may overwrite the program.
+The implementation here is simply to show how the calibration information is obtained and stored.
+Other methods should be explored for a completed application.
+
+A proper implementation of this method in an application would modify the linker script to reserve this area for the storage of any persistent data that is required for an application.
+Other methods of storing calibration data may be utilised such as writing to the flash attached to the EVE or external devices connected to the pico.
+

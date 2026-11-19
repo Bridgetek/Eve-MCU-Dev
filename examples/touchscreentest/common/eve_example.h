@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ * @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,11 +46,19 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
+
+/* Include snippets */
+#include <touch.h>
+
+/* Constants available within the eve_example code */
 /**
  @brief Definitions of handles for custom fonts and bitmaps.
  */
 //@{
-#define FONT_CUSTOM 8
 #define BITMAP_BRIDGETEK_LOGO 7
 #define BITMAP_SKETCH 6
 //@}
@@ -65,8 +73,6 @@ void eve_clear_sketch(void);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-#include "touch.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

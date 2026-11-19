@@ -1,5 +1,5 @@
 /**
- @file eve_assetload_flash_eve3.c
+ * @file eve_assetload_flash_eve3.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,26 +37,31 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if IS_EVE_API(5)
 
 #if (ASSETS == USE_FLASH) || (ASSETS == USE_FLASHIMAGE)
 
+/* CONSTANTS ***********************************************************************/
+
+
 #if ASSETS == USE_FLASHIMAGE
 extern const char *flashimage;
 extern const char *assetdir;
 extern const char *join(const char *dirname, const char *filename);
 #endif
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_asset_properties(const char *assets)
 {

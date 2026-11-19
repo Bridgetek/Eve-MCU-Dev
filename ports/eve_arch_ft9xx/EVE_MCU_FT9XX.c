@@ -1,5 +1,6 @@
 /**
- @file EVE_MCU_FT9XX.c
+ * @file EVE_MCU_FT9XX.c
+ * @details MCU-specific code for controlling EVE on FT9xx devices.
  */
 /*
  * ============================================================================
@@ -8,7 +9,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_FT9XX)
 
 #pragma message "Compiling " __FILE__ " for BridgeTek FT9XX"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -50,8 +53,13 @@
 #include <ft900_spi.h>
 #include <ft900_gpio.h>
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+
+/* The Timer Prescaler will divide the 100MHz Master clock down to 2kHz */
+#define TIMER_PRESCALER (50000)
+#define TIMER_ONE_MILLISECOND (100000/TIMER_PRESCALER)
+#define TIMER_ONE_SECOND (1000*TIMER_ONE_MILLISECOND)
 
 // SPI Master pins
 #if defined(__FT900__)
@@ -62,8 +70,10 @@
 #define PIN_NUM_IO3  32
 #define PIN_NUM_CLK  27
 #define PIN_NUM_CS   28
-// Powerdown pin
+// EVE Powerdown# pin
 #define PIN_NUM_PD   43
+// EVE INT# pin
+#define PIN_NUM_INT  42
 
 #elif defined(__FT930__)
 
@@ -73,93 +83,173 @@
 #define PIN_NUM_IO3  38
 #define PIN_NUM_CLK  34
 #define PIN_NUM_CS   30
-// Powerdown pin
+// EVE Powerdown# pin
 #define PIN_NUM_PD   15
+// EVE INT# pin
+#define PIN_NUM_INT  14
 
 #endif //
 
-// This is the MCU specific section and contains the functions which talk to the
-// PIC registers. If porting the code to a different PIC or to another MCU, these
-// should be modified to suit the registers of the selected MCU.
+/* EVE MCU HEADER END */
+
+// FT9xx tick timer
+static void timerISR(void);
+static volatile uint32_t ticks = 0;
+
+/* EVE MCU */
+
+// This is the FT9xx platform specific section and contains the functions which
+// enable the Tiemr, GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
 {
-    // Initialize SPIM HW
+    /* Initialize SPIM HW */
     sys_enable(sys_device_spi_master);
 
+    /* Set CLK pin */
     gpio_function(PIN_NUM_CLK, pad_spim_sck); /* GPIO27 to SPIM_CLK */
+
+    /* Set CS#, PD#, INT# pins */
 #if defined(__FT900__)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO28 as CS */
-    gpio_function(PIN_NUM_PD, pad_gpio43);
+    gpio_function(PIN_NUM_PD, pad_gpio43); /* GPIO43 as PD */
+    gpio_function(PIN_NUM_INT, pad_gpio42); /* GPIO42 as INT */
 #elif defined(__FT930__)
     gpio_function(PIN_NUM_CS, pad_spim_ss0); /* GPIO30 as CS */
-    gpio_function(PIN_NUM_PD, pad_gpio15);
+    gpio_function(PIN_NUM_PD, pad_gpio15); /* GPIO15 as PD */
+    gpio_function(PIN_NUM_INT, pad_gpio14); /* GPIO14 as INT */
 #endif
 
+    /* Set MISO/MOSI pins */
     gpio_function(PIN_NUM_MOSI, pad_spim_mosi); /* GPIO29 to SPIM_MOSI */
     gpio_function(PIN_NUM_MISO, pad_spim_miso); /* GPIO30 to SPIM_MISO */
 
+    /* Set pin directions  */
     gpio_dir(PIN_NUM_CLK, pad_dir_output);
     gpio_dir(PIN_NUM_CS, pad_dir_output);
     gpio_dir(PIN_NUM_MOSI, pad_dir_output);
     gpio_dir(PIN_NUM_MISO, pad_dir_input);
     gpio_dir(PIN_NUM_PD, pad_dir_output);
-#if (SPI_ENABLE == ENABLE_SPI_QUAD)
-    /* Initialize IO2 and IO3 pad/pin for quad settings */
-    gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
-    gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
-    gpio_dir(PIN_NUM_IO2, pad_dir_output);
-    gpio_dir(PIN_NUM_IO3, pad_dir_output);
-#endif
+    gpio_dir(PIN_NUM_INT, pad_dir_input);
+
+    /* CS# & PD# pins write to high */
     gpio_write(PIN_NUM_CS, 1);
     gpio_write(PIN_NUM_PD, 1);
 
-    // Set SPI clock speed to 25 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
-    // Divide by 8 is 25 MHz
+    /* Start SPIM interface */
+    // Set SPI clock speed to 12.5 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
+    // Divide by 8 is 12.5 MHz
     spi_init(SPIM, spi_dir_master, spi_mode_0, 8);
+    spi_option(SPIM,spi_option_fifo_size,64);
+	spi_option(SPIM,spi_option_fifo,1);
+	spi_option(SPIM,spi_option_fifo_receive_trigger,1);
+
+    /* Enable Timers... */
+    sys_enable(sys_device_timer_wdt);
+    /* Set up the Timer tick to be 1 ms... */
+    /* FT900 Rev A and B have timers that share the prescaler */
+    /* FT900 Rev C and FT93x timers have dedicated prescalers */
+#if defined(__FT900__)
+    if (sys_check_ft900_revB()) //90x series rev B
+    {
+        timer_prescaler(TIMER_PRESCALER);
+    }
+    else
+#endif
+    {
+        timer_prescaler(timer_select_a, TIMER_PRESCALER);
+    }
+    /* Set up Timer A to be triggered after 5 seconds... */
+    timer_init(timer_select_a,              /* Device */
+               TIMER_ONE_MILLISECOND,       /* Initial Value */
+               timer_direction_down,        /* Count Direction */
+               timer_prescaler_select_on,   /* Prescaler Select */
+               timer_mode_continuous);      /* Timer Mode */
+
+    /* Register the interrupt... */
+    interrupt_attach(interrupt_timers, 17, timerISR);
+
+    /* Enable all the timers... */
+    timer_enable_interrupt(timer_select_a);
+
+    /* Enable interrupts to fire... */
+    interrupt_enable_globally();
+
+    /* Start all the timers at the same time... */
+    timer_start(timer_select_a);
 
     return 0;
 }
 
 int MCU_Deinit(void)
 {
-    // Shut down the SPI Master
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Shut down the SPI master. */
     spi_uninit(SPIM);
     sys_disable(sys_device_spi_master);
-
+    
     return 0;
 }
 
 int MCU_Setup(void)
 {
-#if defined QUADSPI_ENABLE
-
-#if IS_EVE_API(2,3,4)
-    // Turn on EVE quad-SPI for FT81x devices.
-    MCU_CSlow();
-    MCU_SPIWrite24(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
-    MCU_SPIWrite8(2);
-    MCU_CShigh();
-
-    // Turn on FT9xx quad-SPI.
-    spi_option(SPIM, spi_option_bus_width, 4);
-#elif IS_EVE_API(5)
-    // Turn on EVE quad-SPI for FT81x devices.
-    MCU_CSlow();
-    MCU_SPIWrite32(MCU_htobe32((EVE_REG_SPI_WIDTH << 8) | (1 << 31)));
-    MCU_SPIWrite32(2);
-    MCU_CShigh();
-
-    // Turn on FT9xx quad-SPI.
-    spi_option(SPIM, spi_option_bus_width, 4);
-#endif // IS_EVE_API(2,3,4,5)
-#endif // QUADSPI_ENABLE
-
+    /* Additional SPI Configuration */
     // Turn off SPI buffering. Timing of chip select is critical.
     spi_option(SPIM, spi_option_fifo, 0);
 
     return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        /* SPI Configuration */
+        if (spi_option(SPIM, spi_option_bus_width, 1) != 0)
+        {
+            return -1;
+        }
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        /* Initialize IO2 and IO3 pad/pin for quad settings */
+        gpio_function(PIN_NUM_IO2, pad_spim_io2); /* GPIO31 to IO2 */
+        gpio_function(PIN_NUM_IO3, pad_spim_io3); /* GPIO32 to IO3 */
+        gpio_dir(PIN_NUM_IO2, pad_dir_output);
+        gpio_dir(PIN_NUM_IO3, pad_dir_output);
+        
+        /* QSPI Configuration */
+        if (spi_option(SPIM, spi_option_bus_width, 4) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
+#endif /* defined(EVE_QSPI_ENABLE) */
+
+/**
+ * @brief The interrupt handler for the timers.
+ *
+ * This will keep a count of how many times each interrupt has fired in a global
+ * variable.
+*/
+static void timerISR(void)
+{
+    if (timer_is_interrupted(timer_select_a) == 1)
+    {
+        ticks++;
+    }
 }
 
 // ########################### GPIO CONTROL ####################################
@@ -193,6 +283,12 @@ inline void MCU_PDlow(void)
 inline void MCU_PDhigh(void)
 {
     gpio_write(PIN_NUM_PD, 1);
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void)
+{
+    return gpio_read(PIN_NUM_INT);  // EVE INT# line
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -246,12 +342,12 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
-  spi_writen(SPIM, DataToWrite, length);
+    spi_writen(SPIM, DataToWrite, length);
 }
 
 void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
-  spi_readn(SPIM, DataToRead, length);
+    spi_readn(SPIM, DataToRead, length);
 }
 
 void MCU_Delay_20ms(void)
@@ -262,6 +358,11 @@ void MCU_Delay_20ms(void)
 void MCU_Delay_500ms(void)
 {
     delayms(500);
+}
+
+uint32_t MCU_Time_ms(void)
+{
+    return ticks;
 }
 
 // FT9XX is Little Endian.
@@ -305,5 +406,7 @@ uint32_t MCU_le32toh(uint32_t h)
 {
     return h;
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_FT9XX) */

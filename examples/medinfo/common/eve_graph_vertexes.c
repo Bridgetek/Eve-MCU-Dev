@@ -1,5 +1,5 @@
 /**
- @file eve_graph_calllist.c
+ * @file eve_graph_calllist.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,13 +42,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if GRAPHING_METHOD == USE_GRAPH_VERTEXES
 
-TRACE_PROPS trace[trace_total];
+EVE_TRACE_PROPS trace[trace_total];
 uint8_t trace_data[trace_total][TRACE_POINTS];
 
 static void graph_trace_zero(uint8_t *store)
@@ -104,7 +103,7 @@ static void graph_draw_line(uint8_t num, uint32_t pos, uint32_t count, uint32_t 
 
             // Draw the second last point if it is not within the filter
             // Then update filter to the second last point
-            if ((abs(((x2 - x1) * (y3 - y2)) + y2 - y1) > filter) || (k == 0))
+            if ((abs((int32_t)(((x2 - x1) * (y3 - y2)) + y2 - y1)) > filter) || (k == 0))
             {
                 y1 = y2;
                 x1 = x2;

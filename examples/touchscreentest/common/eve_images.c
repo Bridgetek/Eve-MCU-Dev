@@ -1,5 +1,5 @@
 /**
- @file eve_images.c
+ * @file eve_images.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,12 +37,15 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <string.h>
 
-#include <EVE.h>
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* GLOBAL VARIABLES ****************************************************************/
 
 uint32_t eve_img_bridgetek_logo_width;
 uint32_t eve_img_bridgetek_logo_height;
@@ -50,6 +53,8 @@ uint32_t eve_img_bridgetek_logo_height;
 uint32_t image_addr;
 uint32_t sketch_addr;
 uint32_t end_addr;
+
+/* CONSTANTS ***********************************************************************/
 
 #ifdef __GNUC__
 static const uint8_t img_bridgetek_logo[] __attribute__((aligned(4))) =
@@ -284,6 +289,8 @@ static const uint8_t img_bridgetek_logo[] =
     /*E00:*/ 0xD3, 0x4D, 0x34, 0x44, 0xD3, 0x4D, 0x34, 0x44, 0xD3, 0x4D, 0x34, 0x44, 0xD3, 0x4D, 0x34, 0x44,
     /*E10:*/ 0xD3, 0x4D, 0x34, 0x45, 0xFF, 0xD9,
 };
+
+/* FUNCTIONS ***********************************************************************/
 
 uint32_t eve_load_images(uint32_t start_addr)
 {

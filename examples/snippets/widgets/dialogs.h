@@ -1,5 +1,5 @@
 /**
- @file sevenseg.h
+ * @file dialogs.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,6 +37,9 @@
  * ============================================================================
  */
 
+#ifndef _EVE_DIALOGS_H
+#define _EVE_DIALOGS_H
+
 #define EVE_OPT_MSGBGALPHA 255
 #define EVE_OPT_MSGTOP 512
 #define EVE_OPT_MSGBOTTOM 1024
@@ -44,3 +47,5 @@
 void textsize(uint16_t font, uint16_t options, const char *message, uint16_t *w, uint16_t *h);
 void messagebox(int16_t font, uint16_t options, const char *message);
 void tooltip(int16_t x, int16_t y, int16_t font, uint16_t options, const char *message);
+
+#endif /* EVE_DIALOGS_H */

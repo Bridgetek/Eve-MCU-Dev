@@ -1,5 +1,5 @@
 /**
- @file compass_bulkhead.c
+ * @file compass_bulkhead.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,13 +36,19 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+ 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "maths/trig_furman.h"
 #include "compass_controls.h"
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -296,6 +302,8 @@ static void draw_compass_point(int16_t x, int16_t y, int16_t radius, int16_t opt
         }
     }
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 /*
  * x,y - top left of widget in pixels

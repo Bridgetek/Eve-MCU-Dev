@@ -1,5 +1,5 @@
 /**
- @file compasscontrols.h
+ * @file compass_controls.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef _COMPASS_CONTROLS_H
-#define _COMPASS_CONTROLS_H
+#ifndef _EVE_COMPASS_CONTROLS_H
+#define _EVE_COMPASS_CONTROLS_H
 
 // Draw the bezel on the compass widgets
 #define OPT_COMPASS_BEZEL               1
@@ -52,4 +52,4 @@
 void compass_binnacle(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
 void compass_bulkhead(int32_t x, int32_t y, uint16_t radius, uint16_t options, int16_t heading);
 
-#endif /* _COMPASS_CONTROLS_H */
+#endif /* _EVE_COMPASS_CONTROLS_H */

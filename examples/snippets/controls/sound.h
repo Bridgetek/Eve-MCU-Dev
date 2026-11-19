@@ -1,5 +1,5 @@
- /**
- @file sound.h
+/**
+ * @file sound.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_SOUNDS_H
-#define EVE_SOUNDS_H
+#ifndef _EVE_SOUNDS_H
+#define _EVE_SOUNDS_H
 
 #define SOUND_SILENCE 0x00 // Silence Y N        
 #define SOUND_SQUARE 0x01 // Square wave Y Y    
@@ -189,14 +189,16 @@
 #define NOTE_B7 107 // B7 3951.1
 #define NOTE_C8 108 // C8 4186.0
 
-void enableSound(void);
-int checkRegPlay();
-void playSound(uint8_t sound, uint8_t note);
-void playMute(void);
-void playClick(void);
-void playChimes(uint8_t note);
-void playBell(uint8_t note);
-void playPip(uint8_t note);
-void playClack(void);
+void sound_enable(void);
+void sound_set_volume(uint8_t volume);
+int sound_is_playing();
+void sound_play(uint8_t sound, uint8_t note);
+void sound_mute(void);
+void sound_silence(void);
+void sound_click(void);
+void sound_chimes(uint8_t note);
+void sound_bell(uint8_t note);
+void sound_pip(uint8_t note);
+void sound_clack(void);
 
-#endif // EVE_SOUNDS_H
+#endif /* _EVE_SOUNDS_H */

@@ -12,15 +12,15 @@
 		{
 			"path": "../common"
 		},
-		{
-			"path": "../../../ports/eve_arch_ft9xx"
+				{
+			"path": "../../snippets"
 		},
 		{
-			"path": "../../../ports/eve_bt82x"
+			"path": "../../../ports/eve_arch_ft9xx"
 		}
 	],
 	"settings": {
-		"ft9xx.projectName": "simple_ft9xx",
+		"ft9xx.projectName": "simple_ft900",
 		"ft9xx.baudrate": "921600",
 		"ft9xx.buildMode": "Debug",
 		"ft9xx.chipset": "FT90x",
