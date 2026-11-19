@@ -36,7 +36,8 @@ jobs:
       max-parallel: 1
       matrix:
         example: [
-          {dir: raspberry_pi,   compiler: arm,  library: rpi},
+          # Disable test for RPi since GitHub action is not running on Raspberry Pi OS with libgpiod2
+          #{dir: raspberry_pi,   compiler: arm,  library: rpi},
           {dir: pico,           compiler: arm,  library: pico},
           {dir: STM32CUBE_CMake_MiniSTM32H7xx, compiler: arm, library: none },
         ]
