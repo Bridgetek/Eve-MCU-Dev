@@ -1,6 +1,7 @@
 /**
  * @file EVE_MCU_ESP32.c
  * @details MCU-specific code for controlling EVE on ESP32 devices.
+ *          This build depends on the FreeRTOS task timer and delays.
  */
 /*
  * ============================================================================
@@ -53,11 +54,8 @@
 /* REQUIRE FreeRTOS to enable accurate timers. */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-/* Local copy of endian.h */
-/*#include "endian.h"*/
 
 #include "esp_system.h"
-#include "esp_timer.h"
 #include "driver/spi_master.h"
 #include "driver/spi_common.h"
 #include "hal/spi_types.h"
@@ -374,17 +372,21 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_Delay_20ms(void)
 {
+    // Use a task delay
     vTaskDelay(20 / portTICK_PERIOD_MS);
 }
 
 void MCU_Delay_500ms(void)
 {
+    // Use a task delay
     vTaskDelay(500 / portTICK_PERIOD_MS);
 }
 
 uint32_t MCU_Time_ms(void)
 {
-    return esp_timer_get_time() / 1000;
+    // Use the FreeRTOS task tick count for milliseconds
+    // rather than the high resolution timer.
+    return xTaskGetTickCount() * portTICK_PERIOD_MS;
 }
 
 // ESP32 is Little Endian.

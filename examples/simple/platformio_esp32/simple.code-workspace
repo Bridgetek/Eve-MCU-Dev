@@ -13,10 +13,6 @@
 			"path": "../../snippets"
 		},
 		{
-			"name": "eve_arch_esp32",
-			"path": "../../../ports/eve_arch_esp32"
-		},
-		{
 			"name": "simple",
 			"path": "."
 		},

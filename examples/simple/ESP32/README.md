@@ -6,6 +6,8 @@
 
 The build environment uses the ESP-IDF VSCode Extension. This can be setup following instructions in the [ESP-IDF Extension for VSCode](https://docs.espressif.com/projects/vscode-esp-idf-extension/) document from the Espressif website.
 
+The [ESP-IDF ESP32 port](../../../ports/eve_arch_esp32/README.md) is used for this example.
+
 ### Compiling the Simple ESP32 VSCode Example
 
 The instructions for compiling and programming the pico can be followed from the ESP-IDF Extension for VSCode documentation. The needs the target device to be "esp32".

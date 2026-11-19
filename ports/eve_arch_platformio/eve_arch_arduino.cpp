@@ -1,6 +1,12 @@
 /**
  * @file eve_arch_arduino.ino
- * @details MCU-specific code for controlling EVE on Arduino devices.
+ * @details MCU-specific code for controlling EVE Arduino PlatformIO.
+ *          This file is used with the Arduino Framework in PlatformIO.
+ *          In `platformio.ini`
+ *          - Use the following framework: "framework = arduino"
+ *          - Set the following macros:
+ *              -DPLATFORM_PLATFORMIO
+ *              -DPLATFORM_PLATFORMIO_ARDUINO
  */
 /*
  * ============================================================================
@@ -175,13 +181,11 @@ int MCU_SetSPIMode(uint8_t mode)
 // --------------------- Chip Select line low ----------------------------------
 void MCU_CSlow(void) {
   digitalWrite(PIN_CHIPSELECT, LOW);  
-  delayMicroseconds(10);
 }
 
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void) {
   digitalWrite(PIN_CHIPSELECT, HIGH);  // disable CS#
-  delayMicroseconds(10);
 }
 
 // -------------------------- PD line low --------------------------------------

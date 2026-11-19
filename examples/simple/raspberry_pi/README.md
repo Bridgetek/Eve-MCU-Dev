@@ -2,6 +2,8 @@
 
 [Back](../README.md)
 
+The [Raspberry Pi port](../../../ports/eve_arch_rpi/README.md#raspberry-pi) is used for this example.
+
 ## Compiling the Simple Raspberry Pi Example
 
 The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be easily installed by the following command.

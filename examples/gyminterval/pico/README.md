@@ -2,6 +2,8 @@
 
 [Back](../README.md)
 
+The [Raspberry Pi pico port](../../../ports/eve_arch_rpi/README.md#pico) is used for this example.
+
 ## Compiling using the Raspberry Pi pico VSCode Extension
 
 Ensure that the "Raspberry Pi pico VSCode Extension" is installed on Visual Studio Code (VS Code).

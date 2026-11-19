@@ -1,8 +1,10 @@
 # EVE simple example for Infineon PSoC 6 - Eclipse / ModusToolbox 3.9
 
 This is a ModusToolbox 3.x single-core combined application for the
-`CY8CPROTO-062S2-43439`. It communicates with a Bridgetek BT817 over SPI and
+`CY8CPROTO-062S2-43439`. It communicates with a EVE devices over SPI and
 uses the migration layout described in Infineon KBA236134.
+
+The [Infineon PSoC 6 port](../../../../ports/eve_arch_infineon/README.md) is used for this example.
 
 ## Important: do not import this as a generic Eclipse CDT project
 

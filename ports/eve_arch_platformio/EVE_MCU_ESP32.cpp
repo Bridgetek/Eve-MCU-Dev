@@ -1,6 +1,13 @@
 /**
  * @file EVE_MCU_ESP32.cpp
- * @details MCU-specific code for controlling EVE on ESP32 devices.
+ * @details MCU-specific code for controlling EVE with ESP-IDF PlatformIO.
+ *          This file is used with the ESP-IDF Framework in PlatformIO.
+ *          In `platformio.ini`
+ *          - Use the following framework: "framework = espidf"
+ *          - Set the following macros:
+ *              -DPLATFORM_PLATFORMIO
+ *              -DPLATFORM_PLATFORMIO_ESPIDF
+ *              -DPLATFORM_ESP32
  */
 /*
  * ============================================================================
@@ -41,7 +48,7 @@
 // Guard against being used for incorrect platform or architecture. ESP32 is Xtensa LE based.
 #if defined(PLATFORM_PLATFORMIO_ESPIDF)
 
-#pragma message "Compiling " __FILE__ " for PlatformIO Espressif ESP32"
+#pragma message "Compiling " __FILE__ " for PlatformIO ESP-IDF"
 
 /* EVE MCU HEADER */
 
@@ -54,8 +61,6 @@ extern "C" {
 /* REQUIRE FreeRTOS to enable accurate timers. */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-/* Local copy of endian.h */
-/*#include "endian.h"*/
 
 #include "esp_system.h"
 #include "driver/spi_master.h"
@@ -381,17 +386,21 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 
 void MCU_Delay_20ms(void)
 {
+    // Use a task delay
     vTaskDelay(20 / portTICK_PERIOD_MS);
 }
 
 void MCU_Delay_500ms(void)
 {
+    // Use a task delay
     vTaskDelay(500 / portTICK_PERIOD_MS);
 }
 
 uint32_t MCU_Time_ms(void)
 {
-    return xTaskGetTickCount();
+    // Use the FreeRTOS task tick count for milliseconds
+    // rather than the high resolution timer.
+    return xTaskGetTickCount() * portTICK_PERIOD_MS;
 }
 
 // ESP32 is Little Endian.

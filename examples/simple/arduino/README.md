@@ -4,6 +4,8 @@
 
 The sketch needs additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`simple_arduino`](simple_arduino/).
 
+The [Arduino port](../../../ports/eve_arch_arduino/README.md) is used for this example.
+
 ## Sketch Directory
 
 There are two methods of setting up the sketch directory. A python script is provided and manual instructions are also provided.

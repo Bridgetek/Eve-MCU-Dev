@@ -4,6 +4,8 @@ This library allows a variety of hardware to communicate with FT8xx and BT8xx gr
 
 This library is intended to provide a **C** library for embedded designs.
 
+This is version 2.0 of the EVE-MCU-Dev. [Release Notes](RELEASE_NOTES.md).
+
 ## Contents
 
 - [Overview](#overview)

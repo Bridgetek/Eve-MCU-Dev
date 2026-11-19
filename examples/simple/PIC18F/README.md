@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-
+The [PIC18F port](../../../ports/eve_arch_pic/README.md) is used for this example.
 
 ## Compiling using the MPLAB Tools for VSCode Extension
 

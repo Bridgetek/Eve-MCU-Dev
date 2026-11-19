@@ -10,6 +10,8 @@ The toolchain will configure a command line environment for compilation of FT9xx
 
 A Visual Studio Code extension for the FT9xx devices is also available from the VS Code Extensions Activity Bar. The extension name is "Bridgetek FT9xx Extension" from "Bridgetek". This will automate and manage the build environment.
 
+The [FT9xx port](../../../ports/eve_arch_ft9xx/README.md) is used for this example.
+
 ## Compiling the FT9xx Example
 
 The project can be compiled on the command line or in Visual Studio Code using the Bridgetek FT9xx Extension. The toolchain install will make an evironment variable called `FT9XX_TOOLCHAIN` pointing to the FT9xx Toolchain installation that is used in the build process.

@@ -2,6 +2,8 @@
 
 [Back](../README.md)
 
+The [Raspberry Pi pico port](../../../ports/eve_arch_rpi/README.md#pico) is used for this example.
+
 ## Compiling using the pico VSCode Extension
 
 The workspace file `medinfo.code-workspace` can be loaded directly in Visual Studio Code (VS Code) to load the project as a workspace.

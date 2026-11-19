@@ -4,6 +4,8 @@
 
 ## Compiling the Simple BeagleBone Black Example
 
+The [Beaglebone Black port](../../../ports/eve_arch_beaglebone/README.md) is used for this example.
+
 The build environment depends on the presence of the build tools, GCC compiler and make utility. These can be easily installed by the following command.
 
 ```console

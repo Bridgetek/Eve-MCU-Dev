@@ -1,5 +1,7 @@
 # EVE-MCU-Dev Simple Example for libmpsse
 
+Please follow instructions to install the MPSSE Library in EVE-MCU-Dev library. Instructions are available in [EVE-MCU-Dev Ports for libmpsse](../../../ports/eve_libmpsse/README.md). This must be done before compilation.
+
 ## Command Line Compilation
 
 To configure the project with the default C compiler:
