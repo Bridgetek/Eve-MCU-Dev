@@ -96,6 +96,12 @@ Both MCUs have two SPI master interface. These are a single channel SPI interfac
 
 Both STM32F0 Discovery modules can be connected via short wires to the corresponding signals of an EVE module. Please reference the Datasheet for more information.
 
+The following picture is of a STM32F0 Discovery module connected using the wire colours in [Module Connections](../../README.md#module-connections).
+
+![STM32F0 Discovery Wiring Picture](../../docs/stm32f0discovery.png)
+
+The pin connections for STM32F0 Discovery module is as follows for the 2x8 and 1x10 connectors:
+
 | STM32F0 Discovery Pin | STM32F0 Discovery Label | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
 | P 2 11 | PB3 | 1 | 1 | SCK | Brown 🟫 |
@@ -240,7 +246,13 @@ The STM32 Keil port directly supports the following STM32 modules:
 
 ### Connection to EVE
 
-The discovery module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Datasheet for more information.
+The STM32F0 Discovery module can be connected via short wires to the corresponding signals of an EVE module. Please reference the Datasheet for more information.
+
+The following picture is of a STM32F0 Discovery module connected using the wire colours in [Module Connections](../../README.md#module-connections).
+
+![STM32F0 Discovery Wiring Picture](../../docs/stm32f0discovery.png)
+
+The pin connections for STM32F0 Discovery module is as follows for the 2x8 and 1x10 connectors:
 
 | STM32F0308-DISCO Pin | STM32F0308-DISCO Label | 2x8 Pin | 1x10 Pin | EVE Signal | Colour in Figure |
 | --- | --- | --- | --- | --- | --- |
