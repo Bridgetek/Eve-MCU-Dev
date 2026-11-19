@@ -93,7 +93,8 @@
     || defined(PLATFORM_STM32) || defined(PLATFORM_PIC) \
     || defined(PLATFORM_NXPK64) || defined(PLATFORM_MSP430) \
     || defined(PLATFORM_ESP32) || defined(PLATFORM_RP2040) \
-    || defined(PLATFORM_PICO_SDK) || defined(PLATFORM_MSPM0)
+    || defined(PLATFORM_PICO_SDK) || defined(PLATFORM_MSPM0) \
+    || defined(PLATFORM_INFINEON_PSOC6)
 #define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
 #elif defined(ARDUINO)
 #define EVE_SPI_MAX_TRANSFER sizeof(uint32_t)
@@ -152,6 +153,10 @@
     || defined(PLATFORM_ESP32) || defined(PLATFORM_MSPM0)
 /* The default SPI bus for embedded MCUs is set to 1 MHz */
 #define EVE_SPI_TIMEOUT 8
+
+#elif  defined(PLATFORM_INFINEON_PSOC6)
+/* Infineon PSoC6 SPI bus is set to 1 MHz by default */
+#define EVE_SPI_TIMEOUT 16
 
 #elif defined(ARDUINO)
 /* Arduino SPI bus is set to 1 MHz by default */

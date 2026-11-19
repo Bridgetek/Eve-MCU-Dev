@@ -19,6 +19,7 @@
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerGdbPortNumber" value="3333"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerLog" value=""/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerOther" value="-s &quot;${openocd_path}/../scripts&quot;&#13;&#10;-s &quot;bsps/TARGET_APP_CY8CPROTO-062S2-43439/config/GeneratedSource&quot;&#13;&#10;-c &quot;source [find interface/kitprog3.cfg]&quot;&#13;&#10;-c &quot;transport select swd&quot;&#13;&#10;-c &quot;puts stderr {Started by GNU MCU Eclipse}&quot;&#13;&#10;-c &quot;source [find target/infineon/cy8cxxa.cfg]&quot;&#13;&#10;-c &quot;psoc6.cpu.cm4 configure -rtos auto -rtos-wipe-on-reset-halt 1&quot;&#13;&#10; -c &quot;gdb_port 3332&quot;&#13;&#10;-c &quot;psoc6 sflash_restrictions 1&quot;&#13;&#10;-c &quot;init; reset init;&quot;"/>
+    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTclPortNumber" value="6666"/>
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTelnetPortNumber" value="4444"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherInitCommands" value=""/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherRunCommands" value="mon reset run&#13;&#10;mon psoc6 reset_halt sysresetreq&#13;&#10;flushregs&#13;&#10;mon gdb_sync&#13;&#10;thread apply all stepi&#13;&#10;tbreak main&#13;&#10;thread apply all continue"/>
@@ -50,6 +51,8 @@
     <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="${cy_prj_path:e3a9e80f-7ba1-4013-aab7-5336e7390cc1}/build/last_config/EVE_simple_infineon_eclipse.elf"/>
     <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="simple"/>
     <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value=""/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
         <listEntry value="/simple"/>
     </listAttribute>
@@ -59,4 +62,6 @@
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
+    <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;memoryBlockExpressionList context=&quot;Context string&quot;/&gt;&#13;&#10;"/>
+    <stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory"/>
 </launchConfiguration>

@@ -11,12 +11,8 @@ TOOLCHAIN = GCC_ARM
 CONFIG=Debug
 VERBOSE=
 
-
-
 #CY_TOOLS_PATHS+=C:/Users/gb_so/ModusToolbox/tools_3.9
 CY_TOOLS_PATHS+=C:/Users/gordon.mcnab/ModusToolbox/tools_3.9
-
-
 
 # This project sits at examples/simple/infineon-eclipse in the EVE library tree.
 EVE_ROOT=../../../..
@@ -31,14 +27,17 @@ SOURCES+=$(EVE_ROOT)/examples/snippets/platform/calib_none.c
 SOURCES+=$(EVE_ROOT)/source/EVE_API.c
 SOURCES+=$(EVE_ROOT)/source/EVE_HAL.c
 SOURCES+=$(EVE_ROOT)/ports/eve_arch_infineon/EVE_MCU_PSOC6.c
+SOURCES+=$(EVE_ROOT)/source/extensions/bt82x_patch.c
+SOURCES+=$(EVE_ROOT)/source/extensions/custom_touch_fw.c
+SOURCES+=$(EVE_ROOT)/source/extensions/lcd_panel_init.c
 
 INCLUDES+=source
 INCLUDES+=$(EVE_ROOT)/include
 INCLUDES+=$(EVE_ROOT)/examples/simple/common
 INCLUDES+=$(EVE_ROOT)/examples/snippets
+INCLUDES+=$(EVE_ROOT)/include/extensions/
 
 DEFINES+=PLATFORM_INFINEON_PSOC6
-#DEFINES+=MODULE_TYPE=IDM20407A
 
 COMPONENTS=
 DISABLE_COMPONENTS+=FREERTOS
