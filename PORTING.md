@@ -24,7 +24,7 @@ If the port device is a bare-metal target MCU without an RTOS to handle SPI tran
 
 If the device contains an operating system (Windows, Linux, RTOS etc) then the "Platform" port method is preferred.
 
-**Note:** The [NXP Port][nxp-c] is available as a supported platform in EVE-MCU-Dev and can be referenced during the porting process.
+> **Note:** The [NXP Port][nxp-c] is available as a supported platform in EVE-MCU-Dev and can be referenced during the porting process.
 
 ### Scope
 
@@ -120,7 +120,7 @@ For an existing checkout, update its submodules to the revisions recorded by tha
 git submodule update --init --recursive
 ```
 
-**Note:** EVE-MCU-Dev currently utilises submodules for USB based host implementations with 
+> **Note:** EVE-MCU-Dev currently utilises submodules for USB based host implementations with 
 external driver dependencies; [FT4222][lib4222-c], [MPSSE][libmpsse-c]. A submodule is also 
 utilised for the [EVE_Emulator][emulator-c] port to obtain the required dependencies.
 
@@ -214,7 +214,7 @@ flowchart TD
     MCU --> SDK
 ```
 
-**NOTE:** On Platform ports the file `source/EVE_HAL.c` is replaced by `source/EVE_HAL_Linux.c` and `MCU.h` is replaced by `Platform.h`.
+> **Note:** On Platform ports the file `source/EVE_HAL.c` is replaced by `source/EVE_HAL_Linux.c` and `MCU.h` is replaced by `Platform.h`.
 
 This is the runtime interface overview, and does not constitue a header-include diagram, 
 which can be found in the [repository overview][readme].
@@ -349,7 +349,7 @@ This example uses the Platform Macro `PLATFORM_NEWMCU`.
 
 Use the [`include/MCU.h`][mcu-h] file function declarations in the library as the interface checklist.
 
-**Note:** The [BRT_AN_062][an062] application note's combined `MCU_SPIReadWrite8()` is not to be used 
+> **Note:** The [BRT_AN_062][an062] application note's combined `MCU_SPIReadWrite8()` is not to be used 
 as a public read or write function and should not be implemented. 
 A combined read and write function is allowed to be used as the implementation of the public read and write functions.
 
@@ -472,7 +472,7 @@ void MCU_PDhigh(void)
 Establish the GPIO directions, pin multiplexing and initial levels during board/MCU initialisation 
 or in `MCU_Init()`/`Platform_Init()`, not on every pin transition.
 
-**Note:**  A SPI driver that only queues bytes or fills a transmit FIFO is not necessarily finished transmitting. 
+> **Note:**  A SPI driver that only queues bytes or fills a transmit FIFO is not necessarily finished transmitting. 
 Either make the SPI functions wait for actual completion, as assumed above, or provide the 
 completion handling required by a deliberately designed advanced transport before CS# rises.
 
@@ -550,7 +550,7 @@ describe the number of data bits transferred by the library operation.
 They do not require 16-, 24- or 32-bit hardware frames. 
 Keep the initial SPI peripheral configuration at eight bits and implement these operations through the block-transfer functions.
 
-**Note:** MSB-first SPI bit order is not the same as byte order within a multi-byte value. 
+> **Note:** MSB-first SPI bit order is not the same as byte order within a multi-byte value. 
 The HAL layer prepares the protocol representation; scalar helpers preserve the resulting object bytes rather than adding an unconditional swap.
 
 **References:** [HAL address/data operations][hal-c], [pico SDK scalar helpers][pico-sdk-c].
@@ -682,7 +682,7 @@ Return `0` when INT# is asserted (logic low) and a non-zero value when it is dea
 The function should only sample the input pin; it should not change CS#, perform SPI transfers, 
 clear EVE interrupt flags, or wait for INT# to become active.
 
-**Note:** The INT# pin implementation is optional and is only required when `EVE_COPRO_METHOD` is set to `EVE_COPRO_INT` in `EVE_config.h`.
+> **Note:** The INT# pin implementation is optional and is only required when `EVE_COPRO_METHOD` is set to `EVE_COPRO_INT` in `EVE_config.h`.
 
 **References:** [MCU input contract][mcu-h], [Platform input contract][platform-h], [pico SDK GPIO input example][pico-sdk-c].
 
@@ -764,7 +764,7 @@ Ensure that the local configuration directory appears before the repository [`in
 directory for all library and application translation units. 
 This ensures that the same configuration is used throughout the build rather than only by `main.c`.
 
-**Note:** Avoid adding a second set of conflicting configuration definitions elsewhere in the project.
+> **Note:** Avoid adding a second set of conflicting configuration definitions elsewhere in the project.
 
 **Reference:** [configuration override mechanism][config-h].
 
@@ -865,7 +865,7 @@ For example, the STM32 CUBE port uses [`EVE_MCU_STM32CUBE_SPI.c`][stm32-spi-c] f
 SPI transport and [`EVE_MCU_STM32CUBE.c`][stm32-common-c] for timing, PD#, INT# and byte-order support. 
 When using an existing port as a reference, make sure all source files required to implement the complete MCU interface are included.
 
-**Note:** Where a port provides alternative transport implementations, include only the variant required by the target. 
+> **Note:** Where a port provides alternative transport implementations, include only the variant required by the target. 
 For example, do not link both the conventional SPI and Quad SPI implementations if they provide competing definitions of the same MCU interface functions.
 
 ### Reuse the current CMake structure
@@ -955,7 +955,7 @@ Replace the illustrative toolchain and display options with values appropriate t
 For a predefined module configuration, select the required `EVE_MODULE` rather than supplying separate 
 `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` values.
 
-**CMake configuration note:** At the library level, `EVE_MODULE` may be set to `EVE_NO_MODULE`. 
+> **CMake configuration note:** At the library level, `EVE_MODULE` may be set to `EVE_NO_MODULE`. 
 In this case, `EVE_settings.h` does not apply a predefined module configuration, and the separate 
 `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` selections remain effective.
 
@@ -1207,7 +1207,7 @@ EVE_LIB_AwaitCoProEmpty();
 It is recommended to use distinctive test patterns so that missing, repeated or byte-swapped data can be identified easily. 
 Begin with short transfers, then increase the length to exercise any internal MCU, SDK or HAL transfer boundaries.
 
-**Note:** Use memory accesses appropriate to the selected EVE device generation.
+> **Note:** Use memory accesses appropriate to the selected EVE device generation.
 
 **Reference:** [HAL memory operations][hal-c].
 

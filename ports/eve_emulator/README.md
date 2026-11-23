@@ -117,7 +117,7 @@ The emulator port supports the following storage features:
 
 Defining one of these macros for an unsupported EVE API level causes a compilation error.
 
-**NOTE**: Flash image and flash filesystem folder emulation can be configured independently or together. When both are defined, the emulator loads the flash image and creates a filesystem volume from the specified folder, replacing the image contents within the filesystem region.
+> **Note:** Flash image and flash filesystem folder emulation can be configured independently or together. When both are defined, the emulator loads the flash image and creates a filesystem volume from the specified folder, replacing the image contents within the filesystem region.
 
 ### Emulator Asset Paths for Flash and SD Cards
 
@@ -394,7 +394,7 @@ EVE_EMULATOR_FLASH_FOLDER=TEXT("..\\assets\\flashFolderName")
 EVE_EMULATOR_FLASH_FOLDER=TEXT("C:\\path\\to\\flashFolderName")
 ```
 
-**Note:** Do not define `EVE_EMULATOR_FLASH_FOLDER` without a value. The macro must expand to a valid `eve_tchar_t` string.
+> **Note:** Do not define `EVE_EMULATOR_FLASH_FOLDER` without a value. The macro must expand to a valid `eve_tchar_t` string.
 
 #### Defining the Flash Folder Macro in Visual Studio
 
@@ -448,7 +448,7 @@ In this configuration:
 
 The filesystem volume overrides the contents of the flash image from the default offset to the end of the device.
 
-**Note:** When using both a flash image and filesystem folder, ensure that any existing flash-image data beyond the default filesystem offset is not required. 
+> **Note:** When using both a flash image and filesystem folder, ensure that any existing flash-image data beyond the default filesystem offset is not required. 
 
 ### Flash Persistence
 
@@ -464,7 +464,7 @@ The current defaults are:
 | EVE 4 (BT817/BT817A/BT818) | `BT8XXEMU_FlashBackingMemory` | Flash contents are loaded into memory. Writes are lost when the emulator exits. |
 | EVE 5 (BT820) | `BT8XXEMU_FlashBackingSparse` | Flash contents are accessed on demand without allocating a complete flash array. Modified pages are retained in memory but lost when the emulator exits. |
 
-**Note:** By default, flash modifications are not written back to the original flash-image file.
+> **Note:** By default, flash modifications are not written back to the original flash-image file.
 
 Persistent flash writes can be enabled through `BT8XXEMU_FlashBackingFile`, which memory-maps the flash-image file and saves modifications directly to it. However, this is not currently exposed through a dedicated **EVE-MCU-Dev** preprocessor definition.  
 
@@ -738,7 +738,7 @@ For example:
 EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
 ```
 
-If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and the configured filesystem offset does not overlap flash data that must be preserved.
+If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and that any existing flash data beyond the default filesystem offset is not required.
 
 ### The SD-Card Folder Cannot Be Attached
 

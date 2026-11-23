@@ -8,7 +8,7 @@ This port is selected with the `PLATFORM_INFINEON_PSOC6` macro.
 
 The [Infineon ModusToolbox Eclipse IDE](https://softwaretools.infineon.com/tools/com.ifx.tb.tool.mtbeclipse) is used for compiling the examples. The ModusToolbox handles the BSPs for each version of device. Calls are made to the Infineon ModusToolbox HAL to control the SPI, GPIO and timers.
 
-**Note:** The ModusToolbox Eclipse IDE requires that projects are included using a specific method. Please follow the instructions in the Infineon Knowledgebase article KBA236134.
+> **Note:** The ModusToolbox Eclipse IDE requires that projects are included using a specific method. Please follow the instructions in the Infineon Knowledgebase article KBA236134.
 
 ## Requirements 
 

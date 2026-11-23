@@ -244,7 +244,7 @@ Resets the co-processor list profiling length.
 | ---  | ---  | ---  | ---  | ---  |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
+> **Note:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
 
 **Detailed Description:**
 
@@ -264,7 +264,7 @@ Size of co-processor list since last reset.
 | ---  | ---  | ---  | ---  | ---  |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
+> **Note:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
 
 **Detailed Description:**
 
@@ -287,7 +287,7 @@ Size of display list.
 | ---  | ---  | ---  | ---  | ---  |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
+> **Note:** This is only compiled if the macro `EVE_COPROC_PROFILE` is defined.
 
 **Detailed Description:**
 
@@ -360,7 +360,7 @@ Test if an interrupt flag is set.
 | ---  | ---  | ---  | ---  | ---  |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** This is only compiled if the co-processor method is set to `EVE_COPROC_INT`.
+> **Note:** This is only compiled if the co-processor method is set to `EVE_COPROC_INT`.
 
 **Detailed Description:**
 
@@ -775,7 +775,7 @@ Write a 32-bit memory location.
 | ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** EVE_LIB_MemWrite32 supports only 32-bit aligned writes on EVE5.
+> **Note:** EVE_LIB_MemWrite32 supports only 32-bit aligned writes on EVE5.
 
 **Detailed Description:**
 
@@ -853,7 +853,7 @@ Read a 32-bit memory location.
 | ---- | ---- | ---- | ---- | ---- |
 | Yes  | Yes  | Yes  | Yes  | Yes  |
 
-**NOTE:** EVE_LIB_MemRead32 supports only 32-bit aligned reads on EVE5.
+> **Note:** EVE_LIB_MemRead32 supports only 32-bit aligned reads on EVE5.
 
 **Detailed Description:**
 

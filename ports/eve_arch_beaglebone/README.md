@@ -35,7 +35,7 @@ The pin connections for Beaglebone modules is as follows for the 2x8 and 1x10 co
 | - | VUSB | 10 | 7 | 5V | Purple 🟪 |
 | - | GND | 11/12 | 9/10 | GND | Black ⬛ |
 
-- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **NOTE:** This has not been tested on hardware.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. **Note:** This has not been tested on hardware.
 
 Ensure that the power supply from the BeagleBone Black module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the BeagleBone Black and EVE modules common to both power sources.
 

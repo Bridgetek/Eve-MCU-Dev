@@ -14,7 +14,7 @@ It will set a macro called `SOFTWARE_SIMULATOR` to indicate which "platform" is 
 Adaptations can be made in example code to cope with the software simulator running. 
 For example, infinite loops are not performed and a single display list is generated in most sample.
 
-**NOTE:** The software simulator will install a BT820 patch file at startup. 
+> **NOTE:** The software simulator will install a BT820 patch file at startup. 
 To check consistency of the patch file a version report is compared with an expected value in the patch file. 
 The `EVE_RAM_REPORT` response string in function `get_response` in [`EVE_simulator.c`](EVE_simulator.c) must match the `expected` string in function `eve_loadpatch` function of [`bt82x_patch.c`](../source/extensions/bt82x_patch.c).
 
