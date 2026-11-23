@@ -70,7 +70,7 @@
 
 copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll "$(OutDir)btflashemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\libz.dll "$(OutDir)libz.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,7 +94,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
 
 copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll "$(OutDir)btflashemu.dll" || exit /b 1
 
-copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.dll" || exit /b 1</Command>
+copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\libz.dll "$(OutDir)libz.dll" || exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -130,7 +130,7 @@ copy /Y ..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll "$(OutDir)zlib.
   <ItemGroup>
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\bt8xxemu.dll" />
     <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\btflashemu.dll" />
-    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\zlib.dll" />
+    <None Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\bin\libz.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\..\..\ports\eve_emulator\EVE_Emulator\lib\bt8xxemu.lib" />

@@ -2,47 +2,47 @@
  * @file EVE_emulator.c
  * @details Platform-specific code for running and controlling an EVE Emulator instance.
  */
-/*
- * ============================================================================
- * (C) Copyright,  Bridgetek Pte. Ltd.
- * ============================================================================
- *
- * This source code ("the Software") is provided by Bridgetek Pte Ltd
- * ("Bridgetek") subject to the licence terms set out
- * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
- * You must read the Licence Terms before downloading or using the Software.
- * By installing or using the Software you agree to the Licence Terms. If you
- * do not agree to the Licence Terms then do not download or use the Software.
- *
- * Without prejudice to the Licence Terms, here is a summary of some of the key
- * terms of the Licence Terms (and in the event of any conflict between this
- * summary and the Licence Terms then the text of the Licence Terms will
- * prevail).
- *
- * The Software is provided "as is".
- * There are no warranties (or similar) in relation to the quality of the
- * Software. You use it at your own risk.
- * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of Bridgetek liability for certain types of loss
- * such as: special loss or damage; incidental loss or damage; indirect or
- * consequential loss or damage; loss of income; loss of business; loss of
- * profits; loss of revenue; loss of contracts; business interruption; loss of
- * the use of money or anticipated savings; loss of information; loss of
- * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
- * corruption of data.
- * There is a monetary cap on Bridgetek's liability.
- * The Software may have subsequently been amended by another user and then
- * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, Bridgetek
- * has no liability in relation to those amendments.
- * ============================================================================
- */
+ /*
+  * ============================================================================
+  * (C) Copyright,  Bridgetek Pte. Ltd.
+  * ============================================================================
+  *
+  * This source code ("the Software") is provided by Bridgetek Pte Ltd
+  * ("Bridgetek") subject to the licence terms set out
+  * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+  * You must read the Licence Terms before downloading or using the Software.
+  * By installing or using the Software you agree to the Licence Terms. If you
+  * do not agree to the Licence Terms then do not download or use the Software.
+  *
+  * Without prejudice to the Licence Terms, here is a summary of some of the key
+  * terms of the Licence Terms (and in the event of any conflict between this
+  * summary and the Licence Terms then the text of the Licence Terms will
+  * prevail).
+  *
+  * The Software is provided "as is".
+  * There are no warranties (or similar) in relation to the quality of the
+  * Software. You use it at your own risk.
+  * The Software should not be used in, or for, any medical device, system or
+  * appliance. There are exclusions of Bridgetek liability for certain types of loss
+  * such as: special loss or damage; incidental loss or damage; indirect or
+  * consequential loss or damage; loss of income; loss of business; loss of
+  * profits; loss of revenue; loss of contracts; business interruption; loss of
+  * the use of money or anticipated savings; loss of information; loss of
+  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+  * corruption of data.
+  * There is a monetary cap on Bridgetek's liability.
+  * The Software may have subsequently been amended by another user and then
+  * distributed by that other user ("Adapted Software").  If so that user may
+  * have additional licence terms that apply to those amendments. However, Bridgetek
+  * has no liability in relation to those amendments.
+  * ============================================================================
+  */
 
-// Guard against being used for incorrect platform or architecture.
-// PLATFORM_EMULATOR macro enables this file to open the emulator library.
-// In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
-// In Visual Studio this is in Project Properties -> Configuration Properties -> 
-//     C/C++ -> Preprocessor -> Preprocessor Definitions.
+  // Guard against being used for incorrect platform or architecture.
+  // PLATFORM_EMULATOR macro enables this file to open the emulator library.
+  // In gcc compilers this is in the Makefile. -DPLATFORM_EMULATOR
+  // In Visual Studio this is in Project Properties -> Configuration Properties -> 
+  //     C/C++ -> Preprocessor -> Preprocessor Definitions.
 #if defined(PLATFORM_EMULATOR)
 
 #pragma message ("Compiling " __FILE__ " for the emulator")
@@ -71,8 +71,8 @@
 #include "EVE_Emulator/include/bt8xxemu.h"
 
 // ensure API version
-#if !defined(BT8XXEMU_VERSION_API) || (BT8XXEMU_VERSION_API < 19)
-#error EVE Emulator API version 19 or later is required
+#if !defined(BT8XXEMU_VERSION_API) || (BT8XXEMU_VERSION_API < 20)
+#error EVE Emulator API version 20 or later is required
 #endif
 
 /* Include functions for EVE-MCU-Dev library MCU layer */
@@ -106,15 +106,15 @@ typedef enum
  * File Path Helper Functions
  * ============================================================================ */
 
-/**
- * @brief Determines whether a Windows path is absolute.
- *
- * Absolute paths:
- *   C:\folder\file.bin
- *   C:/folder/file.bin
- *   \\server\share\file.bin
- *   //server/share/file.bin
- */
+ /**
+  * @brief Determines whether a Windows path is absolute.
+  *
+  * Absolute paths:
+  *   C:\folder\file.bin
+  *   C:/folder/file.bin
+  *   \\server\share\file.bin
+  *   //server/share/file.bin
+  */
 static bool MCU_IsAbsoluteWindowsPath(const eve_tchar_t* path)
 {
     if (!path || !path[0])
@@ -186,7 +186,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
                 return NULL;
             }
         }
-        else 
+        else
         {
             EVE_DEBUG_ERROR("ERROR: Invalid path type.\n");
             return NULL;
@@ -269,7 +269,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
  * Flash Emulation Functions
  * ============================================================================ */
 
-// External flash emulation is supported by EVE API levels 3, 4, and 5.
+ // External flash emulation is supported by EVE API levels 3, 4, and 5.
 #if IS_EVE_API(3,4,5)
 
 #ifdef EVE_EMULATOR_FLASH_DEVICE
@@ -335,16 +335,18 @@ static int MCU_IsExactFlashPart(const eve_tchar_t* libraryName, const eve_tchar_
 /**
  * @brief Creates and attaches an emulated flash device.
  *
- * @details Resolves the configured flash file, initializes the flash emulator
+ * @details Resolves the configured flash file and/or folder, initializes the flash emulator
  *      parameters, creates the flash device, and attaches it to the emulator
  *      configuration.
  *
- * @param path Path to the flash binary file.
- *
  * @return 0 on success, or -1 if the flash device cannot be configured or created.
  */
-static int MCU_AttachFlash(const eve_tchar_t* path) {
+static int MCU_AttachFlash(void) {
+#ifdef EVE_EMULATOR_FLASH_FILE
     EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FILE is defined, attempting to attach flash (.bin) file to emulator...\n");
+#else
+    EVE_DEBUG_PRINTF("EVE_EMULATOR_FLASH_FOLDER is defined, attempting to attach flash folder to emulator...\n");
+#endif
 
     // Allocate and initialize the flash emulator configuration.
     EmulatorFlashParameters = (BT8XXEMU_FlashParameters*)malloc(sizeof(BT8XXEMU_FlashParameters));
@@ -389,8 +391,9 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
     EmulatorFlashParameters->SizeBytes = isExactPart ? 0 : EVE_EMULATOR_FLASH_FILE_SIZE;
 #endif
 
+#ifdef EVE_EMULATOR_FLASH_FILE
     // Resolve the flash file path supplied by the definition.
-    const eve_tchar_t* flashPath = MCU_ResolvePath(MCU_PATH_FILE, path);
+    const eve_tchar_t* flashPath = MCU_ResolvePath(MCU_PATH_FILE, EVE_EMULATOR_FLASH_FILE);
     if (!flashPath)
     {
         EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator flash (.bin) file path.\n\n");
@@ -408,6 +411,42 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
         EVE_DEBUG_ERROR("ERROR: Unable to copy emulator flash path.\n");
         return -1;
     }
+#endif
+
+#ifdef EVE_EMULATOR_FLASH_FOLDER
+#ifndef EVE_EMULATOR_FLASH_FILESYSTEM
+#define EVE_EMULATOR_FLASH_FILESYSTEM BT8XXEMU_FlashFilesystemLittleFs
+#endif
+#ifndef EVE_EMULATOR_FLASH_VOLUME_OFFSET
+#define EVE_EMULATOR_FLASH_VOLUME_OFFSET 0
+#endif
+
+#if (EVE_EMULATOR_FLASH_VOLUME_OFFSET < 0) || (EVE_EMULATOR_FLASH_VOLUME_OFFSET % 4096 != 0)
+#error EVE_EMULATOR_FLASH_VOLUME_OFFSET must be zero or a positive multiple of 4096
+#endif
+
+    // Resolve the flash folder path supplied by the definition.
+    const eve_tchar_t* folderPath = MCU_ResolvePath(MCU_PATH_FOLDER, EVE_EMULATOR_FLASH_FOLDER);
+    if (!folderPath)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to resolve emulator flash filesystem folder path.\n");
+        EVE_DEBUG_ERROR("Check that the flash folder exists on the path defined by:\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FOLDER = TEXT(\"flashFolderName\").\n");
+        EVE_DEBUG_ERROR("OR\n");
+        EVE_DEBUG_ERROR("EVE_EMULATOR_FLASH_FOLDER = TEXT(\"..\\\\path\\\\to\\\\folder\\\\from\\\\exe\\\\flashFolderName\").\n\n");
+        return -1;
+    }
+
+    // Copy the resolved flash folder path into the emulator configuration.
+    if (wcscpy_s(EmulatorFlashParameters->FolderPath, _countof(EmulatorFlashParameters->FolderPath), folderPath) != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: Unable to copy emulator flash filesystem folder path.\n");
+        return -1;
+    }
+
+    EmulatorFlashParameters->Filesystem = EVE_EMULATOR_FLASH_FILESYSTEM;
+    EmulatorFlashParameters->VolumeOffset = EVE_EMULATOR_FLASH_VOLUME_OFFSET;
+#endif
 
     // Create the emulated flash device.
     EmulatorFlash = BT8XXEMU_Flash_create(BT8XXEMU_VERSION_API, EmulatorFlashParameters);
@@ -436,7 +475,7 @@ static int MCU_AttachFlash(const eve_tchar_t* path) {
  * SD Card Emulation Functions
  * ============================================================================ */
 
-// SD card folder emulation is supported by EVE API level 5 only.
+ // SD card folder emulation is supported by EVE API level 5 only.
 #if IS_EVE_API(5)
 
 /**
@@ -481,7 +520,7 @@ static int MCU_AttachSDFolder(const eve_tchar_t* path) {
         return -1;
     }
 
-    return 0; 
+    return 0;
 }
 
 #endif /* IS_EVE_API(5) */
@@ -490,7 +529,7 @@ static int MCU_AttachSDFolder(const eve_tchar_t* path) {
  * MCU Interface Functions
  * ============================================================================ */
 
-// ------------------ Platform specific initialisation  ------------------------
+ // ------------------ Platform specific initialisation  ------------------------
 int MCU_Init(void)
 {
     // Print Emulator Version
@@ -552,12 +591,16 @@ int MCU_Init(void)
     // Enable window rotation
     EmulatorParameters->Flags |= BT8XXEMU_EmulatorEnableWindowRotate;
 
-#ifdef EVE_EMULATOR_FLASH_FILE
+#if defined(EVE_EMULATOR_FLASH_FILE) || defined(EVE_EMULATOR_FLASH_FOLDER)
 #if IS_EVE_API(3,4,5)
     // Attach flash to the emulator configuration.
-    if (MCU_AttachFlash(EVE_EMULATOR_FLASH_FILE) == 0)
+    if (MCU_AttachFlash() == 0)
     {
+#ifdef EVE_EMULATOR_FLASH_FILE
         EVE_DEBUG_PRINTF("SUCCESS: Flash (.bin) file attached to emulator.\n\n");
+#else
+        EVE_DEBUG_PRINTF("SUCCESS: Flash folder attached to emulator.\n\n");
+#endif
     }
     else
     {
@@ -565,9 +608,9 @@ int MCU_Init(void)
         return -1;
     }
 #else
-#error EVE_EMULATOR_FLASH_FILE requires EVE API 3, 4, or 5
+#error EVE_EMULATOR_FLASH_FILE or EVE_EMULATOR_FLASH_FOLDER requires EVE API 3, 4, or 5
 #endif /* IS_EVE_API(3,4,5) */
-#endif /* EVE_EMULATOR_FLASH_FILE */
+#endif /* EVE_EMULATOR_FLASH_FILE || EVE_EMULATOR_FLASH_FOLDER */
 
     // Create and start the emulator instance on the current thread.
     BT8XXEMU_run(BT8XXEMU_VERSION_API, &Emulator, EmulatorParameters);
@@ -584,8 +627,7 @@ int MCU_Init(void)
     // Attach the SD card folder to the running emulator.
     if (MCU_AttachSDFolder(EVE_EMULATOR_SD_FOLDER) == 0)
     {
-        EVE_DEBUG_PRINTF(
-            "SUCCESS: SD card folder successfully attached to emulator.\n\n");
+        EVE_DEBUG_PRINTF("SUCCESS: SD card folder successfully attached to emulator.\n\n");
     }
     else
     {

@@ -2,7 +2,7 @@
 
 [Back](../README.md)
 
-The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds are not supported because the **EVE_Emulator** library is not currently distributed for Linux.
+The `EVE Emulator` port allows **EVE-MCU-Dev** applications to run on a Windows host using the **EVE_Emulator** library. The emulator simulates a selected EVE device and displays its output in a **Windows** desktop window. The port supports `x64` (64-bit) Windows applications only. Linux builds for the `EVE Emulator` port are not currently supported.
 
 ## Requirements 
 
@@ -11,6 +11,7 @@ The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host
 | Host operating system | Windows |
 | Application architecture | `x64` | 
 | Emulator library | Bridgetek **EVE_Emulator** |
+| Emulator API version | 20 or later |
 | Build environment | Visual Studio or a CMake-compatible toolchain | 
 | Platform definition | `PLATFORM_EMULATOR` |
 
@@ -18,7 +19,7 @@ The `EVE Emulator` port allows EVE-MCU-Dev applications to run on a Windows host
 
 ### Enabling the Emulator Port
 
-The `PLATFORM_EMULATOR` macro enables an EVE-MCU-Dev application to use the `EVE Emulator` port.
+The `PLATFORM_EMULATOR` macro enables an **EVE-MCU-Dev** application to use the `EVE Emulator` port.
 
 If the emulator's interrupt line is to be used to detect the completion of a co-processor list then the `EVE_COPRO_METHOD` macro can be set to `EVE_COPRO_INT`.
 
@@ -58,13 +59,13 @@ Ensure that the project is configured to build for the `x64` platform.
 
 The **EVE_Emulator** library is available from the following repository: [Bridgetek EVE_Emulator](https://github.com/Bridgetek/EVE_Emulator) 
 
-The repository is included in EVE-MCU-Dev as a Git submodule at:
+The repository is included in **EVE-MCU-Dev** as a Git submodule at:
 
 ```text
 ports/eve_emulator/EVE_Emulator
 ```
 
-When cloning EVE-MCU-Dev, initialise the submodule using:
+When cloning **EVE-MCU-Dev**, initialise the submodule using:
 
 ```console
 git clone --recurse-submodules https://github.com/Bridgetek/Eve-MCU-Dev.git
@@ -76,7 +77,7 @@ For an existing clone, run:
 git submodule update --init --recursive
 ```
 
-If the EVE-MCU-Dev repository is distributed without its submodules, the complete EVE_Emulator repository can instead be copied manually into:
+If the **EVE-MCU-Dev** repository is distributed without its submodules, the complete EVE_Emulator repository can instead be copied manually into:
 
 ```text
 ports/eve_emulator/EVE_Emulator
@@ -98,7 +99,7 @@ The required DLLs must be available in the same output directory as the applicat
 | --- | --- |
 | `bt8xxemu.dll` | Main EVE Emulator runtime library |
 | `btflashemu.dll` | Additional flash-emulation dependency |
-| `zlib.dll` | Compression dependency used by EVE for certain API function calls |
+| `libz.dll` | Compression dependency used by EVE for certain API function calls |
 
 The provided Visual Studio projects and `CMakeLists.txt` files automatically copy the available DLLs to the executable output directory after the application is built.
 
@@ -111,13 +112,16 @@ The emulator port supports the following storage features:
 | Feature | Configuration macro | Supported EVE API levels |
 | --- | --- | --- |
 | External flash image | `EVE_EMULATOR_FLASH_FILE` | 3, 4, and 5 |
+| Flash filesystem folder | `EVE_EMULATOR_FLASH_FOLDER` | 3, 4, and 5 |
 | SD-card folder | `EVE_EMULATOR_SD_FOLDER` | 5 only |
 
 Defining one of these macros for an unsupported EVE API level causes a compilation error.
 
+**NOTE**: Flash image and flash filesystem folder emulation can be configured independently or together. When both are defined, the emulator loads the flash image and creates a filesystem volume from the specified folder, replacing the image contents within the filesystem region.
+
 ### Emulator Asset Paths for Flash and SD Cards
 
-The flash-image and SD-card-folder macros use the same path-resolution rules.
+The flash-image, flash-filesystem-folder, and SD-card-folder macros use the same path-resolution rules.
 
 On Windows, the native emulator API defines `eve_tchar_t` as `wchar_t`. Paths should therefore be supplied using either the Windows `TEXT("...")` macro or a wide string literal such as `L"..."`.
 
@@ -166,6 +170,7 @@ TEXT("\\\\server\\share\\flash.bin")
 Before starting or configuring the emulator, the port verifies that:
 
 - A flash-image path identifies an existing file.
+- A flash-filesystem-folder path identifies an existing folder.
 - An SD-card path identifies an existing folder.
 - The resolved path fits within the Windows `MAX_PATH` limit used by the port.
 
@@ -175,7 +180,7 @@ If the path is invalid, the emulator initialisation fails and an error message i
 
 External flash emulation is supported for EVE API levels 3, 4, and 5.
 
-When `EVE_EMULATOR_FLASH_FILE` is defined, the port creates the emulated flash device and attaches it to the emulator configuration before the emulator instance is started.
+When `EVE_EMULATOR_FLASH_FILE` or `EVE_EMULATOR_FLASH_FOLDER` is defined, the port creates the emulated flash device and attaches it to the emulator configuration before the emulator instance is started. The flash device can be initialized from a binary image, a host folder containing filesystem assets, or both.
 
 Flash-image `.bin` files can be generated using the [EVE Asset Builder](https://brtchip.com/eab/) toolchain.
 
@@ -257,7 +262,7 @@ The exact quotation rules may vary between shells and build systems.
 
 ### Flash Image Size
 
-The `EVE_EMULATOR_FLASH_FILE_SIZE` macro defines the capacity of the emulated flash device in bytes.
+The `EVE_EMULATOR_FLASH_FILE_SIZE` macro defines the capacity of the emulated flash device in bytes, whether the device is initialized using a flash-image file, a filesystem folder, or both.
 
 If the macro is not defined, the port uses a default size of 8 MiB:
 
@@ -281,7 +286,7 @@ When a flash device family is selected using `EVE_EMULATOR_FLASH_DEVICE`, the co
 
 If an exact flash part is selected, its native capacity takes precedence over `EVE_EMULATOR_FLASH_FILE_SIZE`.
 
-The selected flash capacity should be suitable for the configured EVE device and supplied flash image.
+The selected flash capacity should be suitable for the configured EVE device, the supplied flash image, and any filesystem volume generated from a host folder.
 
 ### Flash Device Selection
 
@@ -345,12 +350,175 @@ The following flash devices are supported by the `btflashemu.dll` library:
 
 The selected flash device must be compatible with the configured EVE generation. Not all flash devices are necessarily supported by every EVE device.
 
+### Flash Folder Emulation (BT81x, BT82x)
+
+Flash folder emulation is supported for EVE API levels 3, 4, and 5.
+
+When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a FAT32 or LittleFS volume from the contents of the specified host folder and places it into the emulated flash device.
+
+The flash folder can be used independently or alongside an existing flash-image file.
+
+#### Defining the Flash Folder
+
+The `EVE_EMULATOR_FLASH_FOLDER` macro identifies the host folder containing the files to be included in the emulated flash filesystem.
+
+The macro can specify a folder in the executable directory, a path relative to the executable directory, or an absolute Windows path.
+
+**Local Folder**
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
+```
+
+This looks for the following folder:
+
+```text
+<executable-directory>\flashFolderName
+```
+
+**Relative Path**
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("assets\\flashFolderName")
+```
+
+A parent-relative path can also be used:
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("..\\assets\\flashFolderName")
+```
+
+**Absolute Path**
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("C:\\path\\to\\flashFolderName")
+```
+
+**Note:** Do not define `EVE_EMULATOR_FLASH_FOLDER` without a value. The macro must expand to a valid `eve_tchar_t` string.
+
+#### Defining the Flash Folder Macro in Visual Studio
+
+Add the following under the project's preprocessor definitions:
+
+```text
+EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
+```
+
+#### Defining the Flash Folder Macro in CMake
+
+When defining the folder through CMake, use a wide string literal:
+
+```cmake
+add_compile_definitions(
+    EVE_EMULATOR_FLASH_FOLDER=L\"flashFolderName\"
+)
+```
+
+#### Flash Filesystem Selection
+
+The `EVE_EMULATOR_FLASH_FILESYSTEM` macro selects the filesystem format used to create the flash volume.
+
+If the macro is not defined, the port uses LittleFS by default:
+
+```c
+#define EVE_EMULATOR_FLASH_FILESYSTEM BT8XXEMU_FlashFilesystemLittleFs
+```
+
+The following filesystem formats are supported:
+
+| Definition | Description |
+| --- | --- |
+| `BT8XXEMU_FlashFilesystemLittleFs` | LittleFS filesystem using flash geometry compatible with the emulator's supported flash devices |
+| `BT8XXEMU_FlashFilesystemFat32` | FAT32 filesystem suitable for use with supported flash filesystem attachment commands |
+
+
+The generated filesystem must be accessed using a compatible filesystem implementation in the EVE application. LittleFS volumes require a compatible LittleFS implementation, while FAT32 volumes can be attached using `CMD_FLASHFSATTACH` on supported devices..
+
+Creating the filesystem volume does not automatically mount it within the application.
+
+
+For example, to select FAT32:
+
+```text
+EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemFat32
+```
+
+The filesystem format should be selected based on the requirements of the emulated EVE application.
+
+For FAT32, the emulator API notes that volumes smaller than approximately 32.5 MiB may be readable by the EVE co-processor but rejected by conventional host FAT readers.
+
+#### Flash Filesystem Offset
+
+The `EVE_EMULATOR_FLASH_VOLUME_OFFSET` macro defines the byte offset within the emulated flash device at which the filesystem volume begins.
+
+If the macro is not defined, the port uses:
+
+```c
+#define EVE_EMULATOR_FLASH_VOLUME_OFFSET 0
+```
+
+A value of `0` allows the emulator to select its default offset:
+
+- **NOR flash:** 4096 bytes, immediately after the flash firmware region.
+- **NAND flash with LittleFS:** The beginning of the second erase block.
+
+A custom offset can be configured, for example:
+
+```text
+EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
+```
+
+This places the filesystem volume at offset 1 MiB (`0x100000`).
+
+The offset must be zero or a non-negative multiple of 4096 bytes.
+
+The generated filesystem extends from the selected offset to the end of the emulated flash device. Flash creation fails if the folder contents cannot fit within the available capacity.
+
+#### Combining a Flash Image and Filesystem Folder
+
+The existing flash image and new filesystem folder can be used together.
+
+For example:
+
+```text
+EVE_EMULATOR_FLASH_FILE=TEXT("flash.bin")
+EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
+EVE_EMULATOR_FLASH_FILE_SIZE=16777216
+EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemLittleFs
+EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
+```
+
+In this configuration:
+
+- The emulator creates a 16 MiB flash device.
+- The contents of `flash.bin` are loaded into the device.
+- A LittleFS filesystem is generated from `flashFolderName`.
+- The filesystem is placed at offset 1 MiB.
+
+The filesystem volume overrides the contents of the flash image from the configured offset to the end of the device.
+
+> **Note:** Ensure that the filesystem offset does not overlap any existing flash-image data that must be preserved.
+
+When only `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator creates the flash device without requiring an external flash-image file.
+
 
 ### Flash Persistence
 
-Flash writes are temporary by default and are not written back to the flash-image file.
+The native `EVE Emulator` API supports several flash backing modes through the `Backing` member of `BT8XXEMU_FlashParameters`.
 
-The native `EVE Emulator` API supports persistent flash writes through the `Persistent` member of `BT8XXEMU_FlashParameters`. 
+The **EVE-MCU-Dev** port uses the backing mode selected by `BT8XXEMU_Flash_defaultsEx()`, which depends on the configured EVE generation.
+
+The current defaults are:
+
+| EVE Generation | Default Backing Mode | Description |
+| --- | --- | --- |
+| EVE 3 (BT815/BT816) | `BT8XXEMU_FlashBackingMemory` | Flash contents are loaded into memory. Writes are lost when the emulator exits. |
+| EVE 4 (BT817/BT817A/BT818) | `BT8XXEMU_FlashBackingMemory` | Flash contents are loaded into memory. Writes are lost when the emulator exits. |
+| EVE 5 (BT820) | `BT8XXEMU_FlashBackingSparse` | Flash contents are accessed on demand without allocating a complete flash array. Modified pages are retained in memory but lost when the emulator exits. |
+
+**Note:** By default, flash modifications are not written back to the original flash-image file.
+
+Persistent flash writes can be enabled through `BT8XXEMU_FlashBackingFile`, which memory-maps the flash-image file and saves modifications directly to it. However, this is not currently exposed through a dedicated **EVE-MCU-Dev** preprocessor definition.  
 
 ### Flash Image Recommendations
 
@@ -367,6 +535,23 @@ The flash-image file can be copied to the executable output directory using:
 - A CMake post-build command.
 - A Visual Studio post-build event.
 - A manual copy operation.
+
+### Flash Folder Recommendations
+
+It is recommended that the flash filesystem folder be placed in the same directory as the application executable and configured using:
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
+```
+
+Keeping the folder beside the executable allows the project to be compressed, shared, and relocated without changing an absolute path.
+
+The folder can be copied to the executable output directory using:
+
+- A CMake post-build command.
+- A Visual Studio post-build event.
+- A manual copy operation.
+
 
 ## SD-Card Folder Emulation (BT82x)
 
@@ -469,9 +654,11 @@ EVE_EMULATOR_SD_FOLDER_SIZE=67108864
 
 ### SD-Card Read and Write Behaviour
 
-The EVE-MCU-Dev port currently attaches the folder-backed SD card with the native API's `readOnly` parameter set to `false`.
+The **EVE-MCU-Dev** port currently attaches the folder-backed SD card with the native API's `readOnly` parameter set to `false`.
 
-The emulated application can therefore write to the virtual SD card during the emulator session. 
+The emulated application can therefore write to the virtual SD card during the emulator session.
+
+Writes to the emulated SD card are stored in memory and discarded when the emulator exits. The contents of the original host folder are not modified.
 
 ### SD-Card Folder Recommendations
 
@@ -502,13 +689,13 @@ BT8XXEMU_touchResetXY()
 
 The touch index accepted by these functions allows multiple touch points to be controlled by a host application.
 
-Multi-touch support is not currently implemented by the EVE-MCU-Dev emulator port. Applications using the standard port are limited to a single simulated touch point controlled through the mouse.
+Multi-touch support is not currently implemented by the **EVE-MCU-Dev** emulator port. Applications using the standard port are limited to a single simulated touch point controlled through the mouse.
 
 ### Display Rotation
 
 Display rotation can be controlled using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`.
 
-The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is enabled by defualt in `EVE_Emulator.c`. When `BT8XXEMU_EmulatorEnableWindowRotate` enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
+The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is enabled by defualt in `EVE_Emulator.c`. When enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
 
 This eliminates the need to manually swap `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` solely to accommodate display rotation in the emulator.
 
@@ -527,7 +714,7 @@ MCU_PDhigh()
 
 do not stop or restart the emulator instance.
 
-This behaviour is intentional. The normal EVE-MCU-Dev initialisation sequence calls `MCU_PDlow()` and `MCU_PDhigh()` immediately after creating the emulator, which would otherwise destroy and recreate the newly started instance.
+This behaviour is intentional. The normal **EVE-MCU-Dev** initialisation sequence calls `MCU_PDlow()` and `MCU_PDhigh()` immediately after creating the emulator, which would otherwise destroy and recreate the newly started instance.
 
 ### Closing the Emulator Window
 
@@ -553,7 +740,7 @@ Rebuild the project to run its post-build copy operation, or manually copy the D
 ports\eve_emulator\EVE_Emulator\bin
 ```
 
-If required, copy `btflashemumu.dll` and `zlib.dll` to the same directory.
+If required, copy `btflashemu.dll` and `libz.dll` to the same directory.
 
 ### The Application or DLL Has the Wrong Architecture
 
@@ -583,6 +770,35 @@ For example:
 EVE_EMULATOR_FLASH_FILE=TEXT("flash-image-name.bin")
 ```
 
+### The Flash Folder Cannot Be Attached
+
+Check that:
+
+- EVE API level 3, 4, or 5 is selected.
+- EVE Emulator API version 20 or later is being used.
+- `EVE_EMULATOR_FLASH_FOLDER` has a valid value.
+- The folder exists.
+- The path identifies a folder rather than a file.
+- A relative path is relative to the executable directory.
+- Backslashes in C string literals are escaped.
+- The resolved path does not exceed the path length supported by the port.
+- The selected flash capacity is sufficient for the generated filesystem.
+- `EVE_EMULATOR_FLASH_VOLUME_OFFSET` is zero or a non-negative multiple of 4096 bytes.
+
+For example:
+
+```c
+EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
+```
+
+If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and the configured filesystem offset does not overlap flash data that must be preserved.
+
+If `EVE_EMULATOR_FLASH_FILESYSTEM` is defined, ensure that it specifies a supported filesystem format:
+
+- `BT8XXEMU_FlashFilesystemLittleFs`
+- `BT8XXEMU_FlashFilesystemFat32`
+
+
 ### The SD-Card Folder Cannot Be Attached
 
 Check that:
@@ -602,9 +818,11 @@ EVE_EMULATOR_SD_FOLDER=TEXT("sdFolderName")
 
 ### An Unsupported EVE API Compilation Error Is Reported
 
-`EVE_EMULATOR_FLASH_FILE` requires EVE API level 3, 4, or 5.
+`EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` require EVE API level 3, 4, or 5.
 
 `EVE_EMULATOR_SD_FOLDER` requires EVE API level 5.
+
+The **EVE-MCU-Dev** emulator port requires EVE Emulator API version 20 or later for all configurations.
 
 Remove the unsupported macro or select a compatible EVE API level.
 
@@ -616,8 +834,8 @@ The emulator uses this flag to compensate for display rotation when presenting t
 
 ## Linux
 
-Linux builds are not supported because the EVE Emulator library is not currently distributed for Linux.
+Linux builds are not currently supportedfor for the `EVE Emulator` port within the **EVE-MCU-Dev** library.
 
 ## Example Software
 
-Please refer to the [Emulator Simple example](../../examples/simple/emulator/README.md) for instructions on using the port in an EVE-MCU-Dev project.
+Please refer to the [Emulator Simple example](../../examples/simple/emulator/README.md) for instructions on using the port in an **EVE-MCU-Dev** project.
