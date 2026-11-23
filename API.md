@@ -1069,7 +1069,7 @@ The following table shows the co-processor commands which are supported by each 
 | EVE_CMD_FLASHFAST        | CMD_FLASHFAST        | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_CMD_FLASHSPIRX       | CMD_FLASHSPIRX       | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_CMD_FLASHATTACH      | CMD_FLASHATTACH      | *No* | *No* | Yes  | Yes  | Yes  |
-| EVE_CMD_FLASHDETATCH     | CMD_FLASHDETATCH     | *No* | *No* | Yes  | Yes  | Yes  |
+| EVE_CMD_FLASHDETACH      | CMD_FLASHDETACH      | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_CMD_FLASHSPIDESEL    | CMD_FLASHSPIDESEL    | *No* | *No* | Yes  | Yes  | Yes  |
 | EVE_CMD_GETIMAGE         | CMD_GETIMAGE         | *No* | *No* | *No* | Yes  | Yes  |
 | EVE_CMD_CALIBRATESUB     | CMD_CALIBRATESUB     | *No* | *No* | *No* | Yes  | Yes  |

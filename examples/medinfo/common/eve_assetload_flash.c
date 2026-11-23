@@ -126,7 +126,7 @@ void eve_flash_full_speed(void)
 #if IS_EVE_API(3,4)
     // Detach Flash
     EVE_LIB_BeginCoProList();
-    EVE_CMD_FLASHDETATCH();
+    EVE_CMD_FLASHDETACH();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 

@@ -56,7 +56,7 @@ void ConnectToFlash(void)
 
 		// Detach Flash
 		EVE_LIB_BeginCoProList();
-		EVE_CMD_FLASHDETATCH();
+		EVE_CMD_FLASHDETACH();
 		EVE_LIB_EndCoProList();
 		EVE_LIB_AwaitCoProEmpty();
 
