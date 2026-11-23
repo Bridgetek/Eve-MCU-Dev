@@ -416,7 +416,7 @@ add_compile_definitions(
 
 #### Flash Filesystem Selection
 
-The `EVE_EMULATOR_FLASH_FILESYSTEM` macro selects the filesystem format used to create the flash volume.
+The `EVE_EMULATOR_FLASH_FILESYSTEM` macro selects the filesystem format used to create the flash volume from the contents of the configured host folder.
 
 If the macro is not defined, the port uses LittleFS by default:
 
@@ -429,13 +429,7 @@ The following filesystem formats are supported:
 | Definition | Description |
 | --- | --- |
 | `BT8XXEMU_FlashFilesystemLittleFs` | LittleFS filesystem using flash geometry compatible with the emulator's supported flash devices |
-| `BT8XXEMU_FlashFilesystemFat32` | FAT32 filesystem suitable for use with supported flash filesystem attachment commands |
-
-
-The generated filesystem must be accessed using a compatible filesystem implementation in the EVE application. LittleFS volumes require a compatible LittleFS implementation, while FAT32 volumes can be attached using `CMD_FLASHFSATTACH` on supported devices..
-
-Creating the filesystem volume does not automatically mount it within the application.
-
+| `BT8XXEMU_FlashFilesystemFat32` | FAT32 filesystem generated from the contents of the configured host folder |
 
 For example, to select FAT32:
 
@@ -445,7 +439,15 @@ EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemFat32
 
 The filesystem format should be selected based on the requirements of the emulated EVE application.
 
-For FAT32, the emulator API notes that volumes smaller than approximately 32.5 MiB may be readable by the EVE co-processor but rejected by conventional host FAT readers.
+**Filesystem Access**
+
+The selected filesystem format determines how the host folder contents are stored in the emulated flash device. Creating the filesystem volume does not automatically mount it or provide filesystem access to the EVE application.
+
+The EVE-MCU-Dev emulator port provides the emulated flash storage, but accessing files within the generated filesystem requires appropriate support in the application.
+
+**FAT32 Volume Size**
+
+For FAT32, the emulator API notes that volumes smaller than approximately 32.5 MiB may be rejected by conventional host FAT readers.
 
 #### Flash Filesystem Offset
 
@@ -695,7 +697,7 @@ Multi-touch support is not currently implemented by the **EVE-MCU-Dev** emulator
 
 Display rotation can be controlled using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`.
 
-The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is enabled by defualt in `EVE_Emulator.c`. When enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
+The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is in `EVE_Emulator.c`. When enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
 
 This eliminates the need to manually swap `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` solely to accommodate display rotation in the emulator.
 
@@ -828,13 +830,13 @@ Remove the unsupported macro or select a compatible EVE API level.
 
 ### The Emulator Window Has the Wrong Orientation
 
-Ensure that `BT8XXEMU_EmulatorEnableWindowRotate` is enabled in the emulator parameters set in `EVE_Emulator.c` when automatic display rotation compensation is required.
+Ensure that `BT8XXEMU_EmulatorEnableWindowRotate` is enabled in the emulator parameters set in `EVE_emulator.c` when automatic display rotation compensation is required.
 
 The emulator uses this flag to compensate for display rotation when presenting the output window, including rotations configured through `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`
 
 ## Linux
 
-Linux builds are not currently supportedfor for the `EVE Emulator` port within the **EVE-MCU-Dev** library.
+Linux builds are not currently supported by the `EVE Emulator` port within the **EVE-MCU-Dev** library.
 
 ## Example Software
 

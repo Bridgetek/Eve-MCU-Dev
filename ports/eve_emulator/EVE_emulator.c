@@ -174,7 +174,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
         {
             if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
             {
-                EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+                EVE_DEBUG_ERROR("ERROR: Emulator folder does not exist.\n");
                 return NULL;
             }
         }
@@ -244,7 +244,7 @@ static const eve_tchar_t* MCU_ResolvePath(MCU_PathType pathType, const eve_tchar
     if (pathType == MCU_PATH_FOLDER) {
         if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
         {
-            EVE_DEBUG_ERROR("ERROR: SD card folder does not exist.\n");
+            EVE_DEBUG_ERROR("ERROR: Emulator folder does not exist.\n");
             return NULL;
         }
     }
