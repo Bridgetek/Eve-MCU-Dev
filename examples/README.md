@@ -2,6 +2,31 @@
 
 [Back](../README.md)
 
+## Runnable Examples
+
+In the example code the EVE-MCU-Dev library is compiled with the example program. 
+
+The example [simple](simple/README.md) is supported by all platforms and is intended to be used as a template for new projects. It contains build instructions for all the platforms as well.
+
+The following example code is available:
+
+| Folder | Screenshot | Description |
+| --- | --- | --- |
+| [simple](simple/README.md) | [![simple](simple/docs/simple_tn.png)](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
+| [b2tf](b2tf/README.md) | [![b2tf](b2tf/docs/b2tf_tn.png)](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
+| [colourpicker](colourpicker/README.md) | [![colourpicker](colourpicker/docs/colourpicker_tn.png)](colourpicker/README.md) | Colour picker display demo code. This dynamic bitmap generation and actions for user inputs. |
+| [cruise](cruise/README.md) | [![cruise](cruise/docs/cruise_tn.png)](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
+| [datavisualiser](datavisualiser/README.md) | [![datavisualiser](datavisualiser/docs/datavisualiser_tn.png)](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
+| [flightdeck](flightdeck/README.md) | [![flightdeck](flightdeck/docs/flightdeck_tn.png)](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
+| [flightdeck-bt82x](flightdeck-bt82x/README.md) | [![flightdeck-bt82x](flightdeck-bt82x/docs/flightdeck-bt82x_tn.png)](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
+| [fontmagic](fontmagic/README.md) | [![fontmagic](fontmagic/docs/fontmagic_tn.png)](fontmagic/README.md) | Simple example code demonstrating scaling and rotating letters from a font file. |
+| [gyminterval](gyminterval/README.md) | [![gyminterval](gyminterval/docs/gyminterval_tn.png)](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
+| [medinfo](medinfo/README.md) | [![medinfo](medinfo/docs/medinfo_tn.png)](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
+| [racecar](racecar/README.md) | [![racecar](racecar/docs/racecar_tn.png)](racecar/README.md) | A simulated dashboard for a racing car. |
+| [spaced_invaders](spaced_invaders/README.md) | [![spaced_invaders](spaced_invaders/docs/spaced_invaders_tn.png)](spaced_invaders/README.md) | Simulating spaced invaders (8-bit classic game). |
+| [submarine](submarine/README.md) | [![submarine](submarine/docs/submarine_tn.png)](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
+| [touchscreentest](touchscreentest/README.md) | [![touchscreentest](touchscreentest/docs/touchscreentest_tn.png)](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
+
 ## Example File Structure
 
 The examples are structured in a way that allows multiple platforms to be included in each example and multiple examples to be included in the library. Rather than the focus being on the example code including a copy of the library, the focus is on the library itself and the example code is structured to fit with the library. 
@@ -44,31 +69,6 @@ Examples may or may not have all platform support directories. The contents of t
 The source file containing the `main()` function is not in the example code but is in the MCU specific part of example code. 
 
 The MCU specific files including the entry point function (the `main()` function), build files (CMake, Makefile), IDE files (Eclipse, Visual Studio, Visual Studio Code, Arduino IDE, STM32Cube IDE, Keil uVision, MPLab, Ti CCS).
-
-## Runnable Examples
-
-In the example code the EVE-MCU-Dev library is compiled with the example program. 
-
-The example [simple](simple/README.md) is supported by all platforms and is intended to be used as a template for new projects. It contains build instructions for all the platforms as well.
-
-The following example code is available:
-
-| Folder | Description |
-| --- | --- |
-| [simple](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
-| [b2tf](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
-| [cruise](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
-| [colourpicker](colourpicker/README.md) | Colour picker display demo code. This dynamic bitmap generation and actions for user inputs. |
-| [datavisualiser](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
-| [flightdeck](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
-| [flightdeck-bt82x](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
-| [fontmagic](fontmagic/README.md) | Simple example code demonstrating scaling and rotating letters from a font file. |
-| [gyminterval](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
-| [medinfo](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
-| [racecar](racecar/README.md) | A simulated dashboard for a racing car. |
-| [spaced_invaders](spaced_invaders/README.md) | Simulating spaced invaders (8-bit classic game). |
-| [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
-| [touchscreentest](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
 
 ## Widgets and Utilities
 

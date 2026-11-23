@@ -10,11 +10,33 @@ The example code uses the `touch` snippet from the [snippets](../snippets) direc
 
 The generation of the bitmap for the colour picker wheel is done using floating point arithmetic when the program starts to run. The platform on which this is being run must therefore support floating point libraries.
 
-## Screenshot
+## Screenshots
 
-The following is an screenshot of the `colourpicker` example:
+The following are screenshots of the `colourpicker` example with different values for `EXAMPLE_COLOURPICKER` set in `eve_example.h`.
+
+### Colour Wheel Example
+
+`#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_WHEEL` 
 
 ![Colour Picker Example](docs/colourpicker.png)
+
+### ARGB1555 Multitouch Example
+
+`#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_MULTI`
+
+![Colour Picker ARGB1555 Multitouch Example](docs/colourpicker2.png)
+
+### Paletted Rectangle Example
+
+`#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_PALETTED_RECT` 
+
+![Colour Picker Paletted Image Example](docs/colourpicker2.png)
+
+### Paletted Image Example
+
+`#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_PALETTED_IMAGE` 
+
+![Colour Picker Paletted Image Example](docs/colourpicker4.png)
 
 ## EVE API Support
 

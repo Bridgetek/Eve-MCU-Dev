@@ -54,8 +54,33 @@ extern "C" {
 /* Include snippets */
 #include <touch.h>
 
+/* At the end of the first pass of the main loop return to prevent the simulator 
+ * running continuously */
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* Supported colour picker examples */
+#define EXAMPLE_COLOURPICKER_WHEEL 1
+#define EXAMPLE_COLOURPICKER_MULTI 2
+#define EXAMPLE_COLOURPICKER_PALETTED_RECT 3
+#define EXAMPLE_COLOURPICKER_PALETTED_IMAGE 4
+
+/* Choose the colour picker example to display */
+#ifndef EXAMPLE_COLOURPICKER 
+#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_MULTI
+#endif // EXAMPLE_COLOURPICKER 
+
 /* Entry point to the example code */
 void eve_example(void);
+
+/* Entry point to each example code opertation */
+void eve_display_wheel(void);
+void eve_display_argb1555(void);
+void eve_display_paletted8(void);
 
 #ifdef __cplusplus
 } /* extern "C" */

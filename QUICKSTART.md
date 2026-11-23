@@ -139,6 +139,32 @@ The following directories are included in the simple example:
 The `examples\simple\README.md` file explains the example and lists supported options.
 
 To set the EVE device and display panel resolution the file `include\EVE_config.h` is modified to set the configuration as required. 
+
+Change to the `emulator` directory.
+
+```console
+>cd examples\simple\emulator
+```
+
+```console
+>dir
+ Volume in drive C is OS
+ Volume Serial Number is F41F-6475
+
+ Directory of C:\development\GitHub\EVE-MCU-Dev\examples\simple\emulator
+
+10/11/2026  09:21    <DIR>          .
+17/11/2026  08:52    <DIR>          ..
+20/07/2026  14:54               183 .gitignore
+11/05/2026  09:51    <DIR>          .vscode
+10/11/2026  09:21               925 CMakeLists.txt
+17/09/2026  10:01    <DIR>          main
+27/10/2026  11:05             2,260 README.md
+05/11/2026  14:48    <DIR>          VisualStudio
+               4 File(s)          3,396 bytes
+              22 Dir(s)  10,199,109,632 bytes free
+```
+
 The EVE Emulator is able to change the EVE device type and display type automatically but for real hardware this has to be set at compile time.
 
 If the default configuration needs to be modified then the EVE_config.h file can be edited directly; 
