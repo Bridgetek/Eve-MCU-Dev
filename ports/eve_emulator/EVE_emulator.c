@@ -414,17 +414,6 @@ static int MCU_AttachFlash(void) {
 #endif
 
 #ifdef EVE_EMULATOR_FLASH_FOLDER
-#ifndef EVE_EMULATOR_FLASH_FILESYSTEM
-#define EVE_EMULATOR_FLASH_FILESYSTEM BT8XXEMU_FlashFilesystemLittleFs
-#endif
-#ifndef EVE_EMULATOR_FLASH_VOLUME_OFFSET
-#define EVE_EMULATOR_FLASH_VOLUME_OFFSET 0
-#endif
-
-#if (EVE_EMULATOR_FLASH_VOLUME_OFFSET < 0) || (EVE_EMULATOR_FLASH_VOLUME_OFFSET % 4096 != 0)
-#error EVE_EMULATOR_FLASH_VOLUME_OFFSET must be zero or a positive multiple of 4096
-#endif
-
     // Resolve the flash folder path supplied by the definition.
     const eve_tchar_t* folderPath = MCU_ResolvePath(MCU_PATH_FOLDER, EVE_EMULATOR_FLASH_FOLDER);
     if (!folderPath)
@@ -444,8 +433,9 @@ static int MCU_AttachFlash(void) {
         return -1;
     }
 
-    EmulatorFlashParameters->Filesystem = EVE_EMULATOR_FLASH_FILESYSTEM;
-    EmulatorFlashParameters->VolumeOffset = EVE_EMULATOR_FLASH_VOLUME_OFFSET;
+    // Configure the flash folder using the default filesystem and offset.
+    EmulatorFlashParameters->Filesystem = BT8XXEMU_FlashFilesystemLittleFs;
+    EmulatorFlashParameters->VolumeOffset = 0;
 #endif
 
     // Create the emulated flash device.

@@ -354,7 +354,7 @@ The selected flash device must be compatible with the configured EVE generation.
 
 Flash folder emulation is supported for EVE API levels 3, 4, and 5.
 
-When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a FAT32 or LittleFS volume from the contents of the specified host folder and places it into the emulated flash device.
+When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a LittleFS volume from the contents of the specified host folder and places it into the emulated flash device.
 
 The flash folder can be used independently or alongside an existing flash-image file.
 
@@ -414,67 +414,19 @@ add_compile_definitions(
 )
 ```
 
-#### Flash Filesystem Selection
+#### Flash Filesystem Format
 
-The `EVE_EMULATOR_FLASH_FILESYSTEM` macro selects the filesystem format used to create the flash volume from the contents of the configured host folder.
+When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a LittleFS volume from the contents of the specified host folder.
 
-If the macro is not defined, the port uses LittleFS by default:
-
-```c
-#define EVE_EMULATOR_FLASH_FILESYSTEM BT8XXEMU_FlashFilesystemLittleFs
-```
-
-The following filesystem formats are supported:
-
-| Definition | Description |
-| --- | --- |
-| `BT8XXEMU_FlashFilesystemLittleFs` | LittleFS filesystem using flash geometry compatible with the emulator's supported flash devices |
-| `BT8XXEMU_FlashFilesystemFat32` | FAT32 filesystem generated from the contents of the configured host folder |
-
-For example, to select FAT32:
-
-```text
-EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemFat32
-```
-
-The filesystem format should be selected based on the requirements of the emulated EVE application.
-
-**Filesystem Access**
-
-The selected filesystem format determines how the host folder contents are stored in the emulated flash device. Creating the filesystem volume does not automatically mount it or provide filesystem access to the EVE application.
-
-The EVE-MCU-Dev emulator port provides the emulated flash storage, but accessing files within the generated filesystem requires appropriate support in the application.
-
-**FAT32 Volume Size**
-
-For FAT32, the emulator API notes that volumes smaller than approximately 32.5 MiB may be rejected by conventional host FAT readers.
-
-#### Flash Filesystem Offset
-
-The `EVE_EMULATOR_FLASH_VOLUME_OFFSET` macro defines the byte offset within the emulated flash device at which the filesystem volume begins.
-
-If the macro is not defined, the port uses:
-
-```c
-#define EVE_EMULATOR_FLASH_VOLUME_OFFSET 0
-```
-
-A value of `0` allows the emulator to select its default offset:
+The emulator uses its default filesystem offset:
 
 - **NOR flash:** 4096 bytes, immediately after the flash firmware region.
-- **NAND flash with LittleFS:** The beginning of the second erase block.
-
-A custom offset can be configured, for example:
-
-```text
-EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
-```
-
-This places the filesystem volume at offset 1 MiB (`0x100000`).
-
-The offset must be zero or a non-negative multiple of 4096 bytes.
+- **NAND flash:** The beginning of the second erase block.
 
 The generated filesystem extends from the selected offset to the end of the emulated flash device. Flash creation fails if the folder contents cannot fit within the available capacity.
+
+Creating the filesystem volume does not automatically provide filesystem access to the EVE application.
+
 
 #### Combining a Flash Image and Filesystem Folder
 
@@ -486,23 +438,17 @@ For example:
 EVE_EMULATOR_FLASH_FILE=TEXT("flash.bin")
 EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
 EVE_EMULATOR_FLASH_FILE_SIZE=16777216
-EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemLittleFs
-EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
 ```
-
 In this configuration:
 
 - The emulator creates a 16 MiB flash device.
 - The contents of `flash.bin` are loaded into the device.
 - A LittleFS filesystem is generated from `flashFolderName`.
-- The filesystem is placed at offset 1 MiB.
+- The filesystem is placed at the emulator's default offset.
 
-The filesystem volume overrides the contents of the flash image from the configured offset to the end of the device.
+The filesystem volume overrides the contents of the flash image from the default offset to the end of the device.
 
-> **Note:** Ensure that the filesystem offset does not overlap any existing flash-image data that must be preserved.
-
-When only `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator creates the flash device without requiring an external flash-image file.
-
+**Note:** When using both a flash image and filesystem folder, ensure that any existing flash-image data beyond the default filesystem offset is not required. 
 
 ### Flash Persistence
 
@@ -785,7 +731,6 @@ Check that:
 - Backslashes in C string literals are escaped.
 - The resolved path does not exceed the path length supported by the port.
 - The selected flash capacity is sufficient for the generated filesystem.
-- `EVE_EMULATOR_FLASH_VOLUME_OFFSET` is zero or a non-negative multiple of 4096 bytes.
 
 For example:
 
@@ -794,12 +739,6 @@ EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
 ```
 
 If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and the configured filesystem offset does not overlap flash data that must be preserved.
-
-If `EVE_EMULATOR_FLASH_FILESYSTEM` is defined, ensure that it specifies a supported filesystem format:
-
-- `BT8XXEMU_FlashFilesystemLittleFs`
-- `BT8XXEMU_FlashFilesystemFat32`
-
 
 ### The SD-Card Folder Cannot Be Attached
 
