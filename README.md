@@ -73,9 +73,9 @@ This document covers the following topics:
 - How to modify the settings and the main example code to produce your own application 
 - A separate section for each of the target MCUs describing the hardware requirements and any MCU-specific considerations.
 
-**Note 1:** This code is intended to act as a starting point for customers to create their own application rather than being a complete library package. It is necessary that developers of the final application incorporating this library review all layers of the code as part of their product validation. By using any part of this code, the customer agrees to accept full responsibility for ensuring that their final product operates correctly and complies with any operational and safety requirements and accepts full responsibility for any consequences resulting from its use.
+> **Note 1:** This code is intended to act as a starting point for customers to create their own application rather than being a complete library package. It is necessary that developers of the final application incorporating this library review all layers of the code as part of their product validation. By using any part of this code, the customer agrees to accept full responsibility for ensuring that their final product operates correctly and complies with any operational and safety requirements and accepts full responsibility for any consequences resulting from its use.
 
-**Note 2:** The library functions are intended to perform a basic set-up of the MCU so that the EVE functionality can be demonstrated. The reader must consult the product documentation provided by the manufacturer of their selected MCU, and the Bridgetek documentation for their EVE device, to confirm that their final code and hardware complies with all recommendations, best practices, and specifications, so that reliable operation of the final product can be assured. The information provided in this document and code is not intended to override any information or specifications in the product datasheets.
+> **Note 2:** The library functions are intended to perform a basic set-up of the MCU so that the EVE functionality can be demonstrated. The reader must consult the product documentation provided by the manufacturer of their selected MCU, and the Bridgetek documentation for their EVE device, to confirm that their final code and hardware complies with all recommendations, best practices, and specifications, so that reliable operation of the final product can be assured. The information provided in this document and code is not intended to override any information or specifications in the product datasheets.
 
 ### Prerequisites
 
@@ -685,7 +685,7 @@ If `EVE_API` is used this will override any `EVE_DEVICE` values and a number fro
 ```
 **The default in the distribution will be a BT817 device**. This is the EVE device used in the [IDK-BT817-70A](https://brtchip.com/product/idk-bt817-70a/) modules.
 
-Note that the example programs will take the `EVE_config.h` file from the `include` directory.
+> **Note:** that the example programs will take the `EVE_config.h` file from the `include` directory.
 
 #### Display Panel Selection
 
@@ -737,7 +737,7 @@ The `EVE_MODULE`, `EVE_DEVICE`, `EVE_PANEL`, `EVE_DISPLAY_RES`, and `EVE_COPRO_M
 
 The `EVE_MODULE` macro is parsed first. Setting this to `EVE_NO_MODULE` will allow one or all of the `EVE_DEVICE`, `EVE_PANEL` and `EVE_DISPLAY_RES` macros to be picked up from the build file C definitions. The `EVE_COPRO_METHOD` is always parsed but ignored if the device type does not support the method.
 
-Note that the preprocessor may complain if it is asked to change the value of one of the macros. 
+> **Note:** that the preprocessor may complain if it is asked to change the value of one of the macros. 
 
 ## Supported Platforms
 
@@ -790,7 +790,9 @@ The 2x8 header can be connected as in the following pictures:
 
 ### Header 1x10 Pins
 
-This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the [MM4222-QSPI](https://brtchip.com/product/mm4222-qspi/) board or VA800A-SPI. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
+This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly found on the "VM" range of modules such as the VM800B, VM810C50A and VM816C50A. The connector directly mates with the [MM4222-QSPI](https://brtchip.com/product/mm4222-qspi/) board or VA800A-SPI. 
+
+> **Note:**: that the VA800A-SPI is now discontinued but the information is retained here for reference.
 
 The 1x10 header can be connected as in the following pictures:
 
@@ -1392,7 +1394,8 @@ A co-processor list can be created in more than one section, as shown below, to 
 
 For tasks sending long display lists, the data can be divided into smaller chunks and sent with the program waiting for sufficient buffer space before continuing with the next chunk.
 
-This example below shows how to split a co-processor list to generate a display list correctly. Note the position of the `EVE_CMD_DLSTART`, `EVE_DISPLAY` or `EVE_CMD_SWAP` commands.
+This example below shows how to split a co-processor list to generate a display list correctly. 
+> **Note:** the position of the `EVE_CMD_DLSTART`, `EVE_DISPLAY` or `EVE_CMD_SWAP` commands.
 
 ```c
   // FIRST SECTION OF LIST

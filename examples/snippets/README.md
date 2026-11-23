@@ -37,7 +37,7 @@ If a supported panel is setup in [EVE_config.h](../../include/EVE_config.h) then
 
 A callback to platform functions are required to store the configuration matrix. These need to store the calibration values using a non-volatile method. On PCs this can be in a regular file, on embedded systems this cabn be flash, NVRAM or any other appropriate methods. The structure `struct touchscreen_calibration` contains the values and is seven 32-bit values.
 
-**NOTE:** Capacitive touch screens can not detect a touch that is present at startup. Therefore for capacitive panels no touch will be detected when a program starts until a new touch even occurs. Resistive panels can detect touches that are present at startup.
+> **Note:** Capacitive touch screens can not detect a touch that is present at startup. Therefore for capacitive panels no touch will be detected when a program starts until a new touch even occurs. Resistive panels can detect touches that are present at startup.
 
 _Header File:_
 
@@ -922,7 +922,8 @@ int16_t angle = DEG2FURMAN(0x4000); // angle = 90
 
 #### Trigonometry Circle Macros
 
-Macros are provided to turn a radius and degrees/furmans into components for X and Y vector. Note that the return value is signed.
+Macros are provided to turn a radius and degrees/furmans into components for X and Y vector. 
+> **Note:** that the return value is signed.
 
 _Calling format:_
 

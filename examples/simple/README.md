@@ -143,7 +143,7 @@ The BridgeTek logo is stored in an array in this file as a JPEG image. The data 
 co-processor which converts it into a bitmap image suitable for use by the EVE device.
 
 To convert the JPG to bitmap format the `EVE_CMD_LOADIMAGE` command is sent followed by the JPG file data.
-Note that the JPG file data must be padded to the next 32-bit boundary. The bitmap image is written into the 
+> **Note:** that the JPG file data must be padded to the next 32-bit boundary. The bitmap image is written into the 
 RAM_G address specified in the command.
 
 In the following code snippet from the example the `while` loop will look for the end marker of the JPG

@@ -74,4 +74,4 @@ This update restructures the library's headers and configuration, improves co-pr
 - Replace misspelled API names `EVE_CMD_FLASHDETATCH()` and `EVE_PALLETE_SOURCE_H()` with `EVE_CMD_FLASHDETACH()` and `EVE_PALETTE_SOURCE_H()`.
 - For BT820, pass an options argument to `EVE_CMD_VIDEOSTART()`.
 - Restart the co-processor list before submitting further commands after `EVE_LIB_WriteDataToCMD()`.
-- NOTE: Initialise the required submodules when updating an existing checkout.
+- > **Note:** Initialise the required submodules when updating an existing checkout.

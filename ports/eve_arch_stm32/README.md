@@ -63,7 +63,8 @@ Once configured they should resemble the following screenshot from STM32CubeMX. 
 
 ![GPIO Pinout and Configuration for STM32F0 Discovery Modules](../../docs/stm32cubeide_STM32F080DISCOVERY_gpio.png)
 
-The above configuration will result in the `Core\Inc\main.h` file being generated with macros similar to the following. Note that the pins are named `EVE CS#` and `EVE PD#` in the STM32CubeMX configuration. 
+The above configuration will result in the `Core\Inc\main.h` file being generated with macros similar to the following. 
+> **Note:** that the pins are named `EVE CS#` and `EVE PD#` in the STM32CubeMX configuration. 
 
 ```c
 #define EVE_CS__Pin GPIO_PIN_6
@@ -82,7 +83,7 @@ In STM32CubeMX the SPI SCK, MISO, MOSI pins will be setup to their GPIO "Alterna
 
 ![SPI Pinout and Configuration for STM32F0 Discovery Modules](../../docs/stm32cubeide_STM32F080DISCOVERY_spi_gpio.png)
 
-Note that the default SPI1 pins are changed to SCK on PB3, MOSI on PB5 and MISO on PB4 to generate the above configuration.
+> **Note:** that the default SPI1 pins are changed to SCK on PB3, MOSI on PB5 and MISO on PB4 to generate the above configuration.
 
 The parameters for the SPI master are set as follows. Mode-0 (i.e. CPOL low and CPHA 1-Edge) SPI is used and the transfers are 8-bit with the MSB first. NSSP mode is "Disabled" with NSS Signal Type as "Software" to allow the library control of the CS# pin.
 
@@ -139,7 +140,8 @@ Once configured they should resemble the following screenshot from STM32CubeMX.
 
 ![GPIO Pinout and Configuration for MiniSTM32H7xx Modules](../../docs/stm32cubeide_MiniSTM32H7xx_gpio.png)
 
-The above configuration will result in the `Core\Inc\main.h` file being generated with the following macros. Note that the pins are named `EVE CS#` and `EVE PD#` in the STM32CubeMX configuration.
+The above configuration will result in the `Core\Inc\main.h` file being generated with the following macros. 
+> **Note:** that the pins are named `EVE CS#` and `EVE PD#` in the STM32CubeMX configuration.
 
 ```c
 #define EVE_PD__Pin GPIO_PIN_7
@@ -197,7 +199,7 @@ Ensure that the power supply from the MiniSTM32H7xx module is capable of also po
 
 On STM32Cube a HAL driver and a device driver is required for each varient of MCU.
 
-**NOTE:** There are no drivers included in the `ports/eve_arch_stm32` library. The project using the EVE-MCU-Dev library **must** include the STM32 HAL and device drivers which are linked to the port during compilation. Therefore, the `examples` which support STM32 will include the STM32 HAL and device code. The `Core` and `Driver` directories in the examples include the files to support the listed boards. 
+> **Note:** There are no drivers included in the `ports/eve_arch_stm32` library. The project using the EVE-MCU-Dev library **must** include the STM32 HAL and device drivers which are linked to the port during compilation. Therefore, the `examples` which support STM32 will include the STM32 HAL and device code. The `Core` and `Driver` directories in the examples include the files to support the listed boards. 
 
 ### STM32CubeMX Settings
 

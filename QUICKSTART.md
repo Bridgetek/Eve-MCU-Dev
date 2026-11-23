@@ -38,7 +38,7 @@ To download the ZIP file of the library click on the green **"<> Code"** button 
 
 The ZIP file can be expanded into the desired development directory.
 
-**NOTE:** Different branches can be selected before downloading the ZIP file.
+> **Note:** Different branches can be selected before downloading the ZIP file.
 
 This process **MUST** be repeated with the EVE Emulator. Download the ZIP file for the EVE Emulator 
 from the [EVE Emulator Home/Code page](https://github.com/Bridgetek/EVE_Emulator) and expand it into 

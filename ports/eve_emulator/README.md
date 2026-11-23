@@ -117,7 +117,7 @@ The emulator port supports the following storage features:
 
 Defining one of these macros for an unsupported EVE API level causes a compilation error.
 
-**NOTE**: Flash image and flash filesystem folder emulation can be configured independently or together. When both are defined, the emulator loads the flash image and creates a filesystem volume from the specified folder, replacing the image contents within the filesystem region.
+> **Note:** Flash image and flash filesystem folder emulation can be configured independently or together. When both are defined, the emulator loads the flash image and creates a filesystem volume from the specified folder, replacing the image contents within the filesystem region.
 
 ### Emulator Asset Paths for Flash and SD Cards
 
@@ -354,7 +354,7 @@ The selected flash device must be compatible with the configured EVE generation.
 
 Flash folder emulation is supported for EVE API levels 3, 4, and 5.
 
-When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a FAT32 or LittleFS volume from the contents of the specified host folder and places it into the emulated flash device.
+When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a LittleFS volume from the contents of the specified host folder and places it into the emulated flash device.
 
 The flash folder can be used independently or alongside an existing flash-image file.
 
@@ -394,7 +394,7 @@ EVE_EMULATOR_FLASH_FOLDER=TEXT("..\\assets\\flashFolderName")
 EVE_EMULATOR_FLASH_FOLDER=TEXT("C:\\path\\to\\flashFolderName")
 ```
 
-**Note:** Do not define `EVE_EMULATOR_FLASH_FOLDER` without a value. The macro must expand to a valid `eve_tchar_t` string.
+> **Note:** Do not define `EVE_EMULATOR_FLASH_FOLDER` without a value. The macro must expand to a valid `eve_tchar_t` string.
 
 #### Defining the Flash Folder Macro in Visual Studio
 
@@ -414,65 +414,19 @@ add_compile_definitions(
 )
 ```
 
-#### Flash Filesystem Selection
+#### Flash Filesystem Format
 
-The `EVE_EMULATOR_FLASH_FILESYSTEM` macro selects the filesystem format used to create the flash volume.
+When `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator generates a LittleFS volume from the contents of the specified host folder.
 
-If the macro is not defined, the port uses LittleFS by default:
-
-```c
-#define EVE_EMULATOR_FLASH_FILESYSTEM BT8XXEMU_FlashFilesystemLittleFs
-```
-
-The following filesystem formats are supported:
-
-| Definition | Description |
-| --- | --- |
-| `BT8XXEMU_FlashFilesystemLittleFs` | LittleFS filesystem using flash geometry compatible with the emulator's supported flash devices |
-| `BT8XXEMU_FlashFilesystemFat32` | FAT32 filesystem suitable for use with supported flash filesystem attachment commands |
-
-
-The generated filesystem must be accessed using a compatible filesystem implementation in the EVE application. LittleFS volumes require a compatible LittleFS implementation, while FAT32 volumes can be attached using `CMD_FLASHFSATTACH` on supported devices..
-
-Creating the filesystem volume does not automatically mount it within the application.
-
-
-For example, to select FAT32:
-
-```text
-EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemFat32
-```
-
-The filesystem format should be selected based on the requirements of the emulated EVE application.
-
-For FAT32, the emulator API notes that volumes smaller than approximately 32.5 MiB may be readable by the EVE co-processor but rejected by conventional host FAT readers.
-
-#### Flash Filesystem Offset
-
-The `EVE_EMULATOR_FLASH_VOLUME_OFFSET` macro defines the byte offset within the emulated flash device at which the filesystem volume begins.
-
-If the macro is not defined, the port uses:
-
-```c
-#define EVE_EMULATOR_FLASH_VOLUME_OFFSET 0
-```
-
-A value of `0` allows the emulator to select its default offset:
+The emulator uses its default filesystem offset:
 
 - **NOR flash:** 4096 bytes, immediately after the flash firmware region.
-- **NAND flash with LittleFS:** The beginning of the second erase block.
-
-A custom offset can be configured, for example:
-
-```text
-EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
-```
-
-This places the filesystem volume at offset 1 MiB (`0x100000`).
-
-The offset must be zero or a non-negative multiple of 4096 bytes.
+- **NAND flash:** The beginning of the second erase block.
 
 The generated filesystem extends from the selected offset to the end of the emulated flash device. Flash creation fails if the folder contents cannot fit within the available capacity.
+
+Creating the filesystem volume does not automatically provide filesystem access to the EVE application.
+
 
 #### Combining a Flash Image and Filesystem Folder
 
@@ -484,23 +438,17 @@ For example:
 EVE_EMULATOR_FLASH_FILE=TEXT("flash.bin")
 EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
 EVE_EMULATOR_FLASH_FILE_SIZE=16777216
-EVE_EMULATOR_FLASH_FILESYSTEM=BT8XXEMU_FlashFilesystemLittleFs
-EVE_EMULATOR_FLASH_VOLUME_OFFSET=1048576
 ```
-
 In this configuration:
 
 - The emulator creates a 16 MiB flash device.
 - The contents of `flash.bin` are loaded into the device.
 - A LittleFS filesystem is generated from `flashFolderName`.
-- The filesystem is placed at offset 1 MiB.
+- The filesystem is placed at the emulator's default offset.
 
-The filesystem volume overrides the contents of the flash image from the configured offset to the end of the device.
+The filesystem volume overrides the contents of the flash image from the default offset to the end of the device.
 
-> **Note:** Ensure that the filesystem offset does not overlap any existing flash-image data that must be preserved.
-
-When only `EVE_EMULATOR_FLASH_FOLDER` is defined, the emulator creates the flash device without requiring an external flash-image file.
-
+> **Note:** When using both a flash image and filesystem folder, ensure that any existing flash-image data beyond the default filesystem offset is not required. 
 
 ### Flash Persistence
 
@@ -516,7 +464,7 @@ The current defaults are:
 | EVE 4 (BT817/BT817A/BT818) | `BT8XXEMU_FlashBackingMemory` | Flash contents are loaded into memory. Writes are lost when the emulator exits. |
 | EVE 5 (BT820) | `BT8XXEMU_FlashBackingSparse` | Flash contents are accessed on demand without allocating a complete flash array. Modified pages are retained in memory but lost when the emulator exits. |
 
-**Note:** By default, flash modifications are not written back to the original flash-image file.
+> **Note:** By default, flash modifications are not written back to the original flash-image file.
 
 Persistent flash writes can be enabled through `BT8XXEMU_FlashBackingFile`, which memory-maps the flash-image file and saves modifications directly to it. However, this is not currently exposed through a dedicated **EVE-MCU-Dev** preprocessor definition.  
 
@@ -695,7 +643,7 @@ Multi-touch support is not currently implemented by the **EVE-MCU-Dev** emulator
 
 Display rotation can be controlled using `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`.
 
-The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is enabled by defualt in `EVE_Emulator.c`. When enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
+The `BT8XXEMU_EmulatorEnableWindowRotate` emulator flag is in `EVE_Emulator.c`. When enabled, the emulator automatically rotates and resizes its window to match the displayed orientation, including 90-degree and 270-degree rotations.
 
 This eliminates the need to manually swap `EVE_DISP_WIDTH` and `EVE_DISP_HEIGHT` solely to accommodate display rotation in the emulator.
 
@@ -783,7 +731,6 @@ Check that:
 - Backslashes in C string literals are escaped.
 - The resolved path does not exceed the path length supported by the port.
 - The selected flash capacity is sufficient for the generated filesystem.
-- `EVE_EMULATOR_FLASH_VOLUME_OFFSET` is zero or a non-negative multiple of 4096 bytes.
 
 For example:
 
@@ -791,13 +738,7 @@ For example:
 EVE_EMULATOR_FLASH_FOLDER=TEXT("flashFolderName")
 ```
 
-If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and the configured filesystem offset does not overlap flash data that must be preserved.
-
-If `EVE_EMULATOR_FLASH_FILESYSTEM` is defined, ensure that it specifies a supported filesystem format:
-
-- `BT8XXEMU_FlashFilesystemLittleFs`
-- `BT8XXEMU_FlashFilesystemFat32`
-
+If both `EVE_EMULATOR_FLASH_FILE` and `EVE_EMULATOR_FLASH_FOLDER` are defined, ensure that the flash image exists and that any existing flash data beyond the default filesystem offset is not required.
 
 ### The SD-Card Folder Cannot Be Attached
 
@@ -828,13 +769,13 @@ Remove the unsupported macro or select a compatible EVE API level.
 
 ### The Emulator Window Has the Wrong Orientation
 
-Ensure that `BT8XXEMU_EmulatorEnableWindowRotate` is enabled in the emulator parameters set in `EVE_Emulator.c` when automatic display rotation compensation is required.
+Ensure that `BT8XXEMU_EmulatorEnableWindowRotate` is enabled in the emulator parameters set in `EVE_emulator.c` when automatic display rotation compensation is required.
 
 The emulator uses this flag to compensate for display rotation when presenting the output window, including rotations configured through `EVE_REG_ROTATE` or `EVE_CMD_SETROTATE`
 
 ## Linux
 
-Linux builds are not currently supportedfor for the `EVE Emulator` port within the **EVE-MCU-Dev** library.
+Linux builds are not currently supported by the `EVE Emulator` port within the **EVE-MCU-Dev** library.
 
 ## Example Software
 

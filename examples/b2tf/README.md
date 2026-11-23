@@ -24,7 +24,7 @@ Supported EVE APIs in this example:
 | --- | --- | --- | --- | --- |
 | No | Awaiting Test | Yes | Yes | Yes |
 
-**NOTE:** this example will only display a 24 hour clock on EVE API 2, 3 and 4; on EVE API 5 it will display month, date, year and 24 hour clock. The macro `IS_EVE_API(5)` will conditionally compile code for EVE API 5.
+> **Note:** this example will only display a 24 hour clock on EVE API 2, 3 and 4; on EVE API 5 it will display month, date, year and 24 hour clock. The macro `IS_EVE_API(5)` will conditionally compile code for EVE API 5.
 
 ## Platform Support
 
@@ -38,7 +38,7 @@ This example supports the following platforms:
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
-**NOTE:** this example will work only on operating systems and compilers that provide a real time clock functionality includeing the `time.h` header file, `gmtime_s` and `mktime` functions.
+> **Note:** this example will work only on operating systems and compilers that provide a real time clock functionality includeing the `time.h` header file, `gmtime_s` and `mktime` functions.
 
 
 ## Platform Files

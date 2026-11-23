@@ -45,7 +45,8 @@ If the version of the cable is used which has the 3.3V power output (or if using
 
 ### VA800A-SPI Module
 
-An alternative is the `VA800A-SPI` module can also be used in the same way as the `C232HM`. ***Note**: that the VA800A-SPI is now discontinued but the information is retained here for reference.*
+An alternative is the `VA800A-SPI` module can also be used in the same way as the `C232HM`. 
+> **Note:** that the VA800A-SPI is now discontinued but the information is retained here for reference.
 
 #### Connection to EVE
 
@@ -82,7 +83,7 @@ The EVE PD# pin is controlled by software using GPIOs.The PD# pin is setup as GP
 
 The INT# pin is setup as a GPIO input with no pull ups or pull downs.
 
-__NOTE:__ The maximum reliable frequency for the SPI bus will depend on the wire length from the MPSSE device to the EVE device.
+> **Note:** The maximum reliable frequency for the SPI bus will depend on the wire length from the MPSSE device to the EVE device.
 
 ## Files
 
