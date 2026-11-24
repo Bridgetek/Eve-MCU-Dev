@@ -32,11 +32,12 @@ Supported EVE APIs in this example:
 
 This example supports the following platforms:
 
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
+| Port Name | Port Directory |
+| --- | --- |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 

@@ -42,12 +42,13 @@ The minimum screen size supported is 1920x1080 pixels. The display will fit in l
 
 This example supports the following platforms:
 
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Arduino IDE](arduino/README.md) | [ft900](arduino/) | Yes |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+| Port Name | Port Directory |
+| --- | --- |
+| [Arduino IDE](arduino/README.md) | [ft900](arduino/) |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) |
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 

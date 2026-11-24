@@ -58,18 +58,60 @@
 #define IMAGE_ARGB_TAG       10
 #define TAG_BACKGROUND      255
 
-/* EXTERN VARIABLES ****************************************************************/
+/* Wheel bitmap Size */
+#define PICKER_WIDTH     460
+#define PICKER_HEIGHT    252
 
-/* ARGB1555 bitmap Size */
-extern const uint32_t img_argb_width;
-extern const uint32_t img_argb_height;
-/* ARGB1555 bitmap LUT */
-extern const uint8_t img_argb[];
-extern const uint32_t img_argb_size;
+/* Storage for the wheel format chosen */
+// EVE_FORMAT_ARGB1555 is 16-bits
+#define PICKER_STORAGE uint16_t
+
+#define PICKER_COLOUR(A) EVE_COLOR_RGB(A,A,A)
+
+/* EXTERN VARIABLES ****************************************************************/
 
 /* LOCAL VARIABLES *****************************************************************/
 
+static PICKER_STORAGE pickerline[PICKER_WIDTH];
+
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
+
+// Picker Generation.
+static void generate_picker(void)
+{
+    int x,y;
+
+    for (y = 0; y < PICKER_HEIGHT; y++)
+    {
+        for (x = 0; x < PICKER_WIDTH; x++)
+        {
+            uint8_t r = 0, g = 0, b = 0;
+            float s = 1.0f;
+            float v = 1.0f;
+            float h = (1.0f * (float)x) / PICKER_WIDTH;
+
+            if (y <= (PICKER_HEIGHT / 2))
+            {
+                v = (float)y / (float)(PICKER_HEIGHT / 2);
+            }
+            else 
+            {
+                s = (float)(PICKER_HEIGHT - y) / (float)(PICKER_HEIGHT / 2);
+            }
+ 
+            hsv_to_rgb(h, s, v, &r, &g, &b);
+ 
+            pickerline[x] = rgb888_to_argb1555(r, g, b);
+        }
+    
+        /* Upload one line of the bitmap to RAM_G */
+        EVE_LIB_WriteDataToRAMG(
+            (uint8_t*)pickerline,
+            sizeof(pickerline),
+            IMAGE_ARGB_RAMG_ADDR + (y * sizeof(pickerline))
+        );
+    }
+}
 
 /* FUNCTIONS ***********************************************************************/
 
@@ -79,7 +121,7 @@ void eve_display_argb1555(void)
     uint16_t const image_x = 10;
     uint16_t const image_y = 10;
 
-    uint16_t info_x = image_x + img_argb_width + 10;
+    uint16_t info_x = image_x + PICKER_WIDTH + 10;
     if (info_x + 130 > EVE_DISP_WIDTH)
     {
         info_x = EVE_DISP_WIDTH - 130;
@@ -106,36 +148,31 @@ void eve_display_argb1555(void)
     uint32_t colorbytesloc = 0;
     uint32_t colorbytes = 0;
 
-    uint32_t c0r = 0;
-    uint32_t c0g = 0;
-    uint32_t c0b = 0;
-    uint32_t c1r = 0;
-    uint32_t c1g = 0;
-    uint32_t c1b = 0;
+    uint8_t c0r = 0;
+    uint8_t c0g = 0;
+    uint8_t c0b = 0;
+    uint8_t c1r = 0;
+    uint8_t c1g = 0;
+    uint8_t c1b = 0;
 
     uint32_t colorbyteindex = 0;
 
-    // Inflate image data to address IMAGE_ARGB_RAMG_ADDR.
-    EVE_LIB_BeginCoProList();
-#if !IS_EVE_API(5)
-    EVE_CMD_INFLATE(IMAGE_ARGB_RAMG_ADDR);
-#else // IS_EVE_API(5)
-    EVE_CMD_INFLATE(IMAGE_ARGB_RAMG_ADDR, 0);
-#endif // !IS_EVE_API(5)
-    EVE_LIB_WriteDataToCMD(img_argb, img_argb_size);
-    EVE_LIB_EndCoProList();
-    EVE_LIB_AwaitCoProEmpty();
+    // Generate a colour wheel in RAM_G.
+    EVE_DEBUG_PRINTF("Generating Picker...\n");
+    generate_picker();
 
+    // Load the colour wheel as a bitmap into a handle.
+    EVE_DEBUG_PRINTF("Configuring Picker...\n");
     // Instantiate the ARGB1555 bitmap.
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_BITMAP_HANDLE(IMAGE_ARGB_HANDLE);
 #if !IS_EVE_API(1)
-    EVE_CMD_SETBITMAP(IMAGE_ARGB_RAMG_ADDR, EVE_FORMAT_ARGB1555, img_argb_width, img_argb_height);
+    EVE_CMD_SETBITMAP(IMAGE_ARGB_RAMG_ADDR, EVE_FORMAT_ARGB1555, PICKER_WIDTH, PICKER_HEIGHT);
 #else // IS_EVE_API(1)
     EVE_BITMAP_SOURCE(IMAGE_ARGB_RAMG_ADDR);
-    EVE_BITMAP_LAYOUT(EVE_FORMAT_ARGB1555, img_argb_width, img_argb_height);
-    EVE_BITMAP_SIZE(EVE_FILTER_BILINEAR, EVE_WRAP_BORDER, EVE_WRAP_BORDER, img_argb_width, img_argb_height);
+    EVE_BITMAP_LAYOUT(EVE_FORMAT_ARGB1555, PICKER_WIDTH * sizeof(PICKER_STORAGE), PICKER_HEIGHT);
+    EVE_BITMAP_SIZE(EVE_FILTER_BILINEAR, EVE_WRAP_BORDER, EVE_WRAP_BORDER, PICKER_WIDTH, PICKER_HEIGHT);
 #endif // !IS_EVE_API(1)
     EVE_DISPLAY();
     EVE_CMD_SWAP();
@@ -189,16 +226,16 @@ void eve_display_argb1555(void)
         EVE_CMD_NUMBER(info_x + 80, info_y + 20, 26, 0, touch1_y);
         // Red color value.
         EVE_CMD_TEXT(info_x, info_y + 50, 26, 0, "R:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 40, 26, 0, c0r);
-        EVE_CMD_NUMBER(info_x + 80, info_y + 40, 26, 0, c1r);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 50, 26, 0, c0r);
+        EVE_CMD_NUMBER(info_x + 80, info_y + 50, 26, 0, c1r);
         // Green color value.
         EVE_CMD_TEXT(info_x, info_y + 70, 26, 0, "G:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 60, 26, 0, c0g);
-        EVE_CMD_NUMBER(info_x + 80, info_y + 60, 26, 0, c1g);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 70, 26, 0, c0g);
+        EVE_CMD_NUMBER(info_x + 80, info_y + 70, 26, 0, c1g);
         // Blue color value.
         EVE_CMD_TEXT(info_x, info_y + 90, 26, 0, "B:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 80, 26, 0, c0b);
-        EVE_CMD_NUMBER(info_x + 80, info_y + 80, 26, 0, c1b);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 90, 26, 0, c0b);
+        EVE_CMD_NUMBER(info_x + 80, info_y + 90, 26, 0, c1b);
         // Tag value.
         EVE_CMD_TEXT(info_x, info_y + 110, 26, 0, "tag:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 110, 26, 0, tag0_val);
@@ -220,15 +257,14 @@ void eve_display_argb1555(void)
         EVE_END();
 
         // Make a set of cursor lines to mark the current touch point.
-        // Set the color to black and the line width to 1 pixel.
         // Note that this could be extended to display a small bitmap
         // arrow or target shape or to adjust the cursor color to make
         // it more clear against the color picker background.
         EVE_BEGIN(EVE_BEGIN_LINES);
-        EVE_COLOR_RGB(0, 0, 0);
         EVE_LINE_WIDTH(1 * 16);
         // Cross Hair point 0.
-        // Vertical line.
+        // Vertical line, contrasting colour.
+        PICKER_COLOUR(255 - ((touch0_pointer_y - image_y) * PICKER_HEIGHT) / PICKER_HEIGHT);
         // 10 pixels below the center of the cursor point.
         EVE_VERTEX2F((touch0_pointer_x) * 16,(touch0_pointer_y - 10) * 16);
         // to 10 pixels above the center of the cursor point
@@ -240,7 +276,8 @@ void eve_display_argb1555(void)
         EVE_VERTEX2F((touch0_pointer_x + 10) * 16,(touch0_pointer_y) * 16);
 
         // Cross Hair point 1.
-        // Vertical line.
+        // Vertical line, contrasting colour.
+        PICKER_COLOUR(255 - ((touch1_pointer_y - image_y) * PICKER_HEIGHT) / PICKER_HEIGHT);
         // 10 pixels below the center of the cursor point.
         EVE_VERTEX2F((touch1_pointer_x) * 16,(touch1_pointer_y - 10) * 16);
         // to 10 pixels above the center of the cursor point.
@@ -259,14 +296,16 @@ void eve_display_argb1555(void)
         // The font coordinate is for the Top-Left of the letter A or B and so 
         // this offset positions it in the top-left quadrant of the cursor
         // without any overlap with the cursor lines.
+        // Use a contrasting colour.
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
-        EVE_COLOR_RGB(255,255,255);
         EVE_BITMAP_HANDLE(22);
         // Using font 22, label point 0 as "A" which is cell 0x41 of the font (ANSI code 0x41 = A)
         EVE_CELL(0x41);
+        PICKER_COLOUR(255 - ((touch0_pointer_y - image_y) * PICKER_HEIGHT) / PICKER_HEIGHT);
         EVE_VERTEX2F((touch0_pointer_x + 3) * 16, (touch0_pointer_y - 20) * 16);
         // Using font 22, label point 1 as "B" which is cell 0x42 of the font (ANSI code 0x42 = B)
         EVE_CELL(0x42);
+        PICKER_COLOUR(255 - ((touch0_pointer_y - image_y) * PICKER_HEIGHT) / PICKER_HEIGHT);
         EVE_VERTEX2F((touch1_pointer_x + 3) * 16, (touch1_pointer_y - 20) * 16);
         EVE_END();
 
@@ -287,7 +326,7 @@ void eve_display_argb1555(void)
         // Top left corner is 2 pixels inside the image.
         EVE_VERTEX2F((image_x + 2) * 16,(image_y + 2) * 16);
         // Bottom Right corner is 2 pixels inside the image.
-        EVE_VERTEX2F((image_x + img_argb_width - 2) * 16,(image_y + img_argb_height - 2) * 16);
+        EVE_VERTEX2F((image_x + PICKER_WIDTH - 2) * 16,(image_y + PICKER_HEIGHT - 2) * 16);
         // Disable tagging
         EVE_TAG_MASK(0);
 
@@ -317,7 +356,13 @@ void eve_display_argb1555(void)
 #endif // IS_EVE_API(1,2,3,4)
         // Get coordinates
         touch0_xy = EVE_LIB_MemRead32(EVE_REG_CTOUCH_TOUCH0_XY);
+#if IS_EVE_API(1,2,3,4)
+        // Use compatibility mode
         touch1_xy = EVE_LIB_MemRead32(EVE_REG_CTOUCH_TOUCH1_XY);
+#else // IS_EVE_API(5)
+        // Extended mode set by default on EVE5 onwards
+        touch1_xy = EVE_LIB_MemRead32(EVE_REG_CTOUCH_TOUCHA_XY);
+#endif
         // Get the X and Y values of the coordinate
         touch0_y = (touch0_xy & 0x0000FFFF);
         touch0_x = ((touch0_xy & 0xFFFF0000) >> 16);
@@ -327,7 +372,7 @@ void eve_display_argb1555(void)
         // Process the touch data
 
         // If there is a touch on Tag 0
-        if(touch0_xy != 0x80008000)
+        if (touch0_xy != 0x80008000)
         {
             // If the touch is on Tag 10 (Cursor A) then take the coordinates 
             // into the point 0 (Cursor A) variables.
@@ -346,11 +391,11 @@ void eve_display_argb1555(void)
         }
 
         // If there is a touch on Tag 1.
-        if(touch1_xy != 0x80008000)
+        if (touch1_xy != 0x80008000)
         {
             // If the touch is on Tag 10 (Cursor A) then take the coordinates 
             // into the point 0 (Cursor A) variables.
-            if(tag1_val == IMAGE_ARGB_TAG)
+            if (tag1_val == IMAGE_ARGB_TAG)
             {
                 touch0_pointer_x = touch1_x;
                 touch0_pointer_y = touch1_y;
@@ -368,25 +413,25 @@ void eve_display_argb1555(void)
         // are restricted to within the color picker area.
         // If any coordinate is outside, then force it to the respective 
         // boundary so the cursor cannot be dragged outside the color picker area.
-        if(touch0_pointer_x < image_x)
+        if (touch0_pointer_x < image_x)
             touch0_pointer_x = image_x;
-        else if (touch0_pointer_x > (image_x + img_argb_width))
-            touch0_pointer_x = image_x + img_argb_width;
+        else if (touch0_pointer_x > (uint32_t)(image_x + PICKER_WIDTH))
+            touch0_pointer_x = image_x + PICKER_WIDTH;
 
-        if(touch0_pointer_y < image_y)
+        if (touch0_pointer_y < image_y)
             touch0_pointer_y = image_y;
-        else if (touch0_pointer_y > (image_y + img_argb_height))
-            touch0_pointer_y = image_y + img_argb_height;
+        else if (touch0_pointer_y > (uint32_t)(image_y + PICKER_HEIGHT))
+            touch0_pointer_y = image_y + PICKER_HEIGHT;
 
-        if(touch1_pointer_x < image_x)
+        if (touch1_pointer_x < image_x)
             touch1_pointer_x = image_x;
-        else if (touch1_pointer_x > (image_x + img_argb_width))
-            touch1_pointer_x = image_x + img_argb_width;
+        else if (touch1_pointer_x > (uint32_t)(image_x + PICKER_WIDTH))
+            touch1_pointer_x = image_x + PICKER_WIDTH;
 
-        if(touch1_pointer_y < image_y)
+        if (touch1_pointer_y < image_y)
             touch1_pointer_y = image_y;
-        else if (touch1_pointer_y > (image_y + img_argb_height))
-            touch1_pointer_y = image_y + img_argb_height;
+        else if (touch1_pointer_y > (uint32_t)(image_y + PICKER_HEIGHT))
+            touch1_pointer_y = image_y + PICKER_HEIGHT;
 
         // ------------ For touch point 0 (tag0 == 10) -----------------------
 
@@ -396,7 +441,7 @@ void eve_display_argb1555(void)
 
         // read through the image data to find byte corresponding to the coordinate.
         // start address in RAM_G + (Y * length of line) + X.
-        colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * img_argb_width * 2));
+        colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * PICKER_WIDTH * 2));
 
         // Read the 2 bytes from this address (2 bytes because it is ARGB1555).
         // These are encoded as ARRR RRGG GGGB BBBB.
@@ -412,9 +457,7 @@ void eve_display_argb1555(void)
 
         // Find the R, G and B components within the bits of these 2 bytes.
         // Shift so that the 5 bits are in the upper bits of the byte.
-        c0r = (((colorbytes & 0x7C00) >> 10)<<3);		// 00000000 00000000 00000000 RRRRR000
-        c0g = (((colorbytes & 0x03D0) >> 5)<<3);		// 00000000 00000000 00000000 GGGGG000
-        c0b = (((colorbytes & 0x001F))<<3);			// 00000000 00000000 00000000 BBBBB000
+        argb1555_to_rgb(colorbytes, &c0r, &c0g, &c0b);
 
         // ------------ For touch point 1 (tag0 == 11) -----------------------
 
@@ -424,7 +467,7 @@ void eve_display_argb1555(void)
 
         // read through the image data to find byte corresponding to the coordinate
         // start address in RAM_G + (Y * length of line) + X.
-        colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * img_argb_width * 2));
+        colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * PICKER_WIDTH * 2));
 
         // Read the 2 bytes from this address (2 bytes because it is ARGB1555).
         // These are encoded as ARRR RRGG GGGB BBBB.
@@ -440,10 +483,7 @@ void eve_display_argb1555(void)
 
         // Find the R, G and B components within the bits of these 2 bytes.
         // Shift so that the 5 bits are in the upper bits of the byte.
-        c1r = (((colorbytes & 0x7C00) >> 10)<<3);		// 00000000 00000000 00000000 RRRRR000
-        c1g = (((colorbytes & 0x03D0) >> 5)<<3);		// 00000000 00000000 00000000 GGGGG000
-        c1b = (((colorbytes & 0x001F))<<3);			// 00000000 00000000 00000000 BBBBB000
-
+        argb1555_to_rgb(colorbytes, &c1r, &c1g, &c1b);
 
     } while (LOOP);
 

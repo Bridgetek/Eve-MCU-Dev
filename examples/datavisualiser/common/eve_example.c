@@ -112,10 +112,10 @@ bool screen_render = false;
 
 
 // declare and populate arrays for the x and y axis labels of the line plot
-static uint8_t const y_axis_labels[y_axis_labels_size] = {
+uint8_t const y_axis_labels[y_axis_labels_size] = {
     100, 80, 60, 40, 20
 };
-static const char* const x_axis_labels[x_axis_labels_size] = {
+const char* const x_axis_labels[x_axis_labels_size] = {
     "0:30", "0:25", "0:20", "0:15", "0:10", "0:05", "0:00"
 };
 
@@ -226,7 +226,7 @@ int16_t pie_chart_box_start_y;
 int16_t pie_chart_box_end_x;
 int16_t pie_chart_box_end_y;
 
-// for circular gauge
+// for radar plot
 int16_t radar_plot_box_start_x;
 int16_t radar_plot_box_start_y;
 int16_t radar_plot_box_end_x;
@@ -264,8 +264,8 @@ int16_t line_plot_num3_y;
 // bar gauge variables
 //------------------------------------------------------------------------------
 // bar gauge positioning
-static int16_t bargauge_x[num_bargauge_bars];
-static int16_t bargauge_y;
+int16_t bargauge_x[num_bargauge_bars];
+int16_t bargauge_y;
 // bar gauge sizing related
 int16_t bargauge_width;
 int16_t bargauge_height;
@@ -304,8 +304,8 @@ int16_t radar_plot_num_line_gap_y; // for the gap between the lines
 int16_t circle_gauge_radius;
 int16_t circle_gauge_thickness;
 // circular gauge positioning
-static int16_t circle_gauge_x;
-static int16_t circle_gauge_y;
+int16_t circle_gauge_x;
+int16_t circle_gauge_y;
 
 //----------------------------------------------------------------------------------
 // pie chart variables

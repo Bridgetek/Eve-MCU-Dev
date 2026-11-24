@@ -221,13 +221,13 @@ void eve_display_paletted8(void)
         EVE_CMD_NUMBER(info_x + 30, info_y + 20, 26, 0, touch_y);
         // Red color value.
         EVE_CMD_TEXT(info_x, info_y + 50, 26, 0, "R:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 40, 26, 0, cr);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 50, 26, 0, cr);
         // Green color value.
         EVE_CMD_TEXT(info_x, info_y + 70, 26, 0, "G:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 60, 26, 0, cg);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 70, 26, 0, cg);
         // Blue color value.
         EVE_CMD_TEXT(info_x, info_y + 90, 26, 0, "B:");
-        EVE_CMD_NUMBER(info_x + 30, info_y + 80, 26, 0, cb);
+        EVE_CMD_NUMBER(info_x + 30, info_y + 90, 26, 0, cb);
         // Tag value.
         EVE_CMD_TEXT(info_x, info_y + 110, 26, 0, "tag:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 110, 26, 0, tag_val);

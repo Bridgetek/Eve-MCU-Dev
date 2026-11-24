@@ -42,11 +42,12 @@ Supported EVE APIs in this example:
 
 This example supports the following platforms:
 
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+| Port Name | Port Directory | 
+| --- | --- | 
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) |
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 
@@ -63,7 +64,6 @@ The example contains a common directory with several files which comprises all t
 | [common/paletted8.c](common/paletted8.c) | Source code for [Paletted Rectangle Example](#paletted-rectangle-example) and [Paletted Image Example](#paletted-image-example). |
 | [common/image_paletted_data.c](common/image_paletted_data.c) | Image data for [Paletted Image Example](#paletted-image-example). |
 | [common/rect_paletted_data.c](common/rect_paletted_data.c) | Image data for [Paletted Rectangle Example](#paletted-rectangle-example). |
-| [common/rect_argb1555_data.c](common/rect_argb1555_data.c) | Image data for [ARGB1555 Multi-touch Example](#argb1555-multitouch-example). |
 | [docs](docs) | Documentation support files. |
 | [images](images) | Source images used in this example. |
 
@@ -338,11 +338,11 @@ items drawn afterwards in the display list do not get affected and display as ex
 
 ## Preparing the Images
 
-The [Colour Wheel Example](#colour-wheel-example) version draws a colour wheel programatically. 
+The [Colour Wheel Example](#colour-wheel-example) version draws a colour wheel programatically. This can be drawn in RGB565, RGB332 or ARGB1555.
+By default it will use RGB565.
 It generates sections of the wheel into an an array in RAM then copies them in to `RAM_G` forming the wheel in parts.
 
-The [ARGB1555 Multi-touch Example](#argb1555-multitouch-example) version uses a pre-rendered colour picker rectangle that has been converted to ARGB1555 format using the "Image Utilities" in EVE Asset Builder.
-The `raw` image of the asset is then compressed using the "Asset Compressor" feature. The output of this was converted to a C array using the "Bin2C" feature.
+The [ARGB1555 Multi-touch Example](#argb1555-multitouch-example) version draws an ARGB1555 colour picker rectangle programatically.
 
 A similar process was followed for the [Paletted Rectangle Example](#paletted-rectangle-example) and [Paletted Image Example](#paletted-image-example). The original image was converted to "PALETTED8" format on EVE2 onwards (or "PALETTED" on EVE1).
 The raw LUT file was converted to C using the "Bin2C" feature. The index file was compressed as above and then converted to C with the "Bin2C" feature.
@@ -372,7 +372,6 @@ Features include:
 - Status Panel to display the selected colour.
 - Debug Information is also printed to show the cursor position/tag and the colour values.
 - Red Warning Ring illuminates if the user touch goes outside the colour picker area.
-- PWM Output to drive the LED Strip to indicate the colour selected.
 
 The code begins by setting up the EVE device then copies the image of the circular colour picker to RAM_G.
 
@@ -410,7 +409,6 @@ Features include:
 - Cursors to indicate current position of each picker A and B.
 - Dual Status Panel to display the selected colour for each cursor A and B.
 - Debug Information is also printed to show the cursor position/tag and the colour values.
-- PWM Output x6 to drive two LED Strips (A above the screen and B below the screen).
 
 The selections on the A and B cursors are drawn and labelled on the screen. Two separate chosen colours are shown side-by-side.
 
@@ -515,7 +513,7 @@ This example focuses on the use of the Paletted 8 format. The same larger rectan
 picker is created as in [ARGB1555 Multi-touch Example](#argb1555-multitouch-example). However, in this case Paletted 8 format is used instead and only
 a single touch is implemented.
 
-![Colour Picker Paletted Image Example](docs/colourpicker2.png)
+![Colour Picker Paletted Image Example](docs/colourpicker3.png)
 
 Paletted 8 offers a greater depth of 8 bits per colour but also has a more limited number of
 colours. Therefore, the benefit over the 5-bit ARGB1555 may vary depending on the actual image
@@ -527,7 +525,6 @@ Features include:
 - Cursor with crossed lines to indicate current position of the selected colour.
 - Status Panel to display the selected colour.
 - Debug Information is also printed to show the cursor position/tag and the colour values.
-- PWM Output to drive the LED Strip to indicate the colour selected.
 
 This example differs from the earlier ones in the way that the image data is looked up once the
 touch point has been determined. Please refer to the earlier section for details of how the Paletted 8

@@ -41,6 +41,8 @@ This example supports the following platforms:
 | [ST STM32Cube](STM32CUBE/README.md) | [STM32CUBE](STM32CUBE/) | 
 | [Raspberry Pi](raspberry_pi/README.md) | [raspberry_pi](raspberry_pi/) | 
 | [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [PlatformIO with ESPIDF Framework](platformio_esp32/README.md) | [platformio_esp32](platformio_esp32/) |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/)  | 
 | [Generic using libMPSSE](libmpsse/README.md) | [libmpsse](libmpsse/) | 
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | 

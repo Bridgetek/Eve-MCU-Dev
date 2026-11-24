@@ -35,11 +35,12 @@ The screen items are scaled based on the defined screen resolution, as such ther
 
 This example supports the following platforms:
 
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) | Yes |
+| Port Name | Port Directory |
+| --- | --- |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) |
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
 
 Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
 

@@ -71,11 +71,20 @@ extern "C" {
 
 /* Choose the colour picker example to display */
 #ifndef EXAMPLE_COLOURPICKER 
-#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_MULTI
+#define EXAMPLE_COLOURPICKER EXAMPLE_COLOURPICKER_WHEEL
 #endif // EXAMPLE_COLOURPICKER 
 
 /* Entry point to the example code */
 void eve_example(void);
+
+/* Helper functions */
+uint16_t rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b);
+uint16_t rgb888_to_argb1555(uint8_t r, uint8_t g, uint8_t b);
+uint8_t rgb888_to_rgb332(uint8_t r, uint8_t g, uint8_t b);
+void rgb565_to_rgb(uint16_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b);
+void argb1555_to_rgb(uint16_t argb1555, uint8_t *r, uint8_t *g, uint8_t *b);
+void rgb332_to_rgb(uint8_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b);
+void hsv_to_rgb(float h, float s, float v, uint8_t* r, uint8_t* g, uint8_t* b);
 
 /* Entry point to each example code opertation */
 void eve_display_wheel(void);

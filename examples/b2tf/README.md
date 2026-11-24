@@ -22,7 +22,7 @@ Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| No | Awaiting Test | Yes | Yes | Yes |
+| Yes | Yes | Yes | Yes | Yes |
 
 > **Note:** this example will only display a 24 hour clock on EVE API 2, 3 and 4; on EVE API 5 it will display month, date, year and 24 hour clock. The macro `IS_EVE_API(5)` will conditionally compile code for EVE API 5.
 
@@ -32,7 +32,8 @@ This example supports the following platforms:
 
 | Port Name | Port Directory | 
 | --- | --- | 
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) |
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
 | [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | 
 | [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
 

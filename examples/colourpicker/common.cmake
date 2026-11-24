@@ -14,7 +14,6 @@ add_library(eve_example # Example code library name
         ${EXAMPLE_COMMON}/eve_example.c
         ${EXAMPLE_COMMON}/image_paletted_data.c
         ${EXAMPLE_COMMON}/rect_paletted_data.c
-        ${EXAMPLE_COMMON}/rect_argb1555_data.c
         ${EXAMPLE_COMMON}/colour_wheel.c
         ${EXAMPLE_COMMON}/paletted8.c
         ${EXAMPLE_COMMON}/argb1555_multi.c
