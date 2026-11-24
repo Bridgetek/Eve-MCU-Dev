@@ -83,7 +83,7 @@ static WHEEL_STORAGE wheelline[WHEEL_SIZE];
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
-// Convert RGB8 to RGB565
+// Convert RGB8 to RGB565.
 static uint16_t rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b)
 {
     return ((r & 0xF8) << 8) |
@@ -91,7 +91,7 @@ static uint16_t rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b)
         (b >> 3);
 }
 
-// Convert RGB8 to ARG1555
+// Convert RGB8 to ARG1555.
 static uint16_t rgb888_to_argb1555(uint8_t r, uint8_t g, uint8_t b)
 {
     uint16_t a = 0;
@@ -102,7 +102,7 @@ static uint16_t rgb888_to_argb1555(uint8_t r, uint8_t g, uint8_t b)
         (b >> 3);
 }
 
-// Convert RGB8 to RGB332
+// Convert RGB8 to RGB332.
 static uint8_t rgb888_to_rgb332(uint8_t r, uint8_t g, uint8_t b)
 {
     return ((r & 0xe0)) |
@@ -110,7 +110,7 @@ static uint8_t rgb888_to_rgb332(uint8_t r, uint8_t g, uint8_t b)
         ((b & 0xc0) >> 6);
 }
 
-// Convert RGB565 to RGB8
+// Convert RGB565 to RGB8.
 static void rgb565_to_rgb(uint16_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b)
 {
     *r = (rgb565 >> 8) & 0xf8;
@@ -118,7 +118,7 @@ static void rgb565_to_rgb(uint16_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b)
     *b = (rgb565 << 3) & 0xf8;
 }
 
-// Convert ARGB1555 to RGB8
+// Convert ARGB1555 to RGB8.
 static void argb1555_to_rgb(uint16_t argb1555, uint8_t *r, uint8_t *g, uint8_t *b)
 {
     *r = (argb1555 >> 7) & 0xf8;
@@ -126,7 +126,7 @@ static void argb1555_to_rgb(uint16_t argb1555, uint8_t *r, uint8_t *g, uint8_t *
     *b = (argb1555 << 3) & 0xf8;
 }
 
-// Convert RGB332 to RGB8
+// Convert RGB332 to RGB8.
 static void rgb332_to_rgb(uint8_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b)
 {
     *r = (rgb565) & 0xe0;
@@ -134,7 +134,7 @@ static void rgb332_to_rgb(uint8_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b)
     *b = (rgb565 << 6) & 0xc0;
 }
 
-// Hue/Saturation/Brightness (HSV colour space) to RGB8 conversion
+// Hue/Saturation/Brightness (HSV colour space) to RGB8 conversion.
 static void hsv_to_rgb(float h, float s, float v, uint8_t* r, uint8_t* g, uint8_t* b)
 {
     float c = v * s;
@@ -155,7 +155,7 @@ static void hsv_to_rgb(float h, float s, float v, uint8_t* r, uint8_t* g, uint8_
     *b = (uint8_t)((bp + m) * 255);
 }
 
-// Colour Wheel Generation
+// Colour Wheel Generation.
 static void generate_colour_wheel(void)
 {
     int cx = (WHEEL_SIZE / 2);
@@ -205,7 +205,7 @@ static void generate_colour_wheel(void)
 
 void eve_display_wheel(void)
 {
-    // Colour wheel position on screen
+    // Colour wheel position on screen.
     const uint16_t image_x = 50;
 #if EVE_DISP_HEIGHT > WHEEL_SIZE + 100
     const uint16_t image_y = 50;
@@ -220,7 +220,7 @@ void eve_display_wheel(void)
     }
     uint16_t info_y = 130;
 
-    // Gap between colour wheel and info
+    // Gap between colour wheel and info.
     const uint16_t gap_x = 50;
     const uint16_t gap_y = 50;
 
@@ -239,11 +239,11 @@ void eve_display_wheel(void)
 
     bool tag_outofrange = false;
 
-    // Generate a colour wheel in RAM_G
+    // Generate a colour wheel in RAM_G.
     EVE_DEBUG_PRINTF("Generating Colour Wheel...\n");
     generate_colour_wheel();
 
-    // Load the colour wheel as a bitmap into a handle
+    // Load the colour wheel as a bitmap into a handle.
     EVE_DEBUG_PRINTF("Configuring Colour Wheel...\n");
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -263,131 +263,141 @@ void eve_display_wheel(void)
 
     do
     {
-        // Begin a new co-processor list
+        // Begin a new co-processor list.
         EVE_LIB_BeginCoProList();
-        // Begin a display list
+        // Begin a display list.
         EVE_CMD_DLSTART();
-        // Tag will read as TAG_BACKGROUND (255) for any untagged areas of the screen when touched
+        // Tag will read as TAG_BACKGROUND (255) for any untagged 
+        // areas of the screen when touched.
         EVE_CLEAR_TAG(TAG_BACKGROUND);
-        // Clear the screen with black
+        // Clear the screen with black.
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
-        // clear colour, tag, stencil
+        // clear colour, tag, stencil.
         EVE_CLEAR(1, 1, 1);
-        // Ensure following items are not tagged
+        // Ensure following items are not tagged.
         EVE_TAG_MASK(0);
 
-        // The generated colour wheel bitmap has a hard, non-anti-aliased round edge.
-        // To smooth the edge, we draw an invisible circle and use blending so that the bitmap is
-        // visible only within the circle. This gives the colour wheel a cleaner, anti-aliased outline.
-        // The same technique can also be applied to other shapes, such as lines and rectangles.
+        // The generated colour wheel bitmap has a hard, 
+        // non-anti-aliased round edge.
+        // To smooth the edge, we draw an invisible circle and use 
+        // blending so that the bitmap is visible only within the circle. 
+        // This gives the colour wheel a cleaner, anti-aliased outline.
+        // The same technique can also be applied to other shapes, 
+        // such as lines and rectangles.
 
-        // As the circle used for the colour picker image is actually a square shape and we don't want the tag to be valid on the corners
-        // By using the invisible circle as our tagged item we can ensure only the actual colour wheel area is tagged.
+        // As the circle used for the colour picker image is actually a 
+        // square shape and we don't want the tag to be valid on the corners.
+        // By using the invisible circle as our tagged item we can ensure 
+        // only the actual colour wheel area is tagged.
         // When we draw invisible circle we also want to tag this with tag = 10
 
-        // Enable tagging
+        // Enable tagging.
         EVE_TAG_MASK(1);
-        // Set tag to 10 for any items drawn after this
+        // Set tag to 10 for any items drawn after this.
         EVE_TAG(WHEEL_TAG);
-        // Alpha mask on only
+        // Alpha mask on only.
         EVE_COLOR_MASK(0, 0, 0, 1);
-        // Draw points
+        // Draw points.
         EVE_BEGIN(EVE_BEGIN_POINTS);
-        // Draw a circle slightly smaller (1px) than the radius of the colour picker
+        // Draw a circle slightly smaller (1px) than the radius of the colour picker.
         EVE_POINT_SIZE(((WHEEL_SIZE / 2) - 1) * 16);
-        // Position at the center of where the colour picker will be (colour picker is 250x250)
+        // Position at the center of where the colour picker will be (colour picker is 250x250).
         EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
-        // End points
+        // End points.
         EVE_END();
-        // Disable tagging for any subsequent items
+        // Disable tagging for any subsequent items.
         EVE_TAG_MASK(0);
-        // Enable colours, alpha disabled
+        // Enable colours, alpha disabled.
         EVE_COLOR_MASK(1, 1, 1, 0);
-        // Blend the bitmap colours into the cicle present in the alpha bufffer
+        // Blend the bitmap colours into the cicle present in the alpha bufffer.
         EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
         
-        // Place the colour picker circle at the coordinates defined previously
+        // Place the colour picker circle at the coordinates defined previously.
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         EVE_VERTEX2II(image_x, image_y, WHEEL_HANDLE, 0);
         EVE_END();
 
-        // Set the blending back to default so that any later items will not be affected
+        // Set the blending back to default so that any later items will not be affected.
         EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-        // Re-enabble colours and alpha
+        // Re-enabble colours and alpha.
         EVE_COLOR_MASK(1, 1, 1, 1);
 
-        // If screen has been touched outwith the colour picker, draw a red circle to alert user that they have touched invalid area
-        // This will be a red ring with inner diameter 138 and outer diameter of 142
-        // This is updated after the display list and so uses the value here on the next time the screen is rendered
+        // If screen has been touched outwith the colour picker, draw a 
+        // red circle to alert user that they have touched invalid area.
+        // This will be a red ring with inner diameter 138 and outer diameter of 142.
+        // This is updated after the display list and so uses the value 
+        // here on the next time the screen is rendered.
         if (tag_outofrange)
         {
-            //save graphics context
+            // Save graphics context.
             EVE_SAVE_CONTEXT();
 
-            // Alpha mask on only
+            // Alpha mask on only.
             EVE_COLOR_MASK(0, 0, 0, 1);
             EVE_COLOR_A(255);
-            // Clear the colour buffer
+            // Clear the colour buffer.
             EVE_CLEAR(1, 0, 0);
 
-            // Draw points
+            // Draw points.
             EVE_BEGIN(EVE_BEGIN_POINTS);
 
-            // Add shape into alpha buffer
+            // Add shape into alpha buffer.
             EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-            // Draw circle diameter slightly larger than colour picker circle
+            // Draw circle diameter slightly larger than colour picker circle.
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 10) * 16);
-            // Position at the center of where the colour picker will be (colour picker is 250x250)
+            // Position at the center of where the colour picker will be (colour picker is 250x250).
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
 
-            // Remove shape from alpha buffer
+            // Remove shape from alpha buffer.
             EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-            // Draw a circle diameter slightly smaller than the outer circle
+            // Draw a circle diameter slightly smaller than the outer circle.
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 1) * 16);
-            // Draw the circle at the center of where the colour picker will be
+            // Draw the circle at the center of where the colour picker will be.
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
 
-            // Turn the colour back on
+            // Turn the colour back on.
             EVE_COLOR_MASK(1, 1, 1, 1);
-            // Blend into the shape we created in the alpha buffer
+            // Blend into the shape we created in the alpha buffer.
             EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
-            // Draw in red
+            // Draw in red.
             EVE_COLOR_RGB(255, 0, 0);
-            // Set the operation to draw 
+            // Set the operation to draw.
             EVE_POINT_SIZE(((WHEEL_SIZE / 2) + 10) * 16);
-            // Draw the circle at the center of where the colour picker will be
+            // Draw the circle at the center of where the colour picker will be.
             EVE_VERTEX2F((image_x + (WHEEL_SIZE / 2)) * 16, (image_y + (WHEEL_SIZE / 2)) * 16);
 
-            // Finish drawing points
+            // Finish drawing points.
             EVE_END();
 
-            // Restore graphics context
+            // Restore graphics context.
             EVE_RESTORE_CONTEXT();
         }
 
         // Print the details.
-        // Touch X coordinate
+        // Touch X coordinate.
         EVE_CMD_TEXT(info_x, info_y + 0, 26, 0, "X:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 0, 26, 0, touch_x);
-        // Touch Y coordinate
+        // Touch Y coordinate.
         EVE_CMD_TEXT(info_x, info_y + 20, 26, 0, "Y:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 20, 26, 0, touch_y);
-        // Red color value
+        // Red color value.
         EVE_CMD_TEXT(info_x, info_y + 50, 26, 0, "R:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 40, 26, 0, cr);
-        // Green color value
+        // Green color value.
         EVE_CMD_TEXT(info_x, info_y + 70, 26, 0, "G:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 60, 26, 0, cg);
-        // Blue color value
+        // Blue color value.
         EVE_CMD_TEXT(info_x, info_y + 90, 26, 0, "B:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 80, 26, 0, cb);
-        // Tag value
+        // Tag value.
         EVE_CMD_TEXT(info_x, info_y + 110, 26, 0, "tag:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 110, 26, 0, tag_val);
 
-        // Draw a rectangle which will display the colour chosen on the colour picker
-        // This rectangle and the above debug output are positioned to the right hand side of the colour picker itself
-        // The line width allows it to have rounded corners
+        // Draw a rectangle which will display the colour chosen on the 
+        // colour picker.
+        // This rectangle and the above debug output are positioned to 
+        // the right hand side of the colour picker itself.
+        // The line width allows it to have rounded corners.
         EVE_BEGIN(EVE_BEGIN_RECTS);
         EVE_LINE_WIDTH(10 * 16);
         EVE_COLOR_RGB((cr), (cg), (cb));
@@ -395,40 +405,41 @@ void eve_display_wheel(void)
         EVE_VERTEX2F((info_x + 70) * 16, 80 * 16);
         EVE_END();
 
-        // Make a set of cursor lines to mark the current touch point
-        // Set the colour to black and the line width to 1 pixel
-        // Note that this could be extended to display a small bitmap arrow or target shape
-        // Or to adjust the cursor colour to make it most clear against the colour picker background.
+        // Make a set of cursor lines to mark the current touch point.
+        // Set the colour to black and the line width to 1 pixel.
+        // Note that this could be extended to display a small bitmap arrow 
+        // or target shape. Or to adjust the cursor colour to make it most 
+        // clear against the colour picker background.
         EVE_BEGIN(EVE_BEGIN_LINES);
         EVE_COLOR_RGB(0, 0, 0);
         EVE_LINE_WIDTH(1 * 16);
-        // Vertical line
-        // 10 pixels below the center of the cursor point
+        // Vertical line.
+        // 10 pixels below the center of the cursor point.
         EVE_VERTEX2F(touch_cursor_x * 16, (touch_cursor_y - 10) * 16);
-        // to 10 pixels above the center of the cursor point
+        // to 10 pixels above the center of the cursor point.
         EVE_VERTEX2F(touch_cursor_x * 16, (touch_cursor_y + 10) * 16);
-        // Horizontal line
-        // 10 pixels to the left of the center of the cursor point
+        // Horizontal line.
+        // 10 pixels to the left of the center of the cursor point.
         EVE_VERTEX2F((touch_cursor_x - 10) * 16, touch_cursor_y * 16);
-        // 10 pixels to the right of the center of the cursor point
+        // 10 pixels to the right of the center of the cursor point.
         EVE_VERTEX2F((touch_cursor_x + 10) * 16, touch_cursor_y * 16);
         EVE_END();
 
-        // Finish the display list
+        // Finish the display list.
         EVE_DISPLAY();
-        // Swap onto the screen to make it visible
+        // Swap onto the screen to make it visible.
         EVE_CMD_SWAP();
-        // Finish the list of commands
+        // Finish the list of commands.
         EVE_LIB_EndCoProList();
-        // Await for the commands to be executed
+        // Await for the commands to be executed.
         EVE_LIB_AwaitCoProEmpty();
 
-        // Read the current Tag value and the coordinates used to find it
-        // Get Tag value
+        // Read the current Tag value and the coordinates used to find it.
+        // Get Tag value.
         tag_val = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-        // Get coordinates
+        // Get coordinates.
         touch_xy = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG_XY);
-        // Get the X and Y values of the coordinate
+        // Get the X and Y values of the coordinate.
         touch_y = (touch_xy & 0x0000FFFF);
         touch_x = ((touch_xy & 0xFFFF0000) >> 16);
 
@@ -437,23 +448,23 @@ void eve_display_wheel(void)
             uint32_t pixel_addr = 0;
             uint32_t pixel_val = 0;
 
-            // Remove any offset from the top-left position of image
+            // Remove any offset from the top-left position of image.
             uint32_t img_touch_x= touch_x - image_x;
             uint32_t img_touch_y = touch_y - image_y;
 
-            // read through the image data to find byte corresponding to the coordinate
-            // start address in RAM_G + (Y * length of line) + X
+            // read through the image data to find byte corresponding to the coordinate.
+            // start address in RAM_G + (Y * length of line) + X.
             pixel_addr = WHEEL_RAMG_ADDR + ((img_touch_x * (sizeof(WHEEL_STORAGE))) + (img_touch_y * WHEEL_SIZE * (sizeof(WHEEL_STORAGE))));
             pixel_val = EVE_LIB_MemRead32(pixel_addr);
 
             if ((sizeof(WHEEL_STORAGE)) == 2)
             {
-                // Correct uint32_t to 16 bit pixel
+                // Correct uint32_t to 16 bit pixel.
                 pixel_val = pixel_val >> ((pixel_addr & 1) * 16);
             }
             else if ((sizeof(WHEEL_STORAGE)) == 1)
             {
-                // Correct uint32_t to 8 bit pixel
+                // Correct uint32_t to 8 bit pixel.
                 pixel_val = pixel_val >> ((pixel_addr & 3) * 8);
             }
 
@@ -464,16 +475,17 @@ void eve_display_wheel(void)
 #elif WHEEL_FORMAT == EVE_FORMAT_RGB332
             rgb332_to_rgb(pixel_val, &cr, &cg, &cb);
 #endif
-            // Also set the coordinate for the cursor (relative to the screen and not just the image)
+            // Also set the coordinate for the cursor 
+            // (relative to the screen and not just the image).
             touch_cursor_x = touch_x; 
             touch_cursor_y = touch_y;
         }
 
         // If the screen is touched but with tag TAG_BACKGROUND (255) which we set 
-        // with CLEAR_TAG() at the start of the display list
+        // with CLEAR_TAG() at the start of the display list.
 
-        // Then the user is touching a part of the screen outwith the colour picker
-        // Set a variable to cause the red ring to be shown around the colour picker
+        // Then the user is touching a part of the screen outwith the colour picker.
+        // Set a variable to cause the red ring to be shown around the colour picker.
         if (tag_val == TAG_BACKGROUND)
         {
             tag_outofrange = true;

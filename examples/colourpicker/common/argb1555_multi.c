@@ -75,7 +75,7 @@ extern const uint32_t img_argb_size;
 
 void eve_display_argb1555(void)
 {
-    // Colour picker position on screen
+    // Colour picker position on screen.
     uint16_t const image_x = 10;
     uint16_t const image_y = 10;
 
@@ -91,8 +91,8 @@ void eve_display_argb1555(void)
 
     uint32_t touch0_pointer_x = 0;
     uint32_t touch0_pointer_y = 0;
-    uint32_t touch1_pointer_x = 0;
-    uint32_t touch1_pointer_y = 0;
+    uint32_t touch1_pointer_x = 60;
+    uint32_t touch1_pointer_y = 50;
 
     uint32_t touch0_xy = 0;
     uint32_t touch0_x = 0;
@@ -115,7 +115,7 @@ void eve_display_argb1555(void)
 
     uint32_t colorbyteindex = 0;
 
-    // Inflate image data to address IMAGE_ARGB_RAMG_ADDR
+    // Inflate image data to address IMAGE_ARGB_RAMG_ADDR.
     EVE_LIB_BeginCoProList();
 #if !IS_EVE_API(5)
     EVE_CMD_INFLATE(IMAGE_ARGB_RAMG_ADDR);
@@ -126,7 +126,7 @@ void eve_display_argb1555(void)
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    // Instantiate the ARGB1555 bitmap
+    // Instantiate the ARGB1555 bitmap.
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
     EVE_BITMAP_HANDLE(IMAGE_ARGB_HANDLE);
@@ -160,13 +160,13 @@ void eve_display_argb1555(void)
         EVE_SCISSOR_XY(image_x, image_y);
         EVE_SCISSOR_SIZE(EVE_DISP_WIDTH - (image_x * 2), EVE_DISP_HEIGHT - (image_y * 2));
 
-        // Draw the colour picker rectangle
+        // Draw the colour picker rectangle.
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
         EVE_BITMAP_HANDLE(IMAGE_ARGB_HANDLE);
         EVE_COLOR_MASK(1,1,1,0);
         EVE_VERTEX2II(image_x, image_y, IMAGE_ARGB_HANDLE, 0);
 
-        // Reset scissor
+        // Reset scissor.
         EVE_SCISSOR_SIZE(2047,2047);
         EVE_SCISSOR_XY(0,0);
 
@@ -179,27 +179,27 @@ void eve_display_argb1555(void)
         EVE_COLOR_RGB(255,255,255);
 
         // Print the details.
-        // Touch X coordinate
+        // Touch X coordinate.
         EVE_CMD_TEXT(info_x, info_y + 0, 26, 0, "X:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 0, 26, 0, touch0_x);
         EVE_CMD_NUMBER(info_x + 80, info_y + 0, 26, 0, touch1_x);
-        // Touch Y coordinate
+        // Touch Y coordinate.
         EVE_CMD_TEXT(info_x, info_y + 20, 26, 0, "Y:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 20, 26, 0, touch0_y);
         EVE_CMD_NUMBER(info_x + 80, info_y + 20, 26, 0, touch1_y);
-        // Red color value
+        // Red color value.
         EVE_CMD_TEXT(info_x, info_y + 50, 26, 0, "R:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 40, 26, 0, c0r);
         EVE_CMD_NUMBER(info_x + 80, info_y + 40, 26, 0, c1r);
-        // Green color value
+        // Green color value.
         EVE_CMD_TEXT(info_x, info_y + 70, 26, 0, "G:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 60, 26, 0, c0g);
         EVE_CMD_NUMBER(info_x + 80, info_y + 60, 26, 0, c1g);
-        // Blue color value
+        // Blue color value.
         EVE_CMD_TEXT(info_x, info_y + 90, 26, 0, "B:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 80, 26, 0, c0b);
         EVE_CMD_NUMBER(info_x + 80, info_y + 80, 26, 0, c1b);
-        // Tag value
+        // Tag value.
         EVE_CMD_TEXT(info_x, info_y + 110, 26, 0, "tag:");
         EVE_CMD_NUMBER(info_x + 30, info_y + 110, 26, 0, tag0_val);
         EVE_CMD_NUMBER(info_x + 80, info_y + 110, 26, 0, tag1_val);
@@ -227,41 +227,45 @@ void eve_display_argb1555(void)
         EVE_BEGIN(EVE_BEGIN_LINES);
         EVE_COLOR_RGB(0, 0, 0);
         EVE_LINE_WIDTH(1 * 16);
-        // Cross Hair point 0
-        // Vertical line
-        // 10 pixels below the center of the cursor point
+        // Cross Hair point 0.
+        // Vertical line.
+        // 10 pixels below the center of the cursor point.
         EVE_VERTEX2F((touch0_pointer_x) * 16,(touch0_pointer_y - 10) * 16);
         // to 10 pixels above the center of the cursor point
         EVE_VERTEX2F((touch0_pointer_x) * 16,(touch0_pointer_y + 10) * 16);
-        // Horizontal line
-        // 10 pixels to the left of the center of the cursor point
+        // Horizontal line.
+        // 10 pixels to the left of the center of the cursor point.
         EVE_VERTEX2F((touch0_pointer_x - 10) * 16,(touch0_pointer_y) * 16);
-        // 10 pixels to the right of the center of the cursor point
+        // 10 pixels to the right of the center of the cursor point.
         EVE_VERTEX2F((touch0_pointer_x + 10) * 16,(touch0_pointer_y) * 16);
 
-        // Cross Hair point 1
-        // Vertical line
-        // 10 pixels below the center of the cursor point
+        // Cross Hair point 1.
+        // Vertical line.
+        // 10 pixels below the center of the cursor point.
         EVE_VERTEX2F((touch1_pointer_x) * 16,(touch1_pointer_y - 10) * 16);
-        // to 10 pixels above the center of the cursor point
+        // to 10 pixels above the center of the cursor point.
         EVE_VERTEX2F((touch1_pointer_x) * 16,(touch1_pointer_y + 10) * 16);
-        // Horizontal line
-        // 10 pixels to the left of the center of the cursor point
+        // Horizontal line.
+        // 10 pixels to the left of the center of the cursor point.
         EVE_VERTEX2F((touch1_pointer_x - 10) * 16,(touch1_pointer_y) * 16);
-        // 10 pixels to the right of the center of the cursor point
+        // 10 pixels to the right of the center of the cursor point.
         EVE_VERTEX2F((touch1_pointer_x + 10) * 16,(touch1_pointer_y) * 16);
         EVE_END();
 
-        // As there are two different touch points / cursors, we add a letter A and B to label them
-        // Note that we use an offset of +3 in the X direction and -20 in the Y direction compared to the center of the cursor
-        // The font coordinate is for the Top-Left of the letter A or B and so this offset positions it in the top-left quadrant of the cursor
-        // without any overlap with the cursor lines
+        // As there are two different touch points / cursors, 
+        // we add a letter A and B to label them.
+        // Note that we use an offset of +3 in the X direction and -20 in the 
+        // Y direction compared to the center of the cursor.
+        // The font coordinate is for the Top-Left of the letter A or B and so 
+        // this offset positions it in the top-left quadrant of the cursor
+        // without any overlap with the cursor lines.
         EVE_BEGIN(EVE_BEGIN_BITMAPS);
-        EVE_BITMAP_HANDLE(27);
-        // Using font 27, label point 0 as "A" which is cell 0x41 of the font (ANSI code 0x41 = A)
+        EVE_COLOR_RGB(255,255,255);
+        EVE_BITMAP_HANDLE(22);
+        // Using font 22, label point 0 as "A" which is cell 0x41 of the font (ANSI code 0x41 = A)
         EVE_CELL(0x41);
-        EVE_VERTEX2F((touch1_pointer_x + 3) * 16, (touch1_pointer_x - 20) * 16);
-        // Using font 27, label point 1 as "B" which is cell 0x42 of the font (ANSI code 0x42 = B)
+        EVE_VERTEX2F((touch0_pointer_x + 3) * 16, (touch0_pointer_y - 20) * 16);
+        // Using font 22, label point 1 as "B" which is cell 0x42 of the font (ANSI code 0x42 = B)
         EVE_CELL(0x42);
         EVE_VERTEX2F((touch1_pointer_x + 3) * 16, (touch1_pointer_y - 20) * 16);
         EVE_END();
@@ -272,35 +276,36 @@ void eve_display_argb1555(void)
         // active.
         // In this case, the tagged area is 2 pixels smaller than the image
         // but this can be adjusted as desired.
-        // Enable tagging
+        // Enable tagging.
         EVE_TAG_MASK(1);
-        // Set tag value
+        // Set tag value.
         EVE_TAG(IMAGE_ARGB_TAG);
-        // Make a rectangle
+        // Make a rectangle.
         EVE_BEGIN(EVE_BEGIN_RECTS);
-        // Disable writes to Red, Green and Blue components
+        // Disable writes to Red, Green and Blue components.
         EVE_COLOR_MASK(0,0,0,255);
-        // Top left corner is 2 pixels inside the image
+        // Top left corner is 2 pixels inside the image.
         EVE_VERTEX2F((image_x + 2) * 16,(image_y + 2) * 16);
-        // Bottom Right corner is 2 pixels inside the image
+        // Bottom Right corner is 2 pixels inside the image.
         EVE_VERTEX2F((image_x + img_argb_width - 2) * 16,(image_y + img_argb_height - 2) * 16);
         // Disable tagging
         EVE_TAG_MASK(0);
 
-        // Restore writes to all color channels so that if any items are added afterwards they are drawn correctly
+        // Restore writes to all color channels so that if any items are 
+        // added afterwards they are drawn correctly.
         EVE_COLOR_MASK(255,255,255,255);
-        // Finish the display list
+        // Finish the display list.
         EVE_DISPLAY();
-        // Swap onto the screen to make it visible
+        // Swap onto the screen to make it visible.
         EVE_CMD_SWAP();
-        // Finish the list of commands
+        // Finish the list of commands.
         EVE_LIB_EndCoProList();
-        // Await for the commands to be executed
+        // Await for the commands to be executed.
         EVE_LIB_AwaitCoProEmpty();
 
         // Read the touch data
 
-        // Read the current Tag value and the coordinates used to find it
+        // Read the current Tag value and the coordinates used to find it.
 #if IS_EVE_API(1,2,3,4)
         // 8 bit read on EVE API 1-4
         tag0_val = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
@@ -324,13 +329,15 @@ void eve_display_argb1555(void)
         // If there is a touch on Tag 0
         if(touch0_xy != 0x80008000)
         {
-            // If the touch is on Tag 10 (Cursor A) then take the coordinates into the point 0 (Cursor A) variables
+            // If the touch is on Tag 10 (Cursor A) then take the coordinates 
+            // into the point 0 (Cursor A) variables.
             if (tag0_val == IMAGE_ARGB_TAG)
             {
                 touch0_pointer_x = touch0_x;
                 touch0_pointer_y = touch0_y;
             }
-            // Or if the touch is on Tag 11 (Cursor B) then take the coordinates into the point 1 (Cursor B) variables
+            // Or if the touch is on Tag 11 (Cursor B) then take the coordinates 
+            // into the point 1 (Cursor B) variables.
             else if (tag0_val == IMAGE_ARGB_TAG + 1)
             {
                 touch1_pointer_x = touch0_x;
@@ -338,16 +345,18 @@ void eve_display_argb1555(void)
             }
         }
 
-        // If there is a touch on Tag 1
+        // If there is a touch on Tag 1.
         if(touch1_xy != 0x80008000)
         {
-            // If the touch is on Tag 10 (Cursor A) then take the coordinates into the point 0 (Cursor A) variables
+            // If the touch is on Tag 10 (Cursor A) then take the coordinates 
+            // into the point 0 (Cursor A) variables.
             if(tag1_val == IMAGE_ARGB_TAG)
             {
                 touch0_pointer_x = touch1_x;
                 touch0_pointer_y = touch1_y;
             }
-            // Or if the touch is on Tag 11 (Cursor B) then take the coordinates into the point 1 (Cursor B) variables
+            // Or if the touch is on Tag 11 (Cursor B) then take the coordinates 
+            // into the point 1 (Cursor B) variables.
             else if (tag1_val == IMAGE_ARGB_TAG + 1)
             {
                 touch1_pointer_x = touch1_x;
@@ -355,8 +364,10 @@ void eve_display_argb1555(void)
             }
         }
 
-        // Make sure that any coordinates obtained by the code above are restricted to within the color picker area
-        // If any coordinate is outside, then force it to the respective boundary so the cursor cannot be dragged outside the color picker area
+        // Make sure that any coordinates obtained by the code above 
+        // are restricted to within the color picker area.
+        // If any coordinate is outside, then force it to the respective 
+        // boundary so the cursor cannot be dragged outside the color picker area.
         if(touch0_pointer_x < image_x)
             touch0_pointer_x = image_x;
         else if (touch0_pointer_x > (image_x + img_argb_width))
@@ -379,28 +390,28 @@ void eve_display_argb1555(void)
 
         // ------------ For touch point 0 (tag0 == 10) -----------------------
 
-        // Remove any offset from the top-left position of image
+        // Remove any offset from the top-left position of image.
         img_touch_x = touch0_pointer_x - image_x;
         img_touch_y = touch0_pointer_y - image_y;
 
-        // read through the image data to find byte corresponding to the coordinate
-        // start address in RAM_G + (Y * length of line) + X
+        // read through the image data to find byte corresponding to the coordinate.
+        // start address in RAM_G + (Y * length of line) + X.
         colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * img_argb_width * 2));
 
-        // Read the 2 bytes from this address (2 bytes because it is ARGB1555)
-        // These are encoded as ARRR RRGG GGGB BBBB
+        // Read the 2 bytes from this address (2 bytes because it is ARGB1555).
+        // These are encoded as ARRR RRGG GGGB BBBB.
 #if IS_EVE_API(1,2,3,4)
         // Read a 16 bit value from RAM_G
         colorbytes = EVE_LIB_MemRead16(colorbytesloc);
 #else // !IS_EVE_API(1,2,3,4)
-        // Read 32 bit value and shift result into the low 8 bits
+        // Read 32 bit value and shift result into the low 8 bits.
         colorbytes = EVE_LIB_MemRead32(colorbytesloc & (~3));
         colorbytes = colorbytes >> ((colorbytesloc & 3) * 8);
         colorbytes &= 0xffff;
 #endif // IS_EVE_API(1,2,3,4)
 
-        // Find the R, G and B components within the bits of these 2 bytes
-        // Shift so that the 5 bits are in the upper bits of the byte
+        // Find the R, G and B components within the bits of these 2 bytes.
+        // Shift so that the 5 bits are in the upper bits of the byte.
         c0r = (((colorbytes & 0x7C00) >> 10)<<3);		// 00000000 00000000 00000000 RRRRR000
         c0g = (((colorbytes & 0x03D0) >> 5)<<3);		// 00000000 00000000 00000000 GGGGG000
         c0b = (((colorbytes & 0x001F))<<3);			// 00000000 00000000 00000000 BBBBB000
@@ -412,23 +423,23 @@ void eve_display_argb1555(void)
         img_touch_y = touch1_pointer_y - image_y;
 
         // read through the image data to find byte corresponding to the coordinate
-        // start address in RAM_G + (Y * length of line) + X
+        // start address in RAM_G + (Y * length of line) + X.
         colorbytesloc = IMAGE_ARGB_RAMG_ADDR + (img_touch_x * 2 + (img_touch_y * img_argb_width * 2));
 
-        // Read the 2 bytes from this address (2 bytes because it is ARGB1555)
-        // These are encoded as ARRR RRGG GGGB BBBB
+        // Read the 2 bytes from this address (2 bytes because it is ARGB1555).
+        // These are encoded as ARRR RRGG GGGB BBBB.
 #if IS_EVE_API(1,2,3,4)
-        // Read a 16 bit value from RAM_G
+        // Read a 16 bit value from RAM_G.
         colorbytes = EVE_LIB_MemRead16(colorbytesloc);
 #else // !IS_EVE_API(1,2,3,4)
-        // Read 32 bit value and shift result into the low 8 bits
+        // Read 32 bit value and shift result into the low 8 bits.
         colorbytes = EVE_LIB_MemRead32(colorbytesloc & (~3));
         colorbytes = colorbytes >> ((colorbytesloc & 3) * 8);
         colorbytes &= 0xffff;
 #endif // IS_EVE_API(1,2,3,4)
 
-        // Find the R, G and B components within the bits of these 2 bytes
-        // Shift so that the 5 bits are in the upper bits of the byte
+        // Find the R, G and B components within the bits of these 2 bytes.
+        // Shift so that the 5 bits are in the upper bits of the byte.
         c1r = (((colorbytes & 0x7C00) >> 10)<<3);		// 00000000 00000000 00000000 RRRRR000
         c1g = (((colorbytes & 0x03D0) >> 5)<<3);		// 00000000 00000000 00000000 GGGGG000
         c1b = (((colorbytes & 0x001F))<<3);			// 00000000 00000000 00000000 BBBBB000
