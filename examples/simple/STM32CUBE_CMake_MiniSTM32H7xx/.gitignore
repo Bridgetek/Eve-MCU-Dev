@@ -1,3 +1,9 @@
+# STM32 Cube Mx distribution directory
+Release/
+Debug/
+Drivers/
+*.launch
+.settings
 build
 mx.scratch
 !.settings
