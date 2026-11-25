@@ -1,6 +1,6 @@
 # EVE-MCU-Dev Release Notes
 
-**Release:** `2.0` 18th November 2026
+**Release:** `2.0` 25th November 2026
 
 **Previous Release:** [`1.1`](https://github.com/Bridgetek/Eve-MCU-Dev/releases/tag/1.1) 21st July 2026  
 
