@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file main.cpp
  * @brief Example source file for a new PlatformIO Arduino project.
  */
 /*

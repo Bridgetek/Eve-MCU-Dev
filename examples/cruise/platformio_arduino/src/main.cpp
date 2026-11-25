@@ -1,6 +1,5 @@
 /**
- * @file main.c
- * @brief Example source file for a new FT4222 project.
+ * @file main.cpp
  */
 /*
  * ============================================================================
