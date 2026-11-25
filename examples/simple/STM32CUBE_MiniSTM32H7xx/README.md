@@ -6,7 +6,9 @@ The [STM32Cube](../../../ports/eve_arch_stm32/README.md#stm32cube) is used for t
 
 ## Setting Up the STM32Cube Example on STM32CubeIDE
 
-The build environment depends on the presence of the STM32CubeIDE IDE. This can be setup following instructions in the [Integrated Development Environment for STM32](https://www.st.com/en/development-tools/stm32cubeide.html) page from the ARM website.
+The build environment depends on the presence of the STM32CubeMX and STM32CubeIDE. This can be setup following instructions in the [Integrated Development Environment for STM32](https://www.st.com/en/development-tools/stm32cubeide.html) page from the ARM website.
+
+The "Drivers" need to be copied into the build environment by opening `simple_MiniSTM32H7xx.ioc` in STM32CubeMX and clicking "Generate Code".
 
 ## Compiling the Simple STM32Cube Example on STM32CubeIDE
 
