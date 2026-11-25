@@ -48,13 +48,10 @@
 
 /** @brief Library includes
  * @details Includes the EVE-MCU-Dev MCU interface implemented by this
- *      Arduino port. The C interface is exposed to this C++ source using
- *      C linkage.
+ *      Arduino port.
  */
 //@{
-extern "C" {
 #include <MCU.h>
-}
 //@}
 
 /* EVE MCU HEADER END */

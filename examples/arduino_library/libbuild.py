@@ -177,6 +177,9 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     line = '#include "custom_touch_fw.h"'
                 elif line.strip() == "#include <extensions/lcd_panel_init.h>":
                     line = '#include "lcd_panel_init.h"'
+                elif line.strip() == "#include <MCU.h>":
+                    if file_out.endswith(".cpp"):
+                        line = 'extern "C" {\n#include <MCU.h>\n}\n'
 
                 # Change code to use C++ class instead of C library
                 if apirefactor:
@@ -315,7 +318,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             cov = []
                             if match_ifsubapi.group(1) == "elif":
                                 (pos, _, cov) = nest.pop()
-                                cov.extend(pos)
+                                if cov != None:
+                                    cov.extend(pos)
                             pos = []
                             for lev in "".join(match_ifsubapi.group(2).split()).split(","):
                                 pos.append(-int(lev))
@@ -325,7 +329,8 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                             cov = []
                             if match_ifapi.group(1) == "elif":
                                 (pos, _, cov) = nest.pop()
-                                cov.extend(pos)
+                                if cov != None:
+                                    cov.extend(pos)
                             pos = []
                             for lev in "".join(match_ifapi.group(2).split()).split(","):
                                 pos.append(int(lev))

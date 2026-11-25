@@ -52,10 +52,10 @@
 #if !IS_EVE_API(1)
 // 1/8 pixel on EVE2,3,4,5
 #define PIX_PRECISION 8
-#elif IS_EVE_API(1)
+#else // IS_EVE_API(1)
 // 1/16 pixel on EVE1
 #define PIX_PRECISION 16
-#endif
+#endif // !IS_EVE_API(1)
 
 // Options for the 
 #define OPT_NONE 0
