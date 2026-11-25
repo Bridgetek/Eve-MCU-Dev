@@ -89,9 +89,8 @@ int main(int argc, char **argv)
 void setup(void)
 {
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
     printf ("Welcome to the EVE-MCU-Dev Racecar Example for Windows FT4222 Library\r\n");
     printf ("\n");
-
 }

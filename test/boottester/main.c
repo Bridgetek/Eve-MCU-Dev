@@ -41,8 +41,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
-#include <ctype.h>
 
 /* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>

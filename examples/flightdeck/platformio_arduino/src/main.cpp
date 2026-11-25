@@ -59,11 +59,16 @@ void setup(void);
 
 void setup(void)
 {
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, 1);
+
+    Serial.begin(115200);
+
     /* Print out a welcome message... */
-    //printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
-    //printf ("---------------------------------------------------------------- \r\n");
-    //printf ("Welcome to EVE-MCU-Dev Simple Example for the FT4222 Library\r\n");
-    //printf ("\n");
+    EVE_DEBUG_PRINTF ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    EVE_DEBUG_PRINTF ("---------------------------------------------------------------- \r\n");
+    EVE_DEBUG_PRINTF ("Welcome to the EVE-MCU-Dev Flightdeck Example for the PlatformIO Arduino\r\n");
+    EVE_DEBUG_PRINTF ("\n");
 }
 
 void loop() 

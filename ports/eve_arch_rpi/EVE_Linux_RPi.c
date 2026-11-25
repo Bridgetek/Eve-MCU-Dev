@@ -62,14 +62,14 @@
 #include <linux/spi/spidev.h>
 #include <gpiod.h>
 
-// Powerdown pin
+// Pin definitions
 /*
-	printf ("J8 Pin 19 - MOSI (SPI0_D1)\n");
-	printf ("J8 Pin 21 - MISO (SPI0_D0)\n");
-	printf ("J8 Pin 23 - SCLK (SPI0_SCLK)\n");
-	printf ("J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin\n");
-	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
-	printf ("J8 Pin 16 - INT# (GPIO23) - Interrupt pin\n");
+    J8 Pin 19 - MOSI (SPI0_D1)
+    J8 Pin 21 - MISO (SPI0_D0)
+    J8 Pin 23 - SCLK (SPI0_SCLK)
+    J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin
+    J8 Pin 18 - PD# (GPIO24) - Powerdown pin
+    J8 Pin 16 - INT# (GPIO23) - Interrupt pin
 */
 #define PIN_NUM_PD   24
 #define PIN_NUM_CS   25

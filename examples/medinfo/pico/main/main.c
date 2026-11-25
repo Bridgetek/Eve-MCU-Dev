@@ -87,19 +87,8 @@ void setup(void)
 #endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
-    printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to the EVE-MCU-Dev Medinfo Example for Raspberry Pi Pico RP2040\r\n");
-    printf ("\n");
-    printf ("Pin configuration for example:\n");
-    printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");
-    printf ("Pin 15 - MOSI (GPIO11)\n");
-    printf ("Pin 16 - MISO (GPIO12)\n");
-    printf ("Pin 14 - SCLK (GPIO10)\n");
-    printf ("Pin 17 - CS# (GPIO13) - Note this is not the SPI0_CS0 pin\n");
-    printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
-    printf ("Pin 9  - INT# (GPIO6) - EVE Interrupt pin\n");
-    printf ("Pin 40 - 5v supply for FT8xx/BT8xx\n");
-    printf ("Pin 23 - signal GND for SPI\n");
-
+    EVE_DEBUG_PRINTF ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    EVE_DEBUG_PRINTF ("---------------------------------------------------------------- \r\n");
+    EVE_DEBUG_PRINTF ("Welcome to the EVE-MCU-Dev Medinfo Example for Raspberry Pi Pico RP2040\r\n");
+    EVE_DEBUG_PRINTF ("\n");
 }

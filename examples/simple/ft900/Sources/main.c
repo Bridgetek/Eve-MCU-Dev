@@ -71,58 +71,58 @@ void debug_uart_init(void);
 
 int main(void)
 {
-	/* Setup */
-	setup();
+    /* Setup */
+    setup();
 
-	/* Start example code */
-	eve_example();
+    /* Start example code */
+    eve_example();
 
-	// function never returns 
-	for (;;) ;
+    // function never returns 
+    for (;;) ;
 }
 
 void setup(void)
 {
-	// UART initialisation
-	debug_uart_init();
+    // UART initialisation
+    debug_uart_init();
 
 #if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
-	/* Print out a welcome message... */
-	printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
-	printf ("---------------------------------------------------------------- \r\n");
-	printf ("Welcome to EVE-MCU-Dev Simple Example for FT9xx\r\n");
+    /* Print out a welcome message... */
+    EVE_DEBUG_PRINTF ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    EVE_DEBUG_PRINTF ("---------------------------------------------------------------- \r\n");
+    EVE_DEBUG_PRINTF ("Welcome to the EVE-MCU-Dev Simple Example for FT9xx\r\n");
 #endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }
 
 /* Initializes the UART for the testing */
 void debug_uart_init(void)
 {
-	/* Enable the UART Device... */
-	sys_enable(sys_device_uart0);
+    /* Enable the UART Device... */
+    sys_enable(sys_device_uart0);
 #if defined(__FT930__)
-	/* Make GPIO23 function as UART0_TXD and GPIO22 function as UART0_RXD... */
-	gpio_function(23, pad_uart0_txd); /* UART0 TXD */
-	gpio_function(22, pad_uart0_rxd); /* UART0 RXD */
+    /* Make GPIO23 function as UART0_TXD and GPIO22 function as UART0_RXD... */
+    gpio_function(23, pad_uart0_txd); /* UART0 TXD */
+    gpio_function(22, pad_uart0_rxd); /* UART0 RXD */
 #else
-	/* Make GPIO48 function as UART0_TXD and GPIO49 function as UART0_RXD... */
-	gpio_function(48, pad_uart0_txd); /* UART0 TXD MM900EVxA CN3 pin 4 */
-	gpio_function(49, pad_uart0_rxd); /* UART0 RXD MM900EVxA CN3 pin 6 */
-	gpio_function(50, pad_uart0_rts); /* UART0 RTS MM900EVxA CN3 pin 8 */
-	gpio_function(51, pad_uart0_cts); /* UART0 CTS MM900EVxA CN3 pin 10 */
+    /* Make GPIO48 function as UART0_TXD and GPIO49 function as UART0_RXD... */
+    gpio_function(48, pad_uart0_txd); /* UART0 TXD MM900EVxA CN3 pin 4 */
+    gpio_function(49, pad_uart0_rxd); /* UART0 RXD MM900EVxA CN3 pin 6 */
+    gpio_function(50, pad_uart0_rts); /* UART0 RTS MM900EVxA CN3 pin 8 */
+    gpio_function(51, pad_uart0_cts); /* UART0 CTS MM900EVxA CN3 pin 10 */
 #endif
 
-	// Open the UART using the coding required.
-	uart_open(UART0,                    /* Device */
-			1,                        	/* Prescaler = 1 */
-			UART_DIVIDER_115200_BAUD,  	/* Divider = 1302 */
-			uart_data_bits_8,         	/* No. buffer Bits */
-			uart_parity_none,         	/* Parity */
-			uart_stop_bits_1);        	/* No. Stop Bits */
+    // Open the UART using the coding required.
+    uart_open(UART0,                    /* Device */
+            1,                        	/* Prescaler = 1 */
+            UART_DIVIDER_115200_BAUD,  	/* Divider = 1302 */
+            uart_data_bits_8,         	/* No. buffer Bits */
+            uart_parity_none,         	/* Parity */
+            uart_stop_bits_1);        	/* No. Stop Bits */
 
 #if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
-	uart_puts(UART0,
-			"\x1B[2J" /* ANSI/VT100 - Clear the Screen */
-			"\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
-	);
+    uart_puts(UART0,
+            "\x1B[2J" /* ANSI/VT100 - Clear the Screen */
+            "\x1B[H\r\n"  /* ANSI/VT100 - Move Cursor to Home */
+    );
 #endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 }

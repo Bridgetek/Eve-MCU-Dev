@@ -68,19 +68,9 @@ int main(void)
 void setup(void)
 {
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
+    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Raspberry Pi\r\n");
+    printf ("Welcome to the EVE-MCU-Dev Simple Example for Raspberry Pi\r\n");
     printf ("\n");
-	printf ("Pin configuration for example:\n");
-	printf ("Use SPI hardware bus which is /dev/spidev0.0 in Linux.\n");
-	printf ("J8 Pin 19 - MOSI (SPI0_D1)\n");
-	printf ("J8 Pin 21 - MISO (SPI0_D0)\n");
-	printf ("J8 Pin 23 - SCLK (SPI0_SCLK)\n");
-	printf ("J8 Pin 22 - CS# (GPIO25) - Note this is not the SPI0_CS0 pin\n");
-	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
-    printf ("J8 Pin 16 - PD# (GPIO23) - EVE Interrupt pin\n");
-	printf ("J8 Pin 2 - 5v supply for FT8xx/BT8xx\n");
-	printf ("J8 Pin 25 - signal GND for SPI\n");
 }
 
