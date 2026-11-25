@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Cruise Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Cruise Raspberry Pi pico Example
 
 [Back](../README.md)
 

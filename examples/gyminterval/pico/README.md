@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Gym Interval Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Gym Interval Raspberry Pi pico Example
 
 [Back](../README.md)
 

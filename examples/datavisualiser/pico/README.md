@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Data Visualiser Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Data Visualiser Raspberry Pi pico Example
 
 [Back](../README.md)
 

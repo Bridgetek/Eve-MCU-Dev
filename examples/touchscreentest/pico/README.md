@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Touchscreen Test Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Touchscreen Test Raspberry Pi pico Example
 
 [Back](../README.md)
 

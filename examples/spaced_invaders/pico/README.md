@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Spaced Invaders Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Spaced Invaders Raspberry Pi pico Example
 
 [Back](../README.md)
 

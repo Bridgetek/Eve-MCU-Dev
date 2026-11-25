@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief Example source file for a new FT4222 project.
+ * @brief Example source file for a new MPSSE project.
  */
 /*
  * ============================================================================
@@ -70,7 +70,7 @@ void setup(void)
     /* Print out a welcome message... */
     printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
     printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to EVE-MCU-Dev Simple Example for Windows MPSSE Library\r\n");
+    printf ("Welcome to EVE-MCU-Dev Simple Example for the MPSSE Library\r\n");
     printf ("\n");
 	printf ("Cable colours are as used for FTDI MPSSE cables. MPSSE Bus \n");
     printf ("numbers refer to the MPSSE interface signals.\n");

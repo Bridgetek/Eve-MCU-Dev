@@ -1,4 +1,4 @@
-# EVE-MCU-Dev MedInfo Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev MedInfo Raspberry Pi pico Example
 
 [Back](../README.md)
 

@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Flightdeck BT82X Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Flightdeck BT82X Raspberry Pi pico Example
 
 [Back](../README.md)
 

@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Race Car Dashboard Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Race Car Dashboard Raspberry Pi pico Example
 
 [Back](../README.md)
 

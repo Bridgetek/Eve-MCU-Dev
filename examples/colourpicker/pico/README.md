@@ -1,4 +1,4 @@
-# EVE-MCU-Dev Colour Picker VRaspberry Pi pico VSCode Example
+# EVE-MCU-Dev Colour Picker VRaspberry Pi pico Example
 
 [Back](../README.md)
 
