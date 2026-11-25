@@ -67,11 +67,6 @@ void setup(void);
 
 void setup(void)
 {
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, 1);
-
-    Serial.begin(115200);
-
     /* Print out a welcome message... */
     EVE_DEBUG_PRINTF ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
     EVE_DEBUG_PRINTF ("---------------------------------------------------------------- \r\n");
