@@ -14,6 +14,12 @@ def add_files(src_dir, dest_dir, file_list):
     try:
         for d in file_list:
             dino = d
+
+            if os.path.splitext(d)[1] == '.ino':
+                fn = os.path.splitext(d)[0]
+                fn = fn.lower()
+                dino = fn + '.ino'
+
             if os.path.splitext(d)[1] == '.c':
                 dino = os.path.splitext(d)[0] + '.ino'
 

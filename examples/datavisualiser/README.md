@@ -18,7 +18,7 @@ The example includes a 'settings menu' button in the top right corner, which inc
 
 The following is an screenshot of the `datavisualiser` example:
 
-![DataVisualiser Screen Example](docs/dataVisualiser.png)
+![DataVisualiser Screen Example](docs/datavisualiser.png)
 
 ## EVE API Support
 
