@@ -1,6 +1,8 @@
-# EVE-MCU-Dev Cruise Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev Cruise Raspberry Pi pico Example
 
 [Back](../README.md)
+
+The [Raspberry Pi pico port](../../../ports/eve_arch_rpi/README.md#pico) is used for this example.
 
 ## Compiling using the pico VSCode Extension
 
@@ -22,24 +24,24 @@ The pico toolchain is also available from the command line. It can be accessed f
 
 To configure the build environment using CMake:
 
-```
-cmake --fresh  -G "Unix Makefiles" -B build -S .
+```console
+    cmake --fresh  -G "Unix Makefiles" -B build -S .
 ```
 
 This will configure the compilation to take place in the `build` directory. It must be directed to use `Unix Makefiles` as a generator, if other compilation environments are configured then these may be used in preference to the pico toolchain.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
-```
-cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQVGA -S .
+```console
+    cmake --fresh  -G "Unix Makefiles" -B build -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_WQVGA -S .
 ```
 
 ### Compiling the Cruise Raspberry Pi pico Example Manually
 
 The following CMake command will build the code and place the resulting files in the `build` directory:
 
-```
-cmake --build build
+```console
+    cmake --build build
 ```
 
 The UF2 file for programming onto the board is `cruise_pico.uf2` in the `build` directory.

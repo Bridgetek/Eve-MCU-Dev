@@ -1,0 +1,2 @@
+# Settings for Arduino for datavisualiser projects
+USE_TRIG_TABLE

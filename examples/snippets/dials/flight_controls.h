@@ -1,5 +1,5 @@
 /**
- @file flight_controls.h
+ * @file flight_controls.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,10 +37,10 @@
  * ============================================================================
  */
 
-#ifndef _FLIGHT_CONTROLS_H
-#define _FLIGHT_CONTROLS_H
+#ifndef _EVE_FLIGHT_CONTROLS_H
+#define _EVE_FLIGHT_CONTROLS_H
 
 void altwidget(int16_t x, int16_t y, uint16_t radius, int alt);
 void attwidget(int16_t x, int16_t y, uint16_t radius, int pitch, int climb, int roll);
 
-#endif /* _FLIGHT_CONTROLS_H */
+#endif /* _EVE_LIGHT_CONTROLS_H */

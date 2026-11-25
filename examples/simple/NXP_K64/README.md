@@ -4,6 +4,8 @@
 
 __Warning: Build environment incomplete__
 
+The [NXP K64 port](../../../ports/eve_arch_nxpk64/README.md) is used for this example.
+
 ## Compiling the Simple NXP K64 Example
 
 The build environment depends on the presence of the build tools, compiler and make utility. Instructions to follow.

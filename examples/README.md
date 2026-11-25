@@ -2,17 +2,46 @@
 
 [Back](../README.md)
 
+## Runnable Examples
+
+In the example code the EVE-MCU-Dev library is compiled with the example program. 
+
+The example [simple](simple/README.md) is supported by all platforms and is intended to be used as a template for new projects. It contains build instructions for all the platforms as well.
+
+The following example code is available:
+
+| Folder | Screenshot | Description |
+| --- | --- | --- |
+| [simple](simple/README.md) | [![simple](simple/docs/simple_tn.png)](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
+| [b2tf](b2tf/README.md) | [![b2tf](b2tf/docs/b2tf_tn.png)](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
+| [colourpicker](colourpicker/README.md) | [![colourpicker](colourpicker/docs/colourpicker_tn.png)](colourpicker/README.md) | Colour picker display demo code. This dynamic bitmap generation and actions for user inputs. |
+| [cruise](cruise/README.md) | [![cruise](cruise/docs/cruise_tn.png)](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
+| [datavisualiser](datavisualiser/README.md) | [![datavisualiser](datavisualiser/docs/datavisualiser_tn.png)](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
+| [flightdeck](flightdeck/README.md) | [![flightdeck](flightdeck/docs/flightdeck_tn.png)](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
+| [flightdeck-bt82x](flightdeck-bt82x/README.md) | [![flightdeck-bt82x](flightdeck-bt82x/docs/flightdeck-bt82x_tn.png)](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
+| [fontmagic](fontmagic/README.md) | [![fontmagic](fontmagic/docs/fontmagic_tn.png)](fontmagic/README.md) | Simple example code demonstrating scaling and rotating letters from a font file. |
+| [gyminterval](gyminterval/README.md) | [![gyminterval](gyminterval/docs/gyminterval_tn.png)](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
+| [medinfo](medinfo/README.md) | [![medinfo](medinfo/docs/medinfo_tn.png)](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
+| [racecar](racecar/README.md) | [![racecar](racecar/docs/racecar_tn.png)](racecar/README.md) | A simulated dashboard for a racing car. |
+| [spaced_invaders](spaced_invaders/README.md) | [![spaced_invaders](spaced_invaders/docs/spaced_invaders_tn.png)](spaced_invaders/README.md) | Simulating spaced invaders (8-bit classic game). |
+| [submarine](submarine/README.md) | [![submarine](submarine/docs/submarine_tn.png)](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
+| [touchscreentest](touchscreentest/README.md) | [![touchscreentest](touchscreentest/docs/touchscreentest_tn.png)](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
+
 ## Example File Structure
 
 The examples are structured in a way that allows multiple platforms to be included in each example and multiple examples to be included in the library. Rather than the focus being on the example code including a copy of the library, the focus is on the library itself and the example code is structured to fit with the library. 
 
 The structure of each example called `<demo>` would be:
 
-- `\examples\<demo>\README.md` **Required** Information on the the example.
+- `\examples\<demo>\README.md` **Required** Information on the example.
 - `\examples\<demo>\common` **Required** Common files for the example.
 - `\examples\<demo>\docs` Common documentation files for the `README.md` file.
 - `\examples\<demo>\assets` Common assets which may be used in the example.
+- `\examples\<demo>\arduino` MCU specific files for Arduino.
+- `\examples\<demo>\BeagleBone` Platform specific files for the BeagleBone.
+- `\examples\<demo>\emulator` MCU specific files for the EVE_Emulator.
 - `\examples\<demo>\ESP32` MCU specific files for the ESP32.
+- `\examples\<demo>\infineon-eclipse` MCU specific files for the Infineon PS0C6.
 - `\examples\<demo>\ft900` MCU specific files for the Bridgetek FT9xx.
 - `\examples\<demo>\libft4222` MCU specific files for FT4222H interface.
 - `\examples\<demo>\libmpsse` MCU specific files for MPSSE interface.
@@ -20,10 +49,10 @@ The structure of each example called `<demo>` would be:
 - `\examples\<demo>\MSPM0` MCU specific files for the Ti MSPM0.
 - `\examples\<demo>\NXP_K64` MCU specific files for the NXP K64.
 - `\examples\<demo>\PIC18F` MCU specific files for the PIC18F.
-- `\examples\<demo>\raspberry_pi` MCU specific files for the Raspberry Pi.
+- `\examples\<demo>\pico` MCU specific files for the Raspberry Pi pico.
+- `\examples\<demo>\raspberry_pi` Platform specific files for the Raspberry Pi.
 - `\examples\<demo>\STM32` MCU specific files for the STM32 using Keil.
 - `\examples\<demo>\STM32CUBE` MCU specific files for the STM32 using STM32CUBE.
-- `\examples\<demo>\pico` MCU specific files for the Raspberry Pi pico.
 
 ### Common Folder
 
@@ -39,30 +68,7 @@ Examples may or may not have all platform support directories. The contents of t
 
 The source file containing the `main()` function is not in the example code but is in the MCU specific part of example code. 
 
-The MCU specific files including the entry point function (the `main()` function), build files (CMake, Makefile), IDE files (Eclipse, Visual Studio, Visual Studio Code, Arduino IDE, STMCube IDE, Keil, MPLab, Ti CCS).
-
-## Runnable Examples
-
-In the example code the EVE-MCU-Dev library is compiled with the example program. 
-
-The example [simple](simple/README.md) is supported by all platforms and is intended to be used as a template for new projects. It contains build instructions for all the platforms as well.
-
-The following example code is available:
-
-| Folder | Description |
-| --- | --- |
-| [simple](simple/README.md) | Simple example code which demonstrates loading a bitmap and a legacy font. |
-| [b2tf](b2tf/README.md) | Seven segment demo code using sevenseg code snippet. This shows a constantly updating screen with blends, scissors and gradients. |
-| [cruise](cruise/README.md) | Circular click-wheel display demo code. This shows gradients and actions for user inputs. |
-| [datavisualiser](datavisualiser/README.md) | Shows methods for drawing various data visualisation components. |
-| [flightdeck](flightdeck/README.md) | Drawing graphical representations of physical controls from an aircraft. Shows blending and gradients with smooth animation. |
-| [flightdeck-bt82x](flightdeck-bt82x/README.md) | Advanced BT82X demo rendering video from the LVDS RX interface to the screen via a bitmap in RAM_G. |
-| [fontmagic](fontmagic/README.md) | Simple example code demonstrating scaling and rotating letters from a font file. |
-| [gyminterval](gyminterval/README.md) | A gym workout timer using arcs and variable sized text. |
-| [medinfo](medinfo/README.md) | A patient monitor showing charting and plotting techniques. |
-| [racecar](racecar/README.md) | A simulated dashboard for a racing car. |
-| [submarine](submarine/README.md) | Simulating a submarine view with animated fish and bubbles. |
-| [touchscreentest](touchscreentest/README.md) | A utility to test and measure touchscreen inputs. |
+The MCU specific files including the entry point function (the `main()` function), build files (CMake, Makefile), IDE files (Eclipse, Visual Studio, Visual Studio Code, Arduino IDE, STM32Cube IDE, Keil uVision, MPLab, Ti CCS).
 
 ## Widgets and Utilities
 
@@ -74,3 +80,94 @@ In addition to runable demo code there are libraries of widgets and utilities th
 
 Many of the examples load code or modules from this directory. 
 
+## Build Options
+
+There are various build options which control the compilation of the examples. These options can be set in the file `EVE_config.h`, either in the `include` directory or in the local compilation directory. 
+
+### CMake Build Options
+
+It is also possible to change the build settings in the CMake command line. The configuration step of CMake can be used to set the build options and override the `EVE_config.h` file settings.
+
+The following build options are supported in the CMake build files:
+
+| Build Option | Function |
+| ------------ | -------- |
+| `EVE_MODULE` | Sets the module to use. This includes the device and panel which is used in the module. |
+| `EVE_PANEL`  | Sets a panel to use. This will be used to set the display resolution with EVE_DISPLAY_RES. |
+| `EVE_DEVICE` | Sets the EVE device type to use. |
+| `EVE_DISPLAY_RES` | Sets the display resolution type of the display. |
+| `EVE_COPRO_METHOD` | Configures how the co-processor command buffer is handled. |
+| `EVE_RAM_G_CONFIG_SIZE` | Set RAM_G size for BT82X only. |
+
+#### CMake Option Selection
+
+The build options selected at the command line for CMake are parsed to remove any unused parameters. Since the `EVE_MODULE` overrides the `EVE_PANEL` and `EVE_DEVICE` settings and `EVE_PANEL` overrides `EVE_DISPLAY_RES` the following flowchart is used to see which options are passed onto the compilation stage.
+
+```mermaid
+flowchart
+    START
+    START --> MODULE
+    
+    MODULE{EVE_MODULE}
+    SM[Set EVE_MODULE]
+    MODULE --> |Yes| SM
+    MODULE -->|No| DEVICE
+    SM --> FINISH
+
+    DEVICE{EVE_DEVICE}
+    SD[Set EVE_DEVICE]
+    DEVICE --> |Yes| SD
+    DEVICE -->|No| PANEL
+    SD --> PANEL
+
+    PANEL{EVE_PANEL}
+    SP[Set EVE_PANEL]
+    PANEL -->|Yes| SP
+    PANEL -->|No| RES
+    SP --> FINISH
+
+    RES{EVE_DISPLAY_RES}
+    SR[Set EVE_DISPLAY_RES]
+    RES -->|Yes| SR
+    RES -->|No| FINISH
+    SR --> FINISH
+
+    FINISH
+```
+
+Therefore the command line `cmake -B build -S . -DEVE_MODULE=EVE_IDM20407A` will specify a BT817 device and DP_0701_01A panel to the compilation. 
+This is equivalent to a command line of `cmake -B build -S . -DEVE_DEVICE=EVE_BT817 -DEVE_PANEL=EVE_DP_0701_01A`.
+
+The `EVE_COPRO_METHOD` or `EVE_RAM_G_CONFIG_SIZE` selections, if set, are always passed onto the compilation.
+
+### Visual Studio Build Options
+
+Some projects are supplied with Visual Studio solutions.
+
+### Build Option Support
+
+The following platforms support the following build methods:
+
+| Port Name                  | CMake    | VS Code       | Visual Studio | STM32CubeIDE  | uVision | Ti CCS | Arduino IDE   | Eclipse IDE    |
+| ---                        | ---      | ---           | ---           | ---           | ---     | ---    | ---           | ---            |           
+| Arduino                    | No       | No            | No            | No            | No      | No     | **Yes**       | No             |
+| BeagleBone                 | **Yes**  | **Yes** _2_   | No _2_        | No            | No      | No     | No            | No             |
+| Expressif ESP32            | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| Bridgetek FT9xx            | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| Infineon PS0C6             | No       | No            | No            | No            | No      | No     | No            | **Yes**        | 
+| TI MSP430                  | No       | No            | No            | No            | No      | **Yes**| No            | No             |
+| TI MSPM0                   | No       | No            | No            | No            | No      | **Yes**| No            | No             |
+| Microchip PIC18F           | No       | **Yes**       | No            | No            | No      | No     | No            | No             |
+| NXP K64                    | No       | **Yes** _1_   | No            | No            | No      | No     | No            | No             |
+| Raspberry Pi               | **Yes**  | **Yes** _2_   | No _2_        | No            | No      | No     | No            | No             |
+| **Raspberry Pi Pico**      | **Yes**  | **Yes**       | No            | No            | No      | No     | No            | No             |
+| ST STM32 (Keil)            | No       | No            | No            | No            | **Yes** | No     | No            | No             |
+| ST STM32Cube               | **Yes**  | **Yes**       | No            | **Yes**       | No      | No     | No            | No             |
+| Generic using libMPSSE     | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
+| **Generic using libFT4222**    | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
+| **Generic using EVE Emulator** | **Yes**  | **Yes** _2_   | **Yes** _2_   | No            | No      | No     | No            | No             |
+
+* _1_ - The MCUXpresso for VS Code extension needs to be installed. The workspace file is not included for examples in this library.
+* _2_ - Support is generic CMake file support in VS Code and Visual Studio.
+
+Port names in **bold** indicate ports for which build files for all examples are provided. Only the [simple](simple/README.md) example has build environments for all platforms.

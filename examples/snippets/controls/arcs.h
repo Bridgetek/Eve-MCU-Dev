@@ -1,5 +1,5 @@
 /**
- @file arcs.h
+ * @file arcs.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_ARCS_H
-#define EVE_ARCS_H
+#ifndef _EVE_ARCS_H
+#define _EVE_ARCS_H
 
 #include "maths/trig_furman.h"
 
@@ -52,10 +52,10 @@
  @param y y position for the center of the arc.
  @param r0 radius value of inner part of the arc.
  @param r1 radius value of outer part of the arc.
- @param a0 degrees clockwise from the bottom of the circle where 
-                      we want the arc to start.
- @param a1 degrees clockwise from the bottom of the circle where 
-                    we want the arc to end.
+ @param a0 angle clockwise from the bottom of the circle where 
+                      we want the arc to start (in furmans).
+ @param a1 angle clockwise from the bottom of the circle where 
+                    we want the arc to end (in furmans).
  */
 void arc_simple(int16_t x, int16_t y, 
     uint16_t r0, uint16_t r1,
@@ -72,10 +72,10 @@ void arc_simple(int16_t x, int16_t y,
  @param y y position for the center of the arc.
  @param r0 radius value of inner part of the arc.
  @param r1 radius value of outer part of the arc.
- @param a0 degrees clockwise from the bottom of the circle where 
-                      we want the arc to start.
- @param a1 degrees clockwise from the bottom of the circle where 
-                    we want the arc to end.
+ @param a0 angle clockwise from the bottom of the circle where 
+                      we want the arc to start (in furmans).
+ @param a1 angle clockwise from the bottom of the circle where 
+                    we want the arc to end (in furmans).
  @param user_value position of indicator on the arc.
  */
 void arc_simple_gauge(int16_t x, int16_t y, 
@@ -84,4 +84,4 @@ void arc_simple_gauge(int16_t x, int16_t y,
     uint16_t val
 );
 
-#endif // EVE_ARCS_H
+#endif /* _EVE_ARCS_H */

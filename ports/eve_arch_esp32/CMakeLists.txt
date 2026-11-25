@@ -2,13 +2,19 @@
 
 set(COMPONENT_NAME "eve_mcu_esp32")
 # Tell EVE library to use ESP32 as base class
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPLATFORM_ESP32= -DDEBUG_LEVEL=1")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DEVE_DEBUG_LEVEL=1")
 
 idf_component_register(SRCS 
                         "EVE_MCU_ESP32.c" 
                         "../../source/EVE_HAL.c" 
                         "../../source/EVE_API.c" 
                         # Add base patch for BT82x only
-                        "../eve_bt82x/patch_base.c"
-                       INCLUDE_DIRS "../../include" "../eve_bt82x"
-                       REQUIRES driver soc)
+                        "../../source/extensions/bt82x_patch.c"
+                        # Add custom touch code FT81x/BT88x/BT81x only
+                        "../../source/extensions/custom_touch_fw.c"
+                        # Only applicable LCD panels that require driver initialisation
+                        "../../source/extensions/lcd_panel_init.c"
+                       INCLUDE_DIRS "../../include"
+                       REQUIRES driver esp_driver_spi soc
+                       PRIV_REQUIRES esp_driver_gpio
+)

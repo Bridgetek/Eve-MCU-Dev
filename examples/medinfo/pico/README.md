@@ -1,6 +1,8 @@
-# EVE-MCU-Dev MedInfo Raspberry Pi pico VSCode Example
+# EVE-MCU-Dev MedInfo Raspberry Pi pico Example
 
 [Back](../README.md)
+
+The [Raspberry Pi pico port](../../../ports/eve_arch_rpi/README.md#pico) is used for this example.
 
 ## Compiling using the pico VSCode Extension
 
@@ -24,24 +26,24 @@ The build depends on the `PICO_SDK_PATH` environment variable. This __must__ be 
 
 To configure the build environment using CMake:
 
-```
-cmake --fresh  -G "Unix Makefiles" -B build -S .
+```console
+    cmake --fresh  -G "Unix Makefiles" -B build -S .
 ```
 
 This will configure the compilation to take place in the `build` directory. It must be directed to use `Unix Makefiles` as a generator, if other compilation environments are configured then these may be used in preference to the pico toolchain.
 
 Configuration settings that are normally made in `EVE_config.h` can also be set in the CMake configuration command:
 
-```
-cmake --fresh  -G "Unix Makefiles" -B build -DFT8XX_TYPE=FT800 -DDISPLAY_RES=WQVGA -S .
+```console
+    cmake --fresh  -G "Unix Makefiles" -B build -DEVE_DEVICE=EVE_FT800 -DEVE_DISPLAY_RES=EVE_WQVGA -S .
 ```
 
 ### Compiling the MedInfo Raspberry Pi pico Example Manually
 
 The following CMake command will build the code and place the resulting files in the `build` directory:
 
-```
-cmake --build build
+```console
+    cmake --build build
 ```
 
 The UF2 file for programming onto the board is `medinfo_pico.uf2` in the `build` directory.
@@ -51,3 +53,4 @@ The UF2 file for programming onto the board is `medinfo_pico.uf2` in the `build`
 If the `ASSETS` macro is set to `USE_FLASH` then the appropriate flash image corresponding to the EVE generation must be programmed into the device flash. The flash image file is `flash-820-default.bin` in the `assets` directory. If `USE_C_ARRAYS` then no additional action is needed. The `USE_FILES` or `USE_FLASHIMAGE` options are not possible on the pico platform as there is no file system built into the example.
 
 Note: the default setting for `ASSETS` on pico is `USE_C_ARRAYS` which is set in the `CMakeLists.txt` file. 
+

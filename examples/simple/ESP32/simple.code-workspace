@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"name": "ESP32",
+			"path": "."
+		},
+		{
+			"name": "common",
+			"path": "../common"
+		},
+		{
+			"name": "include",
+			"path": "../../../include"
+		},
+		{
+			"name": "source",
+			"path": "../../../source"
+		},
+		{
+			"name": "eve_arch_esp32",
+			"path": "../../../ports/eve_arch_esp32"
+		},
+		{
+			"name": "snippets",
+			"path": "../../snippets"
+		}
+	],
+	"settings": {}
+}

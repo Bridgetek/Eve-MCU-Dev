@@ -1,4 +1,4 @@
-# Typically run with "python preprocess.py --dist ../EVE-MCU-Dev --api 5"
+# Typically run with "python preprocess.py --dist ../EVE-MCU-Dev --api 5 --ver 1.2"
 #
 import subprocess
 import re
@@ -8,6 +8,8 @@ import argparse
 # Default API version
 eve_api = 5
 eve_sub_api = 0
+
+eve_max_api = 5
 
 # Default path to API root
 src_api = os.path.normpath(os.path.join("..",".."))
@@ -23,7 +25,7 @@ if (args.api): eve_api = int(args.api)
 if (args.apisub): eve_sub_api = int(args.apisub)
 
 # Check valid input
-if (eve_api < 1) or (eve_api > 5):
+if (eve_api < 1) or (eve_api > eve_max_api):
     raise Exception("Invalid value for --api")
 if (eve_api == 2) and ((eve_sub_api < 1) or (eve_sub_api > 2)):
     raise Exception("Invalid value for --apisub required when --api is 2")
@@ -72,38 +74,52 @@ if not (os.path.exists(os.path.join(src_api, "source")) and
     raise Exception("The distribution directory doesn't look like EVE-MCU-Dev")
 
 # Function to turn template files into final versions
-def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, apidefs, apiimpl, apiproto, apiconstlist, definelist, excludelist, apirefactor):
+def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, apidefs, apiimpl, apiproto, apiconstlist, definelist, excludelist, apirefactor, local_headers=None):
     cppfile = []
     flag = 0
-    str_full_url = re.sub(r"_", '-', str_full_version)
-    
+    str_full_url = re.sub(r'_', '-', str_full_version)
+
     # defaults for each generation
     if api == 1:
         apidev = "FT800/FT801"
         apilib = "FT800 and FT801"
-        defres = "WQVGA" # 480 x 272
+        defres = "EVE_WQVGA" # 480 x 272
     elif api == 2:
         if subapi != 2:
             apidev = "FT810/FT811/FT812/FT813"
             apilib = "FT810 FT811 FT812 and FT813"
-            defres = "WVGA" # 800 x 480
+            defres = "EVE_WVGA" # 800 x 480
         else:
             apidev = "BT880/BT881/BT882/BT883"
             apilib = "BT880 BT881 BT882 and BT883"
-            defres = "WQVGA" # 480 x 272
+            defres = "EVE_WQVGA" # 480 x 272
     elif api == 3:
         apidev = "BT815/BT816"
         apilib = "BT815 and BT816"
-        defres = "WVGA" # 800 x 480
+        defres = "EVE_WVGA" # 800 x 480
     elif api == 4:
         apidev = "BT817/BT818"
         apilib = "BT817 and BT818"
-        defres = "WSVGA" # 1024 x 600
+        defres = "EVE_WSVGA" # 1024 x 600
     elif api == 5:
         apidev = "BT820"
         apilib = "BT820"
-        defres = "WUXGA" # 1920 x 1200
+        defres = "EVE_WUXGA" # 1920 x 1200
 
+    progmem_header = [
+            "#include <string.h>",
+            "",
+            "#if defined(ESP8266) || defined(ESP32)",
+            "#include <pgmspace.h>",
+            "#elif defined(__AVR__)",
+            "#include <avr/pgmspace.h>",
+            "#else",
+            "#define PROGMEM",
+            "#define memcpy_P(A,B,C) memcpy((A),(B),(C))",
+            "#define pgm_read_byte(addr) (*(const unsigned char *)(addr))",
+            "#endif",
+            "",
+    ]
     # Preprocess and replace markers with values
     with open(file_in, "r") as file:
         try:
@@ -112,47 +128,78 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                 cppadd = []
                 line = line.rstrip()
                 # Modify markers in templates
-                line = re.sub(r"### EVE API VER ###", str_full_version, line)
-                line = re.sub(r"### EVE API URL ###", str_full_url, line)
-                line = re.sub(r"### EVE API ###", f"{api}", line)
-                line = re.sub(r"### EVE SUB API ###", f"{subapi}", line)
-                line = re.sub(r"### EVE DEV ###", apidev, line)
-                line = re.sub(r"### EVE LIB NAME ###", apilib, line)
-                line = re.sub(r"### EVE CLASS ###", cpplib, line)
-                line = re.sub(r"### EVE RES ###", defres, line)
-                line = re.sub(r"### ARDUINO VERSION ###", ardver, line)
+                line = re.sub(r'### EVE API VER ###', str_full_version, line)
+                line = re.sub(r'### EVE API URL ###', str_full_url, line)
+                line = re.sub(r'### EVE API ###', f'{api}', line)
+                line = re.sub(r'### EVE SUB API ###', f'{subapi}', line)
+                line = re.sub(r'### EVE DEV ###', apidev, line)
+                line = re.sub(r'### EVE LIB NAME ###', apilib, line)
+                line = re.sub(r'### EVE CLASS ###', cpplib, line)
+                line = re.sub(r'### EVE RES ###', defres, line)
+                line = re.sub(r'### ARDUINO VERSION ###', ardver, line)
                 # Replace template areas
-                if re.findall(r"### API HEADER ###", line):
+                if re.findall(r'### API HEADER ###', line):
                     flag = 1
                     cppfile.extend(apidefs)
-                if re.findall(r"### API IMPLEMENTATION ###", line):
+                if re.findall(r'### API IMPLEMENTATION ###', line):
                     flag = 1
                     cppfile.extend(apiimpl)
-                if re.findall(r"### API PROTO ###", line):
+                if re.findall(r'### API PROTO ###', line):
                     flag = 1
                     cppfile.extend(apiproto)
-                if re.findall(r"### API CONST ###", line):
+                if re.findall(r'### API CONST ###', line):
                     flag = 1
                     cppfile.extend(apiconstlist)
                 # Global static consts moved into PROGMEM storage on Arduino
-                line = re.sub(r"^static const uint8_t\s*(\w+)\s*\[", r"PROGMEM static const uint8_t \g<1> [", line)
-                line = re.sub(r"^const uint8_t\s*(\w+)\s*\[", r"PROGMEM const uint8_t \g<1> [", line)
+                line = re.sub(r'^static const uint8_t\s*(\w+)\s*\[', r'PROGMEM static const uint8_t \g<1> [', line)
+                line = re.sub(r'^const uint8_t\s*(\w+)\s*\[', r'PROGMEM const uint8_t \g<1> [', line)
+
+                # The generated Arduino examples are flat. Rewrite angled
+                # includes for headers copied locally into the example directory.
+                if local_headers:
+                    match = re.match(r'^(\s*#\s*include\s*)<([^>]+)>(.*)$', line)
+                    if match:
+                        include_path = match.group(2)
+                        include_file = os.path.basename(include_path)
+
+                        if include_file in local_headers:
+                            line = (
+                                f'{match.group(1)}'
+                                f'"{include_file}"'
+                                f'{match.group(3)}'
+                            )
+
+                # The Arduino library output is flat. Rewrite extension includes
+                # from the source-tree namespace to headers in the library root.
+                if line.strip() == "#include <extensions/bt82x_patch.h>":
+                    line = '#include "bt82x_patch.h"'
+                elif line.strip() == "#include <extensions/custom_touch_fw.h>":
+                    line = '#include "custom_touch_fw.h"'
+                elif line.strip() == "#include <extensions/lcd_panel_init.h>":
+                    line = '#include "lcd_panel_init.h"'
+                elif line.strip() == "#include <MCU.h>":
+                    if file_out.endswith(".cpp"):
+                        line = 'extern "C" {\n#include <MCU.h>\n}\n'
+
                 # Change code to use C++ class instead of C library
                 if apirefactor:
                     # Add in eve.setup before eve.Init
-                    line = re.sub(r"^(\s*)EVE_Init\s*\(\s*\)\s*;", r"\g<1>// Setup the EVE display (" + defres + ")\n" \
-                                                      r"\g<1>" "eve.setup(DISPLAY_RES);\n" \
-                                                      r"\g<1>" "// Setup the EVE library\n" \
-                                                      r"\g<1>" "eve.Init();\n" \
+                    line = re.sub(r'^(\s*)if\s*\(\s*EVE_Init\s*\(\s*\)\s*!=\s*0\s*\)\s*$', r'\g<1>// Setup the EVE display (' + defres + ')\n' \
+                                                      r'\g<1>' 'eve.setup(' + defres + ');\n\n' \
+                                                      r'\g<1>' '// Initialise the EVE library\n' \
+                                                      r'\g<1>' 'if(eve.Init() != 0)' \
                         , line)
                     # General replace of EVE_ with eve. (except on preprocessor lines)
                     # when it matches an entry in the 
                     if not line.strip().startswith("#"):
                         subline = ""
 
-                        line = re.sub(r"\beve_loadpatch\b", "patch_eve_loadpatch", line)
+                        # Hide extension implementation helpers from the generated Arduino API
+                        line = re.sub(r'\beve_loadpatch\b', 'patch_eve_loadpatch', line)
 
-                        token = re.search(r"\bEVE_[\w]+\b", line)
+                        line = re.sub( r'\beve_loadcustomtouch\b','custom_touch_eve_loadcustomtouch', line)
+
+                        token = re.search(r'\bEVE_[\w]+\b', line)
                         while token:
                             skiptoken = False
                             scrambletoken = False
@@ -160,10 +207,10 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
 
                             # Check if the token is part of the API base patch
                             if os.path.basename(file_in).startswith("patch_"):
-                                if re.match("CMD_(END|)(REGION|TOUCHOFFSET)", subtoken):
+                                if re.match('CMD_(END|)(REGION|TOUCHOFFSET)', subtoken):
                                     # Rename and hence ignore base patch symbols
                                     scrambletoken = True
-                                if re.match("eve_loadpatch", subtoken):
+                                if re.match('eve_loadpatch', subtoken):
                                     # Rename and hence ignore base patch symbols
                                     scrambletoken = True
 
@@ -173,14 +220,14 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                 if not subtoken in apiconstlist:
                                     skiptoken = True
                             # If the token is a CMD_... then check if it matches with an API defined function
-                            if apiproto:
+                            if apiproto and skiptoken == True:
                                 foundproto = False
                                 for a in apiproto:
-                                    if re.search(r"\s" + subtoken + r"\(", a):
+                                    if re.search(r'\s' + subtoken + r'\(', a):
                                         # If it is in the API list then replace it...
                                         foundproto = True
-                                if not foundproto:
-                                    skiptoken = True
+                                if foundproto:
+                                    skiptoken = False
 
                             if scrambletoken:
                                 # Note replacement is made to ignore this in code
@@ -192,68 +239,130 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                 # Note replacement is made to use class version
                                 subline += line[:token.start()] + "eve." + subtoken
                             line = line[token.end():]
-                            token = re.search(r"\bEVE_[\w]+\b", line)
+                            token = re.search(r'\bEVE_[\w]+\b', line)
                         line = subline + line
                     # Change references to the FONT header structures to class definitions
-                    line = re.sub(r"\beve\.(GPU_\w+)\b", "Bridgetek_EVE" + str_full_version + r"::\g<1>", line)
+                    line = re.sub(r'\beve\.(GPU_\w+)\b', 'Bridgetek_EVE' + str_full_version + r'::\g<1>', line)
                     # Change references to the ROMFONT array to point to class member
-                    line = re.sub(r"\beve\.(ROMFONT_\w+)\b", "Bridgetek_EVE" + str_full_version + r"::\g<1>", line)
+                    line = re.sub(r'\beve\.(ROMFONT_\w+)\b', 'Bridgetek_EVE' + str_full_version + r'::\g<1>', line)
                     # Rename refereces to EVE_DISP_WIDTH/HEIGHT to class member
-                    line = re.sub(r"\bEVE_(DISP_\w+)\b", r"eve.\g<1>()", line)
-                    # Add extern or definition of the EVE class
-                    extern = ""
-                    if not file_out.endswith("eve_example.ino"):
-                        extern = "extern "
-                    line = re.sub(r"#include \<EVE.h\>", "#include <Bridgetek_EVE" + str_full_version + ".h>" \
-                                                          "\n\n/**\n" \
-                                                          " @brief EVE library handle.\n" \
-                                                          " @details This is the one instance of the EVE library. Available as a global.\n" \
-                                                          " */\n" \
-                                                          + extern + "Bridgetek_EVE" + str_full_version + " eve;\n" \
-                                  , line)
-                    # Remove snippet top level directory references 
-                    line = re.sub(r"#include \"[\w]+/([\w.]+)\"", r"#include \"\g<1>\"", line)
+                    line = re.sub(r'\bEVE_(DISP_\w+)\b', r'eve.\g<1>()', line)
+                    # Rename refereces to EVE_DEBUG_PRINTF to Serial.print
+                    #line = re.sub(r'\bEVE_DEBUG_PRINTF\(', r'Serial.print(', line)
+                    # Rename refereces to EVE_DEBUG_ERROR to Serial.print
+                    #line = re.sub(r'\bEVE_DEBUG_ERROR\(', r'Serial.print(', line)
+                    # Rename references from @file <file>.c to @file <file>.ino
+                    line = re.sub(r'@file (\w+).c', r'@file \g<1>.ino', line)
+                    # Replace the C EVE API header with the generated Arduino library class.
+                    # Declare the global EVE handle wherever EVE.h is included.
+                    line = re.sub(
+                        r'#include \<EVE.h\>',
+                        '#include <Bridgetek_EVE' + str_full_version + '.h>'
+                        '\n\n/**\n'
+                        ' @brief EVE library handle.\n'
+                        ' @details This is the one instance of the EVE library. Available as a global.\n'
+                        ' */\n'
+                        'extern Bridgetek_EVE' + str_full_version + ' eve;\n',
+                        line
+                    )
+
+                    # Define the global EVE handle once in eve_example.ino.
+                    if file_out.endswith("eve_example.ino"):
+                        match = re.match(
+                            r'^\s*#include\s*[<"]eve_example\.h[>"]',
+                            line
+                        )
+                        if match:
+                            line += (
+                                '\n\n/**\n'
+                                ' @brief EVE library handle.\n'
+                                ' @details This is the one instance of the EVE library. Available as a global.\n'
+                                ' */\n'
+                                'Bridgetek_EVE' + str_full_version + ' eve;'
+                            )
+                    # Remove snippet top level directory references (single quotes)
+                    line = re.sub(r'#include \"[\w]+/([\w.]+)\"', r'#include "\g<1>"', line)
                     # Change references to const array stored in class to pointer from unsized array
-                    line = re.sub(r"([\w.]+)\[\] = (Bridgetek_EVE[0-9_]*::ROMFONT_)", r"*\g<1> = \g<2>", line)
+                    line = re.sub(r'([\w.]+)\[\] = (Bridgetek_EVE[0-9_]*::ROMFONT_)', r'*\g<1> = \g<2>', line)
                 else:
                     # Update name of library header file to prevent clashes
-                    line = re.sub(r"#include \<EVE.h\>", "#include <EVE" + str_full_version + ".h>", line)
+                    line = re.sub(r'#include \<EVE.h\>', '#include <EVE' + str_full_version + '.h>', line)
 
                 if flag == 0:
                     # Simulate preprocessor by excluding/replacing code
-                    match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\((.+)\)", line)
-                    match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\((.+)\)", line)
+                    # Exclude all non-matching lines for EVE_API and EVE_SUB_API
+                    match_ifsubapi = re.match(r"\s*#(if|elif)\s+IS_EVE_SUB_API\(([^)]+)\)", line)
+                    match_ifapi = re.match(r"\s*#(if|elif)\s+IS_EVE_API\(([^)]+)\)", line)
+                    # Exclude all lines within IS_ARDUINO_LIB blocks
+                    match_ifardulib = re.match(r"\s*#if\s+(!*)defined\s*\(IS_ARDUINO_LIB\)", line)
+                    # Handle general if/elif/ifdef and ifndef blocks
                     match_if = re.match(r"\s*#(if|elif|ifdef|ifndef)\s+", line)
+                    # Simple else blocks
                     match_else = re.match(r"\s*#else\s*", line)
+                    # Simple endif blocks
                     match_endif = re.match(r"\s*#endif\s*", line)
+                    # Process defines and includes according to lists in arguments
                     match_define = re.match(r"(\s*#define\s*)(\w+)", line)
                     match_include = re.match(r"\s*#include\s*\"(.+)\"", line)
+                    match_commentline = re.match(r"^ \* ", line)
+                    # Custom touch support is not included in EVE API 1 Arduino builds
+                    match_ifcustomtouch = re.match(r"\s*#if\s+defined\s*\(EVE_SUPPORT_CUSTOM_TOUCH\)\s*&&\s*defined\s*\(EVE_CUSTOM_TOUCH\)", line)
+                    # Case to remove the IDM2040-21R custom touch code
+                    match_ifidm21r = re.match(r"\s*#if\s+defined\s*\(EVE_MODULE\)\s*&&\s*"r"\(EVE_MODULE\s*==\s*EVE_IDM204021R\)", line)
 
                     try:
-                        if match_ifsubapi:
+                        # Skip lines that start with an indented comment continuator
+                        if match_commentline:
+                            pass
+                        elif match_ifsubapi:
                             cov = []
                             if match_ifsubapi.group(1) == "elif":
                                 (pos, _, cov) = nest.pop()
-                                cov.extend(pos)
+                                if cov != None:
+                                    cov.extend(pos)
                             pos = []
                             for lev in "".join(match_ifsubapi.group(2).split()).split(","):
                                 pos.append(-int(lev))
                             nest.append((pos, True, cov))
-                            print(nest)
                             flag = -1
                         elif match_ifapi:
                             cov = []
                             if match_ifapi.group(1) == "elif":
                                 (pos, _, cov) = nest.pop()
-                                cov.extend(pos)
+                                if cov != None:
+                                    cov.extend(pos)
                             pos = []
                             for lev in "".join(match_ifapi.group(2).split()).split(","):
                                 pos.append(int(lev))
                             nest.append((pos, True, cov))
                             flag = -1
+                        elif match_ifcustomtouch and api == 1:
+                            # Remove custom touch implementation from EVE API 1 Arduino builds.
+                            nest.append(([2, 3, 4], True, []))
+                            flag = -1
+                        elif match_ifidm21r:
+                            # IDM2040-21R custom touch support is not supported by Arduino libraries.
+                            nest.append(("IDM21R", True, None))
+                            flag = -1
+                        elif match_ifardulib:
+                            print(match_ifardulib)
+                            cov = []
+                            pos = []
+                            for addapi in range(eve_max_api): pos.append(addapi + 1)
+                            if match_ifardulib.group(1) == "!":
+                                print("EXCLUDING")
+                                nest.append((pos, False, cov))
+                            else:
+                                print("INCLUDING")
+                                nest.append((pos, True, cov))
+                            flag = -1
                         elif match_else:
                             (pos, _, cov) = nest.pop()
-                            if cov != None:
+                            if pos == "IDM21R":
+                                # Discard IDM21R branch, retain the fallback branch.
+                                nest.append(("IDM21R", False, None))
+                                flag = -1
+                            elif cov != None:
                                 if pos != None:
                                     cov.extend(pos)
                                 flag = -1
@@ -262,17 +371,49 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                                 nest.append((cov, True, None))
                         elif match_endif:
                             (pos, _, cov) = nest.pop()
-                            if pos != None:
+                            if pos == "IDM21R":
+                                flag = -1
+                            elif pos != None:
                                 flag = -1
                         elif match_if:
                             if match_if.group(1) == "elif":
                                 nest.pop()
                             nest.append((None, True, None))
+                        else:
+                            # Replace all EVE_API_SELECT macros (depends on the macro being on one line)
+                            match_select_defn = re.match(r"\s*#define\s+EVE_API_SELECT\s*\(", line)
+                            match_select = re.search(r"\b(EVE_API_SELECT\b)\(", line)
+                            if match_select and not match_select_defn:
+                                opt = []
+                                brcount = 1
+                                start = match_select.start()
+                                end = match_select.end()
+                                param = ""
+                                for ch in line[match_select.end():]:
+                                    if ch == '(': brcount += 1
+                                    elif ch == ')': brcount -= 1
+
+                                    if ch == ',': 
+                                        opt.append(param)
+                                        param = ""
+                                    else:
+                                        param = param + ch
+                                    end += 1
+
+                                    if brcount == 0: 
+                                        param = param[:-1]
+                                        opt.append(param)
+                                        break
+                                line = line[:start] + opt[api - 1].strip() + line[end:]
 
                         depth = len(nest)
                         if depth > 0:
                             for n in nest:
                                 (cond,sense,_) = n
+                                if cond == "IDM21R":
+                                    if sense:
+                                        flag = -1
+                                    continue
                                 if sense:
                                     if cond:
                                         if not api in cond and not (-subapi) in cond:
@@ -295,48 +436,52 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
                     except Exception as inst:
                         print("Error: preprocessing - ", inst)
                         exit(0)
-                   
+
                 if flag == 0: 
                     # Use variable EVE_RAM_G_SIZE for size of RAM_G
-                    if file_out.endswith("BT82x.h"):
-                        line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
-                    # Add PROGMEM storage read for patch_base.c
-                    elif file_out.endswith("patch_base.c"):
-                        if line == "#include \"patch_base.h\"":
-                            cppadd = [
-                                    "#include <string.h>",
-                                    "",
-                                    "#if defined(ESP8266) || defined(ESP32)",
-                                    "#include <pgmspace.h>",
-                                    "#else",
-                                    "#include <avr/pgmspace.h>",
-                                    "#endif",
-                                    "",
-                            ]
-                            print("patch_base.c updated for PROGMEM")
+                    if file_out.endswith("registers.h"):
+                        if line.find("EVE_RAM_G_SIZE") >= 0:
+                            line = None
+                        elif line.find("EVE_RAM_G_CONFIG_SIZE") >= 0:
+                            line = None
+                        #line = re.sub(r"EVE_RAM_G_CONFIG_SIZE", "EVE_RAM_G_SIZE", line)
+                        #line = re.sub(r"EVE_RAM_G_SIZE", "EVE_RAM_G_SIZE", line)
+                    # Add PROGMEM storage read for extension firmware data.
+                    elif file_out.endswith("bt82x_patch.c") or file_out.endswith("custom_touch_fw.c"):
+                        # The include has already been flattened above.
+                        if line == '#include "bt82x_patch.h"' or line == '#include "custom_touch_fw.h"':
+                            cppadd = progmem_header
+                            print(f"{os.path.basename(file_out)} updated for PROGMEM")
                         else:
-                            match = re.match(r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s(\w+)\);", line)
+                            # Convert:
+                            #   EVE_LIB_WriteDataToCMD(data, sizeof(data));
+                            # into buffered reads from PROGMEM.
+                            match = re.match(
+                                r"^(\s*)EVE_LIB_WriteDataToCMD\((\w+),\s*sizeof\(\2\)\);",
+                                line
+                            )
                             if match:
-                                dlen = int(match.group(3))
-                                line = "/*hello*/"
+                                indent = match.group(1)
+                                data = match.group(2)
+                                line = None
                                 cppadd = [
-                                        f"{match.group(1)}/* Read the data from the program memory into CMD. */",
-                                        f"{match.group(1)}uint8_t pgm[16];",
-                                        f"{match.group(1)}uint32_t pgmoffset, pgmchunk;",
-                                        f"{match.group(1)}for (pgmoffset = 0; pgmoffset < {dlen}; pgmoffset += 16)",
-                                        f"{match.group(1)}{{",
-                                        f"{match.group(1)}    // Maximum of pgm buffer",
-                                        f"{match.group(1)}    uint32_t chunk = sizeof(pgm);",
-                                        f"{match.group(1)}    if (pgmoffset + chunk > {dlen})",
-                                        f"{match.group(1)}    {{",
-                                        f"{match.group(1)}        chunk = {dlen} - pgmoffset;",
-                                        f"{match.group(1)}    }}",
-                                        f"{match.group(1)}    // Load the pgm buffer",
-                                        f"{match.group(1)}    memcpy_P(pgm, &{match.group(2)}[pgmoffset], chunk);",
-                                        f"{match.group(1)}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
-                                        f"{match.group(1)}}}",
+                                        f"{indent}/* Read the data from the program memory into CMD. */",
+                                        f"{indent}uint8_t pgm[16];",
+                                        f"{indent}uint32_t pgmoffset;",
+                                        f"{indent}for (pgmoffset = 0; pgmoffset < sizeof({data}); pgmoffset += sizeof(pgm))",
+                                        f"{indent}{{",
+                                        f"{indent}    // Maximum of pgm buffer",
+                                        f"{indent}    uint32_t chunk = sizeof(pgm);",
+                                        f"{indent}    if (pgmoffset + chunk > sizeof({data}))",
+                                        f"{indent}    {{",
+                                        f"{indent}        chunk = sizeof({data}) - pgmoffset;",
+                                        f"{indent}    }}",
+                                        f"{indent}    // Load the pgm buffer",
+                                        f"{indent}    memcpy_P(pgm, &{data}[pgmoffset], chunk);",
+                                        f"{indent}    EVE_LIB_WriteDataToCMD(pgm, chunk);",
+                                        f"{indent}}}",
                                 ]
-                                print("patch_base.c updated for accessing PROGMEM")
+                                print(f"{os.path.basename(file_out)} updated for accessing PROGMEM")
 
                     if line != None:
                         cppfile.append(line)
@@ -360,17 +505,7 @@ def template(file_in, file_out, ardver, cpplib, api, subapi, str_full_version, a
             exit(0)
 
 # Collate header files needed (from include directory)
-dist_inc_files = ["HAL.h", "MCU.h", "FT8xx.h"]
-if eve_api == 1:
-    dist_inc_files.append("FT80x.h")
-elif eve_api == 2:
-    dist_inc_files.append("FT81x.h")
-elif eve_api == 3:
-    dist_inc_files.append("BT81x.h")
-elif eve_api == 4:
-    dist_inc_files.append("BT81x.h")
-elif eve_api == 5:
-    dist_inc_files.append("BT82x.h")
+dist_inc_files = ["HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_commands.h", "EVE_defs.h", "EVE_settings.h"]
 
 # Destination API file
 dest_api = os.path.join(dest_lib,"EVE_API.c")
@@ -382,10 +517,33 @@ for d in dist_inc_files:
     dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(dest_lib,d)))
 dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), dest_api))
 dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(dest_lib,"EVE_HAL.c")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
+dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","EVE_ARCH_ARDUINO.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
+if eve_api ==2 or eve_api == 3 or eve_api == 4:
+    dist_source_files.append((
+        os.path.join(src_api, "include", "extensions", "custom_touch_fw.h"),
+        os.path.join(dest_lib, "custom_touch_fw.h")
+    ))
+    dist_source_files.append((
+        os.path.join(src_api, "source", "extensions", "custom_touch_fw.c"),
+        os.path.join(dest_lib, "custom_touch_fw.c")
+    ))
 if eve_api == 5:
-    dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.c"), os.path.join(dest_lib,"patch_base.c")))
-    dist_source_files.append((os.path.join(src_api,"ports","eve_bt82x","patch_base.h"), os.path.join(dest_lib,"patch_base.h")))
+    dist_source_files.append((
+        os.path.join(src_api, "source", "extensions", "bt82x_patch.c"),
+        os.path.join(dest_lib, "bt82x_patch.c")
+    ))
+    dist_source_files.append((
+        os.path.join(src_api, "include", "extensions", "bt82x_patch.h"),
+        os.path.join(dest_lib, "bt82x_patch.h")
+    ))
+dist_source_files.append((
+    os.path.join(src_api, "include", "extensions", "lcd_panel_init.h"),
+    os.path.join(dest_lib, "lcd_panel_init.h")
+))
+dist_source_files.append((
+    os.path.join(src_api, "source", "extensions", "lcd_panel_init.c"),
+    os.path.join(dest_lib, "lcd_panel_init.c")
+))
 dist_source_files.append((os.path.join(src_api,"LICENSE"), os.path.join(dest_lib,"LICENSE.txt")))
 
 # Copy API source and header files
@@ -416,7 +574,7 @@ for t in template_files:
     template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", "", "", None, None, False)
 
 # Command line for preprocessor
-cppcmd = ['cpp', f'-I{dest_lib}', f'-DEVE_API={eve_api}']
+cppcmd = ['cpp', f'-I{dest_lib}', f'-DARDUINO=1', f'-DEVE_API={eve_api}']
 if eve_sub_api > 0:
     cppcmd.append(f'-DEVE_SUB_API={eve_sub_api}')
 
@@ -425,10 +583,21 @@ cppcmd.append(dest_api)
 coderes = subprocess.run(cppcmd, stdout=subprocess.PIPE)
 
 # Command line to harvest all #defines from the source code
-cppcmd.insert(1, '-dM')
-defineres = subprocess.run(cppcmd, stdout=subprocess.PIPE)
+definecmd = cppcmd.copy()
+definecmd.insert(1, '-dM')
+defineres = subprocess.run(definecmd, stdout=subprocess.PIPE)
 
-if (coderes.returncode == 0) and (defineres.returncode == 0):
+# EVE_defs.h now contains configuration constants which are not guaranteed
+# to be retained by the EVE_API.c preprocessing path. Harvest these
+# definitions explicitly for the generated Arduino class API.
+defscmd = ['cpp', '-dM', f'-I{dest_lib}', f'-DARDUINO=1', f'-DEVE_API={eve_api}']
+if eve_sub_api > 0:
+    defscmd.append(f'-DEVE_SUB_API={eve_sub_api}')
+defscmd.append(os.path.join(dest_lib, "EVE_defs.h"))
+
+defsres = subprocess.run(defscmd, stdout=subprocess.PIPE)
+
+if (coderes.returncode == 0) and (defineres.returncode == 0) and (defsres.returncode == 0):
     cppoutput = coderes.stdout.decode('utf-8')
     cpplines = cppoutput.splitlines()
 
@@ -457,7 +626,7 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
         if cdefl[2] == "EVE_NOP":
             # Don't make a functino called NOP()!
             continue
-        cdefl[0] = re.sub("EVE_", "", cdefl[2])
+        cdefl[0] = re.sub('EVE_', '', cdefl[2])
         capiparams = cdefl[3].split(",")
         cparam = []
         cppparam = []
@@ -505,23 +674,37 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
         cppprotoline = f"{cdefl[1]} {cdefl[0]}({cppparamtext})"
         cppapiproto.append(cppprotoline)
 
-    cppdefouput = defineres.stdout.decode('utf-8')
-    definelines = cppdefouput.splitlines()
-    
-    defre = re.compile(r'^\#define\s(EVE_\w*)\s*(.+)')
+    cppdefoutput = defineres.stdout.decode('utf-8')
+    defsoutput = defsres.stdout.decode('utf-8')
+
+    definelines = defsoutput.splitlines()
+    definelines.extend(cppdefoutput.splitlines())
+
+    # Remove duplicate macro definitions by name. Definitions obtained from the
+    # complete EVE_API.c preprocessing pass take precedence over EVE_defs.h.
+    define_map = {}
+
+    for line in definelines:
+        match = re.match(r'^\s*#define\s+(EVE_\w+)', line)
+        if match:
+            define_map[match.group(1)] = line
+
+    definelines = list(define_map.values())
+
+    defre = re.compile(r'^\s*\#define\s(EVE_\w*)\s*(.+)')
     cconstdefs = []
     for line in definelines:
         if defre.search(line):
             definep =line.split()
             if len(definep) > 2:
                 cppline = None
-                definep[0] = re.sub("EVE_", "", definep[1])
+                definep[0] = re.sub('EVE_', '', definep[1])
                 if line.endswith("}"):
                     # deal with arrays
                     if definep[0].startswith("ROMFONT"):
                         cppvals = ""
                         for dp in definep[2:]:
-                            dp = re.sub(r"EVE_", "(uint8_t)", dp)
+                            dp = re.sub(r'EVE_', '(uint8_t)', dp)
                             cppvals += dp
                         dpc = cppvals.count(',') + 1
                         #static const uint8_t ROMFONT_WIDTHS[32];
@@ -529,16 +712,25 @@ if (coderes.returncode == 0) and (defineres.returncode == 0):
                         cppapihdrdec.append(cppline)
                         #constexpr uint8_t Bridgetek_EVE1::ROMFONT_WIDTHS[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,8,8,8,10,13,14,17,24,30,12,16,18,22,28,36};
                         cppline = f"constexpr uint8_t Bridgetek_EVE{str_full_version}::{definep[0]}[] = {cppvals};"
-                        cppapiimpldef.append(cppline)
-                        cppapiconstslist.append(definep[0])
+                        cppapiconstslist.append(cppline)
                 elif definep[0].startswith("ENC_"):
                     pass
                 elif definep[0].startswith("RAM_G_CONFIG_SIZE"):
                     pass
                 elif definep[0].startswith("RAM_G_SIZE"):
                     pass
+                elif definep[0].startswith("API_SELECT"):
+                    pass
+                elif definep[0].startswith("DEBUG_"):
+                    pass
+                elif definep[0].startswith("HAL_CHUNK_SIZE"):
+                    pass
+                elif definep[0].startswith("SPI_TIMEOUT"):
+                    pass
+                elif definep[0].startswith("SPI_MAX_TRANSFER"):
+                    pass
                 else:
-                    cppline = f"      {definep[0]} = {definep[2]},"
+                    cppline = f"      {definep[0]} = {definep[1]},"
                     cppapiconsts.append(cppline)
                     cppapiconstslist.append(definep[0])
 
@@ -658,7 +850,7 @@ for subdirs in os.scandir(os.path.normpath("examples")):
             os.makedirs(os.path.join(dest_lib, "examples", destdir), exist_ok=True)
             # Add a docs directory
             os.makedirs(os.path.join(dest_lib, "examples", destdir, "docs"), exist_ok=True)
-            
+
             defines_list = []
             defineslist = os.path.normpath(os.path.join("examples", exampledir, "!defines.txt"))
             if os.path.exists(defineslist):
@@ -674,7 +866,7 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                                 else:
                                     defval = ""
                                 defines_list.append((defname, defval))
-            
+
             # Copy any docs
             docdir = os.path.normpath(os.path.join(src_api, "examples", exampledir, "docs"))
             docfiles = [f for f in os.listdir(docdir) if os.path.isfile(os.path.join(docdir, f))]
@@ -742,11 +934,6 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                             print(f"Adding asset file {d} renamed to {destname}")
                             common_files.append((os.path.join(assetdir, d), os.path.join(dest_lib, "examples", destdir, os.path.basename(destname))))
 
-            for t in common_files:
-                srcf, destf = t
-                print(f"common example files: {srcf} -> {destf}")
-                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, exclude_files, True)
-
             # Example files
             example_files = []
             # Definitions
@@ -770,10 +957,23 @@ for subdirs in os.scandir(os.path.normpath("examples")):
                         if (os.path.basename(examplefilename) == os.path.split(exampledir)[-1] + ".ino"):
                             destname = os.path.split(exampledir)[-1] + "_EVE" + str_full_version + ".ino"
                         example_files.append((os.path.join("examples", exampledir, examplefilename), os.path.join(dest_lib, "examples", destpath, destname)))
+
+            # Headers copied locally into the flattened Arduino example directory.
+            local_headers = {
+                os.path.basename(destf)
+                for _, destf in common_files + example_files
+                if os.path.splitext(destf)[1] == ".h"
+            }
+
+            for t in common_files:
+                srcf, destf = t
+                print(f"common example files: {srcf} -> {destf}")
+                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, exclude_files, True, local_headers)
+
             for t in example_files:
                 srcf, destf = t
                 print(f"examples: {srcf} -> {destf}")
-                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, None, False)
+                template(srcf, destf, args.ver, str_lib_name, eve_api, eve_sub_api, str_full_version, "", "", cppapiproto, cppapiconstslist, defines_list, None, False, local_headers)
         else:
             print("Not supporting example:", exampledir)
 

@@ -1,5 +1,5 @@
 /**
- @file eve_assetload_file.c
+ * @file eve_assetload_file.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,25 +37,43 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if ASSETS == USE_FILES
+
+/* CONSTANTS ***********************************************************************/
+
+static const char *assetdir;
+
+/* FUNCTIONS ***********************************************************************/
 
 /** @brief Portable version of fopen/fopen_s
  *  @details This is provided in the main.c file if the platform is able to use
  *           a file system for accessing assets.
  */
-extern FILE *port_fopen(char const * _FileName, char const * _Mode);
-
-static const char *assetdir;
+static FILE *port_fopen(char const * _FileName, char const * _Mode)
+{
+#if defined(_MSC_VER)
+    FILE *h1;
+    errno_t err;
+    err = fopen_s(&h1, _FileName, _Mode);
+    if (err)
+    {
+        return NULL;
+    }
+    return h1;
+#else
+    return fopen(_FileName, _Mode);
+#endif
+}
 
 const char *join(const char *dirname, const char *filename)
 {
@@ -65,7 +83,7 @@ const char *join(const char *dirname, const char *filename)
     
     if (!joined)
     {
-        DEBUG_PRINTF("Failed to malloc %zu chars for patch path \"%s\" and \"%s\"\n", joinedlen, dirname, filename);
+        EVE_DEBUG_PRINTF("Failed to malloc %zu chars for patch path \"%s\" and \"%s\"\n", joinedlen, dirname, filename);
         exit(-3);
     }
     
@@ -88,38 +106,63 @@ int eve_loadpatch_impl(void)
     uint32_t total = 0;
     uint32_t chunk;
     size_t xfer;
+    int result = 0;
 
     h1 = port_fopen(patch_asset.filename, "rb");
     if (h1)
     {
-        EVE_LIB_BeginCoProList();
-        EVE_CMD_LOADPATCH(0);
-        do {
-            chunk = sizeof(buffer);
-            xfer = fread(buffer, 1, (size_t)chunk, h1);
-            if (xfer > 0)
+        xfer = fread(buffer, 1, (size_t)64, h1);
+        if (xfer > 0)
+        {
+            // Only load the patch if the signature is 0x7c 0xda
+            if ((buffer[0] == 0x7c) && (buffer[1] == 0xda))
             {
-                EVE_LIB_WriteDataToCMD(buffer, chunk);
-                total += (uint32_t)xfer;
+                EVE_LIB_BeginCoProList();
+                EVE_CMD_LOADPATCH(0);
+                EVE_LIB_WriteDataToCMD(buffer, 64);
+                do {
+                    chunk = (size_t)(patch_asset.Flash_Size - total);
+                    if (chunk > sizeof(buffer)) 
+                    {
+                        chunk = sizeof(buffer);
+                    }
+                    xfer = fread(buffer, 1, (size_t)chunk, h1);
+                    if (xfer > 0)
+                    {
+                        EVE_LIB_WriteDataToCMD(buffer, chunk);
+                        total += (uint32_t)xfer;
+                    }
+                } while (xfer == sizeof(buffer));
+                EVE_LIB_BeginCoProList();
+                EVE_CMD_SWAP();
+                EVE_LIB_EndCoProList();
+                EVE_LIB_AwaitCoProEmpty();
             }
-        } while (xfer == sizeof(buffer));
+            else
+            {
+                EVE_DEBUG_ERROR("load patch from file error");
+                result = -1;
+            }
+        }
+        else
+        {
+            EVE_DEBUG_ERROR("patch file read error\n");
+            result = -1;
+        }
         fclose(h1); 
-        EVE_CMD_SWAP();
-        EVE_LIB_EndCoProList();
-        EVE_LIB_AwaitCoProEmpty();
     }
     else
     {
-        DEBUG_PRINTF("Patch file error\n");
-        exit(-1);
+        EVE_DEBUG_ERROR("patch file error\n");
+        result = -1;
     }
 
-    return 0;
+    return result;
 }
 
 #endif
 
-void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 {
     FILE *h1;
     uint8_t buffer[512];
@@ -154,7 +197,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // Decode image
         if (loadimage)
         {
-            DEBUG_PRINTF("Load image %s\n", asset->filename);
+            EVE_DEBUG_PRINTF("Load image %s\n", asset->filename);
 
             EVE_LIB_BeginCoProList();
             EVE_CMD_LOADIMAGE(asset->RAM_G_Start, 0);
@@ -185,16 +228,16 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
             // EVE4 and EVE5 support CMD_GETIMAGE for CMD_LOADIMAGE results
             EVE_LIB_GetImage(&dummy, &asset->Format, &w, &h, &dummy);
 #endif
-            DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
+            EVE_DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
 
             if ((asset->Width != w) || (asset->Height != h))
             {
-                DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
+                EVE_DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
             }
         }
         else
         {
-            DEBUG_PRINTF("Load to memory %s\n", asset->filename);
+            EVE_DEBUG_PRINTF("Load to memory %s\n", asset->filename);
     
             EVE_LIB_BeginCoProList();
             EVE_CMD_MEMWRITE(asset->RAM_G_Start, (uint32_t)sz);
@@ -217,11 +260,11 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
 
         fclose(h1); 
 
-        DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start,  asset->RAM_G_EndAddr);
+        EVE_DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start,  asset->RAM_G_EndAddr);
     }
     else
     {
-        DEBUG_PRINTF("RAM_G: file error %s\n", asset->filename);
+        EVE_DEBUG_PRINTF("RAM_G: file error %s\n", asset->filename);
         exit(-1);
     }
 }

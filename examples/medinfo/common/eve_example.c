@@ -1,62 +1,78 @@
-
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
- /*
-  * ============================================================================
-  * (C) Copyright,  Bridgetek Pte. Ltd.
-  * ============================================================================
-  *
-  * This source code ("the Software") is provided by Bridgetek Pte Ltd
-  * ("Bridgetek") subject to the licence terms set out
-  * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
-  * You must read the Licence Terms before downloading or using the Software.
-  * By installing or using the Software you agree to the Licence Terms. If you
-  * do not agree to the Licence Terms then do not download or use the Software.
-  *
-  * Without prejudice to the Licence Terms, here is a summary of some of the key
-  * terms of the Licence Terms (and in the event of any conflict between this
-  * summary and the Licence Terms then the text of the Licence Terms will
-  * prevail).
-  *
-  * The Software is provided "as is".
-  * There are no warranties (or similar) in relation to the quality of the
-  * Software. You use it at your own risk.
-  * The Software should not be used in, or for, any medical device, system or
-  * appliance. There are exclusions of Bridgetek liability for certain types of loss
-  * such as: special loss or damage; incidental loss or damage; indirect or
-  * consequential loss or damage; loss of income; loss of business; loss of
-  * profits; loss of revenue; loss of contracts; business interruption; loss of
-  * the use of money or anticipated savings; loss of information; loss of
-  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
-  * corruption of data.
-  * There is a monetary cap on Bridgetek's liability.
-  * The Software may have subsequently been amended by another user and then
-  * distributed by that other user ("Adapted Software").  If so that user may
-  * have additional licence terms that apply to those amendments. However, Bridgetek
-  * has no liability in relation to those amendments.
-  * ============================================================================
-  */
+/*
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ * 
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the 
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
+
+/* INCLUDES ************************************************************************/
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include "EVE_debug.h"
 
 #include "eve_example.h"
 
-// ######################################################################################################################################################################################################
-// #######################################################            Set properties of all of the assets to be loaded                ###################################################################
-// ######################################################################################################################################################################################################
+/* CHECKS **************************************************************************/
 
 #if IS_EVE_API(1,2)
 #error This project needs EVE API 3, 4 or 5 (BT81x, BT82x).
 #endif
 
-#if !((DISPLAY_RES == WUXGA) || (DISPLAY_RES == FULLHD))
+#if !defined(IS_ARDUINO_LIB) /* Do not perform check in Arduino library */
+
+#if !((EVE_DISPLAY_RES == EVE_WUXGA) || (EVE_DISPLAY_RES == EVE_FULLHD))
 #error This project requires a screen of at least 1920x1024 pixels.
+#endif
+
+#endif // !defined(IS_ARDUINO_LIB)
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
 #endif
 
 // Handle for icon cell images
@@ -107,14 +123,14 @@ const uint8_t resp_hysteresis = 16;
 uint8_t sweep_edge[trace_total][TRACE_STEP];
 
 // Updated touchscreen and status info data loaded into sweep_edge
-TRACE_PROPS infostatus;
+EVE_TRACE_PROPS infostatus;
 
 // Array to receive touchscreen and status info
 uint32_t receivedata[3];
 
-ASSET_PROPS patch_asset;
-ASSET_PROPS icon_assets_small[icons_total_small];
-ASSET_PROPS icon_assets_large[icons_total_large];
+EVE_ASSET_PROPS patch_asset;
+EVE_ASSET_PROPS icon_assets_small[icons_total_small];
+EVE_ASSET_PROPS icon_assets_large[icons_total_large];
 
 // Built-in fonts
 const uint8_t widths[] = EVE_ROMFONT_WIDTHS;
@@ -160,6 +176,8 @@ const uint32_t update_period_ms = 1000;
 // Brightness range - Note PWM max is 0x80.
 const uint16_t brightness_range = 96;
 const uint16_t brightness_min = 32;
+
+/* FUNCTIONS ***********************************************************************/
 
 void eve_display_load_assets(void)
 {
@@ -321,13 +339,14 @@ void eve_draw_number(int32_t x, int32_t y, uint16_t size, uint16_t digit, uint32
 
 int eve_loadpatch(void)
 {
-    eve_loadpatch_impl();
+    int result = eve_loadpatch_impl();
     char actual[128];
-
+    
+    // Print the patch version
     EVE_LIB_GetCoProException(actual);
-    DEBUG_PRINTF("%s\n", actual);
+    EVE_DEBUG_PRINTF("%s\n", actual);
 
-    return 0;
+    return result;
 }
 
 #endif
@@ -401,8 +420,8 @@ void eve_display(void)
     // Tooltips text
     const char *tooltip = NULL;
     uint8_t tooltip_key = 0;
-    uint16_t tooltip_x;
-    uint16_t tooltip_y;
+    uint16_t tooltip_x = 0;
+    uint16_t tooltip_y = 0;
 
     // Brightness display position
     uint32_t brightness_val = brightness_range;
@@ -418,7 +437,7 @@ void eve_display(void)
     trace_colour[trace_resp] =  green;
     trace_colour[trace_sat] =  blue;
 
-    while(1)
+    do
     {
         // Calculate updated data "received" to display on the traces
         if (icon_updatestate == icon_pause)
@@ -474,7 +493,9 @@ void eve_display(void)
             }
         }
 
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1, 1, 1);
@@ -720,9 +741,11 @@ void eve_display(void)
         // Get display list fullness
         EVE_CMD_MEMCPY(infostatus.RAM_G_Start + (sizeof(uint32_t) * 2), EVE_REG_CMD_DL, sizeof(uint32_t));
 
-        // Send display to EVE
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
         // Await is implied in the EVE_LIB_BeginCoProList() call on the next frame
         //EVE_LIB_AwaitCoProEmpty();
@@ -899,7 +922,7 @@ void eve_display(void)
 
         // Make the heart sign "pulse" using sweep edge data
         pulse = pulse / 2; // decrease size of pulse slower for visual effect
-        for (k = 0; k < (int)sweep_step; k++)
+        for (k = 0; k < sweep_step; k++)
         {
             uint8_t test = sweep_edge[trace_hrm][k];
             if (test > pulse)
@@ -979,7 +1002,7 @@ void eve_display(void)
         if (frame_rate_flag)
         {
             (void)frame_render_time;
-            DEBUG_PRINTF("overrun: took %d ms\n", frame_render_time);
+            EVE_DEBUG_PRINTF("overrun: took %d ms\n", frame_render_time);
         }
 
         if ((dialog) || (tooltip))
@@ -993,21 +1016,38 @@ void eve_display(void)
 
         uint32_t dlsize =  receivedata[2];
         (void)dlsize;
-        DEBUG_PRINTF("DL: %08x frame %d ms\n", dlsize, frame_render_time);
-    }
+        EVE_DEBUG_PRINTF("DL: %08x frame %d ms\n", dlsize, frame_render_time);
+    
+    } while(LOOP);
 }
 
 // Application Code begins here
-
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);
+    
+    // Initialise the display
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
-    EVE_Init();                 // Initialise the display
+    // Calibrate the display
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
-    eve_calibrate();          // Calibrate the display
+    // Load assets into RAM_G
+    EVE_DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    eve_display_load_assets();   
 
-    eve_display_load_assets();   // Load assets into RAM_G
-
-    eve_display();              // Run Application
+    // Start example code
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

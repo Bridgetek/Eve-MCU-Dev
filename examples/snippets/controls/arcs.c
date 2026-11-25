@@ -1,5 +1,5 @@
 /**
- @file arcs.c
+ * @file arcs.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,31 +36,32 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "arcs.h"
 
+/* CONSTANTS ***********************************************************************/
+
 // Set pixel precision based on EVE version
-#if IS_EVE_API(2,3,4,5)
+#if !IS_EVE_API(1)
 // 1/8 pixel on EVE2,3,4,5
 #define PIX_PRECISION 8
-#elif IS_EVE_API(1)
+#else // IS_EVE_API(1)
 // 1/16 pixel on EVE1
 #define PIX_PRECISION 16
-#endif
+#endif // !IS_EVE_API(1)
 
 // Options for the 
 #define OPT_NONE 0
 #define OPT_INDICATOR 1
 
-#ifndef min
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
+/* FUNCTIONS ***********************************************************************/
 
 /**
  @brief Function to draw a simple arc gauge, using an optional indicator point.
@@ -140,10 +141,12 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
     // Save current graphics context
     EVE_SAVE_CONTEXT();
 
-    #if IS_EVE_API(2,3,4,5) // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
+    #if !IS_EVE_API(1) 
+    // PIX_PRECISION = 1/8th if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT command
     // Set desired vertex format for the example
     EVE_VERTEX_FORMAT(3);
-    #endif
+    #endif // !IS_EVE_API(1)
+
     // Stencils preclude using alpha
     EVE_COLOR_A(255);
 
@@ -219,7 +222,7 @@ static void arc_simple_gauge_impl(int16_t x, int16_t y,
         EVE_VERTEX2F((x * PIX_PRECISION) - indicator_x, (y * PIX_PRECISION) + indicator_y);
     }
 
-    // Draw a circle which will fill the arc with the colour set in the graphics context before the funciton call
+    // Draw a circle which will fill the arc with the colour set in the graphics context before the function call
     EVE_COLOR_MASK(1, 1, 1, 0);
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
     EVE_POINT_SIZE(r1 * 16);

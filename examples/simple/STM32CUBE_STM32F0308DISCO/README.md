@@ -2,6 +2,8 @@
 
 [Back](../README.md)
 
+The [STM32Cube](../../../ports/eve_arch_stm32/README.md#stm32cube) is used for this example.
+
 ## Setting Up the STM32Cube Example on STM32CubeIDE
 
 The build environment depends on the presence of the STM32CubeIDE IDE. This can be setup following instructions in the [Integrated Development Environment for STM32](https://www.st.com/en/development-tools/stm32cubeide.html) page from the ARM website.

@@ -1,5 +1,5 @@
 /**
- @file eve_helper.c
+ * @file eve_helper.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,16 +37,20 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
-#include <EVE.h>
-#include <HAL.h>
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
 
 /* Array containing the bitmap sizes of ROM fonts. */
 const uint8_t eve_rom_font_widths[] = EVE_ROMFONT_WIDTHS;
 const uint8_t eve_rom_font_heights[] = EVE_ROMFONT_HEIGHTS;
+
+/* FUNCTIONS ***********************************************************************/
 
 uint8_t eve_romfont_width(uint8_t font)
 {

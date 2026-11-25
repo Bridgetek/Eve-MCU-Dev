@@ -1,14 +1,15 @@
 /**
- @file EVE_Linux_RPi.c
+ * @file EVE_Linux_RPi.c
+ * @details Platform-specific code for controlling EVE on Raspberry Pi devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -44,6 +45,8 @@
 
 #pragma message "Compiling " __FILE__ " for Raspberry Pi"
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -54,25 +57,32 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <gpiod.h>
 
-// Powerdown pin
+// Pin definitions
 /*
-	printf ("J8 Pin 19 - MOSI (SPI0_D1)\n");
-	printf ("J8 Pin 21 - MISO (SPI0_D0)\n");
-	printf ("J8 Pin 23 - SCLK (SPI0_SCLK)\n");
-	printf ("J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin\n");
-	printf ("J8 Pin 18 - PD# (GPIO24) - Powerdown pin\n");
+    J8 Pin 19 - MOSI (SPI0_D1)
+    J8 Pin 21 - MISO (SPI0_D0)
+    J8 Pin 23 - SCLK (SPI0_SCLK)
+    J8 Pin 22 - CS (GPIO25) - Note this is not the SPI0_CS0 pin
+    J8 Pin 18 - PD# (GPIO24) - Powerdown pin
+    J8 Pin 16 - INT# (GPIO23) - Interrupt pin
 */
 #define PIN_NUM_PD   24
 #define PIN_NUM_CS   25
+#define PIN_NUM_INT  23
 
 #define str(s) xstr(s)
 #define xstr(s) #s
 
-// This is the Linux Platform specific section and contains the functions which
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the Linux Platform specific section and and contains the functions which
 // enable the GPIO and SPI interfaces.
 
 // ------------------ Platform specific initialisation  ------------------------
@@ -86,6 +96,8 @@ unsigned int GPIO_pd_line_num = PIN_NUM_PD;  // GPIO pin number
 struct gpiod_line *gpio_pd_line = NULL;
 unsigned int GPIO_cs_line_num = PIN_NUM_CS;  // GPIO pin number
 struct gpiod_line *gpio_cs_line = NULL;
+unsigned int GPIO_int_line_num = PIN_NUM_INT;  // GPIO pin number
+struct gpiod_line *gpio_int_line = NULL;
 
 int Platform_Init(void)
 {
@@ -99,7 +111,7 @@ int Platform_Init(void)
         return -1;
     }
 
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    // Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     uint32_t speed = 1000000;
     ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
     // Initialize SPIM HW
@@ -158,6 +170,20 @@ int Platform_Init(void)
         gpiod_chip_close(gpio_chip);
         exit(-1);
     }
+    gpio_int_line = gpiod_chip_get_line(gpio_chip, GPIO_int_line_num);
+    if (!gpio_int_line) 
+    {
+        fprintf(stderr, "Failed: gpiod_chip_get_line GPIO_int_line_num\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
+    // Request line as input
+    if (gpiod_line_request_input(gpio_int_line, "eve") < 0) 
+    {
+        fprintf(stderr, "Failed: gpiod_line_request_output\n");
+        gpiod_chip_close(gpio_chip);
+        exit(-1);
+    }
 
     return 0;
 }
@@ -172,10 +198,21 @@ int Platform_Deinit(void)
 
 int Platform_Setup(void)
 {
+    /* Additional SPI Configuration */
     return 0;
 }
 
-int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)
+#if defined(EVE_QSPI_ENABLE)
+int Platform_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+#error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Raspberry Pi
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+int Platform_SPITransfer(struct spi_ioc_transfer *xfer, int count)
 {
     return (ioctl(spiHandle, SPI_IOC_MESSAGE(count), xfer));
 }
@@ -226,6 +263,19 @@ void Platform_PDhigh(void)
     }
 }
 
+// ------------------------ interrupt input ------------------------------------
+int Platform_Int(void)
+{
+    int val = gpiod_line_get_value(gpio_int_line);
+    if (val < 0)
+    {
+        perror("gpiod_line_set_value");
+        gpiod_chip_close(gpio_chip);
+        return -1;
+    }
+    return val;
+}
+
 // ------------------------- Delay functions -----------------------------------
 
 void Platform_Delay_20ms(void)
@@ -236,6 +286,14 @@ void Platform_Delay_20ms(void)
 void Platform_Delay_500ms(void)
 {
     usleep(500 * 1000);
+}
+
+uint32_t Platform_Time_ms(void)
+{
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000000));
 }
 
 // Use toolchain defined functions.
@@ -278,6 +336,8 @@ uint32_t Platform_le32toh(uint32_t h)
 {
     return le32toh(h);
 }
+
+/* EVE MCU */
 
 #endif /* (PLATFORM_RASPBERRYPI) */
 

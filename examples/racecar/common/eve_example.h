@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ * @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,16 +42,20 @@
 
 #include <stdint.h>
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#include "patch_textscale.h"
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
 
-/* Functions called from eve_example code to platform specific code */
-uint32_t platform_get_time(void);
+/* Include snippets */
+#include <touch.h>
+#include <maths/trig_furman.h>
+#include <platform/platform_time.h>
+#include <patch_textscale.h>
 
 /* Entry point to the example code */
 void eve_example(const char *assets);
@@ -68,9 +72,9 @@ void eve_example(const char *assets);
 // (Convert to EVE assets as required)
 #define USE_FILES 4
 
-// Choose the methods for storing assets
+// Choose the methods for storing assets (check setting in CMakeLists.txt or build file)
 #ifndef ASSETS
-#define ASSETS USE_FLASHIMAGE
+#define ASSETS USE_C_ARRAYS
 #endif
 
 // Validate asset storage method is appropriate
@@ -84,8 +88,7 @@ void eve_example(const char *assets);
 /* Array containing the bitmap sizes of ROM fonts. */
 uint8_t eve_romfont_width(uint8_t font);
 uint8_t eve_romfont_height(uint8_t font);
-void eve_set_romfont_width(uint8_t font, uint8_t w);
-void eve_set_romfont_height(uint8_t font, uint8_t h);
+
 // Asset storage information
 typedef struct EVE_ASSET_PROPS_s
 {
@@ -129,9 +132,6 @@ int eve_loadpatch_impl(void);
 #if ASSETS == USE_FLASH
 void eve_flash_full_speed(void);
 #endif
-
-#include "touch.h"
-#include "maths/trig_furman.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -1,6 +1,6 @@
 /**
-    @file eve_example.h
- **/
+ * @file eve_example.h
+ */
 /*
  * ============================================================================
  * (C) Copyright,  Bridgetek Pte. Ltd.
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -42,23 +42,18 @@
 
 #include <stdint.h>
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-/**
- @brief Definitions of handles for custom fonts and bitmaps.
- */
-//@{
-#define FONT_CUSTOM 8
-#define BITMAP_BRIDGETEK_LOGO 7
-//@}
+/* Include EVE-MCU-Dev library API layer */
+#include <EVE.h> 
+/* Include the EVE debug-output macros */
+#include <EVE_debug.h>
 
-/* Globals available within the eve_example code */
-extern uint32_t eve_img_bridgetek_logo_width;
-extern uint32_t eve_img_bridgetek_logo_height;
+/* Include snippets */
+#include <touch.h>
+#include <widgets/sevenseg.h>
 
 /* Functions called within the eve_example code */
 uint8_t eve_romfont_width(uint8_t font);
@@ -66,9 +61,6 @@ uint8_t eve_romfont_height(uint8_t font);
 
 /* Entry point to the example code */
 void eve_example(void);
-
-#include "touch.h"
-#include "widgets/sevenseg.h"
 
 #ifdef __cplusplus
 } /* extern "C" */

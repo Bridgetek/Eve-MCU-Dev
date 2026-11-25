@@ -19,19 +19,19 @@ This directory is used to build an EVE library for Arduino. There are template f
   - [Header 1x10 Pins](#header-1x10-pins)
   - [Arduino Connection](#arduino-connection)
 
-## Introducion
+## Introduction
 
-The script will build a library for one generation of EVE device. Each generation requires a seperate library since the API and supported options on each device are different. Supporting multiple APIs with a single library would lead to larger code size of the library.
+The script will build a library for one generation of EVE device. Each generation requires a separate library since the API and supported options on each device are different. Supporting multiple APIs with a single library would lead to larger code size of the library.
 
 The display panel settings can be chosen at runtime from a set configured into the template files.
 
 ## Setting Up the Arduino Library
 
-The python script `libbuild.py` is run with the the following options:
+The python script `libbuild.py` is run with the following options:
 
-```
+```console
 > libbuild.py --help
-usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB]
+usage: libbuild.py [-h] [--src SRC] [--dest DEST] [--api API] [--apisub APISUB] --ver VERSION
 
 Library Builder for EVE
 
@@ -41,6 +41,7 @@ options:
   --dest DEST      destination directory for Arduino library
   --api API        EVE API to build library for
   --apisub APISUB  EVE SUB API to build library for
+  --ver VERSION    Arduino library version assigned to this build
 ```
 The `--src` option tells the script where the root directory of the EVE-MCU-Dev code is located. This is the folder that contains the `source`, `include`, `ports`, and `examples` directories. The script will take files that it needs from the EVE-MCU-Dev libraries. The default is `../..` since this the relative path to the code from the normal location of this script.
 
@@ -75,6 +76,8 @@ The available EVE device APIs and SUB APIs are:
 
 The name of the library will be generated from the EVE API and SUB API. If there is a SUB API greater than "1" then this is appended to the EVE API to make the "full" API version. So, for example, the API for a BT820 will be "5", FT81x will be "2", and for a BT88x will be "2_2".
 
+A `--ver` parameter is required to make a version number for this build.
+
 ### Files copied to the Arduino Library
 
 The script will build a library suitable to be loaded into the Arduino IDE. It will copy files from the EVE-MCU-Dev library and alter template files to form the interface to the user in the Arduino programming environment.
@@ -85,19 +88,29 @@ The following files are copied without change from the EVE-MCU-Dev library.
   - EVE.h
   - MCU.h
   - HAL.h
-  - FT8xx.h
-  - BT81x.h  (for EVE API 3,4 only)
-  - BT82x.h  (for EVE API 5 only)
-  - FT80x.h  (for EVE API 1 only)
-  - FT81x.h  (for EVE API 2 only)
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `ports\eve_bt82x` directory add the BT82x base patch (for API 5 only):
-  - patch_base.c
-  - patch_base.h
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
-  - eve_arch_arduino.ino (renamed to EVE_MCU.cpp)
+  - EVE_ARCH_ARDUINO.ino (renamed to EVE_MCU.cpp)
+
+- Extension source and header files are stored separately in the EVE-MCU-Dev
+source tree:
+
+  From `include/extensions`:
+
+  - `custom_touch_fw.h` - EVE API 2, 3 and 4
+  - `bt82x_patch.h` - EVE API 5
+  - `lcd_panel_init.h` - EVE API 1, 2, 3, 4 and 5
+
+  From `source/extensions`:
+
+  - `custom_touch_fw.c` - EVE API 2, 3 and 4
+  - `bt82x_patch.c` - EVE API 5
+  - `lcd_panel_init.c` - EVE API 1, 2, 3, 4 and 5
+
+When the Arduino library is generated, these files are copied into the
+library root directory. The `extensions` directory structure is not retained
 
 Template files are added to this to form the library.
 - EVE_config.h.template 
@@ -108,7 +121,12 @@ Template files are added to this to form the library.
 - test.ino.template
 
 The following example projects are added:
+- examples/b2tf
+- examples/datavisualiser
+- examples/gyminterval
+- examples/medinfo
 - examples/simple
+- examples/touchscreentest
 
 The output directory is a library specifically for the API version that was specified in the command line. It cannot be used for EVE devices that support a different API level.
 
@@ -138,7 +156,7 @@ The properties file is used in the Arduino IDE to find releases of the library i
 
 ### README.md.template
 
-A README.md file is compiled from the template to include information pertinant to the library.
+A README.md file is compiled from the template to include information pertinent to the library.
 
 ### test.ino.template
 
@@ -153,7 +171,7 @@ The script needs a valid EVE-MCU-Dev directory with current files located either
 ### Manually Adding the Library to a Sketch
 
 The library can be added to a sketch by including the lines in the example below. This example is for the API 5 library for BT82x, the number corresponds to the API.
-```
+```c++
 #include <BridgetekEVE5.h>
 
 BridgetekEVE5 eve;
@@ -176,7 +194,7 @@ The generated library code can be distributed as a ZIP file and loaded into Ardu
 
 ### Adding the ZIP file to the Arduino IDE
 
-Once the library has been generated by the above script the output directory can be ZIPped into a single file. Using the Arduino IDE the ZIP file can be added to the librarues by selecting "Include Library ->" from the Menu then "Add .ZIP Library...".
+Once the library has been generated by the above script the output directory can be ZIPped into a single file. Using the Arduino IDE the ZIP file can be added to the libraries by selecting "Include Library ->" from the Menu then "Add .ZIP Library...".
 
 Alternatively, the contents of the output directory can be copied into a directory in the "libraries" directory found within the "Arduino" directory in the User's "Documents" directory. The library will be able to be added manually afterwards.
 
@@ -201,12 +219,12 @@ The wiring colours in the section for each connection are defined in the followi
 
 ### Through-Board 2x8 Pins
 
-This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board ontop of the EVE module.
+This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly found on the "ME" range of boards. These are designed with longer pins that can be used with the MM900EVxB FT9XX boards to mount the MCU board on top of the EVE module.
 
 | Pin | EVE Signal | Pin | EVE Signal |
 | --- | --- | --- | --- |
 | 1 | N/C | 2 | N/C |
-| 3 | N/C | 4 | PD# |
+| 3 | INT# | 4 | PD# |
 | 5 | GND | 6 | N/C |
 | 7 | 5V | 8 | N/C |
 | 9 | N/C | 10 | N/C |
@@ -216,7 +234,7 @@ This connector is a through-board connector 2x8 pin with 2.54mm spacing commonly
 
 The 2x8 header can be connected as in the following picture.
 
-![Wiring for 2x8 Header](docs/header2x8.png)
+![Wiring for 2x8 Header](/docs/header2x8.png)
 
 ### Header 1x10 Pins
 
@@ -237,7 +255,7 @@ This connector is the header pin connector 1x10 pin with 2.54mm spacing commonly
 
 The 1x10 header can be connected as in the following picture.
 
-![Wiring for 1x10 Header](docs/header1x10.png)
+![Wiring for 1x10 Header](/docs/header1x10.png)
 
 ### Arduino Connection 
 
@@ -250,10 +268,14 @@ The Arduino module can be connected via short wires to the corresponding signals
 | CIPO | ISCP 1 | MISO |
 | D10 | PB6 | CS# |
 | D9 | PB5 | PD# |
+| D8 | - | INT# _(1)_ |
 | - | ISCP 2 | 5V |
 | - | ISCP 6 / GND | GND |
 
-Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the Beaglebone Black and EVE modules common to both power sources.
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_TRANSFER_INT` in the configuration for EVE-MCU-Dev.
+
+
+Ensure that the power supply from the Arduino module is capable of also powering the EVE board. If using third-party modules which may consume more current, a separate power connection to the EVE module could be used, with the grounds of the BeagleBone Black and EVE modules common to both power sources.
 
 An Arduino board can be connected to an EVE board as in the following picture.
 

@@ -2,6 +2,8 @@
 
 [Back](../README.md)
 
+The [STM32 Keil port](../../../ports/eve_arch_stm32/README.md#keil-uvision) is used for this example.
+
 ## Setting Up the STM32 Example on Keil uVision 5
 
 The build environment depends on the presence of the Keil uVision 5 IDE. This can be setup following instructions in the [ARM Developer Tools Keil MDK](https://developer.arm.com/Tools%20and%20Software/Keil%20MDK) page from the ARM website.

@@ -1,5 +1,5 @@
 /**
- @file touch.c
+ * @file touch.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,22 +37,26 @@
  * ============================================================================
  */
 
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <stdint.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "touch.h"
 
-/* CONSTANTS ***********************************************************************/
-
-/* GLOBAL VARIABLES ****************************************************************/
-
-/* LOCAL VARIABLES *****************************************************************/
-
-/* MACROS **************************************************************************/
-
-/* LOCAL FUNCTIONS / INLINES *******************************************************/
+/* External linkage to calibration storage functions 
+ * These are implemented for common cases in the snippets/platform directory.
+ * The linkage here allows these to be provided in application specific cases.
+ */
+/* Initialise method used to store touchscreen settings */
+extern int8_t platform_calib_init(void);
+/* Write calibration settings */
+extern int8_t platform_calib_write(void *calib, uint32_t len);
+/* Read calibration settings */
+extern int8_t platform_calib_read(void *calib, uint32_t len);
 
 /* FUNCTIONS ***********************************************************************/
 
@@ -104,23 +108,26 @@ int eve_read_tag(uint8_t *key)
 
 int eve_calibrate(void)
 {
+    // Do not perform a calibration if the simulator is running the code
+#if !defined(SOFTWARE_SIMULATOR)
+
     struct touchscreen_calibration calib;
 
     // Transform matrix definition
     // x' = x * A + y * B + C
     // y' = x * D + y * E + F
 
-#if PANEL_TYPE == DP_1012_01A
-    // Predefined transform matrix for DP-1012-01A display panel
-    // X-axis 1920 pixels. Raw 1919 -> 0 (0x780)
-    // Y-axis 1200 pixels. Raw 1199 -> 0 (0x4b0)
-    calib.transform[0] = 0xffff0000; // - 1.0
+#if EVE_PANEL == EVE_DP_IDM21R
+    // Predefined transform matrix for EVE_DP_IDM21R display panel
+    // use default register values here as the first calib dot wont appear
+    // on the round panel
+    calib.transform[0] = 0x00010000; // 1.0
     calib.transform[1] = 0x00000000; // 0.0
-    calib.transform[2] = 0x07800000; // + 1200
+    calib.transform[2] = 0x00000000; // 0.0
     calib.transform[3] = 0x00000000; // 0.0
-    calib.transform[4] = 0xffff0000; // - 1.0
-    calib.transform[5] = 0x04b00000; // + 1200.0
-#elif 0 // PANEL_TYPE == DP_1561_01A
+    calib.transform[4] = 0x00010000; // 1.0
+    calib.transform[5] = 0x00000000; // 0.0
+#elif EVE_PANEL == EVE_DP_1561_01A
     // Predefined transform matrix for DP-1561-01A display panel
     // X-axis 1920 pixels. Raw 0 -> 16383 (0x4000)
     // Y-axis 1080 pixels. Raw 0 -> 9599 (0x2580)
@@ -133,17 +140,25 @@ int eve_calibrate(void)
     calib.transform[5] = 0x00000000; // 0.0
 #else
     // Uncharacterised panels
+    
+    // Flag set if persistent storage is available
+    int store = 0;
+
+    // Flag set if a valid calibration data read from peristent storage
     int valid = 0;
+
     // Try to read a touch configuration if the platform support it
-    // NOTE: platform_calib_init to return zero if supported non-zero if now
+    // NOTE: platform_calib_init to return zero if supported non-zero if not
     if (platform_calib_init() == 0)
     {
+        // Persistent storage is available
+        store = 1;
         // Do not read calibration information if screen is being touched at start
         // NOTE: Not available on capacitive touch screens.
         if (!eve_key_detect())
         {
             // Read calibration information from platform
-            if (platform_calib_read(&calib) == 0)
+            if (platform_calib_read(&calib, sizeof(struct touchscreen_calibration)) == 0)
             {
                 // Verify the information is valid
                 if (calib.key == VALID_KEY_TOUCHSCREEN)
@@ -182,7 +197,12 @@ int eve_calibrate(void)
         calib.transform[3] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_D);
         calib.transform[4] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_E);
         calib.transform[5] = EVE_LIB_MemRead32(EVE_REG_TOUCH_TRANSFORM_F);
-        platform_calib_write(&calib);
+        
+        // Only write to persistent storage if it is available
+        if (store)
+        {
+            platform_calib_write(&calib, sizeof(struct touchscreen_calibration));
+        }
     }
 #endif
 
@@ -201,6 +221,8 @@ int eve_calibrate(void)
     EVE_LIB_MemWrite32(EVE_REG_CPURESET, 2);
     EVE_LIB_MemWrite32(EVE_REG_CPURESET, 0);
 #endif
+
+#endif // !defined(SOFTWARE_SIMULATOR)
 
     return 0;
 }

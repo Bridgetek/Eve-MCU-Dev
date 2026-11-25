@@ -1,14 +1,15 @@
 /**
- @file EVE_libft4222.c
+ * @file EVE_libft4222.c
+ * @details Platform-specific code for controlling EVE on FT4222 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -46,6 +47,8 @@
 
 #pragma message ("Compiling " __FILE__ " for libFT4222")
 
+/* EVE MCU HEADER */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
@@ -53,8 +56,15 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
-/* EVE MCU HEADER */
+#include <ftd2xx.h>
+#include <LibFT4222.h>
+
+/* Include functions for EVE-MCU-Dev library MCU layer */
+#include <MCU.h>
+/* Include EVE-MCU-Dev library debug macros */
+#include "EVE_debug.h"
 
 #if defined(__linux__) || defined(__CYGWIN__)
 // Linux endianness (not BSD variants)
@@ -74,7 +84,7 @@
 #define HOST_IS_LITTLE_ENDIAN 0
 #endif
 
-#if defined(QUADSPI_ENABLE)
+#if defined(EVE_QSPI_ENABLE)
 #if IS_EVE_API(1)
 #error Quad SPI is not supported on EVE API 1 (FT80x)
 #endif
@@ -83,35 +93,31 @@
 #pragma message ("libFT4222 Single SPI enabled")
 #endif
 
-#include "ftd2xx.h"
-#include "libft4222.h"
-
 /* EVE MCU HEADER END */
-
-#include <EVE.h>
-#include <HAL.h>
-#include <MCU.h>
 
 /* EVE MCU */
 
-// This platform specific section contains the functions which
+// This is the FT4222 platform specific section, and contains the functions which
 // enable the GPIO and SPI interfaces.
 
-// GPIO is not utilized in Lib4222 as it is directly managed by firmware.
+// GPIO is not utilized in Libft4222 as it is directly managed by firmware.
 #define FT8XX_CS_N_PIN   1    
 #define FT8XX_PD_N_PIN   GPIO_PORT0
+#define FT8XX_INT_N_PIN  GPIO_PORT2
 // GPIO0         , GPIO1      , GPIO2       , GPIO3         }
-static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_OUTPUT, GPIO_INPUT, GPIO_OUTPUT };
+static GPIO_Dir gpio_dir[4] = { GPIO_OUTPUT , GPIO_INPUT, GPIO_INPUT, GPIO_INPUT };
 
 // ----------------------- MCU Transmit Buffering  -----------------------------
 
-/* Transfers are "chunked" to the EVE by the HAL.
- * This buffer is large enough to receive one chunk of
- * data and transmit it in one go. If it cannot be
- * sent in one go then the write address may not be
- * valid on subsequent packets.
+/*
+ * Size of the local SPI transfer buffer.
+ *
+ * EVE data transfers are chunked by the HAL. This buffer is sized to hold
+ * a complete HAL transfer chunk so that it can be sent to EVE in a single
+ * SPI transaction. Splitting a chunk across multiple transactions may
+ * invalidate the write address used by subsequent transfers.
  */
-#define MCU_BUFFER_SIZE (HAL_MAX_CHUNK_SIZE)
+#define MCU_BUFFER_SIZE (64 * 1024)
 static uint8_t *MCU_buffer;
 static uint16_t MCU_bufferLen;
 
@@ -131,7 +137,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     ftStatus = FT_SetTimeouts(ftHandleSPI, 5000, 5000);
     if (FT_OK != ftStatus)
     {
-        DEBUG_ERROR("FT4222 Setup FT_SetTimeouts failed: %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("FT4222 Setup FT_SetTimeouts failed: %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -139,22 +145,22 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
     ftStatus = FT_SetLatencyTimer(ftHandleSPI, 2);
     if (FT_OK != ftStatus)
     {
-        DEBUG_ERROR("FT4222 Setup FT_SetLatencyTimer failed: %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("FT4222 Setup FT_SetLatencyTimer failed: %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
-    /* Set SPI clock speed to 20 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock speed to 20 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
     ftStatus = FT4222_SPIMaster_Init(ftHandleSPI, SPI_IO_SINGLE, div, CLK_IDLE_LOW, CLK_LEADING, FT8XX_CS_N_PIN);
     if (FT_OK != ftStatus)
     {
-        DEBUG_ERROR("FT4222 Setup SPIMaster Init failed: %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("FT4222 Setup SPIMaster Init failed: %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
     ftStatus = FT4222_SPIMaster_SetCS(ftHandleSPI, CS_ACTIVE_LOW);
     if (FT_OK != ftStatus)
     {
-        DEBUG_ERROR("FT4222 Setup SPIMaster SetCS set failed: %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("FT4222 Setup SPIMaster SetCS set failed: %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -163,7 +169,7 @@ static void mcu_setup_spi(FT4222_SPIClock div, FT4222_SPIMode mode)
         ftStatus = FT4222_SPIMaster_SetLines(ftHandleSPI, mode);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Setup SPIMaster SetLines failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Setup SPIMaster SetLines failed: %d\n", (int)ftStatus);
             exit(ftStatus);
         }
     }
@@ -193,7 +199,7 @@ int MCU_Init(void)
                                         &devInfo.ftHandle);
         if (ftStatus != FT_OK)
         {
-            DEBUG_PRINTF("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %u\n", (int)ftStatus, (uint32_t)iDev);
+            EVE_DEBUG_PRINTF("FT4222 Init FT_GetDeviceInfoDetail returned %d for interface %u\n", (int)ftStatus, (uint32_t)iDev);
             continue;
         }
 
@@ -203,21 +209,21 @@ int MCU_Init(void)
             continue;
         }
 
-        printf("FT4222 device %u: ", (uint32_t)iDev);
+        EVE_DEBUG_PRINTF("FT4222 device %u: ", (uint32_t)iDev);
 
         if( ! strcmp( devInfo.Description, "FT4222 A"))
         {
             if (countSPI == 0)
             {
                 devNumSPI = devInfo.LocId;
-                printf("selected for SPI\n");
-                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
-                printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
-                printf("\t\tDescription: %s\n", devInfo.Description);
+                EVE_DEBUG_PRINTF("selected for SPI\n");
+                EVE_DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
+                EVE_DEBUG_PRINTF("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
+                EVE_DEBUG_PRINTF("\t\tDescription: %s\n", devInfo.Description);
             }
             else
             {
-                printf("ignored\n");
+                EVE_DEBUG_PRINTF("ignored\n");
             }
             countSPI--;
         }
@@ -227,14 +233,14 @@ int MCU_Init(void)
             if (countGPIO == 0)
             {
                 devNumGPIO = devInfo.LocId;
-                printf("selected for GPIO\n");
-                printf("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
-                printf("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
-                printf("\t\tDescription: %s\n", devInfo.Description);
+                EVE_DEBUG_PRINTF("selected for GPIO\n");
+                EVE_DEBUG_PRINTF("\t\tVID/PID: 0x%04x/0x%04x\n", (uint16_t)(devInfo.ID >> 16), (uint16_t)(devInfo.ID & 0xffff));
+                EVE_DEBUG_PRINTF("\t\tSerialNumber: %s\n", devInfo.SerialNumber);
+                EVE_DEBUG_PRINTF("\t\tDescription: %s\n", devInfo.Description);
             }
             else
             {
-                printf("ignored\n");
+                EVE_DEBUG_PRINTF("ignored\n");
             }
             countGPIO--;
         }
@@ -245,14 +251,14 @@ int MCU_Init(void)
         ftStatus = FT_OpenEx((PVOID)(uintptr_t)devNumSPI, FT_OPEN_BY_LOCATION, &ftHandleSPI);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init Open FT4222 SPI device failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init Open FT4222 SPI device failed: %d\n", (int)ftStatus);
             return -1;
         }
 
         ftStatus = FT_OpenEx((PVOID)(uintptr_t)devNumGPIO, FT_OPEN_BY_LOCATION, &ftHandleGPIO);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init Open FT4222 GPIO device failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init Open FT4222 GPIO device failed: %d\n", (int)ftStatus);
             return -1;
         }
 
@@ -265,21 +271,21 @@ int MCU_Init(void)
         ftStatus = FT4222_SetClock(ftHandleGPIO, SYS_CLK_80);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init SetClock failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init SetClock failed: %d\n", (int)ftStatus);
             return -1;
         }
 
         ftStatus = FT4222_SetSuspendOut(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init Disable Suspend Out function on GPIO2 failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init Disable Suspend Out function on GPIO2 failed: %d\n", (int)ftStatus);
             return -1;
         }
 
         ftStatus = FT4222_SetWakeUpInterrupt(ftHandleGPIO, FALSE);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init Disable Wakeup/Interrupt feature on GPIO3 failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init Disable Wakeup/Interrupt feature on GPIO3 failed: %d\n", (int)ftStatus);
             return -1;
         }
 
@@ -287,20 +293,20 @@ int MCU_Init(void)
         ftStatus = FT4222_GPIO_Init(ftHandleGPIO, gpio_dir);
         if (FT_OK != ftStatus)
         {
-            DEBUG_ERROR("FT4222 Init FT4222 as GPIO interface failed: %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 Init FT4222 as GPIO interface failed: %d\n", (int)ftStatus);
             return -1;
         }
     }
     else
     {
-        DEBUG_ERROR("No FT4222 channels found\n");
+        EVE_DEBUG_ERROR("No FT4222 channels found\n");
         return -1;
     }
 
     MCU_buffer = malloc(MCU_BUFFER_SIZE);
     if (MCU_buffer == NULL)
     {
-        DEBUG_ERROR("Setup malloc failed\n");
+        EVE_DEBUG_ERROR("Setup malloc failed\n");
         return -1;
     }
     MCU_bufferLen = 0;
@@ -326,24 +332,36 @@ int MCU_Deinit(void)
 int MCU_Setup(void)
 {
     // Increase SPI speed to 20 MHz after initialisation is complete
-    // See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     // Clock is 80 MHz / 4 = 20 MHz
-#if defined QUADSPI_ENABLE
-#if IS_EVE_API(2,3,4,5)
-    /* Select QSPI after initialisation complete. */
-    HAL_SetSPIMode(2);
-    mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
-    ftIsQuad = TRUE;
-#else // IS_EVE_API(2,3,4,5)
     mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
-    ftIsQuad = FALSE;
-#endif
-#else // QUADSPI_ENABLE
-    mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
-    ftIsQuad = FALSE;
-#endif // QUADSPI_ENABLE
+    
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    if (mode == EVE_SPI_SINGLE_CHANNEL)
+    {
+        /* SPI Configuration */
+        mcu_setup_spi(CLK_DIV_4, SPI_IO_SINGLE);
+        ftIsQuad = FALSE;
+    }
+    else if (mode == EVE_SPI_QUAD_CHANNEL)
+    {
+        /* QSPI Configuration */
+        mcu_setup_spi(CLK_DIV_4, SPI_IO_QUAD);
+        ftIsQuad = TRUE;
+    }
+    else
+    {
+        return -1;
+    }
+
+    return 0;
+}
+#endif /* defined(EVE_QSPI_ENABLE) */
 
 // ------------------------- Output buffering ----------------------------------
 
@@ -370,6 +388,7 @@ static int MCU_multi_transfer(uint8_t *DataToRead, uint16_t len)
         MCU_bufferLen = 0;
     }
 
+    // Calling function will handle ftStatus errors
     return ftStatus;
 }
 
@@ -385,7 +404,7 @@ static int MCU_transmit_buffer(int end)
         if (FT4222_OK != ftStatus)
         {
             // spi master read failed
-            DEBUG_ERROR("FT4222 SPIMaster Write failed %d\n", (int)ftStatus);
+            EVE_DEBUG_ERROR("FT4222 SPIMaster Write failed %d\n", (int)ftStatus);
             exit(ftStatus);
         }
         else
@@ -404,7 +423,7 @@ static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
 
     if (ftIsQuad)
     {
-        MCU_multi_transfer(DataToRead, len);
+        ftStatus = MCU_multi_transfer(DataToRead, len);
     }
     else
     {
@@ -414,11 +433,13 @@ static int MCU_receive_buffer(uint8_t *DataToRead, uint16_t len, int end)
         ftStatus = FT4222_SPIMaster_SingleRead(ftHandleSPI, (uint8_t *)DataToRead, len, &transferred, end);
     }
 
+    // Calling function will handle ftStatus errors
     return ftStatus;
 }
 
 static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
 {
+    FT_STATUS ftStatus = FT4222_OK;
     uint16_t i = MCU_bufferLen;
     uint16_t j = 0;
     uint16_t plength;
@@ -441,7 +462,13 @@ static int MCU_append_buffer(const uint8_t *buffer, uint16_t length, int end)
         {
             if (ftIsQuad)
             {
-                MCU_multi_transfer(NULL, 0);
+                ftStatus = MCU_multi_transfer(NULL, 0);
+                if (FT4222_OK != ftStatus)
+                {
+                    // spi master transfer failed
+                    EVE_DEBUG_ERROR("FT4222 MCU_append_buffer failed %d\n", (int)ftStatus);
+                    exit(ftStatus);
+                }
                 /* Keep the previous write address in the transmit buffer if we are not
                  * ending this transfer. */
                 if (end == 0)
@@ -482,9 +509,17 @@ void MCU_CSlow(void)
 // --------------------- Chip Select line high ---------------------------------
 void MCU_CShigh(void)
 {
+    FT_STATUS ftStatus = FT_OK;
+    
     if (ftIsQuad)
     {
-        MCU_multi_transfer(NULL, 0);
+        ftStatus = MCU_multi_transfer(NULL, 0);
+        if (FT4222_OK != ftStatus)
+        {
+            // spi master read failed
+            EVE_DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)ftStatus);
+            exit(ftStatus);
+        }
     }
     else
     {
@@ -492,17 +527,10 @@ void MCU_CShigh(void)
         {
             // Pull CS high with a dummy read to address zero.
             // This is only required after an unaddressed read.
-            FT_STATUS ftStatus;
 
             MCU_bufferLen = 4;
             memset(MCU_buffer, 0, 4);
-            ftStatus = MCU_transmit_buffer(1);
-            if (FT4222_OK != ftStatus)
-            {
-                // spi master read failed
-                DEBUG_ERROR("FT4222 MCU_CShigh failed %d\n", (int)ftStatus);
-                exit(ftStatus);
-            }
+            MCU_transmit_buffer(1);
         }
     }
 }
@@ -510,10 +538,10 @@ void MCU_CShigh(void)
 // -------------------------- PD line low --------------------------------------
 void MCU_PDlow(void)
 {
-    // PD# set to 0, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 0, connect GPIO0 of FT4222 PD# of FT8xx/BT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 0)))
     {
-        DEBUG_ERROR("FT4222 MCU_PDlow change failed!\n");
+        EVE_DEBUG_ERROR("FT4222 MCU_PDlow change failed!\n");
         exit(-100);
     }
 }
@@ -521,12 +549,27 @@ void MCU_PDlow(void)
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
-    // PD# set to 1, connect BLUE wire of MPSSE to PD# of FT8xx board
+    // PD# set to 1, connect GPIO0 of FT4222 to PD# of FT8xx/BT8xx board
     if (FT4222_OK != (FT4222_GPIO_Write(ftHandleGPIO, FT8XX_PD_N_PIN, 1)))
     {
-        DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");
+        EVE_DEBUG_ERROR("FT4222 MCU_PDhigh change failed!\n");
         exit(-100);
     }
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+    unsigned int val;
+
+    // INT# read, connect GPIO2 of FT4222 to INT# of FT8xx/BT8xx board
+    if (FT4222_OK != (FT4222_GPIO_Read(ftHandleGPIO, (GPIO_Port)FT8XX_INT_N_PIN, &val)))
+    {
+        EVE_DEBUG_ERROR("FT4222 MCU_Int read failed!\n");
+        exit(-100);
+    }
+
+    return (int)val;
 }
 
 // ------------------------- Delay functions -----------------------------------
@@ -549,6 +592,20 @@ void MCU_Delay_500ms(void)
 #endif
 }
 
+uint32_t MCU_Time_ms(void)
+{
+#ifdef _WIN32
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+#else
+    // For MinGW synthesize a tick counter from clock_gettime. Resolution 1 ms.
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+#endif
+}
+
 // --------------------- SPI Send and Receive ----------------------------------
 
 uint8_t MCU_SPIRead8(void)
@@ -560,7 +617,7 @@ uint8_t MCU_SPIRead8(void)
     if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("FT4222 MCU_SPIRead8 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
  
@@ -581,7 +638,7 @@ uint16_t MCU_SPIRead16(void)
     if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead16 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -607,7 +664,7 @@ uint32_t MCU_SPIRead32(void)
     if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead32 failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 
@@ -628,7 +685,7 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
     if (FT4222_OK != ftStatus)
     {
          // spi master read failed
-        DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
+        EVE_DEBUG_ERROR("MCU_SPIRead failed %d\n", (int)ftStatus);
         exit(ftStatus);
     }
 }

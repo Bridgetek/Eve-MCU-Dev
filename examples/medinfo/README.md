@@ -6,7 +6,7 @@
 
 The `medinfo` example demonstrates drawing a multi-function information monitor for an imagined medical device. **This demo only works on the BT82x devices.**
 
-A medinfo dashboard is drawn using graphing, bitmap scaling and simple animation. The `medinfo` code uses the `sevenseg` extension, and the `plotgraph` extension.
+A medinfo dashboard is drawn using graphing, bitmap scaling and simple animation. The example code uses the `sevenseg` widget from the [snippets](../snippets) directory, and the `plotgraph` extension.
 
 The example is intended to show an imagined medical patient monitor. In real life external inputs would provide the data for the display. This data is precomputed and stored in arrays in the program.
 
@@ -17,13 +17,13 @@ Graphics assets are stored in 4 different ways:
 
 ## Screenshot
 
-The following is an screenshot of the medinfo example.
+The following is an screenshot of the `medinfo` example:
 
 ![Medinfo Example](docs/medinfo.png)
 
 ## Assets
 
-The program contains image assets, font assets and for BT82x, an extension patch asset. These assets can be stored in different locations that suit the platform that the example code is being run on. The options are to store them in the EVE Flash, in the example program code or as files on the host system. The later option is not suitable for embedded systems without a file system. It is recommended that the assets are stored in EVE Flash as this is the fastest method of loading them into RAM_G when the example is started.
+The program contains image assets, font assets and for BT82x, an extension patch asset. These assets can be stored in different locations that suit the platform that the example code is being run on. The options are to store them in the EVE Flash, in the example program code or as files on the host system. The latter option is not suitable for embedded systems without a file system. It is recommended that the assets are stored in EVE Flash as this is the fastest method of loading them into RAM_G when the example is started.
 
 The asset storage method is set in the file `eve_example.h` file in the `ASSETS` macro. Change this macro in the file to choose the method. The macro can be set to one of 4 different values:
 
@@ -36,13 +36,13 @@ Assets are stored in the EVE device Flash. Different Flash images for BT815/6, B
 The addresses of the various assets in the flash image must be modified if the flash image is recreated or modified. To do this a python script called `flashmap.py` is provided in the `assets` directory. This will modify code associated with markers in the source code files to match the flash image. There is a `.bin` file and a `.map` file created by EVE Asset Builder (EAB) when a flash image is created. The script takes the data for the assets from the `.map` file and modifies one of the `common/eve_assetload_flash_eve*.c` files. 
 
 For example, to update the flash image pointers for a BT817/8 (EVE4) the script on Windows from the `assets` directory is run as follows:
-```
-python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
+```console
+    python flashmap.py eve4\flash-817-default.map ..\common\eve_assetload_flash_eve4.c
 ```
 The map file for the flash image is `assets\eve4\flash-817-default.map` and the C file to update is `common\eve_assetload_flash_eve4.c`. Relative paths from the `assets` directory are shown.
 
 The script confirms the update with the output:
-```
+```console
 Setting map offsets and sizes from "eve4\flash-817-default.map" to "..\common\eve_assetload_flash_eve4.c"
 ```
 The example program will expect assets loaded from the EVE device flash to be at the addresses in the `.map` file. The `.bin` file must be programmed into the EVE device flash.
@@ -61,11 +61,11 @@ Setup of the flash file mapping addresses in the program using `flashmap.py` is 
 
 #### Running the Example
 
-The example application must be passed a command line argument telling it where the flash image file `.bin` file is located. It will load assets from there at runtime as if they were stored in the EVE device flash. 
+The example application must be passed a command line argument telling it where the flash image file `.bin` file is located. It will load assets from there at runtime as if they were stored in the EVE device flash. The flash images are distributed in the `assets` directory.
 
 ### `USE_C_ARRAYS` 
 
-C arrays containing PNG compressed images or raw data for RAM_G are compiled into the example program code. The C arrays and are always compiled in the example. The data will be discarded by the linker if the data is not used in the final application. This method does not require use of the EVE device flash or the host PC file system at the expense of larger binary code for the example. With the `USE_C_ARRAYS` method each asset has PNG images and raw data encodeded into a C source file with the data encoded into an array. The arrays and a counterpart constant `uint32_t` containing the size of the array are included as an `extern` in the `eve_assetload_array.c` file. This allows them to be compiled into the example. 
+C arrays containing PNG compressed images or raw data for RAM_G are compiled into the example program code. The C arrays and are always compiled in the example. The data will be discarded by the linker if the data is not used in the final application. This method does not require use of the EVE device flash or the host PC file system at the expense of larger binary code for the example. With the `USE_C_ARRAYS` method each asset has PNG images and raw data encoded into a C source file with the data encoded into an array. The arrays and a counterpart constant `uint32_t` containing the size of the array are included as an `extern` in the `eve_assetload_array.c` file. This allows them to be compiled into the example. 
 
 #### Setup
 
@@ -85,18 +85,7 @@ There is no setup required for this method.
 
 #### Running the Example
 
-The example application must be passed a command line argument telling it where the source files are located. It will load files from there at runtime and write them into the RAM_G. 
-
-## Platform Support
-
-This example supports the following platforms:
-
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-
-Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+The example application must be passed a command line argument telling it where the source files are located. It will load files from there at runtime and write them into the RAM_G. The source files are distributed in the `assets\source` directory.
 
 ## EVE API Support
 
@@ -104,21 +93,30 @@ Supported EVE APIs in this example:
 
 | EVE API 1 | EVE API 2 | EVE API 3 | EVE API 4 | EVE API 5 |
 | --- | --- | --- | --- | --- |
-| No | No | No | No | Yes |
+| No | No | Yes | Yes | Yes |
 
-The minimum screen size supported is 1920x1080 pixels. The display will fit in larger displays.
+The minimum screen size supported is 1920x1080 pixels. The display will fit on larger displays.
 
-## Platform Files and Folders
+## Platform Support
+
+This example supports the following platforms:
+
+| Port Name | Port Directory |
+| --- | --- |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) |
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## Platform Files
 
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
-- **platform_get_time** get the system time elapsed since start in milliseconds.
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system.
 
 The example program in the common code is then called.
 
@@ -130,10 +128,13 @@ The example contains a common directory with several files which comprises all t
 | --- | --- |
 | [README.md](README.md) | This file |
 | [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
 | [common/eve_assetload_array.c](common/eve_assetload_array.c) | Load assets from C arrays - used in `USE_C_ARRAYS` |
 | [common/eve_assetload_file.c](common/eve_assetload_file.c) | Load assets from files - used in `USE_FILES` |
 | [common/eve_assetload_flash.c](common/eve_assetload_flash.c) | Load assets from flash or flash image file - used in `USE_FLASH` and `USE_FLASHIMAGE` |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [snippets/widgets/sevenseg.c](../widgets/sevenseg.c) | Implementation file for 7 segment LED widget |
+| [snippets/widgets/dialogs.c](../widgets/dialogs.c) | Implementation file for tooltip and dialog box widgets |
+| [snippets/platform/platform_time.c](../snippets/platform/platform_time.c) | Platform time routines |
 | [docs](docs) | Documentation support files |
 | [assets](assets) | Directory for storage of assets |
 | [assets/c_array_assets](assets/c_array_assets) | Directory for arrays of assets |
@@ -143,47 +144,46 @@ The example contains a common directory with several files which comprises all t
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(const char *assets)
 {
-    eve_asset_properties(assets); // Configure asset properties for custom assets used in application
+    // Configure asset properties for custom assets used in application
+    eve_asset_properties(assets);
+    
+    // Initialise the display
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
 
-    EVE_Init();                 // Initialise the display
+    // Calibrate the display
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
-    eve_calibrate();          // Calibrate the display
+    // Load assets into RAM_G
+    EVE_DEBUG_PRINTF("Loading assets into RAM_G...\n");
+    eve_display_load_assets();   
 
-    eve_display_load_assets();   // Load assets into RAM_G
-
-    eve_display();              // Run Application
+    // Start example code
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }
 ```
+The `eve_asset_properties()` function is intially called to configure specific properties for each asset (size, height, witdth, format, etc) used in the application.
+
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
 Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
-Following this the `eve_asset_properties()` function is called to configure specific properties for each asset (size, height, witdth, format, etc), which are then used in the `eve_display_load_assets()` funciton to load the assets into RAM_G fo use in the applciation.
+Following this the `eve_display_load_assets()` function is called to load the assets into RAM_G for use in the application, using the asset properties conigured by `eve_asset_properties()`.
 
-Once the precceeding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
-
-### `touch.c`
-
-This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
-
-The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
-
-Another function of this file is to read a single touch tag from the screen.
-
-```
-    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
-    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
-    {
-        key_detect = 1;
-        *key = Read_tag;
-    }
-```
-
-A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
-If that register indicates a valid touch then this is flagged to the calling program.
+Once the preceding steps are complete, the main loop is called which sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
 ### `eve_assetload_array.c`
 
@@ -195,7 +195,7 @@ This code facilitates loading asset files directly from the file system. When `U
 
 ### `eve_assetload_flash.c`
 
-This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. The mapping of the flash may be different for BT815/6, BT817/8 and BT820 so seperate files contain a mapping function. These are `eve_assetload_flash_eve5.c` for BT820, `eve_assetload_flash_eve4.c` for BT817/8 and `eve_assetload_flash_eve3.c` for BT815/6.
+This file implements both `USE_FLASH` and `USE_FLASHIMAGE` methods. The code can load assets from the flash or from a flash image file. The mapping of the flash may be different for BT815/6, BT817/8 and BT820 so separate files contain a mapping function. These are `eve_assetload_flash_eve5.c` for BT820, `eve_assetload_flash_eve4.c` for BT817/8 and `eve_assetload_flash_eve3.c` for BT815/6.
 
 ### `eve_assetload_flash_eve5.c`
 
@@ -208,3 +208,31 @@ Flash mapping addresses for BT817/8.
 ### `eve_assetload_flash_eve3.c`
 
 Flash mapping addresses for BT815/6.
+
+### `touch.c`
+
+This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
+
+The platform specific functions in `main.c` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
+
+Another function of this file is to read a single touch tag from the screen.
+
+```c
+    Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
+    if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
+    {
+        key_detect = 1;
+        *key = Read_tag;
+    }
+```
+
+A TAG event is read from the EVE_REG_TOUCH_TAG register. This is verified by reading the EVE_REG_TOUCH_RAW_XY register. 
+If that register indicates a valid touch then this is flagged to the calling program.
+
+### `sevenseg.c`
+
+This widget will simulate a 7 segment LED display. Active LEDs will be drawn in the foreground colour and inactive ones as the background. The digit to be displayed is sent in the range 0-16. For values 0 to 9 the decimal number is shown, for 10 to 15 the letters 'a' to 'f' are shown for hexadecimal displays, and for 16 a dash '-' is displayed.
+
+### `dialogs.c`
+
+This snippet provides two dialogs widgets which can be used draw message boxes or tooltips on the screen. The messagebox will render in one of 5 locations on the screen based upon the selected options. The tooltip can positioned on the screen as required using input variables. Both widgets will be displayed with a 3D effect by default, take an input font handle, and message string. Options are available to render the widgets flat, and their colour can be set by preceding CMD_FGCOLOUR call, while the text colour can be set similarly with a `COLOR_RGB` call.

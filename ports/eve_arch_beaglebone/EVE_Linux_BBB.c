@@ -1,5 +1,6 @@
 /**
- @file EVE_Linux_BBB.c
+ * @file EVE_Linux_BBB.c
+ * @details Platform-specific code for controlling EVE on BeagleBone devices.
  */
 /*
  * ============================================================================
@@ -8,7 +9,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,10 +38,12 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_BEAGLEBONE)
 
-#pragma message "Compiling " __FILE__ " for Beaglebone Black"
+#pragma message "Compiling " __FILE__ " for BeagleBone Black"
+
+/* EVE MCU HEADER */
 
 #include <string.h>
 #include <stdio.h>
@@ -52,6 +55,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 
@@ -60,13 +64,19 @@
 /* P9 Pin 18 - MOSI (SPI0_D1) */
 /* P9 Pin 21 - MISO (SPI0_D0) */
 /* P9 Pin 22 - SCLK (SPI0_SCLK) */
-#define PIN_NUM_CS   51 /* P9 Pin 16 - Note this is not the SPI0_CS0 pin. */
+#define PIN_NUM_CS   51 /* (GPIO1/19) P9 Pin 16 - Note this is not the SPI0_CS0 pin. */
 /* Powerdown pin */
-#define PIN_NUM_PD   48 /* P9 Pin 15 */
+#define PIN_NUM_PD   48 /* (GPIO1/16) P9 Pin 15 */
+/* Interrupt pin */
+#define PIN_NUM_INT  50 /* (GPIO1/18) P9 Pin 14 */
 
 /* Stringification macros. */
 #define str(s) xstr(s)
 #define xstr(s) #s
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
 
 // This is the Linux Platform specific section and contains the functions which
 // enable the GPIO and SPI interfaces.
@@ -80,8 +90,10 @@ const char *GPIO_export = "/sys/class/gpio/export";
 const char *GPIO_unexport = "/sys/class/gpio/unexport";
 const char *GPIO_pd_dir = "/sys/class/gpio/gpio" str(PIN_NUM_PD) "/direction";
 const char *GPIO_cs_dir = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/direction";
+const char *GPIO_int_dir = "/sys/class/gpio/gpio" str(PIN_NUM_INT) "/direction";
 const char *GPIO_pd_val = "/sys/class/gpio/gpio" str(PIN_NUM_PD) "/value";
 const char *GPIO_cs_val = "/sys/class/gpio/gpio" str(PIN_NUM_CS) "/value";
+const char *GPIO_int_val = "/sys/class/gpio/gpio" str(PIN_NUM_INT) "/value";
 
 int Platform_Init(void)
 {
@@ -98,7 +110,7 @@ int Platform_Init(void)
         return -1;
     }
 
-    // Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file.
+    // Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
     uint32_t speed = 1000000;
     ioctl(spiHandle, SPI_IOC_WR_MAX_SPEED_HZ, &speed );
 
@@ -162,6 +174,17 @@ int Platform_Init(void)
         printf("failed to set GPIO chip select %d!\n", PIN_NUM_CS);
     }
 
+    if ((hGPIO = fopen(GPIO_int_dir, "r+")) != NULL)
+    {
+        fwrite("in", sizeof(char), 2, hGPIO);
+        fclose(hGPIO);
+        hGPIO = NULL;
+    }
+    else
+    {
+        printf("failed to set GPIO chip select %d!\n", PIN_NUM_INT);
+    }
+
     if (hGPIO == NULL)
     {
         printf("failed to export GPIO %d. Make sure you run this with \"sudo\"\n", PIN_NUM_PD);
@@ -180,11 +203,21 @@ int Platform_Deinit(void)
 
 int Platform_Setup(void)
 {
-    // Do nothing here
+    /* Additional SPI Configuration */       
     return 0;
 }
 
-int Platform_SPI_transfer(struct spi_ioc_transfer *xfer, int count)
+#if defined(EVE_QSPI_ENABLE)
+int Platform_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on BeagleBone
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+int Platform_SPITransfer(struct spi_ioc_transfer *xfer, int count)
 {
     return (ioctl(spiHandle, SPI_IOC_MESSAGE(count), xfer));
 }
@@ -239,6 +272,20 @@ void Platform_PDhigh(void)
     }
 }
 
+// ------------------------ interrupt input ------------------------------------
+int Platform_Int(void)
+{
+    FILE *h1;
+    int val;
+
+    if ((h1 = fopen(GPIO_int_val, "r")) != NULL)
+    {
+        fscanf(h1,"%d",(int *)&val);
+        fclose(h1);
+    }
+    return val;
+}
+
 // ------------------------- Delay functions -----------------------------------
 
 void Platform_Delay_20ms(void)
@@ -249,6 +296,14 @@ void Platform_Delay_20ms(void)
 void Platform_Delay_500ms(void)
 {
     usleep(500 * 1000);
+}
+
+uint32_t Platform_Time_ms(void)
+{
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000000));
 }
 
 // Beaglebone is Little Endian.
@@ -292,5 +347,7 @@ uint32_t Platform_le32toh(uint32_t h)
 {
     return le32toh(h);
 }
+
+/* EVE MCU END */
 
 #endif /* defined(PLATFORM_BEAGLEBONE) */

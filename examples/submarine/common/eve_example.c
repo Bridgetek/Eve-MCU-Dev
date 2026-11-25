@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,15 +36,31 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <EVE.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* TYPES / STRUCTURES **************************************************************/
 
 // Structure to hold information to draw animated bubbles
 struct bubbles_s
@@ -87,6 +103,8 @@ struct prop_size_s
     uint8_t handle; // prop handle
  } prop_info_g;
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 static inline void draw_vertex(int16_t x, int16_t y)
 {
 #if IS_EVE_API(1)
@@ -95,6 +113,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
     EVE_VERTEX2F(x, y);
 #endif
 }
+
+/* FUNCTIONS ***********************************************************************/
 
 // Animate bubbles rising past the lens
 static void animate_bubbles(void)
@@ -416,7 +436,6 @@ void eve_display(void)
 
     // Variables detemining how the animation of the widget appears
     int depth = 0;
-    int max_depth = 9500;
     // Compass heading
     int heading = 0;
 
@@ -436,9 +455,11 @@ void eve_display(void)
     int prop_handle = fish_handle;
     addr = load_prop_image(prop1_128x128_ARGB2, prop1_128x128_ARGB2_size, prop_handle++, EVE_FORMAT_ARGB2, 1, 128, 128, addr);
 
-    while (1)
+    do
     {
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0, 0, 0);
         EVE_CLEAR(1,1,1);
@@ -459,26 +480,41 @@ void eve_display(void)
         compass_bulkhead(x_compass, y_compass, compass_radius, OPT_COMPASS_BULKHEAD_RECT | OPT_COMPASS_TRANSPARENT /*| OPT_COMPASS_BULKHEAD_USE_FONT*/, heading);
         sub_depth(x_depth, y_depth, depth_width, depth_height, OPT_COMPASS_TRANSPARENT, depth, 60 * SUB_UNITS_SCALE);
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
         depth++;
         heading++;
-    }
+    
+    } while (LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
-
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
     // Calibrate the display
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
     // Start example code
-    printf("Starting demo:\n");
-    eve_display();
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

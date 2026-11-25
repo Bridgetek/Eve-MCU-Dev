@@ -1,14 +1,15 @@
 /**
- @file EVE_MCU_NXP.c
+ * @file EVE_MCU_NXP.c
+ * @details MCU-specific code for controlling EVE on NXP_K64 devices.
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,24 +38,31 @@
  * ============================================================================
  */
 
-// Guard against being used for incorrect CPU type.
+// Guard against being used for incorrect platform or architecture.
 #if defined(PLATFORM_NXPK64)
 
 #pragma message "Compiling " __FILE__ " for NXP K64"
+
+/* EVE MCU HEADER */
 
 #define bswap16(x) (((x) >> 8) | ((x) << 8))
 #define bswap32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) \
                   | (((x) & 0x0000FF00) << 8) | ((x) << 24))
 
 
-
 #include "MK64F12.h"
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
 
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+// This is the NXPK64 platform specific section and contains the functions which
+// enable the GPIO and SPI interfaces.
 
 // ------------------- MCU specific initialisation  ----------------------------
 int MCU_Init(void)
@@ -92,7 +100,7 @@ int MCU_Init(void)
     // Shut down the SPI Master to initialise it
     SPI1_MCR |= SPI_MCR_HALT_MASK;
 
-    /* Set SPI clock speed to 1 MHz - See the notes for MCU_SPI_TIMEOUT in the MCU.h file. */
+    /* Set SPI clock speed to 1 MHz - See the notes for EVE_SPI_TIMEOUT in the MCU.h file. */
 
     // Set up the SPI1 CTAR0
     SPI1_CTAR0 = 0;
@@ -163,12 +171,25 @@ int MCU_Init(void)
     // 1		RESERVED	= 0			Reserved
     // 0		HALT		= 1			Halt
 
+    /* setup tick timer */
+    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+    SysTick->LOAD = (32000000 / 1000);
+    SysTick->VAL  = 0;
+    /* Enable interrupt */
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+    /* Enable counter */
+    SysTick->CTRL |= (SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk);
+
     return 0;
 }
 
 int MCU_Deinit(void)
 {
-    // Shut down the SPI Master
+    /* Leave EVE in a safe state. */
+    MCU_CShigh();
+    MCU_PDlow();
+
+    /* Halt SPI controller. */
     SPI1_MCR |= SPI_MCR_HALT_MASK;
 
     return 0;
@@ -176,23 +197,19 @@ int MCU_Deinit(void)
 
 int MCU_Setup(void)
 {
-//#ifdef FT81X_ENABLE
-// Turn on EVE quad-SPI for FT81x devices. PIC18F does not support QSPI
-//	MCU_CSlow();
-//	MCU_SPIWrite24(MCU_htobe32((REG_SPI_WIDTH << 8) | (1 << 31)));
-//	MCU_SPIWrite8(2);
-//	MCU_CShigh();
-
-// Turn on quad-SPI.
-//	spi_option(SPIM, spi_option_bus_width, 4);
-
-//#endif // FT81X_ENABLE
-
-// Turn off SPI buffering. Timing of chip select is critical.
-//	spi_option(SPIM, spi_option_fifo, 0);
-
+    /* Additional SPI Configuration */
     return 0;
 }
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+    /* QSPI Configuration */
+    #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on NXPK64
+    /* Initialize IO2 and IO3 pad/pin for quad settings */
+    return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
 
 
 // ########################### GPIO CONTROL ####################################
@@ -243,6 +260,16 @@ void MCU_PDlow(void)
 void MCU_PDhigh(void)
 {
     GPIOB_PSOR = 0x00100000;	// Set bit 20 of port B
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+#if !defined(EVE_USE_CMDB_METHOD) && defined(EVE_USE_INTERRUPT_METHOD)
+#error EVE_USE_INTERRUPT_METHOD (EVE Interrupt pin) is not supported on NXPK64
+#endif
+    // Do not support the interrupt line.
+    return -1;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -324,6 +351,12 @@ void MCU_Delay_500ms(void)
     {
         MCU_Delay_20ms();
     }
+}
+
+// --------------------------- msec delay based on timer -------------------------
+uint32_t MCU_Time_ms(void)
+{
+    return SysTick->VAL;
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -409,12 +442,12 @@ uint32_t MCU_htobe32 (uint32_t h)
 
 uint16_t MCU_htole16 (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_htole32 (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
 
 uint16_t MCU_be16toh (uint16_t h)
@@ -423,17 +456,19 @@ uint16_t MCU_be16toh (uint16_t h)
 }
 uint32_t MCU_be32toh (uint32_t h)
 {
-     return h;
+    return h;
 }
 
 uint16_t MCU_le16toh (uint16_t h)
 {
-        return bswap16(h); 
+    return bswap16(h); 
 }
 
 uint32_t MCU_le32toh (uint32_t h)
 {
-        return bswap32(h);
+    return bswap32(h);
 }
+
+/* EVE MCU */
 
 #endif /* defined(PLATFORM_NXPK64) */

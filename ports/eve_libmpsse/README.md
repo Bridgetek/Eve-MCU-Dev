@@ -2,196 +2,229 @@
 
 [Back](../README.md)
 
-The port for libmpsse comprises a host PC with a USB host controller connecting to the target EVE device through an FTDI FT4232H/FT232H/FT232R device. The FTDI device manages the EVE device SPI bus. The host PC uses a library or DLL to manage the interface with the FTDI device.
+The libMPSSE port comprises a host PC with a USB host controller connected to the target EVE device through an FTDI MPSSE-capable device, such as the `FT232H`, `FT2232H`, or `FT4232H`. The FTDI device manages the EVE device SPI bus. The FTDI device manages the EVE SPI bus while the host PC communicates with the FTDI device using the `libMPSSE` and `D2XX` interfaces.
+
+## Requirements 
+
+| Requirement | Details | 
+| --- | --- | 
+| Host operating system | Windows/Linux |
+| Application architecture | `x64` |
+| Build environment | Visual Studio or a CMake-compatible toolchain | 
+| Platform definition | `USE_MPSSE` |
+| Other | External FTDI Libraries |
 
 ## Hardware
 
-This code requires a USB-MPSSE adapter to connect to the EVE module. The USB-MPSSE adapter is normally based around the FTDI FT232H USB bridging chip.
+This code requires a USB-MPSSE adapter to connect to the EVE module. The USB-MPSSE adapter is normally based around the FTDI `FT232H` USB bridging chip.
 
-A popular solution which makes it easy to get up and running quickly is the range of C232HM cables from FTDI such as [C232HM-EDHSL](https://ftdichip.com/products/c232hm-edhsl-0/) or [Connective Peripherals High Speed MPSSE Type-C](https://connectiveperipherals.com/products/usb-type-c-high-speed-mpsse).
+### MPSSE Cables
 
-The C232HM uses the FT232H chipset and has a 50cm cable with ten single pole receptacles. These can be connected to the associated pins of the EVE module.
+A popular solution which makes it easy to get up and running quickly is the range of `C232HM` cables from FTDI such as [C232HM-EDHSL](https://ftdichip.com/products/c232hm-edhsl-0/) or [Connective Peripherals High Speed MPSSE Type-C](https://connectiveperipherals.com/products/usb-type-c-high-speed-mpsse).
 
-For the versions with 5V output on the red wire (C232HM-EDHSL and USBC-HS-MPSSE-5V-3.3V500-SPR) the following wires can be used in Table 3.
+The `C232HM` uses the `FT232H` chipset and has a 50cm cable with ten single pole receptacles. These can be connected to the associated pins of the EVE module.
 
-If the version of the cable is used which has the 3.3V power output (or if using the 5V version but the EVE module requires more current than can be provided) then a separate power connection to the EVE module could be used, with the grounds of the C232HM / USBC-HS-MPSSE and the separate power source common together to EVE.
+#### Connection to EVE
 
-| Wire colour | EVE Signal |
+For the versions of MPSSE cables with 5V output on the red wire (`C232HM-EDHSL` and `USBC-HS-MPSSE-5V-3.3V500-SPR`) the following wires can be used.
+
+| MPSSE Cable Wire colour | 2x8 Pin | 1x10 Pin | EVE Signal |
+| --- | --- |--- | --- |
+| Orange 🟧 | 1 | 1 | SCK |
+| Yellow 🟨 | 4 | 2 | MOSI |
+| Green 🟩 | 3 | 3 | MISO |
+| Brown 🟫 | 2 | 4 | CS# |
+| Purple 🟪 | 14 | 5 | INT# _(1)_ |
+| Blue 🟦 | 13 | 6 | PD# |
+| Red 🟥 | 10 | 7 | 5V |
+| Black ⬛ | 11/12 | 9/10 | GND |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev. The `INT#` signal is connected to the `ADBUS5` pin on the `FT232H` and is read using the low-byte GPIO functionality provided by the modified libMPSSE source used by this port. This allows the EVE interrupt-based co-processor completion method to be used.
+
+If the version of the cable is used which has the 3.3V power output (or if using the 5V version but the EVE module requires more current than can be provided) then a separate power connection to the EVE module could be used, with the grounds of the `C232HM` / `USBC-HS-MPSSE` and the separate power source common together to EVE.
+
+### VA800A-SPI Module
+
+An alternative is the `VA800A-SPI` module can also be used in the same way as the `C232HM`. 
+> **Note:** that the VA800A-SPI is now discontinued but the information is retained here for reference.
+
+#### Connection to EVE
+
+The `VA800A-SPI` has a 10-way connector and can be connected directly to the "VM" range of EVE modules such as the `VM800B`, `VM810C50A` and `VM816C50A`. Very short jumper wires can be used to connect it to other EVE modules by connecting the SCK, CS, MOSI, MISO, PD and GND connections. The adapter also provides a 5V power supply via the 5V pin on the header.
+
+| VA800A-SPI | 2x8 Pin | 1x10 Pin | EVE Signal |
+| --- | --- | --- | --- |
+| CN1-1 | 1 | 1 | SCK |
+| CN1-2 | 4 | 2 | MOSI |
+| CN1-3 | 3 | 3 | MISO |
+| CN1-4 | 2 | 4 | CS# |
+| CN1-5 | 14 | 5 | INT# _(1)_ |
+| CN1-6 | 13 | 6 | PD# |
+| CN1-7 | 10 | 7 | 5V |
+| CN1-8 | N/A | 8 | N/C |
+| CN1-9 | 11/12 | 9 |GND |
+| CN1-10 | 11/12 | 10 | GND |
+
+- (1) The INT# line is not required for operation unless `EVE_COPRO_METHOD` macro is set with `EVE_COPRO_INT` in the configuration for EVE-MCU-Dev.
+
+Ensure that the USB connection to the VA800A-SPI module has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the `VA800A-SPI` and the separate power source common together to EVE. 
+
+## SPI Transfer Frequency
+
+The following table shows the SPI transfer frequencies for the libMPSSE port:
+
+| Initialisation Phase | Runtime |
 | --- | --- |
-| Orange | SCK |
-| Yellow | MOSI |
-| Green | MISO |
-| Brown | CS# |
-| Blue | PD# |
-| Red | 5V |
-| Black | GND |
+| 1 MHz | 15 MHz |
 
-An alternative is the VA800A-SPI module can also be used in the same way as the C232HM. *Note that the VA800A-SPI is now discontinued but the information is retained here for reference.*
+The CS# pin is controlled by the libMPSSE library.
 
-The VA800A-SPI has a 10-way connector and can be connected directly to the "VM" range of EVE modules such as the VM800B, VM810C50A and VM816C50A. Very short jumper wires can be used to connect it to other EVE modules by connecting the SCK, CS, MOSI, MISO, PD and GND connections. The adapter also provides a 5V power supply via the 5V pin on the header.
+The EVE PD# pin is controlled by software using GPIOs.The PD# pin is setup as GPIO output pin with a "Low" output and no pull ups or pull downs, as is is controlled by software. 
 
-| VA800A-SPI | EVE Signal |
+The INT# pin is setup as a GPIO input with no pull ups or pull downs.
+
+> **Note:** The maximum reliable frequency for the SPI bus will depend on the wire length from the MPSSE device to the EVE device.
+
+## Files
+
+| File | Function |
 | --- | --- |
-| CN1-1 | SCK |
-| CN1-2 | MOSI |
-| CN1-3 | MISO |
-| CN1-4 | CS# |
-| CN1-5 | INT# |
-| CN1-6 | PD# |
-| CN1-7 | 5V |
-| CN1-8 | N/C |
-| CN1-9 | GND |
-| CN1-10 | GND |
+| [EVE_libmpsse.c](EVE_libmpsse.c) | MCU layer interface for interface setup, higher level read/writes, endian conversions, PD# pin control, INT# detection. |
+| [libmpsse.cmake](libmpsse.cmake) | CMake recipe suitable for including in an application CMakeLists.txt file to include libMPSSE in a project. |
+| [../external/ftdi_libraries/libMPSSE](../external/ftdi_libraries/libMPSSE) | Directory containing MPSSE libraries for Linux and Windows. |
+| [../external/ftdi_libraries/libFTD2XX](../external/ftdi_libraries/libFTD2XX) | Directory containing D2XX libraries for Linux and Windows. |
 
-Ensure that the computer has sufficient power to supply the EVE module when the backlight is on (and if the audio amplifier is used). If the PC cannot provide sufficient power, a separate power connection to the EVE module could be used, with the grounds of the VA800A-SPI and the separate power source common together to EVE. 
+
+## Compilation
+
+The "platform" macro `USE_MPSSE` must be set to enable this port. All other platform macros must be undefined.
+
+The `USE_MPSSE` macro holds the MPSSE channel to open. For example in the compiler command line the following would be a parameter to the compiler to select channel 0 on the MPSSE device.
+
+```console
+-DUSE_MPSSE=0
+```
+
+In a CMake recipe the compile definition would be:
+
+```cmake
+add_compile_definitions(USE_MPSSE=0)
+```
+
+A sample CMake recipe is included which can be used in a project to add the libMPSSE functionality. 
+
+For Visual Studio this can be set in "Project Properties" -> "Configuration Properties" -> "C/C++" -> "Preprocessor" -> "Preprocessor Definitions":
+
+![USE_MPSSE Setting in Visual Studio](../../docs/vs_use_mpsse.png)
+
+### FTDI Software Dependencies
+
+This port uses files from the [Bridgetek FTDI-SW-Release](https://github.com/Bridgetek/FTDI-SW-Release) repository. The repository is included in EVE-MCU-Dev as a submodule under:
+
+`ports/external/ftdi_libraries`
+
+The following directories from the `FTDI-SW-Release` repository are used:
+
+- `libMPSSE` - libMPSSE source and public header files.
+- `libFTD2XX` - D2XX public header files and runtime dependencies.
+
+Ensure that the `ftdi_libraries` submodule has been loaded or copied before building an example using this port.
+
+#### Modified libMPSSE Source
+
+The libMPSSE implementation used by this port contains modifications for EVE-MCU-Dev.
+
+In particular, the GPIO read functionality has been extended so that `FT_ReadGPIO()` can read either the low or high byte of the MPSSE interface. This allows the EVE `INT#` signal connected to bit 5 of the selected MPSSE channel (`ADBUS5` or `BDBUS5`) to be read by the port.
+
+Because these modifications are made to the libMPSSE source, the precompiled static libraries supplied in the `FTDI-SW-Release` repository do not contain the functionality required by this port and therefore **cannot be used**.
+
+The following libMPSSE source files are compiled directly as part of the EVE-MCU-Dev build:
+
+- `libMPSSE/source/ftdi_infra.c`
+- `libMPSSE/source/ftdi_spi.c`
+- `libMPSSE/source/ftdi_mid.c`
+
+The corresponding header files are included from:
+
+- `libMPSSE/include`
+- `libFTD2XX/include`
+
+This source-based build is used on both Windows and Linux.
+
+The precompiled libMPSSE libraries are therefore not used:
+
+- `libMPSSE.lib` on Windows.
+- `libmpsse.a` on Linux.
+
+The D2XX import/static libraries are also not linked directly by the EVE-MCU-Dev application. The libMPSSE implementation loads the appropriate D2XX shared library dynamically at runtime.
 
 ## Windows
 
-Important Information about Windows builds.
+### Build Requirements
 
-To compile this you will have to download the **libMPSSE** library for Windows. The recommended version is v1.0.2 or later. It is available from the FTDI website:
+Windows builds compile the modified libMPSSE source files from the `FTDI-SW-Release` repository directly into the application.
 
-https://ftdichip.com/software-examples/mpsse-projects/
+The following libraries are therefore **not required at link time**:
 
-The file will typically have a name in the format `libmpsse-windows-x.x.x.zip` where *x.x.x* is the version number. 
+- `libMPSSE.lib`
+- `ftd2xx.lib`
 
-The library is installed *once* into the `ports\eve_libmpsse` directory. When building the example code the library files (H, C and LIB files) are loaded from this location.
+The public D2XX header files under `libFTD2XX/include` are still required when compiling the libMPSSE source.
 
-### Install the LibMPSSE SPI Middleware Library in EVE-MCU-Dev library
+### Runtime Requirements
 
-The LibMPSSE library distribution zip file must be extracted into a new directory. The new directory will have a subfolder called `release`. The distribution contains libraries for various CPU architectures. On v1.4.7 these architectures are AMD64 (64-bit Windows) and x86 (32-bit Windows).
+The FTDI D2XX runtime is required.
 
-Each architecture has:
-- A DLL file for LibMPSSE and LIB files for connecting the application to the LibMPSSE DLLs
-- A static LibMPSSE LIB file
-- C header files for LibMPSSE
-- Source code for I2C and SPI layers
+The libMPSSE implementation dynamically loads:
 
-A Windows Command Line BAT file `install_libmpsse.bat` is included in this folder. This will copy the correct files from a LibMPSSE library distribution to the 
-current directory (`ports\eve_libmpsse`).
+`ftd2xx.dll`
 
-To run the BAT file change directory to the `ports\eve_libmpsse` directory. The path to the `release` directory in the extracted distribution folder is passed as the first parameter to the BAT file. For example:
+when `Init_libMPSSE()` is called.
 
-```
-> cd ports\eve_libmpsse
-> install_libmpsse.bat ..\..\..\libmpsse-windows-1.0.9\release
-Installing AMD64 libraries from "..\..\..\libmpsse-windows-1.0.9\release"
-Copying "..\..\..\libmpsse-windows-1.0.9\release\build/x64/LIB/libmpsse.lib" to libmpsse.lib
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_i2c.h" to libmpsse_i2c.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\include\libmpsse_spi.h" to libmpsse_spi.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_common.h" to ftdi_common.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.c" to ftdi_infra.c
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_infra.h" to ftdi_infra.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_spi.c" to ftdi_spi.c
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_i2c.c" to ftdi_i2c.c
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.c" to ftdi_mid.c
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\ftdi_mid.h" to ftdi_mid.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\source\memcpy.c" to memcpy.c
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\ftd2xx.h" to ftd2xx.h
-        1 file(s) copied.
-Copying "..\..\..\libmpsse-windows-1.0.9\release\libftd2xx\WinTypes.h" to WinTypes.h
-        1 file(s) copied.
+The appropriate FTDI D2XX driver must therefore be installed and `ftd2xx.dll` must be available to the application at runtime. On Windows, the required driver is generally installed automatically through Windows Update when the FTDI device is first connected.
 
-IMPORTANT:
-Change line 246 on ftdi_infra.c:
- from 'hdll_d2xx = LoadLibrary(L"ftd2xx.dll");' to 'hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));'
-Not doing this will result in "LoadLibrary failed: 126"
-```
-
-Additionally, the `ftd2xx.dll` library is required. This is installed automatically on the system path when Windows installs the driver for an FTDI device.
-
-Due to limitations in the libMPSSE distribution, a small modification is required:
-
-Line 246 of "ftdi_infra.c":
-```
-#elif defined(_WIN32)
-	// Load ftd2xx.dll on Windows
-	hdll_d2xx = LoadLibrary(L"ftd2xx.dll");
-	if (!hdll_d2xx) {
-		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-	}
-#else
-```
-
-Change the "L" before the DLL name to the Microsoft `TEXT` macro which will automatically use the `L` macro when Unicode is enabled and omit it when Unicode is not active.
-```
-#elif defined(_WIN32)
-	// Load ftd2xx.dll on Windows
-	hdll_d2xx = LoadLibrary(TEXT("ftd2xx.dll"));
-	if (!hdll_d2xx) {
-		fprintf(stderr, "LoadLibrary failed: %lu\n", GetLastError());
-	}
-#else
-```
-
-### Command Line Compilation
-
-To configure the project with the default C compiler:
-```
-    cmake -B build -S .
-```
-On Windows, if an MSVC compiler is not the default compiler on your platform then choose a suitable Visual Studio compiler explicitly:
-```
-    cmake -B build -S . -G "Visual Studio 17 2022"
-```
-On Windows, to compile the project use the MinGW C compiler:
-```
-    cmake -B build -S . -G "MinGW Makefiles"
-```
-Then to compile:
-```
-    cmake --build build
-```
-The executable file is in the build directory. The exact location is defined by the compiler defaults.
-
-### Visual Studio Code
-
-To use this example with Microsoft Visual Studio Code follow the instructions in this web page.
-
-https://code.visualstudio.com/docs/cpp/config-msvc
-
-It is possible to use the command line instructions above in a terminal windows from within Visual Studio Code.
-
-### Visual Studio
-
-The Visual Studio project files for the example are found in the `VisualStudio` folder. Program executables and object files are placed into the `VisualStudio\Debug` folder. 
-
-When the example application is launched in Visual Studio it will add the location of the `libmpsse.dll` file to the PATH environment variable of the running process.
+No libMPSSE DLL is required because the libMPSSE implementation is compiled directly into the application.
 
 ## Linux
 
-Important Information about Linux builds.
+### Build Requirements
 
-To compile this you will have to download the **LibMPSSE-SPI** "middleware library" for Linux. The recommended version is v1.0.9 or later. It is available from the FTDI website:
+Linux builds use the same modified libMPSSE source files from the `FTDI-SW-Release` repository as the Windows build.
 
-https://ftdichip.com/software-examples/mpsse-projects/libmpsse-spi-examples/
+The following static libraries are therefore **not used**:
 
-Download the latest version of the LibMPSSE-SPI library distribution. The file will typically have a name in the format `libmpsse-x86_64-x.x.x.tgz` where *x.x.x* is the version number. 
+- `libmpsse.a`
+- `libftd2xx.a`
 
-The library is installed *once* into the Linux file system. When building the example code the library files (H, DLL and LIB files) are found by the operating system.
+The public D2XX header files under `libFTD2XX/include` are still required when compiling the libMPSSE source.
 
-### Install the LibMPSSE-SPI Middleware Library in Linux
+The Linux build also links against the platform dynamic-loading support required by `dlopen()`, `dlsym()` and `dlclose()`.
 
-The LibMPSSE-SPI library distribution tar file must be extracted into a new directory. The new directory will have a file called `ReadMe.txt` which describes in detail how to install the library on a Linux system. 
+### Runtime Requirements
 
-Once the library is installed then the build will search the standard locations for include and library files.
+The FTDI D2XX runtime is required.
 
-The LibMPSSE-SPI library calls the FTDI D2XX driver. The version of FTDI D2XX driver for Linux may be important on certain Linux distributions. Version v1.4.33 has been tested on Ubuntu and is compiled for glibc version "GLIBC\_2.31".  Later versions require a system supporting "GLIBC\_2.34". If the glibc version is not supported then a message such as this will be reported.
+The libMPSSE implementation dynamically loads:
 
-```
- sudo ./build/simple_libmpsse
+`libftd2xx.so`
+
+when `Init_libMPSSE()` is called.
+
+The appropriate FTDI D2XX driver must therefore be installed and `libftd2xx.so` must be available to the system dynamic loader at runtime.
+
+The version of the FTDI D2XX driver may be important on some Linux distributions. A D2XX library compiled against a newer version of `glibc` cannot be loaded on a system using an older incompatible version. Version v1.4.33 has been tested on `Ubuntu` and is compiled for glibc version "GLIBC\_2.31".  Later versions require a system supporting "GLIBC\_2.34". If the glibc version is not supported then a message such as this will be reported.
+
+For example, an incompatible D2XX runtime may result in an error similar to:
+
+```console
+sudo ./build/simple_libmpsse
 dlopen failed: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by /usr/local/lib/libftd2xx.so)
 source/ftdi_infra.c:254:Init_libMPSSE(): NULL expression encountered
 ```
+
+If this occurs, install a version of the FTDI D2XX runtime compatible with the `glibc` version provided by the target Linux distribution.
+
+## Example Software
+
+Please refer to the [libmpsse Simple example](../../examples/simple/libmpsse/README.md) for instructions on using the port in an EVE-MCU-Dev project.
 

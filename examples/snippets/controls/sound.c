@@ -1,5 +1,5 @@
 /**
- @file fonts.c
+ * @file sound.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,27 +36,33 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+ 
 #include <stdint.h>
 #include <stddef.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "sound.h"
 
-void enableSound(void)
+/* FUNCTIONS ***********************************************************************/
+
+void sound_enable(void)
 { 
 #if IS_EVE_API(1)
     uint8_t regGpio;
 	uint8_t regGpioDir;
  
-	// Read GPIOX_DIR register
+	// Read GPIO_DIR register
 	regGpioDir = EVE_LIB_MemRead8(EVE_REG_GPIO_DIR);
 	// Set bit 1 of GPIO_DIR register  to output (GPIO1)
 	regGpioDir = regGpioDir | 0x02;
 	// Enable GPIO2 as an output
 	EVE_LIB_MemWrite8(EVE_REG_GPIO_DIR, regGpioDir);
  
-	// Read REG_GPIOX
+	// Read REG_GPIO
 	regGpio = EVE_LIB_MemRead8(EVE_REG_GPIO);
 	// Set bit 1 of GPIO register (GPIO1) high
 	regGpio = regGpio | 0x02;
@@ -73,10 +79,29 @@ void enableSound(void)
 #elif IS_EVE_API(2,3,4)
     uint16_t regGpiox;
 	uint16_t regGpioxDir;
- 
+
+	// VM810C and VM880C modules use GPIO1
+	#if (EVE_MODULE == EVE_VM810C) || (EVE_MODULE == EVE_IDK_FT810_43A) || (EVE_MODULE == EVE_VM880C)
+
 	// Read GPIOX_DIR register
 	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
-	// Set bit 2 of  GPIO_DIR register  to output (GPIO2)
+	// Set bit 1 of GPIO_DIR register to output (GPIO1)
+	regGpioxDir = regGpioxDir | 0x0002;
+	// Enable GPIO2 as an output
+	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
+ 
+	// Read REG_GPIOX
+	regGpiox = EVE_LIB_MemRead16(EVE_REG_GPIOX);
+	// Set bit 1 of GPIOX register (GPIO1) high
+	regGpiox = regGpiox | 0x0002;
+	// Enable the GPIO2 signal to the Audio Driver
+	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
+
+	// all other modules use GPIO2
+	#else
+	// Read GPIOX_DIR register
+	regGpioxDir = EVE_LIB_MemRead16(EVE_REG_GPIOX_DIR);
+	// Set bit 2 of GPIO_DIR register to output (GPIO2)
 	regGpioxDir = regGpioxDir | 0x0004;
 	// Enable GPIO2 as an output
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX_DIR, regGpioxDir);
@@ -87,7 +112,9 @@ void enableSound(void)
 	regGpiox = regGpiox | 0x0004;
 	// Enable the GPIO2 signal to the Audio Driver
 	EVE_LIB_MemWrite16(EVE_REG_GPIOX, regGpiox);
- 
+
+	#endif
+
 	// Turn synthesizer volume up
 	EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
@@ -95,6 +122,21 @@ void enableSound(void)
 	// Play sound
 	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
 #else
+
+	// if we have purposely defined AUDIO_I2S or we are using a module with I2S support
+	#if defined(AUDIO_I2S) || (EVE_MODULE == EVE_VM820B10A) || (EVE_MODULE == EVE_VM820B15A) 
+	// send I2S startup command to co-processor
+    EVE_LIB_BeginCoProList();
+    EVE_CMD_I2SSTARTUP(44100);
+    EVE_LIB_EndCoProList();
+    EVE_LIB_AwaitCoProEmpty();
+	
+	// write I2S control register, and set L/R volume
+	EVE_LIB_MemWrite32(EVE_REG_I2S_CTL, 0x0A);  
+    EVE_LIB_MemWrite32(EVE_REG_VOL_L_PB, 255);
+    EVE_LIB_MemWrite32(EVE_REG_VOL_R_PB, 255);
+	#endif
+
     // Turn synthesizer volume up
 	EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, 255);
 	// Set synthesizer to mute
@@ -104,7 +146,23 @@ void enableSound(void)
 #endif
 }
 
-int checkRegPlay(void)
+void sound_set_volume(uint8_t volume)
+{
+#if IS_EVE_API(1,2,3,4)
+    // Set synthesizer volume
+    EVE_LIB_MemWrite8(EVE_REG_VOL_SOUND, volume);
+    // Set audio playback volume
+    EVE_LIB_MemWrite8(EVE_REG_VOL_PB, volume);
+#else
+    // Set synthesizer volume
+    EVE_LIB_MemWrite32(EVE_REG_VOL_SOUND, volume);
+    // Set left and right audio playback volume
+    EVE_LIB_MemWrite32(EVE_REG_VOL_L_PB, volume);
+    EVE_LIB_MemWrite32(EVE_REG_VOL_R_PB, volume);
+#endif
+}
+
+int sound_is_playing(void)
 {
 #if IS_EVE_API(1,2,3,4)
 	uint8_t play; 
@@ -119,7 +177,7 @@ int checkRegPlay(void)
 return play;
 } 
 
-void playSound(uint8_t sound, uint8_t note)
+void sound_play(uint8_t sound, uint8_t note)
 {
 #if IS_EVE_API(1,2,3,4)
 	// set synthesizer to note
@@ -134,7 +192,7 @@ void playSound(uint8_t sound, uint8_t note)
 #endif
 } 
 
-void playMute(void)
+void sound_mute(void)
 {
 #if IS_EVE_API(1,2,3,4)
 	// set synthesizer to note
@@ -147,29 +205,44 @@ void playMute(void)
 	// play sound
 	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
 #endif
+}
+
+void sound_silence(void)
+{
+#if IS_EVE_API(1,2,3,4)
+	// set synthesizer to note
+	EVE_LIB_MemWrite16(EVE_REG_SOUND, SOUND_SILENCE);
+	// play sound
+	EVE_LIB_MemWrite8(EVE_REG_PLAY, 1);
+#else
+	// set synthesizer to note
+	EVE_LIB_MemWrite32(EVE_REG_SOUND, SOUND_SILENCE);
+	// play sound
+	EVE_LIB_MemWrite32(EVE_REG_PLAY, 1);
+#endif
 } 
 
-void playClick(void) 
+void sound_click(void) 
 {
-    playSound(SOUND_CLICK, 0);
+    sound_play(SOUND_CLICK, 0);
 }
  
-void playChimes(uint8_t note) 
+void sound_chimes(uint8_t note) 
 {
-    playSound(SOUND_CHIMES, note);
+    sound_play(SOUND_CHIMES, note);
 }
  
-void playBell(uint8_t note)
+void sound_bell(uint8_t note)
 {
-    playSound(SOUND_BELL, note);
+    sound_play(SOUND_BELL, note);
 }
  
-void playPip(uint8_t note)
+void sound_pip(uint8_t note)
 {
-    playSound(SOUND_1PIP, note);
+    sound_play(SOUND_1PIP, note);
 }
  
-void playClack(void)
+void sound_clack(void)
 {
-    playSound(SOUND_CLACK, 0);
+    sound_play(SOUND_CLACK, 0);
 }

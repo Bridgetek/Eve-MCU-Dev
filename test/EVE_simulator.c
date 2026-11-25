@@ -1,14 +1,14 @@
 /**
- @file EVE_tester.c
+ * @file EVE_simulator.c
  */
 /*
  * ============================================================================
- * (C) Copyright Bridgetek Pte Ltd
+ * (C) Copyright,  Bridgetek Pte. Ltd.
  * ============================================================================
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -49,10 +49,20 @@
 #ifndef _WIN32 // Windows is always little-endian (for now)
 #include <endian.h>
 #include <unistd.h>
+#include <time.h>
+#else
+#include <windows.h>
 #endif // _WIN32
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
+/* Include functions for EVE-MCU-Dev library MCU layer */
 #include <MCU.h>
+
+/* Version string for BT820 patch 
+ * This is the string returned from the RAM_REPORT area by the simulator.
+ */
+#define SIMULATOR_BT820_PATCH_VERSION "patch_base;1.5;touch-1.1;\0\0\0"
 
 extern uint16_t HAL_GetCmdPointer(void);
 
@@ -60,6 +70,38 @@ extern uint16_t HAL_GetCmdPointer(void);
 #define HOSTCMDLEN 3
 #else
 #define HOSTCMDLEN 5
+#endif
+
+#define SIMULATOR_ERROR(...) fprintf(stderr, __VA_ARGS__)
+
+#if SIMULATOR_BOOT
+#define SIMULATOR_PRINT_BOOT(...) printf(__VA_ARGS__)
+#else
+#define SIMULATOR_PRINT_BOOT(...) ((void)0)
+#endif
+
+#if SIMULATOR_SPI_PROTOCOL
+#define SIMULATOR_PRINT_SPI(...) printf(__VA_ARGS__)
+#else
+#define SIMULATOR_PRINT_SPI(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==1
+#define SIMULATOR_PRINT_REGISTERS(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
+#else
+#define SIMULATOR_PRINT_REGISTERS(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==2
+#define SIMULATOR_PRINT_CMDS(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
+#else
+#define SIMULATOR_PRINT_CMDS(...) ((void)0)
+#endif
+
+#if SIMULATOR_OUTPUT==3
+#define SIMULATOR_PRINT_RAM_G(...) do { printf(__VA_ARGS__); doeol = 1; width++; } while (0);
+#else
+#define SIMULATOR_PRINT_RAM_G(...) ((void)0)
 #endif
 
 enum eve_state {
@@ -77,6 +119,19 @@ enum eve_state {
 uint32_t address;
 int hostptr = 0;
 uint8_t hostcmd[16];
+int doeol = 0;
+int width = 0;
+
+/* Current offset in the command buffer */
+uint16_t cmd_write_ptr = 0;
+/* Rewind array of command buffer */
+uint32_t cmd_buffer[EVE_RAM_CMD_SIZE/4];
+
+/* Retrieve the command buffer from the simulator (not part of the MCU layer) */
+uint32_t *get_cmd_buffer(void)
+{
+    return cmd_buffer;
+}
 
 char const *get_state()
 {
@@ -92,16 +147,26 @@ char const *get_state()
     return "unknown";
 }
 
+void inc_address()
+{
+#if defined(EVE_USE_CMDB_METHOD)
+    if (!((address == EVE_REG_CMDB_SPACE) || (address == EVE_REG_CMDB_WRITE)))
+    {
+        address += 4;
+    }
+#endif // defined(EVE_USE_CMDB_METHOD)
+}
+
 char const *get_register()
 {
     if (address == EVE_REG_ID) return "REG_ID";
     else if (address == EVE_REG_CPURESET) return "REG_CPURESET";
     else if (address == EVE_REG_CMD_READ) return "REG_CMD_READ";
     else if (address == EVE_REG_CMD_WRITE) return "REG_CMD_WRITE";
-#ifdef EVE_USE_CMDB_METHOD
+#if defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_CMDB_SPACE) return "REG_CMDB_SPACE";
     else if (address == EVE_REG_CMDB_WRITE) return "REG_CMDB_WRITE";
-#endif
+#endif // defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_PCLK_POL) return "REG_PCLK_POL";
     else if (address == EVE_REG_FREQUENCY) return "REG_FREQUENCY";
 #if IS_EVE_API(1,2,3,4)
@@ -131,6 +196,19 @@ char const *get_register()
     else if (address == EVE_REG_VOL_SOUND) return "REG_VOL_SOUND";
     else if (address == EVE_REG_SOUND) return "REG_SOUND";
     else if (address == EVE_REG_GPIO_DIR) return "REG_GPIO_DIR";
+    else if (address == EVE_REG_TOUCH_SCREEN_XY) return "REG_TOUCH_SCREEN_XY";
+    else if (address == EVE_REG_TOUCH_RAW_XY) return "REG_TOUCH_RAW_XY";
+    else if (address == EVE_REG_TOUCH_TAG) return "REG_TOUCH_TAG";
+    else if (address == EVE_REG_TOUCH_TAG_XY) return "REG_TOUCH_TAG_XY";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_A) return "REG_TOUCH_TRANSFORM_A";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_B) return "REG_TOUCH_TRANSFORM_B";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_C) return "REG_TOUCH_TRANSFORM_C";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_D) return "REG_TOUCH_TRANSFORM_D";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_E) return "REG_TOUCH_TRANSFORM_E";
+    else if (address == EVE_REG_TOUCH_TRANSFORM_F) return "REG_TOUCH_TRANSFORM_F";
+    else if (address == EVE_REG_FRAMES) return "REG_FRAMES";
+    else if (address == EVE_REG_PLAY) return "REG_PLAY";
+    else if (address == EVE_ROMFONT_TABLEADDRESS) return "ROMFONT_TABLEADDRESS";
     else if ((address >= EVE_RAM_DL) && (address < (EVE_RAM_DL + EVE_RAM_DL_SIZE)))
         return "RAM_DL";
     else if ((address >= EVE_RAM_CMD) && (address < (EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
@@ -139,13 +217,13 @@ char const *get_register()
         return "RAM_G";
 #if IS_EVE_API(5)
     else if (address == EVE_REG_BOOT_STATUS) return "REG_BOOT_STATUS";
-    else if ((address >= EVE_COPROC_REPORT) && (address < (EVE_COPROC_REPORT + 256)))
+    else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
         return "COPROC_REPORT";
 #endif
     return "Unknown Register";
 }
 
-uint32_t get_response()
+uint32_t get_response_32()
 {
     uint32_t response = 0;
 
@@ -155,18 +233,22 @@ uint32_t get_response()
     }
     else if (address == EVE_REG_CMD_READ)
     {
-        response = HAL_GetCmdPointer();
+        response = cmd_write_ptr;
+    }
+    else if (address == EVE_REG_CMD_WRITE)
+    {
+        response = cmd_write_ptr;
     }
     else if (address == EVE_REG_CPURESET)
     {
         response = 0x00;
     }
-#ifdef EVE_USE_CMDB_METHOD
+#if defined(EVE_USE_CMDB_METHOD)
     else if (address == EVE_REG_CMDB_SPACE)
     {
         response = EVE_RAM_CMD_SIZE - 4;
     }
-#endif
+#endif // defined(EVE_USE_CMDB_METHOD)
 #if IS_EVE_API(5)
     else if (address == EVE_REG_BOOT_STATUS)
     {
@@ -176,12 +258,14 @@ uint32_t get_response()
     {
         response = 72000000;
     }
-    else if ((address >= EVE_COPROC_REPORT) && (address < (EVE_COPROC_REPORT + 256)))
+    else if ((address >= EVE_RAM_REPORT) && (address < (EVE_RAM_REPORT + 256)))
     {
-        const char msg[] = "This is a test\0\0\0";
-        if (address - EVE_COPROC_REPORT < strlen(msg))
+        // Keep up-to-date with the expected value in `bt82x_patch.c` function eve_loadpatch();
+        const char msg[] = SIMULATOR_BT820_PATCH_VERSION;
+        
+        if (address - EVE_RAM_REPORT < strlen(msg))
         {
-            memcpy(&response, &msg[address - EVE_COPROC_REPORT], 4);
+            memcpy(&response, &msg[address - EVE_RAM_REPORT], 4);
         }
         else
         {
@@ -196,39 +280,39 @@ uint32_t get_response()
 int MCU_Init(void)
 {
     printf("EVE device: %s\n", 
-#if (FT8XX_TYPE == FT800)
+#if (EVE_DEVICE == EVE_FT800)
         "FT800"
-#elif (FT8XX_TYPE == FT801)
+#elif (EVE_DEVICE == EVE_FT801)
         "FT801"
-#elif (FT8XX_TYPE == FT810)
+#elif (EVE_DEVICE == EVE_FT810)
         "FT810"
-#elif (FT8XX_TYPE == FT811)
+#elif (EVE_DEVICE == EVE_FT811)
         "FT811"
-#elif (FT8XX_TYPE == FT812)
+#elif (EVE_DEVICE == EVE_FT812)
         "FT812"
-#elif (FT8XX_TYPE == FT813)
+#elif (EVE_DEVICE == EVE_FT813)
         "FT813"
-#elif (FT8XX_TYPE == BT880)
+#elif (EVE_DEVICE == EVE_BT880)
         "BT880"
-#elif (FT8XX_TYPE == BT881)
+#elif (EVE_DEVICE == EVE_BT881)
         "BT881"
-#elif (FT8XX_TYPE == BT882)
+#elif (EVE_DEVICE == EVE_BT882)
         "BT882"
-#elif (FT8XX_TYPE == BT883)
+#elif (EVE_DEVICE == EVE_BT883)
         "BT883"
-#elif (FT8XX_TYPE == BT815)
+#elif (EVE_DEVICE == EVE_BT815)
         "BT815"
-#elif (FT8XX_TYPE == BT816)
+#elif (EVE_DEVICE == EVE_BT816)
         "BT816"
-#elif (FT8XX_TYPE == BT817)
+#elif (EVE_DEVICE == EVE_BT817)
         "BT817"
-#elif (FT8XX_TYPE == BT818)
+#elif (EVE_DEVICE == EVE_BT818)
         "BT818"
-#elif (FT8XX_TYPE == BT820)
+#elif (EVE_DEVICE == EVE_BT820)
         "BT820"
 #else
-        "FT8XX_TYPE definition not recognised"
-#endif // FT8XX_TYPE
+        "EVE_DEVICE definition not recognised"
+#endif // EVE_DEVICE
     );
 
     printf("EVE_API: %d\n", EVE_API);
@@ -236,86 +320,100 @@ int MCU_Init(void)
     printf("EVE_SUB_API: %d\n", EVE_SUB_API);
 #endif
 
-#ifdef MODULE_TYPE
-#if MODULE_TYPE != NO_MODULE
+#ifdef EVE_MODULE
+#if EVE_MODULE != EVE_NO_MODULE
     printf("EVE Module Name: %s\n", 
-#if MODULE_TYPE == VM800B
+#if EVE_MODULE == EVE_VM800B
         "VM800B35A-BK"
-#elif MODULE_TYPE == VM800C35A
+#elif EVE_MODULE == EVE_VM800C35A
         "VM800C35A-D"
-#elif MODULE_TYPE == VM800C43A
+#elif EVE_MODULE == EVE_VM800C43A
         "VM800C43A-D"
-#elif MODULE_TYPE == VM800C50A
+#elif EVE_MODULE == EVE_VM800C50A
         "VM800C50A-D"
-#elif MODULE_TYPE == VM810C
+#elif EVE_MODULE == EVE_VM810C
         "VM810C50A-D"
-#elif MODULE_TYPE == ME812A
+#elif EVE_MODULE == EVE_ME812A
         "ME812A-WH50R, ME812AU-WH50R"
-#elif MODULE_TYPE == ME813A
+#elif EVE_MODULE == EVE_ME813A
         "ME813A-WH50C"
-#elif MODULE_TYPE == VM816C
+#elif EVE_MODULE == EVE_VM816C
         "VM816C50A-D, VM816CU50A-D"
-#elif MODULE_TYPE == IDM204021R
+#elif EVE_MODULE == EVE_IDM204021R
         "IDM2040-21R"
-#elif MODULE_TYPE == IDM204043A
+#elif EVE_MODULE == EVE_IDM204043A
         "IDM2040-43A"
-#elif MODULE_TYPE == IDM20407A
+#elif EVE_MODULE == EVE_IDM20407A
         "IDM2040-7A"
-#endif // MODULE_TYPE
+#elif EVE_MODULE == EVE_VM820B10A       
+        "VM820B10A"
+#elif EVE_MODULE == EVE_VM820B15A      
+        "VM820B15A"
+#elif EVE_MODULE == EVE_IDK_FT810_43A 
+        "IDK-FT810-43A"
+#elif EVE_MODULE == EVE_IDK_BT816_50A
+        "IDK-BT816-50A"
+#elif EVE_MODULE == EVE_IDK_BT817_70A
+        "IDK-BT817-70A"
+#elif EVE_MODULE == EVE_IDK_BT817_101A  
+        "IDK-BT817-101A"
+#elif EVE_MODULE ==  EVE_IDK_BT820_101A  
+        "IDK-BT820-101A"
+#else
+        "EVE_MODULE definition not recognised"
+#endif // EVE_MODULE
     );
-#endif // MODULE_TYPE != NO_MODULE
-#endif // defined(MODULE_TYPE)
+#endif // EVE_MODULE != EVE_NO_MODULE
+#endif // defined(EVE_MODULE)
 
-#ifdef PANEL_TYPE
-#if PANEL_TYPE != NO_PANEL
+#ifdef EVE_PANEL
+#if EVE_PANEL != EVE_NO_PANEL
     printf("EVE Panel Type: %s\n", 
-#if PANEL_TYPE == DP_0351_11A
+#if EVE_PANEL == EVE_DP_0351_11A
         "DP-0351-11A QVGA (Resistive)"
-#elif PANEL_TYPE == DP_0431_11A
+#elif EVE_PANEL == EVE_DP_0431_11A
         "DP-0431-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0501_01A
+#elif EVE_PANEL == EVE_DP_0501_01A
         "DP-0501-01A WVGA (Capacitive)"
-#elif PANEL_TYPE == DP_0501_11A
+#elif EVE_PANEL == EVE_DP_0501_11A
         "DP-0351-11A WVGA (Resistive)"
-#elif PANEL_TYPE == DP_0502_11A
+#elif EVE_PANEL == EVE_DP_0502_11A
         "DP-0502-11A WQVGA (Resistive)"
-#elif PANEL_TYPE == DP_0701_01A
-        "DP-0701-11A WVGA (Capacitive)"
-#elif PANEL_TYPE == DP_1012_01A
+#elif EVE_PANEL == EVE_DP_0701_01A
+        "DP-0701-01A WVGA (Capacitive)"
+#elif EVE_PANEL == EVE_DP_1012_01A
         "DP-1012-01A WUXGA (Capacitive)"
-#elif PANEL_TYPE == DP_1561_01A
+#elif EVE_PANEL == EVE_DP_1561_01A
         "DP-1561-01A FullHD (Capacitive)"
-#elif PANEL_TYPE == DP_IDM43A
-        "IDM204043A (Capacitive)"
-#elif PANEL_TYPE == DP_IDM21R
+#elif EVE_PANEL == EVE_DP_IDM21R
         "IDM204021R (Capacitive)"
 #else
-        "Other"
-#endif // PANEL_TYPE
+        "EVE_PANEL not recognised"
+#endif // EVE_PANEL
     );
-#endif // PANEL_TYPE != NO_PANEL
-#endif // defined(PANEL_TYPE)
+#endif // EVE_PANEL != EVE_NO_PANEL
+#endif // defined(EVE_PANEL)
 
     printf("EVE display panel resolution: %s\n", 
-#if (DISPLAY_RES == QVGA)
+#if (EVE_DISPLAY_RES == EVE_QVGA)
         "QVGA 320x240"
-#elif (DISPLAY_RES == WQVGA)
+#elif (EVE_DISPLAY_RES == EVE_WQVGA)
         "WQVGA 480x272"
-#elif (DISPLAY_RES == WQVGAR)
+#elif (EVE_DISPLAY_RES == EVE_WQVGAR)
         "WQVGAR 480x480"
-#elif (DISPLAY_RES == WVGA)
+#elif (EVE_DISPLAY_RES == EVE_WVGA)
         "WVGA 800x480"
-#elif (DISPLAY_RES == WSVGA)
+#elif (EVE_DISPLAY_RES == EVE_WSVGA)
         "WSVGA 1024x600"
-#elif (DISPLAY_RES == WXGA)
+#elif (EVE_DISPLAY_RES == EVE_WXGA)
         "WXGA 1280x800"
-#elif (DISPLAY_RES == FULLHD)
+#elif (EVE_DISPLAY_RES == EVE_FULLHD)
         "FULLHD 1920x1080"
-#elif (DISPLAY_RES == WUXGA)
+#elif (EVE_DISPLAY_RES == EVE_WUXGA)
         "WUXGA 1920x1200"
 #else
-        "DISPLAY_RES definition not recognised"
-#endif // DISPLAY_RES
+        "EVE_DISPLAY_RES definition not recognised"
+#endif // EVE_DISPLAY_RES
     );
 
     state = state_end;
@@ -339,13 +437,15 @@ void MCU_CSlow(void)
     if (state == state_idle)
     {
         state = state_address;
-        printf("addr: ");
+        SIMULATOR_PRINT_SPI("addr: ");
     }
     else if (state == state_booting)
     {
-        printf("host command: ");
+        SIMULATOR_PRINT_BOOT("host command: ");
         hostptr = 0;
     }
+    doeol = 0;
+    width = 0;
 }
 
 // --------------------- Chip Select line high ---------------------------------
@@ -365,9 +465,8 @@ void MCU_CShigh(void)
             {
                 // Leave host command state
                 state = state_idle;
-                printf("\nidle");
             }
-            printf("\n");
+            SIMULATOR_PRINT_BOOT("\n");
         }
     }
     else if (state == state_idle)
@@ -376,8 +475,23 @@ void MCU_CShigh(void)
     }
     else
     {
+        if (doeol)
+        {
+            if (state == state_read_cont)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_CMDS("\n");
+                SIMULATOR_PRINT_RAM_G("\n");
+            }
+            else if (state == state_write_cont)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                SIMULATOR_PRINT_CMDS("\n");
+                SIMULATOR_PRINT_RAM_G("\n");
+            }
+            doeol = 0;
+        }
         state = state_idle;
-        printf("\n");
     }
 }
 
@@ -385,26 +499,46 @@ void MCU_CShigh(void)
 void MCU_PDlow(void)
 {
     state = state_reset;
-    printf("%s\n", get_state());
+    SIMULATOR_PRINT_BOOT("%s\n", get_state());
 }
 
 // ------------------------- PD line high --------------------------------------
 void MCU_PDhigh(void)
 {
     state = state_booting;
-    printf("%s\n", get_state());
+    SIMULATOR_PRINT_BOOT("%s\n", get_state());
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) 
+{
+    return 1;
 }
 
 // ------------------------- Delay functions -----------------------------------
 
 void MCU_Delay_20ms(void)
 {
-    printf("delay 20 ms\n");
+    SIMULATOR_PRINT_BOOT("delay 20 ms\n");
 }
 
 void MCU_Delay_500ms(void)
 {
-    printf("delay 500 ms\n");
+    SIMULATOR_PRINT_BOOT("delay 500 ms\n");
+}
+
+uint32_t MCU_Time_ms(void)
+{
+#ifdef _WIN32
+    // The resolution of this Windows API call may be as large as 15 to 16 ms.
+    return GetTickCount();
+#else
+    // For MinGW synthesize a tick counter from clock_gettime. Resolution 1 ms.
+    struct timespec spec;
+
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)((spec.tv_sec * 1000) + (spec.tv_nsec / 1000));
+#endif
 }
 
 // --------------------- SPI Send and Receive ----------------------------------
@@ -413,21 +547,31 @@ uint8_t MCU_SPIRead8(void)
 {
     uint8_t DataRead = 0;
 
-    DataRead = (uint8_t)get_response();
+    DataRead = (uint8_t)get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %02x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %02x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Read %02x ", get_register(), DataRead);
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%02x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%02x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%02x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(1);
 
     return DataRead;
 }
@@ -436,53 +580,64 @@ void MCU_SPIWrite8(uint8_t DataToWrite)
 {
     if (state == state_write)
     {
-        printf("%s %02x ", get_register(), DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%s Write %02x ", get_register(), DataToWrite);
         state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        printf("%02x ", DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%02x ", DataToWrite);
     }
 #if IS_EVE_API(1,2,3,4)
     // Host commands
     else if (state == state_booting)
     {
-        printf("%02x ", DataToWrite);
+        SIMULATOR_PRINT_BOOT("%02x ", DataToWrite);
         hostcmd[hostptr++] = DataToWrite;
         if (hostptr > HOSTCMDLEN)
         {
-            printf("[%s] host command length error %d\n", __FUNCTION__, hostptr);
+            SIMULATOR_ERROR("[%s] host command length error %d\n", __FUNCTION__, hostptr);
             exit(-1);
         }
     }
 #endif
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(1);
 }
 
 uint16_t MCU_SPIRead16(void)
 {
     uint16_t DataRead = 0;
 
-    DataRead = (uint16_t)get_response();
+    DataRead = (uint16_t)get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %04x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %04x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%s Read %04x ", get_register(), DataRead);
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%04x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%04x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%04x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 
+    inc_address(2);
     return DataRead;
 }
 
@@ -490,18 +645,23 @@ void MCU_SPIWrite16(uint16_t DataToWrite)
 {
     if (state == state_write)
     {
-        printf("%s %04x ", get_register(), DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%s Write %04x ", get_register(), DataToWrite);
         state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        printf("%04x ", DataToWrite);
+        SIMULATOR_PRINT_REGISTERS("%04x ", DataToWrite);
+        if (address == EVE_REG_CMD_WRITE)
+        {
+            cmd_write_ptr = DataToWrite;
+        }
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
+    inc_address(2);
 }
 
 void MCU_SPIWrite24(uint32_t DataToWrite)
@@ -509,22 +669,22 @@ void MCU_SPIWrite24(uint32_t DataToWrite)
     if (state == state_address)
     {
         address = MCU_be32toh(DataToWrite);
+        SIMULATOR_PRINT_SPI("0x%x ", address);
         if (address >> 31)
         {
             state = state_write;
             address = (address & 0x7fffff00) >> 8;
-            printf("write %x ", address);
         }
         else
         {
             // Read address cannot be send in 24 bits
-            printf("[%s] state error %s cannot set read address in 24 bits\n", __FUNCTION__, get_state());
+            SIMULATOR_ERROR("[%s] state error %s cannot set read address in 24 bits\n", __FUNCTION__, get_state());
             exit(-1);
         }
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
@@ -533,22 +693,37 @@ uint32_t MCU_SPIRead32(void)
 {
     uint32_t DataRead = 0;
 
-    DataRead = get_response();
+    DataRead = get_response_32();
     
     if (state == state_read)
     {
-        printf("%s %08x ", get_register(), DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("<-- %08x ", DataRead);
+            SIMULATOR_PRINT_REGISTERS("%s Read:\n%08x ", get_register(), DataRead);
+        }
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Read %08x ", get_register(), DataRead);
+        }
+
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        printf("%08x ", DataRead);
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%08x ", DataRead);
+        }
+        SIMULATOR_PRINT_REGISTERS("%08x ", DataRead);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
     
+    inc_address(4);
     return DataRead;
 }
 
@@ -556,35 +731,112 @@ void MCU_SPIWrite32(uint32_t DataToWrite)
 {
     if (state == state_address)
     {
+#if IS_EVE_API(1, 2, 3, 4)
+        DataToWrite = DataToWrite << 8;
+#endif
         address = MCU_be32toh(DataToWrite);
-        if (address >> 31)
+        SIMULATOR_PRINT_SPI("0x%x ", address);
+#if IS_EVE_API(1, 2, 3, 4)
+        if (address >> 23)
         {
             state = state_write;
-            printf("write ");
         }
         else
         {
             state = state_read;
-            printf("read ");
         }
-        address = MCU_be32toh(DataToWrite) & 0x7fffffff;
-#if IS_EVE_API(1, 2, 3, 4)
-        address = address >> 8;
+        address = address & 0x7fffff;
+#else
+        if (address >> 31)
+        {
+            state = state_write;
+        }
+        else
+        {
+            state = state_read;
+        }
+        address = address & 0x7fffffff;
 #endif
-        printf("%x ", address);
     }
     else if (state == state_write)
     {
-        printf("%s %08x ", get_register(), DataToWrite);
+        if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+        {
+            if (width == 0)
+            {
+                SIMULATOR_PRINT_REGISTERS("%s Write:\n%08x ", get_register(), DataToWrite);
+                SIMULATOR_PRINT_CMDS("==> %08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("==> %08x ", DataToWrite);
+            }
+            else
+            {
+                SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            }
+        }
+        else if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            if (width == 0)
+            {
+                SIMULATOR_PRINT_REGISTERS("%s Write:\n%08x ", get_register(), DataToWrite);
+                SIMULATOR_PRINT_RAM_G("--> %08x ", DataToWrite);
+            }
+            else
+            {
+                SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+                SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            }
+        }
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Write %08x ", get_register(), DataToWrite);
+        }
+
         state = state_write_cont;
+        if (address == EVE_REG_CMD_WRITE)
+        {
+            cmd_write_ptr = DataToWrite;
+        }
+        inc_address(4);
     }
     else if (state == state_write_cont)
     {
-        printf("%08x ", DataToWrite);
+        if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+        {
+            cmd_buffer[cmd_write_ptr/4] = DataToWrite;
+            cmd_write_ptr += 4;
+            if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+            
+            SIMULATOR_PRINT_CMDS("%08x ", DataToWrite);
+            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_CMDS("\n => ");
+                SIMULATOR_PRINT_RAM_G("\n => ");
+                width = 0;
+            }
+        }
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+        {
+            SIMULATOR_PRINT_RAM_G("%08x ", DataToWrite);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_RAM_G("\n -> ");
+                width = 0;
+            }
+        }
+        SIMULATOR_PRINT_REGISTERS("%08x ", DataToWrite);
+        if (width == 16)
+        {
+            SIMULATOR_PRINT_REGISTERS("\n");
+            width = 0;
+        }
+        inc_address(4);
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
@@ -593,9 +845,9 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
 {
     uint32_t DataRead = 0;
     uint16_t DataPtr = 0;
+    uint32_t val;
     uint32_t i;
-
-    DataRead = get_response();
+    uint32_t j;
 
     if (state == state_read)
     {
@@ -607,52 +859,199 @@ void MCU_SPIRead(uint8_t *DataToRead, uint32_t length)
         DataToRead[3] = 1;
         DataPtr = 4;
 #endif
-        printf("%s (LE) ", get_register());
-
-        for (i = DataPtr; i < length; i++)
+        if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
         {
-            DataToRead[DataPtr++] = DataRead & 0xff;
-            printf("%02x", DataRead & 0xff);
-            DataRead = DataRead >> 8;
+            SIMULATOR_PRINT_RAM_G("<-- ");
+            SIMULATOR_PRINT_REGISTERS("%s Read:\n", get_register());
         }
+        else
+        {
+            SIMULATOR_PRINT_REGISTERS("%s Read ", get_register());
+        }
+        width = 0;
+
+        for (i = DataPtr; i < length; i+=4)
+        {
+            DataRead = get_response_32();
+            
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                DataToRead[DataPtr++] = DataRead & 0xff;
+                val |= ((DataRead & 0xff) << (j * 8));
+                DataRead = DataRead >> 8;
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n<-| ");
+                    width = 0;
+                }
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
+
+            inc_address(4);
+        }
+        state = state_read_cont;
     }
     else if (state == state_read_cont)
     {
-        for (i = DataPtr; i < length; i++)
+        for (i = DataPtr; i < length; i+=4)
         {
-            DataToRead[DataPtr++] = DataRead & 0xff;
-            printf("%02x", DataRead & 0xff);
+            DataRead = get_response_32();
+            
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                DataToRead[DataPtr++] = DataRead & 0xff;
+                val |= ((DataRead & 0xff) << (j * 8));
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n");
+                    width = 0;
+                }
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
+
             DataRead = DataRead >> 8;
+            inc_address(4);
         }
     }
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }
 
 void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
 {
+    uint16_t DataPtr = 0;
+    uint32_t val;
     uint32_t i;
+    uint32_t j;
 
     if (state == state_write)
     {
-        printf("%s ", get_register());
-
-        for (i = 0; i < length; i++)
+        SIMULATOR_PRINT_REGISTERS("%s Write:\n", get_register());
+        width = -1;
+        for (i = 0; i < length; i+=4)
         {
-            printf("%02x", DataToWrite[i]);
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
+            }
+            if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+            {
+                cmd_buffer[cmd_write_ptr/4] = val;
+                cmd_write_ptr += 4;
+                if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+
+                if (width == -1)
+                {
+                    width = 0;
+                    SIMULATOR_PRINT_CMDS("==> %08x ", val);
+                    SIMULATOR_PRINT_RAM_G("==> %08x ", val);
+                }
+                else
+                {
+                    SIMULATOR_PRINT_CMDS("%08x ", val);
+                    SIMULATOR_PRINT_RAM_G("%08x ", val);
+                }
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_CMDS("\n => ");
+                    SIMULATOR_PRINT_RAM_G("\n => ");
+                    width = 0;
+                }
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                if (width == -1)
+                {
+                    width = 0;
+                    SIMULATOR_PRINT_RAM_G("--> %08x ", val);
+                }
+                else
+                {
+                    SIMULATOR_PRINT_RAM_G("%08x ", val);
+                }
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n -> ");
+                    width = 0;
+                }
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
+
+            inc_address(4);
         }
-        printf(" ");
+        state = state_write_cont;
     }
     else if (state == state_write_cont)
     {
-        for (i = 0; i < length; i++)
+        for (i = 0; i < length; i+=4)
         {
-            printf("%02x", DataToWrite[i]);
+            val = 0;
+            for (j = 0; j < 4; j++)
+            {
+                val |= ((DataToWrite[DataPtr++] & 0xff) << (j * 8));
+            }
+            if ((address == EVE_REG_CMDB_WRITE) || ((address >= EVE_RAM_CMD) && (address < EVE_RAM_CMD + EVE_RAM_CMD_SIZE)))
+            {
+                cmd_buffer[cmd_write_ptr/4] = val;
+                cmd_write_ptr += 4;
+                if (cmd_write_ptr > EVE_RAM_CMD_SIZE) cmd_write_ptr = 0;
+
+                SIMULATOR_PRINT_CMDS("%08x ", val);
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_CMDS("\n => ");
+                    SIMULATOR_PRINT_RAM_G("\n => ");
+                    width = 0;
+                }
+            }
+            if ((address >= EVE_RAM_G) && (address < (EVE_RAM_G + EVE_RAM_G_SIZE)))
+            {
+                SIMULATOR_PRINT_RAM_G("%08x ", val);
+                if (width == 16)
+                {
+                    SIMULATOR_PRINT_RAM_G("\n -> ");
+                    width = 0;
+                }
+            }
+            SIMULATOR_PRINT_REGISTERS("%08x ", val);
+            if (width == 16)
+            {
+                SIMULATOR_PRINT_REGISTERS("\n");
+                width = 0;
+            }
+
+            inc_address(4);
         }
-        printf(" ");
     }
 #if IS_EVE_API(5)
     else if (state == state_booting)
@@ -661,19 +1060,19 @@ void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length)
         for (i = 0; i < length; i++)
         {
             hostcmd[hostptr++] = DataToWrite[i];
-            printf("%02x", DataToWrite[i]);
+            SIMULATOR_PRINT_BOOT("%02x", DataToWrite[i]);
             if (hostptr > HOSTCMDLEN)
             {
-                printf("[%s] host command length error %d\n", __FUNCTION__, hostptr);
+                SIMULATOR_ERROR("[%s] host command length error %d\n", __FUNCTION__, hostptr);
                 exit(-1);
             }
         }
-        printf(" ");
+        SIMULATOR_PRINT_BOOT(" ");
     }
 #endif
     else
     {
-        printf("[%s] state error %s\n", __FUNCTION__, get_state());
+        SIMULATOR_ERROR("[%s] state error %s\n", __FUNCTION__, get_state());
         exit(-1);
     }
 }

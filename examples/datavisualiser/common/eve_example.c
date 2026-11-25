@@ -1,13 +1,14 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
  /*
+  * ============================================================================
   * (C) Copyright,  Bridgetek Pte. Ltd.
   * ============================================================================
   *
   * This source code ("the Software") is provided by Bridgetek Pte Ltd
   * ("Bridgetek") subject to the licence terms set out
-  * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+  * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
   * You must read the Licence Terms before downloading or using the Software.
   * By installing or using the Software you agree to the Licence Terms. If you
   * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,14 +37,15 @@
   * ============================================================================
   */
 
+  /* INCLUDES ************************************************************************/
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* MACROS **************************************************************************/
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
@@ -52,11 +54,24 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
-// Define global varibles for use in example
+/* CONSTANTS ***********************************************************************/
 
-//--------------------------------------------------------------------------------------------------------
-// colour related variables
-//--------------------------------------------------------------------------------------------------------
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/**
+ @brief Define constants and global variables for use in the example.
+ */
+
+ //----------------------------------------------------------------------------------
+ // colour related constants
+ //----------------------------------------------------------------------------------
 const uint32_t colourBGBox = 0x000000; // black
 const uint32_t colourBG = 0x2C1048; // purple
 const uint32_t colour1 = 0x9D45D0; // purple 2
@@ -64,50 +79,89 @@ const uint32_t colour2 = 0xFFC337; // yellow
 const uint32_t colour3 = 0xF90099; // pink
 const uint32_t colour4 = 0xE1341E; // orange
 
-//--------------------------------------------------------------------------------------------------------
-// screen data related variables
-//--------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+// pixel precision related constants
+//----------------------------------------------------------------------------------
+// set pixel precision constant based on EVE version, used in VERTEX2F() calls
+#if !IS_EVE_API(1)
+const uint8_t pix_precision = 8; // 1/8th
+#else
+const uint8_t pix_precision = 16; // 1/16th
+#endif
 
-// declare arrays for the x and y axis labels
-char* x_axis_labels[x_axis_labels_size];
-uint8_t y_axis_labels[y_axis_labels_size];
+/* GLOBAL VARIABLES ****************************************************************/
+
+//----------------------------------------------------------------------------------
+// flag for screen renders
+//----------------------------------------------------------------------------------
+bool screen_render = false;
+
+//----------------------------------------------------------------------------------
+// screen data related variables
+//----------------------------------------------------------------------------------
+// defines for the sizing of data arrays and labels
+// for line plot
+#define line_plot_data_size 7 // set to desired number of data points
+#define x_axis_labels_size 7 // set to line_plot_data_size
+#define y_axis_labels_size 5 // set to (x_axis_labels_size - 2)
+// for bar gauges
+#define num_bargauge_bars 6 // set total bar graph bars
+// for radar plot
+#define num_radar_points 5 // set total radar points
+
+
+// declare and populate arrays for the x and y axis labels of the line plot
+uint8_t const y_axis_labels[y_axis_labels_size] = {
+    100, 80, 60, 40, 20
+};
+const char* const x_axis_labels[x_axis_labels_size] = {
+    "0:30", "0:25", "0:20", "0:15", "0:10", "0:05", "0:00"
+};
 
 // declare arrays for the line plot data
-uint8_t line_plot1_data[plot_data_size];
-uint8_t line_plot2_data[plot_data_size];
-uint8_t line_plot3_data[plot_data_size];
+uint8_t line_plot1_data[line_plot_data_size];
+uint8_t line_plot2_data[line_plot_data_size];
+uint8_t line_plot3_data[line_plot_data_size];
 
-// varibles for changing the on-screen bar readouts
-uint8_t bar_value[bargauge_num_bars];
-uint8_t bar_dir[bargauge_num_bars];
+// variables for changing the on-screen bar gauge readouts
+uint8_t bar_value[num_bargauge_bars] = { 0, 0, 0, 0, 0, 0 };
+uint8_t bar_dir[num_bargauge_bars] = { 1, 1, 1, 1, 1, 1 };
 
-// varibles for changing the on-screen pie chart readout
-uint8_t pie_value = 95;
-uint8_t pie_dir = 0xFF; // used in demo mode
+// variables for changing the on-screen radar plot readout 
+uint8_t radar_value[num_radar_points] = { 20, 60, 45, 100, 83 };
+uint8_t radar_dir[num_radar_points] = { 1, 1, 1, 0, 1 };
 
 // variables for changing the on-screen circle readouts
 uint16_t circle_value = 0;
 uint8_t circle_dir = 0xFF; // used in demo mode
+// variables for changing the on-screen pie chart readout
+uint8_t pie_value = 95;
+uint8_t pie_dir = 0xFF; // used in demo mode
 
-// used to update the line plot in demo mode
+// used to update the data in demo mode
 uint64_t count = 0;
 
-//--------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
 // settings, mode, and backlight related variables
-//--------------------------------------------------------------------------------------------------------
-
+//----------------------------------------------------------------------------------
 // variable for settings menu display
 bool settings = false;
-
 // variable for demo mode
 bool demoMode = true;
 
 // variable for backlight level (0-100)
 int8_t backlight_value = 100;
 
-//--------------------------------------------------------------------------------------------------------
-// touch input related vairbales
-//--------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+// touch input related variables
+//----------------------------------------------------------------------------------
+// Definitions of values for on-screen button tags
+const uint8_t settings_button_tag = 10;
+const uint8_t settings_menu_item_1_tag = 11;
+const uint8_t settings_menu_item_2_tag = 12;
+const uint8_t mode_button_1_tag = 13;
+const uint8_t mode_button_2_tag = 14;
+const uint8_t backlight_dial_tag = 15;
 
 // booleans for button press states
 bool settings_button_press = false;
@@ -116,78 +170,281 @@ bool settings_menu_item_2_press = false;
 bool mode_button_1_press = false;
 bool mode_button_2_press = false;
 
-// boolean for sound playback detection on button press
-bool sound_played = false;
-
-// variables for touch detection
+// variables for touch tag, pen up, and pen down detection
 uint8_t TagVal = 0;
 uint8_t LastTagVal = 0;
 uint8_t Pen_Down_Tag = 0;
 uint8_t Pen_Up_Tag = 0;
-// for CMD_TRACKER
+
+// boolean for sound playback detection on button press
+bool sound_played = false;
+
+// for CMD_TRACKER used on backlight LCD dial arc
 int32_t TrackValue = 0;
 
-// for angle on backlight LCD dial arc
+//----------------------------------------------------------------------------------
+// LCD backlight arc dial variables
+//----------------------------------------------------------------------------------
+// angles for use in LCD backlight dial arc
+#define backlight_arc_start_deg 60
+#define backlight_arc_end_deg 300
+
+// for current angle on LCD backlight dial arc
 uint16_t angle = 0;
+
 // have this start at the 'full' value as we are starting backlight_value at 'full'
 uint16_t last_valid_angle = backlight_arc_end_deg;
 
-//--------------------------------------------------------------------------------------------------------
-// static screen content variables
-//--------------------------------------------------------------------------------------------------------
+// for total degrees in arc
+int16_t backlight_arc_total_deg = (backlight_arc_end_deg - backlight_arc_start_deg);
 
-// define global variables for static screen content size and RAM_G location
+//----------------------------------------------------------------------------------
+// static screen content variables
+//----------------------------------------------------------------------------------
 uint32_t static_screen_size = 0;
 uint32_t static_screen_location = 0;
 
-//--------------------------------------------------------------------------------------------------------
-// pixel precision variable
-//--------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+// background box positioning and sizes variables
+//----------------------------------------------------------------------------------
+// for line plot
+int16_t line_plot_box_start_x;
+int16_t line_plot_box_start_y;
+int16_t line_plot_box_end_x;
+int16_t line_plot_box_end_y;
 
-// set pixel precision variable based on EVE version, used in VERTEX2F() calls
-#if IS_EVE_API(2,3,4,5)
-const uint8_t pix_precision = 8; // 1/8 th
-#elif IS_EVE_API(1)
-const uint8_t pix_precision = 16; // 1/16 th
-#endif
+// for bar gauges
+int16_t bar_gauge_box_start_x;
+int16_t bar_gauge_box_start_y;
+int16_t bar_gauge_box_end_x;
+int16_t bar_gauge_box_end_y;
 
-// ######################################################################################################################################################################################################
-// #######################################################                     Code for gradient helper functions                     ###################################################################
-// ######################################################################################################################################################################################################
+// for pie chart
+int16_t pie_chart_box_start_x;
+int16_t pie_chart_box_start_y;
+int16_t pie_chart_box_end_x;
+int16_t pie_chart_box_end_y;
+
+// for radar plot
+int16_t radar_plot_box_start_x;
+int16_t radar_plot_box_start_y;
+int16_t radar_plot_box_end_x;
+int16_t radar_plot_box_end_y;
+
+// for circular gauge
+int16_t circle_gauge_box_start_x;
+int16_t circle_gauge_box_start_y;
+int16_t circle_gauge_box_end_x;
+int16_t circle_gauge_box_end_y;
+
+//----------------------------------------------------------------------------------
+// line plot variables
+//----------------------------------------------------------------------------------
+// for graph positioning and size
+int16_t line_plot_x;
+int16_t line_plot_y;
+int16_t line_plot_height;
+int16_t line_plot_width;
+// for shadow lines on graph
+#define line_plot_extra_x_lines (x_axis_labels_size - 1)
+#define line_plot_extra_y_lines y_axis_labels_size
+// for line plot line width
+uint8_t line_plot_line_width; // set this width based on screen size
+// for labels
+int16_t line_plot_label_x;
+int16_t line_plot_label_y;
+// for readout
+int16_t line_plot_num_x;
+int16_t line_plot_num1_y;
+int16_t line_plot_num2_y;
+int16_t line_plot_num3_y;
+
+//------------------------------------------------------------------------------
+// bar gauge variables
+//------------------------------------------------------------------------------
+// bar gauge positioning
+int16_t bargauge_x[num_bargauge_bars];
+int16_t bargauge_y;
+// bar gauge sizing related
+int16_t bargauge_width;
+int16_t bargauge_height;
+// for labels
+int16_t bargauge_label_y;
+int16_t bargauge_label_height;
+
+//----------------------------------------------------------------------------------
+// radar plot variables
+//----------------------------------------------------------------------------------
+// radar plot sizing related
+int16_t radar_plot_radius;
+int16_t radar_plot_line_thickness;
+
+// radar plot positioning
+int16_t radar_plot_x;
+int16_t radar_plot_y;
+// for labels
+int16_t radar_plot_label_x;
+int16_t radar_plot_label_y;
+// for readout
+int16_t radar_plot_num_x;
+int16_t radar_plot_num1_y;
+int16_t radar_plot_num2_y;
+int16_t radar_plot_num3_y;
+int16_t radar_plot_num4_y;
+int16_t radar_plot_num5_y;
+int16_t radar_plot_num_label_x; // for the labels beside the readout numbers
+int16_t radar_plot_num_line_y; // for the lines below readout numbers
+int16_t radar_plot_num_line_gap_y; // for the gap between the lines
+
+//----------------------------------------------------------------------------------
+// circular gauge variables
+//----------------------------------------------------------------------------------
+// circular gauge sizing related
+int16_t circle_gauge_radius;
+int16_t circle_gauge_thickness;
+// circular gauge positioning
+int16_t circle_gauge_x;
+int16_t circle_gauge_y;
+
+//----------------------------------------------------------------------------------
+// pie chart variables
+//----------------------------------------------------------------------------------
+// pie chart positioning
+int16_t pie_chart_x;
+int16_t pie_chart_y;
+// pie chart size
+int16_t pie_chart_radius;
+// for label
+int16_t pie_chart_label_x;
+int16_t pie_chart_label_y;
+int16_t pie_chart_readout_x;
+int16_t pie_chart_readout_y;
+
+//----------------------------------------------------------------------------------
+// settings menu variables
+//----------------------------------------------------------------------------------
+// settings buttons positioning
+int16_t settings_button_x1;
+int16_t settings_button_y1;
+int16_t settings_button_x2;
+int16_t settings_button_y2;
+// for the lines used to create the settings menu icon
+int16_t settings_button_lines_x;
+int16_t settings_button_lines_y;
+int16_t settings_button_lines_length;
+int16_t settings_button_lines_y_offset;
+
+// for the line used to create the settings button
+int16_t settings_button_line_width; // set this width based on screen size
+// settings control menu size and position.
+//----------------------------------------------------------------------------------
+// for menu positioning
+int16_t settings_menu_x;
+int16_t settings_menu_y;
+// for menu size
+int16_t settings_menu_length;
+int16_t settings_menu_size;
+// for label positioning
+int16_t settings_menu_label_x;
+int16_t settings_menu_label_y;
+// mode menu buttons and readout, size and positions.
+//----------------------------------------------------------------------------------
+// for button sizing
+int16_t mode_button_size;
+// for buttons positioning
+int16_t mode_button1_x;
+int16_t mode_button1_y;
+int16_t mode_button2_x;
+int16_t mode_button2_y;
+// for readout positioning
+int16_t mode_readout_x1;
+int16_t mode_readout_y1;
+int16_t mode_readout_x2;
+int16_t mode_readout_y2;
+// for label positioning
+int16_t mode_label_x;
+int16_t mode_label_y;
+// backlight menu arc gauge size, position and angles.
+//----------------------------------------------------------------------------------
+// for dial positioning
+int16_t backlight_dial_x;
+int16_t backlight_dial_y;
+// for dial sizing
+int16_t backlight_dial_radius;
+int16_t backlight_dial_inner_radius;
+
+//----------------------------------------------------------------------------------
+// font handle variables
+//----------------------------------------------------------------------------------
+// variables for inbuilt ROM font handles to be used which are set based on screen size.
+uint8_t font_small;
+uint8_t font_med;
+uint8_t font_large;
+uint8_t font_xl;
+
+// variable for font handle to be used for the line plot readout.
+uint8_t font_line_readout;
+
+/* FUNCTIONS ***********************************************************************/
+
+// Explicit declarations for the example-private functions and Arduino sketches.
+static inline int16_t scalePosition(uint32_t size, uint16_t num, uint16_t den);
+
+// #################################################################################
+// ###                         General Helper Functions                          ###
+// #################################################################################
 
 /**
- @brief Function to dynamically create a gradient from a bitmap and a rectangle which can also be used to colour alpha blended shapes.
- @details This can be used after a shape has been created in the alpha buffer to colour the shape with using the
- EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA); blend function, it works by using the inverse alpha values from a inbuilt
- gradient bitmap and layering colour based on these alpha values of a rectangle shape drawn beneath the bitmap. Otherwise it can be used to
- create a normal rectangular gradient that can be faded using the COLOR_A command preceeding the call to the function.
- @param grad_x x value on screen for the gradient
- @param grad_y y value on screen for the gradient
- @param width width of the gradient
- @param height height of the gradient
- @param colour1 colour used in the gradient bitmap
- @param colour2 base colour used for the rectangle the gradeint is applied on top of
- @param alpha_compositing boolean to determine if the gradient is being used in a alpha composited shape
- @param mirror boolen to determine if the graident bitmap needs mirrored
- @param vert boolen to determine if we wish the gradient to run vertically or horizontally
+ * @brief Scale a screen dimension; den must be non - zero and the result must fit int16_t.
  */
-void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, uint16_t height, uint32_t colour1, uint32_t colour2, bool alpha_compositing, bool mirror, bool vert)
+static inline int16_t scalePosition(uint32_t size, uint16_t num, uint16_t den)
 {
+    return (int16_t)((size * num) / den);
+}
+
+// #################################################################################
+// ###                         Graphics Helper Functions                         ###
+// #################################################################################
+
+/**
+ * @brief Function to dynamically create a gradient from a bitmap and a rectangle
+ *   which can also be used to colour alpha blended shapes.
+ * @details This can be used after a shape has been created in the alpha buffer
+ *   to colour the shape using the
+ *   EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
+ *   blend function. It works by using the inverse alpha values from an inbuilt
+ *   gradient bitmap and layering colour based on these alpha values of a rectangle
+ *   shape drawn beneath the bitmap. Otherwise, it can be used to create a normal
+ *   rectangular gradient that can be faded using the COLOR_A command preceding
+ *   the call to the function.
+ *
+ * @param grad_x x value on screen for the gradient
+ * @param grad_y y value on screen for the gradient
+ * @param width width of the gradient
+ * @param height height of the gradient
+ * @param colour1 colour used in the gradient bitmap
+ * @param colour2 base colour used for the rectangle the gradient is applied on top of
+ * @param alpha_compositing boolean to determine if the gradient is in an alpha-composited shape
+ * @param mirror boolean to determine if the gradient bitmap needs mirrored
+ * @param vert boolean to determine if we wish the gradient to run vertically or horizontally
+ */
+void addRectangularGradient(int16_t grad_x, int16_t grad_y, uint16_t width, uint16_t height, uint32_t colour1, uint32_t colour2, bool alpha_compositing, bool mirror, bool vert)
+{
+
     // scissor to the size of the gradient we want to create
-    // this is required as we are using the wrapx/wrapy = REPEAT in the BITMAP_SIZE call
-    // which requires the values to be a power of 2 for height or width or the bitmap data
-    // becomes undefined past the wrap section. If we use a scissor here it will prevent the 
-    // undefined data being rendered if the height/width arent a power of 2
+    // this is required as we are using the wrapx/wrapy = REPEAT in the BITMAP_SIZE
+    // call which requires the values to be a power of 2 for height or width or
+    // the bitmap data becomes undefined past the wrap section. If we use a
+    // scissor here it will prevent the
+    // undefined data being rendered if the height/width aren't a power of 2
     EVE_SCISSOR_XY(grad_x, grad_y);
     EVE_SCISSOR_SIZE(width, height);
-
-    // are we using this gradient in a alpha composited shape?
-    // if we arent we need to draw it before the gradient
+    // are we using this gradient in an alpha-composited shape?
+    // if we aren't, we need to draw it before the gradient
     if (!alpha_compositing) {
         // save context
         EVE_SAVE_CONTEXT();
-
-        // draw a rectangle of the colour we want to blend the graident into
+        // draw a rectangle of the colour we want to blend the gradient into
         EVE_BEGIN(EVE_BEGIN_RECTS);
         EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
         EVE_VERTEX2F((grad_x * pix_precision), (grad_y * pix_precision));
@@ -196,12 +453,10 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
         EVE_END();
 
     }
-
     // we want to use the inbuilt gradient bitmap utilised in CMD_GRADIENT to apply a gradient to our arc gauges
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     // assign this the bitmap handle that CMD_GRADIENT would use for it
     EVE_BITMAP_HANDLE(15);
-
     if (!vert) {
 #if IS_EVE_API (1)
         EVE_BITMAP_SOURCE(-261517);
@@ -228,28 +483,29 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
         // scale the bitmap width to the size we need
         EVE_CMD_LOADIDENTITY();
         // scale by width in the x axis to mirror the image and scale to the height we need
-        // mirror with a  multiplication of -1 if required
+        // mirror with a multiplication of -1 if required
         if (!mirror) {
-            EVE_CMD_SCALE(((width * 65536) / 512), 0); // 512 is the size of the orignal bitmap
+            EVE_CMD_SCALE(((width * 65536) / 512), 0); // 512 is the size of the original bitmap
         }
         else {
-            // adjust the translate where the bitmap will start render from when scaled
+            // adjust the translation to where the bitmap will start rendering when scaled
             EVE_CMD_TRANSLATE((width * 65536), 0);
             // scale
             // add 1 here as the mirror scale can sometimes shrink the desired bitmap slightly
-            EVE_CMD_SCALE((((width + 1) * 65536) / 512) * -1, 0); // 512 is the size of the orignal bitmap
+            // 512 is the size of the original bitmap
+            EVE_CMD_SCALE((((width + 1) * 65536) / 512) * -1, 0);
         }
         // set new bitmap transform matrix
         EVE_CMD_SETMATRIX();
     }
     else {
-        // normally this bitmap is 512 x 1, but as we want ot use it vertically we can set it to be 1 x 512
-#if IS_EVE_API (1)
+        // normally this bitmap is 512 x 1, but as we want to use it vertically we can set it to be 1 x 512
+#if IS_EVE_API(1)
         EVE_BITMAP_SOURCE(-261517);
         EVE_BITMAP_LAYOUT(EVE_FORMAT_L8, 1, 512);
-#elif IS_EVE_API (2,3,4)
+#elif IS_EVE_API(2,3,4)
         EVE_CMD_SETBITMAP(2097256, EVE_FORMAT_L8, 1, 512);
-#elif IS_EVE_API (5)
+#elif IS_EVE_API(5)
 // configure bitmap with standard parameters
         EVE_CMD_SETBITMAP(0, EVE_FORMAT_L8, 1, 512);
         EVE_BITMAP_SOURCE_H(7);
@@ -257,7 +513,7 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
 #endif
         // set the width/height to the input value and wrap along the x axis (to repeat bitmap data)
         if (width > 511 || height > 511) {
-#if IS_EVE_API (2,3,4,5)
+#if IS_EVE_API(2,3,4,5)
             EVE_BITMAP_SIZE_H((width >> 9), (height >> 9));
 #endif
             EVE_BITMAP_SIZE(EVE_FILTER_NEAREST, EVE_WRAP_REPEAT, EVE_WRAP_BORDER, width, height);
@@ -267,42 +523,40 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
         }
         // scale the bitmap height to the size we need
         EVE_CMD_LOADIDENTITY();
-
         // scale by grad_size in the y axis to mirror the image and scale to the height we need
         // mirror with a multiplication of -1 if required
         if (!mirror) {
             // scale
-            EVE_CMD_SCALE(0, ((height * 65536) / 512)); // 512 is the size of the orignal bitmap
+            EVE_CMD_SCALE(0, ((height * 65536) / 512)); // 512 is the size of the original bitmap
         }
         else {
-            // adjust the translate where the bitmap will start render from when scaled
+            // adjust the translation to where the bitmap will start rendering when scaled
             EVE_CMD_TRANSLATE(0, (height * 65536));
             // scale
             // add 1 here as the mirror scale can sometimes shrink the desired bitmap slightly
-            EVE_CMD_SCALE(0, (((height + 1) * 65536) / 512) * -1); // 512 is the size of the original bitmap
+            // 512 is the size of the original bitmap
+            EVE_CMD_SCALE(0, (((height + 1) * 65536) / 512) * -1);
         }
         // set new bitmap transform matrix
         EVE_CMD_SETMATRIX();
     }
-
     // place the gradient on screen using the input colour
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
     EVE_VERTEX2F((grad_x * pix_precision), (grad_y * pix_precision));
 
     // end bitmaps
     EVE_END();
-
-    // are we using this gradient in a alpha composited shape?
+    // are we using this gradient in an alpha-composited shape?
     // if we are we need to draw this after the gradient
     if (alpha_compositing) {
         // draw a rectangle of the colour we want to blend the gradient into
-        // NOTE: because the preceding BLEND_FUNC call is EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
+        // NOTE: because the preceding BLEND_FUNC call is
+        // EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
         // this rectangle has to be rendered after the gradient
         EVE_BEGIN(EVE_BEGIN_RECTS);
         EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
         EVE_VERTEX2F((grad_x * pix_precision), (grad_y * pix_precision));
         EVE_VERTEX2F(((grad_x + width) * pix_precision), ((grad_y + height) * pix_precision));
-
         // end rectangles
         EVE_END();
     }
@@ -321,85 +575,213 @@ void addRectangularGradient(uint16_t grad_x, uint16_t grad_y, uint16_t width, ui
 
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                           Code for the Widgets                            ###################################################################
-// ######################################################################################################################################################################################################
+/**
+ * @brief Draws a circular gradient background with an outline.
+ * @details Uses a circular stencil to render a gradient with transparency,
+ * followed by a separate alpha - buffer blending operation to draw
+ * the circular outline.The gradient and outline are rendered
+ * independently.
+ *
+ * @param input_x x value on screen for the gradient.
+ * @param input_y y value on screen for the gradient
+ * @param radius Radius of the circle in pixels.
+ * @param alpha alpha value used to fade gradient render.
+ * @param colour1 First gradient colour.
+ * @param colour2 Second gradient colour.
+ * @param colourOutline Outline colour.
+ */
+void addCircularGradient(uint16_t input_x, uint16_t input_y, uint16_t radius, uint8_t alpha, uint32_t colour1, uint32_t colour2, uint32_t colourOutline)
+{
+    // Ensure radius does not exceed max value considering sizes used in function
+    radius = MIN(radius, 510);
+
+    // Centre in vertex units
+    const int32_t cx = (int32_t)input_x * pix_precision;
+    const int32_t cy = (int32_t)input_y * pix_precision;
+
+    //--------------------------------------------------------------------------
+    // Create circular stencil and render gradient
+    //--------------------------------------------------------------------------
+
+    // Save graphics context
+    EVE_SAVE_CONTEXT();
+
+    // Set scissor for the size of the gradient
+    EVE_SCISSOR_SIZE((radius * 2) + 4, (radius * 2) + 4);
+    EVE_SCISSOR_XY(input_x - radius - 2, input_y - radius - 2);
+
+    // Disable all colour channels
+    EVE_COLOR_MASK(0, 0, 0, 0);
+
+    // Clear stencil buffer
+    EVE_STENCIL_MASK(255);
+    EVE_CLEAR_STENCIL(0);
+    EVE_CLEAR(0, 1, 0);
+
+    // Replace stencil values
+    EVE_STENCIL_OP(EVE_STENCIL_REPLACE, EVE_STENCIL_REPLACE);
+    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 255, 255);
+
+    // Create circular stencil
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // Set size to radius
+    EVE_POINT_SIZE(radius * 16);
+    // Draw point
+    EVE_VERTEX2F(cx, cy);
+    EVE_END();
+
+    // Keep stencil values
+    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
+
+    // Draw gradient only within the circular stencil
+    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 255, 255);
+
+    // Enable colour writes
+    EVE_COLOR_MASK(1, 1, 1, 0);
+
+    // Set blend function and transparency
+    EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    // set desired alpha
+    EVE_COLOR_A(alpha);
+
+    // Add gradient into stencilled shape
+    addRectangularGradient(input_x - radius, input_y - radius, radius * 2, radius * 2, colour1, colour2, false, true, true);
+
+    // Restore graphics context, including the scissor
+    EVE_RESTORE_CONTEXT();
+
+    //--------------------------------------------------------------------------
+    // Create and blend circular outline
+    //--------------------------------------------------------------------------
+
+    // Save graphics context
+    EVE_SAVE_CONTEXT();
+
+    // Disable stencil testing
+    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 255, 255);
+    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
+
+    // Enable alpha writes only
+    EVE_COLOR_MASK(0, 0, 0, 1);
+
+    // Set full alpha
+    EVE_COLOR_A(255);
+
+    // begin points
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+
+    // Add outer circle to alpha buffer
+    EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ZERO);
+    // Set radius slightly bigger
+    EVE_POINT_SIZE((radius * 16) + 16);
+    // Draw point
+    EVE_VERTEX2F(cx, cy);
+
+    // Remove inner circle from alpha buffer
+    EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
+    // Set radius 
+    EVE_POINT_SIZE(radius * 16);
+    // Draw point
+    EVE_VERTEX2F(cx, cy);
+
+    // Enable colour writes, preserving the alpha buffer
+    EVE_COLOR_MASK(1, 1, 1, 0);
+
+    // Blend using the prepared alpha buffer
+    EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
+
+    // Set outline colour
+    EVE_COLOR_RGB((uint8_t)(colourOutline >> 16), (uint8_t)(colourOutline >> 8), (uint8_t)colourOutline);
+
+    // Draw circular outline
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // Set radius slightly bigger
+    EVE_POINT_SIZE((radius * 16) + 16);
+    // Draw point
+    EVE_VERTEX2F(cx, cy);
+    // End drawing
+    EVE_END();
+
+    // Restore graphics context
+    EVE_RESTORE_CONTEXT();
+}
+
+// #################################################################################
+// ###                              Widget Functions                             ###
+// #################################################################################
 
 /**
- @brief Function to draw a circle gauge whose filled section blends in a gradient dynamically.
- @details This function draws a circular guage whos unfilled section is semi transparent, and whose filled section
- has the ability to colour with a gradient fill (or solid colour)
- @param centerx x position for the center of the circle
- @param centery y position for the center of the circle
- @param radius radius value we wish to use to draw the circle
- @param thickness thickness value for the circle
- @param user_value input value to the circle to determine current reading (range 16 bit)
+ * @brief Function to draw a circle gauge.
+ * @details This function draws a circular gauge whose unfilled section
+ *   is semi-transparent, and whose filled section has the ability to
+ *   colour with a gradient fill (or solid colour) dynamically
+ *
+ * @param centre_x x position for the center of the circle
+ * @param centre_y y position for the center of the circle
+ * @param radius radius value we wish to use to draw the circle
+ * @param thickness thickness value for the circle
+ * @param user_value input value to the circle to determine current reading (16-bit)
  */
-void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint16_t thickness, uint16_t user_value)
+void circleGaugeShadow(int16_t centre_x, int16_t centre_y, uint16_t radius, uint16_t thickness, uint16_t user_value)
 {
-    // local variable for arc fill in degrees
-    uint16_t arc_degrees = ((360 * (user_value)) / 0xffff);
 
+    // local variable for arc fill in degrees
+    uint16_t arc_degrees = (uint16_t)((360UL * user_value) / 0xffffUL);
     // Ensure the arc_degrees is within limits (0 - 360)
     arc_degrees = MAX(arc_degrees, 0);
     arc_degrees = MIN(arc_degrees, 360);
 
     // change this value to alter how transparent the inactive section of the arc is
-    uint8_t alpha_value = 50;
+    const uint8_t alpha_value = 50;
 
     // variables for current arc fill
     int32_t arc_fill_x = 0;
     int32_t arc_fill_y = 0;
-
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Process the angle data which will be used to make a uniform motion of the arc
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
-    // Calculate the coordinates of the starting point, the gauge arc and the point at the tip of the arc
-
+    // Calculate the coordinates of the starting point,
+    // the gauge arc and the point at the tip of the arc
     // for the arc gauge fill itself
-    // multiply by 8 (or 16 for FT80x) so we can feed this number directly int the VERTEX2F command with our desired pixel precision
+    // multiply by 8 (or 16 for FT80x) so we can feed this number directly in
+    // the VERTEX2F command with our desired pixel precision
     arc_fill_x = CIRC_X((radius * pix_precision + 8), user_value);
     arc_fill_y = CIRC_Y((radius * pix_precision + 8), user_value);
-
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Write to the alpha buffer and disable writing colours to the screen to make an invisible arc
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
     // save current graphics context
     EVE_SAVE_CONTEXT();
 
     // scissor the area which we wish to draw the arc in
     EVE_SCISSOR_SIZE((radius * 2) + 1, (radius * 2) + 1);
-    EVE_SCISSOR_XY((centerx - radius), (centery - radius));
-
-    // set desried pixel precision format
+    EVE_SCISSOR_XY((centre_x - radius), (centre_y - radius));
+    // set desired pixel precision format
     // EVE_VERTEX_FORMAT(3);
-    /*
-    set in main display list in this example if required and carried through to this function
-    */
+    /**
+     * NOTE: set in main display list in this example if required and carried through to this function
+     */
 
-    // firstly we want to paint the fill and outline shapes into the alpah buffer, and use a stencil
-    // disable all colours bar the alpha channel
+     // firstly we want to paint the fill and outline shapes into the alpha buffer,
+     // and use a stencil. disable all colours bar the alpha channel
     EVE_COLOR_MASK(0, 0, 0, 1);
     EVE_CLEAR(1, 1, 0);
-
     // we want to add the fill into the alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_COLOR_A(255);
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Draw the edge strips (or circle) which will fill in the arc
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
-    //here we want to start incrementing the stencil buffer 
+    //here we want to start incrementing the stencil buffer
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
-
     if (arc_degrees >= 360) {
 
         EVE_BEGIN(EVE_BEGIN_POINTS);
         EVE_POINT_SIZE(radius * 16);
-        EVE_VERTEX2F(((centerx)*pix_precision), (centery)*pix_precision);
-
+        EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y)*pix_precision);
     }
     else {
         // These are drawn per quadrant as each edge strip will only work well on an angle up to 90 deg
@@ -408,156 +790,143 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x), ((centery * pix_precision) + arc_fill_y));
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x * pix_precision) - arc_fill_x), ((centre_y * pix_precision) + arc_fill_y));
         }
         else if (arc_degrees > 0) {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx - radius) * pix_precision), (centery)*pix_precision);
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x - radius) * pix_precision), (centre_y)*pix_precision);
         }
-
         // 90 - 179 deg
         if ((arc_degrees >= 90) && (arc_degrees < 180))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_L);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x), (centery * pix_precision) + arc_fill_y);
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x * pix_precision) - arc_fill_x), (centre_y * pix_precision) + arc_fill_y);
         }
         else if (arc_degrees > 90)
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_L);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery - radius) * pix_precision);
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y - radius) * pix_precision);
         }
-
         // 180 - 269 deg
         if ((arc_degrees >= 180) && (arc_degrees < 270))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_A);
-            EVE_VERTEX2F(((centerx - 1) * pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx * pix_precision) - arc_fill_x), (centery * pix_precision) + arc_fill_y);
+            EVE_VERTEX2F(((centre_x - 1) * pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x * pix_precision) - arc_fill_x), (centre_y * pix_precision) + arc_fill_y);
         }
         else if (arc_degrees > 180)
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_A);
-            EVE_VERTEX2F(((centerx - 1) * pix_precision), (centery)*pix_precision);
-            EVE_VERTEX2F(((centerx + radius + 1) * pix_precision), (centery)*pix_precision);
+            EVE_VERTEX2F(((centre_x - 1) * pix_precision), (centre_y)*pix_precision);
+            EVE_VERTEX2F(((centre_x + radius + 1) * pix_precision), (centre_y)*pix_precision);
         }
-
         // 270 - 359 deg
         if ((arc_degrees >= 270) && (arc_degrees < 360))
         {
             // Edge strip to draw the arc
             EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
-            EVE_VERTEX2F(((centerx)*pix_precision), (centery - 1) * pix_precision);
-            EVE_VERTEX2F((centerx * pix_precision) - arc_fill_x, (centery * pix_precision) + arc_fill_y);
+            EVE_VERTEX2F(((centre_x)*pix_precision), (centre_y - 1) * pix_precision);
+            EVE_VERTEX2F((centre_x * pix_precision) - arc_fill_x, (centre_y * pix_precision) + arc_fill_y);
         }
     }
-
-    // draw the outer radius here and blend destination alpha to source alpha, this is so the fill edge strips above only render across this point
-    // and only effect shapes drawn within this point
+    // draw the outer radius here and blend destination alpha to source alpha,
+    // this is so the fill edge strips above only render across this point
+    // and only affect shapes drawn within this point
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_SRC_ALPHA);
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE(radius * 16);
-    EVE_VERTEX2F((centerx * pix_precision), (centery * pix_precision));
-
-    // here we want to keep the stencil buffer 
+    EVE_VERTEX2F((centre_x * pix_precision), (centre_y * pix_precision));
+    // here we want to keep the stencil buffer
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Draw the outline section for the arc
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // begin drawing circles for our gauge
-    //-------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     EVE_BEGIN(EVE_BEGIN_POINTS);
-    // set alpha to a lower value so this is see through
+    // set alpha to a lower value so it is see-through
     EVE_COLOR_A(alpha_value);
     // add to alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     // circle outer size
     EVE_POINT_SIZE(radius * 16);
-    EVE_VERTEX2F((centerx * pix_precision), (centery * pix_precision));
-
+    EVE_VERTEX2F((centre_x * pix_precision), (centre_y * pix_precision));
     // reset alpha to full
     EVE_COLOR_A(255);
     // remove from alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     // circle inner size
     EVE_POINT_SIZE((radius - thickness) * 16);
-    EVE_VERTEX2F((centerx * pix_precision), (centery * pix_precision));
+    EVE_VERTEX2F((centre_x * pix_precision), (centre_y * pix_precision));
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Draw shapes which will fill the arc
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // re-enable colours
     EVE_COLOR_MASK(1, 1, 1, 1);
     // blend in colour
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
-
     // draw only where the stencil value is <=1 (unfilled section of arc)
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
-
     // colour based on input colour for unfilled section
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
     EVE_POINT_SIZE(radius * 16);
-    EVE_VERTEX2F((centerx * pix_precision), (centery * pix_precision));
-
+    EVE_VERTEX2F((centre_x * pix_precision), (centre_y * pix_precision));
     // draw only where the stencil value is >=2 (section of arc that has been filled)
     EVE_STENCIL_FUNC(EVE_TEST_GEQUAL, 2, 255);
-
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // dynamic gradient section to fill based on input fill value
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // we can use a trick here to blend in a gradient to our fill for the arc
-    // we can utilise a L8 bitmap which goes from full alpha (255) to 0, and lay this on top
-    // of our main colour fill to add in a transtion from one colour to the main fill
-    // this gradient is generated in the addRectangularGradient() function
-
-    // we want to blend a differnt colour on each side of the arc, so we can use one gradient blend on each side
-    // figure out how tall and wide we need the grad to actually be for our arc
-    int32_t grad_size_height = ((radius + 1) * 2); // + 4 to account for aliased edge
-    int32_t grad_size_width = (radius + 1);
-
-    // call the addGradient function to dynamically create a gradient for each side of the arc
-    // position these accordingly to account for aliased edge of the arc (as we want to ensure we cover this)
-    // we can add a vertical or horizontal gradient shapes via the function parameters, and mirror the direction of the gradient if required
-    addRectangularGradient((centerx - radius - 1), (centery - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true, true, true);
-    addRectangularGradient(centerx, (centery - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
-
-    // NOTE: this trick will not work with the unfilled section of the ARC, as the unfillsed sections alpha value will make alter the colour blends
-    // so this can only be used when we are filling the unfilled section of the arc with a non blended colour. To over come this we could utilise a
-    // bitmap here to 'fill' the alpha composited shape
-
-    // NOTE: we can also repeat the commands in the stenicl = 1 block above to simplify the fill technique with a singular colour
-
-    // end drawing
+    // we can utilise an L8 bitmap which goes from full alpha (255) to 0, and lay this
+    // on top of our main colour fill to add in a transition from one colour to the
+    // main fill. This gradient is generated in the addRectangularGradient() function
+    // we want to blend a different colour on each side of the arc, so we can use one
+    // gradient blend on each side. Figure out how tall and wide we need the gradient to
+    // actually be for our arc
+    const uint16_t grad_size_height = ((radius + 1) * 2); // + 4 to account for aliased edge
+    const uint16_t grad_size_width = (radius + 1);
+    // call the addGradient function to dynamically create a gradient for each side
+    // of the arc. Position these accordingly to account for the aliased edge of the arc
+    // (as we want to ensure we cover this). We can add a vertical or horizontal gradient
+    // shapes via the function parameters, and mirror the direction if required
+    addRectangularGradient((centre_x - radius - 1), (centre_y - radius - 1), grad_size_width, grad_size_height, colour2, colour1, true, true, true);
+    addRectangularGradient(centre_x, (centre_y - radius - 1), grad_size_width, grad_size_height, colour3, colour1, true, true, true);
+    // NOTE: this trick will not work with the unfilled section of the ARC, as the
+    // unfilled section's alpha value will alter the colour blends, so this can
+    // only be used when we are filling the unfilled section of the arc with a non
+    // blended colour. To overcome this, we could utilise a bitmap here to 'fill'
+    // the alpha composited shape
+    /**
+     * NOTE: we can also repeat the commands in the stencil = 1 block above to simplify the fill technique with a singular colour
+     */
+     // end drawing
     EVE_END();
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Add 0 line on bottom of circle
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // Revert to always drawing for the subsequent items
     EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 0, 255);
     // set the blend function back to the default
     EVE_BLEND_FUNC(EVE_BLEND_SRC_ALPHA, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-
     EVE_BEGIN(EVE_BEGIN_LINES);
     EVE_COLOR_RGB(255, 255, 255);
-    // draw start finish line marker 
+    // draw start/finish line marker
     EVE_LINE_WIDTH(thickness);
-    EVE_VERTEX2F((centerx * pix_precision), ((centery + radius - thickness) * pix_precision));
-    EVE_VERTEX2F((centerx * pix_precision), ((centery + radius) * pix_precision));
+    EVE_VERTEX2F((centre_x * pix_precision), ((centre_y + radius - thickness) * pix_precision));
+    EVE_VERTEX2F((centre_x * pix_precision), ((centre_y + radius) * pix_precision));
 
     //restore previous graphics context
     EVE_RESTORE_CONTEXT();
@@ -565,27 +934,32 @@ void circleGaugeShadow(uint16_t centerx, uint16_t centery, uint16_t radius, uint
 }
 
 /**
- @brief Function to draw graph lines.
- @details This function draws a series of graph lines, along the mian X and Y axis for the graph. It dynamically draws additional lines along
- both axis as determined by input variables.
- @param input_x x position for top left of the graph lines
- @param input_y x position for top left of the graph lines
- @param width total width in px of the graph lines chart
- @param height total height in px of the graph lines chart
- @param num_x_lines number of additional lines to draw along the x axis
- @param num_y_lines number of additional lines to draw along the y axis
- @param line_width line width desired for the main chart lines
- @param font_handle font handle to be use for the labels
- @param y_axis_labels pointer to integer array for y axis labels
- @param x_axis_labels pointer to array of chars for x axis labels
+ * @brief Function to draw graph lines.
+ * @details This function draws a series of graph lines, along the main X and Y
+ *   axis for the graph. It dynamically draws additional lines along both axes
+ *   as determined by input variables.
+ *
+ * @param input_x x position for top left of the graph lines
+ * @param input_y x position for top left of the graph lines
+ * @param width total width in px of the graph lines chart
+ * @param height total height in px of the graph lines chart
+ * @param num_x_lines number of additional lines to draw along the x axis
+ * @param num_y_lines number of additional lines to draw along the y axis
+ * @param line_width line width desired for the main chart lines
+ * @param font_handle font handle to be used for the labels
+ * @param y_axis_labels pointer to integer array for y axis labels
+ * @param x_axis_labels pointer to array of chars for x axis labels
  */
-void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint8_t num_x_lines, uint8_t num_y_lines, uint8_t line_width, uint8_t font_handle, uint8_t* y_axis_labels, char** x_axis_labels) {
+void addLinePlotLinesAndLabels(int16_t input_x, int16_t input_y, uint16_t width, uint16_t height, uint8_t num_x_lines, uint8_t num_y_lines, uint8_t line_width, uint8_t font_handle, const uint8_t* y_axis_labels, const char* const* x_axis_labels) {
+
+    // ensure num_X_lines and num_y_lines are non-zero
+    num_x_lines = MAX(num_x_lines, 1);
+    num_y_lines = MAX(num_y_lines, 1);
 
     // declare local variables
     // multiply these by 8 initially so we can feed these values straight into the VERTEX2F call
-    uint16_t x_line_spacing = ((width * pix_precision) / num_x_lines);
-    uint16_t y_line_spacing = ((height * pix_precision) / num_y_lines);
-
+    const int32_t x_line_spacing = (((int32_t)width * pix_precision) / num_x_lines);
+    const int32_t y_line_spacing = (((int32_t)height * pix_precision) / num_y_lines);
     // for label text offset
     int16_t text_offset = (width / 40);
     // ensure its at least 2
@@ -596,43 +970,38 @@ void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, 
 
     // set line colour
     EVE_COLOR_RGB(255, 255, 255); // white
-
     // set line width
     EVE_LINE_WIDTH((line_width * 16) / 2);
-
     // draw X and Y axis main lines
     EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
     EVE_VERTEX2F((input_x * pix_precision), ((input_y + height) * pix_precision));
     EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     EVE_END();
-
     // draw additional x and y axis shadow lines
     // set line width
     EVE_LINE_WIDTH((line_width * 16) / 4);
     EVE_BEGIN(EVE_BEGIN_LINES);
     // for x axis
-    // dont need to re-draw the first line so start int i =1 
-    for (int i = 1; i <= num_x_lines; i++) {
+    // don't need to re-draw the first line so start int i =1
+    for (uint16_t i = 1; i <= num_x_lines; i++) {
         EVE_VERTEX2F(((input_x * pix_precision) + (i * x_line_spacing)), (input_y * pix_precision));
         EVE_VERTEX2F(((input_x * pix_precision) + (i * x_line_spacing)), ((input_y + height) * pix_precision));
     }
     // for y axis
-    for (int i = 0; i < num_y_lines; i++) {
+    for (uint16_t i = 0; i < num_y_lines; i++) {
         EVE_VERTEX2F((input_x * pix_precision), ((input_y * pix_precision) + (i * y_line_spacing)));
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y * pix_precision) + (i * y_line_spacing)));
     }
     EVE_END();
-
     // add x and y axis labels onto the chart
-    for (int i = 0; i <= num_x_lines; i++) {
+    for (uint16_t i = 0; i <= num_x_lines; i++) {
         EVE_CMD_TEXT((input_x + (i * (x_line_spacing / pix_precision))), (input_y + height + text_offset), font_handle, EVE_OPT_CENTER, x_axis_labels[i]);
     }
     // for y axis
-    for (int i = 0; i < num_y_lines; i++) {
+    for (uint16_t i = 0; i < num_y_lines; i++) {
         EVE_CMD_NUMBER((input_x - (text_offset / 2)), (input_y + (i * (y_line_spacing / pix_precision))), font_handle, EVE_OPT_RIGHTX | EVE_OPT_CENTERY, y_axis_labels[i]);
     }
-
 
     // restore context
     EVE_RESTORE_CONTEXT();
@@ -640,38 +1009,35 @@ void addGraphLinesAndLabels(uint16_t input_x, uint16_t input_y, uint16_t width, 
 }
 
 /**
- @brief Function to draw a line plot.
- @details This function draws a line plot line, with the number of data points determined by an input variable and the data values provided
- provided by an input array.
- @param input_x x position for top left of the line plot
- @param input_y y position for top left of the line plot
- @param width total width in px of the line plot
- @param height total height in px of the line plot
- @param colour input colour for the lines
- @param line_width input line width for the plot lines
- @param num_points number of data points in the line plot
- @param data pointer to array containing data points
+ * @brief Function to draw a line plot.
+ * @details This function draws a line plot line, with the number of data points
+ *   determined by an input variable and the data values provided by an input array.
+ *
+ * @param input_x x position for top left of the line plot
+ * @param input_y y position for top left of the line plot
+ * @param width total width in px of the line plot
+ * @param height total height in px of the line plot
+ * @param colour input colour for the lines
+ * @param line_width input line width for the plot lines
+ * @param num_points number of data points in the line plot
+ * @param data pointer to array containing data points
  */
-void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint32_t colour, uint16_t line_width, uint8_t num_points, uint8_t* data) {
-
+void linePlot(int16_t input_x, int16_t input_y, uint16_t width, uint16_t height, uint32_t colour, uint16_t line_width, uint8_t num_points, const uint8_t* data) {
     // declare local variables
-    uint16_t point_spacing = ((width * pix_precision) / (num_points - 1));
+    const int32_t point_spacing = (((int32_t)width * pix_precision) / (num_points - 1));
     // used in the vertex positioning
-    uint16_t value;
+    int32_t value;
 
     // save context
     EVE_SAVE_CONTEXT();
 
     // set line colour from input
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
-
     // set line width from input
     EVE_LINE_WIDTH(line_width * 16);
-
     // draw main plot line
     EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
-
-    for (int i = 0; i < num_points; i++) {
+    for (uint16_t i = 0; i < num_points; i++) {
         // set value variable to current data point
         value = data[i];
         // ensure value is within uint8_t limits
@@ -683,12 +1049,11 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
         EVE_VERTEX2F(((input_x * pix_precision) + (i * point_spacing)), ((input_y + height - (value)) * pix_precision));
     }
     EVE_END();
-
     // draw indication points
     EVE_BEGIN(EVE_BEGIN_POINTS);
     // set point size
     EVE_POINT_SIZE((line_width * 3) * 16);
-    for (int i = 0; i < num_points; i++) {
+    for (uint16_t i = 0; i < num_points; i++) {
         // set value variable to current data point
         value = data[i];
         // ensure value is within uint8_t limits
@@ -706,25 +1071,27 @@ void linePlot(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t heigh
 }
 
 /**
- @brief Function to render a vertical bar gauge widget on screen. This function will render a vertical bar gauge using rectangles, and
- stencilling to draw a fill value for the bar based upon the input 'value' variable.
- @param input_x x value for top left of widget
- @param input_y y value for top left of widget
- @param width width of the bar
- @param height height of the bar
- @param colour_bottom input to determine the bottom colour the bar fill and shadow
- @param colour_top input to determine the top colour bar fill (if set to 0x000000 (or 0) only colour_top will be utilised in the widget)
- @param value current value for the bar (0-255)
+ * @brief Function to render a vertical bar gauge widget on screen.
+ * @details This function will render a vertical bar gauge using rectangles, and
+ *   stencilling to draw a fill value for the bar based upon the input 'value' variable.
+ *
+ * @param input_x x value for top left of widget
+ * @param input_y y value for top left of widget
+ * @param width width of the bar
+ * @param height height of the bar
+ * @param colour_bottom input to determine the bottom colour the bar fill and shadow
+ * @param colour_top input to determine the top colour bar fill (if set to 0x000000 (or 0)
+ *   only colour_bottom will be utilised in the widget)
+ * @param value current value for the bar (0-255)
  */
-void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16_t height, uint32_t colour_bottom, uint32_t colour_top, uint8_t value) {
-
+void verticalBarGauge(int16_t input_x, int16_t input_y, uint16_t width, uint16_t height, uint32_t colour_bottom, uint32_t colour_top, uint8_t value) {
     // ensure value is in range
     value = MAX(value, 0);
     value = MIN(value, 255);
 
-    // normalise value to widget size, also multiple by current pixel precision so we can add this value straight into 
-    // the vertex 2F call
-    uint16_t reading = (((value * pix_precision) * height) / 255);
+    // normalise value to widget size, also multiply by current pixel precision
+    // so we can add this value straight into the vertex 2F call
+    const int32_t reading = ((((int32_t)value * pix_precision) * height) / 255);
 
     // save graphics context
     EVE_SAVE_CONTEXT();
@@ -732,30 +1099,27 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     // set scissor to size of widget and starting position
     EVE_SCISSOR_SIZE(width, height);
     EVE_SCISSOR_XY(input_x, input_y);
-
     // draw fill
     //----------------------------------------
-
-    // draw shadow   
+    // draw shadow
     EVE_COLOR_A(50);
     // use input colour for rectangles
     EVE_COLOR_RGB(((uint8_t)(colour_bottom >> 16)), ((uint8_t)(colour_bottom >> 8)), ((uint8_t)(colour_bottom)));
-    // begin rectanles
+    // begin rectangles
     EVE_BEGIN(EVE_BEGIN_RECTS);
-    // draw intial shadow bar
+    // draw initial shadow bar
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
     EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     // reset alpha
     EVE_COLOR_A(255);
-
     // stencil section to fill
-    // clear the stencil buffer so no previous values in the effect this operation 
+    // clear the stencil buffer so no previous values affect this operation
     EVE_CLEAR(0, 1, 0);
     // disable colours and alpha
     EVE_COLOR_MASK(0, 0, 0, 0);
     // increment the stencil
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
-    // these vertexes draw the fill stencil (first one moves with vertically with the value input)
+    // these vertices draw the fill stencil (the first one moves vertically with the input value)
     if (value != 0) {
         EVE_VERTEX2F((input_x * pix_precision), (((input_y + height + 1) * pix_precision) - reading));
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
@@ -764,17 +1128,15 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
     EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
     // re-enable colours
     EVE_COLOR_MASK(1, 1, 1, 0);
-
-    // draw the fill (this will colour all pixels where the stenicl = 1)
+    // draw the fill (this will colour all pixels where the stencil = 1)
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 255);
-
     // if colour_top is set to black, then just draw a rectangle with colour bottom
     if (colour_top == 0x000000) {
         EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
         EVE_VERTEX2F(((input_x + width) * pix_precision), ((input_y + height) * pix_precision));
     }
     else {
-        //else add a gradient from colour bottom to colour top
+        // else add a gradient from colour bottom to colour top
         addRectangularGradient(input_x, input_y, width, height, colour_bottom, colour_top, false, false, true);
     }
     // end drawing
@@ -782,85 +1144,86 @@ void verticalBarGauge(uint16_t input_x, uint16_t input_y, uint16_t width, uint16
 
     // restore graphics context
     EVE_RESTORE_CONTEXT();
+
 }
 
 /**
- @brief Function to draw a segment of a pie or doughnut chart.
- @details This function draws a section of a pie or doughnut chart whose fill colour is based on a preceeding COLOR_RGB call,
- where the radius and start/end angles are input as variabes to the function
- @param chart_center_x x position for the center of the circle where the pie/doughnut segment would reside
- @param chart_center_y y position for the center of the circle where the pie/doughnut segment would reside
- @param radius radius value of the circle used to size the pie/doughnut chart segment
- @param doughnut boolean to determine if we want ot create a doughtnut segment instead of a pie segment (inner doughnut radius set at 3/4th of the radius input variable)
- @param start_angle degrees clockwise from the bottom of the circle where we want the pie/doughnut segment to start (16 bit value)
- @param end_angle degrees clockwise from the bottom of the circle where we want the pie/doughnut segment to end (16 bit value)
+ * @brief Function to draw a segment of a pie or doughnut chart.
+ * @details This function draws a section of a pie or doughnut chart whose fill
+ *   colour is based on a preceding COLOR_RGB call, where the radius and start/end
+ *   angles are input as variables to the function
+ *
+ * @param chart_center_x x position for the center of the circle where the pie/doughnut segment would reside
+ * @param chart_center_y y position for the center of the circle where the pie/doughnut segment would reside
+ * @param radius radius value of the circle used to size the pie/doughnut chart segment
+ * @param doughnut boolean to determine if we want to create a doughnut segment instead
+ *   of a pie segment (inner doughnut radius set at 3/4th of the radius input variable)
+ * @param start_angle degrees clockwise from the bottom of the circle where we want the
+ *   pie/doughnut segment to start (16 bit value)
+ * @param end_angle degrees clockwise from the bottom of the circle where we want the
+ *   pie/doughnut segment to end (16 bit value)
  */
-void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
+void pieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y, uint16_t radius, bool doughnut, uint16_t start_angle, uint16_t end_angle)
 {
+
     // Ensure the radius does not exceed max point size
     radius = MIN(radius, 511);
-
     // Draw in reverse if end_angle > start_angle
-    int8_t reverse = 0;
+    bool reverse = false;
     // Calculate pie segment range
     uint16_t range = (end_angle - start_angle) & 0xffff;
     if (range & 0x8000)
     {
         // Negative range end > start
-        uint16_t temp = end_angle;
+        const uint16_t temp = end_angle;
         end_angle = start_angle;
         start_angle = temp;
-        reverse = 1;
+        reverse = true;
     }
     else if (range < 0x10)
     {
         // Special case for end angle equal to start angle
         range = 0xffff;
-        reverse = 1;
+        reverse = true;
     }
+    // Points for the starting angle
+    const int16_t chart_start_x = CIRC_X(radius * 2, start_angle);
+    const int16_t chart_start_y = CIRC_Y(radius * 2, start_angle);
 
-    // Points for the starting angle 
-    int16_t chart_start_x = CIRC_X(radius * 2, start_angle);
-    int16_t chart_start_y = CIRC_Y(radius * 2, start_angle);
-
-    // Points for the finishing angle 
-    int16_t chart_end_x = CIRC_X(radius * 2, end_angle);
-    int16_t chart_end_y = CIRC_Y(radius * 2, end_angle);
-
+    // Points for the finishing angle
+    const int16_t chart_end_x = CIRC_X(radius * 2, end_angle);
+    const int16_t chart_end_y = CIRC_Y(radius * 2, end_angle);
     // Points for the intermediate stretcher point (used if range is > 16384)
-    int16_t chart_int_x = CIRC_X(radius * 2, start_angle + 0x4000);
-    int16_t chart_int_y = CIRC_Y(radius * 2, start_angle + 0x4000);
+    const int16_t chart_int_x = CIRC_X(radius * 2, start_angle + 0x4000);
+    const int16_t chart_int_y = CIRC_Y(radius * 2, start_angle + 0x4000);
 
     // Save current graphics context
     EVE_SAVE_CONTEXT();
 
-    // set desried pixel precision format
+    // set desired pixel precision format
     // EVE_VERTEX_FORMAT(3);
-    /*
-    set in main display list in this example if required and carried through to this function
-    */
-
-    // Stencils preclude using alpha
+    /**
+     * NOTE: set in main display list in this example if required and carried through to this function
+     */
+     // Stencils preclude using alpha
     EVE_COLOR_A(255);
     // disable colours, leave alpha enabled
     EVE_COLOR_MASK(0, 0, 0, 1);
     // Scissor for the size of the pie we wish to draw
     EVE_SCISSOR_SIZE((radius * 2) + 1, (radius * 2) + 1);
     EVE_SCISSOR_XY((chart_center_x - radius), (chart_center_y - radius));
-
     // clear alpha to 0
     EVE_CLEAR_COLOR_A(0);
     // clear stencil
     EVE_CLEAR_STENCIL(reverse);
     // clear alpha and stencil values
     EVE_CLEAR(1, 1, 0);
-    // diasable all colours and alpha
+    // disable all colours and alpha
     EVE_COLOR_MASK(0, 0, 0, 0);
     // enable stencil
     EVE_STENCIL_MASK(1);
-    // incrememnt stencil
+    // increment stencil
     EVE_STENCIL_OP(EVE_STENCIL_INCR, EVE_STENCIL_INCR);
-
     if (range != 0xffff)
     {
         // Stencil cut-out from the circle for the pie segment
@@ -876,37 +1239,35 @@ void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y
         }
         EVE_VERTEX2F((chart_center_x - chart_start_x) * pix_precision, (chart_center_y + chart_start_y) * pix_precision);
     }
-
-    // enable alpha, to be begin creating alpha compositied shape
+    // enable alpha, to begin creating an alpha-composited shape
     EVE_COLOR_MASK(0, 0, 0, 1);
     // disable stencil
     EVE_STENCIL_MASK(0);
     // draw the following items where the stencil = 1 (the area that the edge strip covers)
     EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 1, 1);
-
     // begin points
     EVE_BEGIN(EVE_BEGIN_POINTS);
     // Add circle of our radius size into the alpha buffer
     EVE_BLEND_FUNC(EVE_BLEND_ONE, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
     EVE_POINT_SIZE(radius * 16);
     EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
-
     if (doughnut) {
         // remove circle of 3/4 radius size from the alpha buffer
         // this turns our pie chart into a doughnut chart
-        // we can also feed a varaible into this function if desried to set the inner radius here
+        // we can also feed a variable into this function if desired
+        // to set the inner radius here
         EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
         EVE_POINT_SIZE(((radius * 3) / 4) * 16);
         EVE_VERTEX2F((chart_center_x * pix_precision), (chart_center_y * pix_precision));
     }
-
-    //if we arent a full circle
+    //if we aren't a full circle
     if (range != 0xffff) {
         // begin line strip
         EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
-        // remove this line strip from thhe alpha buffer (to give a aliased edge of the pie segment)
+        // remove this line strip from the alpha buffer
+        // (to give an aliased edge of the pie segment)
         EVE_BLEND_FUNC(EVE_BLEND_ZERO, EVE_BLEND_ONE_MINUS_SRC_ALPHA);
-        // set line width based off of input radius
+        // set line width based on the input radius
         if (radius > 64)
             EVE_LINE_WIDTH(radius / 3);
         else if (radius <= 64 && radius > 48)
@@ -917,14 +1278,13 @@ void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y
             EVE_LINE_WIDTH(radius);
         else
             EVE_LINE_WIDTH((radius * 3) / 2);
-        // add verticies along the edges of the pie segment
+        // add vertices along the edges of the pie segment
         EVE_VERTEX2F((chart_center_x - chart_start_x) * pix_precision, (chart_center_y + chart_start_y) * pix_precision);
         EVE_VERTEX2F(chart_center_x * pix_precision, chart_center_y * pix_precision);
         EVE_VERTEX2F((chart_center_x - chart_end_x) * pix_precision, (chart_center_y + chart_end_y) * pix_precision);
     }
-
     // Draw a circle which will fill the arc with the input colour
-    // re-enable colours, but we dont need to re-enable alpha here currently
+    // re-enable colours, but we don't need to re-enable alpha here currently
     EVE_COLOR_MASK(1, 1, 1, 0);
     // blend this shape into the alpha composited shape we created above
     EVE_BLEND_FUNC(EVE_BLEND_DST_ALPHA, EVE_BLEND_ONE_MINUS_DST_ALPHA);
@@ -940,10 +1300,11 @@ void addPieOrDoughnutChartSegment(int16_t chart_center_x, int16_t chart_center_y
 }
 
 /**
- @brief Helper function add the uptime pie chart into the display list.
- @details This function draws a pie chart with two segments and adds this into the display list,
- along with the pie chart label text.
- @param uptime varible used to determine the draw size of the two pie chart segments
+ * @brief Helper function to add the uptime pie chart into the display list.
+ * @details This function draws a pie chart with two segments and adds this into
+ *   the display list, along with the pie chart label text.
+ *
+ * @param uptime variable used to determine the draw size of the two pie chart segments
  */
 void pieChart(uint8_t uptime) {
 
@@ -954,30 +1315,22 @@ void pieChart(uint8_t uptime) {
     // Save current graphics context
     EVE_SAVE_CONTEXT();
 
-    // add label on to the screen
+    // add label and readout on to the screen
     EVE_CMD_TEXT(pie_chart_label_x, pie_chart_label_y, font_med, 0, "Uptime %");
     EVE_CMD_NUMBER(pie_chart_readout_x, pie_chart_readout_y, font_med, EVE_OPT_RIGHTX, uptime);
-
     // add background shape
-    EVE_BEGIN(EVE_BEGIN_POINTS);
-    // colour set to BG colour
-    EVE_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
-    // set size to slight bigger than the pie chart radius
-    EVE_POINT_SIZE(((pie_chart_radius * 11) / 10) * 16);
-    // draw point
-    EVE_VERTEX2F((pie_chart_x * pix_precision), (pie_chart_y * pix_precision));
+    addCircularGradient(pie_chart_x, pie_chart_y, ((pie_chart_radius * 11) / 10), 50, colour4, colour1, 0x000000); // 110% the size
 
-    // add pie chart segemnts onto the screen
+    // add pie chart segments onto the screen
     if (uptime != 0 && uptime != 100) {
         // this is the uptime section of the chart
         EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
         // add pie chart segment onto the screen
-        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0x8000, (0x8000 + (uptime * 0xffff) / 100));
-
+        pieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0x8000, (uint16_t)(0x8000UL + ((uint32_t)uptime * 0xffffUL) / 100));
         // this is the downtime section of the chart
         EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
         // add pie chart segment onto the screen
-        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, (0x8000 + (uptime * 0xffff) / 100), 0x8000);
+        pieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, (uint16_t)(0x8000UL + ((uint32_t)uptime * 0xffffUL) / 100), 0x8000);
     }
     else {
         // colour based on whether we are full uptime or downtime
@@ -986,7 +1339,7 @@ void pieChart(uint8_t uptime) {
         else
             EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
         // add pie chart segment onto the screen
-        addPieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0, 0);
+        pieOrDoughnutChartSegment(pie_chart_x, pie_chart_y, pie_chart_radius, false, 0, 0);
     }
 
     // Restore previous graphics context
@@ -995,31 +1348,31 @@ void pieChart(uint8_t uptime) {
 }
 
 /**
- @brief Function to draw a simple circular button.
- @details This function draws a simple circular button, assigning it a TAG value based upon the input variable,
- and altering its rendered colour based upon its current 'pressed' state.
- @param input_x x position for center of the button
- @param input_y x position for center of the button
- @param size radius in px of the button
- @param colour colour input for the buttons !pressed state
- @param colour_pressed colour input for the buttons pressed state
- @param colour_text colour input for the text printed on the button
- @param text text input for the text printed on the button
- @param tag TAG value  associated to the button
- @param pressed pressed state boolean for the button
+ * @brief Function to draw a simple circular button.
+ * @details This function draws a simple circular button, assigning it a TAG value
+ *   based upon the input variable, and altering its rendered colour based upon its
+ *   current 'pressed' state.
+ *
+ * @param input_x x position for center of the button
+ * @param input_y x position for center of the button
+ * @param size radius in px of the button
+ * @param colour colour input for the button's !pressed state
+ * @param colour_pressed colour input for the button's pressed state
+ * @param colour_text colour input for the text printed on the button
+ * @param text text input for the text printed on the button
+ * @param tag TAG value  associated to the button
+ * @param pressed pressed state boolean for the button
  */
-void circularButton(uint16_t input_x, uint16_t input_y, uint16_t size, uint32_t colour, uint32_t colour_pressed, uint32_t colour_text, uint16_t font_handle, const char* text, uint8_t tag, bool pressed) {
+void circularButton(int16_t input_x, int16_t input_y, uint16_t size, uint32_t colour, uint32_t colour_pressed, uint32_t colour_text, uint8_t font_handle, const char* text, uint8_t tag, bool pressed){
 
     // save context
     EVE_SAVE_CONTEXT();
 
     // set full alpha
     EVE_COLOR_A(255);
-
     // begin points
     EVE_BEGIN(EVE_BEGIN_POINTS);
-
-    // if the button isnt pressed in, draw a highlight at the top left/bottom right edges
+    // if the button isn't pressed in, draw a highlight at the top left/bottom right edges
     if (!pressed) {
         // set size to input
         EVE_POINT_SIZE((size * 16));
@@ -1027,14 +1380,12 @@ void circularButton(uint16_t input_x, uint16_t input_y, uint16_t size, uint32_t 
         EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
         // draw point
         EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
-
-        // use slightly smaller white ciricles to add a highlight effect
+        // use slightly smaller white circles to add a highlight effect
         EVE_POINT_SIZE(((size - 1) * 16) - 8); //-1.5
         EVE_COLOR_RGB(255, 255, 255);
         // position these up and left 1, down and right 1
         EVE_VERTEX2F(((input_x + 1) * pix_precision), ((input_y + 1) * pix_precision));
         EVE_VERTEX2F(((input_x - 1) * pix_precision), ((input_y - 1) * pix_precision));
-
         // set size and colour for overlay/tagged point drawn further down
         EVE_POINT_SIZE((size * 16) - 8); // -0.5
         EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
@@ -1046,25 +1397,19 @@ void circularButton(uint16_t input_x, uint16_t input_y, uint16_t size, uint32_t 
         // set colour
         EVE_COLOR_RGB(((uint8_t)(colour_pressed >> 16)), ((uint8_t)(colour_pressed >> 8)), ((uint8_t)(colour_pressed)));
     }
-
     // enable tagging
     EVE_TAG_MASK(1);
     // set input tag
     EVE_TAG(tag);
-
     // draw main point
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
-
     // end points
     EVE_END();
-
     // disable tagging
     EVE_TAG_MASK(0);
-
     // place some text in the middle of the button
     // colour based on input
     EVE_COLOR_RGB(((uint8_t)(colour_text >> 16)), ((uint8_t)(colour_text >> 8)), ((uint8_t)(colour_text)));
-
     // draw text
     EVE_CMD_TEXT(input_x, input_y, font_handle, EVE_OPT_CENTER, text);
 
@@ -1073,14 +1418,234 @@ void circularButton(uint16_t input_x, uint16_t input_y, uint16_t size, uint32_t 
 
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                  Code for display list UI helper functions                 ###################################################################
-// ######################################################################################################################################################################################################
+/**
+ *@brief Function to dynamically create a five - axis radar plot with a coloured polygon fill.
+ * @details Draws a pentagonal radar plot consisting of five radial lines and concentric pentagons at
+ * 20 %, 40 %, 60 %, 80 % and100 % of the specified radius.Five percentage values determine the position
+ * of each vertex of the inner polygon, which is filled using the stencil buffer to create a coloured
+ * shape with adjustable alpha transparency.The fill polygon is also outlined, with points drawn at
+ * each vertex to emphasise its shape.
+ *
+ * Percentage values are limited to 0 - 100 %, where 0 represents the centre of the plot and 100 represents
+ * the outer pentagon boundary.The line width is limited to a minimum of 1 pixel, and the radius is
+ * automatically increased where necessary to accommodate the drawing elements.The scissor rectangle
+ * is calculated from the radiusand line width, and clipped to the display boundaries.
+ *
+ * @note The function clears the stencil buffer within the scissor rectangle when creating the fill polygon.
+ *
+ * @param centre_x X position of the radar plot on screen.
+ * @param centre_y Y position of the radar plot on screen.
+ * @param line_width Line width in pixels, also used to determine the size of the vertex points.
+ * @param radius Radius of the outer pentagon in pixels.
+ * @param colour_lines RGB colour(0xRRGGBB) used for the grid lines.
+ * @param colour_fill RGB colour(0xRRGGBB) used for the fill polygonand its outline.
+ * @param fill_alpha Alpha transparency of the fill polygon(0 = transparent, 255 = opaque).
+ * @param font_handle Font to be used on vertex lables
+ * @param p1 Percentage value(0 - 100) for the first polygon vertex.
+ * @param p2 Percentage value(0 - 100) for the second polygon vertex.
+ * @param p3 Percentage value(0 - 100) for the third polygon vertex.
+ * @param p4 Percentage value(0 - 100) for the fourth polygon vertex.
+ * @param p5 Percentage value(0 - 100) for the fifth polygon vertex.
+ */
+void radarPlot(uint16_t centre_x, uint16_t centre_y, int16_t line_width, uint16_t radius, uint32_t colour_lines, uint32_t colour_fill, uint8_t fill_alpha, uint8_t font_handle, uint8_t p1, uint8_t p2, uint8_t p3, uint8_t p4, uint8_t p5) {
+    // ensure line_width is at least 1
+    if (line_width < 1)
+        line_width = 1;
+    // ensure radius is large enough to include all of the lines
+    if (radius < (line_width * 15))
+        radius = line_width * 15;
+
+    // declare local varibles
+
+    // array for input values
+    const uint8_t values[5] = { p1, p2, p3, p4, p5 };
+
+    // centre vertices
+    const int32_t cx = (int32_t)centre_x * pix_precision;
+    const int32_t cy = (int32_t)centre_y * pix_precision;
+    // radius of the circle which the widget occupies
+    const int32_t r = (int32_t)radius * pix_precision;
+
+    // arrays to store grid and fille shape verticies
+    int32_t grid_offset_x[6], grid_offset_y[6];
+    int32_t fill_vertex_x[6], fill_vertex_y[6];
+
+    // Calculate outer grid and fill polygon vertices
+    for (int i = 0; i < 5; i++) {
+        const int angle = 180 + (i * 72);
+        const uint8_t percent = values[i] > 100 ? 100 : values[i];
+
+        grid_offset_x[i] = CIRC_X_DEG(r, angle);
+        grid_offset_y[i] = CIRC_Y_DEG(r, angle);
+
+        fill_vertex_x[i] = cx - (grid_offset_x[i] * percent) / 100;
+        fill_vertex_y[i] = cy + (grid_offset_y[i] * percent) / 100;
+    }
+
+    // Repeat first vertex to close the grid and fill polygons
+    grid_offset_x[5] = grid_offset_x[0];
+    grid_offset_y[5] = grid_offset_y[0];
+    fill_vertex_x[5] = fill_vertex_x[0];
+    fill_vertex_y[5] = fill_vertex_y[0];
+
+    // extent used to determine scissor size
+    const int32_t extent = (int32_t)radius + (line_width * 2) + 1;
+
+    // Calculate the scissor boundaries
+    int32_t x1 = (int32_t)centre_x - extent;
+    int32_t y1 = (int32_t)centre_y - extent;
+    int32_t x2 = (int32_t)centre_x + extent + 1;
+    int32_t y2 = (int32_t)centre_y + extent + 1;
+
+    // Clamp to the display boundaries
+    if (x1 < 0) x1 = 0;
+    if (y1 < 0) y1 = 0;
+    if (x2 > EVE_DISP_WIDTH)  x2 = EVE_DISP_WIDTH;
+    if (y2 > EVE_DISP_HEIGHT) y2 = EVE_DISP_HEIGHT;
+
+    // Nothing visible if the scissor rectangle is outside the screen
+    if (x1 >= x2 || y1 >= y2)
+        return;
+
+    // Save current graphics context
+    EVE_SAVE_CONTEXT();
+
+    // set desried vertex format
+#if !IS_EVE_API(1)
+    EVE_VERTEX_FORMAT(3);
+#endif
+
+    // Set the scissor rectangle for the widget
+    EVE_SCISSOR_XY(x1, y1);
+    EVE_SCISSOR_SIZE(x2 - x1, y2 - y1);
+
+    // Draw lines from centre to each outer vertex
+    // set alpha to draw the grid lines
+    EVE_COLOR_A(170);
+    // set colour from input
+    EVE_COLOR_RGB(((uint8_t)(colour_lines >> 16)), ((uint8_t)(colour_lines >> 8)), ((uint8_t)(colour_lines)));
+    // use 1/4 of the input line_width
+    EVE_LINE_WIDTH(line_width * 4);
+    // draw lines
+    EVE_BEGIN(EVE_BEGIN_LINES);
+    // add verticies
+    for (int i = 0; i < 5; i++) {
+        EVE_VERTEX2F(cx, cy);
+        EVE_VERTEX2F(cx - grid_offset_x[i], cy + grid_offset_y[i]);
+    }
+
+    // Draw grid boundaries at 20%, 40%, 60%, 80%, 100%
+    // use 1/2 of the input line_width
+    EVE_LINE_WIDTH(line_width * 8);
+    // loop through for the percentage lines
+    for (int j = 1; j <= 5; j++) {
+        // draw a line strip
+        EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+        // add verticies
+        for (int i = 0; i < 6; i++) {
+            EVE_VERTEX2F(cx - (grid_offset_x[i] * j) / 5, cy + (grid_offset_y[i] * j) / 5);
+        }
+    }
+
+    // Create fill polygon using a stencil
+    // mask off colour and alpha channels
+    EVE_COLOR_MASK(0, 0, 0, 0);
+    // clear the stencil buffer
+    EVE_CLEAR_STENCIL(0);
+    EVE_CLEAR(0, 1, 0);
+
+    // use keep/invert stencil function so only the areas we want have the correct stencil value
+    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_INVERT);
+    // set these stencilled areas = 255
+    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 255, 255);
+    // use a bottom edge strip to create the shape
+    EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_B);
+    // add verticies for the fill polygon
+    for (int i = 0; i < 6; i++) {
+        EVE_VERTEX2F(fill_vertex_x[i], fill_vertex_y[i]);
+    }
+
+    // Fill this polygon using the stencil we just created
+    // stop incrementing the stencil buffer
+    EVE_STENCIL_OP(EVE_STENCIL_KEEP, EVE_STENCIL_KEEP);
+    // draw where the buffer = 255
+    EVE_STENCIL_FUNC(EVE_TEST_EQUAL, 255, 255);
+    // re-enable colours and alpha
+    EVE_COLOR_MASK(1, 1, 1, 1);
+    // use the input colour for the fill polygon
+    EVE_COLOR_RGB(((uint8_t)(colour_fill >> 16)), ((uint8_t)(colour_fill >> 8)), ((uint8_t)(colour_fill)));
+    // use the input alpha value for the fill polygon
+    EVE_COLOR_A(fill_alpha);
+    // draw a point to fill the stencil buffer
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // use the radius of the circle which the widget occupies
+    EVE_POINT_SIZE(radius * 16);
+    // place in the centre of the widget
+    EVE_VERTEX2F(cx, cy);
+
+    // Draw polygon outline 
+    // set the stencil fucntion to always draw
+    EVE_STENCIL_FUNC(EVE_TEST_ALWAYS, 255, 255);
+    // set full alpha
+    EVE_COLOR_A(255);
+    // set these lines to the input line_width
+    EVE_LINE_WIDTH(line_width * 16);
+    // draw a linbe strip
+    EVE_BEGIN(EVE_BEGIN_LINE_STRIP);
+    // add verticies
+    for (int i = 0; i < 6; i++) {
+        EVE_VERTEX2F(fill_vertex_x[i], fill_vertex_y[i]);
+    }
+
+    // add points to emphasise the corners of the fill polygon
+    // Draw points at the five polygon vertices
+    EVE_BEGIN(EVE_BEGIN_POINTS);
+    // set point size to input line_width * 2 
+    EVE_POINT_SIZE((line_width * 2) * 16);
+    // add verticies
+    for (int i = 0; i < 5; i++) {
+        EVE_VERTEX2F(fill_vertex_x[i], fill_vertex_y[i]);
+    }
+
+    // end drawing
+    EVE_END();
+
+    // add vertex lables
+    // reset scissor
+    EVE_SCISSOR_XY(0, 0);
+#if IS_EVE_API(1) // max values for command are different for FT80x
+    EVE_SCISSOR_SIZE(512, 512);
+#else
+    EVE_SCISSOR_SIZE(2048, 2048);
+#endif    
+    // set colour from lines input
+    EVE_COLOR_RGB(((uint8_t)(colour_lines >> 16)), ((uint8_t)(colour_lines >> 8)), ((uint8_t)(colour_lines)));
+    // set full alpha
+    EVE_COLOR_A(255);
+    // add labels
+    for (uint8_t i = 0; i < 5; i++) {
+        // Calculate label positions at 115% of the radius
+        const int32_t label_x = cx - (grid_offset_x[i] * 23) / 20;
+        const int32_t label_y = cy + (grid_offset_y[i] * 23) / 20;
+
+        // Convert from vertex units to pixel coordinates
+        EVE_CMD_NUMBER((label_x / pix_precision), (label_y / pix_precision), font_handle, EVE_OPT_CENTER, (i + 1));
+    }
+
+    // restore graphics context
+    EVE_RESTORE_CONTEXT();
+
+}
+
+// #################################################################################
+// ###                       Display List UI Helper Functions                    ###
+// #################################################################################
 
 /**
- @brief Helper function to add background boxes for widgets into the display list.
- @param alpha input transparency for the boxes
- @param colour input colour for the boxes
+ * @brief Helper function to add background boxes for widgets into the display list.
+ *
+ * @param alpha input transparency for the boxes
+ * @param colour input colour for the boxes
  */
 void addBackgroundBoxes(uint8_t alpha, uint32_t colour) {
 
@@ -1095,18 +1660,20 @@ void addBackgroundBoxes(uint8_t alpha, uint32_t colour) {
     EVE_COLOR_A(alpha);
     // set colour from input colour
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
-
-    // draw background boxes on screen    
+    // draw background boxes on screen
     // top left
-    EVE_VERTEX2F((line_graph_box_start_x * pix_precision), (line_graph_box_start_y * pix_precision));
-    EVE_VERTEX2F((line_graph_box_end_x * pix_precision), (line_graph_box_end_y * pix_precision));
+    EVE_VERTEX2F((line_plot_box_start_x * pix_precision), (line_plot_box_start_y * pix_precision));
+    EVE_VERTEX2F((line_plot_box_end_x * pix_precision), (line_plot_box_end_y * pix_precision));
     // top right
     EVE_VERTEX2F((pie_chart_box_start_x * pix_precision), (pie_chart_box_start_y * pix_precision));
     EVE_VERTEX2F((pie_chart_box_end_x * pix_precision), (pie_chart_box_end_y * pix_precision));
     // bottom left
     EVE_VERTEX2F((bar_gauge_box_start_x * pix_precision), (bar_gauge_box_start_y * pix_precision));
     EVE_VERTEX2F((bar_gauge_box_end_x * pix_precision), (bar_gauge_box_end_y * pix_precision));
-    //bottom right
+    // bottom middle
+    EVE_VERTEX2F((radar_plot_box_start_x * pix_precision), (radar_plot_box_start_y * pix_precision));
+    EVE_VERTEX2F((radar_plot_box_end_x * pix_precision), (radar_plot_box_end_y * pix_precision));
+    // bottom right
     EVE_VERTEX2F((circle_gauge_box_start_x * pix_precision), (circle_gauge_box_start_y * pix_precision));
     EVE_VERTEX2F((circle_gauge_box_end_x * pix_precision), (circle_gauge_box_end_y * pix_precision));
     // end rects
@@ -1118,10 +1685,11 @@ void addBackgroundBoxes(uint8_t alpha, uint32_t colour) {
 }
 
 /**
- @brief Helper function add label boxes for the bar gauge widgets into the display list.
- @param colour input colour for the boxes
+ * @brief Helper function to add label boxes for the bar gauge widgets into the display list.
+ *
+ * @param colour input colour for the boxes
  */
-void addBarGuageLabelBoxes(uint32_t colour) {
+void addBarGaugeLabelBoxes(uint32_t colour) {
 
     // save context
     EVE_SAVE_CONTEXT();
@@ -1131,41 +1699,69 @@ void addBarGuageLabelBoxes(uint32_t colour) {
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
     //set line width
     EVE_LINE_WIDTH(2 * 16);
-
-    // first bargauge
-    EVE_VERTEX2F((bargauge1_x * pix_precision), (bargauge_label_y * pix_precision));
-    EVE_VERTEX2F(((bargauge2_x + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
-    // second bargauge
-    EVE_VERTEX2F((bargauge3_x * pix_precision), (bargauge_label_y * pix_precision));
-    EVE_VERTEX2F(((bargauge4_x + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
-    // third bargauge
-    EVE_VERTEX2F((bargauge5_x * pix_precision), (bargauge_label_y * pix_precision));
-    EVE_VERTEX2F(((bargauge6_x + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
-    // end drawing rectanlges
+    // first bar gauge
+    EVE_VERTEX2F((bargauge_x[0] * pix_precision), (bargauge_label_y * pix_precision));
+    EVE_VERTEX2F(((bargauge_x[1] + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
+    // second bar gauge
+    EVE_VERTEX2F((bargauge_x[2] * pix_precision), (bargauge_label_y * pix_precision));
+    EVE_VERTEX2F(((bargauge_x[3] + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
+    // third bar gauge
+    EVE_VERTEX2F((bargauge_x[4] * pix_precision), (bargauge_label_y * pix_precision));
+    EVE_VERTEX2F(((bargauge_x[5] + bargauge_width - 2) * pix_precision), ((bargauge_label_y + bargauge_label_height) * pix_precision)); // -2 is the line width set above
+    // end drawing rectangles
     EVE_END();
 
     // restore context
     EVE_RESTORE_CONTEXT();
-
 }
 
 /**
- @brief Helper function add the settings menu button onto the screen.
- @details this funciton adds a invisible tagged edge strip onto the screen to act as the menu button, to
- indicate where the button is a line coloured the same as the bscreen background colour is drawn to disect
- the pie chart background box, creating the illusion of a seperate triangular shape in the top right corner of this box.
- @param colour input colour for the button
+ * @brief Helper function to add lines below the readout numbers for the radar plot.
+ */
+void addRadarPlotReadoutLines(void) {
+
+    // Save context
+    EVE_SAVE_CONTEXT();
+
+    // white
+    EVE_COLOR_RGB(255, 255, 255);
+    // set alpha
+    EVE_COLOR_A(255);
+    // add readout lines
+    EVE_BEGIN(EVE_BEGIN_LINES);
+    // set line width
+    EVE_LINE_WIDTH(8);
+    // draw lines
+    for (int i = 0; i < 5; i++) {
+        EVE_VERTEX2F((radar_plot_num_label_x * pix_precision), ((radar_plot_num_line_y - (radar_plot_num_line_gap_y * i)) * pix_precision));
+        EVE_VERTEX2F((radar_plot_label_x * pix_precision), ((radar_plot_num_line_y - (radar_plot_num_line_gap_y * i)) * pix_precision));
+    }
+    // end drawing
+    EVE_END();
+
+    // restore context
+    EVE_RESTORE_CONTEXT();
+}
+
+/**
+ * @brief Helper function to add the settings menu button onto the screen.
+ * @details This function adds an invisible tagged edge strip onto the screen to
+ *   act as the menu button. To indicate where the button is, a line coloured the
+ *   same as the screen background colour is drawn to dissect the pie chart
+ *   background box, creating the illusion of a separate triangular shape
+ *   in the top right corner of this box.
+ *
+ * @param colour input colour for the button
  */
 void addSettingsButton(uint32_t colour) {
 
     // save context
     EVE_SAVE_CONTEXT();
-
     // enable tagging
     EVE_TAG_MASK(1);
     // set tag to settings menu tag
     EVE_TAG(settings_button_tag);
-    // set alpha to 0 so this shape is invisible 
+    // set alpha to 0 so this shape is invisible
     EVE_COLOR_A(0);
     // begin drawing edge strip that will be used as the button shape
     EVE_BEGIN(EVE_BEGIN_EDGE_STRIP_R);
@@ -1174,16 +1770,15 @@ void addSettingsButton(uint32_t colour) {
     EVE_VERTEX2F((settings_button_x2 * pix_precision), (settings_button_y2 * pix_precision));
     // set alpha to full
     EVE_COLOR_A(255);
-    // set colour for the line that will disect the background bbox
+    // set colour for the line that will dissect the background box
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
     // begin lines
     EVE_BEGIN(EVE_BEGIN_LINES);
     // set line width
     EVE_LINE_WIDTH(settings_button_line_width * 16);
-    // add line that disects the pie chart background box to create our button shape
+    // add line that dissects the pie chart background box to create our button shape
     EVE_VERTEX2F((settings_button_x1 * pix_precision), (settings_button_y1 * pix_precision));
     EVE_VERTEX2F((settings_button_x2 * pix_precision), (settings_button_y2 * pix_precision));
-
     // add lines to create the classic menu icon
     // colour these white
     EVE_COLOR_RGB(255, 255, 255);
@@ -1191,73 +1786,66 @@ void addSettingsButton(uint32_t colour) {
     EVE_LINE_WIDTH((settings_button_line_width / 2) * 16);
     // add lines
     EVE_VERTEX2F((settings_button_lines_x * pix_precision), (settings_button_lines_y * pix_precision));
-    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght) * pix_precision), (settings_button_lines_y * pix_precision));
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_length) * pix_precision), (settings_button_lines_y * pix_precision));
     // second line
     EVE_VERTEX2F((settings_button_lines_x * pix_precision), ((settings_button_lines_y + settings_button_lines_y_offset) * pix_precision));
-    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght) * pix_precision), ((settings_button_lines_y + settings_button_lines_y_offset) * pix_precision));
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_length) * pix_precision), ((settings_button_lines_y + settings_button_lines_y_offset) * pix_precision));
     // third line
     EVE_VERTEX2F((settings_button_lines_x * pix_precision), ((settings_button_lines_y + (settings_button_lines_y_offset * 2)) * pix_precision));
-    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_lenght) * pix_precision), ((settings_button_lines_y + (settings_button_lines_y_offset * 2)) * pix_precision));
-
-    // end drawing 
+    EVE_VERTEX2F(((settings_button_lines_x + settings_button_lines_length) * pix_precision), ((settings_button_lines_y + (settings_button_lines_y_offset * 2)) * pix_precision));
+    // end drawing
     EVE_END();
     // disable tagging
     EVE_TAG_MASK(0);
 
     // restore context
     EVE_RESTORE_CONTEXT();
-
 }
 
 /**
- @brief Helper function add the settings option menu into the display list.
- @details This function draws a simple two button menu bar, constructed using the LINES primitive,
- each button is tagged with a individual value
- @param input_x x position for the start of the menu bar line
- @param input_y y position for the start of the menu bar line
- @param lenght total length of the menu bar
- @param size total thickness of the menu bar
- @param colour input colour for the menu
+ * @brief Helper function to add the settings option menu into the display list.
+ * @details This function draws a simple two-button menu bar, constructed using
+ *   the LINES primitive. Each button is tagged with an individual value.
+ *
+ * @param input_x x position for the start of the menu bar line
+ * @param input_y y position for the start of the menu bar line
+ * @param length total length of the menu bar
+ * @param size total thickness of the menu bar
+ * @param colour input colour for the menu
  */
-void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uint16_t size, uint32_t colour) {
+void settingsOptionMenu(int16_t input_x, int16_t input_y, uint16_t length, uint16_t size, uint32_t colour) {
 
     // ensure the size is at least 5
     size = MAX(size, 5);
 
-    // declare local varaibles
-    uint16_t label_length = (length / 3); // 33.333% 
-    uint16_t text1_x = (input_x + (label_length / 2));
-    uint16_t text2_x = ((input_x + length) - (label_length / 2));
+    // declare local variables
+    const uint16_t label_length = (length / 3); // 33.333%
+    const int16_t text1_x = (input_x + (label_length / 2));
+    const int16_t text2_x = ((input_x + length) - (label_length / 2));
 
     // save context
     EVE_SAVE_CONTEXT();
 
     // set lower alpha
     EVE_COLOR_A(50);
-
     // draw main menu bar
     //----------------------------------------
-    // set colour to input 
+    // set colour to input
     EVE_COLOR_RGB(((uint8_t)(colour >> 16)), ((uint8_t)(colour >> 8)), ((uint8_t)(colour)));
-
     // set line width
     EVE_LINE_WIDTH(size * 16);
-
     // begin lines
     EVE_BEGIN(EVE_BEGIN_LINES);
-
+    // draw lines
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
     EVE_VERTEX2F(((input_x + length) * pix_precision), (input_y * pix_precision));
-
     // draw menu items
     //----------------------------------------
 
     // make these lines smaller
     EVE_LINE_WIDTH((size - 5) * 16);
-
     // set full transparency initially
     EVE_COLOR_A(0);
-
     // enable tagging
     EVE_TAG_MASK(1);
 
@@ -1268,7 +1856,6 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
     // if the item is pressed set alpha to full
     if (settings_menu_item_1_press == true)
         EVE_COLOR_A(255);
-
     // draw shape
     EVE_VERTEX2F((input_x * pix_precision), (input_y * pix_precision));
     EVE_VERTEX2F(((input_x + label_length) * pix_precision), (input_y * pix_precision));
@@ -1276,7 +1863,6 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
     // re-set alpha to 0 (if it was pressed)
     if (settings_menu_item_1_press == true)
         EVE_COLOR_A(0);
-
     // menu item 2
     // tag the following shape with item 2 tag
     EVE_TAG(settings_menu_item_2_tag);
@@ -1287,7 +1873,6 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
     // draw shape
     EVE_VERTEX2F((((input_x + length) - label_length) * pix_precision), (input_y * pix_precision));
     EVE_VERTEX2F(((input_x + length) * pix_precision), (input_y * pix_precision));
-
     // re-set alpha to 0 (if it was pressed)
     if (settings_menu_item_2_press == true)
         EVE_COLOR_A(0);
@@ -1297,12 +1882,11 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
 
     // add menu item text
     //----------------------------------------
-
     // set full alpha
     EVE_COLOR_A(255);
     // set colour to white
     EVE_COLOR_RGB(255, 255, 255);
-    // add text labe;s
+    // add text labels
     EVE_CMD_TEXT(text1_x, input_y, font_med, EVE_OPT_CENTER, "Mode");
     EVE_CMD_TEXT(text2_x, input_y, font_med, EVE_OPT_CENTER, "LCD");
 
@@ -1312,36 +1896,38 @@ void settingsOptionMenu(uint16_t input_x, uint16_t input_y, uint16_t length, uin
 }
 
 /**
- @brief Helper funciton add the LCD backlight contol menu into the display list.
- @details This function renders and arc gauge widget onto the screen which can be used to alter the backlight strength value of the display.
+ * @brief Helper function to add the LCD backlight control menu into the display list.
+ * @details This function renders an arc gauge widget onto the screen which can
+ *   be used to alter the backlight strength value of the display.
  */
-void LCDBacklightPage() {
+void LCDBacklightPage(void) {
 
     // save context
     EVE_SAVE_CONTEXT();
 
-    // set desried colour
+    // set desired colour
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
-    // add arc simple gauge onto the screen to act as input control (from snippets/controls/arcs.c)
-    // use the last valid angle, minus the start deg angle, normalised to an 16 bit number/total deg angles as the reading value of the arc
-    arc_simple_gauge(backlight_dial_x, backlight_dial_y, backlight_dial_inner_radius, backlight_dial_radius, DEG2FURMAN(backlight_arc_start_deg), DEG2FURMAN(backlight_arc_end_deg), (((last_valid_angle - backlight_arc_start_deg) * 65535) / backlight_arc_total_deg));
-
+    // add arc simple gauge onto the screen to act as input control
+    // (from snippets/controls/arcs.c) use the last valid angle minus
+    // the start deg angle, normalised to a 16-bit value over the total arc angle
+    // as the reading value of the arc.
+    arc_simple_gauge(backlight_dial_x, backlight_dial_y, backlight_dial_inner_radius, backlight_dial_radius, DEG2FURMAN(backlight_arc_start_deg), DEG2FURMAN(backlight_arc_end_deg), (((last_valid_angle - backlight_arc_start_deg) * 65535UL) / backlight_arc_total_deg));
     // tag and add a tracker to the arc gauge point
     EVE_TAG_MASK(1); // enable tagging
     // use dial tag
     EVE_TAG(backlight_dial_tag);
-    // draw a point slightly bigger than the gauge to be tagged, this aides in touch detection near the arcPointGauge
+    // draw a point slightly bigger than the gauge to be tagged
+    // this aids in touch detection near the arcPointGauge
     EVE_BEGIN(EVE_BEGIN_POINTS);
     EVE_POINT_SIZE((backlight_dial_radius + 10) * 16);
     // make the point invisible
     EVE_COLOR_A(0);
-    // place the point where the arc guage is
+    // place the point where the arc gauge is
     EVE_VERTEX2F((backlight_dial_x * pix_precision), (backlight_dial_y * pix_precision)); // draw point
     // add tracker in the centre of the point
     EVE_CMD_TRACK(backlight_dial_x, backlight_dial_y, 1, 1, backlight_dial_tag);
     // disable tagging
     EVE_TAG_MASK(0);
-
     // reset alpha and colour to white
     EVE_COLOR_A(255);
     EVE_COLOR_RGB(255, 255, 255);
@@ -1357,18 +1943,17 @@ void LCDBacklightPage() {
 }
 
 /**
- @brief Helper function add the mode control menu into the display list.
- @details This function renders the mode control sub-menu using the RECTS primitive for the readout, and
- custom circle buttons for the controls.
+ * @brief Helper function to add the mode control menu into the display list.
+ * @details This function renders the mode control sub-menu using the RECTS
+ *   primitive for the readout, and custom circle buttons for the controls.
  */
-void modePage() {
+void modePage(void) {
 
     // save context
     EVE_SAVE_CONTEXT();
 
-    // draw  rectangle  for readout
+    // draw rectangle for readout
     EVE_BEGIN(EVE_BEGIN_RECTS);
-
     // set rectangle colour
     EVE_COLOR_RGB(((uint8_t)(colourBG >> 16)), ((uint8_t)(colourBG >> 8)), ((uint8_t)(colourBG)));
     // set line width
@@ -1376,9 +1961,8 @@ void modePage() {
     // draw vertices
     EVE_VERTEX2F((mode_readout_x1 * pix_precision), (mode_readout_y1 * pix_precision));
     EVE_VERTEX2F((mode_readout_x2 * pix_precision), (mode_readout_y2 * pix_precision));
-    // end  rectangles
+    // end rectangles
     EVE_END();
-
     // set colour to white:
     EVE_COLOR_RGB(255, 255, 255);
     // add label for current mode
@@ -1386,7 +1970,6 @@ void modePage() {
         EVE_CMD_TEXT(mode_label_x, mode_label_y, font_large, EVE_OPT_CENTER, "Demo");
     else
         EVE_CMD_TEXT(mode_label_x, mode_label_y, font_large, EVE_OPT_CENTER, "Sensor");
-
     // add some custom buttons onto the screen
     circularButton(mode_button1_x, mode_button1_y, mode_button_size, colourBG, colour4, 0xFFFFFF, font_large, "<", mode_button_1_tag, mode_button_1_press);
     circularButton(mode_button2_x, mode_button2_y, mode_button_size, colourBG, colour4, 0xFFFFFF, font_large, ">", mode_button_2_tag, mode_button_2_press);
@@ -1395,20 +1978,20 @@ void modePage() {
     EVE_RESTORE_CONTEXT();
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                      Code for main display list creation                   ###################################################################
-// ######################################################################################################################################################################################################
+// #################################################################################
+// ###                        Display List Generation                            ###
+// #################################################################################
 
 /**
- @brief Function to generate a display list containing the static screen elements and copy these into RAM_G so they
- can be appended into screen updates using the CMD_APPEND command.
+ * @brief Function to generate a display list containing the static screen elements
+ *   and copy these into RAM_G so they can be appended into screen updates using
+ *   the CMD_APPEND command.
  */
-void generateStaticScreenComponents() {
+void generateStaticScreenComponents(void) {
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Construct display list to copy into RAM_DL
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // start the display list
     EVE_LIB_BeginCoProList();
     EVE_CMD_DLSTART();
@@ -1418,75 +2001,79 @@ void generateStaticScreenComponents() {
     EVE_CLEAR_TAG(100);
     // clear colour, stencil, tag
     EVE_CLEAR(1, 1, 1);
-
-    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a VERTEX_FORMAT() command
-    // this command will cascade through the remaining commands in the display list (such as the VERTEX2F calls)
-#if IS_EVE_API(2,3,4,5)
+    // pix_precision = 8 (1/8th) if API level is 2,3,4,5, so we need to insert a
+    // VERTEX_FORMAT() command; this command will cascade through the remaining
+    // commands in the display list (such as the VERTEX2F calls)
+#if !IS_EVE_API(1)
     // Set desired vertex format for the example
     EVE_VERTEX_FORMAT(3);
 #endif
 
-    // disable tagging, this prevents items being drawn with tag = 255 when we havent explicitly tagged them 
+    // disable tagging, this prevents items being drawn with tag = 255 when we
+    // haven't explicitly tagged them
     EVE_TAG_MASK(0);
-
-    // add background boxs
-    //--------------------------------------------------------------------------------------------------------
-
+    // add background boxes
+    //------------------------------------------------------------------------------
     addBackgroundBoxes(200, colourBGBox);
 
-    // add line graph outline onto the screen
-    //--------------------------------------------------------------------------------------------------------
-
-    // add main label
-    EVE_CMD_TEXT(line_graph_label_x, line_graph_label_y, font_med, 0, "Temperatures");
-
+    // add line plot outline onto the screen
+    //------------------------------------------------------------------------------
+    // white
+    EVE_COLOR_RGB(255, 255, 255);
+    // add label
+    EVE_CMD_TEXT(line_plot_label_x, line_plot_label_y, font_med, 0, "Temperatures");
     // add gradient behind the graph
     // set alpha for gradient
     EVE_COLOR_A(50);
-    addRectangularGradient(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour4, colourBG, false, true, true);
-    // reset gradient
+    addRectangularGradient(line_plot_x, line_plot_y, line_plot_width, line_plot_height, colour4, colourBG, false, true, true);
+    // reset alpha
     EVE_COLOR_A(255);
-
     // add graph lines and labels
-    addGraphLinesAndLabels(line_graph_x, line_graph_y, line_graph_width, line_graph_height, line_graph_extra_x_lines, line_graph_extra_y_lines, line_graph_line_width, font_small, y_axis_labels, x_axis_labels);
+    addLinePlotLinesAndLabels(line_plot_x, line_plot_y, line_plot_width, line_plot_height, line_plot_extra_x_lines, line_plot_extra_y_lines, line_plot_line_width, font_small, y_axis_labels, x_axis_labels);
 
     // add settings menu button
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     addSettingsButton(colourBG);
 
     // add label boxes and text for bar gauges
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // add label boxes for bar gauges
-    addBarGuageLabelBoxes(colourBG);
-
+    addBarGaugeLabelBoxes(colourBG);
     // add text labels for bar gauges
-    EVE_CMD_TEXT(((bargauge1_x + bargauge2_x + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "SpO2");
-    EVE_CMD_TEXT(((bargauge3_x + bargauge4_x + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "CO2");
-    EVE_CMD_TEXT(((bargauge5_x + bargauge6_x + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "Humid");
+    EVE_CMD_TEXT(((bargauge_x[0] + bargauge_x[1] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "VOC");
+    EVE_CMD_TEXT(((bargauge_x[2] + bargauge_x[3] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "CO2");
+    EVE_CMD_TEXT(((bargauge_x[4] + bargauge_x[5] + bargauge_width) / 2), (bargauge_label_y + (bargauge_label_height / 2) - 1), font_small, EVE_OPT_CENTER, "RH");
 
-    // add label boxes and text for circle gauges
-    //--------------------------------------------------------------------------------------------------------
+    // add text for circle gauge
+    //------------------------------------------------------------------------------
+    EVE_CMD_TEXT(circle_gauge_x, (circle_gauge_y + circle_gauge_radius + ((circle_gauge_thickness * 4) / 3)), font_med, EVE_OPT_CENTER, "Pressure");
 
-    // add labels for circle gauges
-    EVE_CMD_TEXT(circle_guage1_x, (circle_guage1_y + circle_gauge_radius + (circle_gauge_thickness * 2)), font_med, EVE_OPT_CENTER, "Main Pressure");
-    EVE_CMD_TEXT(circle_guage2_x, (circle_guage2_y + circle_gauge_radius + (circle_gauge_thickness * 2)), font_med, EVE_OPT_CENTER, "Pressure 2");
-    EVE_CMD_TEXT(circle_guage3_x, (circle_guage3_y + circle_gauge_radius + (circle_gauge_thickness * 2)), font_med, EVE_OPT_CENTER, "Pressure 3");
+    // add cutout and labels for radar plot
+    //------------------------------------------------------------------------------
+    addCircularGradient(radar_plot_x, radar_plot_y, ((radar_plot_radius * 13) / 10), 50, colour4, colourBG, 0xFFFFFF); // 130% the size
+    // add main label
+    EVE_CMD_TEXT(radar_plot_label_x, radar_plot_label_y, font_med, EVE_OPT_RIGHTX, "AQS");
+    // add labels for readouts
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num1_y, font_med, 0, "A1:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num2_y, font_med, 0, "A2:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num3_y, font_med, 0, "A3:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num4_y, font_med, 0, "A4:");
+    EVE_CMD_TEXT(radar_plot_num_label_x, radar_plot_num5_y, font_med, 0, "A5:");
+    // add readout lines
+    addRadarPlotReadoutLines();
 
-    // send list to the co-processor but dont display it
+    // send list to the co-processor but don't display it
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // determine RAM_DL usage for the static parts of the screen by reading DL size
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     static_screen_size = EVE_LIB_MemRead32(EVE_REG_CMD_DL);
-
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // copy static screen display into an unoccupied section of RAM_G
     // so we can call this with the CMD_APPEND command
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     EVE_LIB_BeginCoProList();
     // memcpy from RAM_DL to RAM_G
     EVE_CMD_MEMCPY(static_screen_location, EVE_RAM_DL, static_screen_size); // dest, src, num
@@ -1495,93 +2082,90 @@ void generateStaticScreenComponents() {
 }
 
 /**
- @brief Function to issue a display list to EVE to update the screen contents.
+ * @brief Function to issue a display list to EVE to update the screen contents.
  */
-void renderScreenUpdate() {
+void renderScreenUpdate(void) {
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Construct display list and send to EVE
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
-    // start the display list
+    // Begin a new co-processor list
     EVE_LIB_BeginCoProList();
+    // Begin a display list
     EVE_CMD_DLSTART();
-
-
     // append static sections of display list that were previously generated and stored in RAM_G
     EVE_CMD_APPEND(static_screen_location, static_screen_size);
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // add three line plots on top of the graph lines from the static section of the display
-    //--------------------------------------------------------------------------------------------------------
-
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour1, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot1_data);
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour2, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot2_data);
-    linePlot(line_graph_x, line_graph_y, line_graph_width, line_graph_height, colour3, line_graph_line_width, (line_graph_extra_x_lines + 1), line_plot3_data);
-
+    //------------------------------------------------------------------------------
+    // add line plots
+    linePlot(line_plot_x, line_plot_y, line_plot_width, line_plot_height, colour1, line_plot_line_width, line_plot_data_size, line_plot1_data);
+    linePlot(line_plot_x, line_plot_y, line_plot_width, line_plot_height, colour2, line_plot_line_width, line_plot_data_size, line_plot2_data);
+    linePlot(line_plot_x, line_plot_y, line_plot_width, line_plot_height, colour3, line_plot_line_width, line_plot_data_size, line_plot3_data);
     // add number readouts for the line plots
-    //--------------------------------------------------------------------------
-
-#if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-// call ROMFONT so we can use a larger font in handle font_large
-    EVE_CMD_ROMFONT(font_large, font_xl);
+    // for EVE_API = 3,4,5 font_xl can be defined as a font handle that
+    // isn't already pre-configured or available
+#if !IS_EVE_API(1, 5)
+    // call CMD_ROMFONT to load the font data for rom font font_xl handle into font_line_readout handle
+    if (font_line_readout == 0) // if font_line_readout is set to 0 (instead of font_xl)
+        EVE_CMD_ROMFONT(font_line_readout, font_xl);
 #endif
-
     // number and colour 1
     EVE_COLOR_RGB(((uint8_t)(colour1 >> 16)), ((uint8_t)(colour1 >> 8)), ((uint8_t)(colour1)));
-    EVE_CMD_NUMBER(line_graph_num1_x, line_graph_num1_y, font_large, EVE_OPT_CENTER, ((line_plot1_data[plot_data_size - 1] * 100) / 255));
+    EVE_CMD_NUMBER(line_plot_num_x, line_plot_num1_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot1_data[line_plot_data_size - 1] * 100) / 255));
     // number and colour 2
     EVE_COLOR_RGB(((uint8_t)(colour2 >> 16)), ((uint8_t)(colour2 >> 8)), ((uint8_t)(colour2)));
-    EVE_CMD_NUMBER(line_graph_num2_x, line_graph_num2_y, font_large, EVE_OPT_CENTER, ((line_plot2_data[plot_data_size - 1] * 100) / 255));
+    EVE_CMD_NUMBER(line_plot_num_x, line_plot_num2_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot2_data[line_plot_data_size - 1] * 100) / 255));
     // number and colour 3
     EVE_COLOR_RGB(((uint8_t)(colour3 >> 16)), ((uint8_t)(colour3 >> 8)), ((uint8_t)(colour3)));
-    EVE_CMD_NUMBER(line_graph_num3_x, line_graph_num3_y, font_large, EVE_OPT_CENTER, ((line_plot3_data[plot_data_size - 1] * 100) / 255));
-
-#if IS_EVE_API(2,3,4,5) // if we arnt FT8xx
-    // call ROMFONT so we can reset the font handle back to what we originally set
-    EVE_CMD_ROMFONT(font_large, font_large);
-#endif
-
+    EVE_CMD_NUMBER(line_plot_num_x, line_plot_num3_y, font_line_readout, EVE_OPT_CENTERY, ((line_plot3_data[line_plot_data_size - 1] * 100) / 255));
     // reset colour
     EVE_COLOR_RGB(255, 255, 255); // white
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // add our bar gauges onto the screen
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     // first gauges
-    verticalBarGauge(bargauge1_x, bargauge1_y, bargauge_width, bargauge_height, colour1, colour4, bar_value[0]);
-    verticalBarGauge(bargauge2_x, bargauge2_y, bargauge_width, bargauge_height, colour1, 0, bar_value[1]);
-    // second guages
-    verticalBarGauge(bargauge3_x, bargauge3_y, bargauge_width, bargauge_height, colour2, colour4, bar_value[2]);
-    verticalBarGauge(bargauge4_x, bargauge4_y, bargauge_width, bargauge_height, colour2, 0, bar_value[3]);
-    // third guages
-    verticalBarGauge(bargauge5_x, bargauge5_y, bargauge_width, bargauge_height, colour3, colour4, bar_value[4]);
-    verticalBarGauge(bargauge6_x, bargauge6_y, bargauge_width, bargauge_height, colour3, 0, bar_value[5]);
+    verticalBarGauge(bargauge_x[0], bargauge_y, bargauge_width, bargauge_height, colour1, colour4, bar_value[0]);
+    verticalBarGauge(bargauge_x[1], bargauge_y, bargauge_width, bargauge_height, colour1, 0, bar_value[1]);
+    // second gauges
+    verticalBarGauge(bargauge_x[2], bargauge_y, bargauge_width, bargauge_height, colour2, colour4, bar_value[2]);
+    verticalBarGauge(bargauge_x[3], bargauge_y, bargauge_width, bargauge_height, colour2, 0, bar_value[3]);
+    // third gauges
+    verticalBarGauge(bargauge_x[4], bargauge_y, bargauge_width, bargauge_height, colour3, colour4, bar_value[4]);
+    verticalBarGauge(bargauge_x[5], bargauge_y, bargauge_width, bargauge_height, colour3, 0, bar_value[5]);
 
-    //--------------------------------------------------------------------------------------------------------
-    // add our circular gauges onto the screen
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    // add our circular gauge onto the screen
+    //------------------------------------------------------------------------------
+    // add circle gauge
+    circleGaugeShadow(circle_gauge_x, circle_gauge_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535UL) / 360)); // normalise number to a 16-bit number
+    // add readout numbers for gauge
+#if IS_EVE_API(5) // if we are BT82x
+    // we want to use a monospaced font for the final uses of font_large handle here
+    // as they are centred within a circle call CMD_ROMFONT to load the font data for
+    // monospaced font 25 (largest monospaced font available) into the handle for font_large
+    EVE_CMD_ROMFONT(font_large, 25);
+#endif
+    EVE_CMD_NUMBER(circle_gauge_x, circle_gauge_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
 
-    // add three circle gauges
-    //--------------------------------------------------------------------------
-    circleGaugeShadow(circle_guage1_x, circle_guage1_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535) / 360)); // normalise number to 16 bit number
-    circleGaugeShadow(circle_guage2_x, circle_guage2_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535) / 360)); // normalise number to 16 bit number
-    circleGaugeShadow(circle_guage3_x, circle_guage3_y, circle_gauge_radius, circle_gauge_thickness, ((circle_value * 65535) / 360)); // normalise number to 16 bit number
+    //------------------------------------------------------------------------------
+    // add radar plot onto the screen
+    //------------------------------------------------------------------------------
+    // add radar plot
+    radarPlot(radar_plot_x, radar_plot_y, radar_plot_line_thickness, radar_plot_radius, 0xFFFFFF, colour4, 170, font_small, radar_value[0], radar_value[1], radar_value[2], radar_value[3], radar_value[4]);
+    // add readout numbers for radar plot
+    EVE_CMD_NUMBER(radar_plot_num_x, radar_plot_num1_y, font_med, EVE_OPT_RIGHTX, radar_value[0]);
+    EVE_CMD_NUMBER(radar_plot_num_x, radar_plot_num2_y, font_med, EVE_OPT_RIGHTX, radar_value[1]);
+    EVE_CMD_NUMBER(radar_plot_num_x, radar_plot_num3_y, font_med, EVE_OPT_RIGHTX, radar_value[2]);
+    EVE_CMD_NUMBER(radar_plot_num_x, radar_plot_num4_y, font_med, EVE_OPT_RIGHTX, radar_value[3]);
+    EVE_CMD_NUMBER(radar_plot_num_x, radar_plot_num5_y, font_med, EVE_OPT_RIGHTX, radar_value[4]);
 
-    // add readout numbers for gauges
-    //--------------------------------------------------------------------------
-    // first gauge
-    EVE_CMD_NUMBER(circle_guage3_x, circle_guage3_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
-    // second guage
-    EVE_CMD_NUMBER(circle_guage2_x, circle_guage2_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
-    // Third guage
-    EVE_CMD_NUMBER(circle_guage1_x, circle_guage1_y, font_large, EVE_OPT_CENTER, ((circle_value * 100) / 360)); // normalise number to 0-100
-
-
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // add pie chart onto the screen (if required)
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
     // i.e when we are not rendering the settings menu
     if (!settings) {
@@ -1590,20 +2174,17 @@ void renderScreenUpdate() {
 
     }
     else {
-
-        //--------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------
         // add settings menu buttons onto the screen (if required)
-        //--------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------
 
         // add settings menu label
         EVE_CMD_TEXT(settings_menu_label_x, settings_menu_label_y, font_med, 0, "Settings");
-
         // we always want to draw the options menu
         settingsOptionMenu(settings_menu_x, settings_menu_y, settings_menu_length, settings_menu_size, colour1);
-
         // decide which sub-menu we wish to render based on the menu item 1 press state
         if (settings_menu_item_1_press == true) {
-            // if menu item 1 then drawn the mode sub-menu
+            // if menu item 1 then draw the mode sub-menu
             modePage();
         }
         else {
@@ -1612,86 +2193,301 @@ void renderScreenUpdate() {
         }
     }
 
-    // display
+    // Finish the display list
     EVE_DISPLAY();
-    EVE_DISPLAY(); // per BRT_TN_005
-    // swap this display list inro RAM_DL
+    // Swap onto the screen to make it visible
     EVE_CMD_SWAP();
-    // send display list to co-processor
+    // Finish the list of commands
     EVE_LIB_EndCoProList();
+    // Await for the commands to be executed
     EVE_LIB_AwaitCoProEmpty();
 
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                             Main example code                              ###################################################################
-// ######################################################################################################################################################################################################
+// #################################################################################
+// ###                        Application Initialisation                         ###
+// #################################################################################
 
 /**
- @brief Helper function to initially populate the data arrays for the line graph labels.
+ * @brief Set on-screen content sizing & positioning, and font handle variables.
+ * @details This function will use the screen width and height to initialise
+ *   the global variables for the application, such as positioning & sizing
+ *   variables for on-screen items, and in-built ROM font handles to be used.
+ *   The axis labels to be used on the line plot axes are set at declaration.
  */
-void setAxisLabels(void) {
+void initialiseGlobals(void) {
 
-    // populate y axis labels arrays
-    y_axis_labels[0] = 100;
-    y_axis_labels[1] = 80;
-    y_axis_labels[2] = 60;
-    y_axis_labels[3] = 40;
-    y_axis_labels[4] = 20;
+    // local variables for use in logic
+    const uint32_t screen_width = EVE_DISP_WIDTH;
+    const uint32_t screen_height = EVE_DISP_HEIGHT;
 
-    // populate x axis labels arrays
-    x_axis_labels[0] = "0:30";
-    x_axis_labels[1] = "0:25";
-    x_axis_labels[2] = "0:20";
-    x_axis_labels[3] = "0:15";
-    x_axis_labels[4] = "0:10";
-    x_axis_labels[5] = "0:05";
-    x_axis_labels[6] = "0:00";
+    // set background box positioning and sizes
+    //------------------------------------------------------------------------------
+    line_plot_box_start_x = scalePosition(screen_width, 1, 40); // 2.5%
+    line_plot_box_start_y = scalePosition(screen_height, 1, 40); // 2.5%
+    line_plot_box_end_x = scalePosition(screen_width, 28, 40); // 70%
+    line_plot_box_end_y = scalePosition(screen_height, 20, 40); // 50%
+
+    bar_gauge_box_start_x = scalePosition(screen_width, 1, 40); // 2.5%
+    bar_gauge_box_start_y = scalePosition(screen_height, 22, 40); // 55%
+    bar_gauge_box_end_x = scalePosition(screen_width, 51, 160); // 31.875%
+    bar_gauge_box_end_y = scalePosition(screen_height, 39, 40); // 97.5%
+
+    pie_chart_box_start_x = scalePosition(screen_width, 29, 40); // 72.5%
+    pie_chart_box_start_y = scalePosition(screen_height, 1, 40); // 2.5%
+    pie_chart_box_end_x = scalePosition(screen_width, 39, 40); // 97.5%
+    pie_chart_box_end_y = scalePosition(screen_height, 20, 40); // 50%
+
+    circle_gauge_box_start_x = scalePosition(screen_width, 55, 160); // 34.375%
+    circle_gauge_box_start_y = scalePosition(screen_height, 22, 40); // 55%
+    circle_gauge_box_end_x = scalePosition(screen_width, 93, 160); // 51.87%
+    circle_gauge_box_end_y = scalePosition(screen_height, 39, 40); // 97.5%
+
+    radar_plot_box_start_x = scalePosition(screen_width, 97, 160); // 60.62%
+    radar_plot_box_start_y = scalePosition(screen_height, 22, 40); // 55%
+    radar_plot_box_end_x = scalePosition(screen_width, 39, 40); // 52.5%
+    radar_plot_box_end_y = scalePosition(screen_height, 39, 40); // 97.5%
+
+    // set line plot sizing and positioning
+    //------------------------------------------------------------------------------
+    // for labels
+    line_plot_label_x = scalePosition(screen_width, 2, 40); // 5%
+    line_plot_label_y = scalePosition(screen_height, 2, 40); // 5%
+    // for readout
+    line_plot_num_x = scalePosition(screen_width, 197, 320); // 61.56%
+    line_plot_num1_y = scalePosition(screen_height, 5, 40); // 12.5%
+    line_plot_num2_y = scalePosition(screen_height, 21, 80); // 26.25%
+    line_plot_num3_y = scalePosition(screen_height, 16, 40); // 40%
+    // for positioning and size
+    line_plot_x = scalePosition(screen_width, 3, 40); // 7.5%
+    line_plot_y = scalePosition(screen_height, 5, 40); // 12.5%
+    line_plot_height = scalePosition(screen_height, 25, 80); // 31.25%
+    line_plot_width = scalePosition(screen_width, 20, 40); // 50%
+    //set line plot line width based on screen size
+    line_plot_line_width = (screen_width < 1000) ? 1 : (screen_width <= 1500) ? 2 : 3;
+
+    // set bar gauge size and positions
+    //------------------------------------------------------------------------------
+    // sizing related
+    bargauge_width = scalePosition(screen_width, 1, 32); // 3.1%
+    bargauge_height = scalePosition(screen_height, 21, 80); // 26.25%
+    // positioning
+    bargauge_x[0] = scalePosition(screen_width, 4, 80); // 5%
+    bargauge_x[1] = scalePosition(screen_width, 7, 80); // 8.75%
+    bargauge_x[2] = scalePosition(screen_width, 11, 80); // 13.75%
+    bargauge_x[3] = scalePosition(screen_width, 14, 80); // 17.5%
+    bargauge_x[4] = scalePosition(screen_width, 18, 80); // 22.5%
+    bargauge_x[5] = scalePosition(screen_width, 21, 80); // 26.25%
+    bargauge_y = scalePosition(screen_height, 24, 40); // 60%
+    // for labels
+    bargauge_label_y = scalePosition(screen_height, 36, 40); // 90%
+    bargauge_label_height = scalePosition(screen_height, 3, 80); // 3.75%
+
+    // set circular gauge size and positions
+    //------------------------------------------------------------------------------
+    // sizing 
+    // Set circle gauge radius based on screen size
+    circle_gauge_radius = scalePosition(screen_height, screen_width < 350 ? 5 : 6, 40); // 15% (or 12.5% for small screens)
+    circle_gauge_thickness = scalePosition(screen_width, 1, 50); // 2%
+    // positioning
+    circle_gauge_x = scalePosition(screen_width, 37, 80); // 46.25 %
+    circle_gauge_y = scalePosition(screen_height, 59, 80); // 73.75%
+
+    // set radar plot size and positions
+    //------------------------------------------------------------------------------
+    // sizing 
+    // Set radar plot radius based on screen size
+    radar_plot_radius = scalePosition(screen_height, screen_width < 350 ? 9 : 11, 80); // 13.5% (or 11.25% for small screens)
+    // set radar plot line thickness width based on screen size
+    radar_plot_line_thickness = (screen_width < 1000) ? 1 : (screen_width <= 1500) ? 2 : 3;
+    // positioning
+    radar_plot_x = scalePosition(screen_width, 237, 320); // 70.06%
+    radar_plot_y = scalePosition(screen_height, 61, 80); // 73.75%
+    // for label
+    radar_plot_label_x = scalePosition(screen_width, 38, 40); // 95%
+    radar_plot_label_y = scalePosition(screen_height, 23, 40); // 57.25%
+    // for readouts
+    radar_plot_num_x = scalePosition(screen_width, 38, 40); // 90%
+    radar_plot_num1_y = scalePosition(screen_height, 103, 160); // 65%
+    radar_plot_num2_y = scalePosition(screen_height, 113, 160); // 71.25%
+    radar_plot_num3_y = scalePosition(screen_height, 123, 160); // 77.5%
+    radar_plot_num4_y = scalePosition(screen_height, 133, 160); // 83.75%
+    radar_plot_num5_y = scalePosition(screen_height, 143, 160); // 90%
+    radar_plot_num_label_x = screen_width < 500 ? scalePosition(screen_width, 69, 80) : scalePosition(screen_width, 35, 40); // 87.5% (or 86.25% for small screens)
+    radar_plot_num_line_y = scalePosition(screen_height, screen_width < 500 ? 76 : 75, 80); // 93.75% (or 95% for small screens)
+    radar_plot_num_line_gap_y = scalePosition(screen_height, 5, 80); // 6.25%
+
+    // set pie chart size and position
+    //------------------------------------------------------------------------------
+    // positioning
+    pie_chart_x = scalePosition(screen_width, 34, 40); // 85%
+    pie_chart_y = scalePosition(screen_height, 19, 80); // 23.75%
+    // sizing
+    pie_chart_radius = scalePosition(screen_height, 3, 20); // 15%
+    // for label
+    pie_chart_label_x = scalePosition(screen_width, 3, 4); // 75%
+    pie_chart_label_y = scalePosition(screen_height, 69, 160); // 43.125%
+    // for readout
+    pie_chart_readout_x = scalePosition(screen_width, 38, 40); // 95%
+    pie_chart_readout_y = scalePosition(screen_height, 69, 160); // 43.125%
+
+    // set settings menu size and position
+    //------------------------------------------------------------------------------
+    // set settings menu button size and position.
+    settings_button_x1 = scalePosition(screen_width, 71, 80); // 88.75%
+    settings_button_y1 = 0; // 0%
+    settings_button_x2 = (int16_t)screen_width; // 100 %
+    settings_button_y2 = scalePosition(screen_height, 7, 40); // 17.5%
+    // for the lines used to create the settings menu icon
+    settings_button_lines_x = scalePosition(screen_width, 38, 40); // 95%
+    settings_button_lines_y = scalePosition(screen_height, 27, 640); // 4.21%
+    settings_button_lines_length = scalePosition(screen_width, 1, 80); // 1.25%
+    settings_button_lines_y_offset = scalePosition(screen_height, 1, 80); // 1.25%
+    // for the line used to create the settings button
+    // set this width based on screen size
+    settings_button_line_width = line_plot_line_width + 1;
+
+    // set settings control menu size and position.
+    //------------------------------------------------------------------------------
+    // positioning
+    settings_menu_x = scalePosition(screen_width, 31, 40); // 77.5%
+    settings_menu_y = scalePosition(screen_height, 14, 80); // 17.5%
+    // sizing
+    settings_menu_length = scalePosition(screen_width, 49, 320); // 15.3%
+    settings_menu_size = scalePosition(screen_height, 1, 20); // 5%
+    // for label
+    settings_menu_label_x = scalePosition(screen_width, 3, 4); // 75%
+    settings_menu_label_y = scalePosition(screen_height, 2, 40); // 5%
+
+    // set mode menu buttons and readout, size and positions.
+    //------------------------------------------------------------------------------
+    // sizing
+    mode_button_size = scalePosition(screen_height, 1, 20); // 5%
+    // positioning
+    mode_button1_x = scalePosition(screen_width, 32, 40); // 80%
+    mode_button1_y = scalePosition(screen_height, 17, 40); // 42.5%
+    mode_button2_x = scalePosition(screen_width, 36, 40); // 90%
+    mode_button2_y = scalePosition(screen_height, 17, 40); // 42.5%
+    // for readout
+    mode_readout_x1 = scalePosition(screen_width, 31, 40); // 92.5%
+    mode_readout_y1 = scalePosition(screen_height, 11, 40); // 27.5%
+    mode_readout_x2 = scalePosition(screen_width, 37, 40); // 92.5%
+    mode_readout_y2 = scalePosition(screen_height, 13, 40); // 32.5%
+    // for label
+    mode_label_x = scalePosition(screen_width, 34, 40); // 85%
+    mode_label_y = scalePosition(screen_height, 12, 40); // 30%
+
+    // set LCD backlight arc gauge size and position
+    //------------------------------------------------------------------------------
+    // positioning
+    backlight_dial_x = scalePosition(screen_width, 34, 40); // 85%
+    backlight_dial_y = scalePosition(screen_height, 15, 40); // 30%
+    // sizing
+    backlight_dial_radius = scalePosition(screen_height, 1, 8); // 12.5%
+    backlight_dial_inner_radius = scalePosition(screen_height, 1, 11); // 9%
+
+    // set handles for inbuilt rom font handles to be used based on screen size
+    //------------------------------------------------------------------------------
+    if (screen_width < 350) {
+        font_small = 20;
+        font_med = 20;
+        font_large = 22;
+        font_xl = 23;
+    }
+    else if (screen_width <= 500) {
+        font_small = 20;
+        font_med = 26;
+        font_large = 27;
+        font_xl = 28;
+    }
+    else if (screen_width <= 1000) {
+        font_small = 20;
+        font_med = 27;
+        font_large = 30;
+        font_xl = 31;
+    }
+    else if (screen_width <= 1200) {
+        font_small = 22;
+        font_med = 29;
+        font_large = 31;
+        // for screens above this size we want to use rom font handle 32 or 34, but this does not exist in EVE API = 1
+        font_xl = IS_EVE_API(1) ? 31 : 32;
+    }
+    else {
+        font_small = 23;
+        font_med = 30;
+        font_large = 31;
+        // for screens above this size we want to use rom font handle 33 or 34, but this does not exist in EVE API = 1
+        font_xl = IS_EVE_API(1) ? 31 : ((screen_width <= 1400) ? 33 : 34);
+    }
+    // set font handle to be used for the line plot readout.
+    //------------------------------------------------------------------------------
+    // if font_xl is defined as a font handle that isn't already pre-configured or available
+    if ((font_xl > 31) && !IS_EVE_API(1, 5)) {
+        // set the handle to 0, so we can use a CMD_ROMFONT call to associate this handle with the font_xl rom font handle
+        font_line_readout = 0;
+    }
+    else {
+        // else just set this handle define to be equal to the font_xl value
+        font_line_readout = font_xl;
+    }
 }
 
+// #################################################################################
+// ###                         Application Update Functions                      ###
+// #################################################################################
+
 /**
- @brief Helper function to read current touch inputs and update screen rendering variables accordingly.
+ * @brief Helper function to read current touch inputs and update screen rendering variables.
  */
 void checkTouchStatus(void)
 {
 
     // ================ Check for button presses ===========================
-
     // read REG_TOUCH_TAG and determine what TAG value is returned
 #if IS_EVE_API(1,2,3,4)
     TagVal = EVE_LIB_MemRead8(EVE_REG_TOUCH_TAG);
 #else
+    // BT82x requires that a screen be rendered so that we can check REG_TOUCH_TAG
+    // if there is currently a touch on the screen then set screen_render = true,
+    // so we can check the tag next time through the loop
+    if (!(EVE_LIB_MemRead32(EVE_REG_TOUCH_SCREEN_XY) & 0x8000))
+        screen_render = true;
     TagVal = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
 #endif
-
-
     //-------- Check for pen up and pen down tags -------
-    if ((LastTagVal == 0) && (TagVal != 0))	// if there was previously no touch but now there is
+
+    // if there was previously no touch but now there is
+    if ((LastTagVal == 0) && (TagVal != 0))
         Pen_Down_Tag = TagVal;
-    if ((LastTagVal != 0) && (TagVal == 0)) // if there was previously touch but now there isnt
+
+    // if there was previously touch but now there isn't
+    if ((LastTagVal != 0) && (TagVal == 0))
         Pen_Up_Tag = LastTagVal;
 
     LastTagVal = TagVal;
 
-    //-------- perform logic for settings menu buttons-------
-
+    //-------- perform logic for settings menu buttons -------
     // if the pen up tag equals the settings button tag
     if (Pen_Up_Tag == settings_button_tag) {
         //reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
-        // flip boolean state the settings menu display varaible
+        // flip the boolean state of the settings menu display variable
         settings = !settings;
 
         // play click sound
-        playClick(); 
-        // set boolen for sound playback
-        sound_played = true;
-    }
+        sound_click();
 
+        // set boolean for sound playback
+        sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
+    }
     // if the pen up tag equals settings_menu_item_1 AND the current menu press is not settings_menu_item_1
-    if ((Pen_Up_Tag == settings_menu_item_1_tag) && settings_menu_item_1_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_1_tag) && (!settings_menu_item_1_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
@@ -1699,44 +2495,66 @@ void checkTouchStatus(void)
         // flip boolean state for settings_menu_item_1 and settings_menu_item_2 press
         settings_menu_item_1_press = !settings_menu_item_1_press;
         settings_menu_item_2_press = !settings_menu_item_2_press;
-
         // play click sound
-        playClick();
-        // set boolen for sound playback
+        sound_click();
+
+        // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     // if the pen up tag equals settings_menu_item_2 AND the current menu press is not settings_menu_item_2
-    if ((Pen_Up_Tag == settings_menu_item_2_tag) && settings_menu_item_2_press == false) {
+    if ((Pen_Up_Tag == settings_menu_item_2_tag) && (!settings_menu_item_2_press)) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
-
         // flip boolean state for settings_menu_item_2 and settings_menu_item_1 press
         settings_menu_item_2_press = !settings_menu_item_2_press;
         settings_menu_item_1_press = !settings_menu_item_1_press;
 
         // play click sound
-        playClick();
-        // set boolen for sound playback
+        sound_click();
+
+        // set boolean for sound playback
         sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
-    //-------- perform logic for mode menu buttons-------
+    //-------- perform logic for mode menu buttons -------
+    // if the current tag value equals mode button 1 tag && mode_button_1_press is false
+    if ((TagVal == mode_button_1_tag) && (!mode_button_1_press)) {
 
-    // if the current tag value equals mode button 1 tag
-    if (TagVal == mode_button_1_tag)
-        mode_button_1_press = true; // set button 1 press to true
-    else
-        mode_button_1_press = false; // set button 1 press to false
+        // set mode button 1 press to true
+        mode_button_1_press = true;
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+    else if (mode_button_1_press && (TagVal != mode_button_1_tag)) {
+        // set mode button 1 press to false
+        mode_button_1_press = false;
+        // flag that we want to update the screen
+        screen_render = true;
+    }
 
-    // if the current tag value equals mode button 2 tag
-    if (TagVal == mode_button_2_tag)
-        mode_button_2_press = true; // set button 2 press to true
-    else
-        mode_button_2_press = false; // set button 2 press to false
+    // if the current tag value equals mode button 2 tag && mode_button_2_press is false
+    if ((TagVal == mode_button_2_tag) && (!mode_button_2_press)) {
+        // set mode button 2 press to true
+        mode_button_2_press = true;
+        // flag that we want to update the screen
+        screen_render = true;
+    }
+    else if (mode_button_2_press && (TagVal != mode_button_2_tag)) {
+        // set mode button 2 press to false
+        mode_button_2_press = false;
 
+        // flag that we want to update the screen
+        screen_render = true;
+    }
 
     // if the pen up tag equals mode button 1 tag
     if (Pen_Up_Tag == mode_button_1_tag) {
@@ -1746,33 +2564,41 @@ void checkTouchStatus(void)
 
         // flip boolean state for mode button 1 press
         mode_button_1_press = !mode_button_1_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
-        playClick();
-        // set boolen for sound playback
-        sound_played = true;
-    }
+        sound_click();
 
+        // set boolean for sound playback
+        sound_played = true;
+
+        // flag that we want to update the screen
+        screen_render = true;
+    }
     // if the pen up tag equals mode button 2 tag
     if (Pen_Up_Tag == mode_button_2_tag) {
         // reset variables
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
-        // flip boolean state for mode button 1 press
+        // flip boolean state for mode button 2 press
         mode_button_2_press = !mode_button_2_press;
+
         // flip demo mode variable
         demoMode = !demoMode;
 
         // play click sound
-        playClick();
-        // set boolen for sound playback
+        sound_click();
+
+        // set boolean for sound playback
         sound_played = true;
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
-    //-------- perform logic for lcd backlight menu buttons-------
+    //-------- perform logic for lcd backlight menu buttons -------
     // if the tag value is equal to the backlight dial i.e. the item using CMD_TRACKER
     if (TagVal == backlight_dial_tag) {
 
@@ -1780,67 +2606,85 @@ void checkTouchStatus(void)
         Pen_Down_Tag = 0;
         Pen_Up_Tag = 0;
 
-        // register has a differnt name for the FT80x series
-#if IS_EVE_API(2,3,4,5)
+        // register has a different name for the FT80x series
         TrackValue = EVE_LIB_MemRead32(EVE_REG_TRACKER);
-#else
-        TrackValue = EVE_LIB_MemRead32(EVE_REG_TRACK);
-#endif
-
-        // determine the current angel in degress from the TrackValue
+        // determine the current angle in degrees from the TrackValue
         angle = (((360 * (((TrackValue >> 16)) & 0xffff)) / 0x10000));
-
-        // pefrom some simple rollover checking below
+        // perform some simple rollover checking below
         // if angle is within range then set this to the last valid angle
         if (angle >= backlight_arc_start_deg && angle <= backlight_arc_end_deg) {
             last_valid_angle = angle;
         }
         else if ((angle > backlight_arc_end_deg || angle < backlight_arc_start_deg) && (last_valid_angle == backlight_arc_end_deg || last_valid_angle > (backlight_arc_end_deg - 10))) {
-            // if we are in an invalid section of the arc, and the last valid angle is near the end of the arc
-            // set last valid angle to the end of the arc
+            // if we are in an invalid section of the arc, and the last valid angle
+            // is near the end of the arc set last valid angle to the end of the arc
             last_valid_angle = backlight_arc_end_deg;
         }
         else if ((angle < backlight_arc_start_deg || angle > backlight_arc_end_deg) && (last_valid_angle == backlight_arc_start_deg || last_valid_angle < (backlight_arc_start_deg + 10))) {
-            // if we are in an invalid section of the arc, and the last valid angle is near the start of the arc
-            // set last valid angle to the start of the arc
+            // if we are in an invalid section of the arc, and the last valid angle
+            // is near the start of the arc set last valid angle to the start of the arc
             last_valid_angle = backlight_arc_start_deg;
         }
-
         // update the backlight level variable
-        // nomralise this to a rang of 0-100 based on the angles used
+        // normalise this to a range of 0-100 based on the angles used
         backlight_value = (((last_valid_angle - backlight_arc_start_deg) * 100) / backlight_arc_total_deg);
 
         // write the backlight strength register based upon the current angle
         // add 27 here to the backlight value so the value range becomes 27-127
         EVE_LIB_MemWrite32(EVE_REG_PWM_DUTY, (backlight_value + 27));
-
-    }
-
-    // check if we played a sound due to a button press
-    if(sound_played){
-        // wait until the sound has finished playing
-        // we can do this here as we are only using short non-continious sounds in this example
-        while (checkRegPlay() !=0);
-
-        // Set synthesizer to mute
-        playMute();
-        
-        // reset sound played boolean
-        sound_played = !sound_played;
+        // flag that we want to update the screen
+        screen_render = true;
     }
 
     return;
 }
 
 /**
- @brief Helper function to update data arrays for the readouts if we are in demo mode.
+ * @brief Helper function to update data arrays for the readouts if we are in demo mode.
  */
-void demoDataUpdates() {
+void demoDataUpdates(void) {
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    // logic to move the line plot values 
+    //------------------------------------------------------------------------------
+    // shift the values if count is divisable by 50
+    if (count % 50 == 0) {
+        // declare some temps
+        const uint8_t temp1 = (rand() % (220 + 1 - 180) + 180); // between 220 and 180
+        const uint8_t temp2 = (rand() % (250 + 1 - 70) + 70); // between 250 and 70
+        const uint8_t temp3 = (rand() % (140 + 1 - 90) + 90); // between 140 and 90
+        // shift the other values right
+        for (size_t i = 0; i < (line_plot_data_size - 1); i++) {
+            line_plot1_data[i] = line_plot1_data[i + 1];
+            line_plot2_data[i] = line_plot2_data[i + 1];
+            line_plot3_data[i] = line_plot3_data[i + 1];
+        }
+        // add the temps back into the end of the arrays
+        line_plot1_data[line_plot_data_size - 1] = temp1;
+        line_plot2_data[line_plot_data_size - 1] = temp2;
+        line_plot3_data[line_plot_data_size - 1] = temp3;
+    }
+
+    //------------------------------------------------------------------------------
+    // logic to move the readings for bar gauges
+    //------------------------------------------------------------------------------
+    for (uint8_t i = 0; i < num_bargauge_bars; i++) {
+        // Reverse direction at limits
+        if (bar_value[i] == 0)
+            bar_dir[i] = 0x00;
+        else if (bar_value[i] == 255)
+            bar_dir[i] = 0xFF;
+
+        // Calculate next value based on direction
+        int value = bar_value[i] + (bar_dir[i] == 0x00 ? (i + 1) : -(i + 1));
+
+        // Clamp value between 0 and 255
+        bar_value[i] = (uint8_t)MAX(0, MIN(value, 255));
+    }
+
+    //------------------------------------------------------------------------------
     // logic to move the reading counter for circle gauges
-    //--------------------------------------------------------------------------------------------------------
-
+    //------------------------------------------------------------------------------
     if (circle_dir == 0)
     {
         if (circle_value == 0)
@@ -1856,163 +2700,145 @@ void demoDataUpdates() {
             circle_value += 1;
     }
 
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    // logic to move the readings for radar plot
+    //------------------------------------------------------------------------------
+    // shift the values if count is divisable by 2
+    if (count % 2 == 0) {
+        for (int i = 0; i < num_radar_points; i++) {
+
+            // Random step between 0 and 1
+            const int step = rand() % 2;
+
+            // Calculate next value based on direction
+            int value = radar_value[i] + (radar_dir[i] ? step : -step);
+
+            // Reverse direction at limits
+            if (value >= 100) {
+                value = 100;
+                radar_dir[i] = 0;
+            }
+            else if (value <= 0) {
+                value = 0;
+                radar_dir[i] = 1;
+            }
+
+            // Update radar value
+            radar_value[i] = (uint8_t)value;
+        }
+    }
+    //------------------------------------------------------------------------------
     // logic to move the pie chart reading
-    //--------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    // only do this if the settings menu isn't being rendered and the count % 75 == 0
+    if (!settings && count % 75 == 0) {
 
-    // only do this if the settings menu isnt being rendered and the count % 75 == 0
-    if ((!settings) && (count % 75 == 0)) {
-
-        if (pie_dir == 0)
-        {
-            if (pie_value == 93)
-                pie_dir = 0xFF;
-            else
-                pie_value -= 1;
-        }
+        // Reverse direction at limits
+        if (pie_dir == 0x00 && pie_value == 93)
+            pie_dir = 0xFF;
+        else if (pie_dir != 0x00 && pie_value == 96)
+            pie_dir = 0x00;
         else
-        {
-            if (pie_value == 96)
-                pie_dir = 0x00;
-            else
-                pie_value += 1;
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------------
-    // logic to move the readings for bar gauges
-    //--------------------------------------------------------------------------------------------------------
-
-    for (uint8_t i = 0; i < (bargauge_num_bars); i++) {
-        // check if we need to change the bar_value direction
-        if (bar_value[i] == 0) {
-            bar_dir[i] = 0x00;
-        }
-        else if (bar_value[i] == 255)
-        {
-            bar_dir[i] = 0xFF;
-        }
-
-        // add or remove from value based on the dir
-        if (bar_dir[i] == 0x00) {
-            // account for when loop var is at 0
-            if (i < 1)
-                bar_value[i] = MIN((bar_value[i] + 1), 255); // plus 1 if this the case, also ensure were not out of range
-            else
-                bar_value[i] = MIN((bar_value[i] + (i + 1)), 255); // plus i + 1 if i > 0, also ensure were not out of range
-        }
-        else {
-            // accouunt for when loop var is at 0
-            if (i < 1)
-                bar_value[i] = MAX((bar_value[i] - 1), 0); // minus 1 if this the case, also ensure were not out of range
-            else
-                bar_value[i] = MAX((bar_value[i] - (i + 1)), 0); // minus i + 1 if i > 0, also ensure were not out of range
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------------
-    // logic to move the line graph values around
-    //--------------------------------------------------------------------------------------------------------
-
-    // shift the values if count is % 50 == 0
-    if (count % 50 == 0) {
-        // declare some temps
-        uint8_t temp1 = (rand() % (220 + 1 - 180) + 180); // between 220 and 180
-        uint8_t temp2 = (rand() % (250 + 1 - 70) + 70); // between 250 and 70
-        uint8_t temp3 = (rand() % (140 + 1 - 90) + 90); // between 140 and 190
-        // shift the other values right
-        for (int i = 0; i < (plot_data_size - 1); i++) {
-            line_plot1_data[i] = line_plot1_data[i + 1];
-            line_plot2_data[i] = line_plot2_data[i + 1];
-            line_plot3_data[i] = line_plot3_data[i + 1];
-        }
-        // add the temps back into the end of the arrays
-        line_plot1_data[plot_data_size - 1] = temp1;
-        line_plot2_data[plot_data_size - 1] = temp2;
-        line_plot3_data[plot_data_size - 1] = temp3;
+            pie_value += pie_dir ? 1 : -1;
     }
 
     // increment count
     count++;
-
 }
 
+// #################################################################################
+// ###                           Main Application Code                           ###
+// #################################################################################
+
 /**
- @brief Function to send display lists to EVE within a while(1) 'main' loop. This function constructs a display list to render screens to EVE
- within a while (1) loop, calling functions to add widgets onto the screen. It also contains the data arrays and variables used to update
- readouts and widgets on the screen. Finally it will perform some logic to loop through applicable data arrays or change variables.
+ * @brief Function to send display lists to EVE within a while(1) 'main' loop.
+ * @details This function constructs a display list to render screens to EVE
+ *   within a while (1) loop, calling functions to add widgets onto the screen.
+ *   It also contains the data arrays and variables used to update readouts and
+ *   widgets on the screen. Finally it will perform some logic to loop through
+ *   applicable data arrays or change variables.
  */
 void eve_display(void)
 {
-
-    // set the axis labels we want to use for the line graph
-    setAxisLabels();
-
+    // initialise global values for contents sizing & positioning variables, font handles, etc based upon screen size
+    // the axis labels we want to use for the line plot are set at declaration
+    initialiseGlobals();
     // generate display list entries for static sections of the screen
     generateStaticScreenComponents();
 
     // main loop
-    while (1)
+    do
     {
-
-        // check if any of our buttons have been pressed
-        // we are polling this for simplicity, but we can use the INT_N pin to trigger an  interrupt
-        // for touch input and use this to call the checkTouchStatus() function. We could also call
-        // renderScreenUpdate() if required based upon touch inputs
-        checkTouchStatus();
-
-        //--------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------
         // Update the screen with either demo data or sensor data
-        //--------------------------------------------------------------------------------------------------------
-
-        // again we are simply issuing screen updates continuously, but we can gate these by time elapsed, or sensor
-        // data rates and use either to determine when to call renderScreenUpdate()
+        //--------------------------------------------------------------------------
+        // check if we are in demo mode
         if (demoMode) {
-            // call the helper function to update data arrays
+            // call the helper function to update data arrays with demo data
             demoDataUpdates();
-
-            // call render screen funciton to update the screen
-            renderScreenUpdate();
+            // flag that we want to update the screen
+            screen_render = true;
         }
         else {
             // else we want to read some data from our attached sensors
-            // TODO: add code to read real sensor values 
-
-            // call render screen funciton to update the screen
-            renderScreenUpdate();
+            // TODO: add code to read real sensor values
         }
-    }
+        // check if any of our buttons have been pressed
+        // we are polling this for simplicity, but we can use the INT_N pin to trigger an interrupt
+        // for touch input and use this to call the checkTouchStatus() function.
+        checkTouchStatus();
+
+        // call render screen function to update the screen if flag has been set
+        if (screen_render) {
+            // render screen update
+            renderScreenUpdate();
+            // set screen rendering flag to false
+            screen_render = false;
+        }
+
+        // check if we played a sound due to a button press
+        if (sound_played) {
+
+            // check if the sound has finished playing
+            if (sound_is_playing() == 0) {
+                // Set synthesizer to mute
+                sound_mute();
+
+                // reset sound played boolean
+                sound_played = false;
+            }
+        }
+    } while (LOOP);
 }
 
-// ######################################################################################################################################################################################################
-// #######################################################                        Application Code begins here                        ###################################################################
-// ######################################################################################################################################################################################################
-
 /**
- @brief Function to start the EVE application, called from main.c. 
- This function will call separate functions to initialize EVE, calibrate
- touch for the screen, and enable sound. 
- Finally it will call eve_display() to run the main display loop and update the screen.
+ * @brief Function to start the EVE application, called from main.c.
+ * @details This function will call separate functions to initialize EVE,
+ *   calibrate touch for the screen, and enable sound. Finally it will call
+ *   eve_display() to run the main display loop and update the screen.
  */
 void eve_example(void)
 {
     // Initialise the display
-    DEBUG_PRINTF("Initialising display...\n");
-    EVE_Init();
-
-    // Calibrate the display
-    DEBUG_PRINTF("Calibrating display...\n");
-    if (eve_calibrate() != 0)
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
     {
-        DEBUG_PRINTF("Exception...\n");
-        while (1);
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
     }
 
     // Enable audio amplifier
-    DEBUG_PRINTF("Enabling audio amplifier...\n");
-    enableSound();
+    EVE_DEBUG_PRINTF("Enabling audio amplifier...\n");
+    sound_enable();
+    // Calibrate the display
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
     // Start example code
-    DEBUG_PRINTF("Starting demo:\n");
-    eve_display();          // Run Application
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();   // Run Application
 }

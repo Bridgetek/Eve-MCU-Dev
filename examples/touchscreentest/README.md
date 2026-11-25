@@ -6,24 +6,19 @@
 
 The `touchscreentest` example demonstrates detection of a touch event on a display, displays the raw x,y touch location and the transformed x,y touch location used for tag generation. It will also show a sketch area for testing the output of the touch events.
 
+The example code uses the `touch` snippet from the [snippets](../snippets) directory to provide application functionality. 
+
 A printout of the touchscreen calibration matrix is also shown for reference. There are three buttons "Recalibrate", "Restore", and "Clear". The recalibrate button will perform a 3 point auto-calibration and update the touchscreen calibration matrix; the restore button will reload the original calibration matrix; the clear button will clear the contents of sketch area.
 
 When a touch on the screen is detected then a pair of crosshairs are drawn showing the transformed x,y touch location clearly.
 
 Multiple touch is not supported as this function depends on the same touchscreen calibration matrix transformation as a single touch.
 
-This example supports the following platforms:
+## Screenshot
 
-## Platform Support
+The following is an screenshot of the `touchscreentest` example:
 
-This example supports the following platforms:
-
-| Port Name | Port Directory | Supported |
-| --- | --- | --- |
-| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | Yes |
-| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) | Yes |
-
-Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+![Touch Screen Test Example](docs/touchscreentest.png)
 
 ## EVE API Support
 
@@ -33,46 +28,90 @@ Supported EVE APIs in this example:
 | --- | --- | --- | --- | --- |
 | Yes | Yes | Yes | Yes | Yes |
 
-The following is an screenshot of the touchscreentest example.
+## Platform Support
 
-![Touch Screen Test Example](docs/touchscreentest.png)
+This example supports the following platforms:
 
-## Platform Files and Folders
+| Port Name | Port Directory |
+| --- | --- |
+| [Raspberry Pi Pico](pico/README.md) | [pico](pico/) | 
+| [PlatformIO with Arduino Framework](platformio_arduino/README.md) | [platformio_arduino](platformio_arduino/) |
+| [Generic using libFT4222](libft4222/README.md) | [libft4222](libft4222/) |
+| [Generic using EVE Emulator](emulator/README.md) | [emulator](emulator/) |
+
+Platform specific build instructions and setup requirements are shown in the `README.md` file in the platform build directory.
+
+## Platform Files
 
 ### `main.c`
 
 The application starts up in the file `main.c` which provides initial MCU configuration and then calls `eve_example.c` where the remainder of the application will be carried out. 
 
-The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
+The `main.c` code is platform specific. It must provide any functions that rely on a platform's operating system.
 
 The example program in the common code is then called.
+
+## Common Files and Folders
+
+The example contains a common directory with several files which comprises all the demo functionality.
+
+| File/Folder | Description |
+| --- | --- |
+| [common/eve_example.c](common/eve_example.c) | Example source code file |
+| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
+| [common/eve_images.c](common/eve_images.c) | Image helper routines |
+| [docs](docs) | Documentation support files |
 
 ### `eve_example.c`
 
 In the function `eve_example` the basic format is as follows:
 
-```
+```c
 void eve_example(void)
 {
-    uint32_t font_end;
     // Initialise the display
-    EVE_Init();
-    // Load images
-    eve_load_images(font_end);
-    // Calibrate the display
-    eve_calibrate();
-    // Start example code
-    eve_display();
- }
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
+    // Load images (and obtain the start of the sketch bitmap)
+    EVE_DEBUG_PRINTF("Loading images...\n");
+    eve_load_images(0);
+
+    // Reset calibration data to force re-calibration on first call
+    calib.key = 0;
+    calib.transform[0] = 0;
+    calib.transform[1] = 0;
+    calib.transform[2] = 0;
+    calib.transform[3] = 0;
+    calib.transform[4] = 0;
+    calib.transform[5] = 0;
+    platform_calib_write(&calib);
+
+    while (1)
+    {
+        // Calibrate the display
+        EVE_DEBUG_PRINTF("Calibrating display...\n");
+        if (eve_calibrate() != 0)
+        {
+            EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+            return;
+        }
+
+        // Start example code
+        EVE_DEBUG_PRINTF("Starting demo:\n");
+        eve_display();
+    }
+}
 ```
 The call to `EVE_Init()` is made which sets up the EVE environment on the platform. This will initialise the SPI communications to the EVE device and set-up the device ready to receive communication from the host.
 
 Next, the function `eve_calibrate()` is then called which uses the calibration co-processor command to display the calibration screen and asks the user to tap the three dots (see `touch.c` below).
 
-Once calibration is complete, the font for the counter and the image for the logo are both loaded  (see `eve_fonts.c` and `eve_images.c` below).
+Once calibration is complete, the image for the logo is loaded (see `eve_images.c` below).
 Finally, the main program sits in a continuous loop within `eve_display()`. Each time round the loop, a screen is created using a co-processor list. 
 
 ### `touch.c`
@@ -83,7 +122,7 @@ The platform specific functions in `main.c` are called from this routine to stor
 
 Another function of this file is to read a single touch tag from the screen.
 
-```
+```c
     Read_tag = EVE_LIB_MemRead32(EVE_REG_TOUCH_TAG);
     if ((EVE_LIB_MemRead32(EVE_REG_TOUCH_RAW_XY) & 0xffff) != 0xffff)
     {
@@ -101,13 +140,13 @@ The BridgeTek logo is stored in an array in this file as a JPEG image. The data 
 co-processor which converts it into a bitmap image suitable for use by the EVE device.
 
 To convert the JPG to bitmap format the `EVE_CMD_LOADIMAGE` command is sent followed by the JPG file data.
-Note that the JPG file data must be padded to the next 32-bit boundary. The bitmap image is written into the 
+> **Note:** that the JPG file data must be padded to the next 32-bit boundary. The bitmap image is written into the 
 RAM_G address specified in the command.
 
 In the following code snippet from the example the `while` loop will look for the end marker of the JPG
 data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
-```
+```c
     EVE_CMD_LOADIMAGE(start_addr, 0);
     while (flag != 2) {
         for (i = 0; i < sizeof(buf); i++) {
@@ -131,16 +170,16 @@ data (0xff 0xd9) and finish the transmission of the data to the co-processor.
 
 Once loaded into RAM_G the `EVE_CMD_GETPROPS` command can find the size of the image.
 
-```
+```c
     EVE_LIB_GetProps(&eve_addr, &img_width, &img_height);
 ```
 
-Using the information returned from `EVE_CMD_GETPROPS` the bitmap is intialised.
+Using the information returned from `EVE_CMD_GETPROPS` the bitmap is initialised.
 The code will select bitmap mode with the `EVE_BEGIN`, this tells the device that it is going to be processing bitmap instructions.
 Then it will set the source address of the bitmap in RAM_G with `EVE_BITMAP_SOURCE`. 
 Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device how to render the bitmaps included in the font.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_BEGIN(EVE_BEGIN_BITMAPS);
     EVE_BITMAP_HANDLE(FONT_CUSTOM);
@@ -156,7 +195,7 @@ Next `EVE_BITMAP_LAYOUT` and `EVE_BITMAP_SIZE` commands tell the graphics device
 Some EVE devices have a larger address space and also have an `EVE_BITMAP_SOURCE_H` command for the higher address bits.
 Other EVE devices have `EVE_BITMAP_LAYOUT_H` and `EVE_BITMAP_SIZE_H` to cope with larger supported bitmap sizes.
 
-A call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register 
+A call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register 
 the bitmap handle on the device so that it can be used by subsequent display lists.
 
 The sketch area is a bitmap equal in size to the entire screen drawn in L8 format (one byte per pixel). 
@@ -164,7 +203,7 @@ If this memory allocation is too large for the available RAM_G on a device then 
 The memory area for the bitmap is cleared to zero initially. 
 The sketch is started when the `EVE_CMD_SKETCH` command is received.
 
-```
+```c
     EVE_CMD_DLSTART();
     EVE_CMD_MEMSET(sketch_addr, 0, EVE_DISP_WIDTH * EVE_DISP_HEIGHT);
     EVE_CMD_SKETCH(0, 0, EVE_DISP_WIDTH, EVE_DISP_HEIGHT, sketch_addr, EVE_FORMAT_L8);
@@ -182,15 +221,4 @@ The sketch is started when the `EVE_CMD_SKETCH` command is received.
 The bitmap with handle `BITMAP_SKETCH` is drawn in the main look of the example and is updated by the EVE device whenever a touch event is detected.
 The sketch can be cleared at any point by setting the area for the bitmap to all zeros with a `EVE_CMD_MEMSET` command.
 
-Again a call to the `eve.CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.
-
-## Files and Folders
-
-The example contains a common directory with several files which comprises all the demo functionality.
-
-| File/Folder | Description |
-| --- | --- |
-| [common/eve_example.c](common/eve_example.c) | Example source code file |
-| [snippets/touch.c](../snippets/touch.c) | Calibration and touch detection routines |
-| [common/eve_images.c](common/eve_images.c) | Image helper routines |
-| [docs](docs) | Documentation support files |
+Again a call to the `EVE_CMD_SWAP()` command **must** be made within the same co-processor list to register the bitmap handle.

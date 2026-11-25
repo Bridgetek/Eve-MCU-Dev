@@ -1,5 +1,5 @@
 /**
- @file eve_assetload_array.c
+ * @file eve_assetload_array.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,14 +37,17 @@
  * ============================================================================
  */
 
+
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 
-#include <EVE.h>
-#include <MCU.h> // For DEBUG_PRINTF only
-
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
 
 #if ASSETS == USE_C_ARRAYS
+
+/* CONSTANTS ***********************************************************************/
 
 // Patch
 extern const uint8_t patch_medinfo2[];
@@ -83,6 +86,8 @@ extern const uint32_t off_on_size;
 // Patches only apply to BT82x
 #if IS_EVE_API(5)
 
+/* FUNCTIONS ***********************************************************************/
+
 int eve_loadpatch_impl(void)
 {
     uint32_t total = 0;
@@ -92,7 +97,7 @@ int eve_loadpatch_impl(void)
     EVE_LIB_BeginCoProList();
     EVE_CMD_LOADPATCH(0);
     do {
-        chunk = (size_t)(patch_asset.Array_Size - total);
+        chunk = (uint32_t)(patch_asset.Array_Size - total);
         if (chunk > 256) 
         {
             chunk = 256;
@@ -101,6 +106,7 @@ int eve_loadpatch_impl(void)
         total += (uint32_t)chunk;
         ptr += (uint32_t)chunk;
     } while (chunk == 256);
+    EVE_LIB_BeginCoProList();
     EVE_CMD_SWAP();
     EVE_LIB_EndCoProList();
     EVE_LIB_AwaitCoProEmpty();
@@ -110,7 +116,7 @@ int eve_loadpatch_impl(void)
 
 #endif
 
-void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
+void eve_asset_load(EVE_ASSET_PROPS *asset, uint32_t loadimage)
 {
     const uint8_t *ptr = asset->Array_Ptr;
     uint32_t total = 0;
@@ -119,12 +125,12 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
     // Read directy from flash
     if (loadimage)
     {
-        DEBUG_PRINTF("Load image from array\n");
+        EVE_DEBUG_PRINTF("Load image from array\n");
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_LOADIMAGE(asset->RAM_G_Start, 0);
         do {
-            chunk = (size_t)(asset->Array_Size - total);
+            chunk = (uint32_t)(asset->Array_Size - total);
             if (chunk > 256) 
             {
                 chunk = 256;
@@ -142,22 +148,26 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // EVE3 does not support CMD_GETPTR on CMD_LOADIMAGE
         asset->RAM_G_EndAddr = asset->RAM_G_Start + (w * h * 2);
         // EVE3 does not support CMD_GETIMAGE for CMD_LOADIMAGE results
-        uint32_t filetype = MCU_be32toh(*(uint32_t*)(asset->Array_Ptr));
+        uint32_t filetype = 0;
+        filetype |= asset->Array_Ptr[0] << 24;
+        filetype |= asset->Array_Ptr[1] << 16;
+        filetype |= asset->Array_Ptr[2] << 8;
+        filetype |= asset->Array_Ptr[3] << 0;
         if (filetype == 0x89504e47)
         {
             // Array holds a PNG file
             asset->Format = EVE_FORMAT_ARGB1555;
-            DEBUG_PRINTF("PNG file\n");
+            EVE_DEBUG_PRINTF("PNG file\n");
         }
         else if (filetype == 0xffd8ff0e)
         {
             // Array holds a JPG file
             asset->Format = EVE_FORMAT_RGB565;
-            DEBUG_PRINTF("JPG file\n");
+            EVE_DEBUG_PRINTF("JPG file\n");
         }
         else
         {
-            DEBUG_PRINTF("Unknown file type\n");
+            EVE_DEBUG_PRINTF("Unknown file type\n");
         }
 #elif IS_EVE_API(4,5)
         // EVE4 and EVE5 support CMD_GETPTR on CMD_LOADIMAGE
@@ -165,21 +175,21 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         // EVE4 and EVE5 support CMD_GETIMAGE for CMD_LOADIMAGE results
         EVE_LIB_GetImage(&dummy, &asset->Format, &w, &h, &dummy);
 #endif
-        DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
+        EVE_DEBUG_PRINTF("Image: w %d h %d fmt %d\n", w, h, asset->Format);
 
         if ((asset->Width != w) || (asset->Height != h))
         {
-            DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
+            EVE_DEBUG_PRINTF("MISMATCH image size must match: width %d = %d; height %d = %d\n", asset->Width, w, asset->Height, h);
         }
     }
     else
     {
-        DEBUG_PRINTF("Load to memory from array\n");
+        EVE_DEBUG_PRINTF("Load to memory from array\n");
 
         EVE_LIB_BeginCoProList();
         EVE_CMD_MEMWRITE(asset->RAM_G_Start, asset->Array_Size);
         do {
-            chunk = (size_t)(asset->Array_Size - total);
+            chunk = (uint32_t)(asset->Array_Size - total);
             if (chunk > 256) 
             {
                 chunk = 256;
@@ -194,7 +204,7 @@ void eve_asset_load(ASSET_PROPS *asset, uint32_t loadimage)
         asset->RAM_G_EndAddr = asset->RAM_G_Start + total;
     }
 
-    DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start, asset->RAM_G_EndAddr);
+    EVE_DEBUG_PRINTF("RAM_G: %d -> %d\n", asset->RAM_G_Start, asset->RAM_G_EndAddr);
 }
 
 void eve_asset_properties(const char *assets)

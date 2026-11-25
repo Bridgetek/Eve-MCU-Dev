@@ -1,5 +1,5 @@
 /**
- @file sub_depth.c
+ * @file sub_depth.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,13 +36,19 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+ 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "maths/trig_furman.h"
 #include "sub_controls.h"
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -97,6 +103,9 @@ static void draw_char_font(int16_t x, int16_t y, uint16_t furmans, int16_t width
     EVE_CMD_SETMATRIX(); 
 }
 
+
+/* FUNCTIONS ***********************************************************************/
+
 /*
  * x,y - top left of widget in pixels
  * radius - radius of widget
@@ -112,8 +121,6 @@ void sub_depth(int32_t x, int32_t y, uint16_t width, uint16_t height, uint16_t o
     uint32_t reference_col = 0xffffff;
     // Overlay reference colours
     uint32_t ovl_reference_col = 0xffaa00;
-    // North N colour
-    uint32_t north_col = 0xFF0000;
     // Stepping for depth
     int32_t fur;
 
@@ -173,16 +180,10 @@ void sub_depth(int32_t x, int32_t y, uint16_t width, uint16_t height, uint16_t o
         y += (3 * border);
     }
 
-    // Gap between graduations
-    int16_t height_grad = (height * 1) / ((visible * 2) / SUB_UNITS_SCALE);
-    // Width of graduations
-    int16_t width_depth = (width * 1) / 2;
     // Degree graduation line widths
     int16_t reference_bold = height * 3 / (visible / SUB_UNITS_SCALE);
     int16_t reference_narrow = height * 2 / (visible / SUB_UNITS_SCALE);
     int16_t reference_width;
-    // Inner of degree graduations
-    int16_t text_size = (height * 7) / 10;
     
     // Compass Degree Markings
     EVE_SAVE_CONTEXT();

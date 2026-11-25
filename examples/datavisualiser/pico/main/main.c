@@ -1,12 +1,5 @@
 /**
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#include "pico/stdlib.h"
-
-/**
-  @file main.c
+ * @file main.c
  */
 /*
  * ============================================================================
@@ -29,17 +22,17 @@
  * There are no warranties (or similar) in relation to the quality of the
  * Software. You use it at your own risk.
  * The Software should not be used in, or for, any medical device, system or
- * appliance. There are exclusions of FTDI liability for certain types of loss
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
  * such as: special loss or damage; incidental loss or damage; indirect or
  * consequential loss or damage; loss of income; loss of business; loss of
  * profits; loss of revenue; loss of contracts; business interruption; loss of
  * the use of money or anticipated savings; loss of information; loss of
  * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
  * corruption of data.
- * There is a monetary cap on FTDI's liability.
+ * There is a monetary cap on Bridgetek's liability.
  * The Software may have subsequently been amended by another user and then
  * distributed by that other user ("Adapted Software").  If so that user may
- * have additional licence terms that apply to those amendments. However, FTDI
+ * have additional licence terms that apply to those amendments. However, Bridgetek
  * has no liability in relation to those amendments.
  * ============================================================================
  */
@@ -49,23 +42,15 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
-/* Flash read/write capability for storing Non-volatile data */
-#include <hardware/flash.h>
-#include <hardware/sync.h>
+#include <pico/stdlib.h>
 
-#include <EVE.h>
-
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 /* CONSTANTS ***********************************************************************/
 
-
-/**
- * @brief Location in flash to store touchscreen configuration.
- */
-#define FLASH_OFFSET_CONFIG (256 * 1024)
+/* LOCAL VARIABLES *****************************************************************/
 
 /* LOCAL FUNCTIONS / INLINES *******************************************************/
 
@@ -73,45 +58,9 @@ void setup(void);
 
 /* FUNCTIONS ***********************************************************************/
 
-/**
- * @brief Functions used to store calibration data in file.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 0;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-#if (PICO_FLASH_SIZE_BYTES < FLASH_OFFSET_CONFIG + FLASH_SECTOR_SIZE)
-#error Configuration written above top of flash
-#endif
-    // Data to write to flash must be aligned to a flash page
-    uint8_t config[FLASH_PAGE_SIZE] __aligned(FLASH_PAGE_SIZE);
-    uint32_t ints = save_and_disable_interrupts();
-
-    memset(config, 0xff, FLASH_PAGE_SIZE);
-    memcpy(config, calib, sizeof(struct touchscreen_calibration));
-
-    flash_range_erase(FLASH_OFFSET_CONFIG, FLASH_SECTOR_SIZE);
-    flash_range_program(FLASH_OFFSET_CONFIG, (const uint8_t *)config, FLASH_PAGE_SIZE);
-    restore_interrupts (ints);
-
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    struct touchscreen_calibration *p = (struct touchscreen_calibration *)(XIP_BASE + FLASH_OFFSET_CONFIG);
-    memcpy(calib, p, sizeof(struct touchscreen_calibration));
-    return 0;
-}
-//@}
-
 int main(void)
 {
-    /* Setup UART */
+    /* Setup */
     setup();
 
     /* Start example code */
@@ -121,43 +70,25 @@ int main(void)
     for (;;) ;
 }
 
-uint32_t platform_get_time(void)
-{
-    uint32_t time_ms;
-    time_ms = to_ms_since_boot(get_absolute_time());
-    return time_ms;
-}
-
 void setup(void)
 {
-    int ch = 0;
     // Initialise stdio ports as configured in CMakeLists.txt
     stdio_init_all();
 
     // Turn on the pico LED to show activity
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 1);
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 1);
     
-#if DEBUG_LEVEL > 0
+#if defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
     // Wait for stdio (UART/USB) connection if enabled
     // NOTE: this will prevent the example from running until the COM port presented to the host machine is opened
     while (!stdio_usb_connected()) { sleep_ms(100);  }
+#endif // defined(EVE_DEBUG_LEVEL) && (EVE_DEBUG_LEVEL > 0)
 
     /* Print out a welcome message... */
-    printf ("(C) Copyright, Bridgetek Pte. Ltd. \r\n \r\n");
-    printf ("---------------------------------------------------------------- \r\n");
-    printf ("Welcome to the EVE-MCU-Dev Data Visualiser Example for Raspberry Pi Pico RP2040\r\n");
-    printf ("\n");
-    printf ("Pin configuration for example:\n");
-    printf ("Use SPI 1 hardware bus to match IDM2040-7A from Bridgetek\n");
-    printf ("Pin 15 - MOSI (GPIO11)\n");
-    printf ("Pin 16 - MISO (GPIO12)\n");
-    printf ("Pin 14 - SCLK (GPIO10)\n");
-    printf ("Pin 17 - CS (GPIO13) - Note this is not the SPI0_CS0 pin\n");
-    printf ("Pin 10 - PD# (GPIO7) - Powerdown pin\n");
-    printf ("Pin 40 - 5v supply for FT8xx\n");
-    printf ("Pin 23 - signal GND for SPI\n");
-#endif
+    EVE_DEBUG_PRINTF ("(C) Copyright, Bridgetek Pte. Ltd. \r\n");
+    EVE_DEBUG_PRINTF ("---------------------------------------------------------------- \r\n");
+    EVE_DEBUG_PRINTF ("Welcome to the EVE-MCU-Dev Data Visualiser Example for Raspberry Pi Pico RP2040\r\n");
+    EVE_DEBUG_PRINTF ("\n");
 }

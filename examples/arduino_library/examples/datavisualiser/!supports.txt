@@ -1,0 +1,4 @@
+1       # Supported on EVE1 (FT80x)
+2       # Supported on EVE2 (FT81x, BT88x)
+3, 4    # Supported on EVE3 and EVE4 (BT81x)
+5       # Supported on EVE5 (BT82x)

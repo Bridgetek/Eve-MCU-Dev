@@ -1,5 +1,5 @@
 /**
- @file flightalt.c
+ * @file flightalt.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,19 +36,27 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+ 
+/* INCLUDES ************************************************************************/
+
 #include <stdint.h>
 #include <stdlib.h>
 
+/* Include EVE-MCU-Dev library API layer */
 #include <EVE.h>
 
 #include "maths/trig_furman.h"
 
-#ifndef min
-#define min(X,Y) ((X) < (Y) ? (X) : (Y))
+/* MACROS **************************************************************************/
+
+#ifndef MIN
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 #endif
-#ifndef max
-#define max(X,Y) ((X) > (Y) ? (X) : (Y))
+#ifndef MAX
+#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
 #endif
+
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
 
 static inline void draw_vertex(int16_t x, int16_t y)
 {
@@ -59,6 +67,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
 #endif
 }
 
+/* FUNCTIONS ***********************************************************************/
+
 /*
  * x,y - top left of widget in pixels
  * radius - radius of widget
@@ -67,8 +77,8 @@ static inline void draw_vertex(int16_t x, int16_t y)
 void altwidget(int16_t x, int16_t y, uint16_t radius, int alt)
 {
     // Like a real altitude instrument it will never go beyond the limits
-    alt = max(alt, 0);
-    alt = min(alt, 10000);
+    alt = MAX(alt, 0);
+    alt = MIN(alt, 10000);
 
     // Dimensions of the widget are detemined by the radius
     int16_t radius_outer = radius;

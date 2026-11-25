@@ -1,5 +1,5 @@
 /**
- @file eve_example.c
+ * @file eve_example.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,13 +36,29 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
-#include <stdio.h>
+
+/* INCLUDES ************************************************************************/
+
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
-#include <EVE.h>
+#include <stdlib.h>
 
+/* Include EVE-MCU-Dev library API layer and other required headers. */
 #include "eve_example.h"
+
+/* CONSTANTS ***********************************************************************/
+
+// At the end of the first pass of the main loop return to prevent the simulator 
+// running continuously
+
+#if defined(SOFTWARE_SIMULATOR)
+#define LOOP 0
+#else
+#define LOOP 1
+#endif
+
+/* FUNCTIONS ***********************************************************************/
 
 void ledbox(uint16_t x, uint16_t y, uint16_t count, uint16_t segsize)
 {
@@ -115,7 +131,14 @@ void eve_display(void)
     destination.tm_hour = 1;
     destination.tm_min = 21;
     
+#if defined(SOFTWARE_SIMULATOR)
+    // Use a constant time of 00:00 on Jan 1st 1970 when using the simulator
+    ptime = ((time_t) 0);
+#else
+    // Get the current time in the Unix Epoch
     ptime = time(NULL);
+#endif
+
     if (ptime == -1)
     {
         // If there is no real time clock then time() returns -1.
@@ -141,10 +164,11 @@ void eve_display(void)
         memcpy(&present, ptm, sizeof(struct tm));
 #endif
     }
-    while (1)
+    
+    do
     {
         /*
-        printf("The date time is: %d month %d day %d year %d hour %d minutes\n",
+        EVE_DEBUG_PRINTF("The date time is: %d month %d day %d year %d hour %d minutes\n",
               present.tm_mon + 1,
               present.tm_mday,
               present.tm_year + 1900,
@@ -152,7 +176,9 @@ void eve_display(void)
               present.tm_min
               );
               */
+        // Begin a new co-processor list
         EVE_LIB_BeginCoProList();
+        // Begin a display list
         EVE_CMD_DLSTART();
         EVE_CLEAR_COLOR_RGB(0x0, 0x0, 0x0);
         EVE_CLEAR(1,1,1);
@@ -304,9 +330,13 @@ void eve_display(void)
         ledbox(dx, dy, 2, segsize);
         lednumber(dx, dy, 2, segsize, lasttime.tm_min, fg, bg);
 
+        // Finish the display list
         EVE_DISPLAY();
+        // Swap onto the screen to make it visible
         EVE_CMD_SWAP();
+        // Finish the list of commands
         EVE_LIB_EndCoProList();
+        // Await for the commands to be executed
         EVE_LIB_AwaitCoProEmpty();
 
 #if IS_EVE_API(5)
@@ -326,19 +356,30 @@ void eve_display(void)
             memcpy(&lasttime, ptm, sizeof(struct tm));
 #endif
         }
-    }
+
+    } while (LOOP);
 }
 
+// Application Code begins here
 void eve_example(void)
 {
     // Initialise the display
-    EVE_Init();
-
+    EVE_DEBUG_PRINTF("Initialising display...\n");
+    if (EVE_Init() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: EVE_Init() failed.\n");
+        return;
+    }
+    
     // Calibrate the display
-    printf("Calibrating display...\n");
-    eve_calibrate();
+    EVE_DEBUG_PRINTF("Calibrating display...\n");
+    if (eve_calibrate() != 0)
+    {
+        EVE_DEBUG_ERROR("ERROR: eve_calibrate() failed.\n");
+        return;
+    }
 
     // Start example code
-    printf("Starting demo:\n");
-    eve_display();
+    EVE_DEBUG_PRINTF("Starting demo:\n");
+    eve_display();          // Run Application
 }

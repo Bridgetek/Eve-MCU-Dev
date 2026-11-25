@@ -1,5 +1,5 @@
 /**
- @file touchscreentest_EVE### EVE API VER ###.ino
+ * @file touchscreentest_EVE### EVE API VER ###.ino
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -38,26 +38,6 @@
  */
 
 #include "eve_example.h"
-
-/**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
- */
-//@{
-int8_t platform_calib_init(void) {
-  return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib) {
-  (void)calib;
-  return -1;
-}
-//@}
 
 void setup() {
   Serial.begin(9600);

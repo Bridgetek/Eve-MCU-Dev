@@ -1,5 +1,5 @@
 /**
- @file fonts.h
+ * @file fonts.h
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -37,8 +37,8 @@
  * ============================================================================
  */
 
-#ifndef EVE_FONTS_H
-#define EVE_FONTS_H
+#ifndef _EVE_FONTS_H
+#define _EVE_FONTS_H
 
  /**
  @brief Maximum number of characters to cache form a font.
@@ -76,4 +76,4 @@ uint16_t font_getheight(struct eve_font_cache *cache);
 uint16_t font_getwidth(struct eve_font_cache *cache);
 uint16_t font_getcharwidth(struct eve_font_cache *cache, uint8_t ch);
 
-#endif // EVE_FONTS_H
+#endif /* _EVE_FONTS_H */

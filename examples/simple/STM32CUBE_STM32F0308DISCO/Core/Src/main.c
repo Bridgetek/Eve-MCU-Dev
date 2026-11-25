@@ -24,8 +24,7 @@
 #include <string.h>
 #include <stdint.h> // for Uint8/16/32 and Int8/16/32 data types
 
-#include <EVE.h>
-
+/* Include the example interface and associated function prototypes. */
 #include <eve_example.h>
 /* USER CODE END Includes */
 
@@ -52,6 +51,7 @@ SPI_HandleTypeDef hspi1;
 GPIO_TypeDef *config_gpio;
 uint16_t config_pin_pd;
 uint16_t config_pin_cs;
+uint16_t config_pin_int;
 
 /* USER CODE END PV */
 
@@ -65,27 +65,6 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return -1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    return -1;
-}
-//@}
 
 /* USER CODE END 0 */
 
@@ -121,6 +100,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Start example code */
   eve_example();
 
   /* USER CODE END 2 */
@@ -203,7 +183,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -256,6 +236,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : EVE_INT__Pin */
+  GPIO_InitStruct.Pin = EVE_INT__Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(EVE_INT__GPIO_Port, &GPIO_InitStruct);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
     /* Must match above. If this has been changed by STM32CubeMX then update. */
@@ -263,6 +249,8 @@ static void MX_GPIO_Init(void)
     config_gpio = GPIOB;
     config_pin_cs = EVE_CS__Pin;
     config_pin_pd = EVE_PD__Pin;
+    config_pin_int = EVE_INT__Pin;
+
     
   /* USER CODE END MX_GPIO_Init_2 */
 }

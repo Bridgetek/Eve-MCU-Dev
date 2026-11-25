@@ -2,7 +2,9 @@
 
 [Back](../README.md)
 
-The sketch needs to be additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`simple_arduino`](simple_arduino/).
+The sketch needs additional files copied to setup it up in the Arduino IDE. Since the name of the sketch needs to match the directory name where the sketch is located the example sketch is kept in a special sketch directory named [`simple_arduino`](simple_arduino/).
+
+The [Arduino port](../../../ports/eve_arch_arduino/README.md) is used for this example.
 
 ## Sketch Directory
 
@@ -10,11 +12,11 @@ There are two methods of setting up the sketch directory. A python script is pro
 
 ### Python Script
 
-The python script `sketchbuild.py` can be used to copy the required files to the sketch automatically. It is run from the directory where the script is located and will find the API and example common directory.
+The python script `sketchbuild.py` can be used to copy the required files to the sketch automatically. It is run from the directory where the script is located and will find the API and example common directory. This script relies on the `sketchlib.py` module in the [`examples\arduino_sketches`](../../arduino_sketches/) directory.
 
 The script will report the names of the files copied. There are no parameters for the script.
 
-```
+```console
 > python .\sketchbuild.py
 Sketch name is simple_arduino
 ..\common\eve_example.c -> simple_arduino\eve_example.ino
@@ -26,19 +28,22 @@ Sketch name is simple_arduino
 ..\..\..\include\EVE.h -> simple_arduino\EVE.h
 ..\..\..\include\HAL.h -> simple_arduino\HAL.h
 ..\..\..\include\MCU.h -> simple_arduino\MCU.h
-..\..\..\include\FT8xx.h -> simple_arduino\FT8xx.h
 ..\..\..\include\EVE_config.h -> simple_arduino\EVE_config.h
-..\..\..\include\FT80x.h -> simple_arduino\FT80x.h
-..\..\..\include\FT81x.h -> simple_arduino\FT81x.h
-..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
-..\..\..\include\BT81x.h -> simple_arduino\BT81x.h
-..\..\..\include\BT82x.h -> simple_arduino\BT82x.h
+..\..\..\include\EVE_defs.h -> simple_arduino\EVE_defs.h
+..\..\..\include\EVE_commands.h -> simple_arduino\EVE_commands.h
+..\..\..\include\EVE_debug.h -> simple_arduino\EVE_debug.h
+..\..\..\include\EVE_registers.h -> simple_arduino\EVE_registers.h
+..\..\..\include\EVE_settings.h -> simple_arduino\EVE_settings.h
 ..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
-..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
+..\..\..\ports\eve_arch_arduino\EVE_ARCH_ARDUINO.ino -> simple_arduino\EVE_ARCH_ARDUINO.ino
 ..\..\..\ports\eve_arch_arduino\README.md -> simple_arduino\README.md
-..\..\..\ports\eve_bt82x\patch_base.c -> simple_arduino\patch_base.ino
-..\..\..\ports\eve_bt82x\patch_base.h -> simple_arduino\patch_base.h
+..\..\..\source\extensions\bt82x_patch.c -> simple_arduino\bt82x_patch.ino
+..\..\..\source\extensions\bt82x_patch.h -> simple_arduino\bt82x_patch.h
+..\..\..\source\extensions\custom_touch_fw.h -> simple_arduino\custom_touch_fw.h
+..\..\..\source\extensions\custom_touch_fw.c -> simple_arduino\custom_touch_fw.c
+..\..\..\source\extensions\lcd_panel_init.h -> simple_arduino\lcd_panel_init.h
+..\..\..\source\extensions\lcd_panel_init.c -> simple_arduino\lcd_panel_init.c
 ```
 
 ### Copy Files Manually
@@ -49,20 +54,16 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - EVE.h
   - MCU.h
   - HAL.h
+  - EVE_commands.h
   - EVE_config.h
-  - FT8xx.h
-  - BT81x.h
-  - BT82x.h
-  - FT80x.h
-  - FT81x.h
+  - EVE_defs.h
+  - EVE_registers.h
+  - EVE_settings.h
 - From the `source` directory add the library files:
   - EVE_API.c
   - EVE_HAL.c
-- From the `ports\eve_bt82x` directory add the BT82x base patch (if BT82x will be used):
-  - patch_base.c
-  - patch_base.h
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
-  - eve_arch_arduino.ino
+  - EVE_ARCH_ARDUINO.ino
   - README.md
 - From the `examples\simple\common` directory the files for the simple example functionality:
   - eve_example.c
@@ -73,36 +74,64 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - touch.c
   - touch.h
 
+- Extension source and header files are stored separately in the EVE-MCU-Dev
+source tree:
+
+  From `include/extensions`:
+
+  - `custom_touch_fw.h` - EVE API 2, 3 and 4
+  - `bt82x_patch.h` - EVE API 5
+  - `lcd_panel_init.h` - EVE API 1, 2, 3, 4, and 5
+
+  From `source/extensions`:
+
+  - `custom_touch_fw.c` - EVE API 2, 3 and 4
+  - `bt82x_patch.c` - EVE API 5
+  - `lcd_panel_init.c` - EVE API 1, 2, 3, 4, and 5
+
+When the Arduino library is generated, these files are copied into the
+library root directory. The `extensions` directory structure is not retained
+
 All files with a ".c" extension must be renamed to have the extension ".ino". In all the copied files, references to include files in the sketch must be changed from using angle brackets around the include file name to using quotes.
 
 - `#include <EVE.h>` --> `#include "EVE.h"`
 - `#include <HAL.h>` --> `#include "HAL.h"`
 - `#include <MCU.h>` --> `#include "MCU.h"`
-- `#include <FT8xx.h>` --> `#include "FT8xx.h"`
+- `#include <EVE_commands.h>` --> `#include "EVE_commands.h"`
 - `#include <EVE_config.h>` --> `#include "EVE_config.h"`
-- `#include <patch_base.h>` --> `#include "patch_base.h"`
+- `#include <EVE_defs.h>` --> `#include "EVE_defs.h"`
+- `#include <EVE_debug.h>` --> `#include "EVE_debug.h"`
+- `#include <EVE_registers.h>` --> `#include "EVE_registers.h"`
+- `#include <EVE_settings.h>` --> `#include "EVE_settings.h"`
+- `#include <extensions/bt82x_patch.h>` --> `#include "bt82x_patch.h"`
+- `#include <extensions/custom_touch_fw.h>` --> `#include "custom_touch_fw.h"`
+- `#include <extensions/lcd_panel_init.h>` --> `#include "lcd_panel_init.h"`
 
 ## Sketch Directory
 
 The directory will look similar to this:
 
-```
+```text
  Directory of <path>EVE-MCU-Dev\examples\simple\arduino\simple_arduino
 
 EVE.h    
 MCU.h      
-HAL.h      
-EVE_config.h  
-FT8xx.h  
-BT81x.h  
-BT82x.h  
-FT80x.h  
-FT81x.h  
+HAL.h    
+EVE_commands.h   
+EVE_config.h 
+EVE_defs.h 
+EVE_debug.h 
+EVE_registers.h
+EVE_settings.h    
 EVE_API.ino   
 EVE_HAL.ino   
-patch_base.ino      
-patch_base.h    
-eve_arch_arduino.ino  
+bt82x_patch.ino      
+bt82x_patch.h  
+custom_touch_fw.ino      
+custom_touch_fw.h
+lcd_panel_init.ino      
+lcd_panel_init.h  
+EVE_ARCH_ARDUINO.ino  
 README.md  
 eve_example.ino       
 eve_example.h         
@@ -120,8 +149,8 @@ The sketch can be verified and uploaded to the Arduino device. Please follow the
 
 ## Reusing the Example Code
 
-This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_images.c`, `eve_fonts.c`, and `touch.c`. If using the python script then the list of files for the example code will need updated.
+This code can be reused by altering the code in the "example" files `eve_example.c`, `eve_images.c`, `eve_fonts.c`. If using the python script then the list of files for the example code will need updated.
 
 ## Updating the Configuration
 
-If the sketch is to be changed to target a different display panel or EVE device then changes can be made to the file `EVE_config.h`. This is the main configuration file that is most often changed. If a display panel is changed then there are settings built-in to allow for several different popular screen types and sizes. Likewise, the EVE API is not compatible between generations of devices and the `FT8XX_TYPE` setting will have to change to any different device type.
+If the sketch is to be changed to target a different display panel or EVE device then changes can be made to the file `EVE_config.h`. This is the main configuration file that is most often changed. If a display panel is changed then there are settings built-in to allow for several different popular screen types and sizes. Likewise, the EVE API is not compatible between generations of devices and the `EVE_DEVICE` setting will have to change to any different device type.

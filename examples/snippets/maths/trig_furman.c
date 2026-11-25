@@ -1,5 +1,5 @@
 /**
- @file trig_furman.c
+ * @file trig_furman.c
  */
 /*
  * ============================================================================
@@ -8,7 +8,7 @@
  *
  * This source code ("the Software") is provided by Bridgetek Pte Ltd
  * ("Bridgetek") subject to the licence terms set out
- * https://brtchip.com/wp-content/uploads/2021/11/BRT_Software_License_Agreement.pdf ("the Licence Terms").
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
  * You must read the Licence Terms before downloading or using the Software.
  * By installing or using the Software you agree to the Licence Terms. If you
  * do not agree to the Licence Terms then do not download or use the Software.
@@ -36,6 +36,9 @@
  * has no liability in relation to those amendments.
  * ============================================================================
  */
+
+/* INCLUDES ************************************************************************/
+ 
 #include <stdint.h>
 
 #include "trig_furman.h"
@@ -63,7 +66,9 @@ int16_t cos_furman(uint16_t furman16)
     return ret;
 }
 
-#else
+#else // USE_TRIG_TABLE
+
+/* CONSTANTS ***********************************************************************/
 
 /* Use precomputed sine table for calculation of trigonometrics
  * This uses a 64 furman resolution using 257 position lookup table for 
@@ -98,6 +103,8 @@ const uint16_t sinint[257] = {
     65385, 65411, 65435, 65456, 65474, 65490, 65504, 65515, 65523, 65530, 
     65533, 65535 }; 
 
+/* LOCAL FUNCTIONS / INLINES *******************************************************/
+
 /* 
  * Integer sine function 
  * Takes an input of 16-bit furman value. 
@@ -127,6 +134,8 @@ static int16_t sin_furman_lookup(uint16_t furman16)
     return ret;
 }
 
+/* FUNCTIONS ***********************************************************************/
+
 int16_t sin_furman(uint16_t furman16)
 {
     int16_t ret;
@@ -145,4 +154,4 @@ int16_t cos_furman(uint16_t furman16)
     return sin_furman(furman16 + 0x4000);
 }
 
-#endif
+#endif // ! USE_TRIG_TABLE

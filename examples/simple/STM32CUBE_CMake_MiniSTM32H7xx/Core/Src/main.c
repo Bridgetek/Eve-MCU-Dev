@@ -28,7 +28,8 @@
 
 #include "quadspi.h"
 
-#include "eve_example.h"
+/* Include EVE-MCU-Dev library API layer and other required headers. */
+#include <eve_example.h>
 
 /* USER CODE END Includes */
 
@@ -62,27 +63,6 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/**
- * @brief Functions used to store calibration data in file.
-   @details Currently not used.
- */
-//@{
-int8_t platform_calib_init(void)
-{
-    return 1;
-}
-
-int8_t platform_calib_write(struct touchscreen_calibration *calib)
-{
-    return 0;
-}
-
-int8_t platform_calib_read(struct touchscreen_calibration *calib)
-{
-    return -1;
-}
-//@}
 
 /* USER CODE END 0 */
 
@@ -125,6 +105,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   MX_QUADSPI_Init();
 
+  /* Start example code */
   eve_example();
 
   /* USER CODE END 2 */

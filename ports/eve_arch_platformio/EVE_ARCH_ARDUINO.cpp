@@ -1,0 +1,354 @@
+/**
+ * @file EVE_ARCH_ARDUINO.cpp
+ * @details MCU-specific code for controlling EVE Arduino PlatformIO.
+ *          This file is used with the Arduino Framework in PlatformIO.
+ *          In `platformio.ini`
+ *          - Use the following framework: "framework = arduino"
+ *          - Set the following macros:
+ *              -DPLATFORM_PLATFORMIO
+ *              -DPLATFORM_PLATFORMIO_ARDUINO
+ */
+/*
+ * ============================================================================
+ * (C) Copyright,  Bridgetek Pte. Ltd.
+ * ============================================================================
+ *
+ * This source code ("the Software") is provided by Bridgetek Pte Ltd
+ * ("Bridgetek") subject to the licence terms set out
+ * http://brtchip.com/BRTSourceCodeLicenseAgreement/ ("the Licence Terms").
+ * You must read the Licence Terms before downloading or using the Software.
+ * By installing or using the Software you agree to the Licence Terms. If you
+ * do not agree to the Licence Terms then do not download or use the Software.
+ *
+ * Without prejudice to the Licence Terms, here is a summary of some of the key
+ * terms of the Licence Terms (and in the event of any conflict between this
+ * summary and the Licence Terms then the text of the Licence Terms will
+ * prevail).
+ *
+ * The Software is provided "as is".
+ * There are no warranties (or similar) in relation to the quality of the
+ * Software. You use it at your own risk.
+ * The Software should not be used in, or for, any medical device, system or
+ * appliance. There are exclusions of Bridgetek liability for certain types of loss
+ * such as: special loss or damage; incidental loss or damage; indirect or
+ * consequential loss or damage; loss of income; loss of business; loss of
+ * profits; loss of revenue; loss of contracts; business interruption; loss of
+ * the use of money or anticipated savings; loss of information; loss of
+ * opportunity; loss of goodwill or reputation; and/or loss of, damage to or
+ * corruption of data.
+ * There is a monetary cap on Bridgetek's liability.
+ * The Software may have subsequently been amended by another user and then
+ * distributed by that other user ("Adapted Software").  If so that user may
+ * have additional licence terms that apply to those amendments. However, Bridgetek
+ * has no liability in relation to those amendments.
+ * ============================================================================
+ */
+
+// Guard against being used for incorrect platform or architecture.
+#if defined(PLATFORM_PLATFORMIO_ARDUINO)
+
+#pragma message "Compiling " __FILE__ " for PlatformIO Arduino"
+
+/* EVE MCU HEADER */
+
+#include <Arduino.h>
+#include <SPI.h>
+
+/** @brief Library includes
+ * @details Includes the EVE-MCU-Dev MCU interface implemented by this
+ *      Arduino port. The C interface is exposed to this C++ source using
+ *      C linkage.
+ */
+//@{
+extern "C" {
+#include <MCU.h>
+}
+//@}
+
+/* EVE MCU HEADER END */
+
+/* EVE MCU */
+
+/** @brief Pin definitions for standard Arduino platforms.
+ *  @details Set the standard **Arduino** SPI pinouts:
+ * - 10 (CS#), 11 (COPI), 12 (CIPO), 13 (SCK), 9 (PD#), 8 (INT#).
+ * These are suitable for Arduino UNO, Nano, Mega etc.
+ * Set the macro PIN_REDEFINE to override these defaults.
+ * If defaults are to be changed then the PIN_SPICLOCK, PIN_DATAOUT, 
+ * PIN_DATAIN, PIN_CHIPSELECT, PIN_POWERDOWN and PIN_INTERRUPT **must**
+ * all be defined in "platformio.ini".
+ * Support for overridding the defaults:
+ * - ARDUINO_ARCH_SAMD (SAMD) cannot override (fixed I/O pins).
+ * - ARDUINO_ARCH_MBED (ARM Cortex) can override.
+ * - ARDUINO_ARCH_ESP32 (ESP32) can override.
+ */
+//@{
+#if !defined(PIN_REDEFINE)
+#define PIN_SPICLOCK    13  // SCK
+#define PIN_DATAOUT     11  // MOSI (COPI)
+#define PIN_DATAIN      12  // MISO (CIPO)
+#define PIN_CHIPSELECT  10  // CS#
+/// Additional power down signal pin 9 (PD#)
+#define PIN_POWERDOWN   9   // PD#
+/// Additional interrupt signal pin 8 (INT#)
+#define PIN_INTERRUPT   8   // INT#
+#endif
+
+/** @brief Redefine SPI Pins if supported
+ */
+//@{
+#if defined(PIN_REDEFINE) && defined(ARDUINO_ARCH_MBED)
+#if !defined(ARDUINO_AS_MBED_LIBRARY)
+MbedSPI spi_device(PIN_DATAIN, PIN_DATAOUT, PIN_SPICLOCK);
+#else
+SPI spi_device(PIN_DATAOUT, PIN_DATAIN, PIN_SPICLOCK, NC);
+#endif // !defined(ARDUINO_AS_MBED_LIBRARY)
+#else
+#define spi_device SPI
+#endif // defined(PIN_REDEFINE) && defined(ARDUINO_RASPBERRY_PI_PICO)
+//@}
+
+int MCU_Init(void) 
+{
+#if defined(LED_BUILTIN)  
+  /* Indicate we are running. */
+  /* NOTE: LED_BUILTIN works on Arduino and Raspberry Pi pico SDK. */
+  digitalWrite(LED_BUILTIN, 1);
+#endif
+
+  /* Initialise SPI. */
+#if defined(PIN_REDEFINE) && defined(ARDUINO_ARCH_ESP32)
+  spi_device.begin(PIN_SPICLOCK, PIN_DATAIN, PIN_DATAOUT, -1);
+#else
+  spi_device.begin();
+#endif
+
+  /* Set CS#, PD#, INT# pin directions. */
+  pinMode(PIN_CHIPSELECT, OUTPUT);
+  pinMode(PIN_POWERDOWN, OUTPUT);
+  pinMode(PIN_INTERRUPT, INPUT);
+
+  digitalWrite(PIN_CHIPSELECT, HIGH);  //disable CS#
+  digitalWrite(PIN_POWERDOWN, HIGH);   //disable HD#
+
+  // Set SPI speed to 1 MHz 
+  // 1 MHz allows all EVE devices to initialise correctly
+  // After initialisation the SPI speed can be increased in the MCU_Setup()
+  spi_device.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+
+  return 0;
+}
+
+int MCU_Deinit(void) {
+
+  /* Leave EVE control signals in a safe state. */
+  digitalWrite(PIN_CHIPSELECT, HIGH);
+  digitalWrite(PIN_POWERDOWN, LOW);
+
+  /* Shut down SPI. */
+  spi_device.endTransaction();
+  spi_device.end();
+  return 0;
+}
+
+int MCU_Setup(void) {
+
+  /* Additional SPI Configuration */
+  spi_device.endTransaction();
+
+  // Increase SPI speed to 8 MHz after initialisation is complete
+  // See the notes for EVE_SPI_TIMEOUT in the MCU.h file.
+  spi_device.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
+  return 0;
+}
+
+#if defined(EVE_QSPI_ENABLE)
+int MCU_SetSPIMode(uint8_t mode)
+{
+  /* QSPI Configuration */
+  #error EVE_QSPI_ENABLE (QSPI interfaces to EVE) is currently not supported on Arduino
+  /* Initialize IO2 and IO3 pad/pin for quad settings */
+  return -1;
+}
+#endif // defined(EVE_QSPI_ENABLE)
+
+// Simple endian alignment for tested Arduino devices
+#define bswap16(x) __builtin_bswap16(x)
+#define bswap32(x) __builtin_bswap32(x)
+
+// ########################### GPIO CONTROL ####################################
+
+// --------------------- Chip Select line low ----------------------------------
+void MCU_CSlow(void) {
+  digitalWrite(PIN_CHIPSELECT, LOW);  
+}
+
+// --------------------- Chip Select line high ---------------------------------
+void MCU_CShigh(void) {
+  digitalWrite(PIN_CHIPSELECT, HIGH);  // disable CS#
+}
+
+// -------------------------- PD line low --------------------------------------
+void MCU_PDlow(void) {
+  digitalWrite(PIN_POWERDOWN, LOW);  // enable HD#
+}
+
+// ------------------------- PD line high --------------------------------------
+void MCU_PDhigh(void) {
+  digitalWrite(PIN_POWERDOWN, HIGH);  // disable HD#
+}
+
+// ------------------------ interrupt input ------------------------------------
+int MCU_Int(void) {
+  return digitalRead(PIN_INTERRUPT);
+}
+
+// Exchange a single byte on the SPI bus
+char MCU_SPIReadWrite8(uint8_t val) {
+  uint8_t v = spi_device.transfer(val);
+  return v;
+}
+
+uint16_t MCU_SPIReadWrite16(uint16_t DataToWrite) {
+  uint16_t DataRead = 0;
+  uint16_t temp;
+
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+  DataRead |= (temp << 0);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+  DataRead |= (temp << 8);
+
+  return DataRead;
+}
+
+uint32_t MCU_SPIReadWrite32(uint32_t DataToWrite) {
+  uint32_t DataRead = 0;
+  uint32_t temp;
+
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff) & 0xff);
+  DataRead |= (temp << 0);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff) & 0xff);
+  DataRead |= (temp << 8);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff) & 0xff);
+  DataRead |= (temp << 16);
+  temp = (MCU_SPIReadWrite8((DataToWrite >> 24) & 0xff) & 0xff);
+  DataRead |= (temp << 24);
+
+  return DataRead;
+}
+
+void MCU_Delay_20ms(void) {
+  delay(20);
+}
+
+void MCU_Delay_500ms(void) {
+  delay(500);
+}
+
+uint32_t MCU_Time_ms(void)
+{
+  return millis();
+}
+
+// --------------------- SPI Send and Receive ----------------------------------
+
+uint8_t MCU_SPIRead8(void) {
+  uint8_t DataRead = 0;
+
+  DataRead = MCU_SPIReadWrite8(0);
+
+  return DataRead;
+}
+
+void MCU_SPIWrite8(uint8_t DataToWrite) {
+  MCU_SPIReadWrite8(DataToWrite);
+}
+
+uint16_t MCU_SPIRead16(void) {
+  uint16_t DataRead = 0;
+
+  DataRead = MCU_SPIReadWrite16(0);
+
+  return DataRead;
+}
+
+void MCU_SPIWrite16(uint16_t DataToWrite) {
+  MCU_SPIReadWrite16(DataToWrite);
+}
+
+void MCU_SPIWrite24(uint32_t DataToWrite) {
+  MCU_SPIReadWrite8((DataToWrite >> 0) & 0xff);
+  MCU_SPIReadWrite8((DataToWrite >> 8) & 0xff);
+  MCU_SPIReadWrite8((DataToWrite >> 16) & 0xff);
+}
+
+uint32_t MCU_SPIRead32(void) {
+  uint32_t DataRead = 0;
+
+  DataRead = MCU_SPIReadWrite32(0);
+
+  return DataRead;
+}
+
+void MCU_SPIWrite32(uint32_t DataToWrite) {
+  MCU_SPIReadWrite32(DataToWrite);
+}
+
+void MCU_SPIWrite(const uint8_t *DataToWrite, uint32_t length) {
+  //TODO: replace with spi_device.transfer(DataToWrite, length);
+  // Note that DataToWrite is overwritten.
+  uint16_t DataPointer = 0;
+
+  while (DataPointer < length) {
+    MCU_SPIWrite8(DataToWrite[DataPointer]);  // Send data byte-by-byte from array
+    DataPointer++;
+  }
+}
+
+void MCU_SPIRead(uint8_t *DataToRead, uint32_t length) {
+  //TODO: replace with spi_device.transfer(DataToRead, length);
+  uint16_t DataPointer = 0;
+
+  while (DataPointer < length) {
+    DataToRead[DataPointer] = MCU_SPIRead8();  // Receive data byte-by-byte to array
+    DataPointer++;
+  }
+}
+
+// Arduino is Little Endian. 
+// Use toolchain defined functions.
+uint16_t MCU_htobe16(uint16_t h) {
+  return bswap16(h);
+}
+
+uint32_t MCU_htobe32(uint32_t h) {
+  return bswap32(h);
+}
+
+uint16_t MCU_htole16(uint16_t h) {
+  return h;
+}
+
+uint32_t MCU_htole32(uint32_t h) {
+  return h;
+}
+
+uint16_t MCU_be16toh(uint16_t h) {
+  return bswap16(h);
+}
+
+uint32_t MCU_be32toh(uint32_t h) {
+  return bswap32(h);
+}
+
+uint16_t MCU_le16toh(uint16_t h) {
+  return h;
+}
+
+uint32_t MCU_le32toh(uint32_t h) {
+  return h;
+}
+
+/* EVE MCU END */
+
+#endif /* defined(PLATFORM_PLATFORMIO_ARDUINO) */

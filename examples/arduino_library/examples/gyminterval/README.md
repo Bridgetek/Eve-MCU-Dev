@@ -32,11 +32,7 @@ Once the timer has started then the countdown will be shown as a time in the cen
 
 The application starts up in the file `gyminterval.ino` which provides initial MCU configuration and the program code for the example. 
 
-The `gyminterval.ino` code must provide any functions that rely on a platform's operating system, or built-in non-volatile storage mechanism. The required functions store and recall previous touch screen calibration settings:
-- **platform_calib_init** initialise a platform's non-volatile storage system.
-- **platform_calib_read** read a previous touch screen calibration or return a value indicating that there are no stored calibration setting.
-- **platform_calib_write** write a touch screen calibration to the platform's non-volatile storage.
-- **platform_get_time** get elapsed milliseconds since program start.
+The `gyminterval.ino` code must provide any functions that rely on a platform's operating system.
 
 The `setup` function in the sketch is as follows:
 
@@ -77,8 +73,7 @@ void eve_example(void) {
   Serial.print("Calibrating display...\n");
   if (eve_calibrate() != 0) {
     Serial.print("Exception...\n");
-    while (1)
-      ;
+    return;
   }
 
   Serial.print("Starting demo...\n");
@@ -96,8 +91,6 @@ Finally, the main program sits in a continuous loop within `eve_display()`. Each
 
 This function is used to show the touchscreen calibration screen and prompt the user to touch the screen at the required positions to generate an accurate transformation matrix. This matrix is used to translate the raw touch input into precise points on the screen.
 
-The platform specific functions in `simple.ino` are called from this routine to store and read touchscreen calibration settings so that the user only needs to perform the action once.
-
 ## Files and Folders
 
 The example contains a common directory with several files which comprises all the demo functionality.
@@ -109,6 +102,8 @@ The example contains a common directory with several files which comprises all t
 | [eve_example.h](eve_example.h) | Header file for examaple |
 | [touch.ino](touch.ino) | Calibrations routines |
 | [touch.h](touch.h) | Calibrations routines header file |
+| [platform_time.cpp](platform_time.cpp) | Platform time routines |
+| [platform_time.h](platform_time.h) | Platform time routines header file |
 | [sound.ino](sound.ino) | Sound routines |
 | [sound.h](sound.h) | Sound routines header file |
 | [fonts.ino](fonts.ino) | Font routines |
