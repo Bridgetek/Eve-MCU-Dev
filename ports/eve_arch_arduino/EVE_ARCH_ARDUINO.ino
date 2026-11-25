@@ -1,5 +1,5 @@
 /**
- * @file eve_arch_arduino.ino
+ * @file EVE_ARCH_ARDUINO.ino
  * @details MCU-specific code for controlling EVE on Arduino devices.
  */
 /*

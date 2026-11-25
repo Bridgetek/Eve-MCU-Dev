@@ -512,7 +512,7 @@ for d in dist_inc_files:
     dist_source_files.append((os.path.join(src_api,"include",d), os.path.join(dest_lib,d)))
 dist_source_files.append((os.path.join(src_api,"source","EVE_API.c"), dest_api))
 dist_source_files.append((os.path.join(src_api,"source","EVE_HAL.c"), os.path.join(dest_lib,"EVE_HAL.c")))
-dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","eve_arch_arduino.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
+dist_source_files.append((os.path.join(src_api,"ports","eve_arch_arduino","EVE_ARCH_ARDUINO.ino"), os.path.join(dest_lib,"EVE_MCU.cpp")))
 if eve_api ==2 or eve_api == 3 or eve_api == 4:
     dist_source_files.append((
         os.path.join(src_api, "include", "extensions", "custom_touch_fw.h"),

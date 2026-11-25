@@ -36,7 +36,7 @@ Sketch name is simple_arduino
 ..\..\..\include\EVE_settings.h -> simple_arduino\EVE_settings.h
 ..\..\..\source\EVE_API.c -> simple_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> simple_arduino\EVE_HAL.ino
-..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> simple_arduino\eve_arch_arduino.ino
+..\..\..\ports\eve_arch_arduino\EVE_ARCH_ARDUINO.ino -> simple_arduino\EVE_ARCH_ARDUINO.ino
 ..\..\..\ports\eve_arch_arduino\README.md -> simple_arduino\README.md
 ..\..\..\source\extensions\bt82x_patch.c -> simple_arduino\bt82x_patch.ino
 ..\..\..\source\extensions\bt82x_patch.h -> simple_arduino\bt82x_patch.h
@@ -63,7 +63,7 @@ The following files **must** be copied into the `simple_arduino` directory to be
   - EVE_API.c
   - EVE_HAL.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
-  - eve_arch_arduino.ino
+  - EVE_ARCH_ARDUINO.ino
   - README.md
 - From the `examples\simple\common` directory the files for the simple example functionality:
   - eve_example.c
@@ -131,7 +131,7 @@ custom_touch_fw.ino
 custom_touch_fw.h
 lcd_panel_init.ino      
 lcd_panel_init.h  
-eve_arch_arduino.ino  
+EVE_ARCH_ARDUINO.ino  
 README.md  
 eve_example.ino       
 eve_example.h         

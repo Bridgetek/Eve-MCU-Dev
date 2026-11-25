@@ -40,7 +40,7 @@ Sketch name is gyminterval_arduino
 ..\..\..\include\EVE_registers.h -> gyminterval_arduino\EVE_registers.h
 ..\..\..\source\EVE_API.c -> gyminterval_arduino\EVE_API.ino
 ..\..\..\source\EVE_HAL.c -> gyminterval_arduino\EVE_HAL.ino
-..\..\..\ports\eve_arch_arduino\eve_arch_arduino.ino -> gyminterval_arduino\eve_arch_arduino.ino
+..\..\..\ports\eve_arch_arduino\EVE_ARCH_ARDUINO.ino -> gyminterval_arduino\EVE_ARCH_ARDUINO.ino
 ..\..\..\ports\eve_arch_arduino\README.md -> gyminterval_arduino\README.md
 ..\..\..\source\extensions\bt82x_patch.c -> gyminterval_arduino\bt82x_patch.ino
 ..\..\..\source\extensions\bt82x_patch.h -> gyminterval_arduino\bt82x_patch.h
@@ -67,7 +67,7 @@ The following files **must** be copied into the `gyminterval_arduino` directory 
   - EVE_API.c
   - EVE_HAL.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
-  - eve_arch_arduino.ino
+  - EVE_ARCH_ARDUINO.ino
   - README.md
 - From the `examples\gyminterval\common` directory the files for the gyminterval example functionality:
   - eve_example.c
@@ -137,7 +137,7 @@ custom_touch_fw.ino
 custom_touch_fw.h 
 lcd_panel_init.ino      
 lcd_panel_init.h
-eve_arch_arduino.ino  
+EVE_ARCH_ARDUINO.ino  
 README.md  
 eve_example.ino       
 eve_example.h         

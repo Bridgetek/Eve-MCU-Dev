@@ -1,5 +1,5 @@
 /**
- * @file eve_arch_arduino.cpp
+ * @file EVE_ARCH_ARDUINO.cpp
  * @details MCU-specific code for controlling EVE Arduino PlatformIO.
  *          This file is used with the Arduino Framework in PlatformIO.
  *          In `platformio.ini`

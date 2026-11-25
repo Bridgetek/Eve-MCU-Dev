@@ -92,7 +92,7 @@ The following files are copied without change from the EVE-MCU-Dev library.
   - EVE_API.c
   - EVE_HAL.c
 - From the `ports\eve_arch_arduino` directory add the MCU layer sketch for Arduino:
-  - eve_arch_arduino.ino (renamed to EVE_MCU.cpp)
+  - EVE_ARCH_ARDUINO.ino (renamed to EVE_MCU.cpp)
 
 - Extension source and header files are stored separately in the EVE-MCU-Dev
 source tree:

@@ -40,7 +40,7 @@ dist_source_files.extend(add_files(os.path.join(src_snippets, "maths"), sketch, 
 dist_source_files.extend(add_files(os.path.join(src_snippets, "controls"), sketch, ["arcs.c", "arcs.h", "fonts.c", "fonts.h", "sound.c", "sound.h"]))
 dist_source_files.extend(add_files(src_api_include, sketch, ["EVE.h", "HAL.h", "MCU.h", "EVE_debug.h", "EVE_registers.h", "EVE_settings.h", "EVE_commands.h", "EVE_defs.h", "EVE_config.h"]))
 dist_source_files.extend(add_files(src_api_source, sketch, ["EVE_API.c", "EVE_HAL.c"]))
-dist_source_files.extend(add_files(src_port, sketch, ["eve_arch_arduino.ino", "README.md"]))
+dist_source_files.extend(add_files(src_port, sketch, ["EVE_ARCH_ARDUINO.ino", "README.md"]))
 dist_source_files.extend(add_files(src_extensions_source, sketch, ["bt82x_patch.c", "custom_touch_fw.c", "lcd_panel_init.c"]))
 dist_source_files.extend(add_files(src_extensions_include, sketch, ["bt82x_patch.h", "custom_touch_fw.h", "lcd_panel_init.h"]))
 
